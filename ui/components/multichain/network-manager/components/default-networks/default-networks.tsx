@@ -81,7 +81,6 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
       width={BlockSize.Full}
-      onClick={() => handleAdditionalNetworkClick(network)}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
@@ -117,6 +116,7 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         padding={0}
         marginLeft={'auto'}
         ariaLabel={t('addNetwork')}
+        onClick={() => handleAdditionalNetworkClick(network)}
       />
     </Box>
   );

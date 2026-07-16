@@ -31,7 +31,22 @@ import {
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
+
 import TokenList from './token-list';
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const mockTrackEvent = jest.fn();
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder: jest.requireActual(
+        '../../../../../shared/lib/analytics/create-event-builder',
+      ).createEventBuilder,
+      trackEvent: mockTrackEvent,
+    }),
+    mockTrackEvent,
+  };
+});
 
 jest.mock('../token-cell', () => {
   const ReactActual = jest.requireActual('react');
@@ -56,21 +71,6 @@ jest.mock('../token-cell', () => {
         },
         token.title,
       ),
-  };
-});
-
-jest.mock('../../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual('react');
-  const mockTrackEvent = jest.fn();
-
-  return {
-    MetaMetricsContext: ReactActual.createContext({
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    }),
-    mockTrackEvent,
   };
 });
 
@@ -117,6 +117,10 @@ jest.mock('../../../../selectors/assets', () => ({
   selectAccountGroupBalanceForEmptyState: jest.fn(),
 }));
 
+const getMockTrackEvent = () =>
+  jest.requireMock('../../../../hooks/useAnalytics')
+    .mockTrackEvent as jest.Mock;
+
 const CHAIN_ID = '0x1' as Hex;
 const LINEA_CHAIN_ID = '0xe708' as Hex;
 const ACCOUNT_ID = 'account-1';
@@ -124,10 +128,15 @@ const ACCOUNT_ID = 'account-1';
 const lowValueAssetsLabel = (count: number) =>
   messages.lowValueAssets.message.replace('$1', String(count));
 
-const getMockTrackEvent = () =>
-  jest.requireMock('../../../../contexts/metametrics')
-    .mockTrackEvent as jest.Mock;
+const render = () => {
+  const store = configureMockStore([thunk])({});
 
+  return renderComponent(
+    <Provider store={store}>
+      <TokenList onTokenClick={jest.fn()} />
+    </Provider>,
+  );
+};
 const createAsset = ({
   symbol,
   fiatBalance,
@@ -176,16 +185,6 @@ const createAsset = ({
 const createAccountGroupAssets = (assets: Asset[]): AccountGroupAssets => ({
   [CHAIN_ID]: assets,
 });
-
-const render = () => {
-  const store = configureMockStore([thunk])({});
-
-  return renderComponent(
-    <Provider store={store}>
-      <TokenList onTokenClick={jest.fn()} />
-    </Provider>,
-  );
-};
 
 describe('TokenList', () => {
   beforeEach(() => {
@@ -417,26 +416,32 @@ describe('TokenList', () => {
     fireEvent.click(toggle);
 
     expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
-    expect(getMockTrackEvent()).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.LowValueAssetsToggled,
-      properties: {
-        state: 'expanded',
-        count: 1,
-      },
-    });
+    expect(getMockTrackEvent()).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.LowValueAssetsToggled,
+        properties: {
+          category: MetaMetricsEventCategory.Home,
+          state: 'expanded',
+          count: 1,
+        },
+        sensitiveProperties: {},
+      }),
+    );
 
     fireEvent.click(toggle);
 
     expect(screen.queryByTestId('token-cell-DUST')).not.toBeInTheDocument();
-    expect(getMockTrackEvent()).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.LowValueAssetsToggled,
-      properties: {
-        state: 'collapsed',
-        count: 1,
-      },
-    });
+    expect(getMockTrackEvent()).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.LowValueAssetsToggled,
+        properties: {
+          category: MetaMetricsEventCategory.Home,
+          state: 'collapsed',
+          count: 1,
+        },
+        sensitiveProperties: {},
+      }),
+    );
   });
 
   it('persists expansion for the browser session', () => {

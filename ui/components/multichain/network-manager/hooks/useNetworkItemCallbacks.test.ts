@@ -98,6 +98,9 @@ const solanaDevnetNetwork = {
 describe('useNetworkItemCallbacks', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest
+      .mocked(getSelectedMultichainNetworkChainId)
+      .mockReturnValue('eip155:1');
   });
 
   it('shows Disable label and removes default networks without confirmation', () => {
@@ -131,7 +134,7 @@ describe('useNetworkItemCallbacks', () => {
     expect(removeNetwork).not.toHaveBeenCalled();
   });
 
-  it('shows Disable for default networks even when they are the active network', () => {
+  it('does not show Disable for the active default network', () => {
     jest
       .mocked(getSelectedMultichainNetworkChainId)
       .mockReturnValue(optimismNetwork.chainId);
@@ -139,8 +142,8 @@ describe('useNetworkItemCallbacks', () => {
     const { result } = renderHook(() => useNetworkItemCallbacks());
     const callbacks = result.current.getItemCallbacks(optimismNetwork);
 
-    expect(callbacks.onDeleteMenuLabel).toBe('disable');
-    expect(callbacks.onDelete).toBeDefined();
+    expect(callbacks.onDeleteMenuLabel).toBeUndefined();
+    expect(callbacks.onDelete).toBeUndefined();
   });
 
   it('does not show Disable for featured non-EVM networks', () => {

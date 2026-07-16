@@ -1,6 +1,11 @@
 import { version as VERSION } from '../../package.json';
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
 import { buildBundleSizeDiffSection } from './bundle-size';
+import {
+  extractWhatsInRc,
+  buildWhatsInRcSection,
+  buildWhatsInRcFailureSection,
+} from './cherry-picks-section';
 import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
 import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
@@ -12,7 +17,7 @@ start().catch((error) => {
 
 async function start(): Promise<void> {
   const {
-    PR_COMMENT_TOKEN,
+    BUILD_ANNOUNCE_TOKEN,
     OWNER,
     REPOSITORY,
     RUN_ID,
@@ -23,6 +28,7 @@ async function start(): Promise<void> {
     BUILDS_FROM_SHA,
     BUILDS_FROM_RUN,
     TEST_PLAN_VERSION,
+    BRANCH,
   } = process.env;
 
   if (!PR_NUMBER) {
@@ -33,7 +39,7 @@ async function start(): Promise<void> {
   }
 
   if (
-    !PR_COMMENT_TOKEN ||
+    !BUILD_ANNOUNCE_TOKEN ||
     !OWNER ||
     !REPOSITORY ||
     !RUN_ID ||
@@ -41,7 +47,7 @@ async function start(): Promise<void> {
     !HOST_URL
   ) {
     throw new Error(
-      'Missing required environment variables: PR_COMMENT_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, HOST_URL',
+      'Missing required environment variables: BUILD_ANNOUNCE_TOKEN, OWNER, REPOSITORY, RUN_ID, HEAD_COMMIT_HASH, HOST_URL',
     );
   }
 
@@ -75,6 +81,20 @@ async function start(): Promise<void> {
     'Bundle size diffs',
   );
 
+  // Add "What's in this RC" section for release branches
+  const isReleaseBranch = BRANCH?.startsWith('release/');
+  if (isReleaseBranch) {
+    commentBody += await buildSectionWithFallback(async () => {
+      try {
+        const result = extractWhatsInRc();
+        return buildWhatsInRcSection(result, RUN_ID) || null;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return buildWhatsInRcFailureSection(message, RUN_ID);
+      }
+    }, "What's in this RC");
+  }
+
   // Add AI-generated test plan section when a test plan was generated.
   if (TEST_PLAN_VERSION) {
     commentBody += await buildSectionWithFallback(
@@ -88,6 +108,6 @@ async function start(): Promise<void> {
     owner: OWNER,
     repository: REPOSITORY,
     prNumber: PR_NUMBER,
-    commentToken: PR_COMMENT_TOKEN,
+    commentToken: BUILD_ANNOUNCE_TOKEN,
   });
 }

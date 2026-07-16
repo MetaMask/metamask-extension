@@ -13,12 +13,13 @@ import { EtherDenomination } from '../../../shared/constants/common';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 class ConfirmEncryptionPublicKeyBase extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     trackEvent: PropTypes.func.isRequired,
+    createEventBuilder: PropTypes.func.isRequired,
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
       balance: PropTypes.string,
@@ -167,7 +168,7 @@ class ConfirmEncryptionPublicKeyBase extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { t, trackEvent } = this.props;
+    const { t, trackEvent, createEventBuilder } = this.props;
 
     return (
       <PageContainerFooter
@@ -175,27 +176,30 @@ class ConfirmEncryptionPublicKeyBase extends Component {
         submitText={t('provide')}
         onCancel={async (event) => {
           await cancelEncryptionPublicKey(txData, event);
-          trackEvent({
-            category: MetaMetricsEventCategory.Messages,
-            event: 'Cancel',
-            properties: {
-              action: 'Encryption public key Request',
-              legacy_event: true,
-            },
-          });
+          trackEvent(
+            createEventBuilder('Cancel')
+              .addCategory(MetaMetricsEventCategory.Messages)
+              .addProperties({
+                action: 'Encryption public key Request',
+                legacy_event: true,
+              })
+              .build(),
+          );
           clearConfirmTransaction();
           navigate(mostRecentOverviewPage);
         }}
         onSubmit={async (event) => {
           await encryptionPublicKey(txData, event);
-          this.props.trackEvent({
-            category: MetaMetricsEventCategory.Messages,
-            event: 'Confirm',
-            properties: {
-              action: 'Encryption public key Request',
-              legacy_event: true,
-            },
-          });
+          this.props.trackEvent(
+            this.props
+              .createEventBuilder('Confirm')
+              .addCategory(MetaMetricsEventCategory.Messages)
+              .addProperties({
+                action: 'Encryption public key Request',
+                legacy_event: true,
+              })
+              .build(),
+          );
           clearConfirmTransaction();
           navigate(mostRecentOverviewPage);
         }}
@@ -221,9 +225,14 @@ class ConfirmEncryptionPublicKeyBase extends Component {
 
 function ConfirmEncryptionPublicKey(props) {
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   return (
-    <ConfirmEncryptionPublicKeyBase {...props} t={t} trackEvent={trackEvent} />
+    <ConfirmEncryptionPublicKeyBase
+      {...props}
+      t={t}
+      trackEvent={trackEvent}
+      createEventBuilder={createEventBuilder}
+    />
   );
 }
 

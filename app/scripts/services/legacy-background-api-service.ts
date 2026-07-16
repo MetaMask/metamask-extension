@@ -6,7 +6,7 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json } from '@metamask/utils';
+import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -20,27 +20,50 @@ import {
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithKeyringV2Action,
   KeyringControllerSetLockedAction,
+  KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSubmitEncryptionKeyAction,
   KeyringControllerSubmitPasswordAction,
   KeyringControllerVerifyPasswordAction,
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  TransactionContainerType,
+  TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
-import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
-import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
+import {
+  CurrencyRateControllerSetCurrentCurrencyAction,
+  TokenDetectionControllerDisableAction,
+  TokenDetectionControllerEnableAction,
+} from '@metamask/assets-controllers';
+import {
+  AccountId,
+  Asset,
+  AssetsControllerGetAssetsAction,
+  AssetsControllerSetSelectedCurrencyAction,
+  Caip19AssetId,
+} from '@metamask/assets-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
+  PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerTestOriginAction,
+} from '@metamask/phishing-controller';
+import {
+  ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerRejectRequestAction,
   ApprovalRequestNotFoundError,
@@ -66,13 +89,27 @@ import {
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
-import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
+import {
+  CaveatSpecificationConstraint,
+  ExtractPermission,
+  OriginString,
+  PermissionControllerAcceptPermissionsRequestAction,
+  PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionsAction,
+  PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionSpecificationConstraint,
+  PermissionsRequest,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapInterfaceControllerDeleteInterfaceAction } from '@metamask/snaps-controllers';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
@@ -82,35 +119,69 @@ import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
-import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import {
+  SubscriptionControllerGetStateAction,
+  SubscriptionControllerStopAllPollingAction,
+} from '@metamask/subscription-controller';
+import {
+  ShieldControllerStartAction,
+  ShieldControllerStopAction,
+} from '@metamask/shield-controller';
+import {
+  GasFeeControllerDisableNonRPCGasFeeApisAction,
+  GasFeeControllerEnableNonRPCGasFeeApisAction,
+} from '@metamask/gas-fee-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { cloneDeep } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
+import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+} from '../../../shared/constants/metametrics';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
-import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { applyTransactionContainers } from '../lib/transaction/containers/util';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
+import {
+  PreferencesControllerSetPasswordForgottenAction,
+  PreferencesControllerToggleExternalServicesAction,
+} from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
+  MetaMetricsControllerCreateEventFragmentAction,
+  MetaMetricsControllerGetEventFragmentByIdAction,
   MetaMetricsControllerTrackEventAction,
+  MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
+import {
+  encodeDisabledDelegationsCheck,
+  decodeDisabledDelegationsResult,
+} from '../../../shared/lib/delegation/delegation';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -123,30 +194,48 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
+  'acceptPermissionsRequest',
+  'applyTransactionContainersExisting',
+  'captureTestError',
   'changePassword',
+  'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
+  'decodeTransactionData',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
+  'getAssets',
   'getCode',
   'getGlobalChainId',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
+  'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isRelaySupported',
+  'isSendBundleSupported',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'rejectAllPendingApprovals',
+  'rejectPendingApproval',
+  'rejectPermissionsRequest',
   'removeAccount',
+  'removePermissionsFor',
   'resetAccount',
+  'setAccountLabel',
   'setCurrentCurrency',
   'setLocked',
+  'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwTestError',
+  'toggleExternalServices',
   'unMarkPasswordForgotten',
+  'upsertTransactionUIMetricsFragment',
 ] as const;
 
 /**
@@ -158,18 +247,25 @@ export type LegacyBackgroundApiServiceActions =
 type AllowedActions =
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
+  | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | ApprovalControllerAcceptRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
+  | DelegationControllerSignDelegationAction
+  | GasFeeControllerDisableNonRPCGasFeeApisAction
+  | GasFeeControllerEnableNonRPCGasFeeApisAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -179,8 +275,12 @@ type AllowedActions =
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringV2Action
+  | MetaMetricsControllerCreateEventFragmentAction
+  | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerTrackEventAction
+  | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
+  | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
@@ -196,8 +296,14 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PermissionControllerAcceptPermissionsRequestAction
+  | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerTestOriginAction
   | PreferencesControllerSetPasswordForgottenAction
+  | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
@@ -212,10 +318,19 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | ShieldControllerStartAction
+  | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
+  | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
+  | TokenDetectionControllerDisableAction
+  | TokenDetectionControllerEnableAction
+  | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
+  | TransactionControllerUpdateEditableParamsAction
   | TransactionControllerWipeTransactionsAction;
 
 /**
@@ -234,6 +349,7 @@ type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
   seedlessOperationMutex: Mutex;
+  createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   sendUpdate: () => void;
@@ -264,6 +380,8 @@ export class LegacyBackgroundApiService {
 
   readonly #seedlessOperationMutex: Mutex;
 
+  readonly #createVaultMutex: Mutex;
+
   readonly #offscreenPromise: Promise<void>;
 
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
@@ -277,6 +395,7 @@ export class LegacyBackgroundApiService {
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
+   * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -286,6 +405,7 @@ export class LegacyBackgroundApiService {
     getOpenMetamaskTabsIds,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -298,6 +418,7 @@ export class LegacyBackgroundApiService {
     // migrate the seedless onboarding functionality to this service.
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#createVaultMutex = createVaultMutex;
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -347,6 +468,32 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Refreshes and returns the assets for the given accounts via the
+   * AssetsController (force-updating from remote sources).
+   *
+   * No-ops when the assets unify state feature is not enabled, since the
+   * AssetsController is not registered in that case.
+   *
+   * @param accounts - The accounts to fetch assets for.
+   * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+   * @returns The assets for the given accounts, or `undefined` when the feature
+   * is not enabled.
+   */
+  async getAssets(
+    accounts: InternalAccount[],
+    options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
+  ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return undefined;
+    }
+
+    return await this.#messenger.call('AssetsController:getAssets', accounts, {
+      ...options,
+      forceUpdate: true,
+    });
+  }
+
+  /**
    * Determines if the given endpoint URL is a public endpoint URL.
    *
    * @param endpointUrl - The endpoint URL to check.
@@ -354,6 +501,16 @@ export class LegacyBackgroundApiService {
    */
   isPublicEndpointUrl(endpointUrl: string): boolean {
     return isPublicEndpointUrl(endpointUrl, this.#infuraProjectId);
+  }
+
+  /**
+   * Determines whether the sendBundle feature is supported for the given chain.
+   *
+   * @param chainId - The chain ID to check.
+   * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+   */
+  async isSendBundleSupported(chainId: Hex): Promise<boolean> {
+    return await isSendBundleSupported(chainId);
   }
 
   /**
@@ -372,6 +529,21 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Updates the phishing lists if necessary and then checks whether the given
+   * website is a known phishing site.
+   *
+   * @param website - The website origin to check.
+   * @returns The phishing detection result.
+   */
+  async getPhishingResult(
+    website: string,
+  ): Promise<ReturnType<PhishingControllerTestOriginAction['handler']>> {
+    await this.#messenger.call('PhishingController:maybeUpdateState');
+
+    return this.#messenger.call('PhishingController:testOrigin', website);
   }
 
   /**
@@ -410,6 +582,44 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Checks whether a delegation has been disabled on-chain by performing an
+   * `eth_call` against the delegation manager contract.
+   *
+   * @param delegationManagerAddress - The delegation manager contract address.
+   * @param delegationHash - The hash of the delegation to check.
+   * @param networkClientId - The ID of the network client to use for the request.
+   * @returns `true` if the delegation is disabled, `false` otherwise.
+   */
+  async checkDelegationDisabled(
+    delegationManagerAddress: Hex,
+    delegationHash: Hex,
+    networkClientId: string,
+  ): Promise<boolean> {
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+
+    const result = (await provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
+    })) as Hex;
+
+    // Decode the result
+    return decodeDisabledDelegationsResult(result);
+  }
+
+  /**
    * Estimates the gas for a given transaction using the currently selected
    * network client.
    *
@@ -432,6 +642,38 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
+  }
+
+  /**
+   * Decodes the data of a transaction using the currently selected network
+   * client's provider.
+   *
+   * @param request - The transaction decode request.
+   * @param request.transactionData - The transaction data to decode.
+   * @param request.contractAddress - The address of the contract the
+   * transaction interacts with.
+   * @param request.chainId - The chain ID of the network the transaction is on.
+   * @returns The decoded transaction data, or `undefined` if it could not be
+   * decoded.
+   */
+  async decodeTransactionData(request: {
+    transactionData: Hex;
+    contractAddress: Hex;
+    chainId: Hex;
+  }): Promise<DecodedTransactionDataResponse | undefined> {
+    const { selectedNetworkClientId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+
+    return decodeTransactionData({
+      ...request,
+      provider,
+    });
   }
 
   /**
@@ -469,53 +711,6 @@ export class LegacyBackgroundApiService {
     ).address;
 
     const globalChainId = this.getGlobalChainId();
-
-    const { pendingApprovals } = this.#messenger.call(
-      'ApprovalController:getState',
-    );
-
-    const { transactions } = this.#messenger.call(
-      'TransactionController:getState',
-    );
-
-    const matchingSmartTransactionApprovals = Object.values(
-      pendingApprovals ?? {},
-    ).filter((approval) => {
-      if (
-        approval.type !==
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        return false;
-      }
-
-      const txId = approval.requestState?.txId;
-
-      if (typeof txId !== 'string') {
-        return false;
-      }
-
-      const transaction = transactions.find(({ id }) => id === txId);
-
-      return (
-        transaction &&
-        transaction?.chainId === globalChainId &&
-        isEqualCaseInsensitive(transaction.txParams?.from, selectedAddress)
-      );
-    });
-
-    for (const approval of matchingSmartTransactionApprovals) {
-      try {
-        this.#messenger.call(
-          'ApprovalController:rejectRequest',
-          approval.id,
-          new Error('Transaction activity reset'),
-        );
-      } catch (error) {
-        if (!(error instanceof ApprovalRequestNotFoundError)) {
-          throw error;
-        }
-      }
-    }
 
     this.#messenger.call('TransactionController:wipeTransactions', {
       address: selectedAddress,
@@ -569,6 +764,27 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Sets the label for the account at the given address.
+   *
+   * @param address - The address of the account to set the label for.
+   * @param label - The label to set for the account.
+   */
+  setAccountLabel(address: string, label: string): void {
+    const account = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    );
+    if (account === undefined) {
+      throw new Error(`No account found for address: ${address}`);
+    }
+    this.#messenger.call(
+      'AccountsController:setAccountName',
+      account.id,
+      label,
+    );
+  }
+
+  /**
    * Execute side effects of a removed account.
    *
    * @param address - The address of the account to remove.
@@ -585,6 +801,52 @@ export class LegacyBackgroundApiService {
           address as Hex,
         ),
     );
+  }
+
+  /**
+   * Rejects a pending permissions request.
+   *
+   * Swallows `PermissionsRequestNotFoundError` so that rejecting an already
+   * resolved request does not throw.
+   *
+   * @param requestId - The ID of the permissions request to reject.
+   */
+  rejectPermissionsRequest(requestId: string): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:rejectPermissionsRequest',
+        requestId,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Removes the given permissions for the given subjects.
+   *
+   * @param subjects - The subjects and their permissions to remove.
+   */
+  removePermissionsFor(
+    subjects: Record<
+      OriginString,
+      NonEmptyArray<
+        ExtractPermission<
+          PermissionSpecificationConstraint,
+          CaveatSpecificationConstraint
+        >['parentCapability']
+      >
+    >,
+  ): void {
+    try {
+      this.#messenger.call('PermissionController:revokePermissions', subjects);
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
   }
 
   async importAccountWithStrategy(
@@ -722,6 +984,18 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.#messenger, snapId);
+  }
+
+  /**
+   * Sets the currently selected internal account.
+   *
+   * @param id - The ID of the account to set as selected.
+   */
+  setSelectedInternalAccount(id: string): void {
+    const account = this.#messenger.call('AccountsController:getAccount', id);
+    if (account) {
+      this.#messenger.call('AccountsController:setSelectedAccount', id);
+    }
   }
 
   /**
@@ -1075,57 +1349,62 @@ export class LegacyBackgroundApiService {
    * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
   async setLocked({ skipSeedlessOperationLock = false } = {}): Promise<void> {
-    const isSocialLoginFlow = this.#messenger.call(
-      'OnboardingController:getIsSocialLoginFlow',
-    );
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.#seedlessOperationMutex.acquire();
-    }
-
+    const releaseVaultMutex = await this.#createVaultMutex.acquire();
     try {
-      if (isSocialLoginFlow) {
-        await this.#messenger.call('SeedlessOnboardingController:setLocked');
-      }
-      await this.#messenger.call('KeyringController:setLocked');
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.#messenger.call('SubscriptionController:stopAllPolling');
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.#messenger.call(
-        'AuthenticationController:getState',
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
       );
-      if (isSignedIn) {
-        this.#messenger.call('AuthenticationController:performSignOut');
+
+      let releaseLock;
+      if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+        releaseLock = await this.#seedlessOperationMutex.acquire();
       }
 
-      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-      if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-        clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      }
-      this.#messenger.call(
-        'AppStateController:setPasskeyAutoUnlockSuppressed',
-        true,
-      );
-      this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      try {
+        if (isSocialLoginFlow) {
+          await this.#messenger.call('SeedlessOnboardingController:setLocked');
+        }
+        await this.#messenger.call('KeyringController:setLocked');
+
+        // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+        this.#messenger.call('SubscriptionController:stopAllPolling');
+
+        // sign out from Authentication service and clear the Session Data if user is signed in
+        // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+        // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+        const { isSignedIn } = this.#messenger.call(
+          'AuthenticationController:getState',
+        );
+        if (isSignedIn) {
+          this.#messenger.call('AuthenticationController:performSignOut');
+        }
+
+        // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        }
         this.#messenger.call(
           'AppStateController:setPasskeyAutoUnlockSuppressed',
-          false,
+          true,
         );
-      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
+        this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+          this.#messenger.call(
+            'AppStateController:setPasskeyAutoUnlockSuppressed',
+            false,
+          );
+        }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+      } catch (error) {
+        log.error('Error setting locked state', error);
+        throw error;
+      } finally {
+        if (releaseLock) {
+          releaseLock();
+        }
       }
+    } finally {
+      releaseVaultMutex();
     }
   }
 
@@ -1159,5 +1438,316 @@ export class LegacyBackgroundApiService {
       { password },
       address,
     );
+  }
+
+  /**
+   * Applies the given transaction container types to an existing transaction.
+   *
+   * @param transactionId - The ID of the transaction to update.
+   * @param containerTypes - The container types to apply to the transaction.
+   */
+  async applyTransactionContainersExisting(
+    transactionId: string,
+    containerTypes: TransactionContainerType[],
+  ): Promise<void> {
+    const { transactions } = await this.#messenger.call(
+      'TransactionController:getState',
+    );
+
+    const transactionMeta = transactions.find((tx) => tx.id === transactionId);
+
+    if (!transactionMeta) {
+      throw new Error(`Transaction with ID ${transactionId} not found.`);
+    }
+
+    const { updateTransaction } = await applyTransactionContainers({
+      isApproved: false,
+      messenger:
+        this.#messenger as unknown as TransactionControllerInitMessenger,
+      transactionMeta,
+      types: containerTypes,
+    });
+
+    const newTransactionMeta = cloneDeep(transactionMeta);
+
+    updateTransaction(newTransactionMeta);
+
+    this.#messenger.call(
+      'TransactionController:updateEditableParams',
+      transactionId,
+      {
+        containerTypes,
+        data: newTransactionMeta.txParams.data ?? '0x',
+        gas: newTransactionMeta.txParams.gas,
+        gasPrice: transactionMeta.txParams.gasPrice,
+        maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
+        maxPriorityFeePerGas: transactionMeta.txParams.maxPriorityFeePerGas,
+        to: newTransactionMeta.txParams.to,
+        updateType: false,
+        value: newTransactionMeta.txParams.value,
+      },
+    );
+  }
+
+  /**
+   * Builds the event fragment id used to store the UI metrics fragment for a
+   * given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment id.
+   */
+  #getTransactionUIMetricsFragmentId(transactionId: string): string {
+    return `transaction-ui-${transactionId}`;
+  }
+
+  /**
+   * Retrieves the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @returns The event fragment, or `undefined` if it does not exist.
+   */
+  #getTransactionUIMetricsFragment(
+    transactionId: string,
+  ): MetaMetricsEventFragment | undefined {
+    return this.#messenger.call(
+      'MetaMetricsController:getEventFragmentById',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+    );
+  }
+
+  /**
+   * Creates or updates the UI metrics fragment for a given transaction.
+   *
+   * @param transactionId - The id of the transaction.
+   * @param payload - The fragment settings and properties to store.
+   */
+  upsertTransactionUIMetricsFragment(
+    transactionId: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ): void {
+    if (!transactionId || !payload) {
+      return;
+    }
+
+    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
+    const existingFragment =
+      this.#getTransactionUIMetricsFragment(transactionId);
+
+    if (existingFragment) {
+      this.#messenger.call(
+        'MetaMetricsController:updateEventFragment',
+        fragmentId,
+        payload,
+      );
+      return;
+    }
+
+    this.#messenger.call('MetaMetricsController:createEventFragment', {
+      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
+      uniqueIdentifier: fragmentId,
+      // Required by createEventFragment, but this fragment is storage-only.
+      // We never finalize this fragment and we do not set initialEvent.
+      successEvent: 'Transaction Fragment Created',
+      category: MetaMetricsEventCategory.Transactions,
+      canDeleteIfAbandoned: true,
+      properties: payload.properties ?? {},
+      sensitiveProperties: payload.sensitiveProperties ?? {},
+    });
+  }
+
+  /**
+   * Rejects a pending approval request.
+   *
+   * @param id - The ID of the approval request to reject.
+   * @param error - The error to reject the approval request with.
+   * @param error.code - The error code.
+   * @param error.message - The error message.
+   * @param error.data - The error data.
+   */
+  rejectPendingApproval(
+    id: string,
+    error: { code: number; message: string; data?: Json },
+  ): void {
+    try {
+      this.#messenger.call(
+        'ApprovalController:rejectRequest',
+        id,
+        new JsonRpcError(error.code, error.message, error.data),
+      );
+    } catch (err) {
+      if (!(err instanceof ApprovalRequestNotFoundError)) {
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * Rejects all pending approval requests.
+   *
+   * Snap dialogs and account confirmations are accepted with a falsy value and
+   * their interface deleted where applicable, while all other approvals are
+   * rejected with a user-rejected-request error.
+   */
+  rejectAllPendingApprovals(): void {
+    const { pendingApprovals } = this.#messenger.call(
+      'ApprovalController:getState',
+    );
+
+    const approvalRequests = Object.values(pendingApprovals);
+
+    for (const approvalRequest of approvalRequests) {
+      const { id, type, origin } = approvalRequest;
+      const interfaceId = approvalRequest.requestData?.id as string;
+
+      switch (type) {
+        case ApprovalType.SnapDialogAlert:
+        case ApprovalType.SnapDialogPrompt:
+        case DIALOG_APPROVAL_TYPES.default:
+          log.debug('Rejecting snap dialog', { id, interfaceId, origin, type });
+          this.#messenger.call('ApprovalController:acceptRequest', id, null);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case ApprovalType.SnapDialogConfirmation:
+          log.debug('Rejecting snap confirmation', {
+            id,
+            interfaceId,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          this.#messenger.call(
+            'SnapInterfaceController:deleteInterface',
+            interfaceId,
+          );
+          break;
+
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+        case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+          log.debug('Rejecting snap account confirmation', {
+            id,
+            origin,
+            type,
+          });
+          this.#messenger.call('ApprovalController:acceptRequest', id, false);
+          break;
+
+        default:
+          log.debug('Rejecting pending approval', { id, origin, type });
+          this.#messenger.call(
+            'ApprovalController:rejectRequest',
+            id,
+            providerErrors.userRejectedRequest({
+              data: {
+                cause: 'rejectAllApprovals',
+              },
+            }),
+          );
+          break;
+      }
+    }
+  }
+
+  /**
+   * Toggles external services on or off.
+   *
+   * When enabled, token detection and non-RPC gas fee APIs are started, and the
+   * shield service is started if the user has an active shield subscription.
+   * When disabled, those services are stopped, subscription polling is halted,
+   * and the shield service is stopped if applicable.
+   *
+   * @param useExternal - Whether external services should be enabled.
+   */
+  toggleExternalServices(useExternal: boolean): void {
+    this.#messenger.call(
+      'PreferencesController:toggleExternalServices',
+      useExternal,
+    );
+
+    const subscriptionState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
+
+    if (useExternal) {
+      this.#messenger.call('TokenDetectionController:enable');
+      this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:start');
+      }
+    } else {
+      this.#messenger.call('TokenDetectionController:disable');
+      this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
+      // stop polling for the subscriptions if external services are disabled
+      this.#messenger.call('SubscriptionController:stopAllPolling');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:stop');
+      }
+    }
+  }
+
+  /**
+   * Accepts a permissions request. Silently ignores the request if it can no
+   * longer be found.
+   *
+   * @param request - The permissions request to accept.
+   */
+  acceptPermissionsRequest(request: PermissionsRequest): void {
+    try {
+      this.#messenger.call(
+        'PermissionController:acceptPermissionsRequest',
+        request,
+      );
+    } catch (error) {
+      if (!(error instanceof PermissionsRequestNotFoundError)) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      captureException(error);
+    });
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
+  }
+
+  /**
+   * Determines if the transaction relay supports the given chain.
+   *
+   * @param chainId - The chain ID to check for relay support.
+   * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+   */
+  async isRelaySupported(chainId: Hex): Promise<boolean> {
+    return isRelaySupported(chainId);
   }
 }

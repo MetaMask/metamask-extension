@@ -9,6 +9,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 /**
  * Initialize the NFT controller.
@@ -16,40 +17,40 @@ import {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.initMessenger - The messenger used for initialization.
  * @returns The initialized controller.
  */
 export const NftControllerInit: MessengerClientInitFunction<
   NftController,
   NftControllerMessenger,
   NftControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
+> = ({ controllerMessenger, persistedState }) => {
   const messengerClient = new NftController({
     state: persistedState.NftController,
     messenger: controllerMessenger,
     onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        event: MetaMetricsEventName.NftAdded,
-        category: MetaMetricsEventCategory.Wallet,
-        sensitiveProperties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_contract_address: address,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: symbol ?? null,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_id: tokenId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_standard: standard,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          asset_type: AssetType.NFT,
-          source,
-        },
-      }),
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NftAdded)
+          .addCategory(MetaMetricsEventCategory.Wallet)
+          .addSensitiveProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_contract_address: address,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: symbol ?? null,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_id: tokenId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_standard: standard,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            asset_type: AssetType.NFT,
+            source,
+          })
+          .build(),
+      ),
   });
 
   return {

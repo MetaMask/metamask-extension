@@ -118,7 +118,7 @@ import {
 import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
@@ -487,12 +487,10 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          theController.metaMetricsController.trackEvent(
-            {
-              // should we differentiate between background redirection and content script redirection?
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+              .addCategory(MetaMetricsEventCategory.Phishing)
+              .addProperties({
                 url: blockedUrl,
                 referrer: {
                   url: blockedUrl,
@@ -501,11 +499,10 @@ function maybeDetectPhishing(theController) {
                 requestDomain: blockedRequestResponse.result
                   ? hostname
                   : undefined,
-              },
-            },
-            {
-              excludeMetaMetricsId: true,
-            },
+              })
+              .build({
+                excludeMetaMetricsId: true,
+              }),
           );
         }
       };
@@ -749,12 +746,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternallyConnectable(...args);
 });
 
-function saveTimestamp() {
-  const timestamp = new Date().toISOString();
-
-  browser.storage.session.set({ timestamp });
-}
-
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
@@ -819,12 +810,9 @@ async function initialize(backup) {
 
   if (isManifestV3) {
     addOffscreenConnectivityListener((isOnline) => {
-      if (
-        connectivityReady &&
-        controller.messengerClientApi.setConnectivityStatus
-      ) {
+      if (connectivityReady && controller.connectivityAdapter) {
         const status = isOnline ? 'online' : 'offline';
-        controller.messengerClientApi.setConnectivityStatus(status);
+        controller.connectivityAdapter.setStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -852,15 +840,6 @@ async function initialize(backup) {
   }
 
   if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-    }
-
     const sessionData = await browser.storage.session.get([
       'isFirstMetaMaskControllerSetup',
     ]);
@@ -897,13 +876,13 @@ async function initialize(backup) {
     connectivityReady = true;
     if (pendingConnectivityStatus !== null) {
       const status = pendingConnectivityStatus ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     }
   } else {
     // MV2: Background page has access to window events
     const updateConnectivity = (isOnline) => {
       const status = isOnline ? 'online' : 'offline';
-      controller.messengerClientApi.setConnectivityStatus(status);
+      controller.connectivityAdapter.setStatus(status);
     };
     updateConnectivity(globalThis.navigator.onLine);
     globalThis.addEventListener('online', () => updateConnectivity(true));
@@ -922,9 +901,7 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        await controller.metaMetricsController.trackEvent(
-          createEvent({ signature: parsed.signature, url }),
-        );
+        trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1304,23 +1281,21 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  controller.metaMetricsController.trackEvent(
-    {
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.DappViewed)
+      .addCategory(MetaMetricsEventCategory.InpageProvider)
+      .addProperties({
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
-      },
-    },
-    {
-      excludeMetaMetricsId: true,
-    },
+      })
+      .build({
+        referrer: {
+          url: origin,
+        },
+        excludeMetaMetricsId: true,
+      }),
   );
 }
 
@@ -1753,15 +1728,12 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        /**
-         * @type {MetamaskController}
-         */
-        const theController = controller;
-        theController.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PortStreamChunked,
-          category: MetaMetricsEventCategory.PortStream,
-          properties: { chunkSize },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
+            .addCategory(MetaMetricsEventCategory.PortStream)
+            .addProperties({ chunkSize })
+            .build(),
+        );
       };
       remotePort.onDisconnect.addListener(() =>
         portStream.off('message-too-large', handleMessageTooLarge),
@@ -2134,7 +2106,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    controller.rejectAllPendingApprovals();
+    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
   }
 }
 
@@ -2218,7 +2190,12 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     optedIn === true &&
     analyticsId
   ) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AppInstalled)
+        .addCategory(MetaMetricsEventCategory.App)
+        .addProperties(eventProperties)
+        .build(),
+    );
   } else {
     // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.
