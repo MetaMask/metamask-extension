@@ -71,6 +71,9 @@ export const LimitPriceInput = ({
 }: LimitPriceInputProps) => {
   const t = useI18nContext();
   const midPrice = midPriceProp ?? currentPrice;
+  const parsedLimitPrice = Number.parseFloat(limitPrice);
+  const hasValidLimitPrice =
+    Number.isFinite(parsedLimitPrice) && parsedLimitPrice > 0;
 
   const handlePriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,11 +116,14 @@ export const LimitPriceInput = ({
   }, [limitPrice, currentPrice, direction, t]);
 
   const liquidationWarning = useMemo(() => {
+    if (!hasValidLimitPrice) {
+      return null;
+    }
     if (!isNearLiquidationPrice(currentPrice, liquidationPrice, direction)) {
       return null;
     }
     return t('perpsLimitPriceNearLiquidation');
-  }, [currentPrice, liquidationPrice, direction, t]);
+  }, [currentPrice, liquidationPrice, direction, hasValidLimitPrice, t]);
 
   return (
     <Box

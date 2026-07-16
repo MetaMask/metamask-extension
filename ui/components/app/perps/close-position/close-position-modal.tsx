@@ -754,7 +754,10 @@ export const ClosePositionModal = ({
     setError(null);
   }, []);
 
-  const visibleError = formError ?? error;
+  const isEmptyLimitPrice =
+    effectiveOrderType === 'limit' && limitPrice.trim() === '';
+  const visibleFormError = isEmptyLimitPrice ? null : formError;
+  const visibleError = visibleFormError ?? error;
 
   return (
     <>

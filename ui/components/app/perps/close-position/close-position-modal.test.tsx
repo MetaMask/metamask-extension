@@ -862,7 +862,81 @@ describe('ClosePositionModal', () => {
 
       fireEvent.click(screen.getByTestId('order-type-limit'));
 
-      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      const input = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      expect(input).toHaveFocus();
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeDisabled();
+    });
+
+    it('keeps the required price error hidden when the empty input is blurred', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      const input = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.blur(input as HTMLInputElement);
+
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+    });
+
+    it('accepts a valid price without showing the required price error', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('3000');
+
+      expect(
+        screen.queryByText(tEn('perpsCloseLimitPriceRequired')),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('limit-price-liquidation-warning'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-close-position-modal-submit'),
+      ).toBeEnabled();
+    });
+
+    it('shows the required price error for a non-empty invalid price', () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        createCloseLimitEnabledStore(),
+      );
+
+      enterLimitPrice('0');
+
       expect(
         screen.getByText(tEn('perpsCloseLimitPriceRequired')),
       ).toBeInTheDocument();
