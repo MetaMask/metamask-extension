@@ -13,6 +13,84 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
 const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
 
+const getScuttleGlobalThisExceptions = (args: Args) => [
+  // globals used by different mm deps outside of lm compartment
+  'window',
+  'Proxy',
+  'toString',
+  'getComputedStyle',
+  'addEventListener',
+  'removeEventListener',
+  'ShadowRoot',
+  'HTMLElement',
+  'HTMLFormElement',
+  'Element',
+  'pageXOffset',
+  'pageYOffset',
+  'visualViewport',
+  'Reflect',
+  'Set',
+  'Object',
+  'navigator',
+  'harden',
+  'console',
+  'WeakSet',
+  'Event',
+  'EventTarget',
+  // globals used by the browser to generate notifications
+  'Image',
+  'fetch',
+  'AbortController',
+  'OffscreenCanvas',
+  /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+  'name',
+  'performance',
+  'parseFloat',
+  'innerWidth',
+  'innerHeight',
+  'Symbol',
+  'Math',
+  'DOMRect',
+  'Number',
+  'Array',
+  'crypto',
+  'Function',
+  'Uint8Array',
+  'String',
+  'Promise',
+  'JSON',
+  'Date',
+  // Selenium atoms construct regexes while locating elements.
+  'RegExp',
+  // globals sentry needs to function
+  '__SENTRY__',
+  'appState',
+  'extra',
+  'stateHooks',
+  'sentryHooks',
+  'sentry',
+  'logEncryptedVault',
+  'WebAssembly',
+  'Request',
+  // needed by Sentry and react-router-dom v6 HashRouter
+  'history',
+  // globals used by react-dom
+  'getSelection',
+  // globals opera needs to function
+  'opr',
+  // for @popperjs/core and snap simple keyring site
+  'devicePixelRatio',
+  // for @tanstack/react-virtual
+  'ResizeObserver',
+  'setTimeout',
+  'clearTimeout',
+  // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
+  // under scuttling the detection itself throws unless excepted.
+  'requestIdleCallback',
+  // globals used by e2e
+  ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
+];
+
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
@@ -84,78 +162,7 @@ export const lavamoatPlugin = (args: Args) =>
       enabled: true,
       // Scuttler depends on Snow
       scuttlerName: args.snow ? 'SCUTTLER' : undefined,
-      exceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'window',
-        'Proxy',
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'HTMLFormElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'WeakSet',
-        'Event',
-        'EventTarget',
-        // globals used by the browser to generate notifications
-        'Image',
-        'fetch',
-        'AbortController',
-        'OffscreenCanvas',
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'name',
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        'JSON',
-        'Date',
-        // Selenium atoms construct regexes while locating elements.
-        'RegExp',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-        'logEncryptedVault',
-        // needed by Sentry and react-router-dom v6 HashRouter
-        'history',
-        // globals used by react-dom
-        'getSelection',
-        // globals opera needs to function
-        'opr',
-        // for @popperjs/core and snap simple keyring site
-        'devicePixelRatio',
-        // for @tanstack/react-virtual
-        'ResizeObserver',
-        'setTimeout',
-        'clearTimeout',
-        // globals used by e2e
-        ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
-      ],
+      exceptions: getScuttleGlobalThisExceptions(args),
     },
   });
 
