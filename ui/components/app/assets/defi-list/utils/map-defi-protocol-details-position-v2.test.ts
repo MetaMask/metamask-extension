@@ -12,6 +12,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     marketValue: 0.00001,
     positionType: 'supply',
     poolAddress: '0xpool',
+    groupId: 'group-musd-1',
     tokenImage: 'musd.png',
   };
 

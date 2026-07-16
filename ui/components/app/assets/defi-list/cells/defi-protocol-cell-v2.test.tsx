@@ -22,7 +22,6 @@ jest.mock('../../../../../../ui/hooks/useAnalytics', () => ({
 const position: DeFiProtocolListItem = {
   chainId: 'eip155:1',
   protocolId: 'curve',
-  title: 'curve',
   tokenImage: 'curve.png',
   underlyingSymbols: ['USDC'],
   iconGroup: [{ avatarValue: 'usdc.png', symbol: 'USDC' }],
