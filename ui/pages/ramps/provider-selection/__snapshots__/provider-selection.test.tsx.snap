@@ -1,0 +1,761 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsProviderSelectionScreen keeps the provider list visible while quotes load 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="mx-2 mb-2 rounded-lg bg-background-muted px-3 py-3"
+      data-testid="ramps-provider-quotes-banner"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Quotes displayed for Debit card.
+      </p>
+    </div>
+    <div
+      class="flex-1 overflow-y-auto px-2 pb-4"
+    >
+      <div
+        class="flex flex-col gap-1"
+      >
+        <button
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/transak"
+          role="button"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="Transak"
+                data-testid="ramps-provider-item-logo-/providers/transak"
+                src="https://example.com/transak-light.png"
+                style="width: 90px; height: 24px;"
+              />
+            </div>
+            <div
+              class="flex flex-row gap-2 items-center shrink-0"
+            >
+              <div
+                class="flex flex-col gap-1 items-end"
+                data-testid="ramps-quote-display-loading"
+              >
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded"
+                  style="height: 16px; width: 80px;"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded"
+                  style="height: 16px; width: 60px;"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+              </div>
+              <svg
+                class="inline-block w-5 h-5 text-primary-default"
+                data-testid="ramps-provider-item-selected"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                />
+              </svg>
+            </div>
+          </div>
+        </button>
+        <button
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/moonpay"
+          role="button"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="MoonPay"
+                data-testid="ramps-provider-item-logo-/providers/moonpay"
+                src="https://example.com/moonpay-light.png"
+                style="width: 90px; height: 24px;"
+              />
+            </div>
+            <div
+              class="flex flex-row gap-2 items-center shrink-0"
+            >
+              <div
+                class="flex flex-col gap-1 items-end"
+                data-testid="ramps-quote-display-loading"
+              >
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded"
+                  style="height: 16px; width: 80px;"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  class="relative overflow-hidden rounded"
+                  style="height: 16px; width: 60px;"
+                >
+                  <div
+                    aria-hidden="true"
+                    class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsProviderSelectionScreen matches snapshot when empty 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-empty"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="flex flex-col gap-2 items-center justify-center flex-1 px-4 py-8"
+    >
+      <p
+        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        No providers available.
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsProviderSelectionScreen matches snapshot while loading 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-loading"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center flex-1"
+    >
+      <div
+        class="spinner h-8 w-8"
+      >
+        <svg
+          class="lds-spinner"
+          height="100%"
+          preserveAspectRatio="xMidYMid"
+          style="background: none;"
+          viewBox="0 0 100 100"
+          width="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <g
+            transform="rotate(0 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.9166666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(30 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.8333333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(60 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.75s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(90 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.6666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(120 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5833333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(150 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(180 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.4166666666666667s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(210 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.3333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(240 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.25s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(270 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.16666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(300 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.08333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(330 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="0s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="mx-2 mb-2 rounded-lg bg-background-muted px-3 py-3"
+      data-testid="ramps-provider-quotes-banner"
+    >
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Quotes displayed for Debit card.
+      </p>
+    </div>
+    <div
+      class="flex-1 overflow-y-auto px-2 pb-4"
+    >
+      <div
+        class="flex flex-col gap-1"
+      >
+        <button
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/transak"
+          role="button"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="Transak"
+                data-testid="ramps-provider-item-logo-/providers/transak"
+                src="https://example.com/transak-light.png"
+                style="width: 90px; height: 24px;"
+              />
+            </div>
+            <div
+              class="flex flex-row gap-2 items-center shrink-0"
+            >
+              <div
+                class="flex flex-col items-end"
+                data-testid="ramps-quote-display"
+              >
+                <p
+                  class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  0.05 ETH
+                </p>
+                <p
+                  class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                >
+                  $99.50
+                </p>
+              </div>
+              <svg
+                class="inline-block w-5 h-5 text-primary-default"
+                data-testid="ramps-provider-item-selected"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                />
+              </svg>
+            </div>
+          </div>
+        </button>
+        <div
+          class="px-4 py-3"
+          data-testid="ramps-provider-separator"
+        >
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+          >
+            Other options
+          </p>
+        </div>
+        <button
+          aria-disabled="true"
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/moonpay"
+          disabled=""
+          role="button"
+          tabindex="-1"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="MoonPay"
+                data-testid="ramps-provider-item-logo-/providers/moonpay"
+                src="https://example.com/moonpay-light.png"
+                style="width: 90px; height: 24px;"
+              />
+              <p
+                class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+                data-testid="ramps-provider-item-subtitle-/providers/moonpay"
+              >
+                Quote unavailable.
+              </p>
+            </div>
+            <div
+              class="flex flex-row gap-2 items-center shrink-0"
+            />
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-provider-selection-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-provider-selection-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Providers
+      </p>
+    </div>
+    <div
+      class="flex-1 overflow-y-auto px-2 pb-4"
+    >
+      <div
+        class="flex flex-col gap-1"
+      >
+        <button
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/transak"
+          role="button"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="Transak"
+                data-testid="ramps-provider-item-logo-/providers/transak"
+                src="https://example.com/transak-light.png"
+                style="width: 90px; height: 24px;"
+              />
+            </div>
+            <div
+              class="flex flex-row gap-2 items-center shrink-0"
+            >
+              <svg
+                class="inline-block w-5 h-5 text-primary-default"
+                data-testid="ramps-provider-item-selected"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                />
+              </svg>
+            </div>
+          </div>
+        </button>
+        <button
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="ramps-provider-item-/providers/moonpay"
+          role="button"
+        >
+          <div
+            class="flex flex-row gap-3 items-center justify-between w-full"
+          >
+            <div
+              class="flex flex-col gap-1 items-start min-w-0 flex-1"
+            >
+              <img
+                alt="MoonPay"
+                data-testid="ramps-provider-item-logo-/providers/moonpay"
+                src="https://example.com/moonpay-light.png"
+                style="width: 90px; height: 24px;"
+              />
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

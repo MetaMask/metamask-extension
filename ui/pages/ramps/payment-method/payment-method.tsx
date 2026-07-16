@@ -9,6 +9,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { RAMPS_PROVIDER_SELECTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
@@ -21,6 +22,7 @@ import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
   formatPaymentMethodLimits,
@@ -107,6 +109,12 @@ export function RampsPaymentMethodScreen() {
     navigate(-1);
   }, [navigate]);
 
+  const handleChangeProvider = useCallback(() => {
+    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
+      state: { amount },
+    });
+  }, [amount, navigate]);
+
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
       if (isSelectingRef.current) {
@@ -129,6 +137,13 @@ export function RampsPaymentMethodScreen() {
 
   const title = t('rampsSelectPaymentMethod');
   const backButtonTestId = 'ramps-payment-method-back';
+  const changeProviderFooter = selectedProvider ? (
+    <RampsChangeProviderFooter
+      providerName={selectedProvider.name}
+      isDisabled={Boolean(paymentMethodsError)}
+      onChangeProvider={handleChangeProvider}
+    />
+  ) : null;
 
   // Prerequisites missing — query stays disabled until the user leaves.
   if (paymentMethodsStatus === 'idle') {
@@ -142,6 +157,7 @@ export function RampsPaymentMethodScreen() {
         <RampsSelectionCenteredMessage
           message={t('rampsNoPaymentMethodsAvailable')}
         />
+        {changeProviderFooter}
       </RampsSelectionPage>
     );
   }
@@ -162,6 +178,7 @@ export function RampsPaymentMethodScreen() {
         >
           <Spinner className="h-8 w-8" />
         </Box>
+        {changeProviderFooter}
       </RampsSelectionPage>
     );
   }
@@ -177,6 +194,7 @@ export function RampsPaymentMethodScreen() {
         <RampsSelectionCenteredMessage
           message={t('rampsErrorLoadingPaymentMethods')}
         />
+        {changeProviderFooter}
       </RampsSelectionPage>
     );
   }
@@ -192,6 +210,7 @@ export function RampsPaymentMethodScreen() {
         <RampsSelectionCenteredMessage
           message={t('rampsNoPaymentMethodsAvailable')}
         />
+        {changeProviderFooter}
       </RampsSelectionPage>
     );
   }
@@ -248,6 +267,7 @@ export function RampsPaymentMethodScreen() {
           })}
         </Box>
       </ScrollContainer>
+      {changeProviderFooter}
     </RampsSelectionPage>
   );
 }

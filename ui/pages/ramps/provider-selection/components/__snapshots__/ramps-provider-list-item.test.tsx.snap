@@ -1,0 +1,177 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsProviderListItem matches snapshot when logos are missing 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-provider-item-/providers/transak"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-col gap-1 items-start min-w-0 flex-1"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+        >
+          Transak
+        </p>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsProviderListItem matches snapshot when selected with quote 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-provider-item-/providers/transak"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-col gap-1 items-start min-w-0 flex-1"
+      >
+        <img
+          alt="Transak"
+          data-testid="ramps-provider-item-logo-/providers/transak"
+          src="https://on-ramp-content.uat-api.cx.metamask.io/assets/providers/transak_light.png"
+          style="width: 90px; height: 24px;"
+        />
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+          data-testid="ramps-provider-item-subtitle-/providers/transak"
+        >
+          Best rate
+        </p>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      >
+        <div
+          class="flex flex-col items-end"
+          data-testid="ramps-quote-display"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            0.05 ETH
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+          >
+            $99.50
+          </p>
+        </div>
+        <svg
+          class="inline-block w-5 h-5 text-primary-default"
+          data-testid="ramps-provider-item-selected"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+          />
+        </svg>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsProviderListItem matches snapshot when unavailable 1`] = `
+<div>
+  <button
+    aria-disabled="true"
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-provider-item-/providers/transak"
+    disabled=""
+    role="button"
+    tabindex="-1"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-col gap-1 items-start min-w-0 flex-1"
+      >
+        <img
+          alt="Transak"
+          data-testid="ramps-provider-item-logo-/providers/transak"
+          src="https://on-ramp-content.uat-api.cx.metamask.io/assets/providers/transak_light.png"
+          style="width: 90px; height: 24px;"
+        />
+        <p
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+          data-testid="ramps-provider-item-subtitle-/providers/transak"
+        >
+          Quote unavailable.
+        </p>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      />
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsProviderListItem matches snapshot while quote is loading 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-provider-item-/providers/transak"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-col gap-1 items-start min-w-0 flex-1"
+      >
+        <img
+          alt="Transak"
+          data-testid="ramps-provider-item-logo-/providers/transak"
+          src="https://on-ramp-content.uat-api.cx.metamask.io/assets/providers/transak_light.png"
+          style="width: 90px; height: 24px;"
+        />
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center shrink-0"
+      >
+        <div
+          class="flex flex-col gap-1 items-end"
+          data-testid="ramps-quote-display-loading"
+        >
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 16px; width: 80px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 16px; width: 60px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;

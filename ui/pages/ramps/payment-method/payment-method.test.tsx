@@ -420,4 +420,20 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it('navigates to provider selection when change provider is clicked', () => {
+    mockLocationState = { amount: 100 };
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-change-provider-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
+      state: { amount: 100 },
+    });
+  });
 });

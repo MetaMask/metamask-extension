@@ -141,6 +141,21 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
         </button>
       </div>
     </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Change provider.
+      </p>
+    </div>
   </div>
 </div>
 `;
@@ -185,6 +200,27 @@ exports[`RampsPaymentMethodScreen matches snapshot when no payment methods are a
       >
         No payment methods are available.
       </p>
+    </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-change-provider-button"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Change provider.
+        </span>
+      </button>
     </div>
   </div>
 </div>
@@ -231,6 +267,21 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods fail to 
         Error loading payment methods
       </p>
     </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Change provider.
+      </p>
+    </div>
   </div>
 </div>
 `;
@@ -275,6 +326,27 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods query is
       >
         No payment methods are available.
       </p>
+    </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-change-provider-button"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Change provider.
+        </span>
+      </button>
     </div>
   </div>
 </div>
@@ -583,6 +655,27 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
         </svg>
       </div>
     </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-change-provider-button"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Change provider.
+        </span>
+      </button>
+    </div>
   </div>
 </div>
 `;
@@ -727,6 +820,27 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
           </div>
         </button>
       </div>
+    </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-change-provider-button"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Change provider.
+        </span>
+      </button>
     </div>
   </div>
 </div>
@@ -909,6 +1023,27 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
           </div>
         </button>
       </div>
+    </div>
+    <div
+      class="flex flex-row gap-1 items-center justify-center border-t border-border-muted px-4 py-3"
+      data-testid="ramps-change-provider-footer"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+      >
+        Buying via Test Provider.
+      </p>
+      <button
+        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+        data-testid="ramps-change-provider-button"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Change provider.
+        </span>
+      </button>
     </div>
   </div>
 </div>
