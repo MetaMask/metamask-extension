@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Box,
   Text,
@@ -51,6 +51,8 @@ const SrpInputForm = ({
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
 
   useEffect(() => {
+    // Sync modal open state from parent prop (restore-vault custom description).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional controlled sync from prop
     setShowSrpDetailsModal(toggleSrpDetailsModal);
   }, [toggleSrpDetailsModal]);
 

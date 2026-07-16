@@ -7203,8 +7203,8 @@
       "globals": {
         "File": true,
         "URL": true,
-        "__zod_globalConfig": true,
-        "__zod_globalRegistry": true,
+        "__zod_globalConfig": "write",
+        "__zod_globalRegistry": "write",
         "atob": true,
         "btoa": true,
         "navigator": true
