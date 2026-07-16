@@ -1353,23 +1353,6 @@ describe('MetaMaskController', function () {
       });
     });
 
-    describe('#resetWallet', function () {
-      it('clears passkey controller state as part of reset flow', async function () {
-        const clearPasskeyStateSpy = jest
-          .spyOn(metamaskController.passkeyController, 'clearState')
-          .mockReturnValue();
-        jest
-          .spyOn(metamaskController.keyringController, 'setLocked')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController, 'clearLoginArtifacts')
-          .mockResolvedValue();
-        await metamaskController.resetWallet(true);
-
-        expect(clearPasskeyStateSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('#getApi', function () {
       it('exposes passkey api methods', function () {
         const api = metamaskController.getApi();

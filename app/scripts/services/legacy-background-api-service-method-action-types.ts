@@ -198,6 +198,19 @@ export type LegacyBackgroundApiServiceResetAccountAction = {
 };
 
 /**
+ * Resets the wallet to a clean state, clearing sensitive controller state and
+ * signing the user out.
+ *
+ * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+ * restore-vault flow); when `false`, onboarding is also reset and the wallet
+ * reset progress flag is set.
+ */
+export type LegacyBackgroundApiServiceResetWalletAction = {
+  type: `LegacyBackgroundApiService:resetWallet`;
+  handler: LegacyBackgroundApiService['resetWallet'];
+};
+
+/**
  * @deprecated Avoid new references to the global network.
  * Will be removed once multi-chain support is fully implemented.
  *
@@ -516,6 +529,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceResetWalletAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction

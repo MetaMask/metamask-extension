@@ -791,6 +791,134 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('resetWallet', () => {
+    /**
+     * Registers no-op handlers for every action `resetWallet` invokes.
+     *
+     * @param rootMessenger - The root messenger to register the handlers on.
+     */
+    function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
+      rootMessenger.registerActionHandler(
+        'AuthenticationController:performSignOut',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SeedlessOnboardingController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PasskeyController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:stopAllPolling',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'SubscriptionController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ShieldController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'ClaimsController:clearState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AddressBookController:clear',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'PreferencesController:resetState',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:resetOnboarding',
+        jest.fn(),
+      );
+      rootMessenger.registerActionHandler(
+        'AppStateController:setIsWalletResetInProgress',
+        jest.fn(),
+      );
+    }
+
+    it('clears sensitive controller state and signs the user out', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:stopAllPolling',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SubscriptionController:clearState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('ShieldController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('ClaimsController:clearState');
+        expect(callSpy).toHaveBeenCalledWith('AddressBookController:clear');
+        expect(callSpy).toHaveBeenCalledWith(
+          'PreferencesController:resetState',
+        );
+      });
+    });
+
+    it('resets onboarding and flags the reset as in progress when restoreOnly is false', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          false,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+      });
+    });
+
+    it('preserves onboarding state when restoreOnly is true', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        registerResetWalletHandlers(rootMessenger);
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resetWallet',
+          true,
+        );
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'OnboardingController:resetOnboarding',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AppStateController:setIsWalletResetInProgress',
+          true,
+        );
+        // Non-onboarding cleanup still runs.
+        expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
+      });
+    });
+  });
+
   describe('getGlobalChainId', () => {
     it('returns the global chain ID', async () => {
       const globalChainId = '0x1';
@@ -3612,6 +3740,15 @@ function getMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'ShieldController:clearState',
+      'SeedlessOnboardingController:clearState',
+      'PasskeyController:clearState',
+      'SubscriptionController:clearState',
+      'ClaimsController:clearState',
+      'AddressBookController:clear',
+      'PreferencesController:resetState',
+      'OnboardingController:resetOnboarding',
+      'AppStateController:setIsWalletResetInProgress',
     ],
   });
 
