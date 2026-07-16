@@ -493,6 +493,37 @@ class Driver {
   }
 
   /**
+   * Waits until at least `n` elements matching the locator are present in the DOM.
+   *
+   * Unlike {@link elementCountBecomesN}, this resolves as soon as the count
+   * reaches the threshold (useful while a list is still rendering) and can
+   * require the count to stay at or above the threshold for a stability window
+   * before resolving, which avoids resolving on a transient mid-render count.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} n - The minimum number of matching elements to wait for.
+   * @param {object} [options] - Optional configuration.
+   * @param {number} [options.timeout] - Maximum time to wait in milliseconds.
+   * @param {number} [options.interval] - Polling interval in milliseconds.
+   * @param {number} [options.stableFor] - Optional stability window in milliseconds.
+   * @returns {Promise<void>} promise resolving once the count threshold is met.
+   */
+  async waitForElementCountToBeAtLeast(
+    rawLocator,
+    n,
+    { timeout = this.timeout, interval = 100, stableFor = 0 } = {},
+  ) {
+    const locator = this.buildLocator(rawLocator);
+    await this.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(locator);
+        return elements.length >= n;
+      },
+      { interval, timeout, stableFor },
+    );
+  }
+
+  /**
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *

@@ -72,6 +72,13 @@ class SwapPage {
 
   private readonly reviewFromAmount = '[data-testid="from-amount"]';
 
+  // The from-amount input once it is truly editable: not disabled, not
+  // read-only, and not aria-disabled. Encoding the editable state in the
+  // selector lets a single `waitForSelector` wait for it without reading
+  // element properties.
+  private readonly editableReviewFromAmount =
+    '[data-testid="from-amount"]:not([disabled]):not([readonly]):not([aria-disabled="true"])';
+
   private readonly submitSwapButton = '[data-testid="bridge-cta-button"]';
 
   private readonly transactionStatusHeader =
@@ -147,6 +154,30 @@ class SwapPage {
       throw e;
     }
     console.log('Swap page is loaded');
+  }
+
+  /**
+   * Waits until the swap page has finished rendering its initial quote-ready
+   * state: the source token button is present, the amount input is editable
+   * (not disabled, read-only, or aria-disabled), and the quote details have
+   * rendered. Rendered quote details imply a source token is selected, since
+   * no quote is produced for an empty source.
+   *
+   * Benchmarks use this instead of {@link checkPageIsLoaded} because the latter
+   * resolves on container visibility, before transitions and quote details have
+   * settled — which adds noise to the measured render duration.
+   *
+   * @param options - Wait options.
+   * @param options.timeout - Optional timeout override in milliseconds.
+   */
+  async checkRenderComplete({
+    timeout,
+  }: { timeout?: number } = {}): Promise<void> {
+    await this.driver.waitForSelector(this.bridgeSourceButton, { timeout });
+    await this.driver.waitForSelector(this.editableReviewFromAmount, {
+      timeout,
+    });
+    await this.checkQuoteIsDisplayed({ timeout });
   }
 
   async clickOnMoreQuotes(): Promise<void> {

@@ -22,6 +22,11 @@ class AccountListPage {
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
+  // Matches an account row in either the multichain account menu or the
+  // legacy account list, so render-complete waits work across both UIs.
+  private readonly accountListItemRow =
+    '[data-testid="account-item"], [data-testid="account-list-item"]';
+
   private readonly walletHeader =
     '[data-testid="multichain-account-tree-wallet-header"]';
 
@@ -237,6 +242,35 @@ class AccountListPage {
       await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
+  }
+
+  /**
+   * Waits until at least the expected number of account rows have rendered and
+   * the count has stayed stable for the optional stability window.
+   *
+   * Benchmarks use this instead of {@link checkPageIsLoaded} because the latter
+   * resolves once the account-menu container is visible, before the rows have
+   * finished rendering — which adds noise to the measured render duration.
+   *
+   * @param options - Wait options.
+   * @param options.expectedCount - The number of account rows expected to render.
+   * @param options.timeout - Optional timeout override in milliseconds.
+   * @param options.stableFor - Optional stability window in milliseconds.
+   */
+  async checkAccountListRenderComplete({
+    expectedCount,
+    timeout = 10000,
+    stableFor = 0,
+  }: {
+    expectedCount: number;
+    timeout?: number;
+    stableFor?: number;
+  }): Promise<void> {
+    await this.driver.waitForElementCountToBeAtLeast(
+      this.accountListItemRow,
+      expectedCount,
+      { timeout, stableFor },
+    );
   }
 
   /**
