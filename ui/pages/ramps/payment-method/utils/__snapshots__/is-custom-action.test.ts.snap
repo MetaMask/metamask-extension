@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`isCustomAction matches snapshot for custom-action and standard quotes 1`] = `
-{
-  "customAction": true,
-  "standard": false,
-}
-`;

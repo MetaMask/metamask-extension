@@ -10,7 +10,6 @@ import {
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -27,8 +26,6 @@ import {
   formatPaymentMethodLimits,
   getProviderBuyLimit,
 } from './utils/format-payment-method-limits';
-import { getProviderLimitMessage } from './utils/get-provider-limit-message';
-import { isCustomAction } from './utils/is-custom-action';
 
 type PaymentMethodLocationState = {
   amount?: number;
@@ -45,7 +42,6 @@ export function RampsPaymentMethodScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { formatCurrency } = useFormatters();
   const {
     paymentMethods,
     paymentMethodsLoading,
@@ -212,32 +208,12 @@ export function RampsPaymentMethodScreen() {
           {paymentMethods.map((paymentMethod) => {
             const matchedQuote =
               quotes?.success?.find(
-                (quote) =>
-                  quote.quote?.paymentMethod === paymentMethod.id &&
-                  !isCustomAction(quote),
+                (quote) => quote.quote?.paymentMethod === paymentMethod.id,
               ) ?? null;
-            const hasSuccessQuoteForMethod = (quotes?.success ?? []).some(
-              (quote) => quote.quote?.paymentMethod === paymentMethod.id,
-            );
             const hasQuoteError =
-              !quotesLoading && quotes !== null && !hasSuccessQuoteForMethod;
-            const providerErrorMessage = selectedProvider
-              ? quotes?.error?.find(
-                  (error) =>
-                    error.provider === selectedProvider.id && error.error,
-                )?.error
-              : undefined;
+              !quotesLoading && quotes !== null && matchedQuote === null;
             const quoteErrorMessage = hasQuoteError
-              ? (getProviderLimitMessage({
-                  provider: selectedProvider,
-                  fiatCurrency,
-                  paymentMethodId: paymentMethod.id,
-                  amount,
-                  currency: fiatCurrency,
-                  formatCurrency,
-                  t,
-                  backendError: providerErrorMessage,
-                }) ?? t('rampsQuoteUnavailable'))
+              ? t('rampsQuoteUnavailable')
               : undefined;
 
             return (
