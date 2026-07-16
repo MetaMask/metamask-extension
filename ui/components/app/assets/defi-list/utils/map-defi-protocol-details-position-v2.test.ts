@@ -45,7 +45,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     });
   });
 
-  it('defaults fiat amount to 0 when market value is unavailable', () => {
+  it('leaves fiat amount null when market value is unavailable', () => {
     const positionWithoutPrice: DeFiUnderlyingPosition = {
       ...position,
       marketValue: undefined,
@@ -54,7 +54,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     expect(
       mapDefiProtocolDetailsPositionV2ToToken(positionWithoutPrice),
     ).toMatchObject({
-      tokenFiatAmount: 0,
+      tokenFiatAmount: null,
     });
   });
 });

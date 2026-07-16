@@ -14,9 +14,7 @@ function toTokenCellChainId(
   chainId: DeFiUnderlyingPosition['chainId'],
 ): TokenWithFiatAmount['chainId'] {
   if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
-    return decimalToPrefixedHex(
-      parseCaipChainId(chainId).reference,
-    ) as Hex;
+    return decimalToPrefixedHex(parseCaipChainId(chainId).reference) as Hex;
   }
 
   return chainId as TokenWithFiatAmount['chainId'];
@@ -67,7 +65,7 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     address: toTokenCellAddress(position),
     title: position.name,
     symbol: position.symbol,
-    tokenFiatAmount: position.marketValue ?? 0,
+    tokenFiatAmount: position.marketValue,
     image: position.tokenImage,
     balance: normalizedBalance.toString(),
     secondary: null,
