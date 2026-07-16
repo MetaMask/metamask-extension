@@ -156,6 +156,38 @@ describe('VisitSupportDataConsentModal', () => {
     });
   });
 
+  it('does not share data if the modal is dismissed while fetching the token', async () => {
+    let resolveToken: (token: string | undefined) => void = () => undefined;
+    getCustomerServiceTokenMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveToken = resolve;
+        }),
+    );
+
+    const { getByRole, getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(getCustomerServiceTokenMock).toHaveBeenCalled();
+      expect(openWindow).not.toHaveBeenCalled();
+    });
+
+    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
+
+    expect(mockOnClose).toHaveBeenCalled();
+
+    resolveToken(mockCustomerServiceToken);
+
+    await waitFor(() => {
+      expect(openWindow).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+  });
+
   it('handles clicking the reject button correctly', () => {
     const { getByTestId } = renderModal();
 

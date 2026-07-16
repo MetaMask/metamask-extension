@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { openWindow } from '../../../../helpers/utils/window';
@@ -49,6 +49,7 @@ const VisitSupportDataConsentModal = ({
   const segmentContext = useSegmentContext();
   const { customerId: shieldCustomerId } = useUserSubscriptions();
   const [isLoading, setIsLoading] = useState(false);
+  const wasCancelledRef = useRef(false);
 
   const openSupportLink = useCallback(
     (customerServiceToken?: string) => {
@@ -82,14 +83,26 @@ const VisitSupportDataConsentModal = ({
     ],
   );
 
+  const handleModalClose = useCallback(() => {
+    // Escape / outside-click during Accept must cancel sharing, matching Reject.
+    if (isLoading) {
+      wasCancelledRef.current = true;
+    }
+    onClose();
+  }, [isLoading, onClose]);
+
   const handleClickContactSupportButton = useCallback(async () => {
     if (isLoading) {
       return;
     }
 
+    wasCancelledRef.current = false;
     setIsLoading(true);
     try {
       const customerServiceToken = await getCustomerServiceToken();
+      if (wasCancelledRef.current) {
+        return;
+      }
       onClose();
       openSupportLink(customerServiceToken);
     } finally {
@@ -125,7 +138,7 @@ const VisitSupportDataConsentModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleModalClose}
       data-testid="visit-support-data-consent-modal"
       className="visit-support-data-consent-modal"
     >
