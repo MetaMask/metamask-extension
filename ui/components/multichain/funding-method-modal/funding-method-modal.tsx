@@ -1,6 +1,7 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Modal,
   ModalContent,
@@ -18,9 +19,8 @@ import {
   getMultichainCurrentNetwork,
   getMultichainDefaultToken,
 } from '../../../selectors/multichain';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/ramps/useRamps/useRamps';
+import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getAnalyticsId,
@@ -30,12 +30,10 @@ import {
   getSelectedAccount,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FundingMethodItem from './funding-method-item';
 
 type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
@@ -53,8 +51,8 @@ export const FundingMethodModal = ({
   ...props
 }: FundingMethodModalProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { goToBuy } = useRampsNavigation();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
@@ -67,20 +65,21 @@ export const FundingMethodModal = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleTransferCryptoClick = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.NavSendButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: RampsMetaMaskEntry?.TokensBanner,
-        text: 'Transfer crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: symbol,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavSendButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: RampsMetaMaskEntry?.TokensBanner,
+          text: 'Transfer crypto',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+        })
+        .build(),
+    );
 
     const url = getPortfolioUrl(
       'transfer',
@@ -99,25 +98,33 @@ export const FundingMethodModal = ({
     chainId,
     symbol,
     accountAddress,
+    trackEvent,
+    createEventBuilder,
   ]);
 
-  const handleBuyCryptoClick = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: RampsMetaMaskEntry?.TokensBanner,
-        text: 'Buy crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: symbol,
-      },
-    });
-    openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, [chainId, symbol]);
+  const handleBuyCryptoClick = useCallback(async () => {
+    const opened = await goToBuy({ chainId: chainId as Hex | CaipChainId });
+    // The ramps gate can block the buy (e.g. service disruption, unsupported
+    // region) and show its own modal; don't report a buy click in that case.
+    if (!opened) {
+      return;
+    }
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: RampsMetaMaskEntry?.TokensBanner,
+          text: 'Buy crypto',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+        })
+        .build(),
+    );
+  }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>

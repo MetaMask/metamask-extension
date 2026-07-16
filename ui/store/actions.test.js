@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
@@ -35,6 +36,11 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
+  type: 'Buffer',
+  data: actions.encodeSeedPhraseForBackground(seedPhrase),
+});
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -133,6 +139,11 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.setUseMultiAccountBalanceChecker = sinon.stub();
+    background.setUseTransactionSimulations = sinon.stub();
+    background.setSecurityAlertsEnabled = sinon.stub();
+    background.setUse4ByteResolution = sinon.stub();
+    background.setUseExternalNameSources = sinon.stub();
     background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
@@ -172,23 +183,19 @@ describe('Actions', () => {
     });
 
     it('should create KeyChain, vault and Backup in the background', async () => {
-      const store = mockStore();
-      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
       const mockSeedPhrase = 'mock seed phrase';
-      const mockEncodedSeedPhrase = Array.from(
-        Buffer.from(mockSeedPhrase).values(),
-      );
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+      const store = mockStore();
 
       const createSeedPhraseBackupStub = sinon.stub().resolves();
-      const createNewVaultAndKeychainStub = sinon
+      const createNewVaultAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockKeyrings[0]);
-      const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
+        .resolves(mockSerializedSeedPhrase);
 
       background.getApi.returns({
         createSeedPhraseBackup: createSeedPhraseBackupStub,
-        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
-        getSeedPhrase: getSeedPhraseStub,
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -196,13 +203,12 @@ describe('Actions', () => {
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
-      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
       expect(
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
-          mockEncodedSeedPhrase,
-          mockKeyrings[0].metadata.id,
+          mockSerializedSeedPhrase.data,
+          mockUlid,
         ),
       ).toStrictEqual(true);
     });
@@ -818,6 +824,102 @@ describe('Actions', () => {
     });
   });
 
+  describe('encodeSeedPhraseForBackground', () => {
+    it('encodes a seed phrase as UTF-8 byte values', () => {
+      const seedPhrase = 'abandon abandon abandon';
+
+      expect(actions.encodeSeedPhraseForBackground(seedPhrase)).toStrictEqual(
+        Array.from(stringToBytes(seedPhrase)),
+      );
+    });
+  });
+
+  describe('decodeSeedPhraseFromBackground', () => {
+    const seedPhrase = 'abandon abandon abandon';
+
+    it('decodes a JSON-serialized Buffer from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          toSerializedSeedPhraseBuffer(seedPhrase),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
+
+    it('decodes a Uint8Array from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          new Uint8Array(actions.encodeSeedPhraseForBackground(seedPhrase)),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
+  });
+
+  describe('#createNewVaultAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNewVaultAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+
+      const createNewVaultAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockSerializedSeedPhrase);
+
+      background.getApi.returns({
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.createNewVaultAndGetSeedPhrase('password'),
+      );
+
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.calledWith('password')).toBe(
+        true,
+      );
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls unlockAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+
+      const unlockAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockSerializedSeedPhrase);
+
+      background.getApi.returns({
+        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.unlockAndGetSeedPhrase('password'),
+      );
+
+      expect(unlockAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(unlockAndGetSeedPhraseStub.calledWith('password')).toBe(true);
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
   describe('#createNewVaultAndRestore', () => {
     afterEach(() => {
       sinon.restore();
@@ -897,7 +999,7 @@ describe('Actions', () => {
       const verifyPassword = sinon.stub().resolves();
       const getSeedPhrase = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test'));
 
       background.getApi.returns({ verifyPassword, getSeedPhrase });
       setBackgroundConnection(background.getApi());
@@ -951,7 +1053,7 @@ describe('Actions', () => {
 
       const exportSeedPhraseWithPasskey = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test seed').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test seed'));
 
       background.getApi.returns({ exportSeedPhraseWithPasskey });
       setBackgroundConnection(background.getApi());
@@ -2166,7 +2268,9 @@ describe('Actions', () => {
 
       expect(createNextMultichainAccountGroup.callCount).toStrictEqual(1);
       expect(
-        createNextMultichainAccountGroup.calledWith(walletIdWithoutPrefix),
+        createNextMultichainAccountGroup.calledWith({
+          entropySource: walletIdWithoutPrefix,
+        }),
       ).toStrictEqual(true);
     });
   });
@@ -3173,50 +3277,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setServiceWorkerKeepAlivePreference', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('sends a value to background', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon.stub().resolves();
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
-      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
-        1,
-      );
-      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
-        true,
-      );
-    });
-
-    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon
-        .stub()
-        .rejects(new Error('error'));
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setParticipateInMetaMetrics', () => {
     it('calls background with true when opting in', async () => {
       const store = mockStore();
@@ -4166,6 +4226,36 @@ describe('Actions', () => {
       expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
         true,
       ]);
+    });
+  });
+
+  describe('#toggleBasicFunctionality', () => {
+    it('calls toggleExternalServices and consolidated preference setters', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.toggleBasicFunctionality(false));
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseMultiAccountBalanceChecker.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(
+        background.setUseTransactionSimulations.getCall(0).args,
+      ).toStrictEqual([false]);
+      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+        [false],
+      );
+      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
+        false,
+      ]);
+      expect(
+        background.setUseExternalNameSources.getCall(0).args,
+      ).toStrictEqual([false]);
     });
   });
 

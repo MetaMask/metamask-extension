@@ -78,7 +78,7 @@ The `mm` CLI is the primary interface for interacting with the extension. It aut
 
 ```bash
 # 1. Build the extension
-yarn build:test:webpack
+yarn build:test
 
 # 2. Launch the session (starts daemon + browser)
 mm launch

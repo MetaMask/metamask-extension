@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "使用上限を承認しました"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "トラストラインの有効化に失敗しました"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "$1のトラストラインを有効化中",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "$1のトラストラインが有効化されました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "トラストラインの無効化に失敗しました"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "$1のトラストラインを無効化中",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "$1のトラストラインが無効化されました",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "ブリッジに失敗しました"
   },
@@ -330,7 +376,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "$1を変換しました",
+    "message": "$1に換金しました",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -464,6 +510,17 @@
   },
   "activity_nftMint_success_title": {
     "message": "$1をミントしました",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_failed_title": {
+    "message": "売却に失敗しました"
+  },
+  "activity_nftSell_pending_title": {
+    "message": "$1を売却しています",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_success_title": {
+    "message": "$1を売却しました",
     "description": "$1 is the NFT token symbol"
   },
   "activity_perpsAddFunds_failed_description": {
@@ -952,7 +1009,7 @@
     "description": "$1 is the source token symbol, $2 is the destination token symbol"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップしました",
+    "message": "$1を$2にスワップ",
     "description": "$1 is the source token symbol, $2 is the destination token symbol"
   },
   "activity_unwrap_failed_description": {
@@ -1020,9 +1077,6 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMaskを使用して取得したトークンを追加します"
-  },
   "addAlias": {
     "message": "別名を追加"
   },
@@ -1068,6 +1122,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "信頼できる友達とアドレスを追加する"
+  },
+  "addFromChainlist": {
+    "message": "ChainListから追加"
   },
   "addFunds": {
     "message": "資金を追加"
@@ -1123,6 +1180,65 @@
   },
   "addWallet": {
     "message": "ウォレットを追加"
+  },
+  "add_device_success_desc_imported_plural": {
+    "message": "$1件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "1件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "$1個のウォレットが携帯電話に同期されました。",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "$1個のウォレットと$2件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "$1個のウォレットと1件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "1個のウォレットが携帯電話に同期されました。",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "1個のウォレットと$1件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "1個のウォレットと1件のインポート済みアカウントが携帯電話に同期されました。",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "デバイスがペアリングされました"
+  },
+  "add_device_syncing_desc": {
+    "message": "選択したアカウントを携帯電話に送信します。"
+  },
+  "add_device_syncing_title": {
+    "message": "アカウントのインポート"
+  },
+  "add_device_try_again": {
+    "message": "もう一度お試しください"
+  },
+  "add_device_validating_desc": {
+    "message": "お使いの携帯電話との暗号化された安全な接続を確立します。"
+  },
+  "add_device_validating_title": {
+    "message": "デバイスのペアリング"
+  },
+  "add_wallets": {
+    "message": "同期する項目を選択"
+  },
+  "add_wallets_desc": {
+    "message": "携帯電話にインポートするウォレットとアカウントを選択します。これは後で変更できます。"
+  },
+  "added": {
+    "message": "追加されました"
   },
   "addedProtectionDescription": {
     "message": "不明なアドレスとやり取りしています。これにより悪質なトランザクションを防ぐことができます。"
@@ -1511,8 +1627,20 @@
   "asset": {
     "message": "アセット"
   },
+  "assetActivate": {
+    "message": "有効化",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "まず、$2の$1を有効化してください。",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "過去のデータを取得できませんでした"
+  },
+  "assetInactive": {
+    "message": "非アクティブ",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "アセットのオプション"
@@ -1621,7 +1749,7 @@
     "message": "デバイス間で同期する項目をオンにします。"
   },
   "backupAndSyncPrivacyLink": {
-    "message": "当社のプライバシー保護への取り組みについて見る"
+    "message": "当社のプライバシー保護への取り組みについてはこちらをご覧ください"
   },
   "backupApprovalInfo": {
     "message": "このシークレット コードは、デバイスをなくしたとき、パスワードを忘れたとき、MetaMaskの再インストールが必要なとき、または別のデバイスでウォレットにアクセスするときに必要です。"
@@ -1890,6 +2018,12 @@
     "message": "ブリッジの詳細",
     "description": "Title for the modal showing details about a bridge transaction."
   },
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
+  },
+  "bridgeDiscountBadgePromo": {
+    "message": "プロモ"
+  },
   "bridgeEnterAmount": {
     "message": "金額を選択"
   },
@@ -1901,6 +2035,9 @@
   },
   "bridgeFee": {
     "message": "ブリッジ手数料"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "$1%のMetaMask手数料が含まれています"
   },
   "bridgeFromTo": {
     "message": "$1 $2を$3にブリッジ",
@@ -2005,6 +2142,18 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "プライスインパクトに関する警告"
+  },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "手順$1 / $2：このQRコードをウォレットでスキャンします",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "最終手順：ウォレットに表示されているQRコードをスキャンします",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "手順$1 / $2：ウォレットに表示されているQRコードをスキャンします",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "利用可能なクォートがありません。より小さい額をお試しください。"
@@ -2185,7 +2334,7 @@
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
   },
   "bridgeStepActionSwapComplete": {
-    "message": "$1を$2にスワップしました",
+    "message": "$1を$2にスワップ",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
   "bridgeStepActionSwapPending": {
@@ -2355,6 +2504,18 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "このトークンシンボルは、入力されたネットワーク名またはチェーンIDと一致しません。人気のトークンの多くはシンボルが似ているため、詐欺師がそれを利用してより価値の高いトークンを送り返すように仕向ける可能性があります。続行する前にすべてを確認してください。"
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "安全確保の方法をご確認ください。",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "ネットワークのデータはChainListから取得します。追加する前に必ず検証を行ってください。$1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistNetworkDetails": {
+    "message": "シンボル：$1 · ID：$2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
   },
   "changeInSettings": {
     "message": "設定で変更"
@@ -2819,6 +2980,9 @@
   "contractInteraction": {
     "message": "コントラクトインタラクション"
   },
+  "convertAgain": {
+    "message": "変換を再実行"
+  },
   "convertTokenToNFTDescription": {
     "message": "このアセットはNFTであることが検出されました。MetaMaskでは現在、NFTが完全にネイティブでサポートされています。トークンリストから削除して、NFTとして追加しますか？"
   },
@@ -2970,9 +3134,6 @@
   "customSlippage": {
     "message": "カスタム"
   },
-  "customToken": {
-    "message": "カスタムトークン"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "手動でトークンをインポートする前に、信頼できることを確認してください。$1の詳細をご覧ください。"
   },
@@ -3066,11 +3227,23 @@
   "decryptRequest": {
     "message": "リクエストを解読"
   },
+  "deepLinkQrBatchSellDescription": {
+    "message": "MetaMaskモバイルでは一括売却が可能です。ご利用の際は、モバイルデバイスでこのコードをスキャンしてください。"
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "モバイルで一括売却を開く"
+  },
   "deepLinkQrPredictDescription": {
     "message": "MetaMask予測市場にアクセスするには、モバイルデバイスでQRコードをスキャンしてください。"
   },
   "deepLinkQrPredictTitle": {
     "message": "予測市場をモバイルで開く"
+  },
+  "deepLinkQrTrendingDescription": {
+    "message": "MetaMask MobileではExploreが利用可能です。ご利用の際は、モバイルデバイスでこのコードをスキャンしてください。"
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "モバイルでExploreを開く"
   },
   "deepLink_Caution": {
     "message": "慎重に進めてください"
@@ -3121,6 +3294,9 @@
   "deepLink_theAssetPage": {
     "message": "資産ページ"
   },
+  "deepLink_theBatchSellPage": {
+    "message": "一括売却ページ"
+  },
   "deepLink_theBuyPage": {
     "message": "購入ページ"
   },
@@ -3129,6 +3305,9 @@
   },
   "deepLink_theHomePage": {
     "message": "ホームページ"
+  },
+  "deepLink_theMoneyPage": {
+    "message": "マネーページ"
   },
   "deepLink_theMusdEducationPage": {
     "message": "mUSDの変換に関する学習ページ"
@@ -3163,6 +3342,9 @@
   "deepLink_theTransactionShieldPage": {
     "message": "トランザクションシールドページ"
   },
+  "deepLink_theTrendingPage": {
+    "message": "Exploreのページ"
+  },
   "default": {
     "message": "デフォルト"
   },
@@ -3190,6 +3372,10 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "規約に同意したものとみなされます",
+    "description": "The text for the partner terms link in the DeFi referral confirmation screen"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3287,6 +3473,9 @@
   },
   "developerTools": {
     "message": "開発者ツール"
+  },
+  "disable": {
+    "message": "無効にする"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "「$1」は、元のガス代から最低10%の増加条件を満たしていないため、無効になっています。",
@@ -3502,9 +3691,6 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableFromSettings": {
-    "message": " 設定で有効にします。"
-  },
   "enableSmartContractAccount": {
     "message": "スマートアカウントを使用する"
   },
@@ -3531,9 +3717,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "入力したRPC URLが別のチェーンID ($1) を返しました。",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "改善されたトークン検出は現在$1で利用可能です。$2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMaskにより、ENSドメインがブラウザのアドレスバーに直接表示されます。使い方は次の通りです："
@@ -3594,6 +3777,28 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMaskのパスワードを入力してください"
+  },
+  "enter_verification_code": {
+    "message": "確認コードを入力"
+  },
+  "enter_verification_code_desc": {
+    "message": "セキュリティ確保のため、デバイスのMetaMaskアプリ内に表示されているコードを入力してください。"
+  },
+  "enter_verification_code_error": {
+    "message": "コードが正しくありません。もう一度お試しください。"
+  },
+  "enter_verification_code_expired": {
+    "message": "認証コードの有効期限が切れました"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "期限切れまであと$1秒",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "パスワードを入力"
+  },
+  "enter_your_password_desc": {
+    "message": "アカウントのセキュリティ確保のため、QRコードを表示するにはパスワードを入力してください。"
   },
   "enteredMalicious": {
     "message": "入力したアドレス"
@@ -3889,6 +4094,12 @@
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
   },
+  "gasSponsorshipModalTitle": {
+    "message": "ネットワーク手数料"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -3958,10 +4169,6 @@
     "message": "ERC-20 approve(spender, 0)",
     "description": "Token approval revocation method for ERC-20 approve reset"
   },
-  "gatorPermissionsErc721ApproveRevocation": {
-    "message": "ERC-721 approve(address(0), tokenId)",
-    "description": "Token approval revocation method for ERC-721 single-token approve reset"
-  },
   "gatorPermissionsExpirationDate": {
     "message": "有効期限日",
     "description": "Label for the expiration date of a permission"
@@ -3982,17 +4189,8 @@
     "message": "最大割当",
     "description": "Label for the max allowance of a permission"
   },
-  "gatorPermissionsPermit2ApproveRevocation": {
-    "message": "Permit2 approve(token, spender, 0, 0)",
-    "description": "Token approval revocation method for Permit2 approve reset"
-  },
-  "gatorPermissionsPermit2InvalidateNonces": {
-    "message": "Permit2 invalidate nonces",
-    "description": "Token approval revocation method for Permit2 nonce invalidation"
-  },
-  "gatorPermissionsPermit2Lockdown": {
-    "message": "Permit2ブロックチェーン",
-    "description": "Token approval revocation method for Permit2 lockdown"
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask x402ファシリテーター"
   },
   "gatorPermissionsRevocationMethods": {
     "message": "取り消し方法",
@@ -4046,6 +4244,9 @@
   "generalDescription": {
     "message": "デバイス間で設定を同期して、ネットワーク設定を選択し、トークンデータを追跡します"
   },
+  "generateNewQrCode": {
+    "message": "新しいQRコードを生成"
+  },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
   },
@@ -4081,6 +4282,62 @@
   "hardware": {
     "message": "ハードウェア"
   },
+  "hardwareAllSetTitle": {
+    "message": "これで完了です",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "もう少しで完了です！再度デバイスで確定してください。",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "$1 $2を承認",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "$1 $2を承認しました",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "デバイスを再接続して、もう一度お試しください",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "デバイスを再接続してから続行してください",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "拒否されました",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "トランザクションを再送信",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "$1 $2を送金",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "$1 $2を送金中",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "$1 $2を送金しました",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "使用者：$1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "移動先: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "デバイス上でこのトランザクションを拒否しました",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "ハードウェアウォレットが接続されました"
   },
@@ -4088,7 +4345,8 @@
     "message": "続行"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "再接続"
+    "message": "再接続してもう一度お試しください",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "ハードウェアウォレットがUSBで正しく接続されていることを確認してください"
@@ -4303,15 +4561,31 @@
   "holdToRevealUnlockedLabel": {
     "message": "長押ししてロックが解除された円を表示します"
   },
+  "home": {
+    "message": "ホーム",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "このトークンはハニーポットの危険性があります。金銭的な損失を防ぐために、やり取りする前にデューディリジェンスを行うことをお勧めします。"
   },
   "honeypotTitle": {
     "message": "ハニーポット"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Hyperliquidの$1に従い、今後すべての取引にMetaMaskの紹介コードを適用できます。MetaMaskは手数料をいただきます。",
+    "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMaskの紹介コードを使うと、取引手数料が4%割引されます。",
+    "description": "The subtitle of the redesigned Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Hyperliquidで4%節約",
+    "description": "The title of the redesigned Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "理解しています"
@@ -4381,15 +4655,6 @@
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
-  "importTokenQuestion": {
-    "message": "トークンをインポートしますか？"
-  },
-  "importTokenWarning": {
-    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります！"
-  },
-  "importTokensCamelCase": {
-    "message": "トークンをインポート"
-  },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
   },
@@ -4400,6 +4665,9 @@
   "imported": {
     "message": "インポートされました",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includesSmartAccountActivation": {
+    "message": "スマートアカウントアクティベーションが含まれます"
   },
   "includesXTransactions": {
     "message": "$1件のトランザクションを含む"
@@ -4642,6 +4910,54 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Ledgerデバイスでアプリを開いてから続行してください"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "イーサリアムアプリが閉じられています"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Ledgerデバイスが見つかりました"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Ledgerデバイスのロックを解除してから続行してください"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledgerがロックされています"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "イーサリアムアプリをインストールして開きます"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Ledgerをパソコンに接続してください"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "もう一度接続してみてください"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Ledgerデバイスのロックを解除します"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "デバイスが見つかりません"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "デバイスの接続を解除して、再接続してください"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "Ledgerが応答しません"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Ledgerデバイスが選択されたアカウントのシークレットリカバリーフレーズまたは秘密鍵でセットアップされていることを確認します"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "問題が発生しました"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "検索する間そのままお待ちください..."
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "デバイスを検索中"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
   },
@@ -4687,9 +5003,6 @@
   },
   "lightTheme": {
     "message": "ライト"
-  },
-  "likeToImportToken": {
-    "message": "このトークンをインポートしますか？"
   },
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか？"
@@ -4914,7 +5227,7 @@
     "message": "MetaMaskの手数料"
   },
   "metamaskNotificationsAreOff": {
-    "message": "ウォレットの通知は現在無効になっています"
+    "message": "通知をオンにする"
   },
   "metamaskSwap": {
     "message": "MetaMaskスワップ"
@@ -4970,7 +5283,7 @@
     "message": "弊社の記録によると、送信されたRPC URLの値がこのチェーンIDの既知のプロバイダーと一致しません。"
   },
   "mmFee": {
-    "message": "$1%のMM手数料。"
+    "message": "$1%のMetaMask手数料"
   },
   "month": {
     "message": "月"
@@ -5261,9 +5574,6 @@
   },
   "musdTermsApply": {
     "message": "諸条件が適用されます。"
-  },
-  "mustSelectOne": {
-    "message": "トークンを1つ以上選択する必要があります。"
   },
   "name": {
     "message": "名前"
@@ -5802,6 +6112,9 @@
   "notificationItemUnStakingRequested": {
     "message": "ステーキングの解除がリクエストされました"
   },
+  "notificationSettings": {
+    "message": "通知設定"
+  },
   "notificationTransactionFailedMessage": {
     "message": "トランザクション $1 に失敗しました！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -5856,11 +6169,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "まだ通知を受け取っていません。"
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Agenticを対象としたCLIによる接続要求、承認、セッション更新情報"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "Agentic CLI"
+  },
   "notificationsSettingsBoxError": {
     "message": "問題が発生しました。もう一度お試しください。"
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "すべての選択を解除"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "アプリ内"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "この機能をオンにすることで、MetaMaskからの製品ニュースとマーケティングの最新情報を受け取ることに同意したものとみなされます。"
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "製品の最新情報、機能に関するお知らせ、新しいリリース"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "最新情報とリワード"
+  },
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "通知の内容と受取方法を選択できます。"
+  },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "方法"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "パーペチュアルポジションの変更、清算、入金レート、証拠金の最新情報"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "取引アクティビティ"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "プッシュ"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "アカウント"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "どのアカウントの通知を受け取るか選択できます。"
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "アプリ内"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "オフ"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "プッシュ"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "購入、売却、送金、スワップ、リワード"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "ウォレットアクティビティ"
   },
   "numberOfTokens": {
     "message": "トークンの数"
@@ -6703,6 +7070,9 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "クロスマージンには対応していません"
   },
+  "perpsCurrentPrice": {
+    "message": "現在の価格"
+  },
   "perpsDateToday": {
     "message": "今日"
   },
@@ -6777,6 +7147,18 @@
   "perpsFees": {
     "message": "手数料"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Hyperliquidの手数料",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "MetaMaskの手数料",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "プロバイダーの手数料",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "すべて"
   },
@@ -6803,6 +7185,9 @@
   },
   "perpsFilterStocks": {
     "message": "株式"
+  },
+  "perpsFundAgain": {
+    "message": "再度入金"
   },
   "perpsFunding": {
     "message": "入金"
@@ -6868,6 +7253,10 @@
   "perpsLiquidationPrice": {
     "message": "清算価格"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "価格がこのポイントに達すると清算され、証拠金が失われます。レバレッジが高いほどその可能性が高くなります。",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "ロング"
   },
@@ -6876,6 +7265,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "証拠金を減額すると、清算価格が近づきます。十分な余裕を確保するようにしてください。"
+  },
+  "perpsMarginTooltip": {
+    "message": "証拠金は、取引を開始するために投入する資金です。それが担保となり、その取引で失われる可能性がある最大額となります。",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "マーケット"
@@ -6959,6 +7352,10 @@
   "perpsOrders": {
     "message": "注文"
   },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 パーペチュアル",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
+  },
   "perpsPnl": {
     "message": "損益額"
   },
@@ -7039,11 +7436,30 @@
   "perpsSlippageCustom": {
     "message": "カスタム"
   },
+  "perpsSlippageEditAriaLabel": {
+    "message": "最大スリッページの編集"
+  },
   "perpsSlippageExceeded": {
     "message": "スリッページが超過しました。スリッページ許容範囲を調整してもう一度お試しください。"
   },
+  "perpsSlippageExceedsMax": {
+    "message": "予想スリッページ($1%)が最大スリッページ($2%)を超えています。最大値を増やすか注文サイズを減らしてください。",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
   "perpsSlippageInputLabel": {
     "message": "最大スリッページ割合"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "$1%から$2%の間の値を入力してください",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "予想：$1% / 最大：$2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "予想： -- / 最大：$1%",
+    "description": "$1 is max slippage percent"
   },
   "perpsSlippageSet": {
     "message": "設定"
@@ -7710,6 +8126,17 @@
     "message": "カメラへのアクセスが必要です",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrCodeExpired": {
+    "message": "QRコードが期限切れです"
+  },
+  "qrCodeExpiresIn": {
+    "message": "期限切れまであと$1秒",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "このQRコードは別の取引用です。一度キャンセルし、まずMetaMaskに表示されているQRコードをハードウェアウォレットでスキャンしてからもう一度お試しください。",
+    "description": "Body text when a signature QR belongs to a previous transaction."
+  },
   "qrErrorMismatchedTransactionTitle": {
     "message": "QRコードが間違っています",
     "description": "Title shown when a signature QR belongs to a different transaction."
@@ -7754,6 +8181,14 @@
     "message": "QRコードが間違っています",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "最後のQRコードをスキャン",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "次のQRコードをスキャン",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "キュー待ち"
   },
@@ -7762,6 +8197,9 @@
   },
   "quotedTotalCost": {
     "message": "合計コスト: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "使用可能なトークンがありません"
   },
   "rank": {
     "message": "ランキング"
@@ -7818,6 +8256,9 @@
     "message": "資産を守りましょう"
   },
   "redeemer": {
+    "message": "請求者"
+  },
+  "redeemers": {
     "message": "請求者"
   },
   "redeposit": {
@@ -7971,9 +8412,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "操作が正常に完了しました。"
-  },
-  "retryTransaction": {
-    "message": "トランザクションを再試行"
   },
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
@@ -8170,6 +8608,10 @@
     "message": "サインインしています...",
     "description": "Text shown while the user is signing in to view their rewards points"
   },
+  "rewardsVipReferralTagLabel": {
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
+  },
   "rpcNameOptional": {
     "message": "RPC名 (オプション)"
   },
@@ -8182,11 +8624,114 @@
   "save": {
     "message": "保存"
   },
+  "scamQuestionnaireContinue": {
+    "message": "続行"
+  },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "セキュリティチェック"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "いいえ、私はこの人を実際に知っています"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "これにはデートアプリ、ソーシャルメディア、グループチャットが含まれます。ビデオ通話であっても同様です。"
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "オンラインでしか知らない相手に送金を指示されましたか？"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "はい、オンラインで会った相手に送金を指示されました"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "自分が受け取るものの対価を業者に支払う"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "商品またはサービスの購入"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "相手が指定した暗号資産による罰金、税金、または公的手数料の支払い"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "警察または政府機関に対する支払い"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "お金が必要なパートナー、家族、または友人への送金"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "自分が大切にしている人に対する支援"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "暗号資産やトークンの購入、または収益機会への参加"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "投資"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "初期費用、機器代、作業代金の支払い"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "求人または仕事関係"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "自分宛の送金またはコールドストレージへの移動"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "自分のウォレット間での資金の移動"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "この支払いの説明として最も近いものをお選びください。"
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "この支払いの目的は何ですか？"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "いいえ、すべて自分で行っています"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "指示の方法は電話、ビデオチャット、画面共有などが考えられます。"
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "このトランザクションは誰かの指示を受けながら行っていますか？"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "はい、今まさに誰かに手順を説明してもらっています"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "回答を選択してください"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "リスクを無視して続行"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "$1秒後にそのまま続行",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "一度送金すると、資金を取り戻すことはできなくなります。"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "暗号資産のトランザクションは元に戻せません。"
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "頂いた回答とこの受取人の履歴から判断して、このトランザクションは詐欺の可能性があります。"
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "この支払いを中止"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "今騙されている可能性があります"
+  },
   "scanInstructions": {
     "message": "QRコードにカメラを向けてください"
   },
   "scanQrCode": {
     "message": "QRコードをスキャン"
+  },
+  "scan_qr_code_desc": {
+    "message": "追加したいデバイス上でMetaMaskアプリを使ってこのコードをスキャンします。"
   },
   "scrollDown": {
     "message": "下にスクロール"
@@ -8199,6 +8744,9 @@
   },
   "searchForAnAssetToSend": {
     "message": "送金する資産を検索"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "ネットワーク名またはチェーンIDの検索"
   },
   "searchNetworks": {
     "message": "ネットワークを検索"
@@ -8360,8 +8908,19 @@
   "send": {
     "message": "送金"
   },
+  "sendAlertNewAddressMessage": {
+    "message": "このアドレスに初めて送金しようとしています。続行する前に正しいことを確認してください：$1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "新しいアドレス"
+  },
   "sendBugReport": {
     "message": "バグの報告をお送りください."
+  },
+  "sendBundleHwGasPayment": {
+    "message": "ネットワーク手数料を$1で支払い中",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendSelectReceiveAsset": {
     "message": "受け取るアラートを選択してください"
@@ -9507,6 +10066,18 @@
   "speedUpTransactionTitle": {
     "message": "トランザクションを高速化"
   },
+  "spendableBalance": {
+    "message": "使用可能"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "準備残高 (ロック済み)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "価値"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "合計残高"
+  },
   "spender": {
     "message": "使用者"
   },
@@ -9679,6 +10250,9 @@
   "standardAccountLabel": {
     "message": "スタンダードアカウント"
   },
+  "start_with_new_qr_code": {
+    "message": "新しいQRコードで始める"
+  },
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
@@ -9735,6 +10309,18 @@
   },
   "statusNotConnected": {
     "message": "未接続"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "このトラストラインの追加中に問題が発生しました。もう一度お試しください。",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "このトラストラインの削除中に問題が発生しました。もう一度お試しください。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "ウォレットにはまだ$1 $2が残っています。Stellarでこの資産を無効化する前に、すべて使用するか、他の通貨に交換する必要があります。",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "$1に引き続き接続中です...",
@@ -10167,6 +10753,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下でなければなりません."
   },
+  "syncAccounts": {
+    "message": "モバイルと同期"
+  },
   "syncing": {
     "message": "同期中..."
   },
@@ -10249,9 +10838,6 @@
   },
   "tokenDecimal": {
     "message": "トークンの小数桁数"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "トークンの小数点以下の桁数が必要です。確認はこちら: $1"
   },
   "tokenDetails": {
     "message": "トークンの詳細"
@@ -10367,6 +10953,9 @@
   "transactionHistoryTotalGasFee": {
     "message": "ガス代合計"
   },
+  "transactionIdCopied": {
+    "message": "トランザクションIDがコピーされました"
+  },
   "transactionIdLabel": {
     "message": "トランザクションID",
     "description": "Label for the source transaction ID field."
@@ -10412,6 +11001,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suiteデスクトップ版は、Trezorを使用する必要があります。Trezor Suite (suite.trezor.io) をインストールして開き、もう一度お試しください。",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "帯域幅"
@@ -10495,29 +11088,8 @@
   "turnOn": {
     "message": "オンにする"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "通知をオンにする"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "オンにする"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "通知の作成中にエラーが発生しました。後でもう一度お試しください。"
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "通知を使えば、ウォレットで何が起きているか常に把握できます。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "通知設定。"
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "この機能を使用する際に当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください。"
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "ウォレット通知を使用するために、プロファイルを使用して一部の設定をデバイス間で同期します。$1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "通知は$1でいつでもオフにできます"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
@@ -10900,6 +11472,10 @@
   "youSent": {
     "message": "送金額:",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "出金額：",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "受取額",

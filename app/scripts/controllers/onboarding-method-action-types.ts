@@ -25,6 +25,16 @@ export type OnboardingControllerCompleteOnboardingAction = {
 };
 
 /**
+ * Records that the user has been shown the onboarding completion page at least once.
+ *
+ * @param hasSeenOnboardingCompletionPage - Whether the onboarding completion page has been shown.
+ */
+export type OnboardingControllerSetHasSeenOnboardingCompletionPageAction = {
+  type: `OnboardingController:setHasSeenOnboardingCompletionPage`;
+  handler: OnboardingController['setHasSeenOnboardingCompletionPage'];
+};
+
+/**
  * Setter for the `firstTimeFlowType` property
  *
  * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
@@ -69,6 +79,7 @@ export type OnboardingControllerResetOnboardingAction = {
 export type OnboardingControllerMethodActions =
   | OnboardingControllerSetSeedPhraseBackedUpAction
   | OnboardingControllerCompleteOnboardingAction
+  | OnboardingControllerSetHasSeenOnboardingCompletionPageAction
   | OnboardingControllerSetFirstTimeFlowTypeAction
   | OnboardingControllerRegisterOnboardingAction
   | OnboardingControllerGetIsSocialLoginFlowAction

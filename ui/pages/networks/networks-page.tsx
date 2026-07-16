@@ -4,13 +4,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -52,7 +46,7 @@ import { getEditedNetwork } from '../../selectors/selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsHeader } from '../settings/shared/settings-header';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
@@ -129,7 +123,7 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
 export const NetworksPage = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -213,12 +207,13 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleAddFromChainlist = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.ChainlistAddClicked,
-      category: MetaMetricsEventCategory.Network,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
     setView('add-from-chainlist');
-  }, [setView, trackEvent]);
+  }, [createEventBuilder, setView, trackEvent]);
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork, searchQuery?: string) => {
@@ -226,17 +221,19 @@ export const NetworksPage = () => {
       const existingNetwork =
         evmNetworks[chainIdHex as keyof typeof evmNetworks];
       const networkName = existingNetwork?.name ?? network.name;
-      trackEvent({
-        event: MetaMetricsEventName.ChainlistNetworkSelected,
-        category: MetaMetricsEventCategory.Network,
-        /* eslint-disable @typescript-eslint/naming-convention */
-        properties: {
-          chain_id: chainIdHex,
-          network_name: networkName,
-          already_added: Boolean(existingNetwork),
-          ...(searchQuery ? { search_query: searchQuery } : {}),
-        },
-      });
+      /* eslint-disable @typescript-eslint/naming-convention */
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ChainlistNetworkSelected)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            chain_id: chainIdHex,
+            network_name: networkName,
+            already_added: Boolean(existingNetwork),
+            ...(searchQuery ? { search_query: searchQuery } : {}),
+          })
+          .build(),
+      );
+      /* eslint-enable @typescript-eslint/naming-convention */
 
       if (existingNetwork) {
         dispatch(
@@ -249,10 +246,10 @@ export const NetworksPage = () => {
         return;
       }
 
-      const rpcEndpoints = getUsableUrls(network.rpc).map((url) => ({
-        url,
-        type: RpcEndpointType.Custom,
-      }));
+      const primaryRpcUrl = getUsableUrls(network.rpc)[0];
+      const rpcEndpoints = primaryRpcUrl
+        ? [{ url: primaryRpcUrl, type: RpcEndpointType.Custom }]
+        : [];
       const blockExplorerUrls = getUsableUrls(
         network.explorers?.map((explorer) => explorer.url ?? '') ?? [],
       );
@@ -276,7 +273,14 @@ export const NetworksPage = () => {
       });
       setView('add');
     },
-    [dispatch, evmNetworks, networkFormState, setView, trackEvent],
+    [
+      createEventBuilder,
+      dispatch,
+      evmNetworks,
+      networkFormState,
+      setView,
+      trackEvent,
+    ],
   );
 
   const handleAddRPC = useCallback(

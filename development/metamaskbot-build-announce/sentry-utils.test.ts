@@ -82,14 +82,14 @@ describe('buildPerformanceSentryLogsUrl', () => {
   it('builds explore/logs URL from SENTRY_DSN_PERFORMANCE with branch and optional filters', () => {
     const url = buildPerformanceSentryLogsUrl(['feat/my-branch'], {
       browser: 'chrome',
-      buildType: 'browserify',
+      buildType: 'webpack',
       logMessage: 'benchmark.timerName',
     });
 
     expect(url).toContain('https://metamask.sentry.io/explore/logs/');
     expect(url).toContain('ci.branch%3A%22feat%2Fmy-branch%22');
     expect(url).toContain('ci.browser%3Achrome');
-    expect(url).toContain('ci.buildType%3Abrowserify');
+    expect(url).toContain('ci.buildType%3Awebpack');
     expect(url).toContain('message%3Abenchmark.timerName');
     expect(url).toContain('project=4510302346608640');
     expect(url).toContain('statsPeriod=2w');
