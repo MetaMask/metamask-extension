@@ -196,13 +196,18 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
 
-  // Esplora `GET /block-height/:height` returns the block hash at that height as
-  // plain text. Left unmocked, the Bitcoin snap's discovery request falls to the
-  // empty-200 catch-all, whose malformed body throws in the snap and restarts
-  // discovery in a retry storm that delays the non-EVM account icons past the
-  // default wait. The hash must match the requested height: height 0 is the
-  // genesis block, and returning the chain-tip hash there fails the snap's chain
-  // check and crashes account creation. Real genesis hash for 0, tip otherwise.
+  // Network-identity check, distinct from the tip/blocks mocks above (already
+  // on main via #43817): the Bitcoin snap fetches `/block-height/0` and
+  // verifies the genesis hash before deriving accounts. Left unmocked, the
+  // request falls to the empty-200 catch-all, whose malformed body throws in
+  // the snap and restarts discovery in a retry storm that delays the non-EVM
+  // account icons past the default wait — a trial removal on #42867
+  // deterministically broke `unlock-wallet`. The mock-completion PR #43961
+  // (closes #43958) is Solana-scoped and does not cover this endpoint, so this
+  // handler must be kept even after it lands. The hash must match the
+  // requested height: height 0 is the genesis block, and returning the
+  // chain-tip hash there fails the snap's chain check and crashes account
+  // creation. Real genesis hash for 0, tip otherwise.
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
