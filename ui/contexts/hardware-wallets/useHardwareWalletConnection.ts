@@ -263,6 +263,7 @@ export const useHardwareWalletConnection = ({
       // This ensures that if connect() is awaiting and fails due to adapter destruction,
       // the error handlers will see abortSignal.aborted=true and skip state updates.
       refs.abortControllerRef.current?.abort();
+      refs.isSigningInProgressRef.current = false;
 
       // Capture references at the start to prevent race conditions
       // where connect() creates new ones while disconnect() is awaiting

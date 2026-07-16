@@ -232,32 +232,11 @@ describe('NFTs options', () => {
 
     fireEvent.click(manageTokensButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE);
-  });
-
-  it('shows Import tokens when the token management feature flag is disabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: false,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    expect(await findByTestId('importTokens__button')).toHaveTextContent(
-      messages.importTokensCamelCase.message,
-    );
-    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
   });
 
   it('navigates to the dedicated networks page from manage networks in the home modal', async () => {

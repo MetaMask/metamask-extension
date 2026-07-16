@@ -22,6 +22,7 @@ import {
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -93,6 +94,12 @@ export const resetBridgeController = () => {
     await clearAllBridgeCacheItems();
   };
 };
+
+export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
+  callBridgeControllerMethod('setLocation', location);
+
+export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
+  submitRequestToBackground('getLocation');
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -1,6 +1,12 @@
 import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 
+// Settling the post-quote CTA (fetching the relay quote, rendering the
+// fee/receive rows and enabling the Withdraw button) and the post-submit
+// success toast can take longer than the default 10s wait on slower CI
+// browsers (e.g. Firefox), so give those quote/submit-dependent waits more room.
+const QUOTE_READY_TIMEOUT = 30_000;
+
 /**
  * Page object for the Perps Withdraw confirmation flow.
  *
@@ -38,10 +44,6 @@ export class PerpsWithdrawConfirmation {
 
   private readonly receiveRow = { testId: 'receive-row' };
 
-  private readonly successToast = {
-    testId: 'perps-withdraw-success-toast',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -60,11 +62,17 @@ export class PerpsWithdrawConfirmation {
     );
   }
 
-  async checkConfirmButtonText(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({
-      ...this.confirmButton,
-      text: expectedText,
-    });
+  async checkConfirmButtonText(
+    expectedText: string,
+    timeout?: number,
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      {
+        ...this.confirmButton,
+        text: expectedText,
+      },
+      timeout === undefined ? {} : { timeout },
+    );
   }
 
   async checkDestinationToken(symbol: string): Promise<void> {
@@ -94,13 +102,17 @@ export class PerpsWithdrawConfirmation {
   }
 
   async checkWithdrawButtonEnabled(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.bridgeTimeRow,
-      this.receiveRow,
-    ]);
-    await this.checkConfirmButtonText(tEn('perpsWithdraw'));
+    await this.driver.waitForMultipleSelectors(
+      [this.bridgeTimeRow, this.receiveRow],
+      { timeout: QUOTE_READY_TIMEOUT },
+    );
+    await this.checkConfirmButtonText(
+      tEn('perpsWithdraw'),
+      QUOTE_READY_TIMEOUT,
+    );
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'enabled',
+      timeout: QUOTE_READY_TIMEOUT,
     });
   }
 
@@ -126,9 +138,9 @@ export class PerpsWithdrawConfirmation {
   }
 
   async waitForSuccessToast(): Promise<void> {
-    await this.driver.waitForSelector({
-      ...this.successToast,
-      text: tEn('perpsWithdrawPostQuoteToastSuccessTitle'),
-    });
+    await this.driver.waitForSelector(
+      { text: tEn('perpsWithdrawPostQuoteToastSuccessTitle') },
+      { timeout: QUOTE_READY_TIMEOUT },
+    );
   }
 }

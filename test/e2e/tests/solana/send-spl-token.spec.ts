@@ -5,12 +5,15 @@ import { merge } from 'lodash';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import {
+  mockAccountsApiV2SupportedNetworks,
+  mockAccountsApiV5MultiaccountBalances,
+} from './mocks/accounts-api';
 import {
   commonSolanaAddress,
   mockGetFeeForMessage,
@@ -35,66 +38,27 @@ import {
 
 const isUnifiedAssetsEnabled = true;
 
+const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const USDC_CAIP_ASSET =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
-const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const USDC_BALANCE_HUMAN = '8.908267';
 
 // --- Unified-assets-only helpers ---
 
-async function mockAccountsApiV2WithSolana(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
-        SOLANA_CHAIN_ID,
-      ],
-      partialSupport: { balances: [42220, 43114] },
-    });
-}
-
-async function mockAccountsApiV5WithSolana(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: SOL_CAIP_ASSET,
-      balance: '50',
-    },
-  ];
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { count: balances.length, unprocessedNetworks: [], balances },
-    }));
-}
-
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
+  assetsBalance: {
+    [SOL_ACCOUNT_ID]: {
+      [SOL_CAIP_ASSET]: {
+        amount: '50',
+      },
+      [USDC_CAIP_ASSET]: {
+        amount: USDC_BALANCE_HUMAN,
+      },
+    },
+  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -133,6 +97,9 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
 
 const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   MultichainAssetsController: {
+    accountsAssets: {
+      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+    },
     assetsMetadata: {
       [USDC_CAIP_ASSET]: {
         fungible: true,
@@ -203,8 +170,8 @@ const mockSendWithUSDCVisible = async (
 ): Promise<MockedEndpoint[]> => [
   ...(isUnifiedAssetsEnabled
     ? [
-        await mockAccountsApiV2WithSolana(mockServer),
-        await mockAccountsApiV5WithSolana(mockServer),
+        await mockAccountsApiV2SupportedNetworks(mockServer),
+        await mockAccountsApiV5MultiaccountBalances(mockServer),
       ]
     : []),
   await mockGetTokenAccountsUSDCOnly(mockServer),
@@ -234,8 +201,8 @@ async function mockSendSPLTokenFailed(
   return [
     ...(isUnifiedAssetsEnabled
       ? [
-          await mockAccountsApiV2WithSolana(mockServer),
-          await mockAccountsApiV5WithSolana(mockServer),
+          await mockAccountsApiV2SupportedNetworks(mockServer),
+          await mockAccountsApiV5MultiaccountBalances(mockServer),
         ]
       : []),
     await mockGetTokenAccountsUSDCOnly(mockServer),
@@ -277,6 +244,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
                   conversionTime: 1770832998.066,
                   rate: String(SOL_PRICE),
                 },
+                [USDC_CAIP_ASSET]: {
+                  conversionTime: 1770832998.066,
+                  rate: String(USDC_PRICE),
+                },
               },
             },
             ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
@@ -289,6 +260,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -311,7 +285,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
@@ -360,6 +334,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
                   conversionTime: 1770832998.066,
                   rate: String(SOL_PRICE),
                 },
+                [USDC_CAIP_ASSET]: {
+                  conversionTime: 1770832998.066,
+                  rate: String(USDC_PRICE),
+                },
               },
             },
             ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
@@ -373,6 +351,9 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new HomePage(driver);
+        if (isUnifiedAssetsEnabled) {
+          await homePage.waitForNonEvmAccountsLoaded();
+        }
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -395,7 +376,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),

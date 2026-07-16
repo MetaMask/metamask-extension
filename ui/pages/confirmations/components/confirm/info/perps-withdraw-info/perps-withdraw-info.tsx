@@ -28,7 +28,6 @@ export const PerpsWithdrawInfo = () => {
       autoFocusAmount
       balanceUsdOverride={availableBalance}
       currency={PERPS_CURRENCY}
-      hasMax
       hidePayTokenAmount
       preferredToken={preferredToken}
     >

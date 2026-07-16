@@ -1,5 +1,11 @@
+import assert from 'assert';
 import { Suite } from 'mocha';
-import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -10,9 +16,16 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
-// BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
-// eslint-disable-next-line
-describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
+
+describe('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
   it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
@@ -27,6 +40,17 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
           })
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
+          .withPreferencesController({ securityAlertsEnabled: false })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1338/slip44:60': { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+            },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -95,6 +119,7 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         // Reject Transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.clickFooterCancelButton();
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
@@ -109,12 +134,14 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         const activityTab = new ActivityTab(driver);
         await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-        // Click Unconfirmed Tx
-        await activityTab.clickOnActivity(1);
-
-        // Confirm Tx
+        // Pending confirm stays in the dialog popup on Firefox.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Check for Confirmed Transaction
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);

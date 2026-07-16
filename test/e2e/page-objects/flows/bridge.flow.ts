@@ -1,7 +1,7 @@
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { ASSET_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
-import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../pages/account-list-page';
 import ActivityTab from '../pages/home/activity-tab';
@@ -168,6 +168,41 @@ export const bridgeTransaction = async ({
   });
 };
 
+const waitForAssetPageNavigation = async (
+  driver: Driver,
+  {
+    chainId,
+    address,
+    assetId,
+  }: {
+    chainId: Hex;
+    address: string;
+    assetId: CaipAssetType;
+  },
+) => {
+  const lowercaseAssetId = assetId.toLowerCase() as CaipAssetType;
+  const encodedLowercasePath = buildAssetRoutePath(lowercaseAssetId);
+  const checksummedAssetId = toAssetId(address, chainId);
+  const encodedChecksumPath = checksummedAssetId
+    ? buildAssetRoutePath(checksummedAssetId)
+    : encodedLowercasePath;
+  const caipChainId = toEvmCaipChainId(chainId);
+  const addressNeedle = address.toLowerCase().slice(2);
+
+  await driver.waitUntil(
+    async () => {
+      const url = (await driver.getCurrentUrl()).toLowerCase();
+      return (
+        url.includes(encodedLowercasePath.toLowerCase()) ||
+        url.includes(encodedChecksumPath.toLowerCase()) ||
+        (url.includes(`/asset/${caipChainId.toLowerCase()}`) &&
+          url.includes(addressNeedle))
+      );
+    },
+    { timeout: driver.timeout, interval: 100 },
+  );
+};
+
 /**
  * Searches for a token in the asset picker, clicks the info icon to navigate
  * to the token's asset overview page, and waits for it to load.
@@ -194,16 +229,32 @@ export const goToAssetPage = async ({
 }) => {
   const bridgePage = new BridgeQuotePage(driver);
   const picker = assetPicker ?? bridgePage.sourceAssetPickerButton;
-  const expectedAssetId = toAssetId(address, chainId)?.toLowerCase();
-  const expectedUrl = `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(toChecksumHexAddress(address))}`;
+  const assetId = toAssetId(address, chainId);
+  if (!assetId) {
+    throw new Error('Unable to resolve asset id for bridge flow');
+  }
+  // Bridge search results use lowercase erc20 addresses; wallet-held assets may
+  // use checksummed CAIP-19 ids from toAssetId().
+  const normalizedAssetId = assetId.toLowerCase() as typeof assetId;
 
-  await bridgePage.searchAndClickAssetInfo({
-    token,
-    assetId: expectedAssetId ?? '',
-    assetPicker: picker,
-  });
+  try {
+    await bridgePage.searchAndClickAssetInfo({
+      token,
+      assetId: normalizedAssetId,
+      assetPicker: picker,
+    });
+  } catch (error) {
+    if (assetId === normalizedAssetId) {
+      throw error;
+    }
+    await bridgePage.searchAndClickAssetInfo({
+      token,
+      assetId,
+      assetPicker: picker,
+    });
+  }
 
-  await driver.waitForUrlContaining({ url: expectedUrl });
+  await waitForAssetPageNavigation(driver, { chainId, address, assetId });
   const assetPage = new TokenOverviewPage(driver);
   await assetPage.checkPageIsLoaded();
 };

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodajte stečene tokene koristeći MetaMask."
-  },
   "addAlias": {
     "message": "Dodaj pseudonim"
   },
@@ -177,9 +174,6 @@
   },
   "custom": {
     "message": "Напредне опције"
-  },
-  "customToken": {
-    "message": "Prilagođeni token"
   },
   "decimal": {
     "message": "Decimale preciznosti"
@@ -338,9 +332,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask verzija"
-  },
-  "mustSelectOne": {
-    "message": "Morate izabrati najmanje 1 token."
   },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",

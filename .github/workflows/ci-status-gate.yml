@@ -166,9 +166,14 @@ jobs:
       # in the wrong suite — one the merge queue doesn't monitor. Commit
       # statuses have no suites, so they always work reliably.
       - name: Post commit status
-        # Cross-repo PRs receive a read-only token — createCommitStatus would throw
-        # "Resource not accessible by integration". Commit statuses are for
-        # the merge queue and branch protection; cross-repo PRs don't need them.
+        # Cross-repo PRs (HEAD in a different repo than the base) receive a
+        # read-only token on the pull_request event, so createCommitStatus
+        # would throw "Resource not accessible by integration". We skip it here
+        # and instead post the required "All jobs pass" status from
+        # post-cross-repo-status.yml, which runs in the base-repo context via
+        # workflow_run and therefore has a full-access statuses:write token.
+        # Without that companion workflow the required status would stay pending
+        # forever and cross-repo PRs could never merge.
         # On non-PR events (merge_group, push) this check is irrelevant.
         if: >-
           ${{

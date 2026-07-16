@@ -42,7 +42,7 @@ describe('Send ERC20 - Contract Warning', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -67,7 +67,10 @@ describe('Send ERC20 - Contract Warning', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(contractAddress);
+        await sendPage.fillRecipient({
+          recipientAddress: contractAddress,
+          validAddress: false,
+        });
 
         // Verify warning
         const warningText =

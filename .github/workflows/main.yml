@@ -444,7 +444,6 @@ jobs:
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
-      EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
@@ -463,9 +462,21 @@ jobs:
       - name: Copy bundle size summary
         run: mkdir -p test-artifacts && mv dist/bundle-size test-artifacts/chrome
 
+      - name: Get token
+        id: token
+        if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_bundlesize_stats
+          permissions: |
+            contents: write
+
       - name: Record bundle size at commit
         # Skip on fork repos — only record stats on the canonical repository.
         if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
+        env:
+          EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ steps.token.outputs.token }}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
@@ -538,8 +549,6 @@ jobs:
     needs:
       - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
-    secrets:
-      TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   publish-prerelease:
     name: Publish prerelease
@@ -637,9 +646,18 @@ jobs:
     timeout-minutes: 5
     environment: release-ci
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension-regression-validation-poc
+          permissions: |
+            contents: write
+
       - name: Trigger regression validation in external repo
         env:
-          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+          DISPATCH_TOKEN: ${{ steps.token.outputs.token }}
           BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
