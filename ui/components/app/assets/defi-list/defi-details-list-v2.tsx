@@ -33,10 +33,11 @@ export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) 
             {section.protocolName}
           </Text>
           {section.positions.map((position) => (
-            <DefiDetailsPositionCellV2
-              key={`${position.assetId}-${position.positionType}`}
-              position={position}
-            />
+            // Isolate each cell so sibling `h-full` rows don't stretch under
+            // the flex `.main-container`.
+            <Box key={`${position.assetId}-${position.positionType}`}>
+              <DefiDetailsPositionCellV2 position={position} />
+            </Box>
           ))}
           {sectionIndex !== sections.length - 1 && (
             <Box
