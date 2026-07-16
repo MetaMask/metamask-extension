@@ -8,8 +8,6 @@ describe('getSeedlessOnboardingControllerInitMessenger', () => {
     const seedlessOnboardingControllerInitMessenger =
       getSeedlessOnboardingControllerInitMessenger(messenger);
 
-    expect(seedlessOnboardingControllerInitMessenger).toBeInstanceOf(
-      Messenger,
-    );
+    expect(seedlessOnboardingControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

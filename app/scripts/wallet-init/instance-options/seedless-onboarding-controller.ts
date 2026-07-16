@@ -1,6 +1,4 @@
-import {
-  Web3AuthNetwork,
-} from '@metamask/seedless-onboarding-controller';
+import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
 import type { WalletOptions } from '@metamask/wallet';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';

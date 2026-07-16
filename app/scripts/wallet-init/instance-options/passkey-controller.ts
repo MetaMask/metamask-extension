@@ -5,7 +5,9 @@ type PasskeyControllerInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['passkeyController']
 >;
 
-export function getPasskeyControllerInstanceOptions(platform: Browser): PasskeyControllerInstanceOptions {
+export function getPasskeyControllerInstanceOptions(
+  platform: Browser,
+): PasskeyControllerInstanceOptions {
   const extensionUrl = platform.runtime?.getURL?.('');
   const extensionOrigin = extensionUrl ? extensionUrl.replace(/\/$/u, '') : '';
 
