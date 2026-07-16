@@ -569,17 +569,20 @@ export async function proxyTronBlockchainCalls(
             const { contractAddress } = fields;
             const { value } = fields;
 
-            captured.push({
-              txID,
-              rawDataHex,
-              contractType,
-              ownerAddress,
-              toAddress,
-              amount,
-              contractAddress,
-              value,
-              pollsObserved: 0,
-            });
+            // Avoid duplicate entries from retried broadcasts of the same tx.
+            if (!captured.some((tx) => tx.txID === txID)) {
+              captured.push({
+                txID,
+                rawDataHex,
+                contractType,
+                ownerAddress,
+                toAddress,
+                amount,
+                contractAddress,
+                value,
+                pollsObserved: 0,
+              });
+            }
           }
         } catch {
           // Ignore capture failures — the proxied broadcast result is what
