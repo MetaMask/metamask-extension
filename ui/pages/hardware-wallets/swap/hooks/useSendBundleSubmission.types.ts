@@ -1,8 +1,4 @@
-import type {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-} from 'react';
+import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 import type { internalSelectPendingApproval } from '../../../../selectors';
