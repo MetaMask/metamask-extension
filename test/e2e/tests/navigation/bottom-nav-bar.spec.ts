@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
@@ -13,6 +14,7 @@ import {
 } from '../../../../ui/helpers/constants/routes';
 import BottomNavBar from '../../page-objects/pages/bottom-nav-bar';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { mockGetPopularTokens } from '../bridge/bridge-test-utils';
 
 /**
  * Fixture config for the bottom nav bar AB test treatment.
@@ -46,6 +48,9 @@ function getBottomNavTreatmentFixtures(title?: string) {
         [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
         perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.1' },
       },
+    },
+    testSpecificMock: async (mockServer: Mockttp) => {
+      await mockGetPopularTokens(mockServer);
     },
   };
 }
