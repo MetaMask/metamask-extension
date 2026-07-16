@@ -995,7 +995,7 @@
         "@metamask/polling-controller": true,
         "@metamask/snaps-controllers": true,
         "@metamask/superstruct": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1038,6 +1038,15 @@
     "@metamask/client-controller": {
       "packages": {
         "@metamask/base-controller": true
+      }
+    },
+    "@metamask/client-utils": {
+      "packages": {
+        "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/compliance-controller": {
@@ -2509,14 +2518,6 @@
         "eth-method-registry": true,
         "webpack>events": true,
         "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
         "uuid": true
       }
     },

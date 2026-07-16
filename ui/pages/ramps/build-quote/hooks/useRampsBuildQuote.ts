@@ -36,6 +36,7 @@ export type RampsBuildQuoteReadyViewModel = {
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
   providerStatusLabel: string;
+  isQuoteLoading: boolean;
   canContinue: boolean;
   handleBack: () => void;
   handlePaymentMethodPress: () => void;
@@ -201,6 +202,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const providerLabel = selectedProvider?.name
     ? t('rampsBuyingViaProvider', [selectedProvider.name])
     : '';
+  const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
   return {
     kind: 'ready',
@@ -219,10 +221,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
     displayedQuoteError,
-    providerStatusLabel:
-      selectedQuoteLoading && hasSettledQuoteAmount
-        ? t('loading')
-        : providerLabel,
+    // Keep the known provider visible while quotes refresh; loading is shown
+    // on the Continue button instead of replacing this label.
+    providerStatusLabel: providerLabel,
+    isQuoteLoading,
     canContinue,
     handleBack,
     handlePaymentMethodPress,
