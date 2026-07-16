@@ -97,8 +97,11 @@ export function RampsPaymentMethodScreen() {
     ],
   );
 
-  const { data: quotes, loading: quotesLoading } =
-    useRampsQuotes(quoteFetchParams);
+  const {
+    data: quotes,
+    loading: quotesLoading,
+    status: quotesStatus,
+  } = useRampsQuotes(quoteFetchParams);
 
   // Keep cached methods visible if a background refetch fails.
   const showError = Boolean(paymentMethodsError) && paymentMethods.length === 0;
@@ -210,8 +213,12 @@ export function RampsPaymentMethodScreen() {
               quotes?.success?.find(
                 (quote) => quote.quote?.paymentMethod === paymentMethod.id,
               ) ?? null;
+            // Treat fetch failure like a settled empty response: `data` is null
+            // on query error, so do not require `quotes !== null`.
             const hasQuoteError =
-              !quotesLoading && quotes !== null && matchedQuote === null;
+              !quotesLoading &&
+              matchedQuote === null &&
+              (quotesStatus === 'success' || quotesStatus === 'error');
             const quoteErrorMessage = hasQuoteError
               ? t('rampsQuoteUnavailable')
               : undefined;

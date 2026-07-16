@@ -354,6 +354,40 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockSetSelectedPaymentMethod).not.toHaveBeenCalled();
   });
 
+  it('disables payment methods when quote fetch fails', async () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      status: 'error',
+      isSuccess: false,
+      error: new Error('quote fetch failed'),
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    const debitRow = screen.getByTestId(
+      'ramps-payment-method-item-debit-credit-card',
+    );
+    const bankRow = screen.getByTestId(
+      'ramps-payment-method-item-bank-transfer',
+    );
+    expect(debitRow).toBeDisabled();
+    expect(bankRow).toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(bankRow);
+    });
+
+    expect(mockSetSelectedPaymentMethod).not.toHaveBeenCalled();
+  });
+
   it('selects a payment method and navigates back', async () => {
     renderWithProvider(
       <RampsPaymentMethodScreen />,
