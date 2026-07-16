@@ -595,7 +595,11 @@ describe('ConfirmFooter', () => {
 
     const { getByTestId, getByText, queryByTestId } = render(
       getMockConfirmStateForTransaction(transaction, {
-        metamask: {},
+        metamask: {
+          remoteFeatureFlags: {
+            productSafetyScamQuestionnaireEnabled: 'treatment',
+          },
+        },
         confirmAlerts: {
           alerts: {
             [transaction.id]: [
