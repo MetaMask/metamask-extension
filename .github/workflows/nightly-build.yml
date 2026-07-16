@@ -59,7 +59,15 @@ jobs:
       BRANCH: ${{ github.ref_name || 'main' }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       SLACK_NIGHTLY_BUILDS_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL }}
-      BUILD_STATUS: ${{ needs.build-dist-webpack.result == 'success' && needs.build-dist-mv2-webpack.result == 'success' && needs.build-experimental-webpack.result == 'success' && needs.build-experimental-mv2-webpack.result == 'success' && 'success' || 'failure' }}
+      BUILD_STATUS: >-
+        ${{
+          needs.build-dist-webpack.result == 'success'
+          && needs.build-dist-mv2-webpack.result == 'success'
+          && needs.build-experimental-webpack.result == 'success'
+          && needs.build-experimental-mv2-webpack.result == 'success'
+          && 'success'
+          || 'failure'
+        }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
