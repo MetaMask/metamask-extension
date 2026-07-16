@@ -21,6 +21,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   perpsToggleTestnet,
   resetOnboarding,
@@ -37,29 +38,15 @@ import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
-const PAGE_CRASH_ERROR_MESSAGE =
-  'Unable to find value of key "debug" for locale "en"';
-
-type PageCrashTriggerProps = {
-  shouldCrash: boolean;
-};
-
-const PageCrashTrigger = ({ shouldCrash }: PageCrashTriggerProps) => {
-  if (shouldCrash) {
-    throw new Error(PAGE_CRASH_ERROR_MESSAGE);
-  }
-
-  return null;
-};
-
 const DebugContent = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [shouldCrashPage, setShouldCrashPage] = useState(false);
-  const triggerPageCrash = useCallback(() => {
-    setShouldCrashPage(true);
-  }, []);
+  // This translation call is only required for the "Generate Page Crash" test button.
+  // The crash mechanism works by setting 'debug' to undefined in the locale,
+  // which causes this t() call to throw an error that triggers the error boundary.
+  t('debug');
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -226,7 +213,6 @@ const DebugContent = () => {
 
   return (
     <div className="settings-page__body">
-      <PageCrashTrigger shouldCrash={shouldCrashPage} />
       <Text className="settings-page__security-tab-sub-header__bold">
         States
       </Text>
@@ -264,7 +250,7 @@ const DebugContent = () => {
       </div>
 
       <BackupAndSyncDevSettings />
-      <SentryTest triggerPageCrash={triggerPageCrash} />
+      <SentryTest />
       <hr />
       <MigrateToSplitStateTest />
       <hr />
