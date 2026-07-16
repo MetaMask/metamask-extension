@@ -121,10 +121,12 @@ export const lavamoatPlugin = (args: Args) =>
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
+      const entryOptions = chunk.getEntryOptions();
+
       if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
         // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
-      } else if (chunk.name === 'service-worker.ts') {
+      } else if (entryOptions?.chunkLoading === 'import-scripts') {
         return {
           mode: 'safe',
           embeddedOptions: {
