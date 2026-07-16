@@ -33,5 +33,3 @@ export function getRampsControllerApi(rampsController: RampsController) {
       rampsController.syncOrdersWithUserStorage.bind(rampsController),
   };
 }
-
-export type RampsControllerApi = ReturnType<typeof getRampsControllerApi>;
