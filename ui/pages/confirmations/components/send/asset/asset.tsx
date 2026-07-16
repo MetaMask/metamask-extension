@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useDeferredSearchQuery } from '../../../../../hooks/useDeferredSearchQuery';
 
 import {
   Display,
@@ -54,7 +55,11 @@ export const Asset = ({
   onSelectedChainIdChange,
 }: AssetProps = {}) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const {
+    query: searchQuery,
+    setQuery: setSearchQuery,
+    deferredQuery: deferredSearchQuery,
+  } = useDeferredSearchQuery();
   const {
     addAssetFilterMethod: addAssetFilterMethodFromMetrics,
     removeAssetFilterMethod: removeAssetFilterMethodFromMetrics,
@@ -88,7 +93,7 @@ export const Asset = ({
     tokens: filteredByCustomFilter,
     nfts: effectiveNfts,
     selectedChainId,
-    searchQuery,
+    searchQuery: deferredSearchQuery,
   });
 
   useEffect(() => {
@@ -101,7 +106,7 @@ export const Asset = ({
     setSelectedChainId(null);
     onSearchQueryChange?.('');
     onSelectedChainIdChange?.(null);
-  }, [onSearchQueryChange, onSelectedChainIdChange]);
+  }, [onSearchQueryChange, onSelectedChainIdChange, setSearchQuery]);
 
   const handleSearchQueryChange = useCallback(
     (value: string) => {
@@ -113,7 +118,12 @@ export const Asset = ({
       setSearchQuery(value);
       onSearchQueryChange?.(value);
     },
-    [addAssetFilterMethod, onSearchQueryChange, removeAssetFilterMethod],
+    [
+      addAssetFilterMethod,
+      onSearchQueryChange,
+      removeAssetFilterMethod,
+      setSearchQuery,
+    ],
   );
 
   const handleSelectedChainIdChange = useCallback(

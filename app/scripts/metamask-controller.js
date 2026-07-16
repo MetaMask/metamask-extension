@@ -439,8 +439,10 @@ import { UserOperationControllerInit } from './messenger-client-init/confirmatio
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
-import { QrSyncControllerInit } from './messenger-client-init/qr-sync-controller-init';
-import { QrSyncDataServiceInit } from './messenger-client-init/qr-sync-data-service-init';
+import {
+  QrSyncControllerInit,
+  QrSyncDataServiceInit,
+} from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -2787,6 +2789,10 @@ export default class MetamaskController extends EventEmitter {
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
         this.subscriptionController,
       ),
+      subscriptionsStopPolling:
+        this.subscriptionController.stopPollingByPollingToken.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionsEligibilities:
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,

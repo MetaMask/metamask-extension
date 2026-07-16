@@ -1,49 +1,33 @@
-import type {
-  QrSyncSimulatorAction,
-  SimulatorParams,
-} from '../../helpers/qr-sync/mobile-wallet-simulator';
-import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
-import { WALLET_PASSWORD, QR_SYNC_E2E_OTP } from '../../constants';
+import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import { completeQrSyncFlow } from '../../page-objects/flows/qr-sync.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import SyncAccountsSettingsPage from '../../page-objects/pages/settings/sync-accounts-settings-page';
 import { Driver } from '../../webdriver/driver';
 
-function qrSyncSimulate(
-  action: QrSyncSimulatorAction,
-  params?: SimulatorParams,
-): void {
-  const mock = getServerMochaToBackground();
-  mock.send({
-    command: 'qrSyncSimulate',
-    action,
-    params,
-  });
-}
+const TEST_PRIVATE_KEY =
+  '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
 /**
- * Opens Settings and navigates to Sync accounts, waiting for the QR code.
+ * Imports a private-key account through the account list UI.
  *
  * @param driver - The WebDriver instance.
- * @returns The Sync accounts page object.
+ * @param options - Optional flow configuration.
+ * @param options.accountListTimeout - Timeout while waiting for the account list.
  */
-async function navigateToSyncAccountsSettings(
+async function importPrivateKeyAccount(
   driver: Driver,
-): Promise<SyncAccountsSettingsPage> {
+  options: { accountListTimeout?: number } = {},
+): Promise<void> {
   const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openSettingsPage();
+  await headerNavbar.openAccountMenu();
 
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSyncAccountsSettings();
-
-  const syncAccountsPage = new SyncAccountsSettingsPage(driver);
-  await syncAccountsPage.checkPageIsLoaded();
-  await syncAccountsPage.waitForQrCode();
-  return syncAccountsPage;
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded(options.accountListTimeout);
+  await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
+  await accountListPage.closeMultichainAccountsPage();
 }
 
 describe('QrSync', function () {
@@ -55,28 +39,52 @@ describe('QrSync', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { password: WALLET_PASSWORD });
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 0,
+        });
+      },
+    );
+  });
 
-        const syncAccountsPage = await navigateToSyncAccountsSettings(driver);
+  it('syncs one HD wallet and one imported account to mobile', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { password: WALLET_PASSWORD });
+        await importPrivateKeyAccount(driver);
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 1,
+          expectedImportedAccountCount: 1,
+        });
+      },
+    );
+  });
 
-        qrSyncSimulate('mobileScanned');
-        await syncAccountsPage.waitForOtpScreen();
-        await syncAccountsPage.enterOtp(QR_SYNC_E2E_OTP);
-        await syncAccountsPage.waitForLoadingStep();
-
-        await driver.delay(500); // slight delay to simulate the sync-offer from mobile
-
-        qrSyncSimulate('deliverSyncOffer');
-        await syncAccountsPage.waitForPasswordScreen();
-        await syncAccountsPage.enterPassword(WALLET_PASSWORD);
-
-        await syncAccountsPage.waitForSyncButton();
-        await syncAccountsPage.confirmSync();
-        await syncAccountsPage.waitForLoadingStep();
-
-        await driver.delay(500); // slight delay to simulate the sync-completed from mobile
-
-        qrSyncSimulate('deliverSyncCompleted');
-        await syncAccountsPage.waitForSuccess();
+  it('syncs two HD wallets and one imported account to mobile', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerMultiSRP()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, {
+          password: WALLET_PASSWORD,
+          validateBalance: false,
+        });
+        await importPrivateKeyAccount(driver, { accountListTimeout: 30000 });
+        await completeQrSyncFlow({
+          driver,
+          expectedWalletCount: 2,
+          expectedImportedAccountCount: 1,
+        });
       },
     );
   });

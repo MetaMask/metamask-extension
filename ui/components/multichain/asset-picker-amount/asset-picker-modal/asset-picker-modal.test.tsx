@@ -81,15 +81,6 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => {
-    const debouncedFn = fn;
-    debouncedFn.cancel = jest.fn();
-    return debouncedFn;
-  }),
-}));
-
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
