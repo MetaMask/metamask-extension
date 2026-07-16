@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
-import { BridgeDetails } from './bridge-details';
+import { BridgeDetails } from './bridge-details/bridge-details';
 import { DefaultDetails } from './default-details';
 import { NftDetails } from './nft-details';
 import { PerpsDepositDetails } from './perps-deposit-details';
