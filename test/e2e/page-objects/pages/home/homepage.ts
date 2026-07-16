@@ -519,6 +519,54 @@ class HomePage {
   }
 
   /**
+   * Refreshes the page and asserts the expected balance, retrying the whole
+   * refresh + assert cycle. Non-EVM (Snap) balances hydrate asynchronously and
+   * can lag a single refresh, so each retry gives the Snap another chance to
+   * converge.
+   *
+   * @param options - Balance assertion options (see checkExpectedBalanceIsDisplayed).
+   * @param retryOptions - Retry configuration.
+   * @param retryOptions.attempts - Max number of refresh + assert cycles.
+   * @param retryOptions.timeoutPerAttempt - Max ms to wait for the balance per attempt.
+   */
+  async refreshUntilExpectedBalanceIsDisplayed(
+    options: CheckExpectedBalanceOptions,
+    {
+      attempts = 3,
+      timeoutPerAttempt = 10_000,
+    }: { attempts?: number; timeoutPerAttempt?: number } = {},
+  ): Promise<void> {
+    const { expectedBalance = '25', symbol = 'ETH' } = options;
+
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+      await this.driver.refresh();
+
+      try {
+        await this.driver.waitForSelector(
+          { css: this.balance, text: expectedBalance },
+          { timeout: timeoutPerAttempt },
+        );
+        console.log(
+          `Expected balance ${expectedBalance} ${symbol} is displayed on homepage (refresh attempt ${attempt}/${attempts})`,
+        );
+        return;
+      } catch (e) {
+        if (attempt === attempts) {
+          console.log(
+            `Expected balance ${expectedBalance} ${symbol} not displayed after ${attempts} refresh attempts`,
+            e,
+          );
+          await this.logBalanceDiagnostics(expectedBalance, symbol);
+          throw e;
+        }
+        console.log(
+          `Balance ${expectedBalance} ${symbol} not displayed after refresh attempt ${attempt}/${attempts}; retrying`,
+        );
+      }
+    }
+  }
+
+  /**
    * Checks if the balance empty state is displayed on homepage.
    * Criteria:
    * - The account group has a zero balance across all aggregated mainnet networks.
