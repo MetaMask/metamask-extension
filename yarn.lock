@@ -5917,6 +5917,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/connectivity-controller@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/connectivity-controller@npm:0.3.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/4751d3e4725f6d27d0e91e9213edc5855ab10ddd794200af6095a6c4b9db1c2d5b5ed8c4ec812002a29e0e141fa809e042c8002039f02a64c4dc33b53c2c9945
+  languageName: node
+  linkType: hard
+
 "@metamask/contract-metadata@npm:^2.4.0, @metamask/contract-metadata@npm:^2.5.0":
   version: 2.5.0
   resolution: "@metamask/contract-metadata@npm:2.5.0"
@@ -7151,12 +7162,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:34.0.0":
-  version: 34.0.0
-  resolution: "@metamask/network-controller@npm:34.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@34.0.0-preview-a2621f612":
+  version: 34.0.0-preview-a2621f612
+  resolution: "@metamask-previews/network-controller@npm:34.0.0-preview-a2621f612"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-infura": "npm:^10.3.0"
@@ -7164,7 +7175,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/swappable-obj-proxy": "npm:^2.3.0"
@@ -7175,7 +7186,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/6afb874ca5702e1be616bf6ea92b35332d1969878794ce118138ca8f3733a1521a266d00bb658cf7a37e126545ac942ef5bc09bbd64159612b5424d848dbdc67
+  checksum: 10/0c4962bf8c096ca95e1671e08a73759c6d9f40cf8db1c2913ef44e930a428cfabd33386dfc091b9a6c429129d9d73fa83dc8b903c53ab6b93505ba3510e77a13
   languageName: node
   linkType: hard
 
