@@ -1,6 +1,5 @@
 [
   ".eslintrc.js",
-  "app/scripts/app-init.js",
   "app/scripts/background.js",
   "app/scripts/contentscript.js",
   "app/scripts/controllers/permissions/index.js",
