@@ -4,7 +4,10 @@ import { useTabState } from './useTabState';
 const mockSetSearchParams = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-  useSearchParams: () => [new URLSearchParams('tab=tokens'), mockSetSearchParams],
+  useSearchParams: () => [
+    new URLSearchParams('tab=tokens'),
+    mockSetSearchParams,
+  ],
 }));
 
 describe('useTabState', () => {
