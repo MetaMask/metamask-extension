@@ -111,7 +111,10 @@ const manifestPlugin = new ManifestPlugin({
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
   description: commitHash
-    ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
+    ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}
+
+built with \`yarn webpack ${process.argv.slice(2).join(' ')}\`
+`
     : null,
   version: version.version,
   versionName: version.versionName,
