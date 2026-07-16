@@ -22,6 +22,8 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CreationSuccessful from './creation-successful';
 
+const mockTrackEvent = jest.fn();
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -29,7 +31,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
@@ -149,6 +151,7 @@ describe('Wallet Ready Page', () => {
       false,
     );
     mockUseNavigate.mockClear();
+    mockTrackEvent.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
@@ -675,7 +678,6 @@ describe('Wallet Ready Page', () => {
         const externalUrl = 'https://external-app.com/callback';
         const referringLink =
           'https://link.metamask.io/buy?utm_source=onboarding&redirectTo=https%3A%2F%2Fexternal-app.com%2Fcallback';
-        const mockTrackEvent = jest.fn();
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
           {
             type: DeferredDeepLinkRouteType.Redirect,
@@ -702,18 +704,15 @@ describe('Wallet Ready Page', () => {
         const { getByTestId } = renderWithProvider(
           <CreationSuccessful />,
           mockStore,
-          '/',
-          undefined,
-          () => mockTrackEvent,
         );
 
         fireEvent.click(getByTestId('onboarding-complete-done'));
 
         await waitFor(() => {
           expect(mockTrackEvent).toHaveBeenCalledWith({
-            category: MetaMetricsEventCategory.DeepLink,
-            event: MetaMetricsEventName.DeepLinkUsed,
+            name: MetaMetricsEventName.DeepLinkUsed,
             properties: {
+              category: MetaMetricsEventCategory.DeepLink,
               route: '/buy',
               signature: VALID,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -732,7 +731,6 @@ describe('Wallet Ready Page', () => {
       it('tracks the event for deferred Navigate links', async () => {
         const referringLink =
           'https://link.metamask.io/swap?utm_campaign=onboarding&sig=fake-signature';
-        const mockTrackEvent = jest.fn();
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
           {
             type: DeferredDeepLinkRouteType.Navigate,
@@ -755,18 +753,15 @@ describe('Wallet Ready Page', () => {
         const { getByTestId } = renderWithProvider(
           <CreationSuccessful />,
           mockStore,
-          '/',
-          undefined,
-          () => mockTrackEvent,
         );
 
         fireEvent.click(getByTestId('onboarding-complete-done'));
 
         await waitFor(() => {
           expect(mockTrackEvent).toHaveBeenCalledWith({
-            category: MetaMetricsEventCategory.DeepLink,
-            event: MetaMetricsEventName.DeepLinkUsed,
+            name: MetaMetricsEventName.DeepLinkUsed,
             properties: {
+              category: MetaMetricsEventCategory.DeepLink,
               route: '/swap',
               signature: VALID,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -782,7 +777,6 @@ describe('Wallet Ready Page', () => {
         const referringLink =
           'https://link.metamask.io/swap?amount=100&utm_medium=email';
         const urlPathAndQuery = '/swap?amount=100&utm_medium=email';
-        const mockTrackEvent = jest.fn();
         (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
           {
             type: DeferredDeepLinkRouteType.Interstitial,
@@ -808,18 +802,15 @@ describe('Wallet Ready Page', () => {
         const { getByTestId } = renderWithProvider(
           <CreationSuccessful />,
           mockStore,
-          '/',
-          undefined,
-          () => mockTrackEvent,
         );
 
         fireEvent.click(getByTestId('onboarding-complete-done'));
 
         await waitFor(() => {
           expect(mockTrackEvent).toHaveBeenCalledWith({
-            category: MetaMetricsEventCategory.DeepLink,
-            event: MetaMetricsEventName.DeepLinkUsed,
+            name: MetaMetricsEventName.DeepLinkUsed,
             properties: {
+              category: MetaMetricsEventCategory.DeepLink,
               route: '/swap',
               signature: INVALID,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
