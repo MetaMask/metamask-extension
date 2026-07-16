@@ -132,7 +132,7 @@ export const AccountOverviewTabs = ({
 
   // Whether the persisted/url active tab resolves to a tab that is actually
   // rendered. Membership only — render order is irrelevant here.
-  const renderedTabKeys: AccountOverviewTab[] = [
+  const renderedTabKeys: Set<AccountOverviewTab> = new Set([
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
     ...(isPerpsExperienceAvailable && !showBottomNav
       ? [AccountOverviewTabKey.Perps]
@@ -140,16 +140,16 @@ export const AccountOverviewTabs = ({
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
     ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
-  ];
+  ]);
   // Perps is the effective active tab when it is explicitly selected, or when
   // the active tab isn't rendered and Tabs clamps to the first rendered tab.
   // Perps is that first tab whenever Tokens (the only tab that can precede it)
   // is hidden and the Perps experience is available.
+  const perpsIsRendered = renderedTabKeys.has(AccountOverviewTabKey.Perps);
   const perpsIsEffectiveActiveTab =
-    activeTabKey === AccountOverviewTabKey.Perps ||
-    (!renderedTabKeys.includes(activeTabKey) &&
-      !showTokens &&
-      isPerpsExperienceAvailable);
+    perpsIsRendered &&
+    (activeTabKey === AccountOverviewTabKey.Perps ||
+      (!renderedTabKeys.has(activeTabKey) && !showTokens));
 
   // Mark the badge seen whenever Perps is the effective active tab — covers
   // clicking in, landing directly on Perps (persisted default or ?tab=perps),
