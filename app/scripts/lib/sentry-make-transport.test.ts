@@ -304,7 +304,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('does not call fetch after init when opted out', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -334,6 +333,9 @@ describe('sentry-make-transport', () => {
         release: 'setup-sentry-unit-test',
         transport: makeTransport,
         tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
       });
       // Force the session path explicitly (v10 sends sessions on lifecycle
       // triggers, not eagerly at init): even a forced session capture must
@@ -349,7 +351,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('calls fetch after init when opted in', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -379,6 +380,9 @@ describe('sentry-make-transport', () => {
         release: 'setup-sentry-unit-test',
         transport: makeTransport,
         tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
       });
       // Force the session path explicitly (v10 sends sessions on lifecycle
       // triggers, not eagerly at init) and assert it reaches the transport.
