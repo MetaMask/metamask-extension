@@ -171,7 +171,7 @@ describe('settings-registry', () => {
       jest.isolateModules(() => {
         jest.doMock('../../../shared/lib/environment', () => ({
           ...jest.requireActual('../../../shared/lib/environment'),
-          getIsAddDeviceSyncEnabled: () => true,
+          getIsQrSyncEnabled: () => true,
         }));
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         registry = require('./settings-registry');

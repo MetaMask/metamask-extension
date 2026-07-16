@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Text } from '@metamask/design-system-react';
+import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
@@ -18,6 +18,7 @@ import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsModal } from '../details/transaction-details-modal';
+import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
@@ -41,10 +42,11 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const scrollContainerRef = useScrollContainer();
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
+  const deferredNetworks = useDeferredValue(networks);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: networks ?? [] };
+  const filters = filter ?? { networks: deferredNetworks ?? [] };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
@@ -159,9 +161,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         itemRef={itemRef}
         listEmptyComponent={
           isInitialLoading ? (
-            <Box className="p-4">
-              <Text>{t('loading')}</Text>
-            </Box>
+            <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
           )

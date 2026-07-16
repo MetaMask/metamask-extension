@@ -60,7 +60,7 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
  * Add Device tab is shown in Settings, allowing users to pair a second device
  * via QR code scan and verification code.
  */
-export const getIsAddDeviceSyncEnabled = (): boolean => {
+export const getIsQrSyncEnabled = (): boolean => {
   return process.env.QR_SYNC_ENABLED?.toString() === 'true';
 };
 
