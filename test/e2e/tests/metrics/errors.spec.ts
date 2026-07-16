@@ -105,8 +105,9 @@ const removedBackgroundFields = [
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
-  // Populated by the Home page mount, so captured as `null` or a string
-  // depending on whether the mount wins the race before the error fires.
+  // Populated asynchronously during sign-in (the shield cohort-eligibility
+  // evaluation round-trips to the subscription backend), so captured as
+  // `null` or a string depending on whether that settles before the error.
   'AppStateController.pendingShieldCohort',
   // Present only once the SRP/account-sync session is established, so its
   // capture is timing-dependent across runs.
