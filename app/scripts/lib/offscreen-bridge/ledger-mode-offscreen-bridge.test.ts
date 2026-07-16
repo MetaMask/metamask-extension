@@ -153,9 +153,7 @@ describe('ledger-mode-offscreen-bridge', () => {
 
     it('selector returns true when ledgerDmk flag is enabled', () => {
       let selector:
-        | ((state: {
-            remoteFeatureFlags?: Record<string, unknown>;
-          }) => boolean)
+        | ((state: { remoteFeatureFlags?: Record<string, unknown> }) => boolean)
         | undefined;
       const subscribe = jest.fn(
         (
@@ -185,9 +183,7 @@ describe('ledger-mode-offscreen-bridge', () => {
 
     it('selector returns false when ledgerDmk flag is missing', () => {
       let selector:
-        | ((state: {
-            remoteFeatureFlags?: Record<string, unknown>;
-          }) => boolean)
+        | ((state: { remoteFeatureFlags?: Record<string, unknown> }) => boolean)
         | undefined;
       const subscribe = jest.fn(
         (
