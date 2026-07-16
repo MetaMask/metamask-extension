@@ -26,6 +26,7 @@ type UseActivityScreenViewedProps = {
  * @param options0.isSettled
  * @param options0.isEmpty
  * @param options0.pendingLength
+ * @param options0.entryPoint
  */
 export const useActivityScreenViewed = ({
   filter,
