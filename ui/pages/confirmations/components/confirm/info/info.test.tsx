@@ -122,12 +122,19 @@ jest.mock('../../../hooks/gas/useGasSponsorshipPreference', () => ({
   })),
 }));
 
-/** Tippy assigns incrementing IDs; normalize so snapshots are order-stable. */
+/**
+ * Tippy assigns incrementing IDs; normalize so snapshots are order-stable.
+ *
+ * @param container - Rendered DOM container to clone and normalize.
+ * @returns A clone of the container with Tippy aria IDs normalized.
+ */
 const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
   const clone = container.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll('[aria-describedby^="tippy-tooltip-"]').forEach((el) => {
-    el.setAttribute('aria-describedby', 'tippy-tooltip');
-  });
+  clone
+    .querySelectorAll('[aria-describedby^="tippy-tooltip-"]')
+    .forEach((el) => {
+      el.setAttribute('aria-describedby', 'tippy-tooltip');
+    });
   return clone;
 };
 
