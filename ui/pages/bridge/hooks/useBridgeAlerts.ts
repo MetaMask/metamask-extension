@@ -1,7 +1,11 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import type { CaipChainId, Hex } from '@metamask/utils';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -41,6 +45,20 @@ function getNativeGasAssetId(chainId?: Hex | CaipChainId) {
   } catch {
     return undefined;
   }
+}
+
+/**
+ * Normalize the source chain id for the flag-off Portfolio fallback.
+ * `getBuyURI` runs `hexToNumber` on EVM chain ids, so it needs hex — bridge
+ * state stores them as CAIP (`eip155:1`). Non-EVM caip ids pass through.
+ *
+ * @param chainId - The bridge source chain id.
+ */
+function getBuyFallbackChainId(chainId?: Hex | CaipChainId) {
+  if (!chainId) {
+    return undefined;
+  }
+  return isEvmChainId(chainId) ? formatChainIdToHex(chainId) : chainId;
 }
 
 /**
@@ -239,7 +257,7 @@ export const useBridgeAlerts = () => {
           actionButtonOnClick: () =>
             goToBuy({
               assetId: getNativeGasAssetId(fromChain?.chainId),
-              chainId: fromChain?.chainId,
+              chainId: getBuyFallbackChainId(fromChain?.chainId),
             }),
         },
       });

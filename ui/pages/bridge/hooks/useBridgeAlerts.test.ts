@@ -618,9 +618,11 @@ describe('useBridgeAlerts', () => {
         'insufficient-gas'
       ]?.bannerAlertProps?.actionButtonOnClick?.();
 
+      // chainId is normalized to hex so the flag-off Portfolio fallback
+      // (getBuyURI -> hexToNumber) accepts it; assetId stays CAIP.
       expect(mockGoToBuy).toHaveBeenCalledWith({
         assetId: getNativeAssetForChainId(MOCK_FROM_CHAIN_ID).assetId,
-        chainId: MOCK_FROM_CHAIN_ID,
+        chainId: '0x1',
       });
     });
 
