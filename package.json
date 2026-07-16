@@ -313,8 +313,7 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/network-enablement-controller@npm:^5.4.1": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch",
-    "@metamask/sentinel-api-service": "npm:@metamask-previews/sentinel-api-service@0.0.0-preview-d34fa10c8"
+    "@metamask/network-enablement-controller@npm:^5.4.1": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -340,7 +339,6 @@
     "@ledgerhq/hw-app-eth": "^6.42.0",
     "@ledgerhq/hw-transport": "^6.31.0",
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
-    "@metamask-previews/sentinel-api-service": "0.0.0-preview-d34fa10c8",
     "@metamask/7715-permission-types": "^0.7.1",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.4",
@@ -445,6 +443,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^10.0.3",
     "@metamask/selected-network-controller": "^26.1.4",
+    "@metamask/sentinel-api-service": "^1.0.0",
     "@metamask/shield-controller": "^5.1.2",
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "^24.2.2",

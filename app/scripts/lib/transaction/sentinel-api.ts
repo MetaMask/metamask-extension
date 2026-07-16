@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import type {
   SentinelApiServiceGetNetworksAction,
   SentinelNetwork as SentinelServiceNetwork,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 
 export type SentinelNetwork = SentinelServiceNetwork;

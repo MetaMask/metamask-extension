@@ -142,7 +142,7 @@ import {
   SentinelApiServiceGetNetworksAction,
   SentinelApiServiceGetSmartTransactionAction,
   SentinelApiServiceSubmitRelayTransactionAction,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,

@@ -22,7 +22,7 @@ import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-trans
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { SentinelApiServiceGetNetworksAction } from '@metamask-previews/sentinel-api-service';
+import { SentinelApiServiceGetNetworksAction } from '@metamask/sentinel-api-service';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';

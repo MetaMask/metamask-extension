@@ -8,7 +8,7 @@ import {
   type SentinelRelaySubmitRequest,
   type SentinelRelaySubmitResponse,
   type SentinelSmartTransaction,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 
 const log = createProjectLogger('transaction-relay');
 

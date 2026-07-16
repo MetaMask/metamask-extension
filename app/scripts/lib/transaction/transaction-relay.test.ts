@@ -3,7 +3,7 @@ import {
   SentinelChainNotSupportedError,
   SentinelSmartTransactionStatus,
   type SentinelRelaySubmitRequest,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   type SentinelRelayMessenger,

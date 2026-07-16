@@ -1,5 +1,5 @@
 import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
-import type { SentinelApiServiceMessenger } from '@metamask-previews/sentinel-api-service';
+import type { SentinelApiServiceMessenger } from '@metamask/sentinel-api-service';
 import type { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -24,7 +24,6 @@ export function getSentinelApiServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     actions: ['AuthenticationController:getBearerToken'],
-    events: [],
   });
 
   return serviceMessenger;

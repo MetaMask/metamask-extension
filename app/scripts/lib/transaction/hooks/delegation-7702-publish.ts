@@ -3,7 +3,7 @@ import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   SentinelSmartTransactionStatus,
   type SentinelRelaySubmitRequest,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 import {
   GasFeeToken,
   PublishHook,

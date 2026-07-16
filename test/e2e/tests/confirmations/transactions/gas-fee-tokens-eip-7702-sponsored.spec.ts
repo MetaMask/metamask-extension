@@ -1,4 +1,4 @@
-import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
+import { SentinelSmartTransactionStatus } from '@metamask/sentinel-api-service';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';

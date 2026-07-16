@@ -15,7 +15,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
+import { SentinelSmartTransactionStatus } from '@metamask/sentinel-api-service';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';

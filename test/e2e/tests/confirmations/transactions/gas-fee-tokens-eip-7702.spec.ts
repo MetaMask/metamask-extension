@@ -1,4 +1,4 @@
-import { SentinelSmartTransactionStatus } from '@metamask-previews/sentinel-api-service';
+import { SentinelSmartTransactionStatus } from '@metamask/sentinel-api-service';
 import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';

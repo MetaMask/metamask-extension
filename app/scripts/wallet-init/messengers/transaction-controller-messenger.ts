@@ -68,7 +68,7 @@ import type {
   SentinelApiServiceInvalidateQueriesAction,
   SentinelApiServiceSimulateTransactionsAction,
   SentinelApiServiceSubmitRelayTransactionAction,
-} from '@metamask-previews/sentinel-api-service';
+} from '@metamask/sentinel-api-service';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
@@ -151,24 +151,12 @@ type TransactionControllerInitMessengerInstance = Messenger<
   TransactionControllerInitMessengerEvents
 >;
 
-const transactionControllerInitMessengerCache = new WeakMap<
-  RootMessenger<
-    TransactionControllerInitMessengerActions,
-    TransactionControllerInitMessengerEvents
-  >,
-  TransactionControllerInitMessengerInstance
->();
-
 export function getTransactionControllerInitMessenger(
   messenger: RootMessenger<
     TransactionControllerInitMessengerActions,
     TransactionControllerInitMessengerEvents
   >,
 ): TransactionControllerInitMessengerInstance {
-  const cached = transactionControllerInitMessengerCache.get(messenger);
-  if (cached) {
-    return cached;
-  }
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -243,9 +231,5 @@ export function getTransactionControllerInitMessenger(
     ],
   });
 
-  transactionControllerInitMessengerCache.set(
-    messenger,
-    controllerInitMessenger,
-  );
   return controllerInitMessenger;
 }
