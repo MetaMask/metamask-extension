@@ -12,11 +12,10 @@ import { ActivityList } from './activity-list';
 export const ActivityPage = () => {
   const t = useI18nContext();
   const location = useLocation();
-  const [entryPoint] = useState(
-    () =>
-      location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
-        ? ScreenViewedEntryPoint.BottomNavClick
-        : undefined,
+  const [entryPoint] = useState(() =>
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
   );
 
   return (

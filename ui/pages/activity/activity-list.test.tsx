@@ -97,9 +97,7 @@ describe('ActivityList', () => {
       fetchNextVisiblePage: jest.fn(),
     });
 
-    render(
-      <ActivityList entryPoint={ScreenViewedEntryPoint.BottomNavClick} />,
-    );
+    render(<ActivityList entryPoint={ScreenViewedEntryPoint.BottomNavClick} />);
 
     expect(mockUseActivityScreenViewed).toHaveBeenCalledWith(
       expect.objectContaining({
