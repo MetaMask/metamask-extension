@@ -875,24 +875,7 @@ rm -rf node_modules/ && yarn
 # Then compile the webpack build tooling and rerun the affected policy command above.
 ```
 
-### Debugging Policy Issues
-
-If a build fails on a policy violation, compile the webpack build tooling, regenerate only the affected policy, and review the diff:
-
-```bash
-yarn webpack:tsc
-
-# For a webpack build tooling policy violation
-yarn webpack:lavamoat:policy:build
-
-# For a Firefox MV2 application policy violation
-yarn webpack:lavamoat:policy:mv2
-
-# For a Chrome MV3 application policy violation
-yarn webpack:lavamoat:policy:mv3
-```
-
-**Common Issues:**
+### Common Policy Issues
 
 - **Policy fails on macOS/Windows:** Platform-specific optional dependencies. Regenerate on the target platform.
 - **Dynamic imports fail:** LavaMoat's static analysis may miss dynamic code. May need manual policy updates.
