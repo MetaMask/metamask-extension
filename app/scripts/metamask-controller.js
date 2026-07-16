@@ -2783,6 +2783,10 @@ export default class MetamaskController extends EventEmitter {
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
         this.subscriptionController,
       ),
+      subscriptionsStopPolling:
+        this.subscriptionController.stopPollingByPollingToken.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionsEligibilities:
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
