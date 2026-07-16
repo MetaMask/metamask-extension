@@ -61,6 +61,8 @@ const backgroundConnectionMock = new Proxy(
 const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
 const LEDGER_ACCOUNT_GROUP_ID =
   'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+const SOLANA_ACCOUNT_ID = 'solana-account-id';
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
 const createMockState = () => {
@@ -100,6 +102,29 @@ const createMockState = () => {
 const selectLedgerAccount = (state: ReturnType<typeof createMockState>) => {
   state.metamask.internalAccounts.selectedAccount = LEDGER_ACCOUNT_ID;
   state.metamask.selectedAccountGroup = LEDGER_ACCOUNT_GROUP_ID;
+};
+
+const addSolanaAccountToSelectedGroup = (
+  state: ReturnType<typeof createMockState>,
+) => {
+  state.metamask.internalAccounts.accounts[SOLANA_ACCOUNT_ID] = {
+    address: '7Ec4p8d1VzC9QYQ35gzfSNJbdf2D2qTyhQEt9Dz6F5CQ',
+    id: SOLANA_ACCOUNT_ID,
+    metadata: {
+      importTime: 0,
+      name: 'Solana Account',
+      keyring: {
+        type: 'Snap Keyring',
+      },
+    },
+    options: {},
+    methods: ['solana_signTransaction'],
+    scopes: [SOLANA_CHAIN_ID],
+    type: 'solana:data-account',
+  };
+  state.metamask.accountTree.wallets[
+    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+  ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts.push(SOLANA_ACCOUNT_ID);
 };
 
 describe('NFTs options', () => {
@@ -376,12 +401,10 @@ describe('NFTs options', () => {
 
     renderWithProvider(<AssetListControlBar />, store);
 
-    await waitFor(() =>
-      expect(enableAllPopularNetworksSpy).toHaveBeenCalled(),
-    );
+    await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
   });
 
-  it('does not broaden an unsupported network filter for a non-hardware account', async () => {
+  it('falls back to all popular networks when a non-hardware EVM-only account has an unsupported network filter', async () => {
     const enableAllPopularNetworksSpy = jest.spyOn(
       actions,
       'setEnabledAllPopularNetworks',
@@ -396,12 +419,31 @@ describe('NFTs options', () => {
 
     renderWithProvider(<AssetListControlBar />, store);
 
+    await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
+  });
+
+  it('does not broaden an unsupported network filter when the selected account group supports that network', async () => {
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
     await waitFor(() =>
       expect(enableAllPopularNetworksSpy).not.toHaveBeenCalled(),
     );
   });
 
-  it('does not show Non-EVM network rows in the home network filter for hardware wallets', async () => {
+  it('does not show Non-EVM network rows in the home network filter for EVM-only account groups', async () => {
     const state = createMockState();
     selectLedgerAccount(state);
     state.metamask.useExternalServices = true;
@@ -417,6 +459,21 @@ describe('NFTs options', () => {
     expect(
       queryByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows Non-EVM network rows in the home network filter when the selected account group supports them', async () => {
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    state.metamask.useExternalServices = true;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(
+      await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`),
+    ).toBeInTheDocument();
   });
 
   it('opens the network filter modal and can navigate to manage networks', async () => {

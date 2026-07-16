@@ -12,6 +12,7 @@ import {
   ButtonIconSize as DsButtonIconSize,
   IconName as DsIconName,
 } from '@metamask/design-system-react';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -72,6 +73,7 @@ import {
   showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
 import {
   getMultichainIsEvm,
@@ -85,7 +87,10 @@ import {
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
-import { isHardwareKeyring } from '../../../../../helpers/utils/hardware';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -120,8 +125,21 @@ const AssetListControlBar = ({
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
-  const isHardwareWalletAccount = isHardwareKeyring(
-    selectedInternalAccount?.metadata?.keyring?.type,
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+    const selectedAccountGroup = getSelectedAccountGroup(state);
+    const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+      state,
+      selectedAccountGroup,
+    );
+
+    return (
+      selectedAccountGroupAccounts.length > 0 &&
+      selectedAccountGroupAccounts.every((account) =>
+        isEvmAccountType(account.type),
+      )
+    );
+    },
   );
 
   const { collections } = useNftsCollections();
@@ -221,7 +239,7 @@ const AssetListControlBar = ({
 
   useEffect(() => {
     if (
-      isHardwareWalletAccount &&
+      isEvmOnlySelectedAccountGroup &&
       !accountSupportsEnabledNetworks &&
       totalEnabledNetworkCount > 0
     ) {
@@ -230,7 +248,7 @@ const AssetListControlBar = ({
   }, [
     accountSupportsEnabledNetworks,
     dispatch,
-    isHardwareWalletAccount,
+    isEvmOnlySelectedAccountGroup,
     totalEnabledNetworkCount,
   ]);
 

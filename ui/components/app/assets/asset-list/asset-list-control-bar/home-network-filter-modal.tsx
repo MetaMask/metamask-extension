@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { EthScope } from '@metamask/keyring-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
@@ -51,6 +51,7 @@ import {
   addNetwork,
   setEnabledAllPopularNetworks,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
@@ -60,13 +61,15 @@ import {
   getShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
-import { isHardwareKeyring } from '../../../../../helpers/utils/hardware';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
@@ -330,7 +333,22 @@ const HomeNetworkFilterModalContent = ({
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
-  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+    const selectedAccountGroup = getSelectedAccountGroup(state);
+    const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+      state,
+      selectedAccountGroup,
+    );
+
+    return (
+      selectedAccountGroupAccounts.length > 0 &&
+      selectedAccountGroupAccounts.every((account) =>
+        isEvmAccountType(account.type),
+      )
+    );
+    },
+  );
   const { handleNetworkChange } = useNetworkChangeHandlers();
   const {
     nonTestNetworks: allDefaultNetworkMap,
@@ -345,9 +363,6 @@ const HomeNetworkFilterModalContent = ({
   );
 
   const isAllDefaultSelected = enabledNetworks.length > 1;
-  const isHardwareWalletAccount = isHardwareKeyring(
-    selectedInternalAccount?.metadata?.keyring?.type,
-  );
 
   const isNetworkSelected = useCallback(
     (network: MultichainNetworkConfiguration) =>
@@ -364,7 +379,7 @@ const HomeNetworkFilterModalContent = ({
         }
 
         if (!network.isEvm) {
-          return useExternalServices && !isHardwareWalletAccount;
+          return useExternalServices && !isEvmOnlySelectedAccountGroup;
         }
 
         return Boolean(evmAccountGroup);
@@ -373,7 +388,7 @@ const HomeNetworkFilterModalContent = ({
   }, [
     allDefaultNetworkMap,
     evmAccountGroup,
-    isHardwareWalletAccount,
+    isEvmOnlySelectedAccountGroup,
     isNetworkInDefaultNetworkTab,
     orderedNetworksList,
     useExternalServices,
@@ -382,11 +397,12 @@ const HomeNetworkFilterModalContent = ({
   const customNetworks = useMemo(() => {
     return sortNetworks(customNetworkMap, orderedNetworksList).filter(
       (network) =>
-        network.isEvm || (useExternalServices && !isHardwareWalletAccount),
+        network.isEvm ||
+        (useExternalServices && !isEvmOnlySelectedAccountGroup),
     );
   }, [
     customNetworkMap,
-    isHardwareWalletAccount,
+    isEvmOnlySelectedAccountGroup,
     orderedNetworksList,
     useExternalServices,
   ]);
@@ -394,10 +410,11 @@ const HomeNetworkFilterModalContent = ({
   const testNetworks = useMemo(() => {
     return sortNetworks(testNetworkMap, orderedNetworksList).filter(
       (network) =>
-        network.isEvm || (useExternalServices && !isHardwareWalletAccount),
+        network.isEvm ||
+        (useExternalServices && !isEvmOnlySelectedAccountGroup),
     );
   }, [
-    isHardwareWalletAccount,
+    isEvmOnlySelectedAccountGroup,
     orderedNetworksList,
     testNetworkMap,
     useExternalServices,
@@ -416,7 +433,7 @@ const HomeNetworkFilterModalContent = ({
     ).filter(
       ({ chainId }) =>
         isEvmChainId(chainId as CaipChainId) ||
-        (useExternalServices && !isHardwareWalletAccount),
+        (useExternalServices && !isEvmOnlySelectedAccountGroup),
     );
 
     return getFilteredFeaturedNetworks(
@@ -426,7 +443,7 @@ const HomeNetworkFilterModalContent = ({
   }, [
     blacklistedChainIds,
     evmNetworks,
-    isHardwareWalletAccount,
+    isEvmOnlySelectedAccountGroup,
     useExternalServices,
   ]);
 
