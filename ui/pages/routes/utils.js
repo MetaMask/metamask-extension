@@ -28,6 +28,7 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -356,6 +357,20 @@ export function hideAppHeader(props) {
   );
 
   if (isReviewGatorPermissionsPage) {
+    return true;
+  }
+
+  const isSyncAccountsPage = Boolean(
+    matchPath(
+      {
+        path: SYNC_ACCOUNTS_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+
+  if (isSyncAccountsPage) {
     return true;
   }
 
