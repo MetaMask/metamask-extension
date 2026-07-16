@@ -263,7 +263,6 @@ export const BridgeTransactionSettingsModal = ({
             data-testid="bridge__tx-settings-modal-submit-button"
             disabled={
               !isDirty ||
-              (slippageValue === slippage && slippageValue !== undefined) ||
               (showCustomInput &&
                 (isNaN(Number(inputValue)) || inputValue === ''))
             }

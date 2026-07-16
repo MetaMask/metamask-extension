@@ -233,7 +233,7 @@ const PrepareBridgePage = ({
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
         : isQuoteRequestInsufficientBal,
-      ...(slippage !== undefined ? { slippage } : {}),
+      ...(slippage === undefined ? {} : { slippage }),
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,

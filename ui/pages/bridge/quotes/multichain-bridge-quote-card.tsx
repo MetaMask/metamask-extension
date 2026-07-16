@@ -91,6 +91,12 @@ export const MultichainBridgeQuoteCard = ({
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
   const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
+  let slippageDisplay: string;
+  if (slippage === undefined) {
+    slippageDisplay = isSlippageUserOverride ? t('slippageAuto') : '-';
+  } else {
+    slippageDisplay = `${slippage}%`;
+  }
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -376,11 +382,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined
-                ? isSlippageUserOverride
-                  ? t('slippageAuto')
-                  : '-'
-                : `${slippage}%`}
+              {slippageDisplay}
             </Text>
             <ButtonIcon
               iconName={IconName.Edit}
