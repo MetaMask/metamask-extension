@@ -1270,9 +1270,7 @@ function buildTronQuoteResponse(fixture: TronQuoteFixture) {
   const minDestTokenAmount = String(
     BigInt(fixture.destAmount) - BigInt(fixture.destAmount) / 50n, // 2% slippage floor
   );
-  const grossSrcAmount = String(
-    BigInt(fixture.srcAmount) + BigInt(feeSun),
-  );
+  const grossSrcAmount = String(BigInt(fixture.srcAmount) + BigInt(feeSun));
   const trxAsset = buildTronAsset('TRX');
 
   return {
