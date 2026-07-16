@@ -1,6 +1,6 @@
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useAssetSecurityData } from './useAssetSecurityData';
 

@@ -1,94 +1,19 @@
 import { handleFetch } from '@metamask/controller-utils';
 import type { Infer } from '@metamask/superstruct';
+import { is } from '@metamask/superstruct';
+import { type CaipChainId } from '@metamask/utils';
 import {
-  string,
-  boolean,
-  number,
-  type,
-  is,
-  nullable,
-  optional,
-  intersection,
-  array,
-  enums,
-} from '@metamask/superstruct';
-import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
-import { getClientHeaders } from '@metamask/bridge-controller';
-import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
-
-const MinimalAssetSchema = type({
-  /**
-   * Case-sensitive for non-EVM chains, case-insensitive for EVM chains
-   */
-  assetId: CaipAssetTypeStruct,
-  /**
-   * The symbol of token object
-   */
-  symbol: string(),
-  /**
-   * The name for the network
-   */
-  name: string(),
-  decimals: number(),
-});
-
-export enum BridgeAssetSecurityDataType {
-  INFO = 'Info',
-  BENIGN = 'Benign',
-  VERIFIED = 'Verified',
-  WARNING = 'Warning',
-  SPAM = 'Spam',
-  MALICIOUS = 'Malicious',
-}
-
-export const BridgeAssetSecurityData = type({
-  isVerified: optional(boolean()),
-  securityData: optional(
-    type({
-      type: enums(Object.values(BridgeAssetSecurityDataType)),
-      metadata: optional(
-        type({
-          features: array(
-            type({
-              featureId: string(),
-              type: enums(Object.values(BridgeAssetSecurityDataType)),
-              description: string(),
-            }),
-          ),
-        }),
-      ),
-    }),
-  ),
-});
-
-const BridgeAssetV2Schema = intersection([
+  BridgeAssetV2,
+  getClientHeaders,
   MinimalAssetSchema,
-  BridgeAssetSecurityData,
-  type({
-    /**
-     * URL for token icon
-     */
-    iconUrl: nullable(optional(string())),
-    noFee: optional(
-      type({
-        isDestination: nullable(optional(boolean())),
-        isSource: nullable(optional(boolean())),
-      }),
-    ),
-  }),
-]);
+  validateBridgeAssetV2,
+} from '@metamask/bridge-controller';
+import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 /**
  * This is the interface for the asset object returned by the bridge-api popular and search token endpoints
  */
-export type BridgeAssetV2 = Infer<typeof BridgeAssetV2Schema>;
 export type MinimalAsset = Infer<typeof MinimalAssetSchema>;
-
-const validateSwapsAssetV2Object = (
-  data: unknown,
-): data is Infer<typeof BridgeAssetV2Schema> => {
-  return is(data, BridgeAssetV2Schema);
-};
 
 export const validateMinimalAssetObject = (
   data: unknown,
@@ -177,7 +102,7 @@ export const fetchPopularTokens = async ({
   );
 
   return tokens
-    .map((token: unknown) => (validateSwapsAssetV2Object(token) ? token : null))
+    .map((token: unknown) => (validateBridgeAssetV2(token) ? token : null))
     .filter(Boolean);
 };
 
@@ -260,9 +185,7 @@ export const fetchTokensBySearchQuery = async ({
     hasNextPage,
     endCursor,
     tokens: tokens
-      .map((token: unknown) =>
-        validateSwapsAssetV2Object(token) ? token : null,
-      )
+      .map((token: unknown) => (validateBridgeAssetV2(token) ? token : null))
       .filter(Boolean),
   };
 };
