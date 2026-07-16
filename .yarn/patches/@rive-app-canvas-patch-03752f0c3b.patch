@@ -52,3 +52,12 @@ index 03eeff276d0495d77ce0c4715160db4b80a5fc87..79d6a4b12d62a12a4005e2d7f6f9249c
          }
          // List of animations that should be initialized.
          var startingAnimationNames = mapToStringArray(animations);
+@@ -6415,7 +6420,7 @@ var Rive = /** @class */ (function () {
+     Rive.prototype.stateMachineInputs = function (name) {
+         // If the file's not loaded, early out, nothing to pause
+-        if (!this.loaded) {
++        if (!this.loaded || !this.animator) {
+             return;
+         }
+         var stateMachine = this.animator.stateMachines.find(function (m) { return m.name === name; });
+         return stateMachine === null || stateMachine === void 0 ? void 0 : stateMachine.inputs;
