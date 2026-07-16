@@ -9233,7 +9233,7 @@ export default class MetamaskController extends EventEmitter {
         // abandoned device read, so a late rejection can never surface as an
         // unhandled rejection — but without this it would be dropped silently.
         deviceReadOperation.catch((error) =>
-          log.debug(
+          log.warn(
             `Abandoned hardware device read failed after timeout for device: ${options.name}`,
             error,
           ),
