@@ -80,12 +80,14 @@ import {
 import * as analyticsHelpers from './analytics/analytics';
 import {
   configureAnalytics,
-  createEventBuilder,
   getProfileIdentityProperties,
+  updateProfileSessionData,
+} from './analytics/analytics';
+import {
+  createEventBuilder,
   identify,
   trackEvent,
   trackPage,
-  updateProfileSessionData,
 } from './analytics';
 import {
   MetaMetricsController,
@@ -112,7 +114,9 @@ function trackLegacyMetaMetricsPayload(
     createEventBuilder(payload.event)
       .addProperties({
         ...(payload.properties ?? {}),
-        ...(payload.category === undefined ? {} : { category: payload.category }),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
         ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
         ...(payload.value === undefined ? {} : { value: payload.value }),
         ...(payload.currency === undefined

@@ -209,8 +209,8 @@ There are two analytics mechanisms, and new tests usually need both:
 
 Events are auto-enriched when:
 
-- the event flows through `MetaMetricsContext.trackEvent`, `useAnalytics().trackEvent`,
-  or `createEventBuilder` + `trackEvent` from `app/scripts/controllers/analytics`
+- the event flows through `useAnalytics().trackEvent`, or `createEventBuilder` +
+  `trackEvent` from `app/scripts/controllers/analytics`
 - and the event name is registered in background-safe shared analytics mapping
   code
 

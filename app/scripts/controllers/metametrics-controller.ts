@@ -113,7 +113,9 @@ function trackLegacyMetaMetricsPayload(payload: MetaMetricsEventPayload): void {
       .createEventBuilder(payload.event)
       .addProperties({
         ...(payload.properties ?? {}),
-        ...(payload.category === undefined ? {} : { category: payload.category }),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
         ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
         ...(payload.value === undefined ? {} : { value: payload.value }),
         ...(payload.currency === undefined
