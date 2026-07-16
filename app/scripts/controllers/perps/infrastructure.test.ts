@@ -10,6 +10,16 @@ import {
   type InfrastructureDeps,
 } from './infrastructure';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../analytics', () => {
+  const actual = jest.requireActual('../analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
+
 jest.mock('@metamask/perps-controller', () => ({
   formatPerpsFiat: jest.fn((value: number) =>
     new Intl.NumberFormat('en-US', {
@@ -42,7 +52,6 @@ function setupSentryScope() {
 }
 
 describe('createPerpsInfrastructure', () => {
-  const mockTrackEvent = jest.fn();
   const mockGetStorageItem = jest.fn();
   const mockSetStorageItem = jest.fn();
   const mockRemoveStorageItem = jest.fn();
@@ -52,7 +61,6 @@ describe('createPerpsInfrastructure', () => {
     overrides?: Partial<InfrastructureDeps>,
   ): InfrastructureDeps {
     return {
-      trackEvent: mockTrackEvent,
       getStorageItem: mockGetStorageItem,
       setStorageItem: mockSetStorageItem,
       removeStorageItem: mockRemoveStorageItem,
@@ -192,15 +200,17 @@ describe('createPerpsInfrastructure', () => {
       });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: PerpsAnalyticsEvent.ScreenViewed,
-        category: MetaMetricsEventCategory.Perps,
-        properties: {
-          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
-            PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
-          [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: PerpsAnalyticsEvent.ScreenViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          }),
+        }),
+      );
     });
 
     it('reports metrics as enabled', () => {

@@ -30,7 +30,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 import { NetworkListItem } from '../../../multichain/network-list-item';
@@ -52,7 +52,7 @@ export const MultichainEditNetworksPage = ({
   onClose,
 }: MultichainEditNetworksPageProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(
@@ -212,15 +212,18 @@ export const MultichainEditNetworksPage = ({
                   (chainId) => !selectedChainIdsSet.has(chainId),
                 );
 
-                trackEvent({
-                  category: MetaMetricsEventCategory.Permissions,
-                  event: MetaMetricsEventName.UpdatePermissionedNetworks,
-                  properties: {
-                    addedNetworks: addedNetworks.length,
-                    removedNetworks: removedNetworks.length,
-                    location: 'Edit Networks Modal',
-                  },
-                });
+                trackEvent(
+                  createEventBuilder(
+                    MetaMetricsEventName.UpdatePermissionedNetworks,
+                  )
+                    .addCategory(MetaMetricsEventCategory.Permissions)
+                    .addProperties({
+                      addedNetworks: addedNetworks.length,
+                      removedNetworks: removedNetworks.length,
+                      location: 'Edit Networks Modal',
+                    })
+                    .build(),
+                );
                 onClose();
               }}
               variant={ButtonVariant.Primary}

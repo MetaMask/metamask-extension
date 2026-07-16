@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
-import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
+import { mapApiTransaction } from '@metamask/client-utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
+import { useCachedEvmTransaction } from '../../hooks/activity/useCachedEvmTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
-import { useCachedEvmTransaction } from './useCachedEvmTransaction';
 import { useTransactionQuery } from './useTransactionQuery';
 
 type Props = {
@@ -55,7 +55,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
 
     const apiActivityItem =
       evmTransaction && selectedAddress
-        ? mapApiEvmTransactions({
+        ? mapApiTransaction({
             subjectAddress: selectedAddress,
             transaction: evmTransaction,
           })

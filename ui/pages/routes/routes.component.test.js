@@ -73,6 +73,30 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../token-management/index.ts', () => ({
+  __esModule: true,
+  default: () => <div data-testid="token-management-route" />,
+}));
+
+// React 18 can defer React.lazy resolution in CI; resolve token-management synchronously.
+jest.mock('../../helpers/utils/mm-lazy', () => {
+  // eslint-disable-next-line n/global-require
+  const reactModule = require('react');
+
+  return {
+    mmLazy: (importFn) => {
+      if (importFn.toString().includes('token-management')) {
+        const { default: TokenManagementMock } = jest.requireMock(
+          '../token-management/index.ts',
+        );
+        return TokenManagementMock;
+      }
+
+      return reactModule.lazy(importFn);
+    },
+  };
+});
+
 jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
@@ -256,7 +280,7 @@ describe('Routes Component', () => {
     });
   });
 
-  it('redirects token management route to home when the feature flag is disabled', async () => {
+  it('renders token management route when the legacy feature flag is disabled', async () => {
     const store = configureMockStore(middlewares)({
       ...mockState,
       metamask: {
@@ -273,24 +297,24 @@ describe('Routes Component', () => {
           path: TOKEN_MANAGEMENT_ROUTE,
           element: <TokenManagementFeatureRoute />,
         },
-        {
-          path: DEFAULT_ROUTE,
-          element: <div data-testid="home-route" />,
-        },
       ],
       { initialEntries: [TOKEN_MANAGEMENT_ROUTE] },
     );
 
     rtlRender(
       <Provider store={store}>
-        <RouterProvider
-          router={router}
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        />
+        <React.Suspense fallback={null}>
+          <RouterProvider
+            router={router}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          />
+        </React.Suspense>
       </Provider>,
     );
 
-    expect(await screen.findByTestId('home-route')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('token-management-route'),
+    ).toBeInTheDocument();
   });
 });
 

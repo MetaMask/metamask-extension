@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { AccountWalletId } from '@metamask/account-api';
 
 import {
@@ -17,7 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSingleWalletAccountsBalanceCallback } from '../../../../hooks/multichain-accounts/useWalletBalance';
@@ -50,7 +50,7 @@ export const SrpCard = ({
   hideShowAccounts = false,
 }: SrpCardProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { multichainAccounts, keyringId } = useWalletInfo(walletId);
   const [showAccounts, setShowAccounts] = useState<boolean>(false);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
@@ -74,15 +74,18 @@ export const SrpCard = ({
       key={`srp-${index}-${keyringId}`}
       data-testid={`hd-keyring-${keyringId}`}
       onClick={() => {
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            button_type: 'srp_select',
-          },
-        });
+        trackEvent(
+          createEventBuilder(
+            MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+          )
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              button_type: 'srp_select',
+            })
+            .build(),
+        );
         if (keyringId) {
           onActionComplete(keyringId, shouldTriggerBackup);
         }
@@ -107,15 +110,18 @@ export const SrpCard = ({
               data-testid={`srp-list-show-accounts-${index}`}
               onClick={(event: React.MouseEvent) => {
                 event.stopPropagation();
-                trackEvent({
-                  category: MetaMetricsEventCategory.Accounts,
-                  event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-                  properties: {
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    button_type: 'details',
-                  },
-                });
+                trackEvent(
+                  createEventBuilder(
+                    MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                  )
+                    .addCategory(MetaMetricsEventCategory.Accounts)
+                    .addProperties({
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      button_type: 'details',
+                    })
+                    .build(),
+                );
                 setShowAccounts((prevState) => !prevState);
               }}
             >

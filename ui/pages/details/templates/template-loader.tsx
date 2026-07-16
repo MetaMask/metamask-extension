@@ -1,13 +1,14 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
-import { BridgeDetails } from './bridge-details';
+import { BridgeDetails } from './bridge-details/bridge-details';
 import { DefaultDetails } from './default-details';
 import { NftDetails } from './nft-details';
 import { PerpsDepositDetails } from './perps-deposit-details';
 import { PerpsDetails } from './perps-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
+import { AssetActivationDetails } from './asset-activation-details';
 
 type Props = {
   item: ActivityListItem | undefined;
@@ -43,6 +44,9 @@ export function TemplateLoader({ item }: Props) {
       return <PerpsDepositDetails item={item} />;
     case 'perpsWithdraw':
       return <PerpsDetails item={item} />;
+    case 'assetActivation':
+    case 'assetDeactivation':
+      return <AssetActivationDetails item={item} />;
     default:
       return <DefaultDetails item={item} />;
   }

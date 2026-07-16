@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
@@ -15,7 +15,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
@@ -51,7 +51,7 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const accountLink = isEvm
     ? getAccountLink(address, chainId, rpcPrefs)
     : addressLink;
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     symbol,
@@ -72,19 +72,20 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         <AssetOptions
           isNativeAsset={true}
           onClickBlockExplorer={() => {
-            trackEvent({
-              event: 'Clicked Block Explorer Link',
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                link_type: 'Account Tracker',
-                action: 'Asset Options',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                block_explorer_domain: getURLHostName(accountLink),
-              },
-            });
+            trackEvent(
+              createEventBuilder('Clicked Block Explorer Link')
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: 'Account Tracker',
+                  action: 'Asset Options',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  block_explorer_domain: getURLHostName(accountLink),
+                })
+                .build(),
+            );
             global.platform.openTab({
               url: accountLink,
             });

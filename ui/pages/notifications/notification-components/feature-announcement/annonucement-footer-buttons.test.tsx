@@ -9,10 +9,6 @@ import {
 } from '@testing-library/react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 import { createMockFeatureAnnouncementRaw } from '@metamask/notification-services-controller/notification-services/mocks';
-import {
-  MetaMetricsContext,
-  type MetaMetricsContextValue,
-} from '../../../../contexts/metametrics';
 import * as resolveDeepLinkHrefUtils from '../../../../helpers/utils/resolve-deep-link-href';
 import {
   ExtensionLinkButton,
@@ -20,7 +16,6 @@ import {
 } from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
-const mockTrackEvent = jest.fn();
 const mockNavigate = jest.fn();
 const linkText = 'Learn more';
 
@@ -29,12 +24,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const metametricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-} as unknown as MetaMetricsContextValue;
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
 
 function createFeatureAnnouncementNotification(
   externalLinkUrl: string,
@@ -72,11 +73,9 @@ function createFeatureAnnouncementNotificationWithExtensionLink(
 
 function createExternalLinkButton(externalLinkUrl: string) {
   return (
-    <MetaMetricsContext.Provider value={metametricsContext}>
-      <ExternalLinkButton
-        notification={createFeatureAnnouncementNotification(externalLinkUrl)}
-      />
-    </MetaMetricsContext.Provider>
+    <ExternalLinkButton
+      notification={createFeatureAnnouncementNotification(externalLinkUrl)}
+    />
   );
 }
 
