@@ -102,7 +102,9 @@ describe('ledger-mode-offscreen-bridge', () => {
         (
           _event: string,
           nextHandler: (isDmkEnabled: boolean) => void,
-          _selector: (state: unknown) => boolean,
+          _selector: (state: {
+            remoteFeatureFlags?: Record<string, unknown>;
+          }) => boolean,
         ) => {
           handler = nextHandler;
         },
@@ -130,7 +132,9 @@ describe('ledger-mode-offscreen-bridge', () => {
         (
           _event: string,
           nextHandler: (isDmkEnabled: boolean) => void,
-          _selector: (state: unknown) => boolean,
+          _selector: (state: {
+            remoteFeatureFlags?: Record<string, unknown>;
+          }) => boolean,
         ) => {
           handler = nextHandler;
         },
