@@ -403,10 +403,24 @@ export async function proxyTronBlockchainCalls(
     );
   };
 
+  const proxyGetPath = async (path: string) => {
+    endpoints.push(
+      await mockServer
+        .forGet(tronProviderUrl(path))
+        .always()
+        .thenCallback(async () => proxyPost(localNodeUrl, path, '{}')),
+    );
+  };
+
   await proxyPostPath('/wallet/getblock');
   await proxyPostPath('/wallet/getaccountresource');
   await proxyPostPath('/wallet/getcontract');
   await proxyPostPath('/wallet/gettransactionbyid');
+  await proxyPostPath('/wallet/createtransaction');
+  await proxyPostPath('/wallet/getblockbynum');
+  await proxyPostPath('/wallet/getaccount');
+  await proxyGetPath('/wallet/getnowblock');
+  await proxyPostPath('/wallet/getnowblock');
 
   const seededTrc20ContractAddresses =
     buildSeededTrc20ContractAddressSet(localNode);
