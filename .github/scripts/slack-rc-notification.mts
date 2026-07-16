@@ -4,7 +4,7 @@
  * Posts a Block Kit message when a release-candidate Main workflow completes, aligned with
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
- * Build URLs include main Chrome/Firefox Webpack artifacts plus the deprecated Browserify fallback.
+ * Build URLs include main Chrome/Firefox Webpack artifacts.
  *
  * Local / manual testing
  * ----------------------
@@ -47,7 +47,6 @@ type SlackPayload = {
 };
 
 type MainBrowserLinks = {
-  browserify: BuildLinks['browserify']['main'];
   webpack: BuildLinks['webpack']['main'];
 };
 
@@ -88,7 +87,6 @@ function getExtensionMainBuildLinks(
     version: packageVersion,
   });
   return {
-    browserify: buildLinks.browserify.main,
     webpack: buildLinks.webpack.main,
   };
 }
@@ -242,7 +240,6 @@ function buildSlackMessage(options: {
 
   const buildIdLabel = `run ${runId}`;
 
-  const b = links.browserify;
   const w = links.webpack;
 
   const blocks: Record<string, unknown>[] = [
@@ -287,30 +284,6 @@ function buildSlackMessage(options: {
           type: 'mrkdwn',
           text: isValidUrl(w.firefox)
             ? `*Firefox (MV2):*\n<${w.firefox}|Download zip>`
-            : '*Firefox (MV2):*\n_Not available_',
-        },
-      ],
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '*📦 Deprecated main build zips (Browserify)*',
-      },
-    },
-    {
-      type: 'section',
-      fields: [
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.chrome)
-            ? `*Chrome (MV3):*\n<${b.chrome}|Download zip>`
-            : '*Chrome (MV3):*\n_Not available_',
-        },
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.firefox)
-            ? `*Firefox (MV2):*\n<${b.firefox}|Download zip>`
             : '*Firefox (MV2):*\n_Not available_',
         },
       ],
@@ -475,7 +448,6 @@ export async function main(): Promise<void> {
   const links: MainBrowserLinks = hostUrlOk
     ? getExtensionMainBuildLinks(trimmedHostUrl, packageVersion)
     : {
-        browserify: { chrome: '', firefox: '' },
         webpack: { chrome: '', firefox: '' },
       };
 
