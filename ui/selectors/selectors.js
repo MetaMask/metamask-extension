@@ -4064,3 +4064,13 @@ export function getDeferredDeepLinkParameters(state) {
 
   return utmProperties;
 }
+
+/**
+ * Selects the eligibility value for a given experiment flag key.
+ * Returns `true` or `false` once recorded, `undefined` when not yet evaluated.
+ *
+ * @param {string} flagKey - The LaunchDarkly flag key for the experiment.
+ * @returns {(state: object) => boolean | undefined}
+ */
+export const selectExperimentEligibility = (flagKey) => (state) =>
+  state.metamask.experimentEligibility?.[flagKey];

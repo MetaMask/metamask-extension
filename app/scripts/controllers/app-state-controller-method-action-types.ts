@@ -287,6 +287,14 @@ export type AppStateControllerSetPerpsTabBadgeSeenAction = {
 };
 
 /**
+ * Records eligibility for a named experiment. Idempotent per flag key.
+ */
+export type AppStateControllerSetExperimentEligibilityAction = {
+  type: `AppStateController:setExperimentEligibility`;
+  handler: AppStateController['setExperimentEligibility'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -607,6 +615,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
   | AppStateControllerSetPerpsTabBadgeSeenAction
+  | AppStateControllerSetExperimentEligibilityAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction

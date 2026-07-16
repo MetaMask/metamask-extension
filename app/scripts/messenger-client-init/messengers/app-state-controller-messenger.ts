@@ -33,6 +33,8 @@ export function getAppStateControllerMessenger(
       'PreferencesController:getState',
       'ProfileMetricsController:skipInitialDelay',
       'LegacyBackgroundApiService:setLocked',
+      'AppMetadataController:getState',
+      'OnboardingController:getState',
     ],
     events: ['KeyringController:unlock', 'PreferencesController:stateChange'],
   });
