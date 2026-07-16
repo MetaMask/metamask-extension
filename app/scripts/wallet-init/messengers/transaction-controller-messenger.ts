@@ -60,6 +60,15 @@ import {
   TransactionPayControllerGetStateAction,
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
+import type {
+  SentinelApiServiceCacheUpdatedEvent,
+  SentinelApiServiceGranularCacheUpdatedEvent,
+  SentinelApiServiceGetNetworksAction,
+  SentinelApiServiceGetSmartTransactionAction,
+  SentinelApiServiceInvalidateQueriesAction,
+  SentinelApiServiceSimulateTransactionsAction,
+  SentinelApiServiceSubmitRelayTransactionAction,
+} from '@metamask/sentinel-api-service';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
@@ -99,6 +108,11 @@ export type TransactionControllerInitMessengerActions =
   | NetworkControllerGetNetworkClientRegistryAction
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SentinelApiServiceGetNetworksAction
+  | SentinelApiServiceGetSmartTransactionAction
+  | SentinelApiServiceInvalidateQueriesAction
+  | SentinelApiServiceSimulateTransactionsAction
+  | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
@@ -116,6 +130,8 @@ export type TransactionControllerInitMessengerActions =
 
 export type TransactionControllerInitMessengerEvents =
   | BridgeStatusControllerStateChangeEvent
+  | SentinelApiServiceCacheUpdatedEvent
+  | SentinelApiServiceGranularCacheUpdatedEvent
   | SmartTransactionsControllerSmartTransactionEvent
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerStateChangeEvent
@@ -129,12 +145,18 @@ export type TransactionControllerInitMessengerEvents =
   | TransactionControllerTransactionSubmittedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent;
 
+type TransactionControllerInitMessengerInstance = Messenger<
+  'TransactionControllerInit',
+  TransactionControllerInitMessengerActions,
+  TransactionControllerInitMessengerEvents
+>;
+
 export function getTransactionControllerInitMessenger(
   messenger: RootMessenger<
     TransactionControllerInitMessengerActions,
     TransactionControllerInitMessengerEvents
   >,
-) {
+): TransactionControllerInitMessengerInstance {
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -188,6 +210,10 @@ export function getTransactionControllerInitMessenger(
       'NetworkController:getNetworkClientRegistry',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'SentinelApiService:getNetworks',
+      'SentinelApiService:getSmartTransaction',
+      'SentinelApiService:simulateTransactions',
+      'SentinelApiService:submitRelayTransaction',
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',

@@ -443,6 +443,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^10.0.3",
     "@metamask/selected-network-controller": "^26.1.4",
+    "@metamask/sentinel-api-service": "^1.0.0",
     "@metamask/shield-controller": "^5.1.2",
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "^24.2.2",

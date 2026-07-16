@@ -178,6 +178,14 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
     }),
 }));
 
+jest.mock('./messenger-client-init/sentinel-api-service-init', () => ({
+  SentinelApiServiceInit: jest.fn().mockReturnValue({
+    messengerClient: {},
+    persistedStateKey: null,
+    memStateKey: null,
+  }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',

@@ -112,6 +112,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',
       'ShieldController:stop',
+      'SentinelApiService:getNetworks',
+      'SentinelApiService:getSmartTransaction',
+      'SentinelApiService:submitRelayTransaction',
     ],
   });
 

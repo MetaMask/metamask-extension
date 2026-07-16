@@ -386,10 +386,7 @@ import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
 } from './messenger-client-init/seedless-onboarding';
-import {
-  getSendBundleSupportedChains,
-  setSentinelApiAuth,
-} from './lib/transaction/sentinel-api';
+import { getSendBundleSupportedChains } from './lib/transaction/sentinel-api';
 import { ShieldControllerInit } from './messenger-client-init/shield/shield-controller-init';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
@@ -455,6 +452,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
+import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
@@ -668,6 +666,7 @@ export default class MetamaskController extends EventEmitter {
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
       GeolocationApiService: GeolocationApiServiceInit,
+      SentinelApiService: SentinelApiServiceInit,
       GeolocationController: GeolocationControllerInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
@@ -1010,9 +1009,6 @@ export default class MetamaskController extends EventEmitter {
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
 
-    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
-    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
-
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
@@ -1110,8 +1106,13 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              isRelaySupported,
-              getSendBundleSupportedChains,
+              isRelaySupported: (chainId) =>
+                isRelaySupported(this.controllerMessenger, chainId),
+              getSendBundleSupportedChains: (chainIds) =>
+                getSendBundleSupportedChains(
+                  this.controllerMessenger,
+                  chainIds,
+                ),
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
@@ -3951,10 +3952,8 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      isRelaySupported: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isRelaySupported',
-      ),
+      isRelaySupported: (chainId) =>
+        isRelaySupported(this.controllerMessenger, chainId),
       isSendBundleSupported: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',

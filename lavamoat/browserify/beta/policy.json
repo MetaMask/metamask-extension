@@ -2373,6 +2373,17 @@
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
+    "@metamask/sentinel-api-service": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/shield-controller": {
       "globals": {
         "AbortController": true

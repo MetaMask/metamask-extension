@@ -121,6 +121,7 @@ function publishHook({
       getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
     const sendBundleSupport = await isSendBundleSupported(
+      messenger,
       transactionMeta.chainId,
     );
 

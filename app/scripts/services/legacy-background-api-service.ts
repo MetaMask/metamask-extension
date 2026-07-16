@@ -139,6 +139,11 @@ import {
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
 import {
+  SentinelApiServiceGetNetworksAction,
+  SentinelApiServiceGetSmartTransactionAction,
+  SentinelApiServiceSubmitRelayTransactionAction,
+} from '@metamask/sentinel-api-service';
+import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
@@ -160,7 +165,10 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import {
+  isRelaySupported,
+  type SentinelRelayMessenger,
+} from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
@@ -320,6 +328,9 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
+  | SentinelApiServiceGetNetworksAction
+  | SentinelApiServiceGetSmartTransactionAction
+  | SentinelApiServiceSubmitRelayTransactionAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
@@ -510,7 +521,7 @@ export class LegacyBackgroundApiService {
    * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
    */
   async isSendBundleSupported(chainId: Hex): Promise<boolean> {
-    return await isSendBundleSupported(chainId);
+    return await isSendBundleSupported(this.#messenger, chainId);
   }
 
   /**
@@ -1748,6 +1759,9 @@ export class LegacyBackgroundApiService {
    * @returns `true` if the transaction relay supports the chain, `false` otherwise.
    */
   async isRelaySupported(chainId: Hex): Promise<boolean> {
-    return isRelaySupported(chainId);
+    return isRelaySupported(
+      this.#messenger as unknown as SentinelRelayMessenger,
+      chainId,
+    );
   }
 }

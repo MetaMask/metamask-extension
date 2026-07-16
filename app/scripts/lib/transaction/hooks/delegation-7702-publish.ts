@@ -1,6 +1,10 @@
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
+  SentinelSmartTransactionStatus,
+  type SentinelRelaySubmitRequest,
+} from '@metamask/sentinel-api-service';
+import {
   GasFeeToken,
   PublishHook,
   PublishHookResult,
@@ -15,8 +19,7 @@ import {
 } from '../../../../../shared/lib/eip7702-support-utils';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
-  RelayStatus,
-  RelaySubmitRequest,
+  type SentinelRelayMessenger,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
@@ -37,7 +40,7 @@ const EMPTY_RESULT = {
 };
 
 type RelayTransactionTxType = NonNullable<
-  RelaySubmitRequest['metadata']
+  SentinelRelaySubmitRequest['metadata']
 >['txType'];
 
 const log = createProjectLogger('delegation-7702-publish-hook');
@@ -165,7 +168,7 @@ export class Delegation7702PublishHook {
             },
       });
 
-    const relayRequest: RelaySubmitRequest = {
+    const relayRequest: SentinelRelaySubmitRequest = {
       chainId,
       data,
       to,
@@ -178,25 +181,37 @@ export class Delegation7702PublishHook {
     };
 
     if (authorizationList) {
-      relayRequest.authorizationList = authorizationList;
+      relayRequest.authorizationList = authorizationList.map((auth) => ({
+        address: auth.address,
+        chainId: auth.chainId as Hex,
+        nonce: auth.nonce as Hex,
+        r: auth.r as Hex,
+        s: auth.s as Hex,
+        yParity: auth.yParity as Hex,
+      }));
     }
 
     log('Relay request', relayRequest);
 
-    const { uuid } = await submitRelayTransaction(relayRequest);
+    // The restricted init messenger structurally satisfies the relay actions
+    // but its broad `call` overload union is not directly assignable to the
+    // narrower relay messenger type, so narrow it here.
+    const relayMessenger = this.#messenger as unknown as SentinelRelayMessenger;
 
-    const { transactionHash, status } = await waitForRelayResult({
+    const { uuid } = await submitRelayTransaction(relayMessenger, relayRequest);
+
+    const { hash, status } = await waitForRelayResult(relayMessenger, {
       chainId,
       uuid,
       interval: POLLING_INTERVAL_MS,
     });
 
-    if (status !== RelayStatus.Success) {
+    if (status !== SentinelSmartTransactionStatus.Validated) {
       throw new Error(`Transaction relay error - ${status}`);
     }
 
     return {
-      transactionHash,
+      transactionHash: hash as Hex,
     };
   }
 

@@ -447,7 +447,10 @@ export class SubscriptionService {
 
   async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
     const { isGasFeeSponsored, chainId } = txMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
+    const bundlerSupported = await isSendBundleSupported(
+      this.#messenger,
+      chainId,
+    );
     const isSponsored = Boolean(isGasFeeSponsored && bundlerSupported);
     const currentShieldSubscription =
       await this.#getCurrentShieldSubscription();
@@ -558,7 +561,10 @@ export class SubscriptionService {
     };
     // @ts-expect-error Smart transaction selector types does not match controller state
     const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
-    const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+    const isSendBundleSupportedChain = await isSendBundleSupported(
+      this.#messenger,
+      chainId,
+    );
 
     return isSendBundleSupportedChain && isSmartTransaction;
   }

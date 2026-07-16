@@ -15,11 +15,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SentinelSmartTransactionStatus } from '@metamask/sentinel-api-service';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
-  RelayStatus,
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
@@ -183,8 +183,8 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     waitForRelayResultMock.mockResolvedValue({
-      status: RelayStatus.Success,
-      transactionHash: TRANSCATION_HASH_MOCK,
+      status: SentinelSmartTransactionStatus.Validated,
+      hash: TRANSCATION_HASH_MOCK,
     });
   });
 
@@ -294,6 +294,7 @@ describe('Delegation 7702 Publish Hook', () => {
       parseInt(TRANSACTION_META_MOCK.chainId, 16),
     ).DelegationManager;
     expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
         chainId: TRANSACTION_META_MOCK.chainId,
         to: expectedDelegationManager,
@@ -351,6 +352,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(submitRelayTransactionMock).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({
         authorizationList: [
           {

@@ -325,7 +325,10 @@ async function isEIP7702GasFeeTokensEnabled(
 
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
 
-  const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+  const isSendBundleSupportedChain = await isSendBundleSupported(
+    messenger,
+    chainId,
+  );
 
   // EIP7702 gas fee tokens are enabled when:
   // - Smart transactions are NOT enabled, OR

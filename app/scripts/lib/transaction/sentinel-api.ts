@@ -1,147 +1,70 @@
 import { Hex } from '@metamask/utils';
+import type {
+  SentinelApiServiceGetNetworksAction,
+  SentinelNetwork as SentinelServiceNetwork,
+} from '@metamask/sentinel-api-service';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 
-const BASE_URL = 'https://tx-sentinel-{0}.api.cx.metamask.io/';
-const ENDPOINT_NETWORKS = 'networks';
-
-const CLIENT_ID = 'extension';
-
-/**
- * Optional bearer token getter, set by the extension at init to authenticate
- * Sentinel and Transaction API calls via core-backend (AuthenticationController).
- */
-let getBearerTokenForSentinel: (() => Promise<string | undefined>) | undefined;
-
-/**
- * Sets the bearer token getter for authenticating Sentinel and Transaction API calls.
- * Called once at extension init (e.g. from MetaMaskController) with
- * AuthenticationController.getBearerToken.
- *
- * @param getter - Async function that returns the current bearer token, or undefined to clear.
- */
-export function setSentinelApiAuth(
-  getter: (() => Promise<string | undefined>) | undefined,
-): void {
-  getBearerTokenForSentinel = getter;
-}
-
-/**
- * Returns metadata headers for sentinel API requests.
- *
- * @returns An object containing the metadata headers.
- */
-export function getSentinelApiHeaders(): HeadersInit {
-  const headers: HeadersInit = {
-    'X-Client-Id': CLIENT_ID,
-  };
-
-  if (process.env.METAMASK_VERSION) {
-    headers['X-Client-Version'] = process.env.METAMASK_VERSION;
-  }
-
-  return headers;
-}
-
-/**
- * Returns headers for Sentinel/Transaction API requests, including Authorization
- * when the extension has set a bearer token getter and it returns a token.
- * Use this for all outbound Sentinel and relay requests.
- *
- * @returns Promise resolving to headers (metadata + optional Bearer).
- */
-export async function getSentinelApiHeadersAsync(): Promise<
-  Record<string, string>
-> {
-  const headers: Record<string, string> = {
-    ...(getSentinelApiHeaders() as Record<string, string>),
-  };
-
-  if (getBearerTokenForSentinel) {
-    try {
-      const token = await getBearerTokenForSentinel();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-    } catch {
-      // Proceed without auth if token retrieval fails
-    }
-  }
-
-  return headers;
-}
-
-export type SentinelNetwork = {
-  name: string;
-  group: string;
-  chainID: number;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  network: string;
-  explorer: string;
-  confirmations: boolean;
-  smartTransactions: boolean;
-  relayTransactions: boolean;
-  hidden: boolean;
-  sendBundle: boolean;
-};
+export type SentinelNetwork = SentinelServiceNetwork;
 
 export type SentinelNetworkMap = Record<string, SentinelNetwork>;
 
 /**
- * Returns all network data.
+ * Minimal messenger able to call the `SentinelApiService:getNetworks` action.
+ * Declared structurally so any restricted messenger with that action delegated
+ * (or the base controller messenger) can be threaded to these helpers.
  */
-async function getAllSentinelNetworkFlags(): Promise<SentinelNetworkMap> {
+export type SentinelNetworksMessenger = {
+  call(
+    action: SentinelApiServiceGetNetworksAction['type'],
+    ...args: Parameters<SentinelApiServiceGetNetworksAction['handler']>
+  ): ReturnType<SentinelApiServiceGetNetworksAction['handler']>;
+};
+
+/**
+ * Returns all network data, keyed by decimal chain ID. Resolves to an empty map
+ * if the registry request fails, preserving the previous best-effort behaviour.
+ *
+ * @param messenger - Messenger used to reach the SentinelApiService.
+ */
+async function getAllSentinelNetworkFlags(
+  messenger: SentinelNetworksMessenger,
+): Promise<SentinelNetworkMap> {
   try {
-    const url = `${buildUrl('ethereum-mainnet')}${ENDPOINT_NETWORKS}`;
-    const headers = await getSentinelApiHeadersAsync();
-    const response = await getFetchWithTimeout()(url, { headers });
-    const networkFlags = (await response.json()) as unknown;
-    return isSentinelNetworkMap(networkFlags) ? networkFlags : {};
+    return await messenger.call('SentinelApiService:getNetworks');
   } catch {
     return {};
   }
 }
 
-function isSentinelNetworkMap(value: unknown): value is SentinelNetworkMap {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
 /**
  * Get Sentinel Network flags by chainId
  *
+ * @param messenger - Messenger used to reach the SentinelApiService.
  * @param chainId - The chain ID to get the network flags for.
  * @returns A promise that resolves to the Sentinel network flags for the given chain ID, or undefined if not found.
  */
 export async function getSentinelNetworkFlags(
+  messenger: SentinelNetworksMessenger,
   chainId: Hex,
 ): Promise<SentinelNetwork | undefined> {
   const chainIdDecimal = hexToDecimal(chainId);
-  const networks = await getAllSentinelNetworkFlags();
+  const networks = await getAllSentinelNetworkFlags(messenger);
   return networks[chainIdDecimal];
-}
-
-/**
- * Returns api base url for a given subdomain.
- *
- * @param subdomain - The subdomain to use in the URL.
- * @returns The complete URL with the subdomain.
- */
-export function buildUrl(subdomain: string): string {
-  return BASE_URL.replace('{0}', subdomain);
 }
 
 /**
  * Returns true if this chain supports sendBundle feature.
  *
+ * @param messenger - Messenger used to reach the SentinelApiService.
  * @param chainId - The chain ID to check.
  * @returns A promise that resolves to true if sendBundle is supported, false otherwise.
  */
-export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
-  const network = await getSentinelNetworkFlags(chainId);
+export async function isSendBundleSupported(
+  messenger: SentinelNetworksMessenger,
+  chainId: Hex,
+): Promise<boolean> {
+  const network = await getSentinelNetworkFlags(messenger, chainId);
 
   if (!network?.sendBundle) {
     return false;
@@ -153,13 +76,15 @@ export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
 /**
  * Returns a map of chain IDs to whether sendBundle is supported for each chain.
  *
+ * @param messenger - Messenger used to reach the SentinelApiService.
  * @param chainIds - The chain IDs to check.
  * @returns A map of chain IDs to their sendBundle support status.
  */
 export async function getSendBundleSupportedChains(
+  messenger: SentinelNetworksMessenger,
   chainIds: Hex[],
 ): Promise<Record<string, boolean>> {
-  const networkData = await getAllSentinelNetworkFlags();
+  const networkData = await getAllSentinelNetworkFlags(messenger);
 
   return chainIds.reduce<Record<string, boolean>>((acc, chainId) => {
     const chainIdDecimal = hexToDecimal(chainId);
