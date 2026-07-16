@@ -21,8 +21,7 @@ import {
   getToToken,
   getFromToken,
   getSlippage,
-  getIsSolanaSwap,
-  getIsRWASwap,
+  getIsSlippageUserOverride,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
@@ -91,8 +90,7 @@ export const MultichainBridgeQuoteCard = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const isRWASwap = useSelector(getIsRWASwap);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -378,8 +376,10 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && (isSolanaSwap || isRWASwap)
-                ? t('slippageAuto')
+              {slippage === undefined
+                ? isSlippageUserOverride
+                  ? t('slippageAuto')
+                  : '-'
                 : `${slippage}%`}
             </Text>
             <ButtonIcon

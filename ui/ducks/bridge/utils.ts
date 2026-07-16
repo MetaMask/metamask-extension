@@ -1,8 +1,8 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -30,6 +30,17 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
+
+export const assetIdsMatch = (
+  left?: string | null,
+  right?: string | null,
+): boolean =>
+  left === right ||
+  Boolean(
+    left?.startsWith('eip155:') &&
+      right?.startsWith('eip155:') &&
+      left.toLowerCase() === right.toLowerCase(),
+  );
 
 /**
  *
