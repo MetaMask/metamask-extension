@@ -1493,6 +1493,7 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
+        PasskeyController: this.passkeyController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
         SubscriptionController: this.subscriptionController,
         PermissionController: this.permissionController,
