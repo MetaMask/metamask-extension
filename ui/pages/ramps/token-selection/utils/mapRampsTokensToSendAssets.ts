@@ -3,18 +3,18 @@ import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   AssetStandard,
   type AssetType,
-} from '../../../../../components/app/asset-picker';
+} from '../../../../components/app/asset-picker';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../../../shared/constants/bridge';
+} from '../../../../../shared/constants/bridge';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-} from '../../../../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../../shared/constants/multichain/networks';
-import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
-import { convertCaipToHexChainId } from '../../../../../../shared/lib/network.utils';
+} from '../../../../../shared/constants/network';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/multichain/networks';
+import { getAssetImageUrl } from '../../../../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
 
 export function getRampsNetworkDetailsForCaipChainId(
   caipChainId: CaipChainId,

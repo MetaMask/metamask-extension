@@ -4,11 +4,11 @@
 import {
   AssetStandard,
   type AssetType,
-} from '../../../../../components/app/asset-picker';
+} from '../../../../components/app/asset-picker';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_IDS,
-} from '../../../../../../shared/constants/network';
+} from '../../../../../shared/constants/network';
 import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokenToSendAsset,

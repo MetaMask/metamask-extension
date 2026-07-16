@@ -8294,6 +8294,14 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBuyToken": {
+    "message": "Buy $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Buying via $1",
+    "description": "$1 is the ramp provider name"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
   },
@@ -8305,6 +8313,16 @@
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
+  },
+  "rampsOnNetwork": {
+    "message": "on $1",
+    "description": "$1 is the network name"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Failed to fetch quote."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Select payment method"
   },
   "rampsServiceDisruptionDescription": {
     "message": "We’re experiencing a service disruption. Please try again later."
