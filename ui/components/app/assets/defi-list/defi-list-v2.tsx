@@ -63,7 +63,6 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
         return {
           chainId: position.chainId,
           protocolId: position.protocolId,
-          title: position.protocolName,
           tokenImage: position.protocolIconUrl,
           iconGroup,
           underlyingSymbols: iconGroup.map(({ symbol }) => symbol),

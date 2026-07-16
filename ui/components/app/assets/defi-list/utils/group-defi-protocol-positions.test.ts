@@ -12,7 +12,7 @@ const createDefiBalance = ({
   decimals,
   price,
   protocolId,
-  protocolName,
+  productName,
   protocolIconUrl,
 }: {
   assetId: string;
@@ -21,7 +21,7 @@ const createDefiBalance = ({
   decimals: number;
   price: string;
   protocolId: string;
-  protocolName: string;
+  productName: string;
   protocolIconUrl: string;
 }) => ({
   category: 'defi' as const,
@@ -33,12 +33,13 @@ const createDefiBalance = ({
   price,
   metadata: {
     protocolId,
-    protocolName,
+    productName,
     description: '',
     protocolUrl: '',
     protocolIconUrl,
     positionType: 'stake',
     poolAddress: '0xpool',
+    groupId: crypto.randomUUID(),
   },
 });
 
@@ -57,7 +58,7 @@ describe('group-defi-protocol-positions', () => {
             decimals: 18,
             price: '2000',
             protocolId: 'lido',
-            protocolName: 'Lido',
+            productName: 'Lido',
             protocolIconUrl: 'lido.png',
           }),
           createDefiBalance({
@@ -67,7 +68,7 @@ describe('group-defi-protocol-positions', () => {
             decimals: 18,
             price: '2000',
             protocolId: 'lido',
-            protocolName: 'Lido',
+            productName: 'Lido',
             protocolIconUrl: 'lido.png',
           }),
           createDefiBalance({
@@ -77,7 +78,7 @@ describe('group-defi-protocol-positions', () => {
             decimals: 6,
             price: '1',
             protocolId: 'aave-v3',
-            protocolName: 'Aave V3',
+            productName: 'Aave V3',
             protocolIconUrl: 'aave.png',
           }),
         ],
@@ -93,7 +94,7 @@ describe('group-defi-protocol-positions', () => {
             decimals: 6,
             price: '1',
             protocolId: 'aave-v3',
-            protocolName: 'Aave V3',
+            productName: 'Aave V3',
             protocolIconUrl: 'aave.png',
           }),
         ],
@@ -114,7 +115,6 @@ describe('group-defi-protocol-positions', () => {
       expect(lido).toMatchObject({
         chainId: 'eip155:1',
         protocolId: 'lido',
-        title: 'lido',
         tokenImage: 'lido.png',
         tokenFiatAmount: 3000,
       });
@@ -128,7 +128,6 @@ describe('group-defi-protocol-positions', () => {
       expect(polygonAave).toMatchObject({
         chainId: 'eip155:137',
         protocolId: 'aave-v3',
-        title: 'aave-v3',
         tokenFiatAmount: 1,
       });
 
@@ -140,7 +139,6 @@ describe('group-defi-protocol-positions', () => {
       expect(solanaAave).toMatchObject({
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         protocolId: 'aave-v3',
-        title: 'aave-v3',
         tokenFiatAmount: 2,
       });
     });

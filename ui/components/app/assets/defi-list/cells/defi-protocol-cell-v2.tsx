@@ -60,7 +60,7 @@ export default function DeFiProtocolCellV2({
           symbol={position.protocolId}
         />
       }
-      headerLeftDisplay={<AssetCellTitle title={position.title} />}
+      headerLeftDisplay={<AssetCellTitle title={position.protocolId} />}
       headerRightDisplay={
         <SensitiveText
           className="text-s-body-md @compact:text-s-body-sm"

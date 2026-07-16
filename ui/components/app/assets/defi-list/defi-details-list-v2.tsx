@@ -22,15 +22,15 @@ export default function DefiDetailsListV2({ sections }: DefiDetailsListV2Props) 
   return (
     <>
       {sections.map((section, sectionIndex) => (
-        <Box key={section.protocolName}>
+        <Box key={section.productName}>
           <Text
             variant={TextVariant.bodyMdMedium}
             paddingLeft={4}
             paddingBottom={2}
             color={TextColor.textAlternative}
-            data-testid={`defi-details-list-v2-${section.protocolName}-section`}
+            data-testid={`defi-details-list-v2-${section.productName}-section`}
           >
-            {section.protocolName}
+            {section.productName}
           </Text>
           {section.positions.map((position) => (
             // Isolate each cell so sibling `h-full` rows don't stretch under

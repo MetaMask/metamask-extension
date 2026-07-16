@@ -11,7 +11,6 @@ import { getDefiPositionMarketValue } from './normalize-v6-balance';
 export type GroupedDeFiProtocolPosition = {
   chainId: CaipChainId;
   protocolId: string;
-  title: string;
   tokenImage: string;
   underlyingSymbols: string[];
   iconGroup: { avatarValue: string; symbol: string }[];
@@ -58,7 +57,6 @@ function toGroupedPosition(
   return {
     chainId: group.chainId,
     protocolId: group.protocolId,
-    title: group.title,
     tokenImage: group.tokenImage,
     underlyingSymbols: iconGroup.map(({ symbol }) => symbol),
     iconGroup,
@@ -108,7 +106,6 @@ export function groupDefiProtocolPositions(
       groups.set(groupKey, {
         chainId,
         protocolId,
-        title: protocolId,
         tokenImage: protocolIconUrl,
         underlyingSymbols: [],
         iconGroup: [],

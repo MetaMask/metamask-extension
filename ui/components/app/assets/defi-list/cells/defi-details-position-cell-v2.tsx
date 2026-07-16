@@ -72,7 +72,7 @@ export default function DefiDetailsPositionCellV2({
       }
       headerLeftDisplay={
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={displayToken.title} />
+          <AssetCellTitle title={position.name} />
           {position.positionType ? (
             <Tag
               label={position.positionType}

@@ -21,30 +21,30 @@ type UseDeFiPositionsV2Result = {
 };
 
 /**
- * Merges details-page sections that share the same `protocolName`, appending
+ * Merges details-page sections that share the same `productName`, appending
  * positions rather than keeping them as separate adjacent sections.
  *
  * @param existingSections - Sections already collected for this protocol group.
  * @param incomingSections - Sections from another account holding the same
  * protocol, to be merged in.
- * @returns The merged sections, one per distinct `protocolName`.
+ * @returns The merged sections, one per distinct `productName`.
  */
 function mergeSections(
   existingSections: DeFiPositionDetailsSection[],
   incomingSections: DeFiPositionDetailsSection[],
 ): DeFiPositionDetailsSection[] {
-  const byProtocolName = new Map<string, DeFiPositionDetailsSection>(
+  const byProductName = new Map<string, DeFiPositionDetailsSection>(
     existingSections.map((section) => [
-      section.protocolName,
+      section.productName,
       { ...section, positions: [...section.positions] },
     ]),
   );
 
   for (const section of incomingSections) {
-    const existing = byProtocolName.get(section.protocolName);
+    const existing = byProductName.get(section.productName);
 
     if (!existing) {
-      byProtocolName.set(section.protocolName, {
+      byProductName.set(section.productName, {
         ...section,
         positions: [...section.positions],
       });
@@ -54,7 +54,7 @@ function mergeSections(
     existing.positions.push(...section.positions);
   }
 
-  return [...byProtocolName.values()];
+  return [...byProductName.values()];
 }
 
 /**
@@ -112,7 +112,6 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
     getInternalAccountsFromGroupById(state, selectedAccountGroup),
   );
   const positionsByAccount = useSelector(getDeFiPositionsV2);
-
   const accountIds = useMemo(
     () => groupAccounts.map((account) => account.id),
     [groupAccounts],
