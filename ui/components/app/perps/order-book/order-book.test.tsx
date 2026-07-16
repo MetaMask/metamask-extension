@@ -245,6 +245,49 @@ describe('PerpsOrderBook', () => {
     });
   });
 
+  describe('view toggle', () => {
+    it('cycles both sides -> buy only -> sell only -> both', () => {
+      renderOrderBook({ marketPrice: 73776 });
+
+      // Default: both sides render.
+      expect(
+        screen.getByTestId('perps-order-book-ask-row-0'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-book-bid-row-0'),
+      ).toBeInTheDocument();
+
+      const toggle = screen.getByTestId('perps-order-book-view-toggle');
+
+      // First click: buy side only (bids, no asks).
+      fireEvent.click(toggle);
+      expect(
+        screen.queryByTestId('perps-order-book-ask-row-0'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-book-bid-row-0'),
+      ).toBeInTheDocument();
+
+      // Second click: sell side only (asks, no bids).
+      fireEvent.click(toggle);
+      expect(
+        screen.getByTestId('perps-order-book-ask-row-0'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-bid-row-0'),
+      ).not.toBeInTheDocument();
+
+      // Third click: back to both sides.
+      fireEvent.click(toggle);
+      expect(
+        screen.getByTestId('perps-order-book-ask-row-0'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-book-bid-row-0'),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('price selection', () => {
     it('calls onSelectPrice with the ask row price when clicked', () => {
       const onSelectPrice = jest.fn();

@@ -40,6 +40,22 @@ import type {
 
 const DEPTH_BAR_OPACITY = 0.15;
 
+/**
+ * Which side(s) of the ladder are shown. Cycled by the header view toggle:
+ * `default` (both sides) -> `buy` (bids only) -> `sell` (asks only).
+ */
+type OrderBookViewMode = 'default' | 'buy' | 'sell';
+
+/**
+ * Icon tint for the view toggle, hinting the active side: green for buy-only,
+ * red for sell-only, default color for both sides.
+ */
+const VIEW_TOGGLE_ICON_CLASS: Record<OrderBookViewMode, string | undefined> = {
+  default: undefined,
+  buy: 'text-success-default',
+  sell: 'text-error-default',
+};
+
 type OrderBookRowProps = {
   level: OrderBookLevel;
   side: 'bid' | 'ask';
@@ -163,6 +179,23 @@ export const PerpsOrderBook = ({
   const [metric, setMetric] = useState<OrderBookListMetric>('total');
   const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
+
+  // Cycle the ladder view: both sides -> buy (bids) only -> sell (asks) only.
+  const handleCycleViewMode = useCallback(() => {
+    setViewMode((current) => {
+      if (current === 'default') {
+        return 'buy';
+      }
+      if (current === 'buy') {
+        return 'sell';
+      }
+      return 'default';
+    });
+  }, []);
+
+  const showBids = viewMode !== 'sell';
+  const showAsks = viewMode !== 'buy';
 
   // Raw, full-precision book (shared with the page's top-of-book and slippage).
   // The order entry page owns its lifecycle, so we only read here. Used for the
@@ -297,16 +330,24 @@ export const PerpsOrderBook = ({
       className="h-full w-full overflow-hidden bg-default"
       data-testid={dataTestId}
     >
-      {/* Header: settings control */}
+      {/* Header: view toggle (left) + settings (right) */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
+        justifyContent={BoxJustifyContent.Between}
         paddingLeft={2}
         paddingRight={4}
         paddingTop={2}
         paddingBottom={2}
       >
+        <ButtonIcon
+          iconName={IconName.Sort}
+          ariaLabel={t('perpsOrderBookViewToggle')}
+          size={ButtonIconSize.Md}
+          onClick={handleCycleViewMode}
+          iconProps={{ className: VIEW_TOGGLE_ICON_CLASS[viewMode] }}
+          data-testid={`${dataTestId}-view-toggle`}
+        />
         <ButtonIcon
           iconName={IconName.Setting}
           ariaLabel={t('perpsOrderBookConfigTitle')}
@@ -364,6 +405,7 @@ export const PerpsOrderBook = ({
           className="flex-1 min-h-0 overflow-hidden"
         >
           {/* Asks (sell) — fills the top half, anchored to the spread */}
+          {showAsks && (
           <Box
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.End}
@@ -394,6 +436,7 @@ export const PerpsOrderBook = ({
               />
             ))}
           </Box>
+          )}
 
           {/* Spread */}
           <Box
@@ -425,6 +468,7 @@ export const PerpsOrderBook = ({
           </Box>
 
           {/* Bids (buy) — fills the bottom half, anchored to the spread */}
+          {showBids && (
           <Box
             flexDirection={BoxFlexDirection.Column}
             className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
@@ -452,6 +496,7 @@ export const PerpsOrderBook = ({
               />
             ))}
           </Box>
+          )}
         </Box>
       )}
 
