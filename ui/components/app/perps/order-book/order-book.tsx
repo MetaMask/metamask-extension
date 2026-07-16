@@ -46,14 +46,74 @@ const DEPTH_BAR_OPACITY = 0.15;
  */
 type OrderBookViewMode = 'default' | 'buy' | 'sell';
 
+const VIEW_ICON_SUCCESS_COLOR = 'var(--color-success-default)';
+const VIEW_ICON_ERROR_COLOR = 'var(--color-error-default)';
+
 /**
- * Icon tint for the view toggle, hinting the active side: green for buy-only,
- * red for sell-only, default color for both sides.
+ * Per-bar colors for the view-toggle glyph (top to bottom): both sides colors
+ * the top two bars green (buy) and the bottom two red (sell); buy-only is all
+ * green; sell-only is all red.
  */
-const VIEW_TOGGLE_ICON_CLASS: Record<OrderBookViewMode, string | undefined> = {
-  default: undefined,
-  buy: 'text-success-default',
-  sell: 'text-error-default',
+const VIEW_TOGGLE_BAR_COLORS: Record<OrderBookViewMode, [string, string, string, string]> =
+  {
+    default: [
+      VIEW_ICON_SUCCESS_COLOR,
+      VIEW_ICON_SUCCESS_COLOR,
+      VIEW_ICON_ERROR_COLOR,
+      VIEW_ICON_ERROR_COLOR,
+    ],
+    buy: [
+      VIEW_ICON_SUCCESS_COLOR,
+      VIEW_ICON_SUCCESS_COLOR,
+      VIEW_ICON_SUCCESS_COLOR,
+      VIEW_ICON_SUCCESS_COLOR,
+    ],
+    sell: [
+      VIEW_ICON_ERROR_COLOR,
+      VIEW_ICON_ERROR_COLOR,
+      VIEW_ICON_ERROR_COLOR,
+      VIEW_ICON_ERROR_COLOR,
+    ],
+  };
+
+/** Bar paths for the view-toggle glyph, top (longest) to bottom (shortest). */
+const VIEW_TOGGLE_BAR_PATHS = [
+  'M3 4h18v2H3z',
+  'M3 9h14v2H3z',
+  'M3 14h10v2H3z',
+  'M3 19h6v2H3z',
+] as const;
+
+/**
+ * View-toggle glyph: four left-aligned descending bars, styled like the design
+ * system `Sort` icon but with four rows. Each bar is colored per the active
+ * view so the control doubles as a legend (green = buy, red = sell).
+ *
+ * @param props - Component props.
+ * @param props.mode - Current order-book view mode.
+ * @param props.className - Classes controlling the icon size.
+ */
+const OrderBookViewIcon = ({
+  mode,
+  className,
+}: {
+  mode: OrderBookViewMode;
+  className?: string;
+}) => {
+  const colors = VIEW_TOGGLE_BAR_COLORS[mode];
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className={className}
+      aria-hidden="true"
+      focusable="false"
+    >
+      {VIEW_TOGGLE_BAR_PATHS.map((d, index) => (
+        <path key={d} d={d} fill={colors[index]} />
+      ))}
+    </svg>
+  );
 };
 
 type OrderBookRowProps = {
@@ -340,18 +400,20 @@ export const PerpsOrderBook = ({
         paddingTop={2}
         paddingBottom={2}
       >
-        <ButtonIcon
-          iconName={IconName.Sort}
-          ariaLabel={t('perpsOrderBookViewToggle')}
-          size={ButtonIconSize.Md}
+        <button
+          type="button"
           onClick={handleCycleViewMode}
-          iconProps={{ className: VIEW_TOGGLE_ICON_CLASS[viewMode] }}
+          aria-label={t('perpsOrderBookViewToggle')}
+          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent p-0 hover:bg-hover active:bg-pressed"
           data-testid={`${dataTestId}-view-toggle`}
-        />
+        >
+          <OrderBookViewIcon mode={viewMode} className="h-6 w-6" />
+        </button>
         <ButtonIcon
           iconName={IconName.Setting}
           ariaLabel={t('perpsOrderBookConfigTitle')}
           size={ButtonIconSize.Md}
+          type="button"
           onClick={() => setIsConfigOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={isConfigOpen}

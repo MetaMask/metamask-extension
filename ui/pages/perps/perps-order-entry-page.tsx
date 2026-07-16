@@ -1844,23 +1844,14 @@ const PerpsOrderEntryPage = () => {
           </Box>
         </Box>
         {isOrderBookEnabled ? (
-          <Box
+          <button
+            type="button"
             data-testid="perps-order-book-toggle"
-            role="button"
-            tabIndex={0}
             onClick={handleToggleOrderBook}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                handleToggleOrderBook();
-              }
-            }}
             aria-label={t('perpsOrderBook')}
             aria-pressed={isOrderBookOpen}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
             className={twMerge(
-              'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent',
+              'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent bg-transparent',
               isOrderBookOpen && 'bg-muted border-primary-default',
             )}
           >
@@ -1869,7 +1860,7 @@ const PerpsOrderEntryPage = () => {
               size={IconSize.Lg}
               className={isOrderBookOpen ? 'text-default' : 'text-alternative'}
             />
-          </Box>
+          </button>
         ) : (
           // Keep the header symmetric so the centered title does not shift when
           // the order-book toggle is hidden (default dark-launch state). Mirrors
