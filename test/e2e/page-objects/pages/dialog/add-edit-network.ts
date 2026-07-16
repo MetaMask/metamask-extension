@@ -45,6 +45,8 @@ class AddEditNetworkModal {
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
 
+  private readonly editModalRpcDropDownItem = '.dropdown-editor__item';
+
   private readonly editModalSaveButton = {
     testId: 'page-container-footer-next',
   };
@@ -231,7 +233,15 @@ class AddEditNetworkModal {
         shouldBeDisplayed ? '' : 'not '
       } displayed on edit network modal`,
     );
-    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    if (
+      !(await this.driver.isElementPresentAndVisible(
+        this.editModalRpcDropDownItem,
+        100,
+      ))
+    ) {
+      await this.driver.clickElement(this.editModalRpcDropDownButton);
+      await this.driver.waitForSelector(this.editModalRpcDropDownItem);
+    }
     if (shouldBeDisplayed) {
       await this.driver.waitForSelector({
         text: rpcName,
@@ -243,6 +253,18 @@ class AddEditNetworkModal {
         tag: 'p',
       });
     }
+    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.waitUntil(
+      async () =>
+        !(await this.driver.isElementPresentAndVisible(
+          this.editModalRpcDropDownItem,
+          100,
+        )),
+      {
+        interval: 100,
+        timeout: 3000,
+      },
+    );
   }
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {
