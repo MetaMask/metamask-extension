@@ -160,7 +160,7 @@ describe('Error Page', function () {
         assert.doesNotMatch(
           queryString,
           /metamask_metametrics_id/u,
-          'Metrics ID should not be in tracked URL when user does not consent',
+          'Personal data should not be in tracked URL when user does not consent',
         );
       },
     );
