@@ -16,6 +16,7 @@ export function SwapDetails({
     {
       type:
         | 'swap'
+        | 'bridge'
         | 'convert'
         | 'lendingDeposit'
         | 'lendingWithdrawal'
