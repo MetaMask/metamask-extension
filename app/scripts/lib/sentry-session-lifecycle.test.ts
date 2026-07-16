@@ -63,9 +63,7 @@ describe('sentry session lifecycle (organic init trigger)', () => {
     const fetchCalls = fetchSpy.mock.calls as FetchCallArgs[];
     const sessionSent = fetchCalls
       .map(([, init]) => init?.body)
-      .filter((body): body is NonNullable<RequestInit['body']> =>
-        Boolean(body),
-      )
+      .filter((body): body is NonNullable<RequestInit['body']> => Boolean(body))
       .some((body) => {
         try {
           const parsedEnvelope = parseEnvelope(
