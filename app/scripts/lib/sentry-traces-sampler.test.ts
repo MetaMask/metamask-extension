@@ -428,7 +428,10 @@ describe('sample-rate ceiling (release-level throttle)', () => {
 
   it('caps the default rate at the ceiling', () => {
     expect(
-      getTransactionSampleRate({ name: 'Unlisted Transaction' }, ceilingOptions),
+      getTransactionSampleRate(
+        { name: 'Unlisted Transaction' },
+        ceilingOptions,
+      ),
     ).toBe(0.005);
   });
 
