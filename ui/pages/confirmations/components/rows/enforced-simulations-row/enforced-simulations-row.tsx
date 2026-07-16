@@ -92,7 +92,7 @@ export function EnforcedSimulationsRow() {
     isUnavailable,
   ]);
 
-  if (isUnavailable || (!isEligible && !hasAutoEnabled)) {
+  if (isUnavailable || !hasAutoEnabled) {
     return null;
   }
 
@@ -114,7 +114,6 @@ export function EnforcedSimulationsRow() {
 
         <EnforcedSimulationsCheckbox
           isEnabled={Boolean(hasEnforcedSimulations)}
-          isInitializing={!hasAutoEnabled}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
           onUnavailable={() => setIsUnavailable(true)}
@@ -128,13 +127,11 @@ export function EnforcedSimulationsRow() {
 
 function EnforcedSimulationsCheckbox({
   isEnabled,
-  isInitializing,
   containerTypes,
   transactionId,
   onUnavailable,
 }: {
   isEnabled: boolean;
-  isInitializing: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
   onUnavailable: () => void;
@@ -202,7 +199,7 @@ function EnforcedSimulationsCheckbox({
     }
   }, [containerTypes, isEnabled, onUnavailable, transactionId]);
 
-  if (isInitializing || isToggling) {
+  if (isToggling) {
     return (
       <Icon
         name={IconName.Loading}
