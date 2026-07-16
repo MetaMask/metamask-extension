@@ -82,9 +82,6 @@ const withMetamaskConnectedToMainnet = {
       '0xe708': true,
     },
   },
-  remoteFeatureFlags: {
-    assetsDefiPositionsEnabled: true,
-  },
   allDeFiPositions: {
     [account.address]: {
       '0x1': {

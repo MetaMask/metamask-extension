@@ -605,19 +605,6 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: [
-            {
-              assetsDefiPositionsEnabled: true,
-            },
-          ],
-        };
-      }),
-    await mockServer
       .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => {
         return {
@@ -646,19 +633,6 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           json: { data: [] },
         };
       }),
-    await mockServer
-      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: [
-            {
-              assetsDefiPositionsEnabled: true,
-            },
-          ],
-        };
-      }),
   ];
 }
 
@@ -672,19 +646,6 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
         return {
           ok: false,
           statusCode: 500,
-        };
-      }),
-    await mockServer
-      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: [
-            {
-              assetsDefiPositionsEnabled: true,
-            },
-          ],
         };
       }),
   ];

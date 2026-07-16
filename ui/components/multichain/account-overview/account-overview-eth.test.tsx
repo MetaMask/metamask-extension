@@ -37,7 +37,6 @@ const render = (props: AccountOverviewEthProps) => {
     activeTab: mockState.activeTab,
     metamask: {
       ...mockState.metamask,
-      remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
       preferences: {
         ...mockState.metamask.preferences,
         tokenNetworkFilter: {

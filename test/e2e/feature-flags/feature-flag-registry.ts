@@ -214,18 +214,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  assetsDefiPositionsEnabled: {
-    name: 'assetsDefiPositionsEnabled',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: true,
-    status: FeatureFlagStatus.Active,
-  },
-
   'defi-controller-v-2': {
     name: 'defi-controller-v-2',
     type: FeatureFlagType.Remote,
-    inProd: true,
+    inProd: false,
     productionDefault: {
       versions: {
         '13.41.0': {
