@@ -1,4 +1,7 @@
-import { getRemoteTracesSampleRate } from '../../../shared/lib/sentry-remote-rates';
+import {
+  getRemoteTracesSampleRate,
+  getRemoteTransactionSampleRates,
+} from '../../../shared/lib/sentry-remote-rates';
 
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
@@ -53,6 +56,12 @@ type SampleRateOptions = {
    */
   sampleRateOverrides: Record<string, number>;
   /**
+   * Per-name overrides from the remote `sentry.transactionSampleRates` flag;
+   * consulted before {@link sampleRateOverrides} so a remote value wins over
+   * the build-time one for the same transaction name.
+   */
+  remoteSampleRateOverrides?: Record<string, number>;
+  /**
    * This build's OWN release (bare version, e.g. `'13.32.0'`), not a
    * per-transaction value. When in {@link droppedReleases}, every transaction is
    * dropped.
@@ -75,14 +84,17 @@ type SampleRateOptions = {
  * Resolve the effective sample rate for one transaction. Pure (no SDK access)
  * for direct unit testing. Order: a dropped `release` kills everything; else a
  * per-name override pins its rate (regardless of parent, so a throttled
- * transaction can't ride in on a sampled parent); else inherit the parent
- * decision; else the default. Name reads from `name` or `transactionContext.name`.
+ * transaction can't ride in on a sampled parent), with a remote override
+ * winning over the build-time one; else inherit the parent decision; else the
+ * default. Name reads from `name` or `transactionContext.name`.
  *
  * @param samplingContext - The (subset of the) Sentry sampling context.
  * @param options - Default rate, per-name overrides, and release-drop config.
  * @param options.defaultSampleRate - Rate applied to transactions with no
  * per-name override.
- * @param options.sampleRateOverrides - Per-name sample-rate overrides.
+ * @param options.sampleRateOverrides - Build-time per-name sample-rate overrides.
+ * @param options.remoteSampleRateOverrides - Remote-flag per-name overrides;
+ * win over the build-time ones.
  * @param options.release - This build's own release (bare version).
  * @param options.droppedReleases - Releases dropped wholesale.
  * @param options.sampleRateCeiling - Hard ceiling capping every non-zero path.
@@ -93,6 +105,7 @@ export function getTransactionSampleRate(
   {
     defaultSampleRate,
     sampleRateOverrides,
+    remoteSampleRateOverrides,
     release,
     droppedReleases,
     sampleRateCeiling,
@@ -112,11 +125,16 @@ export function getTransactionSampleRate(
   const name =
     samplingContext?.name ?? samplingContext?.transactionContext?.name;
 
-  if (
-    name !== undefined &&
-    Object.prototype.hasOwnProperty.call(sampleRateOverrides, name)
-  ) {
-    return Math.min(sampleRateOverrides[name], ceiling);
+  if (name !== undefined) {
+    if (
+      remoteSampleRateOverrides &&
+      Object.prototype.hasOwnProperty.call(remoteSampleRateOverrides, name)
+    ) {
+      return Math.min(remoteSampleRateOverrides[name], ceiling);
+    }
+    if (Object.prototype.hasOwnProperty.call(sampleRateOverrides, name)) {
+      return Math.min(sampleRateOverrides[name], ceiling);
+    }
   }
 
   if (typeof parentSampled === 'boolean') {
@@ -219,6 +237,7 @@ export function createTracesSampler({
     return getTransactionSampleRate(samplingContext, {
       defaultSampleRate: remoteRate ?? defaultSampleRate,
       sampleRateOverrides,
+      remoteSampleRateOverrides: getRemoteTransactionSampleRates(),
       release,
       droppedReleases,
       sampleRateCeiling: remoteRate,

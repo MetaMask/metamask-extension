@@ -17,6 +17,7 @@
 export type SentryRemoteRates = {
   tracesSampleRate?: number;
   wrapperSampleRate?: number;
+  transactionSampleRates?: Record<string, number>;
 };
 
 type ControllerFlagState = {
@@ -24,6 +25,28 @@ type ControllerFlagState = {
 };
 
 let remoteRates: SentryRemoteRates = {};
+
+/**
+ * Validate a per-transaction-name rate map: keep only entries whose value is a
+ * valid rate. A non-object, an empty result, or no valid entries yields
+ * undefined so the build-time overrides apply unchanged.
+ *
+ * @param value - Candidate map from the remote flag.
+ * @returns The validated map, or undefined when invalid or empty.
+ */
+function asValidRateMap(value: unknown): Record<string, number> | undefined {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+  const rates: Record<string, number> = {};
+  for (const [name, rate] of Object.entries(value)) {
+    const validRate = asValidRate(rate);
+    if (validRate !== undefined) {
+      rates[name] = validRate;
+    }
+  }
+  return Object.keys(rates).length > 0 ? rates : undefined;
+}
 
 /**
  * A valid rate is a finite number in [0, 1]; anything else is treated as
@@ -48,6 +71,20 @@ function asValidRate(value: unknown): number | undefined {
  */
 export function getRemoteWrapperSampleRate(): number | undefined {
   return remoteRates.wrapperSampleRate;
+}
+
+/**
+ * The remote per-transaction-name sample-rate overrides
+ * (`sentry.transactionSampleRates`), when a valid map was read at init.
+ * Consumed by the `tracesSampler` ahead of the build-time per-name overrides,
+ * so a newly-noisy custom transaction can be re-budgeted without a build.
+ *
+ * @returns The validated name -> rate map, or undefined when absent.
+ */
+export function getRemoteTransactionSampleRates():
+  | Record<string, number>
+  | undefined {
+  return remoteRates.transactionSampleRates;
 }
 
 /**
@@ -102,6 +139,7 @@ export async function applySentryRemoteRates(client?: {
   const applied: SentryRemoteRates = {
     tracesSampleRate: asValidRate(sentryFlag?.tracesSampleRate),
     wrapperSampleRate: asValidRate(sentryFlag?.wrapperSampleRate),
+    transactionSampleRates: asValidRateMap(sentryFlag?.transactionSampleRates),
   };
   remoteRates = applied;
 

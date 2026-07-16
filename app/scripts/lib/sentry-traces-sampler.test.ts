@@ -529,3 +529,95 @@ describe('createTracesSampler with the remote tracesSampleRate flag', () => {
     );
   });
 });
+
+describe('createTracesSampler with the remote transactionSampleRates flag', () => {
+  const defaultSampleRate = 0.0075;
+
+  async function applyRemoteRates(sentryFlag: Record<string, unknown>) {
+    globalThis.stateHooks = {
+      getPersistedState: async () => ({
+        data: {
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: { sentry: sentryFlag },
+          },
+        },
+      }),
+      getSentryState: () => ({ browser: '', version: '' }),
+    };
+    await applySentryRemoteRates();
+  }
+
+  afterEach(() => {
+    resetSentryRemoteRates();
+    // @ts-expect-error test cleanup of the global hook
+    delete globalThis.stateHooks;
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+  });
+
+  it('sub-samples a named transaction at the flag rate', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      transactionSampleRates: { 'Noisy Transaction': 0.001 },
+    });
+
+    expect(sampler({ name: 'Noisy Transaction' })).toBe(0.001);
+  });
+
+  it('passes unnamed and unlisted transactions through at the default rate', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      transactionSampleRates: { 'Noisy Transaction': 0.001 },
+    });
+
+    expect(sampler({})).toBe(defaultSampleRate);
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
+  });
+
+  it('wins over a build-time override for the same name', async () => {
+    process.env.SENTRY_SAMPLE_RATE_OVERRIDES = JSON.stringify({
+      'Contested Transaction': 0.5,
+    });
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      transactionSampleRates: { 'Contested Transaction': 0.001 },
+    });
+
+    expect(sampler({ name: 'Contested Transaction' })).toBe(0.001);
+  });
+
+  it('can un-pin a built-in zero rate (remote wins in both directions)', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      transactionSampleRates: { AssetsDataSourceTiming: 0.0001 },
+    });
+
+    expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0.0001);
+  });
+
+  it('leaves build-time overrides in effect for names the flag omits', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      transactionSampleRates: { 'Noisy Transaction': 0.001 },
+    });
+
+    expect(sampler({ name: 'AssetsUpdatePipeline' })).toBe(0);
+  });
+
+  it('is capped by the remote tracesSampleRate ceiling', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      tracesSampleRate: 0.001,
+      transactionSampleRates: { 'Boosted Transaction': 0.5 },
+    });
+
+    expect(sampler({ name: 'Boosted Transaction' })).toBe(0.001);
+  });
+
+  it('ignores a malformed flag value (safe no-op, build-time fallback)', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({ transactionSampleRates: 'not-a-map' });
+
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
+    expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0);
+  });
+});

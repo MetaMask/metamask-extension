@@ -1,5 +1,6 @@
 import {
   applySentryRemoteRates,
+  getRemoteTransactionSampleRates,
   getRemoteWrapperSampleRate,
   resetSentryRemoteRates,
 } from './sentry-remote-rates';
@@ -42,6 +43,7 @@ describe('applySentryRemoteRates', () => {
     expect(applied).toStrictEqual({
       tracesSampleRate: 0.02,
       wrapperSampleRate: 0.5,
+      transactionSampleRates: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
@@ -74,6 +76,7 @@ describe('applySentryRemoteRates', () => {
     expect(applied).toStrictEqual({
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
+      transactionSampleRates: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
     expect(getRemoteWrapperSampleRate()).toBeUndefined();
@@ -98,6 +101,7 @@ describe('applySentryRemoteRates', () => {
     expect(applied).toStrictEqual({
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
+      transactionSampleRates: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
   });
@@ -108,6 +112,7 @@ describe('applySentryRemoteRates', () => {
     await expect(applySentryRemoteRates(client)).resolves.toStrictEqual({
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
+      transactionSampleRates: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
     expect(getRemoteWrapperSampleRate()).toBeUndefined();
@@ -134,6 +139,53 @@ describe('applySentryRemoteRates', () => {
 
     expect(applied.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
+  });
+
+  describe('transactionSampleRates', () => {
+    it('caches a valid name -> rate map', async () => {
+      mockPersistedState({
+        transactionSampleRates: { 'Noisy Transaction': 0.001, 'Quiet One': 1 },
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getRemoteTransactionSampleRates()).toStrictEqual({
+        'Noisy Transaction': 0.001,
+        'Quiet One': 1,
+      });
+    });
+
+    it('drops invalid entries and keeps valid ones', async () => {
+      mockPersistedState({
+        transactionSampleRates: {
+          'Valid Entry': 0.5,
+          'Out Of Range': 2,
+          'Wrong Type': 'high',
+          'Not Finite': Infinity,
+        },
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getRemoteTransactionSampleRates()).toStrictEqual({
+        'Valid Entry': 0.5,
+      });
+    });
+
+    it.each([
+      ['array', [0.5]],
+      ['string', 'AssetsDataSourceTiming=0'],
+      ['number', 0.5],
+      ['null', null],
+      ['all-invalid map', { 'Only Entry': -1 }],
+      ['empty map', {}],
+    ])('yields undefined for a %s value', async (_, value) => {
+      mockPersistedState({ transactionSampleRates: value });
+
+      await applySentryRemoteRates();
+
+      expect(getRemoteTransactionSampleRates()).toBeUndefined();
+    });
   });
 
   describe('shouldSampleWrappers integration', () => {
