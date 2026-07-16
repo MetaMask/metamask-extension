@@ -65,6 +65,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'Date',
   // Selenium atoms construct regexes while locating elements.
   'RegExp',
+  'WebAssembly',
+  'Request',
   // globals sentry needs to function
   '__SENTRY__',
   'appState',
@@ -75,6 +77,9 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'logEncryptedVault',
   // needed by Sentry and react-router-dom v6 HashRouter
   'history',
+  // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
+  // under scuttling the detection itself throws unless excepted.
+  'requestIdleCallback',
   // globals used by react-dom
   'getSelection',
   // globals opera needs to function
