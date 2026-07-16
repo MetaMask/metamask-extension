@@ -13,6 +13,21 @@ import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
   detectNfts: jest.fn(() => ({ type: 'MOCK_DETECT_NFTS' })),
@@ -210,9 +225,9 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     fireEvent.click(getByText(messages.perps.message));
 
-    expect(trackEvent).not.toHaveBeenCalledWith(
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        event: MetaMetricsEventName.PerpsScreenViewed,
+        name: MetaMetricsEventName.PerpsScreenViewed,
       }),
     );
   });
