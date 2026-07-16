@@ -318,8 +318,10 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
 
-    await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, () =>
-      undefined,
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
     );
 
     expect(validateRequestWithPPOM).toHaveBeenCalledTimes(1);
@@ -339,8 +341,10 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
 
-    await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, () =>
-      undefined,
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
     );
 
     expect(validateRequestWithPPOM).toHaveBeenCalledTimes(1);
