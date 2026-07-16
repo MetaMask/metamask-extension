@@ -82,12 +82,6 @@ function getTitleConfig(item: ActivityListItem | undefined) {
         args: getDefinedArgs(item.data.token?.symbol),
       };
     }
-    case 'swapIncomplete': {
-      return {
-        key,
-        args: getDefinedArgs(item.data.sourceToken?.symbol),
-      };
-    }
     default:
       return { key, args: [''] };
   }
