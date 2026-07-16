@@ -14,22 +14,37 @@ class NFTDetailsPage {
 
   private readonly nftDetailsAddress = '.nft-details__addressButton';
 
+  private readonly nftDetailsAddressByText = (address: string) => ({
+    css: this.nftDetailsAddress,
+    text: address,
+  });
+
   private readonly nftDetailsDescription =
     '[data-testid="nft-details__description"]';
 
+  private readonly nftDetailsDescriptionByText = (description: string) => ({
+    css: this.nftDetailsDescription,
+    text: description,
+  });
+
   private readonly nftDetailsName = '[data-testid="nft-details__name"]';
 
-  private readonly nftRenderedImage = '[data-testid="nft-image"]';
+  private readonly nftDetailsNameByText = (name: string) => ({
+    css: this.nftDetailsName,
+    text: name,
+  });
 
   private readonly nftImageContainer = '.nft-item__container';
+
+  private readonly nftItemButton = '[data-testid="nft-item"]';
 
   private readonly nftOptionsButton = '[data-testid="nft-options__button"]';
 
   private readonly nftRemoveButton = '[data-testid="nft-item-remove__button"]';
 
-  private readonly nftSendButton = '[data-testid="nft-send-button"]';
+  private readonly nftRenderedImage = '[data-testid="nft-image"]';
 
-  private readonly nftItemButtom = '[data-testid="nft-item"]';
+  private readonly nftSendButton = '[data-testid="nft-send-button"]';
 
   private readonly removeNftSuccessToast =
     '[data-testid="nft-remove-success-toast"]';
@@ -48,7 +63,53 @@ class NFTDetailsPage {
     this.driver = driver;
   }
 
+  async checkNftDefaultImageIsDisplayed() {
+    console.log('Check if NFT default image is displayed on NFT details page');
+    await this.driver.waitForSelector(this.nftDefaultImage);
+  }
+
+  async checkNftDescriptionIsDisplayed(description: string) {
+    console.log(
+      'Check if NFT description is displayed on NFT details page',
+      description,
+    );
+    await this.driver.waitForSelector(
+      this.nftDetailsDescriptionByText(description),
+    );
+  }
+
+  async checkNftDetailsAddressIsDisplayed(address: string) {
+    console.log(
+      'Check if NFT address is displayed on NFT details page',
+      address,
+    );
+    await this.driver.waitForSelector(this.nftDetailsAddressByText(address));
+  }
+
+  async checkNftFullImageIsDisplayed() {
+    console.log('Check if NFT full image is displayed on NFT details page');
+    await this.driver.waitForSelector(this.nftItemButton);
+  }
+
+  async checkNftImageContainerIsDisplayed() {
+    console.log(
+      'Check if NFT image container is displayed on NFT details page',
+    );
+    await this.driver.waitForSelector(this.nftImageContainer);
+  }
+
+  async checkNftNameIsDisplayed(name: string) {
+    console.log('Check if NFT name is displayed on NFT details page', name);
+    await this.driver.waitForSelector(this.nftDetailsNameByText(name));
+  }
+
+  async checkNftRenderedImageIsDisplayed() {
+    console.log('Check if NFT rendered image is displayed on NFT details page');
+    await this.driver.waitForSelector(this.nftRenderedImage);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
+    console.log('Check if NFT details page is loaded');
     try {
       await this.driver.waitForMultipleSelectors([
         this.nftSendButton,
@@ -62,12 +123,14 @@ class NFTDetailsPage {
     console.log('NFT details page is loaded');
   }
 
-  async clickNFTSendButton() {
-    await this.driver.clickElement(this.nftSendButton);
+  async clickNFTItemButton() {
+    console.log('Click to NFT item button on NFT details page');
+    await this.driver.clickElement(this.nftItemButton);
   }
 
-  async clickNFTItemButton() {
-    await this.driver.clickElement(this.nftItemButtom);
+  async clickNFTSendButton() {
+    console.log('Click to send NFT button on NFT details page');
+    await this.driver.clickElement(this.nftSendButton);
   }
 
   async removeNFT() {
@@ -84,58 +147,6 @@ class NFTDetailsPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmShowNftImageButton,
     );
-  }
-
-  async checkNftDescriptionIsDisplayed(description: string) {
-    console.log(
-      'Check if NFT description is displayed on NFT details page',
-      description,
-    );
-    await this.driver.waitForSelector({
-      css: this.nftDetailsDescription,
-      text: description,
-    });
-  }
-
-  async checkNftDefaultImageIsDisplayed() {
-    console.log('Check if NFT default image is displayed on NFT details page');
-    await this.driver.waitForSelector(this.nftDefaultImage);
-  }
-
-  async checkNftDetailsAddressIsDisplayed(address: string) {
-    console.log(
-      'Check if NFT address is displayed on NFT details page',
-      address,
-    );
-    await this.driver.waitForSelector({
-      css: this.nftDetailsAddress,
-      text: address,
-    });
-  }
-
-  async checkNftImageContainerIsDisplayed() {
-    console.log(
-      'Check if NFT image container is displayed on NFT details page',
-    );
-    await this.driver.waitForSelector(this.nftImageContainer);
-  }
-
-  async checkNftRenderedImageIsDisplayed() {
-    console.log('Check if NFT rendered image is displayed on NFT details page');
-    await this.driver.waitForSelector(this.nftRenderedImage);
-  }
-
-  async checkNftNameIsDisplayed(name: string) {
-    console.log('Check if NFT name is displayed on NFT details page', name);
-    await this.driver.waitForSelector({
-      css: this.nftDetailsName,
-      text: name,
-    });
-  }
-
-  async checkNftFullImageIsDisplayed() {
-    console.log('Check if NFT full image is displayed on NFT details page');
-    await this.driver.waitForSelector('[data-testid="nft-item"]');
   }
 }
 

@@ -268,7 +268,9 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -291,7 +293,9 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
     expect(opened).toBe(true);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: 'eip155:1/erc20:0xabc' },
+    });
   });
 
   it('intent with assetId absent from a settled catalog → shows RAMPS_UNSUPPORTED', async () => {
@@ -355,7 +359,9 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
     expect(getModalName()).toBeNull();
   });
 });
