@@ -55,13 +55,8 @@ module.exports = {
       '../ui/__mocks__/useAnalytics.ts',
     );
 
-    const hwSwapHooksMock = path.resolve(
-      __dirname,
-      '..',
-      'ui',
-      '__mocks__',
-      'hardware-wallet-swap',
-      'hooks',
+    const hwSwapHooksMock = require.resolve(
+      '../ui/__mocks__/hardware-wallet-swap/hooks.ts',
     );
     config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSwapQuoteData$'
