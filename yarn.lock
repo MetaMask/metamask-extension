@@ -6022,20 +6022,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-42cce76ad":
-  version: 6.5.0-preview-42cce76ad
-  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-42cce76ad"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-c6818385b":
+  version: 6.5.0-preview-c6818385b
+  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-c6818385b"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.5"
+    "@metamask/account-tree-controller": "npm:^7.5.5"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/utils": "npm:^11.11.0"
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/2b11085c3d1df1302a1cfa451cdb169b1106ed59098dd5fe119833dcfd5555dfd391bd5614c12ecc6135390d67cab605190dc1fe2c7553ea588c46640b8ba4f9
+  checksum: 10/122f2676ba02fe5135b5808d4817a0016353c4e1ef412ad21447c4d860645cadff14468757552f8d719f2041e90c72e58d026d10efe7f58ef007106abdbfd44a
   languageName: node
   linkType: hard
 

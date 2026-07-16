@@ -314,7 +314,7 @@
     "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
     "@metamask/messenger": "^2.0.0",
     "@metamask/network-enablement-controller@npm:^5.4.1": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch",
-    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.5.0-preview-42cce76ad"
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.5.0-preview-c6818385b"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
