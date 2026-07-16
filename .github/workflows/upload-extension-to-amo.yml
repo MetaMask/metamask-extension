@@ -25,15 +25,21 @@ name: Upload extension to Firefox AMO
 #   aud = sts.amazonaws.com
 #   sub = repo:MetaMask/metamask-extension:environment:{amo-dev|amo-flask|amo-production}
 # dev (amo-dev): ref + job_workflow_ref pinned to main (human E2E).
-# PRD flask + production (amo-flask / amo-production):
+# PRD flask (amo-flask):
 #   ref              = refs/heads/main | refs/heads/release/*
 #   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/*
-#   actor            = runway-github[bot]
-#   actor_id         = 73448015
+#   actor            = runway-github[bot] OR @MetaMask/release-team member
+#   actor_id         = 73448015 (Runway) OR human release-team member
+# PRD production (amo-production):
+#   ref              = refs/heads/main ONLY (timing-sensitive; aligned with ~1% CWS rollout)
+#   job_workflow_ref = .../upload-extension-to-amo.yml@refs/heads/*
+#   actor            = runway-github[bot] OR @MetaMask/release-team member
+#   actor_id         = 73448015 (Runway) OR human release-team member
 #
-# GitHub Environment deployment branches on amo-production and amo-flask must allow main + release/*.
+# GitHub Environment deployment branches: amo-production → main only; amo-flask → main + release/*.
 #
-# INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is IAM trust actor_id).
+# INFRA-3649 — sender verification (defense-in-depth; primary gate is IAM trust on amo-production/flask).
+# INFRA-3769 — @MetaMask/release-team members may dispatch production manually (main only).
 #
 # Lambda invoke must use alias qualifier (dev | flask | production); unqualified invoke is denied.
 # AMO JWT secrets are read inside Lambda (assumes amo-submission-secrets-{env}), not by the runner.
@@ -97,9 +103,14 @@ jobs:
               echo "::error::Dev (amo-dev) uploads must run from refs/heads/main (current: ${GITHUB_REF})"
               exit 1
             fi
-          elif [[ "${TARGET}" == "production" || "${TARGET}" == "flask" ]]; then
+          elif [[ "${TARGET}" == "production" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "::error::Production uploads must run from refs/heads/main only (current: ${GITHUB_REF}). AMO production is timing-sensitive; dispatch from main after the release is cut."
+              exit 1
+            fi
+          elif [[ "${TARGET}" == "flask" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" && ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
-              echo "::error::Production and Flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
+              echo "::error::Flask uploads must run from refs/heads/main or refs/heads/release/* (current: ${GITHUB_REF})"
               exit 1
             fi
           fi
@@ -200,11 +211,15 @@ jobs:
             echo "| Branch | \`${{ github.ref }}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      # Defense-in-depth: fail fast if a non-Runway actor dispatches a production or flask run.
-      # The authoritative gate is IAM trust (actor_id=73448015) on amo-submission-production/flask.
-      - name: Verify Runway sender (production and flask)
+      # Defense-in-depth: reject unauthorized actors before any AWS credential exchange.
+      # Allowed: Runway bot (actor_id=73448015) OR a member of @MetaMask/release-team.
+      # The authoritative IAM gate is the amo-submission-production/flask trust policy.
+      # INFRA-3769: release-team members may manually dispatch production from main.
+      - name: Verify authorized sender (production and flask)
         if: inputs.target == 'production' || inputs.target == 'flask'
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
           SENDER_ID: ${{ github.event.sender.id }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
           RUNWAY_ACTOR_ID: '73448015'
@@ -212,12 +227,20 @@ jobs:
         run: |
           set -euo pipefail
           echo "Sender: ${SENDER_LOGIN} (id=${SENDER_ID})"
-          echo "Expected: ${RUNWAY_ACTOR_LOGIN} (id=${RUNWAY_ACTOR_ID})"
-          if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
-            echo "::error::Production and Flask uploads must be dispatched by Runway (expected sender_id=${RUNWAY_ACTOR_ID} / ${RUNWAY_ACTOR_LOGIN}, got ${SENDER_ID} / ${SENDER_LOGIN}). IAM trust would also reject this OIDC request."
-            exit 1
+          if [[ "${SENDER_ID}" == "${RUNWAY_ACTOR_ID}" ]]; then
+            echo "Runway sender verified (id=${SENDER_ID})."
+            exit 0
           fi
-          echo "Sender verified: ${SENDER_LOGIN} (id=${SENDER_ID})"
+          # Human actor — check @MetaMask/release-team membership via GitHub API.
+          HTTP_STATUS=$(gh api \
+            "orgs/MetaMask/teams/release-team/memberships/${ACTOR}" \
+            --silent -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
+          if [[ "${HTTP_STATUS}" == "200" ]]; then
+            echo "Release-team member verified: ${ACTOR}"
+            exit 0
+          fi
+          echo "::error::Unauthorized actor '${ACTOR}' (sender_id=${SENDER_ID}). Production and Flask uploads must be dispatched by Runway (id=${RUNWAY_ACTOR_ID}) or a member of @MetaMask/release-team. IAM trust would also reject this OIDC request."
+          exit 1
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
