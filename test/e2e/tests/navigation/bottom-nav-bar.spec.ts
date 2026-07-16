@@ -8,7 +8,6 @@ import { getProductionRemoteFlagDefaults } from '../../feature-flags/feature-fla
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import {
   ACTIVITY_ROUTE,
-  DEFAULT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
@@ -81,7 +80,7 @@ describe('Bottom nav bar', function (this: Suite) {
 
         const bottomNav = new BottomNavBar(driver);
         await bottomNav.waitForBottomNavBar();
-        await bottomNav.assertOnRoute(DEFAULT_ROUTE);
+        await bottomNav.assertOnHomeRoute();
       },
     );
   });
@@ -132,7 +131,7 @@ describe('Bottom nav bar', function (this: Suite) {
         await bottomNav.assertOnRoute(CROSS_CHAIN_SWAP_ROUTE);
 
         await bottomNav.clickHome();
-        await bottomNav.assertOnRoute(DEFAULT_ROUTE);
+        await bottomNav.assertOnHomeRoute();
       },
     );
   });
@@ -150,7 +149,7 @@ describe('Bottom nav bar', function (this: Suite) {
         await bottomNav.assertOnRoute(ACTIVITY_ROUTE);
 
         await bottomNav.clickHome();
-        await bottomNav.assertOnRoute(DEFAULT_ROUTE);
+        await bottomNav.assertOnHomeRoute();
       },
     );
   });

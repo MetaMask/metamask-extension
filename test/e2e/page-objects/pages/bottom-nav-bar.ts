@@ -28,6 +28,20 @@ class BottomNavBar {
     await this.driver.assertElementNotPresent(this.navBar);
   }
 
+  async assertOnHomeRoute(): Promise<void> {
+    console.log('Assert current route is home');
+    await this.driver.waitUntil(
+      async () => {
+        const isHome = await this.driver.executeScript(`
+        const path = window.location.hash.slice(1).split('?')[0];
+        return path === '/' || path === '';
+      `);
+        return Boolean(isHome);
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
+  }
+
   async assertOnRoute(route: string): Promise<void> {
     console.log(`Assert current route contains "${route}"`);
     await this.driver.waitForUrlContaining({ url: route });
