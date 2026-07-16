@@ -721,7 +721,9 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
     return mapCodeToErrorCode(error.code);
   }
 
-  return null;
+  // Some transport paths preserve HardwareWalletError name/message/stack but
+  // drop the explicit code field. Recover the code from those fields.
+  return inferErrorCodeFromSerializedHardwareWalletCause(error);
 }
 
 /**
