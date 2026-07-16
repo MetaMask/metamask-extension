@@ -863,9 +863,10 @@ describe('util', () => {
     });
 
     it('should return ignore message data with unknown types', () => {
+      const ignoredNestedKey = 'do_not_display';
       message.do_not_display = 'one';
       message.do_not_display_2 = {
-        do_not_display: 'two',
+        [ignoredNestedKey]: 'two',
       };
 
       // result will NOT contain the do_not_displays because type definition

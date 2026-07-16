@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionType } from '@metamask/transaction-controller';
 import {
   BlockaidReason,
@@ -6,7 +7,29 @@ import {
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
-export function getMethodName(camelCase) {
+type BlockaidSecurityAlertResponse = {
+  'result_type'?: BlockaidResultType | null;
+  reason?: string | null;
+  description?: string;
+  source?: string;
+  providerRequestsCount?: Record<string, number>;
+  features?: unknown[];
+};
+
+type SwapAndSendTransactionMeta = {
+  type?: string;
+  chainId?: string | number;
+  sourceTokenAmount?: string;
+  sourceTokenDecimals?: number;
+  destinationTokenAmount?: string;
+  destinationTokenDecimals?: number;
+  sourceTokenSymbol?: string;
+  destinationTokenAddress?: string;
+  destinationTokenSymbol?: string;
+  sourceTokenAddress?: string;
+};
+
+export function getMethodName(camelCase: unknown): string {
   if (!camelCase || typeof camelCase !== 'string') {
     return '';
   }
@@ -17,7 +40,7 @@ export function getMethodName(camelCase) {
     .replace(/ +/gu, ' ');
 }
 
-export function formatAccountType(accountType) {
+export function formatAccountType(accountType: string): string {
   if (accountType === 'default') {
     return 'metamask';
   }
@@ -28,20 +51,20 @@ export function formatAccountType(accountType) {
 /**
  * Generates a unique identifier utilizing the original request id for signature event fragments
  *
- * @param {number} requestId
- * @returns {string}
+ * @param requestId
  */
-export function generateSignatureUniqueId(requestId) {
+export function generateSignatureUniqueId(requestId: number): string {
   return `signature-${requestId}`;
 }
 
 /**
  * Returns the ui_customization string value based on the result type
  *
- * @param {BlockaidResultType} resultType
- * @returns {MetaMetricsEventUiCustomization}
+ * @param resultType
  */
-const getBlockaidMetricUiCustomization = (resultType) => {
+const getBlockaidMetricUiCustomization = (
+  resultType?: BlockaidResultType | null,
+): MetaMetricsEventUiCustomization[] | undefined => {
   let uiCustomization;
 
   if (resultType === BlockaidResultType.Malicious) {
@@ -55,16 +78,16 @@ const getBlockaidMetricUiCustomization = (resultType) => {
   return uiCustomization;
 };
 
-/**
- * @param {import('@metamask/transaction-controller').TransactionMeta} transactionMeta
- * @returns {object}
- */
-export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
+export const getBlockaidMetricsProps = ({
+  securityAlertResponse,
+}: {
+  securityAlertResponse?: BlockaidSecurityAlertResponse;
+}): Record<string, unknown> => {
   if (!securityAlertResponse) {
     return {};
   }
 
-  const params = {};
+  const params: Record<string, unknown> = {};
   const {
     providerRequestsCount,
     reason,
@@ -102,7 +125,9 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
   return params;
 };
 
-export const getSwapAndSendMetricsProps = (transactionMeta) => {
+export const getSwapAndSendMetricsProps = (
+  transactionMeta: SwapAndSendTransactionMeta,
+): Record<string, unknown> => {
   if (transactionMeta.type !== TransactionType.swapAndSend) {
     return {};
   }
@@ -120,22 +145,22 @@ export const getSwapAndSendMetricsProps = (transactionMeta) => {
   } = transactionMeta;
 
   const params = {
-    chain_id: chainId,
-    token_amount_source:
+    'chain_id': chainId,
+    'token_amount_source':
       sourceTokenAmount && sourceTokenDecimals
         ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
         : undefined,
-    token_amount_dest_estimate:
+    'token_amount_dest_estimate':
       destinationTokenAmount && destinationTokenDecimals
         ? calcTokenAmount(
             destinationTokenAmount,
             destinationTokenDecimals,
           ).toString()
         : undefined,
-    token_symbol_source: sourceTokenSymbol,
-    token_symbol_destination: destinationTokenSymbol,
-    token_address_source: sourceTokenAddress,
-    token_address_destination: destinationTokenAddress,
+    'token_symbol_source': sourceTokenSymbol,
+    'token_symbol_destination': destinationTokenSymbol,
+    'token_address_source': sourceTokenAddress,
+    'token_address_destination': destinationTokenAddress,
   };
 
   return params;

@@ -1,3 +1,5 @@
+type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
+
 export const GAS_FORM_ERRORS = {
   GAS_LIMIT_OUT_OF_BOUNDS: 'editGasLimitOutOfBounds',
   MAX_PRIORITY_FEE_TOO_LOW: 'editGasMaxPriorityFeeLow',
@@ -9,7 +11,11 @@ export const GAS_FORM_ERRORS = {
   GAS_PRICE_TOO_LOW: 'editGasPriceTooLow',
 };
 
-export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
+export function getGasFormErrorText(
+  type: string,
+  t: TranslateFunction,
+  { minimumGasLimit }: { minimumGasLimit?: string | number } = {},
+): string {
   switch (type) {
     case GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS:
       return t('editGasLimitOutOfBounds', [minimumGasLimit]);

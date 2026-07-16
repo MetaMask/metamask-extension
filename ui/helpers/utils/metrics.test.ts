@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 import {
   BlockaidReason,
@@ -23,17 +24,17 @@ describe('getMethodName', () => {
 });
 
 const securityAlertResponse = {
-  result_type: BlockaidResultType.Malicious,
+  'result_type': BlockaidResultType.Malicious,
   reason: BlockaidReason.setApprovalForAll,
   features: [],
   source: SecurityAlertSource.Local,
 };
 
 const expectedMetricsPropsBase = {
-  security_alert_reason: BlockaidReason.setApprovalForAll,
-  security_alert_response: BlockaidResultType.Malicious,
-  security_alert_source: SecurityAlertSource.Local,
-  ui_customizations: [MetaMetricsEventUiCustomization.FlaggedAsMalicious],
+  'security_alert_reason': BlockaidReason.setApprovalForAll,
+  'security_alert_response': BlockaidResultType.Malicious,
+  'security_alert_source': SecurityAlertSource.Local,
+  'ui_customizations': [MetaMetricsEventUiCustomization.FlaggedAsMalicious],
 };
 
 describe('getBlockaidMetricsProps', () => {
@@ -54,7 +55,7 @@ describe('getBlockaidMetricsProps', () => {
       securityAlertResponse: {
         ...securityAlertResponse,
         reason: null,
-        result_type: null,
+        'result_type': null,
       },
     });
 
@@ -68,14 +69,14 @@ describe('getBlockaidMetricsProps', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Errored,
+        'result_type': BlockaidResultType.Errored,
       },
     });
 
     expect(result).toStrictEqual({
       ...expectedMetricsPropsBase,
-      security_alert_response: BlockaidResultType.Errored,
-      ui_customizations: [MetaMetricsEventUiCustomization.SecurityAlertError],
+      'security_alert_response': BlockaidResultType.Errored,
+      'ui_customizations': [MetaMetricsEventUiCustomization.SecurityAlertError],
     });
   });
 
@@ -83,7 +84,7 @@ describe('getBlockaidMetricsProps', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Malicious,
+        'result_type': BlockaidResultType.Malicious,
       },
     });
 
@@ -94,7 +95,7 @@ describe('getBlockaidMetricsProps', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Malicious,
+        'result_type': BlockaidResultType.Malicious,
       },
     });
 
@@ -105,13 +106,13 @@ describe('getBlockaidMetricsProps', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Benign,
+        'result_type': BlockaidResultType.Benign,
       },
     });
 
     expect(result).toStrictEqual({
-      security_alert_response: BlockaidResultType.Benign,
-      security_alert_source: SecurityAlertSource.Local,
+      'security_alert_response': BlockaidResultType.Benign,
+      'security_alert_source': SecurityAlertSource.Local,
     });
   });
 
@@ -120,16 +121,16 @@ describe('getBlockaidMetricsProps', () => {
       securityAlertResponse: {
         ...securityAlertResponse,
         providerRequestsCount: {
-          eth_call: 5,
-          eth_getCode: 3,
+          'eth_call': 5,
+          'eth_getCode': 3,
         },
       },
     });
 
     expect(result).toStrictEqual({
       ...expectedMetricsPropsBase,
-      ppom_eth_call_count: 5,
-      ppom_eth_getCode_count: 3,
+      'ppom_eth_call_count': 5,
+      'ppom_eth_getCode_count': 3,
     });
   });
 
@@ -137,15 +138,15 @@ describe('getBlockaidMetricsProps', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Errored,
+        'result_type': BlockaidResultType.Errored,
         reason: 'error: error message',
       },
     });
     expect(result).toStrictEqual({
-      ui_customizations: [MetaMetricsEventUiCustomization.SecurityAlertError],
-      security_alert_response: BlockaidResultType.Errored,
-      security_alert_reason: 'error: error message',
-      security_alert_source: SecurityAlertSource.Local,
+      'ui_customizations': [MetaMetricsEventUiCustomization.SecurityAlertError],
+      'security_alert_response': BlockaidResultType.Errored,
+      'security_alert_reason': 'error: error message',
+      'security_alert_source': SecurityAlertSource.Local,
     });
   });
 
@@ -181,7 +182,7 @@ describe('getBlockaidMetricsProps', () => {
 
     expect(result).toStrictEqual({
       ...expectedMetricsPropsBase,
-      security_alert_source: SecurityAlertSource.API,
+      'security_alert_source': SecurityAlertSource.API,
     });
   });
 });
@@ -209,13 +210,13 @@ describe('getSwapAndSendMetricsProps', () => {
       sourceTokenAddress: '0x456',
     };
     const expectedMetricsProps = {
-      chain_id: 1,
-      token_amount_source: '1',
-      token_amount_dest_estimate: '2',
-      token_symbol_source: 'ETH',
-      token_symbol_destination: 'ABC',
-      token_address_source: '0x456',
-      token_address_destination: '0x123',
+      'chain_id': 1,
+      'token_amount_source': '1',
+      'token_amount_dest_estimate': '2',
+      'token_symbol_source': 'ETH',
+      'token_symbol_destination': 'ABC',
+      'token_address_source': '0x456',
+      'token_address_destination': '0x123',
     };
     const result = getSwapAndSendMetricsProps(transactionMeta);
     expect(result).toStrictEqual(expectedMetricsProps);

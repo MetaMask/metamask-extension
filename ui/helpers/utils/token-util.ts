@@ -15,7 +15,51 @@ import { formatCurrency } from './confirm-tx.util';
 
 const DEFAULT_SYMBOL = '';
 
-async function getSymbolFromContract(tokenAddress) {
+type TokenListToken = {
+  address?: string;
+  symbol?: string;
+  name?: string;
+  decimals?: number | string;
+};
+
+type TokenList = Record<string, TokenListToken>;
+
+/**
+ * A stringifiable value, as found in ethers `Interface` parsed token data args.
+ */
+type Stringifiable = { toString(): string };
+
+type ParsedTokenData = {
+  args?: {
+    _to?: Stringifiable;
+    to?: Stringifiable;
+    _tokenId?: Stringifiable;
+    id?: Stringifiable;
+    [index: number]: Stringifiable | undefined;
+  };
+};
+
+type ExistingNft = {
+  address: string;
+  name?: string | null;
+  symbol?: string;
+  tokenId: string;
+  [key: string]: unknown;
+};
+
+type AssetDetails = {
+  standard?: string;
+  decimals?: number | string | false;
+  symbol?: string;
+  name?: string | null;
+  tokenId?: string;
+  tokenAmount?: string | false;
+  toAddress?: string;
+  balance?: string;
+  [key: string]: unknown;
+};
+
+async function getSymbolFromContract(tokenAddress: string) {
   const contract = util.getContractAtAddress(tokenAddress);
 
   try {
@@ -35,7 +79,7 @@ async function getSymbolFromContract(tokenAddress) {
   }
 }
 
-async function getNameFromContract(tokenAddress) {
+async function getNameFromContract(tokenAddress: string) {
   const contract = util.getContractAtAddress(tokenAddress);
 
   try {
@@ -55,7 +99,7 @@ async function getNameFromContract(tokenAddress) {
   }
 }
 
-async function getDecimalsFromContract(tokenAddress) {
+async function getDecimalsFromContract(tokenAddress: string) {
   const contract = util.getContractAtAddress(tokenAddress);
 
   try {
@@ -76,7 +120,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-export function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress: string, tokenList: TokenList) {
   return (
     tokenAddress &&
     (tokenList[tokenAddress.toLowerCase()] ??
@@ -84,7 +128,7 @@ export function getTokenMetadata(tokenAddress, tokenList) {
   );
 }
 
-async function getSymbol(tokenAddress, tokenList) {
+async function getSymbol(tokenAddress: string, tokenList: TokenList) {
   let symbol = await getSymbolFromContract(tokenAddress);
 
   if (!symbol) {
@@ -98,7 +142,7 @@ async function getSymbol(tokenAddress, tokenList) {
   return symbol;
 }
 
-async function getName(tokenAddress, tokenList) {
+async function getName(tokenAddress: string, tokenList: TokenList) {
   let name = await getNameFromContract(tokenAddress);
 
   if (!name) {
@@ -112,7 +156,7 @@ async function getName(tokenAddress, tokenList) {
   return name;
 }
 
-async function getDecimals(tokenAddress, tokenList) {
+async function getDecimals(tokenAddress: string, tokenList: TokenList) {
   let decimals = await getDecimalsFromContract(tokenAddress);
 
   if (!decimals || decimals === '0') {
@@ -126,8 +170,13 @@ async function getDecimals(tokenAddress, tokenList) {
   return decimals;
 }
 
-export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
-  let symbol, decimals, name;
+export async function getSymbolAndDecimalsAndName(
+  tokenAddress: string,
+  tokenList: TokenList,
+) {
+  let symbol: string | undefined;
+  let decimals: string | undefined;
+  let name: string | undefined;
 
   try {
     const results = await Promise.allSettled([
@@ -137,7 +186,10 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
     ]);
     const fulfilled = results
       .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value);
+      .map(
+        (result) =>
+          (result as PromiseFulfilledResult<string | undefined>).value,
+      );
 
     [symbol, decimals, name] = fulfilled;
   } catch (error) {
@@ -155,9 +207,12 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
 }
 
 export function tokenInfoGetter() {
-  const tokens = {};
+  const tokens: Record<
+    string,
+    Awaited<ReturnType<typeof getSymbolAndDecimalsAndName>>
+  > = {};
 
-  return async (address, tokenList) => {
+  return async (address: string, tokenList: TokenList) => {
     if (tokens[address.toLowerCase()]) {
       return tokens[address.toLowerCase()];
     }
@@ -171,34 +226,31 @@ export function tokenInfoGetter() {
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
  * order:
- *   - The '_to' parameter, if present
- *   - The first parameter, if present
+ * - The '_to' parameter, if present
+ * - The first parameter, if present
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A lowercase address string.
+ * @param tokenData - ethers Interface token data.
+ * @returns A lowercase address string.
  */
-export function getTokenAddressParam(tokenData = {}) {
+export function getTokenAddressParam(
+  tokenData: ParsedTokenData = {},
+): string | undefined {
   const value =
     tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
   return value?.toString().toLowerCase();
 }
 
 /**
- * Gets the '_value' parameter of the given token transaction data
- * (i.e function call) per the Human Standard Token ABI, if present.
- *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
- */
-/**
  * Gets either the '_tokenId' parameter or the 'id' param of the passed token transaction data.,
  * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
  * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value.
  */
-export function getTokenIdParam(tokenData = {}) {
+export function getTokenIdParam(
+  tokenData: ParsedTokenData = {},
+): string | undefined {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
@@ -207,21 +259,21 @@ export function getTokenIdParam(tokenData = {}) {
 /**
  * Get the token balance converted to fiat and optionally formatted for display
  *
- * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number|undefined} conversionRate - The exchange rate between the current fiat currency and the native currency
- * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
- * @param {string} [tokenAmount] - The current token balance
- * @param {string} [tokenSymbol] - The token symbol
- * @param {boolean} [formatted] - Whether the return value should be formatted or not
- * @param {boolean} [hideCurrencySymbol] - excludes the currency symbol in the result if true
- * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
+ * @param contractExchangeRate - The exchange rate between the current token and the native currency
+ * @param conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param currentCurrency - The currency code for the user's chosen fiat currency
+ * @param tokenAmount - The current token balance
+ * @param tokenSymbol - The token symbol
+ * @param formatted - Whether the return value should be formatted or not
+ * @param hideCurrencySymbol - excludes the currency symbol in the result if true
+ * @returns The token amount in the user's chosen fiat currency, optionally formatted and localize
  */
 export function getTokenFiatAmount(
-  contractExchangeRate,
-  conversionRate,
-  currentCurrency,
-  tokenAmount,
-  tokenSymbol,
+  contractExchangeRate: number | undefined,
+  conversionRate: number | undefined,
+  currentCurrency: string,
+  tokenAmount: string | number | false | undefined,
+  tokenSymbol: string | undefined,
   formatted = true,
   hideCurrencySymbol = false,
 ) {
@@ -250,17 +302,17 @@ export function getTokenFiatAmount(
     );
   }
 
-  currentTokenInFiat = currentTokenInFiat.round(2).toString();
+  const roundedTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
   if (hideCurrencySymbol && formatted) {
-    result = formatCurrency(currentTokenInFiat, currentCurrency);
+    result = formatCurrency(roundedTokenInFiat, currentCurrency);
   } else if (formatted) {
     result = `${formatCurrency(
-      currentTokenInFiat,
+      roundedTokenInFiat,
       currentCurrency,
     )} ${currentCurrency.toUpperCase()}`;
   } else {
-    result = currentTokenInFiat;
+    result = roundedTokenInFiat;
   }
   return result;
 }
@@ -268,20 +320,20 @@ export function getTokenFiatAmount(
 /**
  * Processes and combines data into a token or NFT details
  *
- * @param {string} tokenAddress
- * @param {string} currentUserAddress
- * @param {string} transactionData
- * @param {unknown[]} existingNfts
- * @param {string} chainId
+ * @param tokenAddress
+ * @param currentUserAddress
+ * @param transactionData
+ * @param existingNfts
+ * @param chainId
  * @returns Token or NFT details
  */
 export async function getAssetDetails(
-  tokenAddress,
-  currentUserAddress,
-  transactionData,
-  existingNfts,
-  chainId,
-) {
+  tokenAddress: string,
+  currentUserAddress: string,
+  transactionData: string,
+  existingNfts: ExistingNft[],
+  chainId?: string,
+): Promise<AssetDetails> {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
     throw new Error(
@@ -302,9 +354,6 @@ export async function getAssetDetails(
   // if a tokenId is present check if there is an NFT in state matching the address/tokenId
   // and avoid unnecessary network requests to query token details we already have
   if (existingNfts?.length && tokenId) {
-    /**
-     * @type {import('@metamask/assets-controllers').Nft | undefined}
-     */
     const existingNft = existingNfts.find(
       ({ address, tokenId: _tokenId }) =>
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
@@ -344,7 +393,7 @@ export async function getAssetDetails(
     tokenDecimals &&
     calcTokenAmount(tokenValue, tokenDecimals).toString(10);
 
-  const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
+  const decimals = tokenDecimals && Number(tokenDecimals?.toString());
 
   if (tokenDetails?.standard === ERC20) {
     tokenId = undefined;

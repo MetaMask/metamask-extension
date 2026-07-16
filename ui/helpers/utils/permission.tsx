@@ -32,13 +32,49 @@ import {
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { getURLHost } from './util';
 
+type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
+
+type PermissionValue = {
+  caveats: { type?: string; value?: unknown }[];
+  [key: string]: unknown;
+};
+
+type PermissionLabelObject = {
+  label: string;
+  description?: string;
+  leftIcon?: string | null;
+  rightIcon?: string | JSX.Element | null;
+  weight: number;
+  id?: string;
+  message?: string;
+  warningMessageSubject?: string;
+  connection?: string;
+  connectionName?: string;
+  subjectName?: string;
+  permissionName?: string;
+  permissionValue?: unknown;
+};
+
+type PermissionDescriptionParams = {
+  t: TranslateFunction;
+  isRequestApprovalPermittedChains?: boolean;
+  permissionName?: string;
+  permissionValue: PermissionValue;
+  subjectName?: string;
+  getSubjectName?: (origin: string) => string;
+};
+
+type PermissionDescriptionBuilder = (
+  params: PermissionDescriptionParams,
+) => PermissionLabelObject | PermissionLabelObject[];
+
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
 const RIGHT_INFO_ICON = (
   <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.iconMuted} />
 );
 
-function getSnapNameComponent(snapName) {
+function getSnapNameComponent(snapName?: string) {
   return (
     <Text
       fontWeight={FontWeight.Medium}
@@ -50,7 +86,9 @@ function getSnapNameComponent(snapName) {
   );
 }
 
-const PERMISSION_DESCRIPTIONS = deepFreeze({
+const PERMISSION_DESCRIPTIONS = deepFreeze<
+  Record<string | symbol, PermissionDescriptionBuilder>
+>({
   // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
   [Caip25EndowmentPermissionName]: ({
     t,
@@ -101,7 +139,9 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
     subjectName,
   }) =>
-    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
+    (
+      permissionValue.caveats[0].value as { path: string[]; curve: string }[]
+    ).map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.SecuritySearch,
         weight: PermissionWeight.snap_getBip32PublicKey,
@@ -172,7 +212,9 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
     subjectName,
   }) =>
-    permissionValue.caveats[0].value.map(({ path, curve }, i) => {
+    (
+      permissionValue.caveats[0].value as { path: string[]; curve: string }[]
+    ).map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.Key,
         weight: PermissionWeight.snap_getBip32Entropy,
@@ -226,7 +268,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
     subjectName,
   }) =>
-    permissionValue.caveats[0].value.map(({ coinType }, i) => ({
+    (permissionValue.caveats[0].value as { coinType: number }[]).map(
+      ({ coinType }, i) => ({
       label: t('permission_manageBip44Keys', [
         <Text
           color={TextColor.inherit}
@@ -282,7 +325,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 4,
   }),
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue, getSubjectName }) => {
-    const snaps = permissionValue.caveats[0].value;
+    const snaps = permissionValue.caveats[0].value as Record<string, unknown>;
     const baseDescription = {
       leftIcon: IconName.Flash,
       rightIcon: RIGHT_INFO_ICON,
@@ -290,7 +333,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     };
 
     return Object.keys(snaps).map((snapId) => {
-      const snapName = getSubjectName(snapId);
+      const snapName = getSubjectName?.(snapId);
       if (snapName) {
         return {
           ...baseDescription,
@@ -413,9 +456,10 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       weight: PermissionWeight.endowment_rpc,
     };
 
-    const { snaps, dapps, allowedOrigins } =
-      getRpcCaveatOrigins(permissionValue);
-    const results = [];
+    const { snaps, dapps, allowedOrigins } = getRpcCaveatOrigins(
+      permissionValue as Parameters<typeof getRpcCaveatOrigins>[0],
+    );
+    const results: PermissionLabelObject[] = [];
     if (snaps) {
       results.push({
         ...baseDescription,
@@ -444,7 +488,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       });
     }
 
-    if (allowedOrigins?.length > 0) {
+    if (allowedOrigins && allowedOrigins.length > 0) {
       let originsMessage;
 
       if (allowedOrigins.length === 1) {
@@ -676,8 +720,14 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
  */
 
 /**
- * @param {PermissionDescriptionParamsObject} params - The permission description params object.
- * @returns {PermissionLabelObject[]}
+ * @param params - The permission description params object.
+ * @param params.t
+ * @param params.isRequestApprovalPermittedChains
+ * @param params.permissionName
+ * @param params.permissionValue
+ * @param params.subjectName
+ * @param params.getSubjectName
+ * @returns
  */
 export const getPermissionDescription = ({
   t,
@@ -725,8 +775,13 @@ export const getPermissionDescription = ({
  * Get the weighted permissions from a permissions object. The weight is used to
  * sort the permissions in the UI.
  *
- * @param {WeightedPermissionDescriptionParamsObject} params - The weighted permissions params object.
- * @returns {PermissionLabelObject[]}
+ * @param params - The weighted permissions params object.
+ * @param params.t
+ * @param params.isRequestApprovalPermittedChains
+ * @param params.permissions
+ * @param params.getSubjectName
+ * @param params.subjectName
+ * @returns
  */
 export function getWeightedPermissions({
   t,

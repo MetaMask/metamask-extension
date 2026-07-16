@@ -8,13 +8,15 @@ import {
   CodefiTokenPricesServiceV2,
 } from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
-import bowser from 'bowser';
+import bowser, { type Parser } from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
-import { isObject, isStrictHexString } from '@metamask/utils';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { type Hex, isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
@@ -35,7 +37,12 @@ import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
-export function formatDate(date, format = "M/d/y 'at' T") {
+type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
+
+type MessageTypeProperty = { name: string; type: string };
+type MessageTypes = Record<string, MessageTypeProperty[]>;
+
+export function formatDate(date?: number | null, format = "M/d/y 'at' T") {
   if (!date) {
     return '';
   }
@@ -43,10 +50,10 @@ export function formatDate(date, format = "M/d/y 'at' T") {
 }
 
 /**
- * @param {number} unixTimestamp - timestamp as seconds since unix epoch
- * @returns {string} formatted date string e.g. "14 July 2034, 22:22"
+ * @param unixTimestamp - timestamp as seconds since unix epoch
+ * @returns formatted date string e.g. "14 July 2034, 22:22"
  */
-export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
+export const formatUTCDateFromUnixTimestamp = (unixTimestamp: number) => {
   if (!unixTimestamp) {
     return unixTimestamp;
   }
@@ -57,7 +64,7 @@ export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
 };
 
 export function formatDateWithYearContext(
-  date,
+  date?: number | null,
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
@@ -71,7 +78,7 @@ export function formatDateWithYearContext(
   );
 }
 
-export function formatDateWithSuffix(timestamp) {
+export function formatDateWithSuffix(timestamp: number) {
   const date = DateTime.fromMillis(timestamp * 1000); // Convert to milliseconds
   const { day } = date;
   const suffix = getOrdinalSuffix(day);
@@ -79,7 +86,7 @@ export function formatDateWithSuffix(timestamp) {
   return date.toFormat(`MMM d'${suffix}', yyyy`);
 }
 
-function getOrdinalSuffix(day) {
+function getOrdinalSuffix(day: number) {
   if (day > 3 && day < 21) {
     return 'th';
   } // because 11th, 12th, 13th
@@ -97,9 +104,9 @@ function getOrdinalSuffix(day) {
 /**
  * Determines if the provided chainId is a default MetaMask chain
  *
- * @param {string} chainId - chainId to check
+ * @param chainId - chainId to check
  */
-export function isDefaultMetaMaskChain(chainId) {
+export function isDefaultMetaMaskChain(chainId?: string) {
   if (
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
@@ -116,7 +123,9 @@ export function isDefaultMetaMaskChain(chainId) {
   return false;
 }
 
-export function valuesFor(obj) {
+export function valuesFor<Value>(
+  obj?: Record<string, Value> | null,
+): Value[] {
   if (!obj) {
     return [];
   }
@@ -126,7 +135,7 @@ export function valuesFor(obj) {
 }
 
 export function addressSummary(
-  address,
+  address?: string,
   firstSegLength = 10,
   lastSegLength = 4,
   includeHex = true,
@@ -145,7 +154,7 @@ export function addressSummary(
     : '...';
 }
 
-export function isValidDomainName(address) {
+export function isValidDomainName(address: string) {
   const match = punycode
     .toASCII(address)
     .toLowerCase()
@@ -165,10 +174,10 @@ export function isValidDomainName(address) {
  * various name formats like email-like names (yulia@beast), scheme-based names (ens:vitalik),
  * or other custom formats.
  *
- * @param {string} name - The name to check
- * @returns {boolean} True if the name could potentially be resolved
+ * @param name - The name to check
+ * @returns True if the name could potentially be resolved
  */
-export function isResolvableName(name) {
+export function isResolvableName(name?: string | null) {
   // Must be a non-empty string
   if (!name || typeof name !== 'string') {
     return false;
@@ -232,7 +241,7 @@ export function isResolvableName(name) {
   return false;
 }
 
-export function isOriginContractAddress(to, sendTokenAddress) {
+export function isOriginContractAddress(to?: string, sendTokenAddress?: string) {
   if (!to || !sendTokenAddress) {
     return false;
   }
@@ -240,7 +249,7 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 }
 
 // Takes wei hex, returns wei bigint, even if input is null
-export function numericBalance(balance) {
+export function numericBalance(balance?: string) {
   if (!balance) {
     return 0n;
   }
@@ -254,7 +263,7 @@ export function numericBalance(balance) {
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
-export function parseBalance(balance) {
+export function parseBalance(balance?: string): [string, string] {
   let afterDecimal;
   const wei = numericBalance(balance);
   const weiString = wei.toString();
@@ -262,7 +271,7 @@ export function parseBalance(balance) {
 
   const beforeDecimal =
     weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0';
-  afterDecimal = `000000000000000000${wei}`
+  afterDecimal = `000000000000000000${weiString}`
     .slice(-18)
     .replace(trailingZeros, '');
   if (afterDecimal === '') {
@@ -274,8 +283,8 @@ export function parseBalance(balance) {
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
 export function formatBalance(
-  balance,
-  decimalsToKeep,
+  balance = '',
+  decimalsToKeep?: number,
   needsParse = true,
   ticker = 'ETH',
 ) {
@@ -305,7 +314,7 @@ export function formatBalance(
   return formatted;
 }
 
-export function getContractAtAddress(tokenAddress) {
+export function getContractAtAddress(tokenAddress: string) {
   return new Contract(
     tokenAddress,
     abi,
@@ -331,13 +340,13 @@ export function getRandomFileName() {
  * Shortens the given string, preserving the beginning and end.
  * Returns the string it is no longer than truncatedCharLimit.
  *
- * @param {string} stringToShorten - The string to shorten.
- * @param {object} options - The options to use when shortening the string.
- * @param {number} options.truncatedCharLimit - The maximum length of the string.
- * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
- * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
- * @param {boolean} options.skipCharacterInEnd - Skip the character at the end.
- * @returns {string} The shortened string.
+ * @param stringToShorten - The string to shorten.
+ * @param options - The options to use when shortening the string.
+ * @param options.truncatedCharLimit - The maximum length of the string.
+ * @param options.truncatedStartChars - The number of characters to preserve at the beginning.
+ * @param options.truncatedEndChars - The number of characters to preserve at the end.
+ * @param options.skipCharacterInEnd - Skip the character at the end.
+ * @returns The shortened string.
  */
 export function shortenString(
   stringToShorten = '',
@@ -346,6 +355,11 @@ export function shortenString(
     truncatedStartChars,
     truncatedEndChars,
     skipCharacterInEnd,
+  }: {
+    truncatedCharLimit: number;
+    truncatedStartChars: number;
+    truncatedEndChars: number;
+    skipCharacterInEnd?: boolean;
   } = {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
@@ -369,8 +383,8 @@ export function shortenString(
  *
  * Example output: 0xabcde...12345
  *
- * @param {string} address - The address to shorten.
- * @returns {string} The shortened address, or the original if it was no longer
+ * @param address - The address to shorten.
+ * @returns The shortened address, or the original if it was no longer
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
@@ -382,18 +396,21 @@ export function shortenAddress(address = '') {
   });
 }
 
-export function getAccountByAddress(accounts = [], targetAddress) {
-  return accounts.find(({ address }) => address === targetAddress);
+export function getAccountByAddress<Account extends { address: string }>(
+  accounts: Account[] | undefined,
+  targetAddress: string,
+): Account | undefined {
+  return accounts?.find(({ address }) => address === targetAddress);
 }
 
 /**
  * Sort the given list of account their selecting order (descending). Meaning the
  * first account of the sorted list will be the last selected account.
  *
- * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
- * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ * @param accounts - The internal accounts list.
+ * @returns The sorted internal account list.
  */
-export function sortSelectedInternalAccounts(accounts) {
+export function sortSelectedInternalAccounts(accounts: InternalAccount[]) {
   // This logic comes from the `AccountsController`:
   // TODO: Expose a free function from this controller and use it here
   return accounts.sort((accountA, accountB) => {
@@ -409,10 +426,10 @@ export function sortSelectedInternalAccounts(accounts) {
  * Strips the following schemes from URL strings:
  * - https
  *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
+ * @param urlString - The URL string to strip the scheme from.
+ * @returns The URL string, without the scheme, if it was stripped.
  */
-export function stripHttpsScheme(urlString) {
+export function stripHttpsScheme(urlString: string) {
   return urlString.replace(/^https:\/\//u, '');
 }
 
@@ -420,11 +437,12 @@ export function stripHttpsScheme(urlString) {
  * Strips `https` schemes from URL strings, if the URL does not have a port.
  * This is useful
  *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
+ * @param urlString - The URL string to strip the scheme from.
+ * @returns The URL string, without the scheme, if it was stripped.
  */
-export function stripHttpsSchemeWithoutPort(urlString) {
-  if (getURL(urlString).port) {
+export function stripHttpsSchemeWithoutPort(urlString: string) {
+  const url = getURL(urlString);
+  if (url && url.port) {
     return urlString;
   }
 
@@ -434,10 +452,10 @@ export function stripHttpsSchemeWithoutPort(urlString) {
 /**
  * Checks whether a URL-like value (object or string) is an extension URL.
  *
- * @param {string | URL | object} urlLike - The URL-like value to test.
- * @returns {boolean} Whether the URL-like value is an extension URL.
+ * @param urlLike - The URL-like value to test.
+ * @returns Whether the URL-like value is an extension URL.
  */
-export function isExtensionUrl(urlLike) {
+export function isExtensionUrl(urlLike: string | URL | { protocol?: string }) {
   const EXT_PROTOCOLS = ['chrome-extension:', 'moz-extension:'];
 
   if (typeof urlLike === 'string') {
@@ -446,6 +464,7 @@ export function isExtensionUrl(urlLike) {
         return true;
       }
     }
+    return false;
   }
 
   if (urlLike?.protocol) {
@@ -458,16 +477,19 @@ export function isExtensionUrl(urlLike) {
  * Checks whether an address is in a passed list of objects with address properties. The check is performed on the
  * lowercased version of the addresses.
  *
- * @param {string} address - The hex address to check
- * @param {Array} list - The array of objects to check
- * @returns {boolean} Whether or not the address is in the list
+ * @param address - The hex address to check
+ * @param list - The array of objects to check
+ * @returns Whether or not the address is in the list
  */
-export function checkExistingAddresses(address, list = []) {
+export function checkExistingAddresses(
+  address?: string,
+  list: { address: string }[] = [],
+) {
   if (!address) {
     return false;
   }
 
-  const matchesAddress = (obj) => {
+  const matchesAddress = (obj: { address: string }) => {
     return obj.address.toLowerCase() === address.toLowerCase();
   };
 
@@ -475,10 +497,10 @@ export function checkExistingAddresses(address, list = []) {
 }
 
 export function checkExistingAllTokens(
-  address,
-  chainId,
-  accountAddress,
-  list = {},
+  address: string | undefined,
+  chainId: string | number,
+  accountAddress: string,
+  list: Record<string, Record<string, { address: string }[]>> = {},
 ) {
   if (!address) {
     return false;
@@ -488,35 +510,47 @@ export function checkExistingAllTokens(
   );
 }
 
-export function bnGreaterThan(a, b) {
+export function bnGreaterThan(
+  a?: BigNumber.Value | null,
+  b?: BigNumber.Value | null,
+) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
   return new BigNumber(a, 10).gt(b, 10);
 }
 
-export function bnLessThan(a, b) {
+export function bnLessThan(
+  a?: BigNumber.Value | null,
+  b?: BigNumber.Value | null,
+) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
   return new BigNumber(a, 10).lt(b, 10);
 }
 
-export function bnGreaterThanEqualTo(a, b) {
+export function bnGreaterThanEqualTo(
+  a?: BigNumber.Value | null,
+  b?: BigNumber.Value | null,
+) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
   return new BigNumber(a, 10).gte(b, 10);
 }
 
-export function bnLessThanEqualTo(a, b) {
+export function bnLessThanEqualTo(
+  a?: BigNumber.Value | null,
+  b?: BigNumber.Value | null,
+) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
   return new BigNumber(a, 10).lte(b, 10);
 }
 
-export function getURL(url) {
+export function getURL(url: string): URL | '' {
   try {
     return new URL(url);
   } catch (err) {
@@ -525,24 +559,29 @@ export function getURL(url) {
 }
 
 export function getIsBrowserDeprecated(
-  browser = bowser.getParser(window.navigator.userAgent),
+  browser: Parser.Parser = bowser.getParser(window.navigator.userAgent),
 ) {
   return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
 }
 
-export function getURLHost(url) {
-  return getURL(url)?.host || '';
+export function getURLHost(url: string) {
+  const parsed = getURL(url);
+  return (parsed && parsed.host) || '';
 }
 
-export function getURLHostName(url) {
-  return getURL(url)?.hostname || '';
+export function getURLHostName(url: string) {
+  const parsed = getURL(url);
+  return (parsed && parsed.hostname) || '';
 }
 
 // Once we reach this threshold, we switch to higher unit
 const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
-export const toHumanReadableTime = (t, milliseconds) => {
+export const toHumanReadableTime = (
+  t: TranslateFunction,
+  milliseconds?: number | null,
+) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
@@ -593,7 +632,7 @@ const solidityTypes = () => {
    * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
    * The M represents the amount of bits that the type takes,
    * with N representing the number of decimal points that are available.
-   *  M has to be divisible by 8, and a number from 8 to 256.
+   * M has to be divisible by 8, and a number from 8 to 256.
    * N has to be a value between 0 and 80, also being inclusive.
    */
   const fixedM = Array.from(new Array(32)).map(
@@ -621,18 +660,22 @@ const solidityTypes = () => {
 
 const SOLIDITY_TYPES = solidityTypes();
 
-const stripArrayType = (potentialArrayType) =>
+const stripArrayType = (potentialArrayType: string) =>
   potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
 
-export const stripOneLayerofNesting = (potentialArrayType) =>
+export const stripOneLayerofNesting = (potentialArrayType: string) =>
   potentialArrayType.replace(/\[(\d*)\]/u, '');
 
-const isArrayType = (potentialArrayType) =>
+const isArrayType = (potentialArrayType: string) =>
   potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
 
-const isSolidityType = (type) => SOLIDITY_TYPES.includes(type);
+const isSolidityType = (type: string) => SOLIDITY_TYPES.includes(type);
 
-export const sanitizeMessage = (msg, primaryType, types) => {
+export const sanitizeMessage = (
+  msg: unknown,
+  primaryType: string,
+  types: MessageTypes,
+): { value: unknown; type: string } => {
   if (!types) {
     throw new Error(`Invalid types definition`);
   }
@@ -641,7 +684,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
     return {
-      value: msg.map((value) =>
+      value: (msg as unknown[]).map((value) =>
         sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
       ),
       type: primaryType,
@@ -658,8 +701,8 @@ export const sanitizeMessage = (msg, primaryType, types) => {
     throw new Error(`Invalid primary type definition`);
   }
 
-  const sanitizedStruct = {};
-  const msgKeys = Object.keys(msg);
+  const sanitizedStruct: Record<string, unknown> = {};
+  const msgKeys = Object.keys(msg as Record<string, unknown>);
   msgKeys.forEach((msgKey) => {
     const definedType = Object.values(baseTypeDefinitions).find(
       (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
@@ -670,7 +713,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
     }
 
     sanitizedStruct[msgKey] = sanitizeMessage(
-      msg[msgKey],
+      (msg as Record<string, unknown>)[msgKey],
       definedType.type,
       types,
     );
@@ -678,7 +721,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   return { value: sanitizedStruct, type: primaryType };
 };
 
-export async function getAssetImageURL(image, ipfsGateway) {
+export async function getAssetImageURL(image?: string, ipfsGateway?: string) {
   if (!image || typeof image !== 'string') {
     return '';
   }
@@ -719,8 +762,8 @@ export async function getAssetImageURL(image, ipfsGateway) {
 }
 
 export function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
+  numberish?: number | string | null,
+  numberOfDecimalPlaces?: number,
 ) {
   if (numberish === undefined || numberish === null) {
     return '';
@@ -735,24 +778,32 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
  * Tests "nullishness". Used to guard a section of a component from being
  * rendered based on a value.
  *
- * @param {any} value - A value (literally anything).
+ * @param value - A value (literally anything).
  * @returns `true` if the value is null or undefined, `false` otherwise.
  */
-export function isNullish(value) {
+export function isNullish(value: unknown): value is null | undefined {
   return value === null || value === undefined;
 }
 
-export const getSnapName = (snapsMetadata) => {
-  return (snapId) => {
+export const getSnapName = (
+  snapsMetadata: Record<string, { name?: string }>,
+) => {
+  return (snapId: string) => {
     return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
   };
 };
 
-export const getSnapRoute = (snapId) => {
+export const getSnapRoute = (snapId: string) => {
   return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
-export const getDedupedSnaps = (request, permissions) => {
+type SnapCaveat = { value?: Record<string, unknown> };
+type SnapPermission = { caveats: SnapCaveat[] };
+
+export const getDedupedSnaps = (
+  request?: { permissions?: Record<string, SnapPermission> },
+  permissions?: Record<string, SnapPermission>,
+) => {
   const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
   const requestedSnaps = permission?.caveats[0].value;
   const currentSnaps =
@@ -778,12 +829,12 @@ export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
  * Prevents text direction manipulation attacks by making hidden characters visible.
  * This is critical for user safety when signing transactions or messages.
  *
- * @param {*} value - Input value to sanitize
- * @returns {string|*} Escaped string or original value if not a string
+ * @param value - Input value to sanitize
+ * @returns Escaped string or original value if not a string
  * @example
- * sanitizeString('Send 100\u200F0 ETH'); // Returns: 'Send 100\u200F0 ETH'
+ * sanitizeString('Send 100‏0 ETH'); // Returns: 'Send 100‏0 ETH'
  */
-export const sanitizeString = (value) => {
+export const sanitizeString = (value: string) => {
   if (!value || !lodash.isString(value)) {
     return value;
   }
@@ -792,7 +843,10 @@ export const sanitizeString = (value) => {
   const INVISIBLE_CHARS = /\p{Cf}/gu;
 
   return value.replace(INVISIBLE_CHARS, (char) => {
-    const hex = char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    const hex = (char.codePointAt(0) ?? 0)
+      .toString(16)
+      .toUpperCase()
+      .padStart(4, '0');
     return `\\u${hex}`;
   });
 };
@@ -801,16 +855,19 @@ export const sanitizeString = (value) => {
  * Checks if the given keyring type is able to export an account.
  *
  * @param keyringType - The type of the keyring.
- * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
+ * @returns `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
  */
-export const isAbleToExportAccount = (keyringType) => {
+export const isAbleToExportAccount = (keyringType?: string) => {
   if (typeof keyringType !== 'string') {
     return false;
   }
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
 };
 
-export const isAbleToRevealSrp = (accountToExport, keyrings = []) => {
+export const isAbleToRevealSrp = (
+  accountToExport: InternalAccount,
+  keyrings: KeyringObject[] = [],
+) => {
   if (!isObject(accountToExport)) {
     return false;
   }
@@ -831,7 +888,7 @@ export const isAbleToRevealSrp = (accountToExport, keyrings = []) => {
   // We only consider 1st-party Snaps that have an entropy source.
   if (
     type === KeyringTypes.snap &&
-    isMultichainWalletSnap(snap?.id) &&
+    isMultichainWalletSnap(snap?.id as SnapId) &&
     entropySource
   ) {
     const keyringId = entropySource;
@@ -847,12 +904,16 @@ export const isAbleToRevealSrp = (accountToExport, keyrings = []) => {
 /**
  * Checks if a tokenId in Hex or decimal format already exists in an object.
  *
- * @param {string} address - collection address.
- * @param {string} tokenId - tokenId to search for
- * @param {*} obj - object to look into
- * @returns {boolean} `false` if tokenId does not already exist.
+ * @param address - collection address.
+ * @param tokenId - tokenId to search for
+ * @param obj - object to look into
+ * @returns `false` if tokenId does not already exist.
  */
-export const checkTokenIdExists = (address, tokenId, obj) => {
+export const checkTokenIdExists = (
+  address: string,
+  tokenId: string,
+  obj: Record<string, { nfts?: { address: string; tokenId: string }[] }>,
+) => {
   // check if input tokenId is hexadecimal
   // If it is convert to decimal and compare with existing tokens
   const isHex = isStrictHexString(tokenId);
@@ -879,15 +940,15 @@ export const checkTokenIdExists = (address, tokenId, obj) => {
 /**
  * Retrieves token prices
  *
- * @param {string} nativeCurrency - native currency to fetch prices for.
- * @param {Hex[]} tokenAddresses - set of contract addresses
- * @param {Hex} chainId - current chainId
+ * @param nativeCurrency - native currency to fetch prices for.
+ * @param tokenAddresses - set of contract addresses
+ * @param chainId - current chainId
  * @returns The prices for the requested tokens.
  */
 export const fetchTokenExchangeRates = async (
-  nativeCurrency,
-  tokenAddresses,
-  chainId,
+  nativeCurrency: string,
+  tokenAddresses: Hex[],
+  chainId: Hex,
 ) => {
   try {
     return await fetchTokenContractExchangeRates({
@@ -901,7 +962,7 @@ export const fetchTokenExchangeRates = async (
   }
 };
 
-export const hexToText = (hex) => {
+export const hexToText = (hex: string) => {
   if (!hex) {
     return hex;
   }
@@ -920,10 +981,10 @@ export const hexToText = (hex) => {
  * Note: This function is used for generating fallback avatars for different entities (websites, Snaps, etc.)
  * Note: Only letters and numbers will be returned if possible (special characters are ignored).
  *
- * @param {string} subjectName - Name of a subject.
+ * @param subjectName - Name of a subject.
  * @returns Single character, chosen from the first character or number, question mark otherwise.
  */
-export const getAvatarFallbackLetter = (subjectName) => {
+export const getAvatarFallbackLetter = (subjectName?: string) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 };
 
@@ -933,10 +994,10 @@ export const getAvatarFallbackLetter = (subjectName) => {
  * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
  * because of how URL formatting works.
  *
- * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @param rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
  * @returns Boolean, true if the origin is an IP address, false otherwise.
  */
-export const isIpAddress = (rawOriginUrl) => {
+export const isIpAddress = (rawOriginUrl: unknown) => {
   if (typeof rawOriginUrl === 'string') {
     return Boolean(
       rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
@@ -952,10 +1013,10 @@ export const isIpAddress = (rawOriginUrl) => {
  *
  * Note: For IP address origins, full IP address without protocol will be returned.
  *
- * @param {string} rawOrigin - Raw origin (URL) with protocol.
+ * @param rawOrigin - Raw origin (URL) with protocol.
  * @returns User friendly title extracted from raw URL.
  */
-export const transformOriginToTitle = (rawOrigin) => {
+export const transformOriginToTitle = (rawOrigin: string) => {
   try {
     const url = new URL(rawOrigin);
 
@@ -978,8 +1039,10 @@ export const transformOriginToTitle = (rawOrigin) => {
  * if filtered permissions count are less than the value specified.
  * @returns Subset of permissions passing weight criteria.
  */
-export const getFilteredSnapPermissions = (
-  weightedPermissions,
+export const getFilteredSnapPermissions = <
+  Permission extends { weight: number },
+>(
+  weightedPermissions: Permission[],
   weightThreshold = Infinity,
   minPermissionCount = 3,
 ) => {
@@ -1007,15 +1070,15 @@ export const getFilteredSnapPermissions = (
 /**
  * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
  *
- * @param {*} tokenFiatBalance - current token fiat balance
- * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @param tokenFiatBalance - current token fiat balance
+ * @param tokenPricePercentChange1dAgo - price percentage 1day ago
  * @returns token amount 1day ago
  */
 export const getCalculatedTokenAmount1dAgo = (
-  tokenFiatBalance,
-  tokenPricePercentChange1dAgo,
+  tokenFiatBalance?: string | number,
+  tokenPricePercentChange1dAgo?: number,
 ) => {
   return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
-    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    ? Number(tokenFiatBalance) / (1 + tokenPricePercentChange1dAgo / 100)
     : (tokenFiatBalance ?? 0);
 };

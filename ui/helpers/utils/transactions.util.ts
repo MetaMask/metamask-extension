@@ -1,5 +1,6 @@
 import {
   TransactionEnvelopeType,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -7,13 +8,15 @@ import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/lib/contract-utils';
 
+type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
+
 /**
  * Returns four-byte method signature from data
  *
- * @param {string} data - The hex data (@code txParams.data) of a transaction
- * @returns {string} The four-byte method signature
+ * @param data - The hex data (@code txParams.data) of a transaction
+ * @returns The four-byte method signature
  */
-export function getFourBytePrefix(data = '') {
+export function getFourBytePrefix(data = ''): string {
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
   return fourBytePrefix;
@@ -22,10 +25,10 @@ export function getFourBytePrefix(data = '') {
 /**
  * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
  *
- * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The type of transaction being evaluated
- * @returns {boolean} whether the transaction is calling an erc20 token method
+ * @param type - The type of transaction being evaluated
+ * @returns whether the transaction is calling an erc20 token method
  */
-export function isTokenMethodAction(type) {
+export function isTokenMethodAction(type: TransactionType): boolean {
   return [
     TransactionType.tokenMethodTransfer,
     TransactionType.tokenMethodApprove,
@@ -37,27 +40,32 @@ export function isTokenMethodAction(type) {
 }
 
 export function getLatestSubmittedTxWithNonce(
-  transactions = [],
+  transactions: TransactionMeta[] = [],
   nonce = '0x0',
-) {
+): TransactionMeta | Record<string, never> {
   if (!transactions.length) {
     return {};
   }
 
-  return transactions.reduce((acc, current) => {
-    const { submittedTime, txParams: { nonce: currentNonce } = {} } = current;
+  return transactions.reduce<TransactionMeta | Record<string, never>>(
+    (acc, current) => {
+      const { submittedTime, txParams: { nonce: currentNonce } = {} } = current;
 
-    if (currentNonce === nonce) {
-      if (!acc.submittedTime) {
-        return current;
+      if (currentNonce === nonce) {
+        if (!('submittedTime' in acc) || !acc.submittedTime) {
+          return current;
+        }
+        return (submittedTime ?? 0) > acc.submittedTime ? current : acc;
       }
-      return submittedTime > acc.submittedTime ? current : acc;
-    }
-    return acc;
-  }, {});
+      return acc;
+    },
+    {},
+  );
 }
 
-export async function isSmartContractAddress(address) {
+export async function isSmartContractAddress(
+  address: string,
+): Promise<boolean> {
   const { isContractAddress } = await readAddressAsContract(
     global.ethereumProvider,
     address,
@@ -65,7 +73,9 @@ export async function isSmartContractAddress(address) {
   return isContractAddress;
 }
 
-export function isLegacyTransaction(txParams) {
+export function isLegacyTransaction(txParams?: {
+  type?: TransactionEnvelopeType;
+}): boolean {
   return txParams?.type === TransactionEnvelopeType.legacy;
 }
 
@@ -73,10 +83,9 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {import('@metamask/transaction-controller').TransactionMeta} transaction - The txMeta object of a transaction.
- * @returns {string}
+ * @param transaction - The txMeta object of a transaction.
  */
-export function getStatusKey(transaction) {
+export function getStatusKey(transaction: TransactionMeta): string {
   const {
     txReceipt: { status: receiptStatus } = {},
     type,
@@ -103,12 +112,16 @@ export function getStatusKey(transaction) {
  *
  * This will throw an error if the transaction category is unrecognized and no default is provided.
  *
- * @param {Function} t - The translation function
- * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
- * @param {string} nativeCurrency - The native currency of the currently selected network
- * @returns {string} The transaction category title
+ * @param t - The translation function
+ * @param type - The transaction type constant
+ * @param nativeCurrency - The native currency of the currently selected network
+ * @returns The transaction category title
  */
-export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
+export function getTransactionTypeTitle(
+  t: TranslateFunction,
+  type: TransactionType,
+  nativeCurrency = 'ETH',
+): string {
   switch (type) {
     case TransactionType.tokenMethodTransfer: {
       return t('transfer');

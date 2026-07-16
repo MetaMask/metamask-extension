@@ -13,13 +13,23 @@ import {
   roundToDecimalPlacesRemovingExtraZeroes,
 } from './util';
 
+type GasParams = {
+  gas?: string;
+  gasLimit?: string;
+  gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+};
+
+type GasFeeEstimateLevel = string | { suggestedMaxFeePerGas?: string };
+
 const TEN_PERCENT_NUMERIC = new Numeric(1.1, 10);
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
-  gasUsed,
-  gasFeeEstimates,
-  estimate,
-) => {
+  gasUsed: GasParams,
+  gasFeeEstimates: Record<string, GasFeeEstimateLevel> | undefined,
+  estimate: string,
+): boolean | null => {
   const gasInTransaction = gasUsed?.maxFeePerGas ?? gasUsed?.gasPrice;
   const bumped = addTenPercentAndRound(gasInTransaction);
   if (!bumped) {
@@ -39,10 +49,12 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
  * Simple helper to save on duplication to multiply the supplied wei hex string
  * by 1.10 to get bare minimum new gas fee.
  *
- * @param {string | undefined} hexStringValue - hex value in wei to be incremented
- * @returns {string | undefined} hex value in WEI 10% higher than the param.
+ * @param hexStringValue - hex value in wei to be incremented
+ * @returns hex value in WEI 10% higher than the param.
  */
-export function addTenPercentAndRound(hexStringValue) {
+export function addTenPercentAndRound(
+  hexStringValue?: string,
+): string | undefined {
   if (hexStringValue === undefined) {
     return undefined;
   }
@@ -52,30 +64,30 @@ export function addTenPercentAndRound(hexStringValue) {
     .toPrefixedHexString();
 }
 
-export function isMetamaskSuggestedGasEstimate(estimate) {
+export function isMetamaskSuggestedGasEstimate(estimate: string): boolean {
   return [
     GasRecommendations.high,
     GasRecommendations.medium,
     GasRecommendations.low,
-  ].includes(estimate);
+  ].includes(estimate as GasRecommendations);
 }
 
 /**
  * Formats a singular gas fee or a range of gas fees by rounding them to the
  * given precisions and then arranging them as a string.
  *
- * @param {string | [string, string] | null | undefined} feeOrFeeRange - The fee
- * in GWEI or range of fees in GWEI.
- * @param {object} options - The options.
- * @param {number | [number, number]} options.precision - The precision(s) to
- * use when formatting the fee(s).
+ * @param feeOrFeeRange - The fee in GWEI or range of fees in GWEI.
+ * @param options - The options.
+ * @param options.precision - The precision(s) to use when formatting the fee(s).
  * @returns A string which represents the formatted version of the fee or fee
  * range.
  */
 export function formatGasFeeOrFeeRange(
-  feeOrFeeRange,
-  { precision: precisionOrPrecisions = 2 } = {},
-) {
+  feeOrFeeRange: string | string[] | null | undefined,
+  {
+    precision: precisionOrPrecisions = 2,
+  }: { precision?: number | number[] } = {},
+): string | null {
   if (
     isNullish(feeOrFeeRange) ||
     (Array.isArray(feeOrFeeRange) && feeOrFeeRange.length === 0)
@@ -103,10 +115,10 @@ export function formatGasFeeOrFeeRange(
 /**
  * Helper method for determining whether an edit gas mode is either a speed up or cancel transaction
  *
- * @param {string | undefined} editGasMode - One of 'speed-up', 'cancel', 'modify-in-place', or 'swaps'
+ * @param editGasMode - One of 'speed-up', 'cancel', 'modify-in-place', or 'swaps'
  * @returns boolean
  */
-export function editGasModeIsSpeedUpOrCancel(editGasMode) {
+export function editGasModeIsSpeedUpOrCancel(editGasMode?: string): boolean {
   return (
     editGasMode === EditGasModes.cancel || editGasMode === EditGasModes.speedUp
   );
@@ -116,15 +128,19 @@ export function editGasModeIsSpeedUpOrCancel(editGasMode) {
  * Returns gas values for a replacement (cancel/speed-up) transaction so it is not underpriced.
  * Uses the higher of (current txParams) or (previousGas × rate) for maxFeePerGas and maxPriorityFeePerGas.
  *
- * @param {object} txParams - Current transaction params (e.g. user-selected gas).
- * @param {object} [previousGas] - Original gas at modal open; if missing, returns txParams unchanged.
- * @param {number} rate - Multiplier for minimum replacement gas (e.g. 1.1 for CANCEL_RATE).
- * @returns {object} Gas values safe for replacement (at least previousGas × rate).
+ * @param txParams - Current transaction params (e.g. user-selected gas).
+ * @param previousGas - Original gas at modal open; if missing, returns txParams unchanged.
+ * @param rate - Multiplier for minimum replacement gas (e.g. 1.1 for CANCEL_RATE).
+ * @returns Gas values safe for replacement (at least previousGas × rate).
  */
-export function getGasValuesForReplacement(txParams, previousGas, rate) {
+export function getGasValuesForReplacement(
+  txParams: GasParams,
+  previousGas: GasParams | null | undefined,
+  rate: number,
+): GasParams {
   // Normalize hex so BigNumber can parse (0x prefix). Values may be 0x-prefixed
   // or raw hex from .toString(16); addHexPrefix handles both (idempotent with 0x).
-  const hexForBN = (v) =>
+  const hexForBN = (v: string | number | null | undefined) =>
     v === null || v === undefined
       ? new BigNumber(0)
       : new BigNumber(addHexPrefix(String(v)));
