@@ -343,35 +343,45 @@ export const DappConnectionControlBar = memo(() => {
                 </button>
               )}
 
-              {/* Permissions button */}
-              <button
-                className="dapp-connection-control-bar__action-button flex items-center"
-                onClick={handlePermissionsClick}
-                data-testid="dapp-connection-control-bar__permissions-button"
-                aria-label={t('managePermissions')}
-                type="button"
+              {/* Combined settings + disconnect container */}
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.End}
+                className="dapp-connection-control-bar__combined-actions"
               >
-                <Icon
-                  name={IconName.Setting}
-                  size={IconSize.Sm}
-                  color={IconColor.IconDefault}
-                />
-              </button>
+                {/* Permissions button */}
+                <button
+                  className="dapp-connection-control-bar__action-button flex items-center"
+                  onClick={handlePermissionsClick}
+                  data-testid="dapp-connection-control-bar__permissions-button"
+                  aria-label={t('managePermissions')}
+                  type="button"
+                >
+                  <Icon
+                    name={IconName.Setting}
+                    size={IconSize.Sm}
+                    color={IconColor.IconDefault}
+                  />
+                </button>
 
-              {/* Disconnect button */}
-              <button
-                className="dapp-connection-control-bar__action-button dapp-connection-control-bar__action-button--disconnect flex items-center"
-                onClick={handleDisconnectClick}
-                data-testid="dapp-connection-control-bar__disconnect-button"
-                aria-label={t('disconnect')}
-                type="button"
-              >
-                <Icon
-                  name={IconName.Logout}
-                  size={IconSize.Sm}
-                  color={IconColor.ErrorDefault}
-                />
-              </button>
+                {/* Vertical divider */}
+                <Box className="dapp-connection-control-bar__divider" />
+
+                {/* Disconnect button */}
+                <button
+                  className="dapp-connection-control-bar__action-button flex items-center"
+                  onClick={handleDisconnectClick}
+                  data-testid="dapp-connection-control-bar__disconnect-button"
+                  aria-label={t('disconnect')}
+                  type="button"
+                >
+                  <Icon
+                    name={IconName.Logout}
+                    size={IconSize.Sm}
+                    color={IconColor.ErrorDefault}
+                  />
+                </button>
+              </Box>
             </>
           )}
         </Box>
