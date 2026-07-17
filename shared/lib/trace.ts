@@ -432,8 +432,13 @@ export function serializeTraceContext(
   span: Sentry.Span | null | undefined,
   request: { name: string; id?: string },
 ): SerializedTraceContext {
+  // Only assign defined fields: `undefined` leaks across the snap response
+  // boundary and fails its JSON validation (the snap trace round-trips this).
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const ctx: SerializedTraceContext = { _name: request.name, _id: request.id };
+  const ctx: SerializedTraceContext = { _name: request.name };
+  if (request.id !== undefined) {
+    ctx._id = request.id;
+  }
   if (span) {
     try {
       const traceparent = spanContextToTraceparent(span.spanContext());
