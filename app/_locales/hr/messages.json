@@ -509,9 +509,6 @@
   "sign": {
     "message": "Potpis"
   },
-  "signatureRequest": {
-    "message": "Zahtjev za potpisom"
-  },
   "signed": {
     "message": "Potpisano"
   },
