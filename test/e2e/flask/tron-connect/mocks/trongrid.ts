@@ -3,6 +3,15 @@ import { Mockttp } from 'mockttp';
 import { TRANSACTION_HASH_MOCK } from '../common-tron';
 
 const TRONGRID_API_URL = 'https://api.trongrid.io';
+const TRON_API_URL =
+  /(?:https:\/\/api\.trongrid\.io|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+)/u;
+const TRON_WALLET_API_URL =
+  /(?:https:\/\/api\.trongrid\.io\/wallet|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet)/u;
+const DEFAULT_TRX_BALANCE_IN_SUN = 45811016;
+
+type AccountRequestOptions = {
+  balance?: number;
+};
 
 // We disable this rule because the resposes we mock are using snake_case
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -54,7 +63,7 @@ const accountsResponse = {
           type: 'TRON_POWER',
         },
       ],
-      balance: 45811016,
+      balance: DEFAULT_TRX_BALANCE_IN_SUN,
       trc20: [
         {
           TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t: '70270000',
@@ -149,13 +158,19 @@ const transactionsTRC20Response = {
 };
 
 const accountResourcesResponse = {
-  freeNetUsed: 527,
-  freeNetLimit: 600,
+  freeNetUsed: 0,
+  freeNetLimit: 2000,
+  EnergyLimit: 2000,
+  EnergyUsed: 0,
   TotalNetLimit: 43200000000,
   TotalNetWeight: 26677115436,
   TotalEnergyLimit: 180000000000,
   TotalEnergyWeight: 19125511029,
 };
+
+export type AccountResourcesRequestOptions = Partial<
+  typeof accountResourcesResponse
+>;
 
 // The block number and blockID must stay consistent with the transaction's
 // TAPOS reference (`ref_block_bytes` / `ref_block_hash`) returned by
@@ -306,28 +321,130 @@ export const mockTriggerSmartContract = (mockServer: Mockttp) =>
       };
     });
 
-export const mockAccountRequest = (mockServer: Mockttp) =>
+export const mockTriggerConstantContract = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(
+      new RegExp(`${TRON_WALLET_API_URL.source}/triggerconstantcontract`, 'u'),
+    )
+    .always()
+    .thenJson(200, {
+      result: {
+        result: true,
+      },
+      energy_used: 1000,
+      constant_result: [],
+      transaction: {
+        ret: [{ ret: 'SUCCESS' }],
+        visible: false,
+        txID: 'mock-trigger-constant-tx-id',
+        raw_data: {
+          contract: [
+            {
+              parameter: {
+                value: {
+                  data: 'a9059cbb00000000000000000000000032f9c0c487f21716b7a8f12906b7528899026558000000000000000000000000000000000000000000000000000000000754d4c0',
+                  owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+                  contract_address:
+                    '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
+                },
+                type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+              },
+              type: 'TriggerSmartContract',
+            },
+          ],
+          ref_block_bytes: '8b15',
+          ref_block_hash: '5fca48bd51bf3f1d',
+          expiration: Date.now() + 10 * 60 * 1000,
+          timestamp: Date.now(),
+        },
+        raw_data_hex: '',
+      },
+    });
+
+export const mockGetChainParameters = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(new RegExp(`${TRON_WALLET_API_URL.source}/getchainparameters`, 'u'))
+    .always()
+    .thenJson(200, {
+      chainParameter: [
+        { key: 'getTransactionFee', value: 1000 },
+        { key: 'getEnergyFee', value: 420 },
+      ],
+    });
+
+export const mockGetNextMaintenanceTime = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(
+      new RegExp(`${TRON_WALLET_API_URL.source}/getnextmaintenancetime`, 'u'),
+    )
+    .always()
+    .thenJson(200, {
+      num: Date.now() + 6 * 60 * 60 * 1000,
+    });
+
+export const mockGetContract = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(new RegExp(`${TRON_WALLET_API_URL.source}/getcontract`, 'u'))
+    .always()
+    .thenJson(200, {});
+
+export const mockAccountRequest = (
+  mockServer: Mockttp,
+  options: AccountRequestOptions = {},
+) =>
   mockServer
     .forGet(
-      `${TRONGRID_API_URL}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3`,
+      new RegExp(
+        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3`,
+        'u',
+      ),
     )
-    .thenJson(200, accountsResponse);
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        ...accountsResponse,
+        data: [
+          {
+            ...accountsResponse.data[0],
+            balance: options.balance ?? DEFAULT_TRX_BALANCE_IN_SUN,
+          },
+        ],
+      },
+    }));
 
 export const mockTransactionsRequest = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      `${TRONGRID_API_URL}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions`,
+      new RegExp(
+        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions`,
+        'u',
+      ),
     )
+    .always()
     .thenJson(200, transactionsResponse);
 
 export const mockTransactionsTRC20Request = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      `${TRONGRID_API_URL}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20`,
+      new RegExp(
+        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20`,
+        'u',
+      ),
     )
+    .always()
     .thenJson(200, transactionsTRC20Response);
 
-export const mockAccountResourcesRequest = (mockServer: Mockttp) =>
+export const mockAccountResourcesRequest = (
+  mockServer: Mockttp,
+  options: AccountResourcesRequestOptions = {},
+) =>
   mockServer
-    .forPost(`${TRONGRID_API_URL}/wallet/getaccountresource`)
-    .thenJson(200, accountResourcesResponse);
+    .forPost(
+      new RegExp(`${TRON_WALLET_API_URL.source}/getaccountresource`, 'u'),
+    )
+    .always()
+    .thenJson(200, {
+      ...accountResourcesResponse,
+      ...options,
+    });
