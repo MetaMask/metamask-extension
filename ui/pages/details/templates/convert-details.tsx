@@ -5,6 +5,7 @@ import type {
   ActivityListItem,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
+import { parseValueTransfers } from '../../../../shared/lib/activity/adapters/helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useApiTransaction } from '../../../hooks/activity/useApiTransaction';
@@ -24,8 +25,7 @@ function useSentToken(
   baseToken: TokenAmount | undefined,
   transactionMeta: TransactionMeta | undefined,
 ) {
-  const { sourceHash, tokenAddress, chainId } =
-    transactionMeta?.metamaskPay ?? {};
+  const { sourceHash, chainId } = transactionMeta?.metamaskPay ?? {};
   const sourceChainId = chainId ? toEvmCaipChainId(chainId) : undefined;
   const userAddress = transactionMeta?.txParams?.from?.toLowerCase();
 
@@ -38,21 +38,14 @@ function useSentToken(
     if (!baseToken) {
       return baseToken;
     }
-    const transfers = sourceTransaction?.valueTransfers ?? [];
-    const payToken = tokenAddress?.toLowerCase();
-    const sentTransfer =
-      transfers.find(
-        (transfer) =>
-          transfer.contractAddress.toLowerCase() === payToken &&
-          transfer.from.toLowerCase() === userAddress,
-      ) ??
-      transfers.find(
-        (transfer) => transfer.contractAddress.toLowerCase() === payToken,
-      );
+    const { sentTransfer } = parseValueTransfers(
+      sourceTransaction?.valueTransfers,
+      userAddress ?? '',
+    );
     return sentTransfer?.amount
       ? { ...baseToken, amount: sentTransfer.amount }
       : baseToken;
-  }, [baseToken, sourceTransaction, tokenAddress, userAddress]);
+  }, [baseToken, sourceTransaction, userAddress]);
 }
 
 type Props = {
