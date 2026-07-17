@@ -500,9 +500,6 @@
   "sign": {
     "message": "Podpiši"
   },
-  "signatureRequest": {
-    "message": "Zahteva za podpis"
-  },
   "signed": {
     "message": "Podpisano"
   },
