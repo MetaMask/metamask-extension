@@ -17,14 +17,36 @@ describe('perps-cache', () => {
   });
 
   describe('fetchMarketInfos', () => {
-    it('passes useTerminalApi: true to perpsGetMarkets', async () => {
+    it('passes useTerminalApi: true when terminal backend is enabled', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+
+      await fetchMarketInfos('provider:mainnet:0xabc', true);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetMarkets',
+        [{ useTerminalApi: true }],
+      );
+    });
+
+    it('passes useTerminalApi: false when terminal backend is disabled', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+
+      await fetchMarketInfos('provider:mainnet:0xabc', false);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetMarkets',
+        [{ useTerminalApi: false }],
+      );
+    });
+
+    it('defaults useTerminalApi to false when not specified', async () => {
       mockSubmitRequestToBackground.mockResolvedValue([]);
 
       await fetchMarketInfos('provider:mainnet:0xabc');
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsGetMarkets',
-        [{ useTerminalApi: true }],
+        [{ useTerminalApi: false }],
       );
     });
 
@@ -59,6 +81,21 @@ describe('perps-cache', () => {
       expect(first).toEqual(markets);
       expect(second).toEqual(markets);
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('refetches when useTerminalApi flag changes', async () => {
+      const directMarkets = [{ symbol: 'BTC' }];
+      const terminalMarkets = [{ symbol: 'BTC' }, { symbol: 'ETH' }];
+
+      mockSubmitRequestToBackground.mockResolvedValue(directMarkets);
+      const first = await fetchMarketInfos('provider:mainnet:0xabc', false);
+      expect(first).toEqual(directMarkets);
+
+      mockSubmitRequestToBackground.mockResolvedValue(terminalMarkets);
+      const second = await fetchMarketInfos('provider:mainnet:0xabc', true);
+      expect(second).toEqual(terminalMarkets);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
   });
 });

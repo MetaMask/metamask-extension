@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Należy wybrać konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodaj tokeny pozyskane przy pomocy MetaMask"
-  },
   "addAlias": {
     "message": "Dodaj alias"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Zaawansowane"
-  },
-  "customToken": {
-    "message": "Własny token"
   },
   "decimal": {
     "message": "Dokładność liczb po przecinku"
@@ -344,9 +338,6 @@
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Należy wybrać co najmniej 1 token."
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
@@ -514,9 +505,6 @@
   },
   "sign": {
     "message": "Podpisz"
-  },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
   },
   "signed": {
     "message": "Podpisane"

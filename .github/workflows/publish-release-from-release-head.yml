@@ -11,7 +11,7 @@ permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
   statuses: read # Required by verify-ci-checks.sh to read commit statuses
   actions: read # Required to download artifacts from build jobs
-  id-token: write # Required for OIDC authentication in S3 uploads
+  id-token: write # Required for OIDC in build-job S3 uploads (run-build.yml) and publish-release
 
 jobs:
   validate-branch:
@@ -72,55 +72,6 @@ jobs:
     steps:
       - run: echo "Release approval granted."
 
-  # Production builds (4 variants) using yarn build prod.
-  build-dist-browserify:
-    name: Build prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-browserify
-      build-command: yarn build prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-dist-mv2-browserify:
-    name: Build prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-mv2-browserify
-      build-command: yarn build prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-flask-browserify:
-    name: Build Flask prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-browserify
-      build-command: yarn build --build-type flask prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-flask-mv2-browserify:
-    name: Build Flask prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-browserify
-      build-command: yarn build --build-type flask prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
   # Webpack production builds (4 variants) using yarn webpack:lavamoat:build.
   build-dist-webpack:
     name: Build prod webpack (Chrome MV3)
@@ -172,13 +123,15 @@ jobs:
 
   publish-release:
     name: Publish release
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write # Required for actions/attest-build-provenance OIDC
+      attestations: write # Required for actions/attest-build-provenance (INFRA-2665)
     needs:
       - validate-branch
       - approve-release
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
       - build-dist-webpack
       - build-dist-mv2-webpack
       - build-flask-webpack
@@ -222,6 +175,7 @@ jobs:
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -241,42 +195,6 @@ jobs:
           skip-allow-scripts: true
           ref: ${{ needs.validate-branch.outputs.release-sha }}
           fetch-depth: 0
-
-      - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-dist-browserify
-          name: build-dist-browserify
-
-      - name: Publish main release to Sentry
-        run: yarn sentry:publish --dist-directory build-dist-browserify/dist
-
-      - name: Download artifact 'build-dist-mv2-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-dist-mv2-browserify
-          name: build-dist-mv2-browserify
-
-      - name: Publish main MV2 release to Sentry
-        run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
-
-      - name: Download artifact 'build-flask-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-flask-browserify
-          name: build-flask-browserify
-
-      - name: Publish Flask release to Sentry
-        run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
-
-      - name: Download artifact 'build-flask-mv2-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-flask-mv2-browserify
-          name: build-flask-mv2-browserify
-
-      - name: Publish Flask MV2 release to Sentry
-        run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
       - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
@@ -314,6 +232,46 @@ jobs:
       - name: Publish Flask MV2 webpack release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-webpack/dist
 
+      # SLSA build provenance attestation (INFRA-2665).
+      - name: Attest webpack chrome artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-dist-webpack/builds/metamask-chrome-*.zip
+
+      - name: Attest webpack firefox artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-dist-mv2-webpack/builds/metamask-firefox-*.zip
+
+      - name: Attest webpack flask chrome artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-flask-webpack/builds/metamask-chrome-*.zip
+
+      - name: Attest webpack flask firefox artifact
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: build-flask-mv2-webpack/builds/metamask-firefox-*.zip
+
+      - name: Generate SHA256SUMS
+        run: |
+          set -euo pipefail
+          # Emit bare filenames (no directory prefix) so `sha256sum -c SHA256SUMS`
+          # works when release assets are downloaded into a single directory
+          # (INFRA-3661 CWS upload verify). Release assets are published under
+          # bare zip names, not their workspace-relative build paths.
+          SHA256SUMS="${GITHUB_WORKSPACE}/SHA256SUMS"
+          : > "${SHA256SUMS}"
+          for zip in \
+            build-dist-webpack/builds/metamask-chrome-*.zip \
+            build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
+            build-flask-webpack/builds/metamask-chrome-*.zip \
+            build-flask-mv2-webpack/builds/metamask-firefox-*.zip; do
+            ( cd "$(dirname "${zip}")" && sha256sum --text "$(basename "${zip}")" ) >> "${SHA256SUMS}"
+          done
+          echo "=== SHA256SUMS ==="
+          cat "${SHA256SUMS}"
+
       - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
 
@@ -324,8 +282,6 @@ jobs:
         id: amo-reviewer-s3
         continue-on-error: true
         uses: ./.github/actions/publish-amo-reviewer-artifacts
-        with:
-          firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
 
       - name: Summary
         env:
@@ -336,14 +292,12 @@ jobs:
             echo ""
             echo "| Component | Status |"
             echo "|-----------|--------|"
-            echo "| Sentry (main) | ✅ Published |"
-            echo "| Sentry (main MV2) | ✅ Published |"
-            echo "| Sentry (Flask) | ✅ Published |"
-            echo "| Sentry (Flask MV2) | ✅ Published |"
             echo "| Sentry (main webpack) | ✅ Published |"
             echo "| Sentry (main MV2 webpack) | ✅ Published |"
             echo "| Sentry (Flask webpack) | ✅ Published |"
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
+            echo "| Attestation (4 webpack artifacts) | ✅ Attested |"
+            echo "| SHA256SUMS | ✅ Generated |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
             if [[ "${{ steps.amo-reviewer-s3.conclusion }}" == "success" ]]; then

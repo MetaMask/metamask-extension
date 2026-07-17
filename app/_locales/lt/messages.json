@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
-  },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Išplėstiniai"
-  },
-  "customToken": {
-    "message": "Pritaikytas žetonas"
   },
   "decimal": {
     "message": "Skaičiai po kablelio"
@@ -347,9 +341,6 @@
   },
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
-  },
-  "mustSelectOne": {
-    "message": "Turite pasirinkti bent 1 žetoną."
   },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
@@ -520,9 +511,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"

@@ -8,6 +8,7 @@ const {
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
+const { UserPromptHandler } = require('selenium-webdriver/lib/capabilities');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
@@ -136,6 +137,8 @@ class FirefoxDriver {
     );
 
     options.setAcceptInsecureCerts(true);
+    // Leave alerts open so tests can read text and click OK.
+    options.setAlertBehavior(UserPromptHandler.IGNORE);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',

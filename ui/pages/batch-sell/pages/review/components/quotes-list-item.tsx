@@ -82,7 +82,7 @@ export const QuotesListItem = ({
 
   const selectedNativeAmount = useMemo(() => {
     const amount = new BigNumber(asset.balance ?? '0').mul(
-      sendAmountPercent / 100,
+      String(sendAmountPercent / 100),
     );
     return formatTokenAmount(locale, amount.toString(), asset.symbol);
   }, [asset.balance, locale, sendAmountPercent, asset.symbol]);
