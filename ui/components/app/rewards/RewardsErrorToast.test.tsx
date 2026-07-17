@@ -1,9 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useToasterStore } from 'react-hot-toast';
 import { setErrorToast } from '../../../ducks/rewards';
 import RewardsErrorToast from './RewardsErrorToast';
+
+const mockToastDismiss = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -14,15 +18,35 @@ jest.mock('react-redux', () => {
   };
 });
 
+jest.mock('../../ui/toast/toast', () => ({
+  toast: {
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+  ToastContent: () => null,
+}));
+
+jest.mock('react-hot-toast', () => ({
+  useToasterStore: jest.fn(() => ({ toasts: [] })),
+}));
+
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseToasterStore = useToasterStore as jest.MockedFunction<
+  typeof useToasterStore
+>;
 
 describe('RewardsErrorToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseToasterStore.mockReturnValue({
+      toasts: [],
+      settings: { toastLimit: 20 },
+      pausedAt: undefined,
+    } as ReturnType<typeof useToasterStore>);
   });
 
-  it('renders nothing when isOpen is false', () => {
+  it('does not show toast when isOpen is false', () => {
     mockUseSelector.mockReturnValue({
       isOpen: false,
       title: '',
@@ -32,10 +56,12 @@ describe('RewardsErrorToast', () => {
     });
 
     render(<RewardsErrorToast />);
-    expect(screen.queryByTestId('rewards-error-toast')).toBeNull();
+
+    expect(mockToastError).not.toHaveBeenCalled();
+    expect(mockToastDismiss).toHaveBeenCalledWith('rewards-error-toast');
   });
 
-  it('renders ToastContainer and content when open', () => {
+  it('shows error toast when isOpen is true', () => {
     const onActionClick = jest.fn();
     const mockDispatch = jest.fn();
     mockUseDispatch.mockReturnValue(mockDispatch);
@@ -54,16 +80,41 @@ describe('RewardsErrorToast', () => {
 
     render(<RewardsErrorToast />);
 
-    expect(screen.getByTestId('rewards-error-toast')).toBeInTheDocument();
-    expect(screen.getByText(title)).toBeInTheDocument();
-    expect(screen.getByText(description)).toBeInTheDocument();
-    expect(screen.getByText(actionText)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText(actionText));
-    expect(onActionClick).toHaveBeenCalledTimes(1);
+    expect(mockToastError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title,
+          description,
+          actionText,
+          onActionClick,
+          dataTestId: 'rewards-error-toast',
+        }),
+      }),
+      {
+        id: 'rewards-error-toast',
+        duration: Infinity,
+      },
+    );
   });
 
-  it('dispatches setErrorToast to close when close button is clicked', () => {
+  it('dismisses toast on unmount', () => {
+    mockUseSelector.mockReturnValue({
+      isOpen: true,
+      title: 'Error',
+      description: 'Details',
+      actionText: undefined,
+      onActionClick: undefined,
+    });
+
+    const { unmount } = render(<RewardsErrorToast />);
+
+    mockToastDismiss.mockClear();
+    unmount();
+
+    expect(mockToastDismiss).toHaveBeenCalledWith('rewards-error-toast');
+  });
+
+  it('dispatches setErrorToast to close when toast is dismissed', () => {
     const onActionClick = jest.fn();
     const mockDispatch = jest.fn();
     mockUseDispatch.mockReturnValue(mockDispatch);
@@ -80,15 +131,16 @@ describe('RewardsErrorToast', () => {
       onActionClick,
     });
 
-    render(<RewardsErrorToast />);
+    mockUseToasterStore.mockReturnValue({
+      toasts: [
+        {
+          id: 'rewards-error-toast',
+          dismissed: true,
+        },
+      ],
+    } as ReturnType<typeof useToasterStore>);
 
-    const closeButton = document.querySelector(
-      '.mm-banner-base__close-button',
-    ) as HTMLElement | null;
-    expect(closeButton).toBeTruthy();
-    if (closeButton) {
-      fireEvent.click(closeButton);
-    }
+    render(<RewardsErrorToast />);
 
     const expectedAction = setErrorToast({
       isOpen: false,
@@ -100,7 +152,55 @@ describe('RewardsErrorToast', () => {
     expect(mockDispatch).toHaveBeenCalledWith(expectedAction);
   });
 
-  it('does not render action button when actionText is not provided', () => {
+  it('does not dispatch close when toast content updates', () => {
+    const mockDispatch = jest.fn();
+    mockUseDispatch.mockReturnValue(mockDispatch);
+
+    mockUseSelector.mockReturnValue({
+      isOpen: true,
+      title: 'Error',
+      description: 'First message',
+      actionText: undefined,
+      onActionClick: undefined,
+    });
+
+    mockUseToasterStore.mockReturnValue({
+      toasts: [
+        {
+          id: 'rewards-error-toast',
+          dismissed: true,
+        },
+      ],
+    } as ReturnType<typeof useToasterStore>);
+
+    const { rerender } = render(<RewardsErrorToast />);
+
+    mockDispatch.mockClear();
+    mockUseToasterStore.mockReturnValue({
+      toasts: [
+        {
+          id: 'rewards-error-toast',
+          dismissed: false,
+        },
+      ],
+    } as ReturnType<typeof useToasterStore>);
+    mockUseSelector.mockReturnValue({
+      isOpen: true,
+      title: 'Error',
+      description: 'Updated message',
+      actionText: undefined,
+      onActionClick: undefined,
+    });
+
+    act(() => {
+      rerender(<RewardsErrorToast />);
+    });
+
+    expect(mockDispatch).not.toHaveBeenCalled();
+    expect(mockToastError).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not pass action props when actionText is not provided', () => {
     mockUseSelector.mockReturnValue({
       isOpen: true,
       title: 'Error',
@@ -110,7 +210,19 @@ describe('RewardsErrorToast', () => {
     });
 
     render(<RewardsErrorToast />);
-    expect(screen.getByTestId('rewards-error-toast')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /retry/iu })).toBeNull();
+
+    expect(mockToastError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: 'Error',
+          description: 'No action available',
+          dataTestId: 'rewards-error-toast',
+        }),
+      }),
+      {
+        id: 'rewards-error-toast',
+        duration: Infinity,
+      },
+    );
   });
 });
