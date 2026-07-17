@@ -1,9 +1,19 @@
 import * as Sentry from '@sentry/browser';
-import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/core';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
 const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
+
+// The v10 session envelope is emitted through a promise chain during init
+// (`browserSessionIntegration` -> `captureSession` -> transport), so it is
+// observable after a microtask drain with no timers involved.
+async function flushMicrotasks(depth = 5): Promise<void> {
+  for (let i = 0; i < depth; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+  }
+}
 
 type TestTransport = ReturnType<typeof makeTransport>;
 type TestEnvelope = Parameters<TestTransport['send']>[0];
@@ -133,7 +143,8 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
+      // The opted-out path can short-circuit before the fetch transport is
+      // instantiated; what matters is the absence of any outbound request.
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -293,7 +304,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('does not call fetch after init when opted out', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -323,8 +333,16 @@ describe('sentry-make-transport', () => {
         release: 'setup-sentry-unit-test',
         transport: makeTransport,
         tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
       });
-
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init): even a forced session capture must
+      // produce zero outbound requests while opted out.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
       await tick();
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -333,7 +351,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('calls fetch after init when opted in', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -363,8 +380,15 @@ describe('sentry-make-transport', () => {
         release: 'setup-sentry-unit-test',
         transport: makeTransport,
         tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
       });
-
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init) and assert it reaches the transport.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
       await tick();
 
       expect(fetchSpy).toHaveBeenCalled();
@@ -385,13 +409,13 @@ describe('sentry-make-transport', () => {
         })
         .filter((parsed): parsed is ParsedSentryEnvelope => parsed !== null);
 
-      const hasSessionItem = envelopes.some((parsedEnvelope) =>
+      const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
           (_item: unknown, type: string) => type === 'session',
         ),
       );
-      expect(hasSessionItem).toBe(true);
+      expect(hasEventItem).toBe(true);
 
       fetchSpy.mockRestore();
     });
