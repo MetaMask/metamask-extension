@@ -8,7 +8,7 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
-import { useTransactionMeta } from '../../../hooks/activity/useTransactionMeta';
+import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import {
   ARBITRUM_USDC,
   PERPS_CURRENCY,
@@ -33,7 +33,7 @@ export function PerpsDetails({
 }) {
   const t = useI18nContext();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
-  const transactionMeta = useTransactionMeta(item.hash);
+  const transactionMeta = useLocalTransactionMeta(item.hash);
   const { metamaskPay } = transactionMeta || {};
   const { totalFiat, networkFeeFiat, bridgeFeeFiat } = metamaskPay || {};
 

@@ -11,7 +11,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import { usePerpsDepositConfirmation } from '../../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { useTransactionMeta } from '../../../hooks/activity/useTransactionMeta';
+import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -39,7 +39,7 @@ export function PerpsDepositDetails({ item }: Readonly<Props>) {
   const t = useI18nContext();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
-  const transactionMeta = useTransactionMeta(item.hash);
+  const transactionMeta = useLocalTransactionMeta(item.hash);
   const { metamaskPay } = transactionMeta ?? {};
   const { targetFiat, networkFeeFiat, bridgeFeeFiat, totalFiat } =
     metamaskPay || {};

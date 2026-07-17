@@ -7,7 +7,7 @@ import { selectLocalTransactionsByHash } from '../../selectors/activity';
  *
  * @param hash - Transaction identifier
  */
-export function useTransactionMeta(
+export function useLocalTransactionMeta(
   hash: string | undefined,
 ): TransactionMeta | undefined {
   const localTransactions = useSelector(selectLocalTransactionsByHash);

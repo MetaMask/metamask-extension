@@ -7,8 +7,8 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { useTransactionMeta } from '../../../hooks/activity/useTransactionMeta';
-import { useTransactionQuery } from '../../../hooks/activity/useTransactionQuery';
+import { useApiTransaction } from '../../../hooks/activity/useApiTransaction';
+import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { Footer, Row, Section } from '../components/shared';
 import { ConvertAgainButton } from '../components/convert-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
@@ -29,10 +29,9 @@ function useSentToken(
   const sourceChainId = chainId ? toEvmCaipChainId(chainId) : undefined;
   const userAddress = transactionMeta?.txParams?.from?.toLowerCase();
 
-  const { data: sourceTransaction } = useTransactionQuery({
+  const sourceTransaction = useApiTransaction({
     chainId: sourceChainId,
     txHash: sourceHash,
-    enabled: Boolean(sourceHash && sourceChainId),
   });
 
   return useMemo(() => {
@@ -75,7 +74,7 @@ type Props = {
 export function ConvertDetails({ item }: Props) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold: format } = useFormatters();
-  const transactionMeta = useTransactionMeta(item.hash);
+  const transactionMeta = useLocalTransactionMeta(item.hash);
   const { networkFeeFiat, totalFiat } = transactionMeta?.metamaskPay ?? {};
   const sentToken = useSentToken(item.data.sourceToken, transactionMeta);
 
