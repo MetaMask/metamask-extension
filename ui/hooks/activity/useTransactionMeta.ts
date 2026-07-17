@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
 
 /**
- * Used for enriching activity items with local-only data.
- * This is where `metamaskPay` and other per-transaction metadata live.
+ * Used for enriching activity items with local-only data e.g. `metamaskPay`
  *
- * @param hash - The activity item hash
+ * @param hash - Transaction identifier
  */
-export function useTransactionMeta(hash: string | undefined) {
-  const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
-  return localTransactionsByHash.get((hash ?? '').toLowerCase())
-    ?.initialTransaction;
+export function useTransactionMeta(
+  hash: string | undefined,
+): TransactionMeta | undefined {
+  const localTransactions = useSelector(selectLocalTransactionsByHash);
+  return localTransactions.get((hash ?? '').toLowerCase())?.initialTransaction;
 }

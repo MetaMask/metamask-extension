@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type {
   ActivityListItem,
   TokenAmount,
@@ -8,7 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useTransactionMeta } from '../../../hooks/activity/useTransactionMeta';
 import { useTransactionQuery } from '../../../hooks/activity/useTransactionQuery';
-import { Footer, PAY_FIAT_CURRENCY, Row, Section } from '../components/shared';
+import { Footer, Row, Section } from '../components/shared';
 import { ConvertAgainButton } from '../components/convert-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -16,10 +17,13 @@ import { TransactionDetailsProvider } from '../../confirmations/components/activ
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
 
+// Fiat currency for `metamaskPay` is always USD
+const metamaskPayCurrency = 'usd';
+
 function useSentToken(
   baseToken: TokenAmount | undefined,
-  transactionMeta: ReturnType<typeof useTransactionMeta>,
-): TokenAmount | undefined {
+  transactionMeta: TransactionMeta | undefined,
+) {
   const { sourceHash, tokenAddress, chainId } =
     transactionMeta?.metamaskPay ?? {};
   const sourceChainId = chainId ? toEvmCaipChainId(chainId) : undefined;
@@ -70,15 +74,13 @@ type Props = {
 
 export function ConvertDetails({ item }: Props) {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold: format } = useFormatters();
   const transactionMeta = useTransactionMeta(item.hash);
   const { networkFeeFiat, totalFiat } = transactionMeta?.metamaskPay ?? {};
   const sentToken = useSentToken(item.data.sourceToken, transactionMeta);
 
   const formatFiat = (value?: string) =>
-    value
-      ? formatCurrencyWithMinThreshold(Number(value), PAY_FIAT_CURRENCY)
-      : null;
+    value ? format(Number(value), metamaskPayCurrency) : null;
 
   if (!transactionMeta) {
     return null;
