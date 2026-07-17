@@ -13,6 +13,18 @@ import {
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),

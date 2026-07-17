@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
@@ -23,12 +23,10 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
@@ -43,7 +41,7 @@ const TokenButtons = ({
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
@@ -53,8 +51,7 @@ const TokenButtons = ({
 
   const currentChainId = token.chainId;
 
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
 
   useEffect(() => {
@@ -68,30 +65,46 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Token Overview',
-        text: 'Buy',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: currentChainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: token.symbol,
-      },
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy({
+      assetId: toAssetId(token.address, token.chainId),
+      chainId: token.chainId,
     });
-  }, [currentChainId, token.symbol, trackEvent, openBuyCryptoInPdapp]);
+    // The ramps gate can block the buy and show its own modal; don't report a
+    // buy click in that case.
+    if (!opened) {
+      return;
+    }
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'Token Overview',
+          text: 'Buy',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: currentChainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol,
+        })
+        .build(),
+    );
+  }, [
+    currentChainId,
+    token.address,
+    token.chainId,
+    token.symbol,
+    trackEvent,
+    createEventBuilder,
+    goToBuy,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SendStarted)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
@@ -100,9 +113,8 @@ const TokenButtons = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: token.chainId,
-        },
-      },
-      { excludeMetaMetricsId: false },
+        })
+        .build({ excludeMetaMetricsId: false }),
     );
 
     try {
@@ -118,7 +130,7 @@ const TokenButtons = ({
         throw err;
       }
     }
-  }, [trackEvent, navigate, token]);
+  }, [trackEvent, createEventBuilder, navigate, token]);
 
   const handleSwapOnClick = useCallback(async () => {
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
@@ -140,7 +152,7 @@ const TokenButtons = ({
         onClick={handleBuyAndSellOnClick}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721 || !isBuyableChain}
+        disabled={token.isERC721}
       />
 
       {shouldShowSendButton ? (

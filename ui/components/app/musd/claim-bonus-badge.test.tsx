@@ -40,38 +40,19 @@ jest.mock('react-redux', () => ({
   }),
 }));
 
-jest.mock('../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const _trackEvent = jest.fn();
-  const MetaMetricsContext = ReactActual.createContext({
-    trackEvent: _trackEvent,
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  MetaMetricsContext.Provider = (({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) =>
-    ReactActual.createElement(
-      ReactActual.Fragment,
-      null,
-      children,
-    )) as unknown as typeof MetaMetricsContext.Provider;
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __mockTrackEvent: _trackEvent,
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
-
-const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __mockTrackEvent: jest.Mock;
-}>('../../../contexts/metametrics');
 
 const defaultProps = {
   label: 'Claim 5% bonus',
@@ -111,18 +92,26 @@ describe('ClaimBonusBadge', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     /* eslint-disable @typescript-eslint/naming-convention */
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
-      category: MetaMetricsEventCategory.MusdConversion,
+      name: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
       properties: {
+        category: MetaMetricsEventCategory.MusdConversion,
         location: 'token_list_item',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         view_trigger: 'component_mounted',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         button_text: 'Claim 5% bonus',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         network_chain_id: '0x1',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         network_name: 'Ethereum Mainnet',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_symbol: 'MUSD',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         bonus_amount_range: '10.00 - 99.99',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         has_claimed_before: false,
       },
+      sensitiveProperties: {},
     });
     /* eslint-enable @typescript-eslint/naming-convention */
   });

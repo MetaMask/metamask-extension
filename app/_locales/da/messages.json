@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
-  },
   "addAlias": {
     "message": "Tilføj alias"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Avanceret"
-  },
-  "customToken": {
-    "message": "Brugerdefineret Token"
   },
   "decimal": {
     "message": "Decimalpræcision"
@@ -338,9 +332,6 @@
   },
   "message": {
     "message": "Besked"
-  },
-  "mustSelectOne": {
-    "message": "Skal vælge mindst 1 token."
   },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
@@ -505,9 +496,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
   },
   "signed": {
     "message": "Underskrevet"
