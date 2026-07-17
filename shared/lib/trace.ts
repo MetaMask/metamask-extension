@@ -5,7 +5,6 @@ import type {
   StartSpanOptions,
   TraceparentData,
 } from '@sentry/types';
-import { extractTraceparentData } from '@sentry/utils';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
@@ -609,9 +608,9 @@ function spanContextToTraceparent(
 
 /**
  * Validate and unpack a W3C `traceparent` string into Sentry `TraceparentData`.
- * `@sentry/utils`' `extractTraceparentData` parses the `sentry-trace` shape
- * (`{traceId}-{spanId}-{sampled}`), so the W3C version byte is dropped and the
- * 2-hex trace-flags reduced to the single sampled bit before unpacking.
+ * The version byte is dropped and the 2-hex trace-flags reduced to the single
+ * `parentSampled` bit. (Sentry v10 removed `@sentry/utils`'
+ * `extractTraceparentData`, so the fields are read straight from the match.)
  *
  * @param value - The candidate `_traceContext` value from the last RPC param.
  * @returns Parsed trace context, or undefined when `value` is not a valid W3C
@@ -626,8 +625,11 @@ function parseTraceparent(value: unknown): TraceparentData | undefined {
     return undefined;
   }
   const [, traceId, parentId, flags] = match;
-  const sampled = isSampled(parseInt(flags, 16)) ? '1' : '0';
-  return extractTraceparentData(`${traceId}-${parentId}-${sampled}`);
+  return {
+    traceId,
+    parentSpanId: parentId,
+    parentSampled: isSampled(parseInt(flags, 16)),
+  };
 }
 
 /**
