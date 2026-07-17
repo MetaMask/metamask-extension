@@ -1,22 +1,21 @@
-import type { Client, Event as SentryEvent, EventHint } from '@sentry/types';
+import type { Client, Event as SentryEvent, EventHint } from '@sentry/core';
 import {
   getActiveSpan,
   getCurrentScope,
   getIsolationScope,
 } from '@sentry/browser';
-import { addFetchInstrumentationHandler } from '@sentry/utils';
+import { addFetchInstrumentationHandler } from '@sentry/core';
 import {
   buildAugmentedHeaders,
   buildConsensysBaggage,
   consensysTracePropagationIntegration,
   getCurrentConsensysRequestId,
-  getCurrentTraceparent,
   matchesBackendTarget,
   resetConsensysRequestIdProvider,
   setConsensysRequestIdProvider,
 } from './sentry-trace-propagation';
 
-jest.mock('@sentry/utils', () => ({
+jest.mock('@sentry/core', () => ({
   addFetchInstrumentationHandler: jest.fn(),
 }));
 
@@ -45,9 +44,9 @@ const emptyPropagationScope = {
   getPropagationContext: () => ({}),
 } as unknown as ReturnType<typeof getCurrentScope>;
 
-function mockActiveSpan(traceFlags = 1) {
+function mockActiveSpan() {
   getActiveSpanMock.mockReturnValue({
-    spanContext: () => ({ traceId: TRACE_ID, spanId: SPAN_ID, traceFlags }),
+    spanContext: () => ({ traceId: TRACE_ID, spanId: SPAN_ID, traceFlags: 1 }),
   } as unknown as ReturnType<typeof getActiveSpan>);
 }
 
@@ -79,63 +78,31 @@ describe('matchesBackendTarget', () => {
 });
 
 describe('buildConsensysBaggage', () => {
-  it('formats the RAPID baggage segment', () => {
+  it('formats the Consensys baggage segment', () => {
     expect(buildConsensysBaggage('abc')).toBe(
       'consensys-request-id=abc,consensys-application=metamask-extension',
     );
   });
 });
 
-describe('getCurrentTraceparent', () => {
-  it('builds a sampled traceparent from the active span', () => {
-    mockActiveSpan(1);
-    expect(getCurrentTraceparent()).toBe(TRACEPARENT);
-  });
-
-  it('encodes an unsampled active span with `00` flags', () => {
-    mockActiveSpan(0);
-    expect(getCurrentTraceparent()).toBe(`00-${TRACE_ID}-${SPAN_ID}-00`);
-  });
-
-  it('falls back to the merged scope propagation context', () => {
-    getActiveSpanMock.mockReturnValue(undefined);
-    getIsolationScopeMock.mockReturnValue(emptyPropagationScope);
-    getCurrentScopeMock.mockReturnValue({
-      getPropagationContext: () => ({
-        traceId: TRACE_ID,
-        spanId: SPAN_ID,
-        sampled: false,
-      }),
-    } as unknown as ReturnType<typeof getCurrentScope>);
-
-    expect(getCurrentTraceparent()).toBe(`00-${TRACE_ID}-${SPAN_ID}-00`);
-  });
-
-  it('returns undefined when no trace id is available', () => {
-    getActiveSpanMock.mockReturnValue(undefined);
-    expect(getCurrentTraceparent()).toBeUndefined();
-  });
-});
-
 describe('buildAugmentedHeaders', () => {
-  it('appends traceparent and baggage to a plain-object header init, preserving sentry headers', () => {
+  it('appends baggage to a plain-object header init, preserving SDK headers', () => {
     const args = [
       BACKEND_URL,
       {
         headers: {
           'sentry-trace': `${TRACE_ID}-${SPAN_ID}-1`,
+          traceparent: TRACEPARENT,
           baggage: 'sentry-environment=dev',
         },
       },
     ];
 
-    const headers = buildAugmentedHeaders(args, {
-      traceparent: TRACEPARENT,
-      requestId: 'uuid-fixed',
-    });
+    const headers = buildAugmentedHeaders(args, { requestId: 'uuid-fixed' });
 
-    expect(headers.get('traceparent')).toBe(TRACEPARENT);
+    // The SDK-injected `sentry-trace` / `traceparent` are seeded through, not removed.
     expect(headers.get('sentry-trace')).toBe(`${TRACE_ID}-${SPAN_ID}-1`);
+    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     const baggage = headers.get('baggage');
     expect(baggage).toContain('sentry-environment=dev');
     expect(baggage).toContain(CONSENSYS_BAGGAGE);
@@ -146,12 +113,10 @@ describe('buildAugmentedHeaders', () => {
     const headers = buildAugmentedHeaders(
       [BACKEND_URL, { headers: existing }],
       {
-        traceparent: TRACEPARENT,
         requestId: 'uuid-fixed',
       },
     );
 
-    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toContain(CONSENSYS_BAGGAGE);
     expect(headers.get('baggage')).toContain('sentry-environment=dev');
   });
@@ -159,11 +124,10 @@ describe('buildAugmentedHeaders', () => {
   it('augments an array-of-pairs header init', () => {
     const headers = buildAugmentedHeaders(
       [BACKEND_URL, { headers: [['x-test', '1']] }],
-      { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
+      { requestId: 'uuid-fixed' },
     );
 
     expect(headers.get('x-test')).toBe('1');
-    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
   });
 
@@ -172,12 +136,10 @@ describe('buildAugmentedHeaders', () => {
       headers: { 'x-from-request': 'yes' },
     });
     const headers = buildAugmentedHeaders([request], {
-      traceparent: TRACEPARENT,
       requestId: 'uuid-fixed',
     });
 
     expect(headers.get('x-from-request')).toBe('yes');
-    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
   });
 
@@ -192,36 +154,27 @@ describe('buildAugmentedHeaders', () => {
           headers: { 'x-from-init': 'init', 'x-override': 'from-init' },
         },
       ],
-      { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
+      { requestId: 'uuid-fixed' },
     );
 
     expect(headers.get('x-from-init')).toBe('init');
     expect(headers.get('x-from-request')).toBe('yes');
     expect(headers.get('x-override')).toBe('from-init');
-    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
   });
 
-  it('does not overwrite an existing traceparent header', () => {
+  it('preserves an SDK-injected traceparent header through augmentation', () => {
     const headers = buildAugmentedHeaders(
-      [
-        BACKEND_URL,
-        {
-          headers: {
-            traceparent: `00-${TRACE_ID}-${SPAN_ID}-00`,
-          },
-        },
-      ],
-      { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
+      [BACKEND_URL, { headers: { traceparent: TRACEPARENT } }],
+      { requestId: 'uuid-fixed' },
     );
 
-    expect(headers.get('traceparent')).toBe(`00-${TRACE_ID}-${SPAN_ID}-00`);
+    expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toContain(CONSENSYS_BAGGAGE);
   });
 
-  it('omits traceparent when none is available but still adds baggage', () => {
+  it('does not inject a traceparent of its own', () => {
     const headers = buildAugmentedHeaders([BACKEND_URL], {
-      traceparent: undefined,
       requestId: 'uuid-fixed',
     });
 
@@ -240,8 +193,8 @@ describe('consensysTracePropagationIntegration', () => {
     return addFetchInstrumentationHandlerMock.mock.calls[0][0];
   }
 
-  it('injects traceparent and baggage on a matched outbound request', () => {
-    mockActiveSpan(1);
+  it('appends baggage on a matched outbound request, leaving traceparent to the SDK', () => {
+    mockActiveSpan();
     const handler = getFetchHandler();
     const handlerData = {
       fetchData: { url: BACKEND_URL, method: 'GET' },
@@ -251,7 +204,7 @@ describe('consensysTracePropagationIntegration', () => {
     handler(handlerData);
 
     const init = handlerData.args[1] as { headers: Headers };
-    expect(init.headers.get('traceparent')).toBe(TRACEPARENT);
+    expect(init.headers.get('traceparent')).toBeNull();
     expect(init.headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
     expect(getCurrentConsensysRequestId()).toBe('uuid-fixed');
   });
@@ -282,7 +235,7 @@ describe('consensysTracePropagationIntegration', () => {
   });
 
   it('uses a custom request-id provider when set', () => {
-    mockActiveSpan(1);
+    mockActiveSpan();
     setConsensysRequestIdProvider(() => 'operation-id');
     const handler = getFetchHandler();
     const handlerData = {
@@ -316,7 +269,7 @@ describe('consensysTracePropagationIntegration', () => {
     });
 
     it('tags events with the current consensysRequestId once a request has run', () => {
-      mockActiveSpan(1);
+      mockActiveSpan();
       const handler = getFetchHandler();
       handler({
         fetchData: { url: BACKEND_URL, method: 'GET' },
@@ -331,7 +284,7 @@ describe('consensysTracePropagationIntegration', () => {
     });
 
     it('does not tag consensysRequestId for a different trace id', () => {
-      mockActiveSpan(1);
+      mockActiveSpan();
       const handler = getFetchHandler();
       handler({
         fetchData: { url: BACKEND_URL, method: 'GET' },
