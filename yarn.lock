@@ -11465,24 +11465,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=1ed092":
+"@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch":
   version: 2.31.5
-  resolution: "@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=1ed092"
-  checksum: 10/d3197be660dcd7508f9864cbca689bd439d02010907e29bd860278dc62af8a3cfff997cc8912fe12632daad9b0541c7cdc6519cc743b5ef1fccb2c0e1d1e6478
-  languageName: node
-  linkType: hard
-
-"@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@npm%253A2.31.5%23~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%3A%3Aversion=2.31.5&hash=1ed092#~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch::version=2.31.5&hash=19c5d0":
-  version: 2.31.5
-  resolution: "@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@npm%253A2.31.5%23~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%3A%3Aversion=2.31.5&hash=1ed092#~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch::version=2.31.5&hash=19c5d0"
-  checksum: 10/f8d4243fa29146bfa7958adf2284fd9a3d88a11c2f99a49b439da40d71ac710ad9a9737aeea628eff397889ec2256b4dd8fa547aa39ebc4f548eabcc488df60f
-  languageName: node
-  linkType: hard
-
-"@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@patch%253A@rive-app/canvas@npm%25253A2.31.5%2523~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%253A%253Aversion=2.31.5&hash=1ed092%23~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch%3A%3Aversion=2.31.5&hash=19c5d0#~/.yarn/patches/@rive-app-canvas-patch-03752f0c3b.patch":
-  version: 2.31.5
-  resolution: "@rive-app/canvas@patch:@rive-app/canvas@patch%3A@rive-app/canvas@patch%253A@rive-app/canvas@npm%25253A2.31.5%2523~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%253A%253Aversion=2.31.5&hash=1ed092%23~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch%3A%3Aversion=2.31.5&hash=19c5d0#~/.yarn/patches/@rive-app-canvas-patch-03752f0c3b.patch::version=2.31.5&hash=26605a"
-  checksum: 10/c5d60382142520bc3aa9af8a8ee18daf7ebe9a39b0fc8da014e7e3bb8389e25b93c58d269793768d208f38b77a14c748fe0eee54edc5553f92fe928c3828ec6a
+  resolution: "@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=5c543c"
+  checksum: 10/d19b98ca38f2183c8c69893264f5b152faf3a7f984b6565f9ca347e99c2f272fa644c7ba2f5c999e907230bba5b38db315f2206ab4d057b06fe4ac1319799fe6
   languageName: node
   linkType: hard
 
