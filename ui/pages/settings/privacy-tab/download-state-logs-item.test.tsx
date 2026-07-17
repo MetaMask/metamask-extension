@@ -6,6 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as exportUtils from '../../../helpers/utils/export-utils';
+import { toast } from '../../../components/ui/toast/toast';
 import { DownloadStateLogsItem } from './download-state-logs-item';
 
 jest.mock('../../../helpers/utils/export-utils', () => ({
@@ -17,6 +18,20 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   ...jest.requireActual('../../../../shared/lib/sentry'),
   captureException: jest.fn(),
 }));
+
+jest.mock('../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../components/ui/toast/toast')
+  >('../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+    },
+    ToastContent: actual.ToastContent,
+  };
+});
 
 const mockExportAsFile = exportUtils.exportAsFile as jest.Mock;
 
@@ -101,12 +116,17 @@ describe('DownloadStateLogsItem', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('download-state-logs-error-toast'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.stateLogError.message),
-      ).toBeInTheDocument();
+      expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: messages.unableToDownload.message,
+            description: messages.stateLogError.message,
+            dataTestId: 'download-state-logs-error-toast',
+          id: 'download-state-logs-error-toast',
+        }),
+        expect.objectContaining({
+          duration: Infinity,
+        }),
+      );
     });
   });
 
@@ -127,9 +147,15 @@ describe('DownloadStateLogsItem', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('download-state-logs-error-toast'),
-      ).toBeInTheDocument();
+      expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dataTestId: 'download-state-logs-error-toast',
+          id: 'download-state-logs-error-toast',
+        }),
+        expect.objectContaining({
+          duration: Infinity,
+        }),
+      );
     });
   });
 });
