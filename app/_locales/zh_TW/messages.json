@@ -857,9 +857,6 @@
   "sign": {
     "message": "簽署"
   },
-  "signatureRequest": {
-    "message": "請求簽署"
-  },
   "signed": {
     "message": "已簽署"
   },
