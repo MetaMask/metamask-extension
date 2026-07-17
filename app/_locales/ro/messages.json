@@ -503,9 +503,6 @@
   "sign": {
     "message": "Semnați"
   },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
-  },
   "signed": {
     "message": "Semnat"
   },
