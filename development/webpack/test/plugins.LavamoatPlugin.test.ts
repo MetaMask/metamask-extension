@@ -49,6 +49,7 @@ describe('LavamoatPlugin', () => {
       assert.strictEqual(result.mode, 'safe');
       assert.deepStrictEqual(result.embeddedOptions?.globalAliases, [
         'self',
+        'global',
         'globalThis',
       ]);
       const exceptions =
