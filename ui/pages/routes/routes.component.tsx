@@ -40,13 +40,13 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -120,7 +120,6 @@ import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -206,6 +205,9 @@ const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
+);
+const RampsPaymentMethod = mmLazy(
+  () => import('../ramps/payment-method/index.ts'),
 );
 const PermissionsPage = mmLazy(
   () =>
@@ -527,10 +529,6 @@ export const routeConfig = [
             element: <BatchSell />,
           },
           {
-            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />,
-          },
-          {
             path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
             element: <CrossChainSwap />,
           },
@@ -545,6 +543,10 @@ export const routeConfig = [
           {
             path: RAMPS_TOKEN_SELECTION_ROUTE,
             element: <RampsTokenSelection />,
+          },
+          {
+            path: RAMPS_PAYMENT_METHOD_ROUTE,
+            element: <RampsPaymentMethod />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,

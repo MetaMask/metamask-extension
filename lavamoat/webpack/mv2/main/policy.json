@@ -995,7 +995,7 @@
         "@metamask/polling-controller": true,
         "@metamask/snaps-controllers": true,
         "@metamask/superstruct": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1420,7 +1420,7 @@
     "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
         "@metamask/ppom-validator>json-rpc-random-id": true,
-        "watchify>xtend": true
+        "browserify>xtend": true
       }
     },
     "@metamask/eth-sig-util": {
@@ -2518,14 +2518,6 @@
         "eth-method-registry": true,
         "webpack>events": true,
         "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -3820,7 +3812,7 @@
       "packages": {
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
@@ -3982,7 +3974,7 @@
         "ethereumjs-util>ethereum-cryptography>browserify-aes>buffer-xor": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "mockttp>express>safe-buffer": true
       }
     },
@@ -4001,7 +3993,7 @@
         "buffer": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "crypto-browserify>browserify-cipher>browserify-des>des.js": true,
-        "pumpify>inherits": true
+        "duplexify>inherits": true
       }
     },
     "crypto-browserify>public-encrypt>browserify-rsa": {
@@ -4018,7 +4010,7 @@
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>create-hmac": true,
         "@toruslabs/eccrypto>elliptic": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>browserify-sign>readable-stream": true,
         "mockttp>express>safe-buffer": true
@@ -4056,7 +4048,7 @@
         "buffer>ieee754": true
       }
     },
-    "terser>source-map-support>buffer-from": {
+    "browserify>concat-stream>buffer-from": {
       "globals": {
         "Buffer": true
       },
@@ -4217,7 +4209,7 @@
     },
     "ethereumjs-util>create-hash>cipher-base": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "mockttp>express>safe-buffer": true,
         "stream-browserify": true,
         "browserify>string_decoder": true
@@ -4282,8 +4274,8 @@
       },
       "packages": {
         "buffer": true,
-        "terser>source-map-support>buffer-from": true,
-        "pumpify>inherits": true,
+        "browserify>concat-stream>buffer-from": true,
+        "duplexify>inherits": true,
         "@metamask/snaps-controllers>readable-stream": true,
         "browserify>concat-stream>typedarray": true
       }
@@ -4346,7 +4338,7 @@
     "ethereumjs-util>create-hash": {
       "packages": {
         "ethereumjs-util>create-hash>cipher-base": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "ethereumjs-util>create-hash>md5.js": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "@ngraveio/bc-ur>sha.js": true
@@ -4364,7 +4356,7 @@
       "packages": {
         "ethereumjs-util>create-hash>cipher-base": true,
         "ethereumjs-util>create-hash": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "mockttp>express>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true
@@ -4410,7 +4402,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "gulp-watch>object-assign": true
+        "prop-types>object-assign": true
       }
     },
     "nock>debug": {
@@ -4464,7 +4456,7 @@
     },
     "crypto-browserify>browserify-cipher>browserify-des>des.js": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
@@ -4504,7 +4496,7 @@
         "@toruslabs/eccrypto>elliptic>brorand": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "@toruslabs/eccrypto>elliptic>hmac-drbg": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-crypto-utils": true
       }
@@ -4973,14 +4965,14 @@
     },
     "ethereumjs-util>create-hash>md5.js>hash-base": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
         "mockttp>express>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
         "mockttp>express>safe-buffer": true
       }
@@ -4991,13 +4983,13 @@
       },
       "packages": {
         "buffer": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "stream-browserify": true
       }
     },
     "ethers>@ethersproject/sha2>hash.js": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
       }
     },
@@ -5365,7 +5357,7 @@
     "ethereumjs-util>create-hash>md5.js": {
       "packages": {
         "ethereumjs-util>create-hash>md5.js>hash-base": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "mockttp>express>safe-buffer": true
       }
     },
@@ -5610,7 +5602,7 @@
     },
     "react-markdown>property-information": {
       "packages": {
-        "watchify>xtend": true
+        "browserify>xtend": true
       }
     },
     "@google/genai>protobufjs": {
@@ -6013,7 +6005,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6028,7 +6020,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6043,7 +6035,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6058,7 +6050,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6073,7 +6065,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6088,7 +6080,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6106,7 +6098,7 @@
         "core-js-pure": true,
         "readable-stream-2>core-util-is": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "crypto-browserify>browserify-sign>readable-stream>isarray": true,
         "process": true,
         "readable-stream-2>process-nextick-args": true,
@@ -6124,7 +6116,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6139,7 +6131,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6154,7 +6146,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6169,7 +6161,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6184,7 +6176,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6199,7 +6191,7 @@
       "packages": {
         "buffer": true,
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
         "@storybook/react>util-deprecate": true
@@ -6305,7 +6297,7 @@
       "packages": {
         "buffer": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base": true,
-        "pumpify>inherits": true
+        "duplexify>inherits": true
       }
     },
     "crypto-browserify>pbkdf2>ripemd160": {
@@ -6315,7 +6307,7 @@
       "packages": {
         "buffer": true,
         "crypto-browserify>pbkdf2>ripemd160>hash-base": true,
-        "pumpify>inherits": true
+        "duplexify>inherits": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -6444,7 +6436,7 @@
     },
     "@ngraveio/bc-ur>sha.js": {
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "mockttp>express>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
@@ -6528,7 +6520,7 @@
     "stream-browserify": {
       "packages": {
         "webpack>events": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "stream-browserify>readable-stream": true
       }
     },
@@ -6552,11 +6544,11 @@
       "packages": {
         "buffer": true,
         "stream-http>builtin-status-codes": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "process": true,
         "stream-http>readable-stream": true,
         "browserify>url": true,
-        "watchify>xtend": true
+        "browserify>xtend": true
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
@@ -6737,7 +6729,7 @@
         "process": true
       },
       "packages": {
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "browserify>util>is-arguments": true,
         "browserify>util>is-generator-function": true,
         "browserify>util>is-typed-array": true,

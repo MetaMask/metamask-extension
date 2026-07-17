@@ -19,85 +19,6 @@ on:
         required: false
 
 jobs:
-  test-e2e-chrome-browserify:
-    uses: ./.github/workflows/run-e2e.yml
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-browserify'] }}
-    with:
-      test-suite-name: test-e2e-chrome-browserify
-      build-artifact: build-test-browserify
-      build-command: yarn build:test
-      test-command: yarn test:e2e:chrome
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
-  test-e2e-chrome-multiple-providers:
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-multiple-providers
-      build-artifact: build-test-browserify
-      build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:multi-provider
-      builds-from-run: ${{ inputs.builds-from-run }}
-
-  test-e2e-chrome-rpc:
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-rpc
-      build-artifact: build-test-browserify
-      build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:rpc
-      builds-from-run: ${{ inputs.builds-from-run }}
-
-  test-e2e-chrome-flask:
-    uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-flask'] }}
-    with:
-      test-suite-name: test-e2e-chrome-flask
-      build-artifact: build-test-flask-browserify
-      build-command: yarn build:test:flask
-      test-command: yarn test:e2e:chrome:flask
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
-  test-e2e-chrome-dist:
-    # Skip for cross-repo PRs — dist tests need secrets not available to external contributors.
-    # Deliberately allowed on fork repos so our test-forks can test the workflows if they set the secrets.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-dist
-      build-artifact: build-dist-browserify
-      test-command: yarn test:e2e:chrome:dist
-      builds-from-run: ${{ inputs.builds-from-run }}
-
-  test-e2e-chrome-api-specs:
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-api-specs
-      build-artifact: build-test-browserify
-      build-command: yarn build:test
-      test-command: yarn test:api-specs
-      test-artifacts-path: html-report
-      builds-from-run: ${{ inputs.builds-from-run }}
-
-  test-e2e-chrome-api-specs-multichain:
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-chrome-api-specs-multichain
-      build-artifact: build-test-flask-browserify
-      build-command: yarn build:test:flask
-      test-command: yarn test:api-specs-multichain
-      test-artifacts-path: html-report-multichain
-      builds-from-run: ${{ inputs.builds-from-run }}
-
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
     secrets:
@@ -108,7 +29,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test
       test-command: yarn test:e2e:chrome
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
@@ -119,7 +40,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-multiple-providers-webpack
       build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
       builds-from-run: ${{ inputs.builds-from-run }}
 
@@ -128,7 +49,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-rpc-webpack
       build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
       builds-from-run: ${{ inputs.builds-from-run }}
 
@@ -140,7 +61,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-flask-webpack
       build-artifact: build-test-flask-webpack
-      build-command: yarn build:test:flask:webpack
+      build-command: yarn build:test:flask
       test-command: yarn test:e2e:chrome:flask
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
@@ -162,7 +83,7 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-api-specs-webpack
       build-artifact: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
       builds-from-run: ${{ inputs.builds-from-run }}
@@ -172,20 +93,13 @@ jobs:
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain-webpack
       build-artifact: build-test-flask-webpack
-      build-command: yarn build:test:flask:webpack
+      build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
       builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-report:
     needs:
-      - test-e2e-chrome-browserify
-      - test-e2e-chrome-multiple-providers
-      - test-e2e-chrome-rpc
-      - test-e2e-chrome-flask
-      - test-e2e-chrome-dist
-      - test-e2e-chrome-api-specs
-      - test-e2e-chrome-api-specs-multichain
       - test-e2e-chrome-webpack
       - test-e2e-chrome-multiple-providers-webpack
       - test-e2e-chrome-rpc-webpack

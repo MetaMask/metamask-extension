@@ -509,9 +509,6 @@
   "sign": {
     "message": "স্বাক্ষর করুন"
   },
-  "signatureRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
-  },
   "signed": {
     "message": "স্বাক্ষরিত"
   },
