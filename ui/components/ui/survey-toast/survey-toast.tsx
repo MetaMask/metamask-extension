@@ -1,6 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { useToasterStore } from 'react-hot-toast';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -18,7 +24,7 @@ import {
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import { Toast } from '../../multichain';
+import { toast } from '../toast/toast';
 
 type Survey = {
   url: string;
@@ -27,6 +33,8 @@ type Survey = {
   cta: string;
   id: number;
 };
+
+const SURVEY_TOAST_ID = 'survey-toast';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -43,6 +51,8 @@ export function SurveyToast() {
   const internalAccount = useSelector(getSelectedInternalAccount);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isProgrammaticDismissRef = useRef(false);
+  const { toasts } = useToasterStore();
 
   const surveyUrl = useMemo(
     () => `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`,
@@ -101,9 +111,29 @@ export function SurveyToast() {
     analyticsId,
     isMetaMetricsEnabled,
     dispatch,
+    surveyUrl,
   ]);
 
-  function handleActionClick() {
+  const trackAction = useCallback(
+    (response: 'accept' | 'deny') => {
+      if (!isMetaMetricsEnabled || !survey) {
+        return;
+      }
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SurveyToast)
+          .addCategory(MetaMetricsEventCategory.Feedback)
+          .addProperties({
+            response,
+            survey: survey.id,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, isMetaMetricsEnabled, survey, trackEvent],
+  );
+
+  const handleActionClick = useCallback(() => {
     if (!survey) {
       return;
     }
@@ -112,46 +142,57 @@ export function SurveyToast() {
     });
     dispatch(setLastViewedUserSurvey(survey.id));
     trackAction('accept');
-  }
+  }, [dispatch, survey, trackAction]);
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     if (!survey) {
       return;
     }
     dispatch(setLastViewedUserSurvey(survey.id));
     trackAction('deny');
-  }
+  }, [dispatch, survey, trackAction]);
 
-  function trackAction(response: 'accept' | 'deny') {
-    if (!isMetaMetricsEnabled || !survey) {
-      return;
+  const shouldShowSurvey = Boolean(survey && survey.id > lastViewedUserSurvey);
+
+  useEffect(() => {
+    if (!shouldShowSurvey || !survey) {
+      isProgrammaticDismissRef.current = true;
+      toast.dismiss(SURVEY_TOAST_ID);
+      return undefined;
     }
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SurveyToast)
-        .addCategory(MetaMetricsEventCategory.Feedback)
-        .addProperties({
-          response,
-          survey: survey.id,
-        })
-        .build(),
+    toast.success(
+      {
+        title: survey.description,
+        description: survey.content,
+        actionText: survey.cta,
+        onActionClick: handleActionClick,
+        id: SURVEY_TOAST_ID,
+      },
+      {
+        duration: Infinity,
+      },
     );
-  }
 
-  if (!survey || survey.id <= lastViewedUserSurvey) {
-    return null;
-  }
+    return () => {
+      isProgrammaticDismissRef.current = true;
+      toast.dismiss(SURVEY_TOAST_ID);
+    };
+  }, [handleActionClick, shouldShowSurvey, survey]);
 
-  return (
-    <Toast
-      dataTestId="survey-toast"
-      key="survey-toast"
-      text={survey.description}
-      description={survey.content}
-      actionText={survey.cta}
-      onActionClick={handleActionClick}
-      onClose={handleClose}
-      startAdornment={<Icon name={IconName.Feedback} size={IconSize.Lg} />}
-    />
-  );
+  useEffect(() => {
+    const surveyToastState = toasts.find((t) => t.id === SURVEY_TOAST_ID);
+    if (
+      surveyToastState?.dismissed &&
+      !isProgrammaticDismissRef.current &&
+      shouldShowSurvey
+    ) {
+      handleClose();
+    }
+    if (surveyToastState?.dismissed) {
+      isProgrammaticDismissRef.current = false;
+    }
+  }, [handleClose, shouldShowSurvey, toasts]);
+
+  return null;
 }

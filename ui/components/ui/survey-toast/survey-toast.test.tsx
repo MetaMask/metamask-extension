@@ -1,8 +1,7 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act } from 'react-dom/test-utils';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -12,6 +11,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { SurveyToast } from './survey-toast';
 
 const mockTrackEvent = jest.fn();
+const mockToastDismiss = jest.fn();
+const mockToast = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -31,6 +32,17 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
+}));
+
+jest.mock('../toast/toast', () => ({
+  toast: Object.assign((...args: unknown[]) => mockToast(...args), {
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
+  }),
+  ToastContent: jest.fn(),
+}));
+
+jest.mock('react-hot-toast', () => ({
+  useToasterStore: jest.fn(() => ({ toasts: [] })),
 }));
 
 const mockFetchWithCache = fetchWithCache as jest.Mock;
@@ -74,7 +86,6 @@ describe('SurveyToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockTrackEvent.mockClear();
-    jest.restoreAllMocks();
 
     // @ts-expect-error mocking platform
     global.platform = {
@@ -84,35 +95,32 @@ describe('SurveyToast', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
-  it('should match snapshot', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
-
-    let container;
-    await act(async () => {
-      const result = renderComponent();
-      container = result.container;
-    });
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('renders nothing if no survey is available', () => {
+  it('does not show toast if no survey is available', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: [] });
+
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
+
+    await waitFor(() => {
+      expect(mockToast).not.toHaveBeenCalled();
+      expect(mockToastDismiss).toHaveBeenCalledWith('survey-toast');
+    });
   });
 
-  it('renders nothing if the survey is stale', () => {
+  it('does not show toast if the survey is stale', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.stale });
+
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
+
+    await waitFor(() => {
+      expect(mockToast).not.toHaveBeenCalled();
+      expect(mockToastDismiss).toHaveBeenCalledWith('survey-toast');
+    });
   });
 
-  it('renders the survey toast when a valid survey is available', async () => {
+  it('shows the survey toast when a valid survey is available', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     await act(async () => {
@@ -120,24 +128,38 @@ describe('SurveyToast', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
-      expect(
-        screen.getByText(surveyData.valid.description),
-      ).toBeInTheDocument();
-      expect(screen.getByText(surveyData.valid.cta)).toBeInTheDocument();
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            dataTestId: 'survey-toast',
+            title: surveyData.valid.description,
+            actionText: surveyData.valid.cta,
+          }),
+        }),
+        {
+          id: 'survey-toast',
+          duration: Infinity,
+        },
+      );
     });
   });
 
   it('handles action click correctly when metametrics is enabled', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
-    renderComponent();
-
-    await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
+    await act(async () => {
+      renderComponent();
     });
 
-    fireEvent.click(screen.getByText(surveyData.valid.cta));
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalled();
+    });
+
+    const toastContentElement = mockToast.mock
+      .calls[0][0] as React.ReactElement<{
+      onActionClick?: () => void;
+    }>;
+    toastContentElement.props.onActionClick?.();
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: surveyData.valid.url,
@@ -154,7 +176,7 @@ describe('SurveyToast', () => {
     );
   });
 
-  it('should not show the toast if metametrics is disabled', async () => {
+  it('does not show the toast if metametrics is disabled', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     renderComponent({
@@ -162,7 +184,8 @@ describe('SurveyToast', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByTestId('survey-toast')).toBeNull();
+      expect(mockToast).not.toHaveBeenCalled();
+      expect(mockFetchWithCache).not.toHaveBeenCalled();
     });
   });
 });
