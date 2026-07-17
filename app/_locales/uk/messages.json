@@ -512,9 +512,6 @@
   "sign": {
     "message": "Підписати"
   },
-  "signatureRequest": {
-    "message": "Запит підпису"
-  },
   "signed": {
     "message": "Підписано"
   },
