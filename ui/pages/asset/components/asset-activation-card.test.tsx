@@ -13,7 +13,22 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import * as storeActions from '../../../store/actions';
 import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
 import type { Asset } from '../types/asset';
+import { toast } from '../../../components/ui/toast/toast';
 import { AssetActivateCard } from './asset-activation-card';
+
+jest.mock('../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../components/ui/toast/toast')
+  >('../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+      dismiss: jest.fn(),
+    },
+  };
+});
 
 const PUBNET_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
@@ -167,9 +182,7 @@ describe('AssetActivateCard', () => {
     fireEvent.click(screen.getByTestId('asset-activate-button'));
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('asset-activation-error-container'),
-      ).toBeInTheDocument();
+      expect(toast.error).toHaveBeenCalled();
     });
 
     expect(storeActions.forceUpdateMetamaskState).not.toHaveBeenCalled();

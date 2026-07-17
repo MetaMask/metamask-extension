@@ -1,18 +1,65 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import React from 'react';
 
-import { AssetActivationErrorToast } from './asset-activation-error-toast';
+import { toast } from '../../../components/ui/toast/toast';
+import {
+  ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS,
+  AssetActivationErrorToast,
+} from './asset-activation-error-toast';
+
+jest.mock('../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../components/ui/toast/toast')
+  >('../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+      dismiss: jest.fn(),
+    },
+  };
+});
 
 describe('AssetActivationErrorToast', () => {
-  it('renders nothing when message is null', () => {
-    render(<AssetActivationErrorToast message={null} onClose={jest.fn()} />);
-
-    expect(
-      screen.queryByTestId('asset-activation-error-container'),
-    ).not.toBeInTheDocument();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
-  it('renders the error message and calls onClose when dismissed', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('does not show a toast when message is null', () => {
+    render(<AssetActivationErrorToast message={null} onClose={jest.fn()} />);
+
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it('shows the error toast when message is set', () => {
+    render(
+      <AssetActivationErrorToast
+        message="Trustline activation test error"
+        onClose={jest.fn()}
+      />,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: 'Trustline activation test error',
+          dataTestId: 'asset-activation-error-container',
+        }),
+      }),
+      {
+        id: 'asset-activation-error-toast',
+        duration: ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS,
+      },
+    );
+  });
+
+  it('calls onClose after the toast auto-hides', () => {
     const onClose = jest.fn();
 
     render(
@@ -22,13 +69,9 @@ describe('AssetActivationErrorToast', () => {
       />,
     );
 
-    expect(
-      screen.getByText('Trustline activation test error'),
-    ).toBeInTheDocument();
-
-    const closeButton = document.querySelector('.mm-banner-base__close-button');
-    expect(closeButton).toBeInTheDocument();
-    fireEvent.click(closeButton as Element);
+    act(() => {
+      jest.advanceTimersByTime(ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS);
+    });
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
