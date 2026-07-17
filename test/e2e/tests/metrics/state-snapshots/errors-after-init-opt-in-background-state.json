@@ -68,7 +68,6 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
@@ -98,8 +97,7 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
