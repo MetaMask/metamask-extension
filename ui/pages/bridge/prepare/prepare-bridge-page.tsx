@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
@@ -70,7 +76,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainProviderConfig } from '../../../selectors/multichain';
-import { Toast, ToastContainer } from '../../../components/multichain';
+import { toast } from '../../../components/ui/toast/toast';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
@@ -90,6 +96,10 @@ import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
 import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
+
+const BRIDGE_BLOCK_EXPLORER_TOAST_ID =
+  'bridge-block-explorer-link-copied-toast';
+const BRIDGE_BLOCK_EXPLORER_TOAST_DURATION_MS = 2500;
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -308,18 +318,36 @@ const PrepareBridgePage = ({
     };
   }, []);
 
-  const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
-  const [blockExplorerToken, setBlockExplorerToken] =
-    useState<BridgeToken | null>(null);
-  const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
-  const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
-
   const [alertModalProps, setAlertModalProps] = useState<
     Pick<
       React.ComponentProps<typeof BridgeAlertModal>,
       'variant' | 'isOpen' | 'alertId'
     >
   >({});
+
+  const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
+
+  const showBlockExplorerCopiedToast = useCallback(
+    (token: BridgeToken) => {
+      toast.success(
+        {
+          title: t('bridgeBlockExplorerLinkCopied'),
+          id: BRIDGE_BLOCK_EXPLORER_TOAST_ID,
+        },
+        {
+          duration: BRIDGE_BLOCK_EXPLORER_TOAST_DURATION_MS,
+          icon: (
+            <AvatarFavicon
+              name={token.symbol}
+              size={AvatarFaviconSize.Sm}
+              src={toToken.iconUrl ?? undefined}
+            />
+          ),
+        },
+      );
+    },
+    [t, toToken.iconUrl],
+  );
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
 
@@ -385,11 +413,7 @@ const PrepareBridgePage = ({
             paddingInline: 4,
           }}
           buttonProps={{ testId: 'bridge-source-button' }}
-          onBlockExplorerClick={(token) => {
-            setBlockExplorerToken(token);
-            setShowBlockExplorerToast(true);
-            setToastTriggerCounter((prev) => prev + 1);
-          }}
+          onBlockExplorerClick={showBlockExplorerCopiedToast}
           isDestination={false}
         />
 
@@ -546,11 +570,7 @@ const PrepareBridgePage = ({
             }}
             showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
-            onBlockExplorerClick={(token) => {
-              setBlockExplorerToken(token);
-              setShowBlockExplorerToast(true);
-              setToastTriggerCounter((prev) => prev + 1);
-            }}
+            onBlockExplorerClick={showBlockExplorerCopiedToast}
             isDestination={true}
           />
         </Column>
@@ -646,37 +666,6 @@ const PrepareBridgePage = ({
         )}
         <div ref={footerRef} />
       </Column>
-
-      {showBlockExplorerToast && blockExplorerToken && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <ToastContainer>
-            <Toast
-              key={toastTriggerCounter}
-              text={t('bridgeBlockExplorerLinkCopied')}
-              onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={2500}
-              startAdornment={
-                <AvatarFavicon
-                  name={blockExplorerToken.symbol}
-                  size={AvatarFaviconSize.Sm}
-                  src={toToken.iconUrl ?? undefined}
-                />
-              }
-            />
-          </ToastContainer>
-        </div>
-      )}
     </>
   );
 };
