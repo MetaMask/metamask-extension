@@ -44,7 +44,7 @@ import {
 } from '../../helpers/constants/routes';
 import { PasskeyVerification } from '../../components/app/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { toast } from '../../components/ui/toast/toast';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -90,8 +90,6 @@ function RevealSeedPage() {
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
   const { value: showPassword, toggle } = useBoolean();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
-
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
@@ -152,7 +150,16 @@ function RevealSeedPage() {
       return;
     }
     copyToClipboard(seedWords);
-    setShowSuccessToast(true);
+    toast.success(
+      {
+        title: t('copiedToClipboard'),
+        dataTestId: "reveal-seed-copy-success-toast",
+        id: 'reveal-seed-copy-success-toast',
+      },
+      {
+        duration: 5000,
+      },
+    );
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportCopied)
         .addCategory(MetaMetricsEventCategory.Keys)
@@ -184,6 +191,7 @@ function RevealSeedPage() {
     hdEntropyIndex,
     phraseRevealed,
     seedWords,
+    t,
     trackEvent,
   ]);
 
@@ -609,18 +617,6 @@ function RevealSeedPage() {
         </>
       )}
       {renderContent()}
-      {showSuccessToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={null}
-            text={t('copiedToClipboard')}
-            onClose={() => setShowSuccessToast(false)}
-            autoHideTime={5000}
-            onAutoHideToast={() => setShowSuccessToast(false)}
-            dataTestId="reveal-seed-copy-success-toast"
-          />
-        </ToastContainer>
-      )}
     </Box>
   );
 }

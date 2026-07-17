@@ -15,9 +15,16 @@ import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { toast } from '../../components/ui/toast/toast';
 import RevealSeedPage from './reveal-seed';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+}));
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -553,6 +560,14 @@ describe('Reveal Seed Page', () => {
     fireEvent.click(copyButton as HTMLElement);
 
     await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        {
+          title: messages.copiedToClipboard.message,
+          dataTestId: 'reveal-seed-copy-success-toast',
+          id: 'reveal-seed-copy-success-toast',
+        },
+        { duration: 5000 },
+      );
       expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         name: MetaMetricsEventName.KeyExportCopied,
         properties: {
