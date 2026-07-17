@@ -4,6 +4,8 @@ import {
   buildWhatsInRcFailureSection,
   buildWhatsInRcSection,
   extractWhatsInRc,
+  getChangelogAnchorId,
+  getCherryPicksAnchorId,
   getWhatsInRcAnchorId,
 } from './cherry-picks-section';
 
@@ -48,11 +50,11 @@ describe('cherry-picks-section', () => {
       mockGit(
         {
           'merge-base HEAD origin/main': 'merge-base-sha\n',
-          'describe --tags --abbrev=0 --match v[0-9]*.[0-9]*.[0-9]* --exclude *-* merge-base-sha^':
-            'v13.35.1\n',
-          'log --format=%h %s merge-base-sha..HEAD':
+          'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha':
+            'v13.35.1\nv13.35.0\n',
+          'log --ancestry-path --format=%h %s merge-base-sha..HEAD':
             'abc1234 fix: cherry-pick (#123)\n',
-          'log --format=%h %s v13.35.1..merge-base-sha':
+          'log --format=%h %s v13.35.1..merge-base-sha --first-parent':
             'def5678 feat: changelog entry (#456)\n',
         },
         (args) => gitCalls.push(args),
@@ -65,37 +67,115 @@ describe('cherry-picks-section', () => {
         ],
         mergeBase: 'merge-base-sha',
         previousTag: 'v13.35.1',
+        changelogFromReleaseBranch: false,
       });
       expect(gitCalls[1]).toStrictEqual([
-        'describe',
-        '--tags',
-        '--abbrev=0',
-        '--match',
-        'v[0-9]*.[0-9]*.[0-9]*',
-        '--exclude',
-        '*-*',
-        'merge-base-sha^',
+        'tag',
+        '--sort=-version:refname',
+        '--list',
+        'v*.*.*',
+        '--merged',
+        'merge-base-sha',
       ]);
     });
 
-    it('throws when the previous release tag cannot be found', () => {
+    it('falls back to the release branch when main-line changelog is empty', () => {
       mockGit({
         'merge-base HEAD origin/main': 'merge-base-sha\n',
-        'describe --tags --abbrev=0 --match v[0-9]*.[0-9]*.[0-9]* --exclude *-* merge-base-sha^':
-          new Error('no matching tag'),
+        'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha':
+          'v13.39.2\n',
+        'log --ancestry-path --format=%h %s merge-base-sha..HEAD':
+          'abc1234 release(runway): cherry-pick fix (#123)\n',
+        'log --format=%h %s v13.39.2..merge-base-sha --first-parent': '',
+        'log --format=%h %s v13.39.2..HEAD':
+          'abc1234 release(runway): cherry-pick fix (#123)\ndef5678 feat: feature on release (#456)\n',
       });
 
-      expect(() => extractWhatsInRc()).toThrow(
-        'Unable to find previous release tag before merge base merge-base-sha',
-      );
+      expect(extractWhatsInRc()).toStrictEqual({
+        cherryPicks: [
+          {
+            hash: 'abc1234',
+            subject: 'release(runway): cherry-pick fix (#123)',
+          },
+        ],
+        changelog: [
+          {
+            hash: 'abc1234',
+            subject: 'release(runway): cherry-pick fix (#123)',
+          },
+          { hash: 'def5678', subject: 'feat: feature on release (#456)' },
+        ],
+        mergeBase: 'merge-base-sha',
+        previousTag: 'v13.39.2',
+        changelogFromReleaseBranch: true,
+      });
+    });
+
+    it('falls back to the release branch when main-line changelog is only release commits', () => {
+      mockGit({
+        'merge-base HEAD origin/main': 'merge-base-sha\n',
+        'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha':
+          'v13.39.2\n',
+        'log --ancestry-path --format=%h %s merge-base-sha..HEAD':
+          'abc1234 release(runway): cherry-pick fix (#123)\n',
+        'log --format=%h %s v13.39.2..merge-base-sha --first-parent':
+          'aaa1111 release: bump version\n',
+        'log --format=%h %s v13.39.2..HEAD':
+          'abc1234 release(runway): cherry-pick fix (#123)\ndef5678 feat: feature on release (#456)\n',
+      });
+
+      expect(extractWhatsInRc()).toMatchObject({
+        changelogFromReleaseBranch: true,
+        changelog: [
+          {
+            hash: 'abc1234',
+            subject: 'release(runway): cherry-pick fix (#123)',
+          },
+          { hash: 'def5678', subject: 'feat: feature on release (#456)' },
+        ],
+      });
+    });
+
+    it('skips merge commits when collecting changelog entries', () => {
+      mockGit({
+        'merge-base HEAD origin/main': 'merge-base-sha\n',
+        'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha':
+          'v13.39.2\n',
+        'log --ancestry-path --format=%h %s merge-base-sha..HEAD': '',
+        'log --format=%h %s v13.39.2..merge-base-sha --first-parent':
+          'aaa1111 Merge pull request #1 from MetaMask/release/13.39.2\nbbb2222 feat: real change (#2)\n',
+      });
+
+      expect(extractWhatsInRc().changelog).toStrictEqual([
+        { hash: 'bbb2222', subject: 'feat: real change (#2)' },
+      ]);
+    });
+
+    it('returns a null previous tag when none are merged into the merge base', () => {
+      mockGit({
+        'merge-base HEAD origin/main': 'merge-base-sha\n',
+        'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha': '',
+        'log --ancestry-path --format=%h %s merge-base-sha..HEAD':
+          'abc1234 fix: cherry-pick (#123)\n',
+      });
+
+      expect(extractWhatsInRc()).toStrictEqual({
+        cherryPicks: [{ hash: 'abc1234', subject: 'fix: cherry-pick (#123)' }],
+        changelog: [],
+        mergeBase: 'merge-base-sha',
+        previousTag: null,
+        changelogFromReleaseBranch: false,
+      });
     });
 
     it('throws when a git log command fails', () => {
       mockGit({
         'merge-base HEAD origin/main': 'merge-base-sha\n',
-        'describe --tags --abbrev=0 --match v[0-9]*.[0-9]*.[0-9]* --exclude *-* merge-base-sha^':
+        'tag --sort=-version:refname --list v*.*.* --merged merge-base-sha':
           'v13.35.1\n',
-        'log --format=%h %s merge-base-sha..HEAD': new Error('git log failed'),
+        'log --ancestry-path --format=%h %s merge-base-sha..HEAD': new Error(
+          'git log failed',
+        ),
       });
 
       expect(() => extractWhatsInRc()).toThrow('git log failed');
@@ -103,7 +183,7 @@ describe('cherry-picks-section', () => {
   });
 
   describe('buildWhatsInRcSection', () => {
-    it('builds a stable run-specific anchor id', () => {
+    it('builds stable run-specific anchor ids', () => {
       expect(getWhatsInRcAnchorId()).toBe('whats-in-this-rc');
       expect(getWhatsInRcAnchorId('28063612297')).toBe(
         'whats-in-this-rc-28063612297',
@@ -111,6 +191,10 @@ describe('cherry-picks-section', () => {
       expect(getWhatsInRcAnchorId('Run 123 / RC')).toBe(
         'whats-in-this-rc-run-123-rc',
       );
+      expect(getCherryPicksAnchorId('28063612297')).toBe(
+        'cherry-picks-28063612297',
+      );
+      expect(getChangelogAnchorId('28063612297')).toBe('changelog-28063612297');
     });
 
     it('renders the stable section anchor when no commits are found', () => {
@@ -119,6 +203,7 @@ describe('cherry-picks-section', () => {
         changelog: [],
         mergeBase: 'merge-base-sha',
         previousTag: 'v13.35.1',
+        changelogFromReleaseBranch: false,
       });
 
       expect(section).toContain('<a id="whats-in-this-rc"></a>');
@@ -126,18 +211,42 @@ describe('cherry-picks-section', () => {
       expect(section).not.toContain('<a id="cherry-picks"></a>');
     });
 
-    it('renders a run-specific section anchor when a suffix is provided', () => {
+    it('renders run-specific section anchors when a suffix is provided', () => {
       const section = buildWhatsInRcSection(
         {
-          cherryPicks: [],
-          changelog: [],
+          cherryPicks: [
+            { hash: 'abc1234', subject: 'fix: cherry-pick (#123)' },
+          ],
+          changelog: [
+            { hash: 'def5678', subject: 'feat: changelog entry (#456)' },
+          ],
           mergeBase: 'merge-base-sha',
           previousTag: 'v13.35.1',
+          changelogFromReleaseBranch: false,
         },
         '28063612297',
       );
 
       expect(section).toContain('<a id="whats-in-this-rc-28063612297"></a>');
+      expect(section).toContain('<a id="cherry-picks-28063612297"></a>');
+      expect(section).toContain('<a id="changelog-28063612297"></a>');
+      expect(section).toContain(
+        'Changelog (1 commits from main at RC cut)',
+      );
+    });
+
+    it('labels changelog as release-branch fallback when applicable', () => {
+      const section = buildWhatsInRcSection({
+        cherryPicks: [],
+        changelog: [
+          { hash: 'def5678', subject: 'feat: changelog entry (#456)' },
+        ],
+        mergeBase: 'merge-base-sha',
+        previousTag: 'v13.39.2',
+        changelogFromReleaseBranch: true,
+      });
+
+      expect(section).toContain('Changelog (1 commits since v13.39.2)');
     });
 
     it('escapes table-breaking characters and links PR references', () => {
@@ -151,6 +260,7 @@ describe('cherry-picks-section', () => {
         changelog: [],
         mergeBase: 'merge-base-sha',
         previousTag: 'v13.35.1',
+        changelogFromReleaseBranch: false,
       });
 
       expect(section).toContain('<a id="cherry-picks"></a>');
