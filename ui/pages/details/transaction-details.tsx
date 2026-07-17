@@ -9,9 +9,9 @@ import {
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useCachedEvmTransaction } from '../../hooks/activity/useCachedEvmTransaction';
+import { useTransactionQuery } from '../../hooks/activity/useTransactionQuery';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
-import { useTransactionQuery } from './useTransactionQuery';
 
 type Props = {
   chainId: string | undefined;

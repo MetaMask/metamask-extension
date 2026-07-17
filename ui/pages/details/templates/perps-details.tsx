@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type {
   ActivityListItem,
@@ -9,7 +8,7 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
-import { selectLocalTransactionsByHash } from '../../../selectors/activity';
+import { useTransactionMeta } from '../../../hooks/activity/useTransactionMeta';
 import {
   ARBITRUM_USDC,
   PERPS_CURRENCY,
@@ -26,11 +25,6 @@ const ARBITRUM_USDC_ASSET_ID = toAssetId(
   ARBITRUM_USDC.address,
   toEvmCaipChainId(ARBITRUM_USDC.chainId),
 );
-
-function useTransactionMeta(hash: string | undefined) {
-  const localTransactions = useSelector(selectLocalTransactionsByHash);
-  return localTransactions.get(hash || '')?.initialTransaction;
-}
 
 export function PerpsDetails({
   item,

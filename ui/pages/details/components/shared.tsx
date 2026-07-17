@@ -11,6 +11,11 @@ import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/const
 import { formatBlockExplorerTransactionUrl } from '../../../../shared/lib/multichain/networks';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 
+/**
+ * Fiat currency for `metamaskPay` is always USD
+ */
+export const PAY_FIAT_CURRENCY = 'usd';
+
 export function getExplorerTxUrl({
   chainId,
   txHash,
