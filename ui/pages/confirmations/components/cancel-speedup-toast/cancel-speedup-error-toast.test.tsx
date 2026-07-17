@@ -1,8 +1,24 @@
 import React from 'react';
-import { screen, act } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { toast } from '../../../../components/ui/toast/toast';
 import { CancelSpeedupErrorToast } from './cancel-speedup-error-toast';
+
+jest.mock('../../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../components/ui/toast/toast')
+  >('../../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+      dismiss: jest.fn(),
+    },
+    ToastContent: actual.ToastContent,
+  };
+});
 
 describe('CancelSpeedupErrorToast', () => {
   const mockOnClose = jest.fn();
@@ -16,35 +32,7 @@ describe('CancelSpeedupErrorToast', () => {
     jest.useRealTimers();
   });
 
-  it('renders cancel title for cancel errors', () => {
-    renderWithProvider(
-      <CancelSpeedupErrorToast
-        isCancel
-        errorMessage="some error"
-        onClose={mockOnClose}
-      />,
-    );
-
-    expect(
-      screen.getByText(tEn('cancelTransactionFailed') as string),
-    ).toBeInTheDocument();
-  });
-
-  it('renders speed-up title for speed-up errors', () => {
-    renderWithProvider(
-      <CancelSpeedupErrorToast
-        isCancel={false}
-        errorMessage="some error"
-        onClose={mockOnClose}
-      />,
-    );
-
-    expect(
-      screen.getByText(tEn('speedUpTransactionFailed') as string),
-    ).toBeInTheDocument();
-  });
-
-  it('renders friendly description for "already confirmed" errors', () => {
+  it('shows cancel error toast with friendly description', () => {
     renderWithProvider(
       <CancelSpeedupErrorToast
         isCancel
@@ -53,29 +41,44 @@ describe('CancelSpeedupErrorToast', () => {
       />,
     );
 
-    expect(
-      screen.getByText(
-        tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
-      ),
-    ).toBeInTheDocument();
+    expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: messages.cancelTransactionFailed.message,
+          description:
+            messages.cancelSpeedupAlreadyConfirmedDescription.message,
+          dataTestId: 'cancel-speedup-error-toast',
+          id: 'cancel-speedup-error-toast',
+        }),
+        expect.objectContaining({
+          duration: 5000,
+        }),
+      );
   });
 
-  it('renders generic description for unknown errors', () => {
+  it('shows speed-up error toast with generic description', () => {
     renderWithProvider(
       <CancelSpeedupErrorToast
-        isCancel
+        isCancel={false}
         errorMessage="gas estimation failed"
         onClose={mockOnClose}
       />,
     );
 
-    expect(
-      screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
-    ).toBeInTheDocument();
+    expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: messages.speedUpTransactionFailed.message,
+          description: messages.cancelSpeedupFailedDescription.message,
+          dataTestId: 'cancel-speedup-error-toast',
+          id: 'cancel-speedup-error-toast',
+        }),
+        expect.objectContaining({
+          duration: 5000,
+        }),
+      );
   });
 
-  it('calls onClose when the toast close button is clicked', () => {
-    renderWithProvider(
+  it('dismisses toast on unmount', () => {
+    const { unmount } = renderWithProvider(
       <CancelSpeedupErrorToast
         isCancel
         errorMessage="some error"
@@ -83,15 +86,14 @@ describe('CancelSpeedupErrorToast', () => {
       />,
     );
 
-    const banner = screen.getByTestId('cancel-speedup-error-toast-banner-base');
-    const closeButton = banner.querySelector('[aria-label="Close"]');
-    expect(closeButton).toBeTruthy();
-    (closeButton as HTMLElement).click();
+    unmount();
 
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(toast.dismiss)).toHaveBeenCalledWith(
+      'cancel-speedup-error-toast',
+    );
   });
 
-  it('auto-hides after 5 seconds', () => {
+  it('calls onClose after 5 seconds', () => {
     renderWithProvider(
       <CancelSpeedupErrorToast
         isCancel
@@ -99,10 +101,6 @@ describe('CancelSpeedupErrorToast', () => {
         onClose={mockOnClose}
       />,
     );
-
-    expect(
-      screen.getByText(tEn('cancelTransactionFailed') as string),
-    ).toBeInTheDocument();
 
     act(() => {
       jest.advanceTimersByTime(5000);

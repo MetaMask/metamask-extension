@@ -1,14 +1,13 @@
-import React, { useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { Icon, IconColor, IconName } from '@metamask/design-system-react';
-import {
-  Toast,
-  ToastContainer,
-} from '../../../../components/multichain/toast/toast';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useToaster } from 'react-hot-toast';
+
+import { SECOND } from '../../../../../shared/constants/time';
+import { toast } from '../../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { resolveCancelSpeedupErrorMessage } from './utils';
 
-const AUTO_HIDE_MS = 5000;
+const TOAST_ID = 'cancel-speedup-error-toast';
+const AUTO_HIDE_MS = 5 * SECOND;
 
 type CancelSpeedupErrorToastProps = {
   isCancel: boolean;
@@ -22,6 +21,8 @@ export const CancelSpeedupErrorToast = ({
   onClose,
 }: CancelSpeedupErrorToastProps) => {
   const t = useI18nContext();
+  const { toasts } = useToaster();
+  const hasCalledOnCloseRef = useRef(false);
 
   const title = isCancel
     ? t('cancelTransactionFailed')
@@ -31,25 +32,42 @@ export const CancelSpeedupErrorToast = ({
   const description = t(descriptionKey);
 
   const handleClose = useCallback(() => {
+    if (hasCalledOnCloseRef.current) {
+      return;
+    }
+    hasCalledOnCloseRef.current = true;
     onClose();
   }, [onClose]);
 
-  // Portal to document.body so position:fixed in ToastContainer is not
-  // trapped by ancestor transforms inside the transaction list.
-  return createPortal(
-    <ToastContainer>
-      <Toast
-        startAdornment={
-          <Icon name={IconName.CircleX} color={IconColor.ErrorDefault} />
-        }
-        text={title}
-        description={description}
-        onClose={handleClose}
-        autoHideTime={AUTO_HIDE_MS}
-        onAutoHideToast={handleClose}
-        dataTestId="cancel-speedup-error-toast"
-      />
-    </ToastContainer>,
-    document.body,
-  );
+  useEffect(() => {
+    hasCalledOnCloseRef.current = false;
+
+    toast.error(
+      {
+        title: title,
+        description: description,
+        dataTestId: TOAST_ID,
+        id: TOAST_ID,
+      },
+      {
+        duration: AUTO_HIDE_MS,
+      },
+    );
+
+    const timeoutId = setTimeout(handleClose, AUTO_HIDE_MS);
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss(TOAST_ID);
+    };
+  }, [title, description, handleClose]);
+
+  useEffect(() => {
+    const ourToast = toasts.find((toastItem) => toastItem.id === TOAST_ID);
+    if (ourToast?.dismissed) {
+      handleClose();
+    }
+  }, [toasts, handleClose]);
+
+  return null;
 };

@@ -19,7 +19,23 @@ import {
 } from '../../../store/actions';
 import { MetaMaskReduxState } from '../../../selectors';
 import { tEn } from '../../../../test/lib/i18n-helpers';
+import { toast } from '../../../components/ui/toast/toast';
 import { CancelSpeedup } from './cancel-speedup';
+
+jest.mock('../../../components/ui/toast/toast', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../components/ui/toast/toast')
+  >('../../../components/ui/toast/toast');
+  return {
+    ...actual,
+    toast: {
+      ...actual.toast,
+      error: jest.fn(),
+      dismiss: jest.fn(),
+    },
+    ToastContent: actual.ToastContent,
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -365,17 +381,19 @@ describe('CancelSpeedup Component', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('cancel-speedup-error-toast'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(tEn('cancelTransactionFailed') as string),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
-        ),
-      ).toBeInTheDocument();
+      expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: tEn('cancelTransactionFailed') as string,
+            description: tEn(
+              'cancelSpeedupAlreadyConfirmedDescription',
+            ) as string,
+            dataTestId: 'cancel-speedup-error-toast',
+          id: 'cancel-speedup-error-toast',
+        }),
+        expect.objectContaining({
+          duration: 5000,
+        }),
+      );
     });
   });
 
@@ -401,15 +419,17 @@ describe('CancelSpeedup Component', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('cancel-speedup-error-toast'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(tEn('speedUpTransactionFailed') as string),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
-      ).toBeInTheDocument();
+      expect(jest.mocked(toast.error)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: tEn('speedUpTransactionFailed') as string,
+            description: tEn('cancelSpeedupFailedDescription') as string,
+            dataTestId: 'cancel-speedup-error-toast',
+          id: 'cancel-speedup-error-toast',
+        }),
+        expect.objectContaining({
+          duration: 5000,
+        }),
+      );
     });
   });
 
