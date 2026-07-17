@@ -700,8 +700,6 @@ describe('Trace', () => {
       expect(result).toStrictEqual({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         _name: 'Test',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _id: undefined,
         traceparent: TRACEPARENT_MOCK,
       });
     });
@@ -715,7 +713,7 @@ describe('Trace', () => {
 
       const result = serializeTraceContext(spanMock, { name: 'Test' });
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(result).toStrictEqual({ _name: 'Test', _id: undefined });
+      expect(result).toStrictEqual({ _name: 'Test' });
     });
   });
 });
