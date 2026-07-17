@@ -131,7 +131,9 @@ describe('SimulationDetails', () => {
 
   it('renders skeleton loader when simulation data is not available', () => {
     const { container } = renderSimulationDetails();
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="simulation-details-skeleton"]'),
+    ).toBeInTheDocument();
   });
 
   it('renders skeleton loader when balance changes are pending', () => {
@@ -142,7 +144,9 @@ describe('SimulationDetails', () => {
 
     const { container } = renderSimulationDetails({});
 
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="simulation-details-skeleton"]'),
+    ).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {
@@ -209,14 +213,12 @@ describe('SimulationDetails', () => {
 
     renderSimulationDetails({});
 
-    expect(BalanceChangeList).toHaveBeenCalledTimes(2);
-
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You send',
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
 
     expect(BalanceChangeList).toHaveBeenCalledWith(
@@ -224,7 +226,7 @@ describe('SimulationDetails', () => {
         heading: 'You receive',
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -243,7 +245,7 @@ describe('SimulationDetails', () => {
         heading: 'You sent',
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
 
     // Test submitted status
@@ -255,7 +257,7 @@ describe('SimulationDetails', () => {
         heading: "You're sending",
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
 
     // Test default (unapproved status)
@@ -267,7 +269,7 @@ describe('SimulationDetails', () => {
         heading: 'You send',
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -287,7 +289,7 @@ describe('SimulationDetails', () => {
         heading: 'You sent', // Should show "You sent" due to Smart Transaction success
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
 
     // Test: Smart Transaction pending should override unapproved transaction status
@@ -300,7 +302,7 @@ describe('SimulationDetails', () => {
         heading: "You're sending", // Should show "You're sending" due to Smart Transaction pending
         balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -322,7 +324,7 @@ describe('SimulationDetails', () => {
         heading: "You've received",
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
 
     jest.clearAllMocks();
@@ -336,7 +338,7 @@ describe('SimulationDetails', () => {
         heading: "You're receiving",
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
 
     jest.clearAllMocks();
@@ -350,7 +352,7 @@ describe('SimulationDetails', () => {
         heading: 'You receive',
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -372,7 +374,7 @@ describe('SimulationDetails', () => {
         heading: "You've received", // Should show "You've received" due to Smart Transaction success
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
 
     jest.clearAllMocks();
@@ -387,7 +389,7 @@ describe('SimulationDetails', () => {
         heading: "You're receiving", // Should show "You're receiving" due to Smart Transaction pending
         balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -428,7 +430,7 @@ describe('SimulationDetails', () => {
         heading: 'Test Label',
         balanceChanges: staticRows[0].balanceChanges,
       }),
-      {},
+      expect.anything(),
     );
   });
 
@@ -508,7 +510,7 @@ describe('SimulationDetails', () => {
         heading: 'Approve',
         balanceChanges: staticRows[0].balanceChanges,
       }),
-      {},
+      expect.anything(),
     );
   });
 

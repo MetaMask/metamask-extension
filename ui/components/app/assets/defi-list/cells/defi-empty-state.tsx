@@ -1,48 +1,60 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../../hooks/useTheme';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../../../selectors';
 
 export const DeFiEmptyStateMessage = () => {
   const t = useI18nContext();
   const theme = useTheme();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const handleExploreDefi = useCallback(() => {
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_defi_empty_state_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      analyticsId,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.EmptyDeFiTabButtonClicked,
-      properties: {
-        location: 'DeFiTab',
-        text: 'Explore DeFi',
-      },
-    });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.EmptyDeFiTabButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'DeFiTab',
+          text: 'Explore DeFi',
+        })
+        .build(),
+    );
+  }, [
+    analyticsId,
+    createEventBuilder,
+    isMarketingEnabled,
+    isMetaMetricsEnabled,
+    trackEvent,
+  ]);
 
   const defiIcon =
     theme === ThemeType.dark

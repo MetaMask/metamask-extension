@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Ki kell választania egy fiókot!"
   },
-  "addAcquiredTokens": {
-    "message": "Adja hozzá MetaMask-kal a kapott érméket"
-  },
   "addAlias": {
     "message": "Álnév hozzáadása"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Speciális"
-  },
-  "customToken": {
-    "message": "Egyéni token"
   },
   "decimal": {
     "message": "A pontosság tizedesjegyei"
@@ -345,9 +339,6 @@
   "metamaskVersion": {
     "message": "MetaMask verzió"
   },
-  "mustSelectOne": {
-    "message": "Legalább 1 tokent ki kell választania."
-  },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
@@ -379,9 +370,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nem találtunk  webkamerát"
-  },
-  "notEnoughGas": {
-    "message": "Nincs elég gáz"
   },
   "ofTextNofM": {
     "message": "ból"
@@ -520,9 +508,6 @@
   },
   "sign": {
     "message": "Aláír"
-  },
-  "signatureRequest": {
-    "message": "Aláírási kérelem"
   },
   "signed": {
     "message": "Aláírva"

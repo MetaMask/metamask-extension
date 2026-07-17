@@ -11,18 +11,18 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
   MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type { AnalyticsEvent } from '../../controllers/analytics';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
   OAuthConfig,
-  OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
   OAuthServiceMessenger,
@@ -53,7 +53,7 @@ export class OAuthService {
 
   #messenger: OAuthServiceMessenger;
 
-  #env: OAuthConfig & OAuthLoginEnv;
+  #config: OAuthConfig;
 
   #webAuthenticator: WebAuthenticator;
 
@@ -63,37 +63,32 @@ export class OAuthService {
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
-  #trackEvent: OAuthServiceOptions['trackEvent'];
-
   #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
 
-  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
+
+  #getOptedIn: OAuthServiceOptions['getOptedIn'];
 
   constructor({
     messenger,
-    env,
     webAuthenticator,
     platform,
     bufferedTrace,
     bufferedEndTrace,
-    trackEvent,
     addEventBeforeMetricsOptIn,
-    getParticipateInMetaMetrics,
+    getCompletedMetaMetricsOnboarding,
+    getOptedIn,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
-    const oauthConfig = loadOAuthConfig();
-    this.#env = {
-      ...env,
-      ...oauthConfig,
-    };
+    this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
-    this.#trackEvent = trackEvent;
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
+    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
+    this.#getOptedIn = getOptedIn;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -104,24 +99,28 @@ export class OAuthService {
   /**
    * Track a MetaMetrics event with buffering (handles consent checking)
    *
-   * @param payload - The event payload
-   * @param options - Optional event options
+   * @param built - The built analytics event.
    */
-  #trackEventWithBuffering(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+  #trackEventWithBuffering(built: AnalyticsEvent): void {
+    const isMetricsEnabled =
+      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
 
     if (isMetricsEnabled) {
-      this.#trackEvent(payload, options);
-    } else {
-      const bufferedPayload = {
-        ...payload,
-        actionId: `${Date.now() + Math.random()}`,
-      };
-      this.#addEventBeforeMetricsOptIn(bufferedPayload);
+      trackEvent(built);
+      return;
     }
+
+    const { category, ...properties } = built.properties;
+    const bufferedPayload: MetaMetricsEventPayload = {
+      event: built.name,
+      category: category as MetaMetricsEventCategory,
+      properties: {
+        ...properties,
+        actionId: `${Date.now() + Math.random()}`,
+      },
+      sensitiveProperties: built.sensitiveProperties,
+    };
+    this.#addEventBeforeMetricsOptIn(bufferedPayload);
   }
 
   /**
@@ -155,9 +154,17 @@ export class OAuthService {
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(
       authConnection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
+
+    // get the user location to determine if the user is in US region
+    // the location value will be used later to determine if Marketing Opt-in should be enabled by default
+    this.#messenger
+      .call('GeolocationController:getGeolocation')
+      .catch((error) => {
+        log.error('Error getting user location:', error);
+      });
 
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,
@@ -181,7 +188,7 @@ export class OAuthService {
     const { connection, refreshToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -210,7 +217,7 @@ export class OAuthService {
     const { connection, revokeToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -228,7 +235,7 @@ export class OAuthService {
     const { connection, revokeToken } = options;
     const loginHandler = createLoginHandler(
       connection,
-      this.#env,
+      this.#config,
       this.#webAuthenticator,
     );
 
@@ -251,11 +258,9 @@ export class OAuthService {
     loginHandler: BaseLoginHandler,
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    const authUrl = await loginHandler.getAuthUrl();
     const isRehydration = this.#isRehydrationFlow();
     const redirectUrlFromOAuth = await this.#performOAuthProviderLogin({
       authConnection,
-      authUrl,
       isRehydration,
       loginHandler,
     });
@@ -270,12 +275,10 @@ export class OAuthService {
 
   async #performOAuthProviderLogin({
     authConnection,
-    authUrl,
     isRehydration,
     loginHandler,
   }: {
     authConnection: AuthConnection;
-    authUrl: string;
     isRehydration: boolean | null;
     loginHandler: BaseLoginHandler;
   }): Promise<string> {
@@ -288,7 +291,6 @@ export class OAuthService {
       });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
-        authUrl,
         loginHandler,
       );
       providerLoginSuccess = true;
@@ -381,21 +383,22 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering({
-      event: MetaMetricsEventName.SocialLoginFailed,
-      category: MetaMetricsEventCategory.Onboarding,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_rehydration:
-          isRehydration === null ? 'unknown' : String(isRehydration),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        failure_type: failureType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_category: errorCategory,
-      },
-    });
+    this.#trackEventWithBuffering(
+      createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: failureType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: errorCategory,
+        })
+        .build(),
+    );
   }
 
   /**
@@ -436,20 +439,20 @@ export class OAuthService {
 
     if (process.env.IN_TEST) {
       const { MOCK_AUTH_CONNECTION_ID, MOCK_GROUPED_AUTH_CONNECTION_ID } =
-        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         require('../../../../test/e2e/constants');
       authConnectionId = MOCK_AUTH_CONNECTION_ID;
       groupedAuthConnectionId = MOCK_GROUPED_AUTH_CONNECTION_ID;
     } else if (loginHandler.authConnection === AuthConnection.Google) {
-      authConnectionId = this.#env.googleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.googleGroupedAuthConnectionId;
+      authConnectionId = this.#config.googleAuthConnectionId;
+      groupedAuthConnectionId = this.#config.googleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Apple) {
-      authConnectionId = this.#env.appleAuthConnectionId;
-      groupedAuthConnectionId = this.#env.appleGroupedAuthConnectionId;
+      authConnectionId = this.#config.appleAuthConnectionId;
+      groupedAuthConnectionId = this.#config.appleGroupedAuthConnectionId;
     } else if (loginHandler.authConnection === AuthConnection.Telegram) {
-      authConnectionId = this.#env.telegramAuthConnectionId;
-      groupedAuthConnectionId = this.#env.telegramGroupedAuthConnectionId;
+      authConnectionId = this.#config.telegramAuthConnectionId;
+      groupedAuthConnectionId = this.#config.telegramGroupedAuthConnectionId;
     }
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
@@ -492,9 +495,9 @@ export class OAuthService {
 
   async #launchAuthFlow(
     authConnection: AuthConnection,
-    authUrl: string,
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
+    const authUrl = await loginHandler.getAuthUrl();
     if (authConnection === AuthConnection.Telegram) {
       return this.#launchTabAuthFlow(
         authUrl,
@@ -629,7 +632,7 @@ export class OAuthService {
       };
 
       const res = await fetch(
-        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
         {
           method: 'POST',
           headers: {
@@ -668,7 +671,7 @@ export class OAuthService {
       }
 
       const res = await fetch(
-        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
         {
           method: 'GET',
           headers: {

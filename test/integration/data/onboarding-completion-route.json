@@ -52,6 +52,7 @@
   "allNftContracts": {},
   "allNfts": {},
   "allTokens": {},
+  "analyticsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
   "announcements": {
     "8": { "id": 8, "date": "2021-11-01", "isShown": false },
     "20": { "id": 20, "date": null, "isShown": false },
@@ -91,6 +92,7 @@
   "approvalFlows": [],
   "assetsMetadata": {},
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
+  "completedMetaMetricsOnboarding": true,
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,
@@ -116,7 +118,6 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
-  "enableMV3TimestampSave": true,
   "enabledNetworkMap": {
     "eip155": {
       "0xaa36a7": true
@@ -185,7 +186,6 @@
   "lastUpdated": null,
   "ledgerTransportType": "u2f",
   "logs": {},
-  "metaMetricsId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
   "methodData": {},
   "multichainNetworkConfigurationsByChainId": {
     "bip122:000000000019d6689c085ae165831e93": {
@@ -253,9 +253,9 @@
   "notifications": {},
   "onboardingTabs": {},
   "openSeaEnabled": false,
+  "optedIn": true,
   "orderedNetworkList": [],
   "outdatedBrowserWarningLastShown": 1715943225448,
-  "participateInMetaMetrics": true,
   "pendingApprovalCount": 0,
   "pendingApprovals": {},
   "pendingTokens": {},
@@ -293,21 +293,6 @@
   "recoveryPhraseReminderLastShown": 1715943225448,
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
-  "segmentApiCalls": {
-    "6QHUuopP26ok11pDgrCt": {
-      "eventType": "identify",
-      "payload": {
-        "userId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
-        "traits": {
-          "address_book_entries": 1,
-          "number_of_accounts": 1,
-          "petname_addresses_count": 1
-        },
-        "messageId": "6QHUuopP26ok11pDgrCt",
-        "timestamp": "Fri May 17 2024 12:07:22 GMT+0100 (Western European Summer Time)"
-      }
-    }
-  },
   "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",

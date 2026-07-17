@@ -1,10 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   TextVariant,
   BlockSize,
   IconColor,
@@ -16,7 +18,6 @@ import {
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
   Text,
   ModalFooter,
   Button,
@@ -43,8 +44,8 @@ export default function DataDeletionErrorModal() {
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <ModalHeader
@@ -54,10 +55,10 @@ export default function DataDeletionErrorModal() {
           onClose={closeModal}
         >
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            className="flex"
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             gap={4}
           >
             <Icon
@@ -74,9 +75,9 @@ export default function DataDeletionErrorModal() {
         <Box
           paddingLeft={6}
           paddingRight={6}
-          display={Display.Flex}
+          className="flex"
           gap={4}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
         >
           <Text variant={TextVariant.bodySm} textAlign={TextAlign.Justify}>
             {t('deleteMetaMetricsDataErrorDesc')}
@@ -84,7 +85,7 @@ export default function DataDeletionErrorModal() {
         </Box>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex" gap={4}>
             <Button
               size={ButtonSize.Lg}
               width={BlockSize.Full}

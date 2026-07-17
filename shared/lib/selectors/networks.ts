@@ -19,6 +19,7 @@ import {
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
+import { createParameterizedSelector } from './selector-creators';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -72,7 +73,9 @@ export const getNetworkConfigurationsByChainId = (
 // Routed through `getNetworkConfigurationsByChainId` (rather than reading
 // `state` directly) so jest mocks of that selector flow through to consumers
 // of these selectors.
-export const selectNetworkConfigurationByChainId = createSelector(
+export const selectNetworkConfigurationByChainId = createParameterizedSelector(
+  20,
+)(
   [
     (state: NetworkConfigurationsByChainIdState) =>
       getNetworkConfigurationsByChainId(state),

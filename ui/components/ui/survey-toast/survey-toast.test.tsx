@@ -4,13 +4,27 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act } from 'react-dom/test-utils';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { SurveyToast } from './survey-toast';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -20,13 +34,6 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
 }));
 
 const mockFetchWithCache = fetchWithCache as jest.Mock;
-const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 const mockStore = configureStore([thunk]);
 
 const surveyData = {
@@ -50,8 +57,9 @@ const createStore = (options = { metametricsEnabled: true }) =>
     metamask: {
       lastViewedUserSurvey: 2,
       useExternalServices: true,
-      participateInMetaMetrics: options.metametricsEnabled,
-      metaMetricsId: '0x123',
+      completedMetaMetricsOnboarding: true,
+      optedIn: options.metametricsEnabled,
+      analyticsId: '0x123',
       internalAccounts: {
         selectedAccount: '0x123',
         accounts: { '0x123': { address: '0x123' } },
@@ -60,16 +68,12 @@ const createStore = (options = { metametricsEnabled: true }) =>
   });
 
 const renderComponent = (options = { metametricsEnabled: true }) =>
-  renderWithProvider(
-    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-      <SurveyToast />
-    </MetaMetricsContext.Provider>,
-    createStore(options),
-  );
+  renderWithProvider(<SurveyToast />, createStore(options));
 
 describe('SurveyToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     jest.restoreAllMocks();
 
     // @ts-expect-error mocking platform
@@ -138,14 +142,16 @@ describe('SurveyToast', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: surveyData.valid.url,
     });
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.SurveyToast,
-      category: MetaMetricsEventCategory.Feedback,
-      properties: {
-        response: 'accept',
-        survey: surveyData.valid.id,
-      },
-    });
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SurveyToast,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Feedback,
+          response: 'accept',
+          survey: surveyData.valid.id,
+        }),
+      }),
+    );
   });
 
   it('should not show the toast if metametrics is disabled', async () => {

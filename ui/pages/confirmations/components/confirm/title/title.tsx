@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import { Skeleton } from '@metamask/design-system-react';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
@@ -15,7 +16,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
@@ -264,7 +264,11 @@ export function TitleSkeleton() {
       paddingTop={4}
       paddingBottom={4}
     >
-      <Skeleton height="24px" width="200px" />
+      <Skeleton
+        height="24px"
+        width="200px"
+        data-testid="confirm-title-skeleton"
+      />
     </Box>
   );
 }
@@ -363,6 +367,7 @@ const ConfirmTitle = memo(() => {
           paddingTop={4}
           paddingBottom={2}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-text"
         >
           {title}
         </Text>
@@ -375,6 +380,7 @@ const ConfirmTitle = memo(() => {
           paddingBottom={4}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-description"
         >
           {description}
         </Text>

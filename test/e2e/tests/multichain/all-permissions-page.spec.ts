@@ -13,6 +13,7 @@ import PermissionListPage from '../../page-objects/pages/permission/permission-l
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page', function () {
@@ -68,7 +69,7 @@ describe('Permissions Page', function () {
 
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.checkPageIsLoaded();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // go to homepage and check site permissions
         await new Homepage(driver).checkPageIsLoaded();

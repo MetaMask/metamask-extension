@@ -1,9 +1,29 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../shared/constants/metametrics';
 import * as MetametricsHooks from '../../../hooks/useMetametrics';
 import MetametricsToggle from './metametrics-toggle';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const enableMetametricsMock = jest.fn(() => Promise.resolve());
 const disableMetametricsMock = jest.fn(() => Promise.resolve());
@@ -11,14 +31,16 @@ const disableMetametricsMock = jest.fn(() => Promise.resolve());
 type StateOverrides = {
   isSignedIn?: boolean;
   useExternalServices?: boolean;
-  participateInMetaMetrics?: boolean;
+  completedMetaMetricsOnboarding?: boolean;
+  optedIn?: boolean;
   isBackupAndSyncEnabled?: boolean;
 };
 
 const initialState: StateOverrides = {
   isSignedIn: true,
   useExternalServices: true,
-  participateInMetaMetrics: true,
+  completedMetaMetricsOnboarding: true,
+  optedIn: true,
   isBackupAndSyncEnabled: true,
 };
 
@@ -91,24 +113,59 @@ describe('MetametricsToggle', () => {
     expect(enableMetametricsMock).not.toHaveBeenCalled();
   });
 
-  it('calls enableMetametrics when toggle is turned on', () => {
+  it('tracks the enabled preference after enabling metrics', async () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      participateInMetaMetrics: false,
+      completedMetaMetricsOnboarding: true,
+      optedIn: false,
     });
     fireEvent.click(metaMetricsToggleButton);
 
     expect(enableMetametricsMock).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.TurnOnMetaMetrics,
+        properties: {
+          category: MetaMetricsEventCategory.Settings,
+          isProfileSyncingEnabled: true,
+          participateInMetaMetrics: false,
+          location: 'Settings',
+        },
+        sensitiveProperties: {},
+      });
+    });
   });
 
-  it('calls disableMetametrics when toggle is turned off', () => {
+  it('tracks the disabled preference when metrics are disabled', async () => {
     const { metaMetricsToggleButton } = arrangeMocks({
       useExternalServices: true,
-      participateInMetaMetrics: true,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
     });
 
     fireEvent.click(metaMetricsToggleButton);
 
-    expect(disableMetametricsMock).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(disableMetametricsMock).toHaveBeenCalled();
+    });
+    expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+      name: MetaMetricsEventName.TurnOffMetaMetrics,
+      properties: {
+        category: MetaMetricsEventCategory.Settings,
+        isProfileSyncingEnabled: true,
+        participateInMetaMetrics: true,
+      },
+      sensitiveProperties: {},
+    });
+    expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+      name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      properties: {
+        category: MetaMetricsEventCategory.Settings,
+        [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+        [MetaMetricsUserTrait.HasMarketingConsent]: false,
+        location: 'Settings',
+      },
+      sensitiveProperties: {},
+    });
   });
 });

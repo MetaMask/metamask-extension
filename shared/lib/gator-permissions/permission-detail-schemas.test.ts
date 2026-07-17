@@ -7,6 +7,10 @@ import type {
 } from './permission-detail-schema.types';
 import { getPermissionSchemaEntry } from './permission-detail-schemas';
 import { MAX_UINT256 } from './permission-constants';
+import {
+  ALL_METAMASK_FACILITATOR_ADDRESSES,
+  isMetaMaskFacilitatorAddress,
+} from './facilitator-addresses';
 
 type ElementOfType<TType extends SchemaElement['type']> = Extract<
   SchemaElement,
@@ -164,6 +168,73 @@ describe('permissionInfoSection field accessors', () => {
       expect(element.getValue(context)).toStrictEqual(addresses);
       expect(element.isVisible(context)).toBe(true);
     }
+  });
+
+  it('shows a MetaMask facilitator redeemer row when all redeemers are facilitator addresses', () => {
+    const namedRedeemerElement = findElementOfType(
+      'native-token-stream',
+      'confirmation-redeemer-metamask-facilitator',
+      'text',
+    );
+    const redeemerAddressElement = findElementOfType(
+      'native-token-stream',
+      'confirmation-redeemer',
+      'rule-address',
+    );
+    const exactFacilitatorContext = {
+      ...base,
+      redeemerAddresses: [...ALL_METAMASK_FACILITATOR_ADDRESSES].reverse(),
+    };
+    const facilitatorSubsetContext = {
+      ...base,
+      redeemerAddresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]],
+    };
+    const duplicateFacilitatorContext = {
+      ...base,
+      redeemerAddresses: [
+        ...ALL_METAMASK_FACILITATOR_ADDRESSES,
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0],
+      ],
+    };
+
+    expect(namedRedeemerElement.isVisible(exactFacilitatorContext)).toBe(true);
+    expect(
+      namedRedeemerElement.getValue(exactFacilitatorContext),
+    ).toStrictEqual({ key: 'gatorPermissionsMetaMaskFacilitator' });
+    expect(redeemerAddressElement.isVisible(exactFacilitatorContext)).toBe(
+      false,
+    );
+    expect(namedRedeemerElement.isVisible(facilitatorSubsetContext)).toBe(true);
+    expect(redeemerAddressElement.isVisible(facilitatorSubsetContext)).toBe(
+      false,
+    );
+    expect(namedRedeemerElement.isVisible(duplicateFacilitatorContext)).toBe(
+      true,
+    );
+    expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
+      false,
+    );
+    expect(
+      namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }),
+    ).toBe(false);
+  });
+});
+
+describe('isMetaMaskFacilitatorAddress', () => {
+  it('matches facilitator addresses case-insensitively', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0].toLowerCase(),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for unknown addresses', () => {
+    expect(
+      isMetaMaskFacilitatorAddress(
+        '0x0000000000000000000000000000000000000001',
+      ),
+    ).toBe(false);
   });
 });
 

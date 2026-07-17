@@ -1,4 +1,5 @@
 import { asset, AssetQueryParams } from './asset';
+import { isDeepLinkRouteAllowedToBypassInterstitial } from './interstitial-bypass';
 import { Destination } from './route';
 
 function assertPathDestination(
@@ -8,6 +9,10 @@ function assertPathDestination(
 }
 
 describe('assetRoute', () => {
+  it('is whitelisted to skip the deep link interstitial', () => {
+    expect(isDeepLinkRouteAllowedToBypassInterstitial(asset)).toBe(true);
+  });
+
   type TestCase = {
     assetIdParam: string | undefined;
     expectedPath: string;
@@ -17,11 +22,12 @@ describe('assetRoute', () => {
     {
       assetIdParam:
         'eip155:59144/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-      expectedPath: '/asset/0xe708/0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      expectedPath:
+        '/asset/eip155:59144/eip155%3A59144%2Ferc20%3A0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
     },
     {
       assetIdParam: 'eip155:59144/slip44:60',
-      expectedPath: '/asset/0xe708',
+      expectedPath: '/asset/eip155:59144/eip155%3A59144%2Fslip44%3A60',
     },
     {
       assetIdParam:

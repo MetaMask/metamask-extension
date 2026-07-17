@@ -13,7 +13,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
 import {
@@ -37,16 +37,16 @@ describe('Perps Geo-block', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
 
-        await perpsHomePage.clickAddFunds();
-        await perpsHomePage.waitForGeoBlockModal();
+        await perpsTab.clickAddFunds();
+        await perpsTab.waitForGeoBlockModal();
 
-        await perpsHomePage.dismissGeoBlockModal();
-        await perpsHomePage.waitForGeoBlockModalDismissed();
+        await perpsTab.dismissGeoBlockModal();
+        await perpsTab.waitForGeoBlockModalDismissed();
       },
     );
   });
@@ -60,10 +60,10 @@ describe('Perps Geo-block', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
         await marketListPage.navigateToMarketList();

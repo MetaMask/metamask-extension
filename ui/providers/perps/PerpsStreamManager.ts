@@ -125,6 +125,8 @@ class PerpsStreamManager {
   // When we last set an optimistic update - used to block WebSocket overwrites
   private lastOptimisticUpdateTime = 0;
 
+  private _useTerminalApi = false;
+
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
@@ -231,7 +233,7 @@ class PerpsStreamManager {
           }
           submitRequestToBackground<PerpsMarketData[]>(
             'perpsGetMarketDataWithPrices',
-            [],
+            [{ useTerminalApi: this._useTerminalApi }],
           )
             .then((data) => {
               if (!cancelled && !this.markets.hasCachedData()) {
@@ -288,6 +290,26 @@ class PerpsStreamManager {
    */
   getLastStreamUpdateAt(): number {
     return this._lastStreamUpdateAt;
+  }
+
+  /**
+   * Update whether REST fallback calls for market data should route through
+   * the MetaMask Terminal API.  Called from the UI layer whenever the
+   * `perpsTerminalBackendEnabled` remote feature flag changes.
+   *
+   * @param enabled - true to pass `useTerminalApi: true` on market REST calls
+   */
+  setUseTerminalApi(enabled: boolean): void {
+    if (this._useTerminalApi === enabled) {
+      return;
+    }
+    this._useTerminalApi = enabled;
+    // The markets channel may already hold data fetched under the previous
+    // mode (direct-provider vs Terminal-enriched). Drop it so the next
+    // subscribe re-fetches through the correct backend instead of serving
+    // stale-mode data — otherwise a false→true flip could leave un-enriched
+    // direct markets cached and suppress the Terminal REST fallback.
+    this.markets.clearCache();
   }
 
   /**

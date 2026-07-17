@@ -1,3 +1,4 @@
+const { execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -7,10 +8,81 @@ const {
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
+const { UserPromptHandler } = require('selenium-webdriver/lib/capabilities');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+
+// geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
+// We pin the version as a temporary patch until migration to Playwright (in progress)
+// See: https://github.com/mozilla/geckodriver/releases/tag/v0.37.0
+const PINNED_GECKODRIVER_VERSION = '0.36.0';
+
+/**
+ * Resolve the geckodriver binary to use.
+ *
+ * Resolution order:
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this explicitly via the
+ *    "Pin geckodriver" step in `.github/workflows/run-e2e.yml` (also usable as
+ *    a manual override to test a different driver version).
+ * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
+ *    cached cross-platform) via the `selenium-manager` binary that ships with
+ *    `selenium-webdriver`. This is the fallback that fixes local runs without
+ *    requiring any env var.
+ * 3. `undefined` on failure, so Selenium Manager falls back to its default
+ *    auto-resolution rather than hard-failing.
+ *
+ * @returns {string|undefined} Absolute path to the geckodriver binary, or
+ * `undefined` to defer to Selenium Manager's default resolution.
+ */
+function resolveGeckodriverPath() {
+  if (process.env.GECKODRIVER_PATH) {
+    return process.env.GECKODRIVER_PATH;
+  }
+
+  try {
+    const platform =
+      // eslint-disable-next-line no-nested-ternary
+      process.platform === 'darwin'
+        ? 'macos'
+        : process.platform === 'win32'
+          ? 'windows'
+          : 'linux';
+    const binName =
+      process.platform === 'win32'
+        ? 'selenium-manager.exe'
+        : 'selenium-manager';
+    const seleniumManager = path.join(
+      path.dirname(require.resolve('selenium-webdriver')),
+      'bin',
+      platform,
+      binName,
+    );
+
+    const output = execFileSync(
+      seleniumManager,
+      [
+        '--driver',
+        'geckodriver',
+        '--driver-version',
+        PINNED_GECKODRIVER_VERSION,
+        '--output',
+        'json',
+      ],
+      { encoding: 'utf8' },
+    );
+
+    const { result } = JSON.parse(output);
+    return result?.driver_path || undefined;
+  } catch (error) {
+    console.warn(
+      `Could not resolve pinned geckodriver ${PINNED_GECKODRIVER_VERSION}; ` +
+        `falling back to Selenium Manager's default driver resolution. ${error}`,
+    );
+    return undefined;
+  }
+}
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -65,6 +137,8 @@ class FirefoxDriver {
     );
 
     options.setAcceptInsecureCerts(true);
+    // Leave alerts open so tests can read text and click OK.
+    options.setAlertBehavior(UserPromptHandler.IGNORE);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
@@ -86,7 +160,7 @@ class FirefoxDriver {
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder();
+      : new firefox.ServiceBuilder(resolveGeckodriverPath());
 
     if (port) {
       service.setPort(port);

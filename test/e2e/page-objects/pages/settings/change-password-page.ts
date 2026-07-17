@@ -1,51 +1,33 @@
 import { Driver } from '../../../webdriver/driver';
 
 export default class ChangePasswordPage {
-  private readonly driver: Driver;
+  private readonly confirmNewPasswordInput =
+    '[data-testid="change-password-confirm-input"]';
+
+  private readonly confirmWarningButton =
+    '[data-testid="change-password-warning-confirm"]';
 
   private readonly currentPasswordInput =
     '[data-testid="verify-current-password-input"]';
 
-  private readonly verifyCurrentPasswordButton =
-    '[data-testid="verify-current-password-button"]';
+  private readonly driver: Driver;
 
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
-
-  private readonly confirmNewPasswordInput =
-    '[data-testid="change-password-confirm-input"]';
-
-  private readonly passwordTerms = '[data-testid="change-password-terms"]';
-
-  private readonly saveButton = '[data-testid="change-password-button"]';
 
   private readonly passwordChangedWarning = {
     text: 'Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password.',
     css: 'p',
   };
 
-  private readonly confirmWarningButton =
-    '[data-testid="change-password-warning-confirm"]';
+  private readonly passwordTerms = '[data-testid="change-password-terms"]';
+
+  private readonly saveButton = '[data-testid="change-password-button"]';
+
+  private readonly verifyCurrentPasswordButton =
+    '[data-testid="verify-current-password-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    console.log('Check change password page is loaded');
-    await this.driver.waitForSelector(this.currentPasswordInput);
-  }
-
-  async waitForPasskeyVerificationToComplete(): Promise<void> {
-    console.log(
-      'Waiting for passkey verification to complete and new password form to appear',
-    );
-    await this.driver.waitForSelector(this.newPasswordInput);
-  }
-
-  async confirmCurrentPassword(password: string): Promise<void> {
-    console.log('Confirm current password');
-    await this.driver.fill(this.currentPasswordInput, password);
-    await this.driver.clickElement(this.verifyCurrentPasswordButton);
   }
 
   async changePassword(newPassword: string): Promise<void> {
@@ -56,6 +38,11 @@ export default class ChangePasswordPage {
     await this.driver.clickElement(this.saveButton);
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Check change password page is loaded');
+    await this.driver.waitForSelector(this.currentPasswordInput);
+  }
+
   async checkPasswordChangedWarning(): Promise<void> {
     console.log('Check password changed warning');
     await this.driver.waitForSelector(this.passwordChangedWarning);
@@ -63,6 +50,19 @@ export default class ChangePasswordPage {
 
   async confirmChangePasswordWarning(): Promise<void> {
     console.log('Confirm change password warning');
-    await this.driver.clickElement(this.confirmWarningButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmWarningButton);
+  }
+
+  async confirmCurrentPassword(password: string): Promise<void> {
+    console.log('Confirm current password');
+    await this.driver.fill(this.currentPasswordInput, password);
+    await this.driver.clickElement(this.verifyCurrentPasswordButton);
+  }
+
+  async waitForPasskeyVerificationToComplete(): Promise<void> {
+    console.log(
+      'Waiting for passkey verification to complete and new password form to appear',
+    );
+    await this.driver.waitForSelector(this.newPasswordInput);
   }
 }

@@ -1,56 +1,7 @@
-import type { Configuration } from 'webpack-dev-server';
-import { getDevServerClientUrl } from './helpers';
-
 export const MODES = {
   PRODUCTION: 'production',
   DEVELOPMENT: 'development',
 } as const;
-
-/**
- * Entry name for the webpack-dev-server client bundle. Used by
- * `DEV_SERVER_OPTIONS.setupMiddlewares` to register the entry, by
- * `ManifestPlugin` to mark it self-contained, and by
- * `HtmlBundlerPlugin.beforeEmit` to look up its output filename for `<script>` injection.
- */
-export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
-
-export const DEV_SERVER_OPTIONS: Configuration = {
-  hot: false,
-  liveReload: true,
-  // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
-  host: 'localhost',
-  // pick a free port at startup.
-  port: 'auto',
-  // client injection is disabled because the client is registered
-  // as a webpack entry by `setupMiddlewares` below
-  // and injected into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
-  client: false,
-  devMiddleware: {
-    // browsers need actual files on disk; extension pages are loaded via
-    // `chrome-extension://`, not from the dev-server HTTP origin.
-    writeToDisk: true,
-  },
-  // we don't need/have a "static" directory, so disable it
-  static: false,
-  allowedHosts: 'all',
-  // Register the webpack-dev-server client here so that we can read the resolved port
-  // from `devServer.options` — by this point `port: 'auto'` has been replaced
-  // with the actual numeric port the server is listening on.
-  setupMiddlewares: (middlewares, devServer) => {
-    const compilers =
-      'compilers' in devServer.compiler
-        ? devServer.compiler.compilers
-        : [devServer.compiler];
-    for (const compiler of compilers) {
-      new compiler.webpack.EntryPlugin(
-        compiler.context,
-        getDevServerClientUrl(devServer.options),
-        { name: DEV_SERVER_CLIENT_ENTRY_NAME, chunkLoading: false },
-      ).apply(compiler);
-    }
-    return middlewares;
-  },
-};
 
 /**
  * The build environment. This describes the environment this build was produced in.
@@ -91,32 +42,12 @@ export const VARIABLES_REQUIRED_IN_PRODUCTION = {
     'QUICKNODE_POLYGON_URL',
     'QUICKNODE_BASE_URL',
     'QUICKNODE_SEI_URL',
-    'APPLE_PROD_CLIENT_ID',
-    'GOOGLE_PROD_CLIENT_ID',
-    'TELEGRAM_PROD_CLIENT_ID',
   ],
-  beta: [
-    'INFURA_BETA_PROJECT_ID',
-    'SEGMENT_BETA_WRITE_KEY',
-    'SENTRY_DSN',
-    'APPLE_BETA_CLIENT_ID',
-    'GOOGLE_BETA_CLIENT_ID',
-    'TELEGRAM_BETA_CLIENT_ID',
-  ],
+  beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
   experimental: [
     'INFURA_EXPERIMENTAL_PROJECT_ID',
     'SEGMENT_EXPERIMENTAL_WRITE_KEY',
     'SENTRY_DSN',
-    'GOOGLE_EXPERIMENTAL_CLIENT_ID',
-    'APPLE_EXPERIMENTAL_CLIENT_ID',
-    'TELEGRAM_EXPERIMENTAL_CLIENT_ID',
   ],
-  flask: [
-    'INFURA_FLASK_PROJECT_ID',
-    'SEGMENT_FLASK_WRITE_KEY',
-    'SENTRY_DSN',
-    'APPLE_FLASK_CLIENT_ID',
-    'GOOGLE_FLASK_CLIENT_ID',
-    'TELEGRAM_FLASK_CLIENT_ID',
-  ],
+  flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
 };

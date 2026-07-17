@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -10,8 +10,12 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
-  getMetaMetricsState,
-  getMetaMetricsStateFromAppState,
+  BACKEND_TRACE_PROPAGATION_TARGETS,
+  consensysTracePropagationIntegration,
+} from './sentry-trace-propagation';
+import {
+  getAnalyticsState,
+  getAnalyticsStateFromAppState,
   getState,
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
@@ -32,6 +36,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_ENABLED =
+  !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -97,6 +103,11 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) => {
+      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      dropLowValueMarkSpans(transaction);
+      return transaction;
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -111,11 +122,24 @@ function getClientOptions() {
         shouldCreateSpanForRequest,
       }),
       metaMetricsIntegration({
-        getMetaMetricsState,
+        getAnalyticsState,
         log,
       }),
+      // Must register after `browserTracingIntegration`.
+      ...(SENTRY_DISTRIBUTED_TRACING_ENABLED
+        ? [consensysTracePropagationIntegration({ log })]
+        : []),
     ],
     release: RELEASE,
+    // Must be a top-level init option.
+    ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
+      tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      // Gated here so the kill switch also disables native `traceparent`
+      // injection; when enabled the SDK attaches it to the backend targets
+      // above. `consensysTracePropagationIntegration` appends the Consensys
+      // `baggage` segment (`consensys-request-id`).
+      propagateTraceparent: true,
+    }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
@@ -178,7 +202,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.0075;
+  return 0.005;
 }
 
 /**
@@ -244,14 +268,6 @@ function setSentryClient() {
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
-   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
-   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
-   * This emulates NW.js which disables these validations.
-   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
-   */
-  globalThis.nw = {};
-
-  /**
    * Sentry checks session tracking support by looking for global history object and functions inside it.
    * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
    */
@@ -301,36 +317,57 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
-    const state = getMetaMetricsStateFromAppState(appState);
+    const state = getAnalyticsStateFromAppState(appState);
     if (
-      !state?.participateInMetaMetrics ||
+      !state?.completedMetaMetricsOnboarding ||
+      !state?.optedIn ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
     }
-    const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
-    return newBreadcrumb;
+    return breadcrumb;
   };
 }
 
 /**
  * Returns whether a span should be created for a given request URL.
- * Filters out Sentry domain requests and local extension file fetches.
+ *
+ * Filters out high-volume fetches with no per-request diagnostic value:
+ * telemetry endpoints (sentry.io, segment.io), static config files re-fetched on
+ * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
+ * extension reads (snap manifests / locale files, and content-hashed
+ * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
+ *
+ * Never filter a URL matching
+ * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
+ * id as the W3C `traceparent` parent, so dropping that span client-side
+ * orphans the backend's subtree of the trace.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url) {
-  // Do not create spans for outgoing requests to a 'sentry.io' domain.
-  if (/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u.test(url)) {
+  // Do not create spans for high-volume remote fetches with no per-request
+  // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
+  // config files re-fetched on a constant poll cadence (chainid.network chain
+  // registry; acl.execution.metamask.io PPOM allowlist registry/signature).
+  if (
+    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry\.io|segment\.io|chainid\.network|acl\.execution\.metamask\.io)(?:\/|$)/u.test(
+      url,
+    )
+  ) {
     return false;
   }
-  // Block span creation on fetches for preinstalled snap manifest and locale files.
-  // Snap manifests are fetched on every MV3 SW restart,
-  // and locale files are fetched on every popup open.
-  // These are high volume, local file reads with no diagnostic value.
-  // TODO: Consider blocking all local extension file fetches.
-  if (/^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url)) {
+  // Skip spans for high-volume local extension reads with no diagnostic value:
+  // snap manifests and locale files (under `/snaps/` and `/_locales/`, read on
+  // every SW restart / popup open) and the content-hashed preinstalled-snap
+  // bundles webpack emits at the extension root (`<hash>.json`, see
+  // app/scripts/constants/snaps.ts). Other local fetches keep their spans.
+  if (
+    /^(?:chrome|moz)-extension:\/\/[^/]+\/(?:(?:snaps|_locales)\/|[0-9a-f]{8,}\.json$)/u.test(
+      url,
+    )
+  ) {
     return false;
   }
   // Create spans for all other requests.
@@ -339,8 +376,9 @@ export function shouldCreateSpanForRequest(url) {
 
 /**
  * Receives a Sentry breadcrumb object and potentially removes urls
- * from its `data` property, it particular those possibly found at
- * data.from, data.to and data.url
+ * from its `data` property, in particular those possibly found at
+ * data.from, data.to and data.url. Performs a deep address scrub for use when
+ * an event is about to be sent (not on every breadcrumb capture).
  *
  * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
  * @returns {object} A modified Sentry breadcrumb object.
@@ -355,7 +393,66 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
   if (breadcrumb?.data?.from) {
     breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
   }
+  // Sanitize any account addresses that may appear in the breadcrumb message or
+  // remaining data values.
+  if (typeof breadcrumb?.message === 'string') {
+    breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
+  }
+  if (breadcrumb?.data) {
+    breadcrumb.data = sanitizeAddressesFromObject(breadcrumb.data);
+  }
   return breadcrumb;
+}
+
+/**
+ * Deep-scrubs all breadcrumbs attached to an outbound Sentry event (errors and
+ * transactions). The report must already be cloned (see `safeCloneReport` in
+ * `beforeSend` / `beforeSendTransaction`) so breadcrumb mutation is safe.
+ *
+ * @param {object} report - A Sentry event object.
+ */
+export function sanitizeBreadcrumbsInReport(report) {
+  if (!Array.isArray(report.breadcrumbs)) {
+    return;
+  }
+  for (let i = 0; i < report.breadcrumbs.length; i++) {
+    removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
+  }
+}
+
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
+
+/**
+ * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
+ * transaction event in place. Measures and all other spans are kept.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ */
+export function dropLowValueMarkSpans(report) {
+  if (!Array.isArray(report.spans)) {
+    return;
+  }
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
+}
+
+/**
+ * Scrubs breadcrumb payloads on performance transaction events before send.
+ * {@link rewriteReport} handles errors via `beforeSend`; transactions use
+ * `beforeSendTransaction` instead.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ * @returns {object} The modified report (same reference).
+ */
+export function rewriteTransactionReport(report) {
+  sanitizeBreadcrumbsInReport(report);
+  return report;
 }
 
 /**
@@ -376,6 +473,12 @@ export function rewriteReport(report) {
     // but putting the code here as well gives public visibility to how we are handling
     // privacy with respect to sentry.
     sanitizeAddressesFromErrorMessages(report);
+    // Deep-scrub breadcrumb payloads only when an error is being sent.
+    sanitizeBreadcrumbsInReport(report);
+    // Remove addresses from other error parameters (extra, contexts).
+    // Done before attaching appState below so the (already masked) appState is
+    // not re-walked.
+    sanitizeAddressesFromReportData(report);
     // modify report urls
     rewriteReportUrls(report);
 
@@ -444,10 +547,112 @@ function sanitizeUrlsFromErrorMessages(report) {
  * @param {object} report - the report to modify
  */
 function sanitizeAddressesFromErrorMessages(report) {
-  rewriteErrorMessages(report, (errorMessage) => {
-    const newErrorMessage = errorMessage.replace(/0x[A-Fa-f0-9]{40}/u, '0x**');
-    return newErrorMessage;
-  });
+  rewriteErrorMessages(report, (errorMessage) =>
+    sanitizeAddressesFromString(errorMessage),
+  );
+}
+
+// Patterns for sanitizing account addresses before sending events to Sentry.
+// EVM is handled separately so it can keep its `0x**` replacement form.
+const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
+const NON_EVM_ADDRESS_REGEXES = [
+  // Tron (base58, starts with `T`, 34 chars total)
+  /\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu,
+  // Stellar / XLM (starts with `G`, 56 chars total)
+  /\bG[A-Z2-7]{55}\b/gu,
+  // Bitcoin bech32 / taproot (`bc1...`)
+  /\bbc1[02-9ac-hj-np-z]{6,87}\b/gu,
+  // Bitcoin legacy P2PKH / P2SH (base58, starts with `1` or `3`)
+  /\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu,
+  // Solana (base58, 32-44 chars). Kept last as its range overlaps the others.
+  /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu,
+];
+
+/**
+ * Sanitizes EVM and non-EVM account addresses from a string.
+ *
+ * @param {string} text - The string to sanitize addresses from.
+ * @returns {string} The string with any addresses replaced by a mask.
+ */
+function sanitizeAddressesFromString(text) {
+  // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
+  // the base58 patterns below.
+  let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
+  for (const regex of NON_EVM_ADDRESS_REGEXES) {
+    sanitized = sanitized.replace(regex, '**');
+  }
+  return sanitized;
+}
+
+/**
+ * Recursively sanitizes account addresses from the string values of an object,
+ * returning a sanitized copy without mutating the input. Used to scrub addresses
+ * that may appear in error parameters such as `report.extra`/`report.contexts`
+ * and in breadcrumb data. Not mutating matters for breadcrumbs, whose
+ * `data.arguments` holds live references (e.g. the thrown `Error`) that the
+ * extension may still use after the event is sent.
+ *
+ * @param {*} value - The value to sanitize addresses from.
+ * @param {WeakMap} [seen] - Maps already-visited inputs to their sanitized copy,
+ * so shared references stay consistent and cyclic structures terminate.
+ * @returns {*} The sanitized value (a copy for objects/arrays).
+ */
+function sanitizeAddressesFromObject(value, seen = new WeakMap()) {
+  if (typeof value === 'string') {
+    return sanitizeAddressesFromString(value);
+  }
+  // Leave primitives (and null) untouched.
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  // Reuse the sanitized copy for any reference we've already processed, so shared
+  // references stay consistent and cyclic structures don't loop forever.
+  if (seen.has(value)) {
+    return seen.get(value);
+  }
+
+  if (Array.isArray(value)) {
+    const copy = [];
+    seen.set(value, copy);
+    for (let i = 0; i < value.length; i++) {
+      copy[i] = sanitizeAddressesFromObject(value[i], seen);
+    }
+    return copy;
+  }
+
+  const copy = {};
+  seen.set(value, copy);
+  // `Error` carries its address-bearing data on `message`/`stack`, which are
+  // non-enumerable and so invisible to the `Object.keys` walk below. These show
+  // up e.g. in console breadcrumbs, whose `data.arguments` holds the raw thrown
+  // error. Copy them across explicitly, sanitized.
+  if (value instanceof Error) {
+    if (typeof value.message === 'string') {
+      copy.message = sanitizeAddressesFromString(value.message);
+    }
+    if (typeof value.stack === 'string') {
+      copy.stack = sanitizeAddressesFromString(value.stack);
+    }
+  }
+  for (const key of Object.keys(value)) {
+    copy[key] = sanitizeAddressesFromObject(value[key], seen);
+  }
+  return copy;
+}
+
+/**
+ * Receives a Sentry event object and sanitizes account addresses from its
+ * error parameters (`extra` and `contexts`).
+ *
+ * @param {object} report - the report to modify
+ */
+function sanitizeAddressesFromReportData(report) {
+  if (report.extra) {
+    report.extra = sanitizeAddressesFromObject(report.extra);
+  }
+  if (report.contexts) {
+    report.contexts = sanitizeAddressesFromObject(report.contexts);
+  }
 }
 
 function simplifyErrorMessages(report) {
@@ -518,8 +723,12 @@ function integrateLogging() {
     return;
   }
 
+  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
+  // override its methods so SDK-internal logs flow through our module logger.
+  const sentrySdkLogger = logger;
+
   for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
+    sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
       internalLog(message, ...args.slice(1));
     };

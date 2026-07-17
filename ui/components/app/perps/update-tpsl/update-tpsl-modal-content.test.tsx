@@ -6,6 +6,11 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import {
+  formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
+  PERPS_LIQUIDATION_PRICE_FALLBACK,
+} from '../utils/formatPerpsDisplayPrice';
+import {
   UpdateTPSLModalContent,
   type UpdateTPSLSubmitState,
 } from './update-tpsl-modal-content';
@@ -13,6 +18,26 @@ import {
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
@@ -228,6 +253,82 @@ describe('UpdateTPSLModalContent', () => {
     });
   });
 
+  describe('price context block', () => {
+    it('renders entry, current, and liquidation price rows above the take profit section', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-price-info'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsEntryPrice.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCurrentPrice.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
+    });
+
+    it('formats the entry price with the adaptive perps formatter', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-entry-price-value'),
+      ).toHaveTextContent(
+        formatPerpsFiatUniversal(positionWithTPSL.entryPrice),
+      );
+    });
+
+    it('formats the liquidation price with the adaptive perps formatter', () => {
+      renderTpslModalContent();
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent(
+        formatPerpsLiquidationPrice(positionWithTPSL.liquidationPrice),
+      );
+    });
+
+    it('shows the current price from the live currentPrice prop', () => {
+      renderTpslModalContent({ currentPrice: 2900 });
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+    });
+
+    it('updates the current price when the live currentPrice prop changes', () => {
+      const { rerender } = renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+
+      rerender(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={3000} />,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(3000));
+    });
+
+    it('falls back to the placeholder when the liquidation price is invalid', () => {
+      renderTpslModalContent({
+        position: { ...positionWithTPSL, liquidationPrice: '0.00' },
+      });
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+    });
+  });
+
   describe('initialization', () => {
     it('initializes TP/SL prices from position data', () => {
       renderTpslModalContent();
@@ -315,6 +416,69 @@ describe('UpdateTPSLModalContent', () => {
       expect(
         screen.queryByTestId('perps-update-tpsl-estimated-sl-pnl-row'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks entry price, liquidation price, and estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-entry-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-liquidation-price-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-tp-pnl-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-update-tpsl-estimated-sl-pnl-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('does not mask the current price, which is public market data', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} currentPrice={2900} />,
+        privacyStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-update-tpsl-current-price-value'),
+      ).toHaveTextContent(formatPerpsFiatUniversal(2900));
+    });
+
+    it('uses the default text color instead of green/red for estimated P&L when privacy mode is enabled', () => {
+      renderWithProvider(
+        <TpslContentWithTestFooter {...defaultProps} />,
+        privacyStore,
+      );
+
+      const tpPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-tp-pnl-value',
+      );
+      const slPnl = screen.getByTestId(
+        'perps-update-tpsl-estimated-sl-pnl-value',
+      );
+      expect(tpPnl).toHaveClass('text-default');
+      expect(tpPnl).not.toHaveClass('text-success-default');
+      expect(tpPnl).not.toHaveClass('text-error-default');
+      expect(slPnl).toHaveClass('text-default');
+      expect(slPnl).not.toHaveClass('text-success-default');
+      expect(slPnl).not.toHaveClass('text-error-default');
     });
   });
 

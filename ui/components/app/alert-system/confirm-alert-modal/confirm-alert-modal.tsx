@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  Box,
   Button,
   ButtonLink,
   ButtonLinkSize,
@@ -15,7 +15,6 @@ import {
 import {
   AlignItems,
   Severity,
-  TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -90,7 +89,7 @@ function ConfirmDetails({
   const t = useI18nContext();
   return (
     <>
-      <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
+      <Box alignItems={BoxAlignItems.Center} className="text-center">
         <Text variant={TextVariant.bodyMd}>
           {t('confirmationAlertDetails')}
         </Text>

@@ -10,10 +10,16 @@ import {
 } from '../../hooks/identity/useAuthentication';
 import { MetamaskIdentityProvider } from '.';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 jest.mock('../../hooks/identity/useBackupAndSync');
 jest.mock('../../hooks/identity/useAccountSyncing');
 jest.mock('../../hooks/identity/useContactSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
+
+const mockUseSelector = jest.mocked(redux.useSelector);
 
 describe('MetamaskIdentityProvider', () => {
   const mockUseAccountSyncing = jest.mocked(useAccountSyncing);
@@ -42,7 +48,7 @@ describe('MetamaskIdentityProvider', () => {
       shouldAutoSignOut: false,
     });
 
-    jest.spyOn(redux, 'useSelector').mockImplementation(() => true);
+    mockUseSelector.mockImplementation(() => true);
   });
 
   it('renders children correctly', () => {

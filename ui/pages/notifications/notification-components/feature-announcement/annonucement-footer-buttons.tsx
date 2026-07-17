@@ -1,42 +1,66 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
-  getShieldInAppNavigationFromExternalLink,
-  SHIELD_ANNOUNCEMENT_NOTIFICATION_ID,
-} from '../../../../../shared/lib/shield';
+  isInternalRouteHref,
+  resolveTrustedDeepLinkHref,
+} from '../../../../helpers/utils/resolve-deep-link-href';
 import { FeatureAnnouncementNotification } from './types';
+
+type ResolvedHref = {
+  href: string;
+  sourceUrl: string;
+};
+
+type PendingResolvedHref = {
+  promise: Promise<string>;
+  sourceUrl: string;
+};
+
+function shouldUseDefaultLinkNavigation(
+  event: React.MouseEvent<HTMLElement>,
+): boolean {
+  return Boolean(
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.shiftKey,
+  );
+}
 
 const useAnalyticEventCallback = (props: {
   id: string;
   type: string;
   clickType: 'external_link' | 'internal_link';
 }) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsEvent = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_id: props.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_type: props.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        clicked_item: props.clickType,
-      },
-    });
-  }, [props.clickType, props.id, props.type, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_id: props.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_type: props.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          clicked_item: props.clickType,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, props.clickType, props.id, props.type, trackEvent]);
 
   return analyticsEvent;
 };
@@ -79,45 +103,145 @@ export const ExternalLinkButton = (props: {
     clickType: 'external_link',
   });
 
-  if (!notification.data.externalLink) {
+  const { externalLink } = notification.data;
+  const externalLinkUrl = externalLink?.externalLinkUrl;
+  const [resolvedHref, setResolvedHref] = useState<ResolvedHref | undefined>();
+  const resolvedHrefRef = useRef<ResolvedHref | undefined>();
+  const pendingResolvedHrefRef = useRef<PendingResolvedHref | undefined>();
+
+  useEffect(() => {
+    resolvedHrefRef.current = resolvedHref;
+  }, [resolvedHref]);
+
+  const resolveHref = useCallback((): Promise<string> => {
+    const linkUrl = externalLinkUrl;
+
+    if (!linkUrl) {
+      return Promise.resolve('');
+    }
+
+    const resolvedHrefForLink = resolvedHrefRef.current;
+    if (resolvedHrefForLink?.sourceUrl === linkUrl) {
+      return Promise.resolve(resolvedHrefForLink.href);
+    }
+
+    const pendingResolvedHref = pendingResolvedHrefRef.current;
+    if (pendingResolvedHref?.sourceUrl === linkUrl) {
+      return pendingResolvedHref.promise;
+    }
+
+    const promise = resolveTrustedDeepLinkHref(linkUrl).catch((error) => {
+      console.error(
+        '[ExternalLinkButton] error resolving external link',
+        error,
+      );
+      return linkUrl;
+    });
+
+    pendingResolvedHrefRef.current = {
+      promise,
+      sourceUrl: linkUrl,
+    };
+
+    return promise;
+  }, [externalLinkUrl]);
+
+  useEffect(() => {
+    if (!externalLinkUrl) {
+      resolvedHrefRef.current = undefined;
+      pendingResolvedHrefRef.current = undefined;
+      setResolvedHref(undefined);
+      return;
+    }
+
+    let isMounted = true;
+    const sourceUrl = externalLinkUrl;
+
+    if (resolvedHrefRef.current?.sourceUrl !== sourceUrl) {
+      resolvedHrefRef.current = undefined;
+    }
+
+    setResolvedHref((currentResolvedHref) =>
+      currentResolvedHref?.sourceUrl === sourceUrl
+        ? currentResolvedHref
+        : undefined,
+    );
+
+    const pendingResolvedHref = resolveHref();
+    pendingResolvedHref
+      .then((href) => {
+        if (isMounted) {
+          const nextResolvedHref = { href, sourceUrl };
+          resolvedHrefRef.current = nextResolvedHref;
+          setResolvedHref(nextResolvedHref);
+        }
+      })
+      .finally(() => {
+        if (
+          pendingResolvedHrefRef.current?.sourceUrl === sourceUrl &&
+          pendingResolvedHrefRef.current.promise === pendingResolvedHref
+        ) {
+          pendingResolvedHrefRef.current = undefined;
+        }
+      });
+
+    return () => {
+      isMounted = false;
+      if (
+        pendingResolvedHrefRef.current?.sourceUrl === sourceUrl &&
+        pendingResolvedHrefRef.current.promise === pendingResolvedHref
+      ) {
+        pendingResolvedHrefRef.current = undefined;
+      }
+    };
+  }, [externalLinkUrl, resolveHref]);
+
+  if (!externalLinkUrl || !externalLink) {
     return null;
   }
 
-  let href: string | undefined = notification.data.externalLink.externalLinkUrl;
-  let isExternal = true;
-  const isShieldAnnouncementNotification =
-    notification.id === SHIELD_ANNOUNCEMENT_NOTIFICATION_ID;
-  // use native navigation for shield announcement instead of opening new tab
-  // TODO: clean this when we have better control of how deeplink are opened
-  if (isShieldAnnouncementNotification) {
-    // don't open new tab with href
-    href = undefined;
-    // don't show external arrow icon
-    isExternal = false;
-  }
-  const onClick = () => {
-    analyticCallback();
-    if (isShieldAnnouncementNotification && notification.data.externalLink) {
-      try {
-        const path = getShieldInAppNavigationFromExternalLink(
-          notification.data.externalLink.externalLinkUrl,
-        );
-        navigate(path);
-      } catch (error) {
-        console.error(
-          '[ExternalLinkButton] error parsing external link',
-          error,
-        );
-      }
+  const { externalLinkText } = externalLink;
+  const resolvedHrefForExternalLink =
+    resolvedHref?.sourceUrl === externalLinkUrl ? resolvedHref.href : undefined;
+
+  const openResolvedLink = async () => {
+    const href = await resolveHref();
+
+    if (!href) {
+      return;
     }
+
+    if (isInternalRouteHref(href)) {
+      navigate(href);
+      return;
+    }
+
+    await global.platform.openTab({ url: href });
+  };
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    analyticCallback();
+
+    if (shouldUseDefaultLinkNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    openResolvedLink().catch((error) => {
+      console.error('[ExternalLinkButton] error opening external link', error);
+    });
   };
 
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Secondary}
-      text={notification.data.externalLink.externalLinkText}
-      href={href}
-      isExternal={isExternal}
+      text={externalLinkText}
+      href={resolvedHrefForExternalLink ?? externalLinkUrl}
+      isExternal={
+        resolvedHrefForExternalLink
+          ? !isInternalRouteHref(resolvedHrefForExternalLink)
+          : false
+      }
       onClick={onClick}
     />
   );

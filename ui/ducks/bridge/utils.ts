@@ -19,6 +19,7 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
@@ -213,6 +214,18 @@ export const toBridgeToken = (
   };
 };
 
+export const getDefaultFromToken = (fromChainId: CaipChainId) => {
+  const defaultFromTokenForChain =
+    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (defaultFromTokenForChain) {
+    return toBridgeToken(defaultFromTokenForChain);
+  }
+
+  // Last resort: native token
+  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+};
+
 export const getDefaultToToken = (
   toChainId: CaipChainId,
   fromAssetId: CaipAssetType,
@@ -226,8 +239,13 @@ export const getDefaultToToken = (
     return toBridgeToken(commonPair);
   }
 
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  /**
+   * Our current "from" asset is our default "to" token.
+   * Hence we can make our "to" token be the default "from" token.
+   * It will still fallback to native (original behavior).
+   * We know fromChainId === toChainId because of the assetId clash.
+   */
+  return getDefaultFromToken(toChainId);
 };
 
 /**

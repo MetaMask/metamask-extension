@@ -12,11 +12,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getLatestMetricsEventTimestamp,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { Toast, ToastContainer } from '../../../components/multichain/toast';
 import { BorderRadius } from '../../../helpers/constants/design-system';
@@ -34,27 +33,24 @@ export const DeleteMetametricsDataItem = () => {
     useState(false);
   const [showDataDeletionSuccessToast, setShowDataDeletionSuccessToast] =
     useState(false);
+  const [deletionRequestedThisSession, setDeletionRequestedThisSession] =
+    useState(false);
 
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
   const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
     getMetaMetricsDataDeletionStatus,
   );
-  const metaMetricsDataDeletionTimestamp = useSelector(
-    getMetaMetricsDataDeletionTimestamp,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const latestMetricsEventTimestamp = useSelector(
-    getLatestMetricsEventTimestamp,
-  );
+  const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled =
-    useSelector(getParticipateInMetaMetrics) && Boolean(metaMetricsId);
-
-  const hasNoPendingDataToDelete =
-    metaMetricsDataDeletionTimestamp > latestMetricsEventTimestamp;
+    completedMetaMetricsOnboarding && isOptedIn && Boolean(analyticsId);
 
   const isDataDeletionInProgress =
-    Boolean(metaMetricsId) &&
+    Boolean(analyticsId) &&
     DATA_DELETION_REQUESTED_STATUSES.includes(metaMetricsDataDeletionStatus) &&
-    hasNoPendingDataToDelete;
+    deletionRequestedThisSession;
 
   return (
     <>
@@ -73,7 +69,10 @@ export const DeleteMetametricsDataItem = () => {
       {showDeleteModal && (
         <DeleteMetametricsModal
           onClose={() => setShowDeleteModal(false)}
-          onSuccess={() => setShowDataDeletionSuccessToast(true)}
+          onSuccess={() => {
+            setDeletionRequestedThisSession(true);
+            setShowDataDeletionSuccessToast(true);
+          }}
           onError={() => setShowDataDeletionErrorToast(true)}
         />
       )}

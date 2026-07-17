@@ -8,20 +8,23 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackMetaMetricsEvent } from '../store/actions';
-import { MetaMetricsContext, MetaMetricsProvider } from './metametrics';
+import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
+import {
+  MetaMetricsContext,
+  MetaMetricsProvider,
+  resetPreviousTrackedPagePathForTesting,
+} from './metametrics';
 
 jest.mock('../hooks/useSegmentContext', () => ({
   useSegmentContext: jest.fn(() => ({})),
 }));
 
 jest.mock('../store/actions', () => ({
-  trackMetaMetricsEvent: jest.fn(),
+  trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
   trackMetaMetricsPage: jest.fn(),
 }));
 
 jest.mock('../store/background-connection', () => ({
-  generateActionId: jest.fn(() => 'test-action-id'),
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -34,8 +37,9 @@ const renderProvider = ({
   event: MetaMetricsEventName;
   state: {
     metamask: {
-      participateInMetaMetrics: boolean | null;
-      metaMetricsId: string | null;
+      analyticsId: string | null;
+      completedMetaMetricsOnboarding: boolean;
+      optedIn: boolean;
     };
   };
 }) => {
@@ -49,7 +53,7 @@ const renderProvider = ({
         category: MetaMetricsEventCategory.Onboarding,
         event,
       });
-    }, [event, trackEvent]);
+    }, [trackEvent]);
 
     return null;
   };
@@ -76,22 +80,24 @@ const renderProvider = ({
 };
 
 describe('MetaMetricsProvider', () => {
-  const mockedTrackMetaMetricsEvent = jest.mocked(trackMetaMetricsEvent);
+  const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
   const mockedSubmitRequestToBackground = jest.mocked(
     submitRequestToBackground,
   );
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetPreviousTrackedPagePathForTesting();
   });
 
-  it('buffers events when participation is enabled but metaMetricsId is missing', async () => {
+  it('buffers events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: true,
-          metaMetricsId: null,
+          analyticsId: null,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         },
       },
     });
@@ -101,7 +107,6 @@ describe('MetaMetricsProvider', () => {
         'addEventBeforeMetricsOptIn',
         [
           expect.objectContaining({
-            actionId: 'test-action-id',
             category: MetaMetricsEventCategory.Onboarding,
             event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           }),
@@ -109,51 +114,57 @@ describe('MetaMetricsProvider', () => {
       );
     });
 
-    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
+    expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
   });
 
-  it('tracks events immediately when participation is enabled and metaMetricsId exists', async () => {
+  it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: true,
-          metaMetricsId: '0x123',
+          analyticsId: '0x123',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         },
       },
     });
 
     await waitFor(() => {
-      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
+      expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+          }),
         }),
-        undefined,
+        expect.anything(),
       );
     });
 
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
-  it('tracks metrics opt out immediately without a metaMetricsId', async () => {
+  it('tracks metrics opt out immediately without an analyticsId', async () => {
     renderProvider({
       event: MetaMetricsEventName.MetricsOptOut,
       state: {
         metamask: {
-          participateInMetaMetrics: false,
-          metaMetricsId: null,
+          analyticsId: null,
+          completedMetaMetricsOnboarding: true,
+          optedIn: false,
         },
       },
     });
 
     await waitFor(() => {
-      expect(mockedTrackMetaMetricsEvent).toHaveBeenCalledWith(
+      expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.MetricsOptOut,
+          name: MetaMetricsEventName.MetricsOptOut,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+          }),
         }),
-        undefined,
+        expect.anything(),
       );
     });
 
@@ -165,8 +176,9 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: false,
-          metaMetricsId: '0x123',
+          analyticsId: '0x123',
+          completedMetaMetricsOnboarding: true,
+          optedIn: false,
         },
       },
     });
@@ -175,7 +187,54 @@ describe('MetaMetricsProvider', () => {
       await Promise.resolve();
     });
 
-    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
+    expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('tracks page views only once across provider remounts', async () => {
+    const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
+    const store = mockStore({
+      metamask: {
+        analyticsId: '0x123',
+        completedMetaMetricsOnboarding: true,
+        optedIn: true,
+      },
+    });
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: (
+            <MetaMetricsProvider>
+              <div data-testid="child" />
+            </MetaMetricsProvider>
+          ),
+        },
+      ],
+      { initialEntries: ['/'] },
+    );
+
+    const { unmount } = render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
+    });
+
+    unmount();
+
+    render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
+    });
   });
 });

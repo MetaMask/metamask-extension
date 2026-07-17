@@ -6,16 +6,20 @@ import {
   BoxAlignItems,
   ButtonBase,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
@@ -24,6 +28,8 @@ export type OrderCardProps = {
   order: Order;
   onClick?: (order: Order) => void;
   variant?: 'default' | 'muted';
+  /** Full asset name (e.g. 'Bitcoin'); falls back to the ticker when omitted */
+  assetName?: string;
 };
 
 /**
@@ -35,15 +41,24 @@ export type OrderCardProps = {
  * @param options0.order - The order data to display
  * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
  * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
+ * @param options0.assetName - Full asset name; falls back to the ticker when omitted
  */
 export const OrderCard = ({
   order,
   onClick,
   variant = 'default',
+  assetName,
 }: OrderCardProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const displayName = getDisplayName(order.symbol);
+  const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
+  const { privacyMode } = useSelector(getPreferences);
+  // Title uses the full asset name when enabled; the size line keeps the ticker
+  // as its unit. When the flag is off, fall back to the ticker.
+  const displayName = getDisplaySymbol(
+    showFullAssetNames ? assetName || order.symbol : order.symbol,
+  );
+  const displaySymbol = getDisplaySymbol(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;
 
@@ -92,6 +107,7 @@ export const OrderCard = ({
         baseStyles,
         heightStyle,
         variantStyles,
+        '[container-name:list-item] [container-type:inline-size]',
       )}
       isFullWidth
       onClick={handleClick}
@@ -113,14 +129,24 @@ export const OrderCard = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {formatOrderLabel(order)}
+          </Text>
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}
           >
-            <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+            <Text
+              fontWeight={FontWeight.Medium}
+              className="text-s-body-md @compact:text-s-body-sm"
+            >
+              {displayName}
+            </Text>
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
@@ -129,9 +155,13 @@ export const OrderCard = ({
             </Text>
           </Box>
         )}
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {order.size} {displayName}
-        </Text>
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          isHidden={privacyMode}
+        >
+          {`${order.size} ${displaySymbol}`}
+        </SensitiveText>
       </Box>
       {/* Right side: USD value */}
       <Box
@@ -140,9 +170,13 @@ export const OrderCard = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <SensitiveText
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+          isHidden={privacyMode && Boolean(orderValueUsd)}
+        >
           {orderValueUsd ?? t('perpsMarket')}
-        </Text>
+        </SensitiveText>
         {isTriggerBasedOrder && orderValueUsd && (
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
             {t('perpsTriggerPrice')}

@@ -41,6 +41,11 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     unconnectedAccountAlertShownOrigins: false,
     web3ShimUsageOrigins: false,
   },
+  AnalyticsController: {
+    analyticsId: true,
+    eventQueue: false,
+    optedIn: true,
+  },
   AnnouncementController: {
     announcements: false,
   },
@@ -140,9 +145,20 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   BridgeStatusController: {
     txHistory: false,
+    quoteUpdateStatusStore: false,
   },
   ConnectivityController: {
     connectivityStatus: true,
+  },
+  ComplianceController: {
+    walletComplianceStatusMap: false,
+    lastCheckedAt: false,
+  },
+  ConfigRegistryController: {
+    configs: false,
+    etag: true,
+    lastFetched: true,
+    version: true,
   },
   CronjobController: {
     events: false,
@@ -190,16 +206,13 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
+    completedMetaMetricsOnboarding: true,
     eventsBeforeMetricsOptIn: false,
     tracesBeforeMetricsOptIn: false,
     fragments: false,
-    metaMetricsId: true,
-    participateInMetaMetrics: true,
-    segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
-    latestNonAnonymousEventTimestamp: true,
   },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
@@ -223,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
+    hasSeenOnboardingCompletionPage: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
@@ -280,11 +294,21 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RampsController: {
+    userRegion: false,
+    countries: false,
+    providers: false,
+    tokens: false,
+    paymentMethods: false,
+    requests: false,
+    nativeProviders: false,
+    orders: false,
+    providerAutoSelected: false,
   },
   RewardsController: {
     rewardsActiveAccount: false,

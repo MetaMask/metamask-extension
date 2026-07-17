@@ -33,13 +33,9 @@ export type SegmentCallback = (err?: unknown, ctx?: unknown) => void;
 
 /**
  * Payload accepted by the segment client. Extension call sites pass partial
- * payloads (e.g. `#identify` only sets `userId` + `traits`, early-init events
- * omit `locale`/`chain_id`), so all fields are optional and `properties` /
- * `context` / `traits` are typed loosely; validation is left to Segment.
- *
- * The `timestamp` field accepts both `string` (as persisted in
- * `MetaMetricsController.state.segmentApiCalls` across service-worker
- * restarts) and `Date` (as produced when the event is first enqueued).
+ * payloads (e.g. early-init events omit `locale`/`chain_id`), so all fields
+ * are optional and `properties` / `context` / `traits` are typed loosely;
+ * validation is left to Segment.
  */
 export type SegmentTrackPayload = {
   userId?: string;
@@ -56,7 +52,7 @@ export type SegmentTrackPayload = {
 
 /**
  * Thin interface exposed to the rest of the extension. This is the only
- * surface `MetaMetricsController` and `early-segment-tracking` interact with,
+ * surface `MetaMetricsController` and `custom-segment-tracking` interact with,
  * so swapping the underlying implementation (real SDK vs. mock) is confined
  * to this module.
  */
@@ -93,20 +89,8 @@ function createSegmentClient(
   });
 
   /**
-   * `MetaMetricsController.#submitSegmentAPICall` writes the same payload into
-   * `state.segmentApiCalls` (via `this.update`) before calling this client.
-   * BaseController uses immer with auto-freeze, so nested fields like
-   * `context`, `properties`, and `traits` that are shared by reference become
-   * non-extensible / frozen in place.
-   *
-   * `@segment/analytics-node`'s Segment.io plugin runs `normalizeEvent`, which
-   * uses `dset` to add `context.library` on the existing `context` object. That
-   * throws `TypeError: Cannot add property library, object is not extensible`.
-   * The error can be swallowed inside the SDK's plugin pipeline, so callbacks
-   * may still report success but no HTTP request is sent.
-   *
-   * `cloneDeep` on each SDK call gives a plain mutable copy so normalization
-   * can run.
+   * The Segment SDK mutates payloads during normalization. Clone on each SDK
+   * call so frozen controller-derived payloads can still be delivered.
    */
   return {
     track(payload, callback) {
@@ -170,14 +154,12 @@ export const createSegmentMock = (
       }
     },
 
-    // These methods are either unused in tests or do not await their callback,
-    // so a NOOP implementation is sufficient. Tests still `spyOn` them to
-    // assert invocation.
-    page() {
-      // noop
+    page(_payload, callback) {
+      callback?.();
     },
-    identify() {
-      // noop
+
+    identify(_payload, callback) {
+      callback?.();
     },
   };
 

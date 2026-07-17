@@ -5,7 +5,8 @@ import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 import { useArgs } from '@storybook/client-api';
-import { Box, Button } from '../../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { Button } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { AlertActionHandlerProvider } from '../contexts/alertActionHandler';
 

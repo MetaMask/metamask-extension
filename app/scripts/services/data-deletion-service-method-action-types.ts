@@ -12,7 +12,7 @@ import type { DataDeletionService } from './data-deletion-service';
  * returns a "regulation ID" to keep track of this request and get status updates for it.
  * https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/createSourceRegulation
  *
- * @param metaMetricsId - The ID associated with the analytics data that we will be deleting.
+ * @param analyticsId - The ID associated with the analytics data that we will be deleting.
  * @returns The regulation ID for the deletion request.
  */
 export type DataDeletionServiceCreateDataDeletionRegulationTaskAction = {

@@ -1,19 +1,6 @@
 import { isFirefoxBrowser } from '../../../../../shared/lib/browser-runtime.utils';
 import { CameraPermissionState } from '../../../../contexts/hardware-wallets/constants';
-import { DOMExceptionName } from '../base-reader.types';
-
-/**
- * Expected UR types for the wallet-pairing flow.
- */
-export const PAIRING_EXPECTED_TYPES = [
-  'crypto-hdkey',
-  'crypto-account',
-] as const;
-
-/**
- * Expected UR types for the transaction-signing flow.
- */
-export const SIGNING_EXPECTED_TYPES = ['eth-signature'] as const;
+import { DOMExceptionName } from '../base-qr-reader/base-qr-reader.types';
 
 /**
  * Determines whether the camera-access-blocked UI should be shown

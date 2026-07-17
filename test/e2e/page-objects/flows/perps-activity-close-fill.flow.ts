@@ -1,6 +1,6 @@
 import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
-import { PerpsHomePage } from '../pages/perps/perps-home-page';
+import { PerpsTab } from '../pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
@@ -35,10 +35,10 @@ export async function assertPerpsActivityShowsCloseFill({
     console.error('Market list not displayed, moving on', error);
   }
 
-  const perpsHomePage = new PerpsHomePage(driver);
-  await perpsHomePage.navigateToPerpsHome();
-  await perpsHomePage.checkPageIsLoaded();
-  await perpsHomePage.clickRecentActivitySeeAll();
+  const perpsTab = new PerpsTab(driver);
+  await perpsTab.navigateToPerpsHome();
+  await perpsTab.checkPageIsLoaded();
+  await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);
   await activityPage.checkPageIsLoaded();

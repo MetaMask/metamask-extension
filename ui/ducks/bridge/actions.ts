@@ -1,7 +1,5 @@
 import {
-  BridgeBackgroundAction,
   type BridgeController,
-  BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -24,6 +22,7 @@ import {
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -79,7 +78,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: keyof BridgeController,
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,10 +90,16 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(callBridgeControllerMethod('resetState'));
     await clearAllBridgeCacheItems();
   };
 };
+
+export const setBridgeLocation = (location: MetaMetricsSwapsEventSource) =>
+  callBridgeControllerMethod('setLocation', location);
+
+export const getBridgeLocation = (): Promise<MetaMetricsSwapsEventSource> =>
+  submitRequestToBackground('getLocation');
 
 export const trackUnifiedSwapBridgeEvent = <
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -108,7 +113,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        'trackUnifiedSwapBridgeEvent',
         eventName,
         propertiesFromClient,
       ),
@@ -128,7 +133,7 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        'updateBridgeQuoteRequestParams',
         params,
         context,
         quoteRequestIndex,
@@ -261,8 +266,12 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

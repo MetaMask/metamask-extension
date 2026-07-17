@@ -1,12 +1,11 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -21,6 +20,7 @@ import {
   mockTokensV2SupportedNetworks,
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
+import { buildBtcSwapFixtures } from '../btc/unified-btc-assets';
 
 async function mockBtcSendMocks(mockServer: Mockttp) {
   return [
@@ -38,23 +38,32 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
 }
 
 describe('BTC Account - Send', function (this: Suite) {
+  this.timeout(300000);
+
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+
+  const btcSendFixtureOptions = {
+    fixtures: buildBtcSwapFixtures(),
+    localNodeOptions: [{ type: 'none' as const }],
+    dappOptions: { numberOfTestDapps: 1 },
+  };
 
   it('fields validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -63,7 +72,10 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient('invalidBTCAddress');
+        await sendPage.fillRecipient({
+          recipientAddress: 'invalidBTCAddress',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
       },
     );
@@ -72,17 +84,18 @@ describe('BTC Account - Send', function (this: Suite) {
   it('amount validation', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
@@ -91,7 +104,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await homePage.startSendFlow();
         await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
 
         await sendPage.fillAmount('5');
         await sendPage.checkInsufficientFundsError();
@@ -106,28 +119,29 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        ...btcSendFixtureOptions,
         title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
         );
 
         const sendPage = new SendPage(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await homePage.startSendFlow();
 
         await sendPage.selectToken(bitcoinChainId, 'BTC');
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount(sendAmount);
         await sendPage.isContinueButtonEnabled();
         await sendPage.pressContinueButton();
@@ -140,11 +154,11 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickConfirmButton();
 
         // Wait for the transaction to appear in the activity list
-        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityTab.checkTransactionActivityByText('Sending');
 
         // Note: Transaction shows as "Pending" immediately after broadcast.
         // The BTC snap stores it with "Unconfirmed" status when broadcast.
-        await activityListPage.checkWaitForTransactionStatus('pending');
+        await activityTab.checkWaitForTransactionStatus('pending');
       },
     );
   });

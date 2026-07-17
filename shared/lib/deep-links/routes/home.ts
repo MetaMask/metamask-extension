@@ -1,7 +1,27 @@
+import { DEEP_LINK_HOST } from '../constants';
 import { DEFAULT_ROUTE, Route } from './route';
+import type { Destination } from './route';
+
+export const DEEP_LINK_ORIGIN = `https://${DEEP_LINK_HOST}`;
 
 export enum HomeQueryParams {
+  BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
+  PredictDeeplinkUrl = 'predictDeeplinkUrl',
+  TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
+}
+
+export function createHomeQrCodeDestination(
+  queryParam:
+    | HomeQueryParams.BatchSellDeeplinkUrl
+    | HomeQueryParams.PredictDeeplinkUrl
+    | HomeQueryParams.TrendingDeeplinkUrl,
+  deeplinkUrl: string,
+): Destination {
+  return {
+    path: DEFAULT_ROUTE,
+    query: new URLSearchParams({ [queryParam]: deeplinkUrl }),
+  };
 }
 
 export const home = new Route({

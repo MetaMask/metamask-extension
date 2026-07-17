@@ -8,8 +8,8 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
@@ -43,6 +43,35 @@ async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
         }
         return { statusCode: 200, json: result };
       }),
+    await mockServer
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
+        const data =
+          query === 'dai'
+            ? [
+                {
+                  assetId: DAI_CAIP_ASSET,
+                  symbol: 'DAI',
+                  name: 'Dai Stablecoin',
+                  decimals: 18,
+                },
+              ]
+            : [];
+        return {
+          statusCode: 200,
+          json: {
+            data,
+            count: data.length,
+            totalCount: data.length,
+            pageInfo: { hasNextPage: false, endCursor: '' },
+          },
+        };
+      }),
   ];
 }
 
@@ -60,6 +89,11 @@ describe('Send ERC20 - Mainnet', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSpotPriceV3ForDai,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -74,13 +108,13 @@ describe('Send ERC20 - Mainnet', function () {
         await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.importTokenBySearch({
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importTokenBySearch({
           tokenName: 'DAI',
           networkName: MAINNET_DISPLAY_NAME,
         });
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.clickOnAsset('Dai Stablecoin');
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
         const tokenOverviewPage = new TokenOverviewPage(driver);
@@ -88,9 +122,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
+        await sendPage.fillRecipient({
+          recipientAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        });
         await sendPage.fillAmount('10');
         await sendPage.pressContinueButton();
 
@@ -104,9 +138,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAmountInActivity('-10 DAI');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAmountInActivity('-10 DAI');
       },
     );
   });

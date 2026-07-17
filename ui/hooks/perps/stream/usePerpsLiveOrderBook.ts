@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
 import type { PerpsStreamManager } from '../../../providers/perps';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 
 /**
@@ -14,8 +16,14 @@ export type UsePerpsLiveOrderBookOptions = {
   nSigFigs?: 2 | 3 | 4 | 5;
   /** Mantissa for aggregation when nSigFigs is 5 */
   mantissa?: 2 | 5;
-  /** Callback for errors */
-  onError?: (error: Error) => void;
+  /** When false, no background order-book stream is activated (default: true). */
+  enabled?: boolean;
+  /**
+   * When false, only read from the shared channel; do not activate/deactivate the
+   * background stream (default: true). Use when another surface already owns
+   * order-book stream lifecycle (e.g. order entry page top-of-book).
+   */
+  manageStream?: boolean;
 };
 
 /**
@@ -33,47 +41,52 @@ const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
 /**
  * Hook for real-time order book data via background stream notifications.
  *
- * Receives data pushed from the background PerpsController via
- * perpsStreamUpdate notifications → PerpsStreamManager.handleBackgroundUpdate().
- *
- * Note: The background emits a single orderBook channel for the currently
- * subscribed symbol. The symbol/levels/nSigFigs parameters are used
- * for the perpsSubscriberChange registration (future: per-symbol scoping).
+ * Activates the background order-book stream for `symbol` (mirrors
+ * `usePerpsTopOfBook` / mobile's subscribeToOrderBook wiring) and reads from
+ * the shared PerpsStreamManager channel.
  *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
- * @example
- * ```tsx
- * function OrderBookDisplay() {
- *   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
- *     symbol: 'BTC',
- *     levels: 10,
- *   });
- *
- *   if (isInitialLoading) return <Spinner />;
- *   if (!orderBook) return <div>No data</div>;
- *
- *   return (
- *     <div>
- *       <div>Asks: {orderBook.asks.length}</div>
- *       <div>Bids: {orderBook.bids.length}</div>
- *       <div>Spread: {orderBook.spread}</div>
- *     </div>
- *   );
- * }
- * ```
  */
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  // options.symbol is available for future per-symbol scoping
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { symbol: _symbol } = options;
+  const {
+    symbol,
+    levels,
+    nSigFigs,
+    mantissa,
+    enabled = true,
+    manageStream = true,
+  } = options;
+  const activeSymbol = enabled ? symbol : undefined;
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     getOrderBookChannel,
     null,
+    activeSymbol || undefined,
   );
 
-  return { orderBook, isInitialLoading };
+  useEffect(() => {
+    if (!manageStream || !enabled || !symbol) {
+      return undefined;
+    }
+    submitRequestToBackground('perpsActivateOrderBookStream', [
+      { symbol, levels, nSigFigs, mantissa },
+    ]).catch(() => {
+      // Controller not ready yet — stream will activate on retry when symbol changes.
+    });
+    return () => {
+      submitRequestToBackground('perpsDeactivateOrderBookStream', []).catch(
+        () => {
+          // Best-effort teardown.
+        },
+      );
+    };
+  }, [manageStream, enabled, symbol, levels, nSigFigs, mantissa]);
+
+  return {
+    orderBook,
+    isInitialLoading: isInitialLoading || !activeSymbol,
+  };
 }

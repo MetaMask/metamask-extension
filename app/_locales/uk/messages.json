@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Вам потрібно обрати обліковий запис!"
   },
-  "addAcquiredTokens": {
-    "message": "Додайте токени, отримані за допомогою MetaMask"
-  },
   "addAlias": {
     "message": "Додати псевдо"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Розширені"
-  },
-  "customToken": {
-    "message": "Користувацький токен"
   },
   "decimal": {
     "message": "Знаків після коми"
@@ -348,9 +342,6 @@
   "metamaskVersion": {
     "message": "Версія MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Слід вибрати хоча б 1 токен."
-  },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"
@@ -382,9 +373,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Вебкамеру не знайдено"
-  },
-  "notEnoughGas": {
-    "message": "Недостатньо газу"
   },
   "ofTextNofM": {
     "message": "з"
@@ -523,9 +511,6 @@
   },
   "sign": {
     "message": "Підписати"
-  },
-  "signatureRequest": {
-    "message": "Запит підпису"
   },
   "signed": {
     "message": "Підписано"

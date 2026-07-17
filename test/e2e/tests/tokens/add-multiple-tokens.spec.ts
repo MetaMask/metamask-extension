@@ -1,5 +1,5 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -59,7 +59,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         );
 
         // Check all three tokens have been added to the token list.
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
         await tokenList.checkTokenItemNumber(4); // 3 tokens plus ETH
         await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('TST');

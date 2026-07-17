@@ -29,7 +29,7 @@ export default function GenericAssetCellLayout({
     <Box
       flexDirection={BoxFlexDirection.Row}
       gap={4}
-      className="flex h-full w-full"
+      className="flex h-full w-full [container-name:list-item] [container-type:inline-size]"
     >
       <Box asChild>
         <a

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -19,7 +19,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Display,
   JustifyContent,
@@ -31,7 +31,7 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import { clearAccountDetails, hideWarning } from '../../../store/actions';
+import { clearAccountDetails } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Modal,
@@ -59,7 +59,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
@@ -101,7 +101,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   const onClose = useCallback(() => {
     dispatch(clearAccountDetails());
-    dispatch(hideWarning());
   }, [dispatch]);
 
   const avatar = (
@@ -126,7 +125,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose={onClose}
             onBack={() => {
               if (attemptingExport === AttemptExportState.PrivateKey) {
-                dispatch(hideWarning());
                 setPrivateKey('');
                 setAttemptingExport(AttemptExportState.None);
               } else if (attemptingExport === AttemptExportState.None) {
@@ -199,18 +197,19 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       <HoldToRevealModal
         isOpen={showHoldToReveal}
         onClose={() => {
-          trackEvent({
-            category: MetaMetricsEventCategory.Keys,
-            event: MetaMetricsEventName.KeyExportCanceled,
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Pkey,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            },
-          });
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Pkey,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           setPrivateKey('');
           setShowHoldToReveal(false);
         }}

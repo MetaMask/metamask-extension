@@ -47,7 +47,7 @@ export const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
     icon: {
       type: 'avatar-icon',
       name: IconName.Warning,
-      severity: AvatarIconSeverity.Error,
+      severity: AvatarIconSeverity.Danger,
       size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-warning',
     },
@@ -85,7 +85,7 @@ const PERPS_ERROR_PRESENTATION: PerpsToastPresentation = {
   icon: {
     type: 'avatar-icon',
     name: IconName.Warning,
-    severity: AvatarIconSeverity.Error,
+    severity: AvatarIconSeverity.Danger,
     size: AvatarIconSize.Md,
     dataTestId: 'perps-toast-icon-warning',
   },

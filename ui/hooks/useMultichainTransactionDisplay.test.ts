@@ -220,6 +220,38 @@ describe('useMultichainTransactionDisplay', () => {
     expect(result.current.priorityFee).toBeDefined();
   });
 
+  it('returns approve spending cap title with token symbol for TokenApprove', () => {
+    const tx = baseTransaction({
+      type: TransactionType.TokenApprove,
+      from: [
+        { asset: makeAsset(USDC_ASSET_ID, '1000', 'USDC'), address: 'Addr' },
+      ],
+      to: [
+        { asset: makeAsset(USDC_ASSET_ID, '0', 'USDC'), address: 'Spender' },
+      ],
+    });
+    const { result } = renderHookWithProvider(
+      () => useMultichainTransactionDisplay(tx as never),
+      mockState,
+    );
+    expect(result.current.title).toContain('USDC');
+  });
+
+  it('returns a defined title for TokenApprove when from has no unit', () => {
+    const tx = baseTransaction({
+      type: TransactionType.TokenApprove,
+      from: [],
+      to: [
+        { asset: makeAsset(USDC_ASSET_ID, '0', 'USDC'), address: 'Spender' },
+      ],
+    });
+    const { result } = renderHookWithProvider(
+      () => useMultichainTransactionDisplay(tx as never),
+      mockState,
+    );
+    expect(result.current.title).toBeDefined();
+  });
+
   it('returns Swap title combining from and to units', () => {
     const tx = baseTransaction({
       type: TransactionType.Swap,

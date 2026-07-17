@@ -3,11 +3,24 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
+
+export type CheckExpectedBalanceOptions = {
+  expectedBalance?: string;
+  symbol?: string;
+  expectFundYourWalletBanner?: boolean;
+  timeout?: number;
+};
+
+// TODO: Remove this widened wait once #43958 completes the Solana discovery
+// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
+// past the default 10s wait.
+const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {
   protected driver: Driver;
@@ -211,8 +224,14 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
+    // as soon as the icons render.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
@@ -397,38 +416,60 @@ class HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
+   * @param expectedBalanceOrOptions - Expected balance string, or an options object.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    * @param expectFundYourWalletBanner - When the balance is '0', whether to assert the
    * "Fund your wallet" banner (EVM behavior).
    * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
-    expectedBalance: string = '25',
+    expectedBalanceOrOptions: string | CheckExpectedBalanceOptions = '25',
     symbol: string = 'ETH',
     expectFundYourWalletBanner: boolean = true,
     timeout: number = this.driver.timeout,
   ): Promise<void> {
-    if (expectedBalance === '0' && expectFundYourWalletBanner) {
-      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
+    const {
+      expectedBalance,
+      symbol: resolvedSymbol,
+      expectFundYourWalletBanner: resolvedExpectFundYourWalletBanner,
+      timeout: resolvedTimeout,
+    } = typeof expectedBalanceOrOptions === 'string'
+      ? {
+          expectedBalance: expectedBalanceOrOptions,
+          symbol,
+          expectFundYourWalletBanner,
+          timeout,
+        }
+      : {
+          expectedBalance: expectedBalanceOrOptions.expectedBalance ?? '25',
+          symbol: expectedBalanceOrOptions.symbol ?? 'ETH',
+          expectFundYourWalletBanner:
+            expectedBalanceOrOptions.expectFundYourWalletBanner ?? true,
+          timeout: expectedBalanceOrOptions.timeout ?? this.driver.timeout,
+        };
+
+    if (expectedBalance === '0' && resolvedExpectFundYourWalletBanner) {
+      await this.driver.waitForSelector(this.fundYourWalletBanner, {
+        timeout: resolvedTimeout,
+      });
       return;
     }
     try {
       await this.driver.waitForSelector(
         { css: this.balance, text: expectedBalance },
-        { timeout },
+        { timeout: resolvedTimeout },
       );
     } catch (e) {
       const balance = await this.driver.waitForSelector(this.balance, {
-        timeout,
+        timeout: resolvedTimeout,
       });
       const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
+      const errorMessage = `Expected balance ${expectedBalance} ${resolvedSymbol}, got balance ${currentBalance} ${resolvedSymbol}`;
       console.log(errorMessage, e);
       throw e;
     }
     console.log(
-      `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
+      `Expected balance ${expectedBalance} ${resolvedSymbol} is displayed on homepage`,
     );
   }
 
@@ -470,30 +511,18 @@ class HomePage {
     );
   }
 
-  async checkIfSendButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.sendButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Send button not clickable', e);
-      return false;
-    }
-    console.log('Send button is clickable');
-    return true;
+  async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.sendButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
   }
 
-  async checkIfSwapButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.swapButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Swap button not clickable', e);
-      return false;
-    }
-    console.log('Swap button is clickable');
-    return true;
+  async checkSwapButtonIsClickable(clickable: boolean = true): Promise<void> {
+    console.log(`Check Swap button is ${clickable ? 'enabled' : 'disabled'}`);
+    await this.driver.waitForSelector(this.swapButton, {
+      state: clickable ? 'enabled' : 'disabled',
+    });
   }
 
   async checkLocalNodeBalanceIsDisplayed(
@@ -508,7 +537,10 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
-    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    await this.checkExpectedBalanceIsDisplayed({
+      expectedBalance,
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
@@ -576,6 +608,11 @@ class HomePage {
   async checkShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check shield entry modal is displayed on homepage');
     await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
   }
 
   async clickOnSendButton(): Promise<void> {

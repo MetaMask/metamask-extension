@@ -13,7 +13,7 @@ import { DummyQuotesNoApproval } from '../../../../../test/data/bridge/dummy-quo
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
-import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
+import * as useSubmitBridgeTransactionModule from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
@@ -21,7 +21,7 @@ import { BridgeAlertModal } from './bridge-alert-modal';
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
 
-jest.mock('../../hooks/useSubmitBridgeTransaction', () => ({
+jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
@@ -157,7 +157,7 @@ describe('BridgeAlertModal', () => {
           submitBridgeTransaction: jest.fn(),
           isSubmitting: true,
         });
-      const { baseElement, getByRole, getAllByRole } = renderModal(
+      const { baseElement, getByRole, getAllByRole, getByTestId } = renderModal(
         'submit-cta',
         '0.9',
       );
@@ -167,7 +167,7 @@ describe('BridgeAlertModal', () => {
         'ProceedLoading',
         'Cancel',
       ]);
-      expect(getByRole('button', { name: 'Proceed Loading' })).toBeDisabled();
+      expect(getByTestId('bridge-alert-modal-proceed-button')).toBeDisabled();
       expect(
         getByRole('button', { name: messages.cancel.message }),
       ).toBeDisabled();

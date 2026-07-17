@@ -151,7 +151,7 @@ export const useTokenSearchResults = ({
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
     }
-  }, [searchQuery, stableMinimalAssetsString, jwt]);
+  }, [searchQuery, stableMinimalAssetsString, chainIds, jwt]);
 
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults;

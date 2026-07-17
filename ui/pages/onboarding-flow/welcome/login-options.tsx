@@ -100,7 +100,7 @@ export default function LoginOptions({
       testIdSuffix: 'google',
       icon: (
         <img
-          src="images/icons/google.svg"
+          src="images/google.svg"
           className="options-modal__social-icon"
           alt=""
         />
@@ -125,10 +125,10 @@ export default function LoginOptions({
       loginType: LOGIN_TYPE.TELEGRAM,
       testIdSuffix: 'telegram',
       icon: (
-        <img
-          src="images/icons/telegram.svg"
-          className="options-modal__social-icon"
-          alt=""
+        <Icon
+          name={IconName.Telegram}
+          style={{ color: 'var(--color-telegram-blue)' }}
+          size={IconSize.Lg}
         />
       ),
       btnClass: 'mb-2',
@@ -207,6 +207,7 @@ export default function LoginOptions({
               aria-label={`${t('onboardingLoginFooterTermsOfUse')} (${t(
                 'opensInNewTab',
               )})`}
+              data-testid="onboarding-login-footer-terms-of-use"
             >
               {t('onboardingLoginFooterTermsOfUse')}
             </a>
@@ -223,6 +224,7 @@ export default function LoginOptions({
               aria-label={`${t('onboardingLoginFooterPrivacyNotice')} (${t(
                 'opensInNewTab',
               )})`}
+              data-testid="onboarding-login-footer-privacy-notice"
             >
               {t('onboardingLoginFooterPrivacyNotice')}
             </a>

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Musíte si vybrať účet!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridajte tokeny, ktoré ste získali pomocou MetaMask"
-  },
   "addAlias": {
     "message": "Pridať alias"
   },
@@ -175,9 +172,6 @@
   "custom": {
     "message": "Rozšírené"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
   },
@@ -323,9 +317,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -357,9 +348,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webová kamera sa nenašla"
-  },
-  "notEnoughGas": {
-    "message": "Nedostatok GAS"
   },
   "ofTextNofM": {
     "message": "z"
@@ -495,9 +483,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"

@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import type { RemoteFeatureFlagsState } from '../../../../../shared/lib/selectors/remote-feature-flags';
+import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   PERPS_WITHDRAW_ROUTE,
@@ -47,7 +47,9 @@ export function usePerpsWithdrawNavigation(
   const { navigateOnTrigger = true, onNavigated } = options;
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  // Perps withdraws settle to the EVM account, so resolve it directly instead
+  // of the globally selected account, which may be non-EVM (Solana, BTC, Tron).
+  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
   const isConfirmationFlowEnabled = useSelector(
     (state: RemoteFeatureFlagsState) =>
       selectPayQuoteConfig(state, TransactionType.perpsWithdraw).enabled ===

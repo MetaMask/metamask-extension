@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import AssetListPage from '../pages/home/asset-list';
+import TokensTab from '../pages/home/tokens-tab';
 import NetworkManager from '../pages/network-manager';
 
 export const switchToNetworkFromNetworkSelect = async (
@@ -10,10 +10,10 @@ export const switchToNetworkFromNetworkSelect = async (
   console.log(
     `Switching to network: ${networkName} in category: ${networkCategory}`,
   );
-  const assetListPage = new AssetListPage(driver);
+  const tokensTab = new TokensTab(driver);
   const networkManager = new NetworkManager(driver);
 
-  await assetListPage.openNetworksFilter();
+  await tokensTab.openNetworksFilter();
   await networkManager.selectTab(networkCategory);
   await networkManager.selectNetworkByNameWithWait(networkName);
 };

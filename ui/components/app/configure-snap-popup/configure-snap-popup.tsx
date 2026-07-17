@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   ButtonVariant,
   Button,
-  Box,
   Modal,
   ModalOverlay,
   Text,
@@ -12,10 +17,6 @@ import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -50,10 +51,10 @@ export default function ConfigureSnapPopup({
             : t('configureSnapPopupInstallTitle')}
         </ModalHeader>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.flexStart}
-          alignItems={AlignItems.center}
+          className="flex"
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Start}
+          alignItems={BoxAlignItems.Center}
         >
           <img
             src="images/logo/metamask-fox.svg"

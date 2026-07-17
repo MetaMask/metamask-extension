@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getImageForChainId } from '../../../utils/network';
@@ -7,37 +8,72 @@ import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNa
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { ARBITRUM_DISPLAY_NAME } from '../../../../../../shared/constants/network';
 import { NetworkFilter } from './network-filter';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 jest.mock('../../../hooks/useChainNetworkNameAndImage');
+jest.mock(
+  '../../../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal',
+  () => ({
+    NetworkSelectionModal: ({
+      isOpen,
+      title,
+      topItem,
+      sections,
+    }: {
+      isOpen: boolean;
+      title: React.ReactNode;
+      topItem?: { name: string; onClick: () => void };
+      sections: {
+        items: { key: string; name: string; onClick: () => void }[];
+      }[];
+    }) =>
+      isOpen ? (
+        <div data-testid="shared-network-selection-modal">
+          <div data-testid="shared-network-selection-title">{title}</div>
+          {topItem ? (
+            <button
+              data-testid="shared-network-selection-top-item"
+              onClick={topItem.onClick}
+            >
+              {topItem.name}
+            </button>
+          ) : null}
+          {sections.flatMap((section) =>
+            section.items.map((item) => (
+              <button
+                key={item.key}
+                data-testid="shared-network-selection-item"
+                onClick={item.onClick}
+              >
+                {item.name}
+              </button>
+            )),
+          )}
+        </div>
+      ) : null,
+  }),
+);
 jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
+  Box: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="box">{children}</div>
   ),
   ButtonBase: ({
     children,
     onClick,
-    ...props
+    startIconName,
   }: {
     children: React.ReactNode;
     onClick: () => void;
-    [key: string]: unknown;
+    startIconName?: string;
   }) => (
-    <button
-      data-testid="send-network-filter-toggle"
-      onClick={onClick}
-      {...props}
-    >
+    <button data-testid="send-network-filter-toggle" onClick={onClick}>
+      {startIconName ? <div data-testid={`icon-${startIconName}`} /> : null}
       {children}
     </button>
   ),
@@ -45,18 +81,15 @@ jest.mock('../../../../../components/component-library', () => ({
     onClick,
     iconName,
     ariaLabel,
-    ...props
   }: {
     onClick: () => void;
     iconName: string;
     ariaLabel: string;
-    [key: string]: unknown;
   }) => (
     <button
       data-testid="close-recipient-modal-btn"
       onClick={onClick}
       aria-label={ariaLabel}
-      {...props}
     >
       <div data-testid={`icon-${iconName}`} />
     </button>
@@ -85,11 +118,16 @@ jest.mock('../../../../../components/component-library', () => ({
   AvatarNetwork: ({ name, src }: { name: string; src: string }) => (
     <div data-testid="avatar-network" data-name={name} data-src={src} />
   ),
-  ButtonBaseSize: { Md: 'md' },
+  ButtonBaseSize: { Md: 'md', Sm: 'sm' },
   ButtonIconSize: { Sm: 'sm' },
   ModalContentSize: { Md: 'md' },
-  IconName: { ArrowDown: 'arrow-down', Global: 'global', Close: 'close' },
-  IconSize: { Sm: 'sm', Xl: 'xl' },
+  IconName: {
+    ArrowDown: 'arrow-down',
+    Filter: 'filter',
+    Global: 'global',
+    Close: 'close',
+  },
+  IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
   AvatarNetworkSize: { Sm: 'sm' },
 }));
 jest.mock('../../../../../components/multichain', () => ({
@@ -118,6 +156,7 @@ jest.mock('../../../../../components/multichain', () => ({
 jest.mock('../../../utils/network');
 
 describe('NetworkFilter', () => {
+  const mockUseSelector = jest.mocked(useSelector);
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockGetImageForChainId = jest.mocked(getImageForChainId);
   const mockOnChainIdChange = jest.fn();
@@ -137,7 +176,12 @@ describe('NetworkFilter', () => {
   const mockNfts = [{ chainId: '1' }, { chainId: '137' }];
 
   beforeEach(() => {
-    mockUseI18nContext.mockReturnValue((key: string) => key);
+    mockUseSelector.mockReturnValue(true);
+    mockUseI18nContext.mockReturnValue(
+      (key: string) =>
+        (messages as Record<string, { message: string } | undefined>)[key]
+          ?.message ?? key,
+    );
     mockGetImageForChainId.mockReturnValue('mock-image-url');
     mockUseAssetSelectionMetrics.mockReturnValue({
       addAssetFilterMethod: mockAddAssetFilterMethod,
@@ -145,9 +189,27 @@ describe('NetworkFilter', () => {
     } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
     mockUseChainNetworkNameAndImageMap.mockReturnValue(
       new Map([
-        ['1', { networkName: 'Ethereum', networkImage: 'eth.svg' }],
-        ['137', { networkName: 'Polygon', networkImage: 'polygon.svg' }],
-        ['42161', { networkName: 'Arbitrum', networkImage: 'arbitrum.svg' }],
+        [
+          '1',
+          {
+            networkName: messages.networkNameEthereum.message,
+            networkImage: 'eth.svg',
+          },
+        ],
+        [
+          '137',
+          {
+            networkName: messages.networkNamePolygon.message,
+            networkImage: 'polygon.svg',
+          },
+        ],
+        [
+          '42161',
+          {
+            networkName: ARBITRUM_DISPLAY_NAME,
+            networkImage: 'arbitrum.svg',
+          },
+        ],
       ]),
     );
   });
@@ -156,7 +218,7 @@ describe('NetworkFilter', () => {
     jest.clearAllMocks();
   });
 
-  it('renders filter button with "All networks" by default', () => {
+  it('renders filter button with the all networks label by default', () => {
     const { getByTestId, getByText } = render(
       <NetworkFilter
         tokens={mockTokens}
@@ -167,7 +229,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.allNetworks.message)).toBeInTheDocument();
-    expect(getByTestId('icon-global')).toBeInTheDocument();
+    expect(getByTestId('icon-filter')).toBeInTheDocument();
   });
 
   it('renders filter button with selected network name', () => {
@@ -182,7 +244,7 @@ describe('NetworkFilter', () => {
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
     expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
-    expect(getByTestId('avatar-network')).toBeInTheDocument();
+    expect(getByTestId('icon-filter')).toBeInTheDocument();
   });
 
   it('opens modal when filter button is clicked', () => {
@@ -198,9 +260,8 @@ describe('NetworkFilter', () => {
 
     fireEvent.click(getByTestId('send-network-filter-toggle'));
 
-    expect(getByTestId('modal')).toBeInTheDocument();
-    expect(getByTestId('modal-header')).toBeInTheDocument();
-    expect(getByTestId('modal-body')).toBeInTheDocument();
+    expect(getByTestId('shared-network-selection-modal')).toBeInTheDocument();
+    expect(getByTestId('shared-network-selection-title')).toBeInTheDocument();
   });
 
   it('renders network list items in modal', () => {
@@ -214,12 +275,18 @@ describe('NetworkFilter', () => {
 
     fireEvent.click(getByTestId('send-network-filter-toggle'));
 
-    const networkItems = getAllByTestId('network-list-item');
-    expect(networkItems).toHaveLength(4);
-    expect(networkItems[0]).toHaveAttribute('data-name', 'allNetworks');
-    expect(networkItems[1]).toHaveAttribute('data-name', 'Ethereum');
-    expect(networkItems[2]).toHaveAttribute('data-name', 'Arbitrum');
-    expect(networkItems[3]).toHaveAttribute('data-name', 'Polygon');
+    const networkItems = getAllByTestId('shared-network-selection-item');
+    expect(networkItems).toHaveLength(3);
+    expect(networkItems[0]).toHaveTextContent(
+      messages.networkNameEthereum.message,
+    );
+    expect(networkItems[1]).toHaveTextContent(ARBITRUM_DISPLAY_NAME);
+    expect(networkItems[2]).toHaveTextContent(
+      messages.networkNamePolygon.message,
+    );
+    expect(getByTestId('shared-network-selection-top-item')).toHaveTextContent(
+      messages.allNetworks.message,
+    );
   });
 
   it('calls onChainIdChange when network is selected', () => {
@@ -232,14 +299,14 @@ describe('NetworkFilter', () => {
     );
 
     fireEvent.click(getByTestId('send-network-filter-toggle'));
-    const networkItems = getAllByTestId('network-list-item');
+    const networkItems = getAllByTestId('shared-network-selection-item');
 
-    fireEvent.click(networkItems[1]);
+    fireEvent.click(networkItems[0]);
 
     expect(mockOnChainIdChange).toHaveBeenCalledWith('1');
   });
 
-  it('calls onChainIdChange with null when "All networks" is selected', () => {
+  it('calls onChainIdChange with null when the all networks option is selected', () => {
     const { getByTestId, getAllByTestId } = render(
       <NetworkFilter
         tokens={mockTokens}
@@ -250,9 +317,7 @@ describe('NetworkFilter', () => {
     );
 
     fireEvent.click(getByTestId('send-network-filter-toggle'));
-    const networkItems = getAllByTestId('network-list-item');
-
-    fireEvent.click(networkItems[0]);
+    fireEvent.click(getByTestId('shared-network-selection-top-item'));
 
     expect(mockOnChainIdChange).toHaveBeenCalledWith(null);
   });
@@ -267,11 +332,15 @@ describe('NetworkFilter', () => {
     );
 
     fireEvent.click(getByTestId('send-network-filter-toggle'));
-    const networkItems = getAllByTestId('network-list-item');
+    const networkItems = getAllByTestId('shared-network-selection-item');
 
-    expect(networkItems[1]).toHaveAttribute('data-name', 'Ethereum');
-    expect(networkItems[2]).toHaveAttribute('data-name', 'Arbitrum');
-    expect(networkItems[3]).toHaveAttribute('data-name', 'Polygon');
+    expect(networkItems[0]).toHaveTextContent(
+      messages.networkNameEthereum.message,
+    );
+    expect(networkItems[1]).toHaveTextContent(ARBITRUM_DISPLAY_NAME);
+    expect(networkItems[2]).toHaveTextContent(
+      messages.networkNamePolygon.message,
+    );
   });
 
   describe('metrics', () => {
@@ -286,13 +355,86 @@ describe('NetworkFilter', () => {
       );
 
       fireEvent.click(getByTestId('send-network-filter-toggle'));
-      const networkItems = getAllByTestId('network-list-item');
-
-      fireEvent.click(networkItems[0]);
+      fireEvent.click(getByTestId('shared-network-selection-top-item'));
 
       expect(mockRemoveAssetFilterMethod).toHaveBeenCalledWith(
         AssetFilterMethod.Network,
       );
+    });
+
+    it('skips metrics updates when disableMetrics is true', () => {
+      const { getByTestId, getAllByTestId } = render(
+        <NetworkFilter
+          tokens={mockTokens}
+          nfts={mockNfts}
+          disableMetrics
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      fireEvent.click(getByTestId('send-network-filter-toggle'));
+      fireEvent.click(getAllByTestId('shared-network-selection-item')[0]);
+
+      expect(mockOnChainIdChange).toHaveBeenCalledWith('1');
+      expect(mockAddAssetFilterMethod).not.toHaveBeenCalled();
+      expect(mockRemoveAssetFilterMethod).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('token network details fallback', () => {
+    it('uses token networkName and networkImage when wallet map lacks the chain', () => {
+      mockUseChainNetworkNameAndImageMap.mockReturnValue(new Map());
+
+      const tokensWithDetails = [
+        {
+          chainId: 'eip155:999',
+          networkName: 'Custom Catalog Network',
+          networkImage: 'https://example.com/custom.png',
+          fiat: { balance: 10 },
+        },
+      ];
+
+      const { getByTestId, getByText } = render(
+        <NetworkFilter
+          tokens={tokensWithDetails}
+          nfts={[]}
+          selectedChainId="eip155:999"
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      expect(getByText('Custom Catalog Network')).toBeInTheDocument();
+
+      fireEvent.click(getByTestId('send-network-filter-toggle'));
+
+      expect(getByTestId('shared-network-selection-item')).toHaveTextContent(
+        'Custom Catalog Network',
+      );
+    });
+
+    it('prefers wallet map details over token-supplied network metadata', () => {
+      const tokensWithConflictingDetails = [
+        {
+          chainId: '1',
+          networkName: 'Token Supplied Name',
+          networkImage: 'https://example.com/token.png',
+          fiat: { balance: 100 },
+        },
+      ];
+
+      const { getByText, queryByText } = render(
+        <NetworkFilter
+          tokens={tokensWithConflictingDetails}
+          nfts={[]}
+          selectedChainId="1"
+          onChainIdChange={mockOnChainIdChange}
+        />,
+      );
+
+      expect(
+        getByText(messages.networkNameEthereum.message),
+      ).toBeInTheDocument();
+      expect(queryByText('Token Supplied Name')).not.toBeInTheDocument();
     });
   });
 });

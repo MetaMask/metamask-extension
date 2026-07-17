@@ -4,7 +4,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type {
-  TransactionPayBridgeQuote,
   TransactionPayControllerState,
   TransactionPayQuote,
   TransactionPayRequiredToken,
@@ -12,7 +11,10 @@ import type {
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { merge } from 'lodash';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
+import { getManifestFlags } from '../../../../../shared/lib/manifestFlags';
+import { getIsPayAmountPrefillEnabled } from '../../../../../shared/lib/transaction/pay-prefill';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import type { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
@@ -33,6 +35,9 @@ const USE_CASE_MAP: [TransactionType[], string][] = [
   [[TransactionType.musdConversion], 'musd_conversion'],
   [[TransactionType.musdClaim], 'musd_claim'],
 ];
+
+// Pay types whose confirmations support pre-filling the amount field.
+const PREFILL_TYPES = [TransactionType.musdConversion];
 
 export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
   eventName,
@@ -100,15 +105,6 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
     const quoteIndex = quoteTransactionIds.indexOf(transactionMeta.id);
     const quote = quotes[quoteIndex];
 
-    if (quote?.strategy === TransactionPayStrategy.Bridge) {
-      const bridgeQuote = quote.original as TransactionPayBridgeQuote;
-      const metrics = bridgeQuote?.metrics;
-      properties.mm_pay_quotes_attempts = metrics?.attempts;
-      properties.mm_pay_quotes_buffer_size = metrics?.buffer;
-      properties.mm_pay_quotes_latency = metrics?.latency;
-      properties.mm_pay_bridge_provider = bridgeQuote?.quote?.bridgeId;
-    }
-
     if (
       quote &&
       quote.request?.targetTokenAddress !==
@@ -162,16 +158,61 @@ function addPayTypeProperties(
   transaction: TransactionMeta,
   transactionMetricsRequest: Pick<
     TransactionMetricsRequest,
-    'getTransactionPayData'
+    | 'getFeatureFlags'
+    | 'getTransactionPayData'
+    | 'getTransactionUIMetricsFragment'
   >,
 ) {
   const { id: transactionId, metamaskPay } = transaction;
 
-  if (
-    !metamaskPay?.chainId ||
-    !metamaskPay?.tokenAddress ||
-    properties.mm_pay
+  if (properties.mm_pay) {
+    return;
+  }
+
+  // Prefill values are recorded on the parent confirmation's UI metrics
+  // fragment. Read them from the parent here so they ride along to the
+  // executed child transactions whose events are actually emitted.
+  const fragmentProperties =
+    transactionMetricsRequest.getTransactionUIMetricsFragment(
+      transactionId,
+    )?.properties;
+
+  const prefilledAmount = fragmentProperties?.mm_pay_prefilled_amount;
+
+  if (prefilledAmount !== undefined) {
+    properties.mm_pay_prefilled_amount = prefilledAmount;
+  }
+
+  const amountInputType = fragmentProperties?.mm_pay_amount_input_type;
+
+  const prefillType = PREFILL_TYPES.find((type) =>
+    hasTransactionType(transaction, [type]),
+  );
+
+  if (amountInputType !== undefined) {
+    properties.mm_pay_amount_input_type = amountInputType;
+  } else if (
+    prefillType &&
+    getIsPayAmountPrefillEnabled(
+      {
+        // Manifest flags take precedence, matching the UI's
+        // getRemoteFeatureFlags selector.
+        remoteFeatureFlags: merge(
+          {},
+          transactionMetricsRequest.getFeatureFlags(),
+          getManifestFlags().remoteFeatureFlags,
+        ),
+      },
+      prefillType,
+    )
   ) {
+    // Transaction Added fires before the confirmation UI records the actual
+    // input type (and before a payment token is selected), so tag the
+    // experiment arm from the feature flag.
+    properties.mm_pay_amount_input_type = 'prefilled_max';
+  }
+
+  if (!metamaskPay?.chainId || !metamaskPay?.tokenAddress) {
     return;
   }
 
@@ -217,9 +258,7 @@ function addPayTypeProperties(
 
   const strategy = quotes?.[0]?.strategy;
 
-  if (strategy === TransactionPayStrategy.Bridge) {
-    properties.mm_pay_strategy = 'mm_swaps_bridge';
-  } else if (strategy === TransactionPayStrategy.Relay) {
+  if (strategy === TransactionPayStrategy.Relay) {
     properties.mm_pay_strategy = 'relay';
   }
 

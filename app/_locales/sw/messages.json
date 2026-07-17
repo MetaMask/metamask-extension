@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Unatakiwa kuchagua akaunti!"
   },
-  "addAcquiredTokens": {
-    "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
-  },
   "addAlias": {
     "message": "Ongeza jina jingine"
   },
@@ -174,9 +171,6 @@
   },
   "custom": {
     "message": "Mipangilio ya kina"
-  },
-  "customToken": {
-    "message": "Kianzio Maalumu"
   },
   "decimal": {
     "message": "Desimali za Usahihi"
@@ -330,9 +324,6 @@
   "metamaskVersion": {
     "message": "Toleo la MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Lazima uchague angalau kianzio 1."
-  },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
@@ -364,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Kamera haipatikanai"
-  },
-  "notEnoughGas": {
-    "message": "Hakuna Gesi ya Kutosha"
   },
   "ofTextNofM": {
     "message": "ya"
@@ -505,9 +493,6 @@
   },
   "sign": {
     "message": "Ingia kwenye akaunti"
-  },
-  "signatureRequest": {
-    "message": "Ombi la Saini"
   },
   "signed": {
     "message": "Imesainiwa"

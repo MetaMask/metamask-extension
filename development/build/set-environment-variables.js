@@ -2,13 +2,6 @@ const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
 
-function isProductionOrReleaseCandidateBuild(environment) {
-  return (
-    environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE
-  );
-}
-
 /**
  * Sets environment variables to inject in the current build.
  *
@@ -31,28 +24,6 @@ function setEnvironmentVariables({
   variables,
   version,
 }) {
-  const isSeedlessOnboardingEnabled =
-    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
-  const oauthClientIdOptions = {
-    buildType,
-    variables,
-    environment,
-    testing: isTestBuild,
-    development: isDevBuild,
-  };
-
-  const APPLE_CLIENT_ID = isSeedlessOnboardingEnabled
-    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'APPLE' })
-    : '';
-
-  const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
-    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
-    : '';
-
-  const TELEGRAM_CLIENT_ID = isSeedlessOnboardingEnabled
-    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
-    : '';
-
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -99,12 +70,13 @@ function setEnvironmentVariables({
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
+    QR_SYNC_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('QR_SYNC_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
-    GOOGLE_CLIENT_ID,
-    APPLE_CLIENT_ID,
-    TELEGRAM_CLIENT_ID,
+    COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
 }
 
@@ -139,15 +111,6 @@ function getBuildIcon({ buildType }) {
 function getBuildAppId({ buildType }) {
   const baseDomain = 'io.metamask';
   return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
-}
-
-function assertAndLoadEnvVar(envVarName, buildType, variables) {
-  const envVarValue = variables.get(envVarName);
-  assert(
-    typeof envVarValue === 'string' && envVarValue.length > 0,
-    `Build type "${buildType}" has improperly set ${envVarName} in builds.yml. Current value: "${envVarValue}"`,
-  );
-  return envVarValue;
 }
 
 /**
@@ -188,53 +151,6 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
-}
-
-/**
- * Get the OAuth client ID for the current build.
- *
- * @param {object} options - The OAuth client ID options.
- * @param {'APPLE' | 'GOOGLE' | 'TELEGRAM'} options.provider - The OAuth provider.
- * @param {string} options.buildType - The current build type.
- * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The current build environment.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @param {boolean} options.development - Whether this is a development build or not.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline.
- * @returns {string} The OAuth client ID.
- */
-function getOAuthClientId({
-  provider,
-  buildType,
-  variables,
-  environment,
-  testing,
-  development,
-}) {
-  const clientIdEnv = `${provider}_CLIENT_ID`;
-
-  if (isProductionOrReleaseCandidateBuild(environment)) {
-    // Production and release-candidate builds resolve the client ID indirectly so
-    // each build can point at the right secret without changing code.
-    const clientIdRef = assertAndLoadEnvVar(
-      `${clientIdEnv}_REF`,
-      buildType,
-      variables,
-    );
-    return assertAndLoadEnvVar(clientIdRef, buildType, variables);
-  }
-
-  if (testing || development) {
-    if (!variables.isDefined(clientIdEnv)) {
-      throw new Error(
-        `${clientIdEnv} is not set for seedless onboarding enabled build`,
-      );
-    }
-    return variables.get(clientIdEnv);
-  }
-
-  const envToLoad =
-    buildType === 'flask' ? `${clientIdEnv}_FLASK_UAT` : `${clientIdEnv}_UAT`;
-  return variables.get(envToLoad);
 }
 
 /**
@@ -313,5 +229,4 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
 module.exports = {
   setEnvironmentVariables,
-  getOAuthClientId,
 };

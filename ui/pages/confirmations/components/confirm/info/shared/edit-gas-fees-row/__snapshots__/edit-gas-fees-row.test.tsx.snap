@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<EditGasFeesRow /> renders component 1`] = `
+exports[`<EditGasFeesRow /> does not render added protection network fee when fiat is hidden on testnets 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    class="flex flex-col"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -42,49 +42,42 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        class="flex flex-col items-end"
       >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          data-testid="edit-gas-fee-icon"
-          style="text-decoration: none;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/edit.svg');"
-          />
-          <span
-            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-          />
-        </button>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-2"
-            class=""
-            data-original-title="0.001234"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md"
-              data-testid="native-currency"
-            >
-              $1
-            </p>
-          </div>
-        </div>
         <div
-          class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
-          data-testid="selected-gas-fee-token"
-          style="cursor: default; padding-inline-end: 6px; padding: 0px;"
+          class="flex flex-row gap-1 items-center justify-between text-center"
+          style="cursor: default;"
         >
+          <button
+            aria-label="Edit"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            data-testid="edit-gas-fee-icon"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+              />
+            </svg>
+          </button>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="first-gas-field"
+          >
+            0.001 ETH
+          </p>
           <div
-            class=""
-            data-testid="native-icon"
+            class="gap-1 items-center inline-flex"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default;"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
+              data-testid="native-icon"
             >
               <span
                 class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
@@ -92,24 +85,24 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
                 E
               </span>
             </div>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            >
+              ETH
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
-            ETH
-          </p>
         </div>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
+      class="flex flex-row justify-between px-2"
     >
       <div
-        class="mm-box"
+        class=""
         style="margin-top: 0px;"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="gas-fee-token-fee"
         >
            

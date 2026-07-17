@@ -5,7 +5,6 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import * as streamHooks from '../../../hooks/perps/stream';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,6 +16,21 @@ import {
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
+
+const mockAnalyticsTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockAnalyticsTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
@@ -76,6 +90,9 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
+    usePerpsAssetNames: jest.fn(() => ({
+      resolveAssetName: (symbol: string) => symbol,
+    })),
   };
 });
 
@@ -95,6 +112,13 @@ jest.mock('./hooks/usePerpsTabExploreData', () => ({
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+// By default the compliance gate is a passthrough (wallet not blocked): it runs
+// the wrapped action. Individual tests can override it to simulate a block.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../compliance', () => ({
+  useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
 }));
 
 jest.mock('./perps-tutorial-modal', () => ({
@@ -164,6 +188,9 @@ describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockComplianceGate.mockImplementation(async (action: () => unknown) =>
+      action(),
+    );
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
@@ -441,6 +468,24 @@ describe('PerpsView', () => {
       ).toBeInTheDocument();
     });
 
+    it('does not open the confirmation modal when the compliance gate blocks', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped action that opens the confirmation modal.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(
+        screen.queryByTestId('perps-close-all-positions-modal'),
+      ).not.toBeInTheDocument();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePositions',
+        expect.anything(),
+      );
+    });
+
     it('calls batch close after confirmation and applies a single positions snapshot', async () => {
       const clearAll = jest.fn();
       const pushPositions = jest.fn();
@@ -539,8 +584,6 @@ describe('PerpsView', () => {
     });
 
     it('shows partial toast and tracks FAILED status when some positions fail to close', async () => {
-      const mockTrackEvent = jest.fn();
-
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
           return Promise.resolve({
@@ -552,19 +595,7 @@ describe('PerpsView', () => {
         return Promise.resolve(undefined);
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider
-          value={{
-            trackEvent: mockTrackEvent,
-            bufferedTrace: jest.fn(),
-            bufferedEndTrace: jest.fn(),
-            onboardingParentContext: { current: null },
-          }}
-        >
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-close-all-positions'));
       fireEvent.click(
@@ -578,9 +609,9 @@ describe('PerpsView', () => {
         });
       });
 
-      const closeTxCalls = mockTrackEvent.mock.calls.filter(
+      const closeTxCalls = mockAnalyticsTrackEvent.mock.calls.filter(
         ([arg]) =>
-          arg?.event === MetaMetricsEventName.PerpsPositionCloseTransaction,
+          arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
       expect(closeTxCalls).toHaveLength(1);
       expect(closeTxCalls[0][0]).toEqual(
@@ -594,8 +625,6 @@ describe('PerpsView', () => {
     });
 
     it('shows failed toast and tracks FAILED status when all positions fail to close', async () => {
-      const mockTrackEvent = jest.fn();
-
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
           return Promise.resolve({
@@ -607,19 +636,7 @@ describe('PerpsView', () => {
         return Promise.resolve(undefined);
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider
-          value={{
-            trackEvent: mockTrackEvent,
-            bufferedTrace: jest.fn(),
-            bufferedEndTrace: jest.fn(),
-            onboardingParentContext: { current: null },
-          }}
-        >
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-close-all-positions'));
       fireEvent.click(
@@ -632,9 +649,9 @@ describe('PerpsView', () => {
         });
       });
 
-      const closeTxCalls = mockTrackEvent.mock.calls.filter(
+      const closeTxCalls = mockAnalyticsTrackEvent.mock.calls.filter(
         ([arg]) =>
-          arg?.event === MetaMetricsEventName.PerpsPositionCloseTransaction,
+          arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
       expect(closeTxCalls).toHaveLength(1);
       expect(closeTxCalls[0][0]).toEqual(
@@ -674,31 +691,18 @@ describe('PerpsView', () => {
 
   describe('analytics tracking', () => {
     it('fires Perp Screen Viewed with wallet_home_perps_tab screen_type once loading completes', () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
+      renderWithProvider(<PerpsView />, mockStore);
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
-
-      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
-        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      const screenViewedCalls = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
       );
 
       expect(screenViewedCalls).toHaveLength(1);
       expect(screenViewedCalls[0][0]).toEqual(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
-          category: MetaMetricsEventCategory.Perps,
+          name: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
             [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: 'wallet_home_perps_tab',
             [PERPS_EVENT_PROPERTY.OPEN_POSITION]: expect.any(Number),
             [PERPS_EVENT_PROPERTY.OPEN_ORDER]: expect.any(Number),
@@ -710,71 +714,37 @@ describe('PerpsView', () => {
     });
 
     it('does not fire Perp Screen Viewed while loading', () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: mocks.mockPositions,
         isInitialLoading: true,
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
-      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
+          name: MetaMetricsEventName.PerpsScreenViewed,
         }),
       );
     });
 
     it('does not fire Perp Screen Viewed while account data is still loading', () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       // positions/orders/markets are ready but account hasn't arrived yet
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: null,
         isInitialLoading: true,
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
-      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect(mockAnalyticsTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
+          name: MetaMetricsEventName.PerpsScreenViewed,
         }),
       );
     });
 
     it('tracks has_perp_balance when unified account funds are tradeable but not withdrawable', () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
@@ -784,16 +754,11 @@ describe('PerpsView', () => {
         isInitialLoading: false,
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
+          name: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
             [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
           }),
@@ -802,14 +767,6 @@ describe('PerpsView', () => {
     });
 
     it('reports no perp balance when withdrawableBalance is zero even if spendableBalance is positive', () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
@@ -819,16 +776,11 @@ describe('PerpsView', () => {
         isInitialLoading: false,
       });
 
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsView />
-        </MetaMetricsContext.Provider>,
-        mockStore,
-      );
+      renderWithProvider(<PerpsView />, mockStore);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
+          name: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
             [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
           }),

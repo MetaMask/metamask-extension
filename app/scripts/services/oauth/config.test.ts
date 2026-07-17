@@ -111,19 +111,38 @@ describe('loadOAuthConfig', () => {
   });
 
   describe('when the build type is beta', () => {
-    const environments = [
-      ENVIRONMENT.PRODUCTION,
-      ENVIRONMENT.RELEASE_CANDIDATE,
-      ENVIRONMENT.TESTING,
-      ENVIRONMENT.STAGING,
+    const testCases: {
+      environment: string;
+      expectedBuildTypeEnv: BuildTypeEnv;
+    }[] = [
+      {
+        environment: ENVIRONMENT.PRODUCTION,
+        expectedBuildTypeEnv: BuildTypeEnv.Beta,
+      },
+      {
+        environment: ENVIRONMENT.RELEASE_CANDIDATE,
+        expectedBuildTypeEnv: BuildTypeEnv.Beta,
+      },
+      {
+        environment: ENVIRONMENT.TESTING,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
+      {
+        environment: ENVIRONMENT.STAGING,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
+      {
+        environment: ENVIRONMENT.PULL_REQUEST,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
     ];
 
-    for (const environment of environments) {
-      it(`returns Beta when environment is ${environment}`, () => {
+    for (const { environment, expectedBuildTypeEnv } of testCases) {
+      it(`returns ${expectedBuildTypeEnv} when environment is ${environment}`, () => {
         expectOAuthConfig({
           buildType: 'beta',
           environment,
-          expectedBuildTypeEnv: BuildTypeEnv.Beta,
+          expectedBuildTypeEnv,
         });
       });
     }

@@ -9,7 +9,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -73,16 +73,16 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Close account menu using the back button
         await accountListPage.closeMultichainAccountsPage();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
 
         // Switch to Ethereum Mainnet network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
 
         // Wait for token list to refresh after network switch
-        await assetListPage.checkTokenListIsDisplayed();
+        await tokensTab.checkTokenListIsDisplayed();
 
-        await assetListPage.clickOnAsset('Ethereum');
+        await tokensTab.clickOnAsset('Ethereum');
 
         // Measure: Asset click to price chart loaded
         steps.push(
@@ -90,8 +90,8 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
             driver,
             'assetClickToPriceChart',
             async () => {
-              await assetListPage.checkPriceChartIsShown();
-              await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
+              await tokensTab.checkPriceChartIsShown();
+              await tokensTab.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
             },
           ),
         );

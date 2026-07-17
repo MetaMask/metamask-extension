@@ -7,7 +7,8 @@ import Pna25Modal from './pna25-modal';
 const storeMock = configureStore({
   metamask: {
     completedOnboarding: true,
-    participateInMetaMetrics: true,
+    optedIn: true,
+    completedMetaMetricsOnboarding: true,
     pna25Acknowledged: false,
   },
 });

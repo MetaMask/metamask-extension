@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
@@ -178,4 +178,131 @@ describe('HomeDeepLinkActions', () => {
       expectedAction();
     },
   );
+
+  it('dispatches setHomeDeepLinkQrCode for a valid predict deeplink URL', async () => {
+    const deeplinkUrl =
+      'https://link.metamask.io/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter';
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.PredictDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrPredictDescription',
+        titleKey: 'deepLinkQrPredictTitle',
+      });
+    });
+  });
+
+  it('dispatches setHomeDeepLinkQrCode for a valid batch sell deeplink URL', async () => {
+    const deeplinkUrl = 'https://link.metamask.io/batch-sell';
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.BatchSellDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrBatchSellDescription',
+        titleKey: 'deepLinkQrBatchSellTitle',
+      });
+    });
+  });
+
+  it('dispatches setHomeDeepLinkQrCode for a valid trending deeplink URL', async () => {
+    const deeplinkUrl = 'https://link.metamask.io/trending?tab=crypto';
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.TrendingDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    await waitFor(() => {
+      const qrCode = (
+        store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+      ).appState.homeDeepLinkQrCode;
+      expect(qrCode).toEqual({
+        deeplinkUrl,
+        descriptionKey: 'deepLinkQrTrendingDescription',
+        titleKey: 'deepLinkQrTrendingTitle',
+      });
+    });
+  });
+
+  it('ignores batch sell QR deeplink params that do not point to /batch-sell', () => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.BatchSellDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
+  it('ignores predict QR deeplink params that do not point to /predict', () => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.PredictDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
+  it('ignores trending QR deeplink params that do not point to /trending', () => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.TrendingDeeplinkUrl]:
+          'https://link.metamask.io/rewards?referral=ABC123',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
 });

@@ -1,4 +1,4 @@
-import type { WebcamError } from '../base-reader.types';
+import type { WebcamError } from '../base-qr-reader/base-qr-reader.types';
 import type { ScanErrorClassification } from '../qr-utils/qr-utils';
 
 /**

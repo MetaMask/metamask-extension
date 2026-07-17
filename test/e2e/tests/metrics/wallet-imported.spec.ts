@@ -29,11 +29,7 @@ describe('Wallet Created Events - Imported Account', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            participateInMetaMetrics: true,
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           return await mockSegment(server, expectedEvents);
@@ -42,7 +38,8 @@ describe('Wallet Created Events - Imported Account', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);

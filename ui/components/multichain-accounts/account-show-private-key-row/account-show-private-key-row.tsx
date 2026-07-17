@@ -22,7 +22,6 @@ import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import { AccountDetailsAuthenticate } from '../../multichain/account-details/account-details-authenticate';
 import { AccountDetailsKey } from '../../multichain/account-details/account-details-key';
-import { hideWarning } from '../../../store/actions';
 
 type AccountShowPrivateKeyRowProps = {
   account: InternalAccount;
@@ -52,7 +51,6 @@ export const AccountShowPrivateKeyRow = ({
     setShowPrivateKeyModal(false);
     setPrivateKey('');
     setShowHoldToReveal(false);
-    dispatch(hideWarning());
   };
 
   const showModal = showPrivateKeyModal && !showHoldToReveal;

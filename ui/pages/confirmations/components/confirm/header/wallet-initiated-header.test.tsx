@@ -1,11 +1,9 @@
 import React from 'react';
-import { DefaultRootState } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-
 import {
   getMockConfirmStateForTransaction,
   getMockTokenTransferConfirmState,
@@ -37,9 +35,7 @@ const getPerpsWithdrawState = () => {
   } as TransactionMeta);
 };
 
-const render = (
-  state: DefaultRootState = getMockTokenTransferConfirmState({}),
-) => {
+const render = (state = getMockTokenTransferConfirmState({})) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<WalletInitiatedHeader />, store);
 };

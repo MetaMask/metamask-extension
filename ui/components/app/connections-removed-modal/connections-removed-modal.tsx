@@ -1,17 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  Display,
   IconColor,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   Modal,
   ModalContent,
   ModalHeader,
@@ -56,7 +54,7 @@ export default function ConnectionsRemovedModal() {
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
           <Box>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box className="flex" justifyContent={BoxJustifyContent.Center}>
               <Icon
                 name={IconName.Danger}
                 size={IconSize.Xl}

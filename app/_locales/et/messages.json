@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Peate valima konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Lisage load, mis olete MetaMaskiga saanud"
-  },
   "addAlias": {
     "message": "Lisage alias"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Täpsemad"
-  },
-  "customToken": {
-    "message": "Kohandatud luba"
   },
   "decimal": {
     "message": "Täpsuse kümnendkohad"
@@ -342,9 +336,6 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "mustSelectOne": {
-    "message": "Peate valima vähemalt 1 loa."
-  },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
     "description": "User is important an account and needs to add a file to continue"
@@ -376,9 +367,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Veebikaamerat ei leitud"
-  },
-  "notEnoughGas": {
-    "message": "Ei ole piisavalt gaasi"
   },
   "ofTextNofM": {
     "message": "/"
@@ -517,9 +505,6 @@
   },
   "sign": {
     "message": "Allkirjasta"
-  },
-  "signatureRequest": {
-    "message": "Allkirja taotlus"
   },
   "signed": {
     "message": "Allkirjastatud"

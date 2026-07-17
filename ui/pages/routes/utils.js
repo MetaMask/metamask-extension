@@ -27,6 +27,8 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -254,6 +256,20 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isBatchSellPage = Boolean(
+    matchPath(
+      {
+        path: `${BATCH_SELL_ROOT_ROUTE}`,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+
+  if (isBatchSellPage) {
+    return true;
+  }
+
   const isAssetsPage = Boolean(
     matchPath(
       {
@@ -341,6 +357,20 @@ export function hideAppHeader(props) {
   );
 
   if (isReviewGatorPermissionsPage) {
+    return true;
+  }
+
+  const isSyncAccountsPage = Boolean(
+    matchPath(
+      {
+        path: SYNC_ACCOUNTS_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+
+  if (isSyncAccountsPage) {
     return true;
   }
 

@@ -23,9 +23,6 @@
   "accountSelectionRequired": {
     "message": "Ou bezwen chwazi yon kont!"
   },
-  "addAcquiredTokens": {
-    "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
-  },
   "addSuggestedTokens": {
     "message": "Ajoute Token Yo Sikjere W"
   },
@@ -107,9 +104,6 @@
   },
   "create": {
     "message": "Kreye"
-  },
-  "customToken": {
-    "message": "Koutim Token"
   },
   "decimal": {
     "message": "Presizyon desimal la"
@@ -244,9 +238,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
-  },
-  "mustSelectOne": {
-    "message": "Ou dwe chwazi omwen 1 token."
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -390,9 +381,6 @@
   },
   "sign": {
     "message": "Siyen"
-  },
-  "signatureRequest": {
-    "message": "Siyati Mande"
   },
   "signed": {
     "message": "Te Siyen"
