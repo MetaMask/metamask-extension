@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
@@ -49,12 +49,11 @@ jest.mock('../../../hooks/musd', () => ({
   useCanBuyMusd: () => mockUseCanBuyMusd(),
 }));
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
-let mockIsRampsEnabled = false;
-jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy, isRampsEnabled: mockIsRampsEnabled }),
+  default: () => ({ openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp }),
 }));
 
 // Mock useTheme
@@ -125,7 +124,6 @@ describe('MusdEducationScreen', () => {
       canBuyMusdInRegion: true,
       isLoading: false,
     });
-    mockIsRampsEnabled = false;
   });
 
   it('renders the headline with the bonus percentage', () => {
@@ -283,7 +281,7 @@ describe('MusdEducationScreen', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     expect(mockStartConversionFlow).not.toHaveBeenCalled();
-    expect(mockGoToBuy).not.toHaveBeenCalled();
+    expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------
@@ -299,7 +297,7 @@ describe('MusdEducationScreen', () => {
       });
     });
 
-    it('routes through goToBuy (mainnet) and returns home when the ramps flag is off', async () => {
+    it('shows "Buy mUSD" and opens buy flow when user can buy', () => {
       mockUseCanBuyMusd.mockReturnValue({
         canBuyMusdInRegion: true,
         isLoading: false,
@@ -312,38 +310,8 @@ describe('MusdEducationScreen', () => {
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalled();
-      // Deeplink buy branch pins the fallback chain to mainnet.
-      expect(mockGoToBuy).toHaveBeenCalledWith({
-        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-        chainId: '0x1',
-      });
-      // Flag off opens Portfolio in a new tab, so the screen returns home.
-      await waitFor(() =>
-        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE),
-      );
-      expect(mockStartConversionFlow).not.toHaveBeenCalled();
-    });
-
-    it('routes through goToBuy and stays put (in-app routing) when the ramps flag is on', async () => {
-      mockUseCanBuyMusd.mockReturnValue({
-        canBuyMusdInRegion: true,
-        isLoading: false,
-      });
-      mockIsRampsEnabled = true;
-      const store = createMockStore();
-      renderWithProvider(<MusdEducationScreen />, store);
-
-      const button = screen.getByTestId('musd-education-continue-button');
-      fireEvent.click(button);
-
-      await waitFor(() =>
-        expect(mockGoToBuy).toHaveBeenCalledWith({
-          assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-          chainId: '0x1',
-        }),
-      );
-      // goToBuy navigates in-app itself; the screen must not override it home.
-      expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
     });
 
@@ -366,7 +334,7 @@ describe('MusdEducationScreen', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
-      expect(mockGoToBuy).not.toHaveBeenCalled();
+      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
 
     it('shows "Continue" and navigates home when ramp unavailable in region', () => {
@@ -383,7 +351,7 @@ describe('MusdEducationScreen', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
-      expect(mockGoToBuy).not.toHaveBeenCalled();
+      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
   });
 
@@ -414,7 +382,7 @@ describe('MusdEducationScreen', () => {
         skipEducation: true,
         entryPoint: 'deeplink',
       });
-      expect(mockGoToBuy).not.toHaveBeenCalled();
+      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
 
     it('shows "Get started" and starts conversion flow even when user cannot buy in region', async () => {
@@ -435,7 +403,7 @@ describe('MusdEducationScreen', () => {
         skipEducation: true,
         entryPoint: 'deeplink',
       });
-      expect(mockGoToBuy).not.toHaveBeenCalled();
+      expect(mockOpenBuyCryptoInPdapp).not.toHaveBeenCalled();
     });
   });
 });

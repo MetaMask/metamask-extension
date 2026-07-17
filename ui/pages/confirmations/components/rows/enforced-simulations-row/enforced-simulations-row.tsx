@@ -27,7 +27,7 @@ import { applyTransactionContainersExisting } from '../../../../../store/actions
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
-  'https://support.metamask.io/manage-crypto/transactions/simulations/';
+  'https://support.metamask.io/privacy-and-security/staying-safe-in-web3/what-are-enforced-simulations/';
 
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

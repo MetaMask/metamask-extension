@@ -232,11 +232,7 @@ describe('NFTs options', () => {
 
     fireEvent.click(manageTokensButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
-      state: {
-        globalMenuTransition: 'forward',
-      },
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE);
   });
 
   it('navigates to the dedicated networks page from manage networks in the home modal', async () => {

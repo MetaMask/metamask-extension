@@ -1,21 +1,13 @@
-import type {
-  QrSyncSimulatorAction,
-  SimulatorParams,
-} from '../helpers/qr-sync/mobile-wallet-simulator';
-
 export type MessageType = {
   command:
     | 'openTabs'
     | 'notFound'
     | 'queryTabs'
-    | 'waitUntilWindowWithProperty'
-    | 'qrSyncSimulate';
+    | 'waitUntilWindowWithProperty';
   tabs?: chrome.tabs.Tab[];
   title?: string;
   property?: WindowProperties;
   value?: string;
-  action?: QrSyncSimulatorAction;
-  params?: SimulatorParams;
 };
 
 export type Handle = {

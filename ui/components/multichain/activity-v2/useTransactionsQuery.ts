@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
-import { useDeferredValue } from '../../../hooks/useDeferredValue';
 import { getErrorBodyMessage } from '../../../../shared/lib/error';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -69,16 +68,13 @@ function useTransactionParams(caipChainId?: CaipChainId) {
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const locale = useSelector(getIntlLocale);
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-  const deferredEnabledNetworks = useDeferredValue(enabledNetworks);
 
   const evmNetworks = useMemo(() => {
     if (caipChainId) {
       return caipChainId.startsWith('eip155:') ? [caipChainId] : [];
     }
-    return deferredEnabledNetworks.filter((id: string) =>
-      id.startsWith('eip155:'),
-    );
-  }, [deferredEnabledNetworks, caipChainId]);
+    return enabledNetworks.filter((id: string) => id.startsWith('eip155:'));
+  }, [enabledNetworks, caipChainId]);
 
   const accountAddresses = useMemo(
     () => (evmAddress ? [`eip155:0:${evmAddress}`] : []),

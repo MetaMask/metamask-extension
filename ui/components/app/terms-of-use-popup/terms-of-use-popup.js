@@ -22,7 +22,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
   BlockSize,
@@ -39,10 +39,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   const { value: isTermsOfUseChecked, toggle } = useBoolean();
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
-  const hasTrackedView = useRef(false);
 
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
@@ -85,19 +84,14 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   }, []);
 
   useEffect(() => {
-    if (hasTrackedView.current) {
-      return;
-    }
-    hasTrackedView.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TermsOfUseShown)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          location: 'Terms Of Use Popover',
-        })
-        .build(),
-    );
-  }, [createEventBuilder, trackEvent]);
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.TermsOfUseShown,
+      properties: {
+        location: 'Terms Of Use Popover',
+      },
+    });
+  }, []);
 
   return (
     <Modal

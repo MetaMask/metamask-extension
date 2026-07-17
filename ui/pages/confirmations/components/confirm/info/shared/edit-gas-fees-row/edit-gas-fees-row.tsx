@@ -24,7 +24,6 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
@@ -40,22 +39,17 @@ import { SelectedGasFeeToken } from '../selected-gas-fee-token';
 import { GasSponsorshipModal } from '../gas-sponsorship-modal';
 
 export const EditGasFeesRow = ({
-  addedProtectionFeeFiat,
-  showAddedProtectionFee,
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
   disableUpdate,
 }: {
-  addedProtectionFeeFiat?: string | null;
-  showAddedProtectionFee?: boolean;
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
   disableUpdate?: boolean;
 }) => {
   const t = useI18nContext();
-  const fiatFormatter = useFiatFormatter();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -117,13 +111,6 @@ export const EditGasFeesRow = ({
     !isGasFeeSponsored;
   const shouldShowPrimaryFiatValue =
     showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
-  // Only ever show the computed added-protection surcharge, or a $0.00
-  // placeholder when it could not be determined. Never fall back to the
-  // full network fee, which would mislabel the entire fee as the surcharge.
-  const addedProtectionFeeDisplay =
-    showFiat && showAddedProtectionFee
-      ? addedProtectionFeeFiat || fiatFormatter(0)
-      : null;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column}>
@@ -186,19 +173,6 @@ export const EditGasFeesRow = ({
                 />
               )}
             </Box>
-            {!estimationFailed &&
-              !isGasFeeSponsored &&
-              addedProtectionFeeDisplay && (
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                  data-testid="added-protection-network-fee"
-                >
-                  {t('addedProtectionIncludesNetworkFee', [
-                    addedProtectionFeeDisplay,
-                  ])}
-                </Text>
-              )}
             {isGasFeeSponsored && (
               <Text
                 variant={TextVariant.BodyXs}

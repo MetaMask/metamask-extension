@@ -11,10 +11,10 @@ import NetworkManager, {
 import { login } from '../../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../../constants';
 
-describe('Filter NFTs by network', function () {
+describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  it('displays NFTs matching the selected network filter', async function () {
+  it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -100,6 +100,7 @@ describe('Filter NFTs by network', function () {
 
         const networkManager = new NetworkManager(driver);
 
+        // Click to open the NFT details page and check title
         const homePage = new Homepage(driver);
         await homePage.goToNftTab();
 

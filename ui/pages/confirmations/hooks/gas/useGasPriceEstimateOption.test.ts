@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import {
   GasFeeEstimateType,
   TransactionEnvelopeType,
@@ -10,7 +10,6 @@ import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCa
 import { useGasPriceEstimateOption } from './useGasPriceEstimateOption';
 
 const MOCK_GAS_PRICE = '0x2540be400';
-const mockPersistGasFeePreference = jest.fn();
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -30,10 +29,6 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
 
 jest.mock('../transactions/useTransactionNativeTicker', () => ({
   useTransactionNativeTicker: () => 'ETH',
-}));
-
-jest.mock('./usePersistGasFeePreference', () => ({
-  usePersistGasFeePreference: () => mockPersistGasFeePreference,
 }));
 
 jest.mock('../../../../store/actions/update-transaction-gas-fees', () => ({
@@ -117,43 +112,5 @@ describe('useGasPriceEstimateOption', () => {
     expect(result.current[0].key).toBe('gasPrice');
     expect(result.current[0].name).toBe('networkSuggested');
     expect(result.current[0].isSelected).toBe(true);
-  });
-
-  it('persists medium when the gas price estimate option is selected', async () => {
-    const transactionMeta = {
-      id: '1',
-      chainId: '0x1',
-      networkClientId: 'mainnet',
-      userFeeLevel: 'custom',
-      gasLimitNoBuffer: '0x5208',
-      gasFeeEstimates: {
-        type: GasFeeEstimateType.GasPrice,
-        gasPrice: MOCK_GAS_PRICE,
-      },
-      txParams: {
-        from: '0xabc',
-        type: TransactionEnvelopeType.legacy,
-      },
-    };
-
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: transactionMeta,
-    } as unknown as ReturnType<typeof useConfirmContext>);
-
-    mockUseGasFeeEstimates.mockReturnValue({
-      gasFeeEstimates: { gasPrice: '10' },
-    } as unknown as ReturnType<typeof useGasFeeEstimates>);
-
-    const { result } = renderHook(() =>
-      useGasPriceEstimateOption({ handleCloseModals: mockHandleCloseModals }),
-    );
-
-    await act(async () => {
-      await result.current[0].onSelect();
-    });
-
-    expect(mockPersistGasFeePreference).toHaveBeenCalledWith(transactionMeta, {
-      userFeeLevel: 'medium',
-    });
   });
 });

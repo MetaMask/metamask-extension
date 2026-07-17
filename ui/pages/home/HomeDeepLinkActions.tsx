@@ -134,8 +134,8 @@ export const useHomeDeepLinkEffects = () => {
 
   const handleDeepLinkAction = useCallback(
     (action: (param: string) => void, param: string) => {
-      clearDeepLinkParams();
       action(param);
+      clearDeepLinkParams();
     },
     [clearDeepLinkParams],
   );

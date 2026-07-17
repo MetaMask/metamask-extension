@@ -1,4 +1,10 @@
-import React, { FormEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -28,7 +34,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextFieldSize,
@@ -95,7 +101,7 @@ export default function RevealRecoveryPhrase({
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
@@ -146,26 +152,26 @@ export default function RevealRecoveryPhrase({
       fetchSeedPhrase: () => Promise<string>,
       onFailure: (error: Error) => void,
     ) => {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.KeyExportRequested)
-          .addCategory(MetaMetricsEventCategory.Keys)
-          .addProperties(
-            getSrpExportEventProperties(hdEntropyIndex, verificationMethod),
-          )
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
+        properties: getSrpExportEventProperties(
+          hdEntropyIndex,
+          verificationMethod,
+        ),
+      });
 
       try {
         const seedPhrase = await fetchSeedPhrase();
 
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
-            .addCategory(MetaMetricsEventCategory.Keys)
-            .addProperties(
-              getSrpExportEventProperties(hdEntropyIndex, verificationMethod),
-            )
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
+          properties: getSrpExportEventProperties(
+            hdEntropyIndex,
+            verificationMethod,
+          ),
+        });
 
         setSecretRecoveryPhrase(seedPhrase);
         navigateToReviewSrp();
@@ -176,26 +182,19 @@ export default function RevealRecoveryPhrase({
             ? getPasskeyErrorCode(revealError)
             : revealError.message;
 
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.KeyExportFailed)
-            .addCategory(MetaMetricsEventCategory.Keys)
-            .addProperties(
-              getSrpExportEventProperties(hdEntropyIndex, verificationMethod, {
-                reason,
-              }),
-            )
-            .build(),
-        );
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
+          properties: getSrpExportEventProperties(
+            hdEntropyIndex,
+            verificationMethod,
+            { reason },
+          ),
+        });
         onFailure(revealError);
       }
     },
-    [
-      createEventBuilder,
-      trackEvent,
-      hdEntropyIndex,
-      setSecretRecoveryPhrase,
-      navigateToReviewSrp,
-    ],
+    [trackEvent, hdEntropyIndex, setSecretRecoveryPhrase, navigateToReviewSrp],
   );
 
   const handleRevealWithPasskey = useCallback(

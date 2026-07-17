@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -93,36 +93,28 @@ const NetworkFilter = ({
       formattedTokensForAllNetworks,
     );
 
-  const handleFilter = useCallback(
-    (chainFilters: Record<string, boolean>) => {
-      if (handleFilterNetwork) {
-        handleFilterNetwork(chainFilters);
-      } else {
-        dispatch(setEnabledNetworks(chainId));
-      }
+  const handleFilter = (chainFilters: Record<string, boolean>) => {
+    if (handleFilterNetwork) {
+      handleFilterNetwork(chainFilters);
+    } else {
+      dispatch(setEnabledNetworks(chainId));
+    }
 
-      // TODO Add metrics
-      handleClose();
-    },
-    [chainId, dispatch, handleClose, handleFilterNetwork],
-  );
+    // TODO Add metrics
+    handleClose();
+  };
 
   const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
-  const allAddedPopularNetworks = useMemo(
-    () =>
-      FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
-        (chain) => allNetworks[chain].name,
-      ),
-    [allNetworks, allOpts],
-  );
+  const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
+    (chain) => allOpts[chain],
+  ).map((chain) => {
+    return allNetworks[chain].name;
+  });
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const filter = useMemo(
-    () => networkFilter || enabledNetworksByNamespace,
-    [enabledNetworksByNamespace, networkFilter],
-  );
+  const filter = networkFilter || enabledNetworksByNamespace;
 
   return (
     <>

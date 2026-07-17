@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
@@ -47,9 +46,7 @@ const useRamps = (
 
         let numericChainId = '';
         if (isEvmChainId(_chainId)) {
-          // EVM chain ids may arrive as hex or CAIP (`eip155:1`); normalize to
-          // hex first so callers can pass whichever format they already have.
-          numericChainId = hexToNumber(formatChainIdToHex(_chainId)).toString();
+          numericChainId = hexToNumber(_chainId).toString();
         } else {
           numericChainId = _chainId;
         }

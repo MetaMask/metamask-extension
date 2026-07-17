@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -33,7 +33,7 @@ describe('AccountNetworkIndicator', () => {
     expect(container).toMatchSnapshot('account-network-indicator');
   });
 
-  it('shows the tooltip when hovered', async () => {
+  it('shows the tooltip when hovered', () => {
     const { container, getByText } = render();
 
     const tooltipTrigger = container.querySelector('[data-tooltipped]');
@@ -43,9 +43,7 @@ describe('AccountNetworkIndicator', () => {
       fireEvent.mouseEnter(tooltipTrigger);
       expect(tooltipTrigger.getAttribute('aria-describedby')).not.toBeNull();
 
-      await waitFor(() => {
-        expect(getByText(POLYGON_DISPLAY_NAME)).toBeInTheDocument();
-      });
+      expect(getByText(POLYGON_DISPLAY_NAME)).toBeInTheDocument();
       expect(getByText(BNB_DISPLAY_NAME)).toBeInTheDocument();
     }
   });

@@ -183,6 +183,11 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
 } as const;
 
+export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
+  showSmartTransactionStatusPage:
+    'smartTransaction:showSmartTransactionStatusPage',
+} as const;
+
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',

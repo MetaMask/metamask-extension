@@ -43,7 +43,7 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import {
-  getDisplaySymbol,
+  getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
   buildPerpsVipTrackingData,
@@ -289,7 +289,7 @@ export const ClosePositionModal = ({
     }
   }, [isOpen]);
 
-  const displayName = getDisplaySymbol(position.symbol);
+  const displayName = getDisplayName(position.symbol);
   const isPartialClose = closePercent < 100;
 
   const positionSize = useMemo(

@@ -27,7 +27,10 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import {
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+} from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
@@ -741,6 +744,41 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              foo: {
+                id: 'foo',
+                type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+                requestState: {
+                  txId: 'bar',
+                },
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({
+            transactions: [
+              {
+                id: 'bar',
+                chainId: '0x1',
+                txParams: {
+                  from: selectedAddress,
+                },
+              },
+            ],
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
           'TransactionController:wipeTransactions',
           jest.fn(),
         );
@@ -765,6 +803,12 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(selectedAddress);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          'foo',
+          expect.any(Error),
+        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
@@ -3645,7 +3689,6 @@ async function withService<ReturnValue>(
     getOpenMetamaskTabsIds: () => ({}),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
-    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

@@ -8,6 +8,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../../selectors/multichain';
+import { selectERC20TokensByChain } from '../../../../selectors/selectors';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
@@ -44,6 +45,8 @@ export default function Asset({
     chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
 
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
   const formattedFiat = useTokenFiatAmount(
     address ?? undefined,
     decimalTokenAmount,
@@ -63,7 +66,12 @@ export default function Asset({
       key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={image}
+      tokenImage={
+        image ??
+        cachedTokens?.[chainId]?.data?.[
+          ((address as string) ?? '').toLowerCase()
+        ]?.iconUrl
+      }
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={name ?? symbol}

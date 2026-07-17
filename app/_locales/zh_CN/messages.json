@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
+  "addDevice": {
+    "message": "与移动设备同步"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "仅当您确定可以信任此 RPC 提供商时才能添加它。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "正在导入账户"
-  },
-  "add_device_try_again": {
-    "message": "请重试"
   },
   "add_device_validating_desc": {
     "message": "正在与您的手机建立安全的加密连接。"
@@ -8129,6 +8129,9 @@
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8193,9 +8196,6 @@
   },
   "quotedTotalCost": {
     "message": "总成本：$1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "无可用代币"
   },
   "rank": {
     "message": "排名"
@@ -8408,6 +8408,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "操作已成功完成。"
+  },
+  "retryTransaction": {
+    "message": "重试交易"
   },
   "reusedTokenNameWarning": {
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
@@ -10748,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
-  },
-  "syncAccounts": {
-    "message": "与移动设备同步"
   },
   "syncing": {
     "message": "同步中……"

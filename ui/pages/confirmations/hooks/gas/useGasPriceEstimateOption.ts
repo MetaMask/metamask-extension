@@ -18,7 +18,6 @@ import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
-import { usePersistGasFeePreference } from './usePersistGasFeePreference';
 
 const HEX_ZERO = '0x0';
 
@@ -28,7 +27,6 @@ export const useGasPriceEstimateOption = ({
   handleCloseModals: () => void;
 }): GasOption[] => {
   const dispatch = useDispatch();
-  const persistGasFeePreference = usePersistGasFeePreference();
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -85,9 +83,6 @@ export const useGasPriceEstimateOption = ({
         ...gasPropertiesToUpdate,
       }),
     );
-    await persistGasFeePreference(transactionMeta, {
-      userFeeLevel: 'medium',
-    });
     handleCloseModals();
   }, [
     id,
@@ -95,8 +90,6 @@ export const useGasPriceEstimateOption = ({
     transactionEnvelopeType,
     handleCloseModals,
     dispatch,
-    persistGasFeePreference,
-    transactionMeta,
   ]);
 
   const options = useMemo((): GasOption[] => {

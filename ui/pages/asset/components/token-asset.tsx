@@ -28,19 +28,8 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-type TokenWithAssetId = Token & {
-  assetId?: string;
-};
-
-const TokenAsset = ({
-  token,
-  chainId,
-}: {
-  token: TokenWithAssetId;
-  chainId: Hex;
-}) => {
-  const { address: hexOrCaipAddress, assetId, symbol, isERC721, image } = token;
-  const address = assetId || hexOrCaipAddress;
+const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
+  const { address, symbol, isERC721, image } = token;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {

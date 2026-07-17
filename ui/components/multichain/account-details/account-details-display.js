@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -20,7 +20,7 @@ import EditableLabel from '../../ui/editable-label/editable-label';
 import { setAccountLabel } from '../../../store/actions';
 import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { shortenString } from '../../../helpers/utils/util';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -42,7 +42,7 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
@@ -65,16 +65,15 @@ export const AccountDetailsDisplay = ({
         defaultValue={accountName}
         onSubmit={(label) => {
           dispatch(setAccountLabel(address, label));
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.AccountRenamed)
-              .addCategory(MetaMetricsEventCategory.Accounts)
-              .addProperties({
-                location: 'Account Details Modal',
-                chain_id: chainId,
-                account_hardware_type: deviceName,
-              })
-              .build(),
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountRenamed,
+            properties: {
+              location: 'Account Details Modal',
+              chain_id: chainId,
+              account_hardware_type: deviceName,
+            },
+          });
         }}
         accounts={accounts}
       />

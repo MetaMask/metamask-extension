@@ -18,7 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
@@ -41,21 +41,15 @@ const AddFundsModal = ({
   payerAddress: Hex;
 }) => {
   const t = useI18nContext();
-  const { goToBuy } = useRampsNavigation();
+  const { openBuyCryptoInPdapp } = useRamps();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const { openBridgeExperience } = useBridging();
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy();
-    // The ramps gate can block the buy (e.g. service disruption, unsupported
-    // region) and show its own modal; don't report a buy click or close this
-    // modal in that case.
-    if (!opened) {
-      return;
-    }
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp();
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -72,7 +66,14 @@ const AddFundsModal = ({
         .build(),
     );
     onClose();
-  }, [chainId, onClose, goToBuy, token.symbol, createEventBuilder, trackEvent]);
+  }, [
+    chainId,
+    onClose,
+    openBuyCryptoInPdapp,
+    token.symbol,
+    createEventBuilder,
+    trackEvent,
+  ]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });

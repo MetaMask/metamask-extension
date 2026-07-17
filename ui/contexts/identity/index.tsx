@@ -38,37 +38,15 @@ export const MetamaskIdentityProvider = ({
    * - Users should be signed out if basic functionality is disabled. (see `useAutoSignOut`)
    */
   useEffect(() => {
-    let cancelled = false;
-
-    const run = async () => {
-      if (!shouldAutoSignIn || cancelled) {
-        return;
-      }
-      await autoSignIn();
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-    };
+    if (shouldAutoSignIn) {
+      autoSignIn();
+    }
   }, [shouldAutoSignIn, autoSignIn]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    const run = async () => {
-      if (!shouldAutoSignOut || cancelled) {
-        return;
-      }
-      await autoSignOut();
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-    };
+    if (shouldAutoSignOut) {
+      autoSignOut();
+    }
   }, [shouldAutoSignOut, autoSignOut]);
 
   return <>{children}</>;

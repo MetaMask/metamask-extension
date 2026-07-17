@@ -15,7 +15,7 @@ jest.mock('./approval-details', () => ({
 jest.mock('./send-details', () => ({
   SendDetails: () => <div data-testid="send-details" />,
 }));
-jest.mock('./bridge-details/bridge-details', () => ({
+jest.mock('./bridge-details', () => ({
   BridgeDetails: () => <div data-testid="bridge-details" />,
 }));
 jest.mock('./swap-details', () => ({

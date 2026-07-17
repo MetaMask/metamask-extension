@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -66,7 +67,7 @@ import {
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -76,7 +77,7 @@ import { ContactNetworks } from './contact-networks';
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const qrCodeData = useSelector(getQrCodeData);
@@ -198,12 +199,11 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
       setSelectedAddress('');
       setEnteredDomainName('');
     } else {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ContactAddQrScannerClicked)
-          .addCategory(MetaMetricsEventCategory.Contacts)
-          .addProperties({ location: 'add_contact_form' })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Contacts,
+        event: MetaMetricsEventName.ContactAddQrScannerClicked,
+        properties: { location: 'add_contact_form' },
+      });
       dispatch(showQrScanner());
     }
   };
@@ -226,19 +226,18 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         typeof selectedChainId === 'string' ? selectedChainId : '',
       ),
     );
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ContactAdded)
-        .addCategory(MetaMetricsEventCategory.Contacts)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
-        })
-        .addSensitiveProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          contact_address: newAddress,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Contacts,
+      event: MetaMetricsEventName.ContactAdded,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: typeof selectedChainId === 'string' ? selectedChainId : '',
+      },
+      sensitiveProperties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        contact_address: newAddress,
+      },
+    });
     onSuccess();
   };
 

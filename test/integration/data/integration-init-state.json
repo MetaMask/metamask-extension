@@ -88,11 +88,8 @@
   "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "userFeeLevel": "custom",
-        "maxBaseFee": "75",
-        "priorityFee": "2"
-      }
+      "maxBaseFee": "75",
+      "priorityFee": "2"
     }
   },
   "alertEnabledness": {

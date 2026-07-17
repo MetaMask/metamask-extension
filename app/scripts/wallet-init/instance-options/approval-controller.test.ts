@@ -1,5 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { getApprovalControllerInstanceOptions } from './approval-controller';
 
 describe('getApprovalControllerInstanceOptions', () => {
@@ -23,6 +24,7 @@ describe('getApprovalControllerInstanceOptions', () => {
       ApprovalType.WatchAsset,
       ApprovalType.EthGetEncryptionPublicKey,
       ApprovalType.EthDecrypt,
+      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       DIALOG_APPROVAL_TYPES.default,
     ]);
   });

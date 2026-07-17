@@ -77,27 +77,15 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
-        const destinationSymbol = destinationToken?.symbol;
-        const hasDestination = Boolean(destinationSymbol);
-        const primaryToken = hasDestination ? destinationToken : sourceToken;
-        const titleKey = hasDestination
-          ? labelKeys.title.key
-          : `activity_swapIncomplete_${activity.status}_title`;
+        const destinationSymbol = destinationToken?.symbol ?? '';
 
         return {
-          avatarTokens: hasDestination
-            ? [sourceToken?.assetId, destinationToken?.assetId]
-            : [sourceToken?.assetId],
-          title: t(
-            titleKey,
-            hasDestination ? [sourceSymbol, destinationSymbol] : [sourceSymbol],
-          ),
+          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
+          title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
           subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(primaryToken),
-          primaryDirection: primaryToken?.direction,
-          secondaryAmount: hasDestination
-            ? formatTokenAmount(sourceToken)
-            : formatAsFiat(sourceToken),
+          primaryAmount: formatTokenAmount(destinationToken),
+          primaryDirection: destinationToken?.direction,
+          secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
@@ -170,6 +158,18 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
                 secondaryAmount: formatTokenAmount(sourceToken),
               }
             : { secondaryAmount: formatAsFiat(sourceToken) }),
+        };
+      }
+      case 'swapIncomplete': {
+        const { sourceToken } = activity.data;
+
+        return {
+          avatarTokens: [sourceToken?.assetId],
+          title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key),
+          primaryAmount: formatTokenAmount(sourceToken),
+          primaryDirection: sourceToken?.direction,
+          secondaryAmount: formatAsFiat(sourceToken),
         };
       }
       case 'buy':

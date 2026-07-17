@@ -1,10 +1,16 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -20,7 +26,7 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
@@ -48,38 +54,35 @@ export const Carousel = () => {
       clickHandled = true;
     }
 
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.BannerSelect)
-        .addCategory(MetaMetricsEventCategory.Banner)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          banner_name: key,
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.BannerSelect,
+      category: MetaMetricsEventCategory.Banner,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        banner_name: key,
+      },
+    });
 
     return clickHandled;
   };
 
   const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.BannerDismissed)
-        .addCategory(MetaMetricsEventCategory.Banner)
-        .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          banner_name: slideId,
-        })
-        .build(),
-    );
+    trackEvent({
+      event: MetaMetricsEventName.BannerDismissed,
+      category: MetaMetricsEventCategory.Banner,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        banner_name: slideId,
+      },
+    });
 
     if (isLastSlide) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.BannerCloseAll)
-          .addCategory(MetaMetricsEventCategory.Banner)
-          .build(),
-      );
+      trackEvent({
+        event: MetaMetricsEventName.BannerCloseAll,
+        category: MetaMetricsEventCategory.Banner,
+      });
     }
 
     dispatch(removeSlide(slideId));
@@ -89,19 +92,18 @@ export const Carousel = () => {
     (slide: CarouselSlide) => {
       if (!displayedSlideIds.current.has(slide.id)) {
         displayedSlideIds.current.add(slide.id);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.BannerDisplay)
-            .addCategory(MetaMetricsEventCategory.Banner)
-            .addProperties({
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              banner_name: slide.id,
-            })
-            .build(),
-        );
+        trackEvent({
+          event: MetaMetricsEventName.BannerDisplay,
+          category: MetaMetricsEventCategory.Banner,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            banner_name: slide.id,
+          },
+        });
       }
     },
-    [createEventBuilder, trackEvent],
+    [trackEvent],
   );
 
   if (!isCarouselEnabled) {

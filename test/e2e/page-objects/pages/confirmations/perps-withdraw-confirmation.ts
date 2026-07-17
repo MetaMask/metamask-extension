@@ -44,6 +44,10 @@ export class PerpsWithdrawConfirmation {
 
   private readonly receiveRow = { testId: 'receive-row' };
 
+  private readonly successToast = {
+    testId: 'perps-withdraw-success-toast',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -139,7 +143,10 @@ export class PerpsWithdrawConfirmation {
 
   async waitForSuccessToast(): Promise<void> {
     await this.driver.waitForSelector(
-      { text: tEn('perpsWithdrawPostQuoteToastSuccessTitle') },
+      {
+        ...this.successToast,
+        text: tEn('perpsWithdrawPostQuoteToastSuccessTitle'),
+      },
       { timeout: QUOTE_READY_TIMEOUT },
     );
   }

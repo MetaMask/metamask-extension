@@ -144,23 +144,6 @@ describe('useRamps', () => {
     expect(buyURI).toBe(mockBuyURI);
   });
 
-  it('should handle EVM chain IDs passed in CAIP format', () => {
-    const metaMaskEntry = 'ext_buy_sell_button';
-    const caipChainId = 'eip155:1';
-    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
-    mockStoreState = {
-      ...mockStoreState,
-      metamask: {
-        ...mockStoreState.metamask,
-        ...mockNetworkState({ chainId: '0x1' }),
-      },
-    };
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=1&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
-    const { result } = renderHook(() => useRamps(), { wrapper });
-    const buyURI = result.current.getBuyURI(caipChainId);
-    expect(buyURI).toBe(mockBuyURI);
-  });
-
   it('should handle non-EVM chain IDs correctly (like Bitcoin)', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
     const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';

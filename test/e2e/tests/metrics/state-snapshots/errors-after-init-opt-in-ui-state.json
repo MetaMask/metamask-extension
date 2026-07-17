@@ -144,6 +144,7 @@
     "dismissSeedBackUpReminder": false,
     "domains": "object",
     "drafts": "object",
+    "enableMV3TimestampSave": true,
     "enabledNetworkMap": {
       "bip122": "object",
       "eip155": "object",

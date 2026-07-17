@@ -6,15 +6,20 @@ import {
   useMusdConversionConfirmTrace,
   useMusdConversionToastStatus,
 } from '../../../hooks/musd';
-import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
+import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 import { TransactionEventToastListener } from './transaction-event-toast-listener';
 
-// Carried over from custom mUSD toasts. Should move telemetry out of toasts into a more appropriate location.
-const MusdTelemetry = () => {
+const PerpsWithdrawTransactionToastListener = () => {
+  usePerpsWithdrawTransactionToasts();
+
+  return null;
+};
+
+// Carried over from MusdConversionToast. Should move telemetry out of toasts into a more appropriate location.
+const MusdConversionTelemetry = () => {
   const { activeTransactionId } = useMusdConversionToastStatus();
   useMusdConversionConfirmTrace(activeTransactionId ?? '');
-  useMerklClaimStatus();
   return null;
 };
 
@@ -29,7 +34,8 @@ export function ToastListener() {
   return (
     <>
       {isUnlocked ? <PerpsDepositToast /> : null}
-      <MusdTelemetry />
+      <PerpsWithdrawTransactionToastListener />
+      <MusdConversionTelemetry />
       <TransactionEventToastListener />
     </>
   );

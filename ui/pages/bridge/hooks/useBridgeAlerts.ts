@@ -1,6 +1,5 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -8,7 +7,6 @@ import {
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
-  getFromChain,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -18,7 +16,7 @@ import { BannerAlertSeverity } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
@@ -67,8 +65,7 @@ export const useBridgeAlerts = () => {
   } = useAssetSecurityData(toToken);
 
   const { txAlert } = useSecurityAlerts(toToken);
-  const { goToBuy } = useRampsNavigation();
-  const fromChain = useSelector(getFromChain);
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
 
@@ -214,14 +211,7 @@ export const useBridgeAlerts = () => {
         bannerAlertProps: {
           severity: BannerAlertSeverity.Danger,
           actionButtonLabel: t('buyMoreAsset', [ticker]),
-          // Pre-select the source chain's native gas token so the buy flow
-          // lands on build-quote for it; chainId also drives the flag-off
-          // Portfolio fallback.
-          actionButtonOnClick: () =>
-            goToBuy({
-              assetId: getNativeAssetId(fromChain?.chainId),
-              chainId: fromChain?.chainId,
-            }),
+          actionButtonOnClick: () => openBuyCryptoInPdapp(),
         },
       });
     }
@@ -317,8 +307,7 @@ export const useBridgeAlerts = () => {
     isSwap,
     insufficientNativeReserveError,
     dispatch,
-    goToBuy,
-    fromChain,
+    openBuyCryptoInPdapp,
     ticker,
     toToken,
     assetIsMalicious,

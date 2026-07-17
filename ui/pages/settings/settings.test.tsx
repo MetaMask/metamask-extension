@@ -88,7 +88,9 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      await screen.findByTestId('settings-tab-item-preferences-and-display');
+      expect(
+        await screen.findByText(messages.theme.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -107,7 +109,9 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      await screen.findByTestId('settings-tab-item-preferences-and-display');
+      expect(
+        await screen.findByText(messages.theme.message),
+      ).toBeInTheDocument();
     });
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {

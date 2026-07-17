@@ -17,7 +17,7 @@ module.exports = function (api) {
           `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
-        plugins: [['babel-plugin-react-compiler', { target: '18' }]],
+        plugins: [['babel-plugin-react-compiler', { target: '17' }]],
       },
     ],
     plugins: [

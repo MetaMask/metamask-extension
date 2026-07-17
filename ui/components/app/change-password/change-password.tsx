@@ -1,5 +1,11 @@
 import EventEmitter from 'events';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -58,7 +64,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -94,7 +100,7 @@ const ChangePassword = ({
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyActive = useIsPasskeyActive();
   const isPasskeyIncompatibleWithSidepanel =
@@ -163,17 +169,16 @@ const ChangePassword = ({
     }
 
     const startedAt = Date.now();
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: 'started',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_renewal_enabled: isPasskeyRenewalEnabled,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasswordChangeWithPasskey,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        status: 'started',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        passkey_renewal_enabled: isPasskeyRenewalEnabled,
+      },
+    });
 
     let isPasskeyRenewed = false;
     try {
@@ -186,36 +191,34 @@ const ChangePassword = ({
       );
       isPasskeyRenewed = isPasskeyRenewalEnabled;
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            passkey_renewal_enabled: isPasskeyRenewalEnabled,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+        },
+      });
     } catch (error) {
       const errorCode = getPasskeyErrorCode(error);
       const durationMs = Date.now() - startedAt;
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            status: 'failed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            passkey_renewal_enabled: isPasskeyRenewalEnabled,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-            reason: errorCode,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'failed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: durationMs,
+          reason: errorCode,
+        },
+      });
 
       captureException(
         createSentryError(
@@ -270,16 +273,15 @@ const ChangePassword = ({
       }
 
       // Track password changed event
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasswordChanged)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            biometrics_enabled: isPasskeyRenewalSuccessful,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChanged,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: isPasskeyRenewalSuccessful,
+        },
+      });
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
@@ -305,16 +307,15 @@ const ChangePassword = ({
 
   const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          text: 'Learn More',
-          location: 'change_password',
-          url: ZENDESK_URLS.PASSWORD_ARTICLE,
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'change_password',
+        url: ZENDESK_URLS.PASSWORD_ARTICLE,
+      },
+    });
   };
 
   const createPasswordLink = (

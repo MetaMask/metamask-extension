@@ -53,9 +53,6 @@ class SettingsPage {
   private readonly backupAndSyncSettingsButton =
     '[data-testid="settings-tab-item-backup-and-sync"]';
 
-  private readonly syncAccountsSettingsButton =
-    '[data-testid="settings-tab-item-sync-accounts"]';
-
   private readonly showNativeTokenAsMainBalanceToggleLabel = {
     xpath:
       "//label[contains(@class,'toggle-button')][.//*[@data-testid='show-native-token-as-main-balance']]",
@@ -268,10 +265,6 @@ class SettingsPage {
   async goToBackupAndSyncSettings(): Promise<void> {
     console.log('Navigating to Backup & Sync Settings page');
     await this.driver.clickElement(this.backupAndSyncSettingsButton);
-  }
-
-  async goToSyncAccountsSettings(): Promise<void> {
-    await this.driver.clickElement(this.syncAccountsSettingsButton);
   }
 
   async goToTransactionsSettings(): Promise<void> {

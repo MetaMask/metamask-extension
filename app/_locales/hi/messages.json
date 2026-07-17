@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "एक कस्टम टोकन जोड़ें"
   },
+  "addDevice": {
+    "message": "मोबाइल के साथ सिंक करें"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "अकाउंट इंपोर्ट किए जा रहे हैं"
-  },
-  "add_device_try_again": {
-    "message": "फिर से प्रयास करें"
   },
   "add_device_validating_desc": {
     "message": "आपके फ़ोन के साथ एक सुरक्षित, एन्क्रिप्टेड कनेक्शन बनाया जा रहा है।"
@@ -8129,6 +8129,9 @@
     "message": "$1सेकंड में एक्स्पायर होगा",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "QR कोड स्कैन करते समय कुछ गड़बड़ हो गई। दोबारा कोशिश करने के लिए नया QR कोड जेनरेट करें।"
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "यह QR कोड किसी दूसरे ट्रांसेक्शन के लिए है। इसे कैंसिल करें और दोबारा कोशिश करें, और दोबारा कोशिश करने से पहले सुनिश्चित करें कि आप अपने हार्डवेयर वॉलेट से MetaMask में दिखाए गए QR कोड को पहले स्कैन करें।",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8193,9 +8196,6 @@
   },
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "कोई टोकन उपलब्ध नहीं है"
   },
   "rank": {
     "message": "रैंक"
@@ -8408,6 +8408,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "परिचालन सफलतापूर्वक पूरा हुआ।"
+  },
+  "retryTransaction": {
+    "message": "ट्रांसेक्शन का फिर से कोशिश करें"
   },
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
@@ -10748,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
-  },
-  "syncAccounts": {
-    "message": "मोबाइल के साथ सिंक करें"
   },
   "syncing": {
     "message": "सिंक किया जा रहा है..."

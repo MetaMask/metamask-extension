@@ -200,6 +200,7 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
+      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "string",
@@ -319,5 +320,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 218 }
+  "meta": { "storageKind": "split", "version": 216 }
 }

@@ -44,7 +44,7 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplaySymbol, formatOrderType } from '../utils';
+import { getDisplayName, formatOrderType } from '../utils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -86,7 +86,7 @@ export const CancelOrderModal = ({
     }
   }, [isOpen]);
 
-  const displayName = getDisplaySymbol(order.symbol);
+  const displayName = getDisplayName(order.symbol);
   const isBuy = order.side === 'buy';
 
   const formattedDate = useMemo(() => {

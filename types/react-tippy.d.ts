@@ -16,19 +16,14 @@ declare module 'react-tippy' {
     | 'right'
     | 'right-start'
     | 'right-end';
-  export type Trigger =
-    | 'mouseenter'
-    | 'focus'
-    | 'click'
-    | 'manual'
-    | (string & {});
+  export type Trigger = 'mouseenter' | 'focus' | 'click' | 'manual';
   export type Animation = 'shift' | 'perspective' | 'fade' | 'scale' | 'none';
   export type Size = 'small' | 'regular' | 'big';
-  export type Theme = 'dark' | 'light' | 'transparent' | (string & {});
+  export type Theme = 'dark' | 'light' | 'transparent';
 
   export type TooltipProps = {
     children?: React.ReactNode;
-    title?: string | null;
+    title?: string;
     disabled?: boolean;
     open?: boolean;
     useContext?: boolean;
@@ -67,10 +62,8 @@ declare module 'react-tippy' {
     stickyDuration?: boolean;
     beforeShown?: () => void;
     shown?: () => void;
-    onShown?: (instance?: { popper?: Element }) => void;
     beforeHidden?: () => void;
     hidden?: () => void;
-    onHidden?: () => void;
     theme?: Theme;
     className?: string;
     style?: React.CSSProperties;

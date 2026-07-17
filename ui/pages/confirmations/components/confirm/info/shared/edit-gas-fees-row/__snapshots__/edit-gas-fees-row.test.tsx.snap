@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<EditGasFeesRow /> does not render added protection network fee when fiat is hidden on testnets 1`] = `
+exports[`<EditGasFeesRow /> renders component 1`] = `
 <div>
   <div
     class="flex flex-col"
@@ -64,12 +64,23 @@ exports[`<EditGasFeesRow /> does not render added protection network fee when fi
               />
             </svg>
           </button>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            data-testid="first-gas-field"
-          >
-            0.001 ETH
-          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="0.001234"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                data-testid="native-currency"
+              >
+                $1
+              </p>
+            </div>
+          </div>
           <div
             class="gap-1 items-center inline-flex"
             data-testid="selected-gas-fee-token"

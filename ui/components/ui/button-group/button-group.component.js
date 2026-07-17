@@ -1,51 +1,94 @@
-import React, { useEffect, useState } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
-function ButtonGroup({
-  className = 'button-group',
-  defaultActiveButtonIndex = 0,
-  variant = 'default',
-  noButtonActiveByDefault,
-  children,
-  disabled,
-  style,
-  newActiveButtonIndex,
-}) {
-  const [activeButtonIndex, setActiveButtonIndex] = useState(() =>
-    noButtonActiveByDefault ? null : defaultActiveButtonIndex,
-  );
+export default class ButtonGroup extends PureComponent {
+  static propTypes = {
+    /**
+     * change button active order
+     */
+    defaultActiveButtonIndex: PropTypes.number,
+    /**
+     * no button are active before clicked by the user
+     */
+    noButtonActiveByDefault: PropTypes.bool,
+    /**
+     * disabling every button inside button group
+     */
+    disabled: PropTypes.bool,
+    /**
+     * Children must be an array of button components
+     */
+    children: PropTypes.array,
+    /**
+     * Adds a className to the root div of the of the ButtonGroup component
+     */
+    className: PropTypes.string,
+    /**
+     * adding style for button group component
+     */
+    style: PropTypes.object,
+    /**
+     * updating value of active button in button group component
+     */
+    newActiveButtonIndex: PropTypes.number,
+    /**
+     * options for rendering type of button, consist of 'default' and 'radiogroup'
+     */
+    variant: PropTypes.oneOf(['radiogroup', 'default']),
+  };
 
-  useEffect(() => {
+  static defaultProps = {
+    className: 'button-group',
+    defaultActiveButtonIndex: 0,
+    variant: 'default',
+  };
+
+  state = {
+    activeButtonIndex: this.props.noButtonActiveByDefault
+      ? null
+      : this.props.defaultActiveButtonIndex,
+  };
+
+  componentDidUpdate(_, prevState) {
+    // Provides an API for dynamically updating the activeButtonIndex
     if (
-      typeof newActiveButtonIndex === 'number' &&
-      activeButtonIndex !== newActiveButtonIndex
+      typeof this.props.newActiveButtonIndex === 'number' &&
+      prevState.activeButtonIndex !== this.props.newActiveButtonIndex
     ) {
-      setActiveButtonIndex(newActiveButtonIndex);
+      this.setState({ activeButtonIndex: this.props.newActiveButtonIndex });
     }
-  }, [newActiveButtonIndex, activeButtonIndex]);
+  }
 
-  const renderButtons = () =>
-    React.Children.map(children, (child, index) => {
+  handleButtonClick(activeButtonIndex) {
+    this.setState({ activeButtonIndex });
+  }
+
+  renderButtons() {
+    const { children, disabled, variant } = this.props;
+
+    return React.Children.map(children, (child, index) => {
       return (
         child && (
           <button
             role={variant === 'radiogroup' ? 'radio' : undefined}
-            aria-checked={index === activeButtonIndex}
+            aria-checked={index === this.state.activeButtonIndex}
             className={classnames(
               variant === 'radiogroup'
                 ? 'radio-button-group__button'
                 : 'button-group__button',
               child.props.className,
               {
-                'button-group__button--active': index === activeButtonIndex,
+                'button-group__button--active':
+                  index === this.state.activeButtonIndex,
                 'radio-button-group__button--active':
-                  variant === 'radiogroup' && index === activeButtonIndex,
+                  variant === 'radiogroup' &&
+                  index === this.state.activeButtonIndex,
               },
             )}
             data-testid={`button-group__button${index}`}
             onClick={() => {
-              setActiveButtonIndex(index);
+              this.handleButtonClick(index);
               child.props.onClick?.();
             }}
             disabled={disabled || child.props.disabled}
@@ -56,29 +99,21 @@ function ButtonGroup({
         )
       );
     });
+  }
 
-  return (
-    <div
-      className={classnames(className, {
-        'radio-button-group': variant === 'radiogroup',
-      })}
-      role={variant === 'radiogroup' ? 'radiogroup' : undefined}
-      style={style}
-    >
-      {renderButtons()}
-    </div>
-  );
+  render() {
+    const { className, style, variant } = this.props;
+
+    return (
+      <div
+        className={classnames(className, {
+          'radio-button-group': variant === 'radiogroup',
+        })}
+        role={variant === 'radiogroup' ? 'radiogroup' : undefined}
+        style={style}
+      >
+        {this.renderButtons()}
+      </div>
+    );
+  }
 }
-
-ButtonGroup.propTypes = {
-  defaultActiveButtonIndex: PropTypes.number,
-  noButtonActiveByDefault: PropTypes.bool,
-  disabled: PropTypes.bool,
-  children: PropTypes.array,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  newActiveButtonIndex: PropTypes.number,
-  variant: PropTypes.oneOf(['radiogroup', 'default']),
-};
-
-export default ButtonGroup;

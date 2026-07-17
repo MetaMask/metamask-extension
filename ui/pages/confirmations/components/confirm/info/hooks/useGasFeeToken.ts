@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import {
   BatchTransactionParams,
@@ -80,34 +79,20 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
     chainId,
   );
 
-  const transferTransaction = useMemo(
-    () =>
-      tokenAddress === NATIVE_TOKEN_ADDRESS
-        ? getNativeTransferTransaction(gasFeeToken)
-        : getTokenTransferTransaction(gasFeeToken),
-    [tokenAddress, gasFeeToken],
-  );
+  const transferTransaction =
+    tokenAddress === NATIVE_TOKEN_ADDRESS
+      ? getNativeTransferTransaction(gasFeeToken)
+      : getTokenTransferTransaction(gasFeeToken);
 
-  return useMemo(
-    () => ({
-      ...gasFeeToken,
-      amountFormatted,
-      amountFiat,
-      balanceFiat,
-      metaMaskFee,
-      metamaskFeeFiat,
-      transferTransaction,
-    }),
-    [
-      gasFeeToken,
-      amountFormatted,
-      amountFiat,
-      balanceFiat,
-      metaMaskFee,
-      metamaskFeeFiat,
-      transferTransaction,
-    ],
-  );
+  return {
+    ...gasFeeToken,
+    amountFormatted,
+    amountFiat,
+    balanceFiat,
+    metaMaskFee,
+    metamaskFeeFiat,
+    transferTransaction,
+  };
 }
 
 export function useSelectedGasFeeToken() {
@@ -132,39 +117,26 @@ function useNativeGasFeeToken(): GasFeeToken {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const selectBalance = useMemo(
-    () => (state: unknown) =>
-      selectTransactionAvailableBalance(state, transactionId, chainId),
-    [transactionId, chainId],
+  const balance = useSelector((state) =>
+    selectTransactionAvailableBalance(state, transactionId, chainId),
   );
-  const balance = useSelector(selectBalance);
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
-  return useMemo(
-    () => ({
-      amount: estimatedFeeNativeHex,
-      balance,
-      decimals: 18,
-      gas: gas as Hex,
-      gasTransfer: '0x0',
-      maxFeePerGas: maxFeePerGas as Hex,
-      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
-      rateWei: RATE_WEI_NATIVE,
-      recipient: NATIVE_TOKEN_ADDRESS,
-      symbol: nativeCurrencySymbol,
-      tokenAddress: NATIVE_TOKEN_ADDRESS,
-    }),
-    [
-      estimatedFeeNativeHex,
-      balance,
-      gas,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      nativeCurrencySymbol,
-    ],
-  );
+  return {
+    amount: estimatedFeeNativeHex,
+    balance,
+    decimals: 18,
+    gas: gas as Hex,
+    gasTransfer: '0x0',
+    maxFeePerGas: maxFeePerGas as Hex,
+    maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+    rateWei: RATE_WEI_NATIVE,
+    recipient: NATIVE_TOKEN_ADDRESS,
+    symbol: nativeCurrencySymbol,
+    tokenAddress: NATIVE_TOKEN_ADDRESS,
+  };
 }
 
 function useFiatTokenValue(

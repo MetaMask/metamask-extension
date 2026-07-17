@@ -1,7 +1,5 @@
 export const QR_SYNC_CONTROLLER_NAME = 'QrSyncController' as const;
 
-export const QR_SYNC_DATA_SERVICE_NAME = 'QrSyncDataService' as const;
-
 export const RELAY_URL =
   'wss://mm-sdk-relay.api.cx.metamask.io/connection/websocket';
 
@@ -89,6 +87,8 @@ export const QrSyncConnectionStatus = {
 } as const;
 
 export const QrSyncErrorMessages = {
+  SYNC_FAILED_TO_INITIALIZE: 'Failed to initialize the sync session',
+  SYNC_FAILED_TO_CREATE_SESSION: 'Failed to create the sync session',
   SYNC_COMPLETION_TIMED_OUT: 'Sync completion timed out',
   SYNC_COMPLETION_FAILED: 'Sync completion failed',
   SYNC_OFFER_TIMED_OUT: 'Sync offer timed out',
@@ -97,9 +97,7 @@ export const QrSyncErrorMessages = {
   SYNC_SESSION_ENDED_BEFORE_SYNC_OFFER: 'Sync session ended before sync offer',
   SYNC_SESSION_ENCOUNTERED_ERROR: 'The sync session encountered an error.',
   OTP_VALIDATION_FAILED: 'Failed to validate OTP',
-  OTP_EXPIRED: 'OTP expired.',
   SYNC_SESSION_CANCELLED_BY_PEER: 'Sync session cancelled by peer',
   SYNC_FAILED_TO_SEND_MESSAGE: 'Failed to send message to mobile wallet client',
   PREMATURE_SYNC_OFFER_RECEIVED: 'Premature sync offer received',
-  UNKNOWN: 'Unknown error',
 } as const;

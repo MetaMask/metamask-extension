@@ -899,38 +899,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withNetworkControllerOnPulseChain(): this {
-    const pulseChainId = '0x171';
-    const pulseChainClientId = 'pulsechain';
-
-    return this.withNetworkController({
-      selectedNetworkClientId: pulseChainClientId,
-      networkConfigurationsByChainId: {
-        [pulseChainId]: {
-          blockExplorerUrls: ['https://scan.pulsechain.com'],
-          chainId: pulseChainId,
-          defaultBlockExplorerUrlIndex: 0,
-          defaultRpcEndpointIndex: 0,
-          name: 'PulseChain',
-          nativeCurrency: 'PLS',
-          rpcEndpoints: [
-            {
-              networkClientId: pulseChainClientId,
-              type: RpcEndpointType.Custom,
-              url: 'https://rpc.pulsechain.com',
-            },
-          ],
-        },
-      },
-      networksMetadata: {
-        [pulseChainClientId]: {
-          EIPS: {},
-          status: NetworkStatus.Available,
-        },
-      },
-    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
-  }
-
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
   withNetworkControllerOnSei(): this {
     const seiChainId = '0x531';

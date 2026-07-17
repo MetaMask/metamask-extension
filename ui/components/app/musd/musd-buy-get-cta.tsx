@@ -9,7 +9,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { CaipAssetType, Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -28,6 +28,7 @@ import {
   BadgeWrapper,
 } from '../../component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
+import type { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,10 +45,9 @@ import {
   getImageForChainId,
 } from '../../../selectors/multichain';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { ASSET_CELL_HEIGHT } from '../assets/constants';
 import {
-  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
@@ -92,7 +92,7 @@ export const MusdBuyGetCta = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const { defaultPaymentToken } = useMusdConversionTokens();
-  const { goToBuy } = useRampsNavigation();
+  const { openBuyCryptoInPdapp } = useRamps();
 
   // Get network configuration for icon
   const networkConfigurationsByChainId = useSelector(
@@ -161,18 +161,7 @@ export const MusdBuyGetCta = ({
     );
 
     if (variant === BuyGetMusdCtaVariant.BUY) {
-      const buyChainId = selectedChainId ?? MUSD_CONVERSION_DEFAULT_CHAIN_ID;
-      goToBuy({
-        // Pre-select mUSD so the in-app flow lands on build-quote instead of
-        // the token-selection page. Fall back to mainnet mUSD when the current
-        // chain has no mUSD route. chainId is only used for the flag-off
-        // Portfolio fallback.
-        assetId: (getMusdAssetIdForChain(buyChainId) ??
-          getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID)) as
-          | CaipAssetType
-          | undefined,
-        chainId: selectedChainId ?? undefined,
-      });
+      openBuyCryptoInPdapp((selectedChainId as ChainId) ?? undefined);
     } else if (variant === BuyGetMusdCtaVariant.GET) {
       if (!defaultPaymentToken) {
         console.error(
@@ -196,7 +185,7 @@ export const MusdBuyGetCta = ({
     educationSeen,
     createEventBuilder,
     trackEvent,
-    goToBuy,
+    openBuyCryptoInPdapp,
     startConversionFlow,
     defaultPaymentToken,
   ]);

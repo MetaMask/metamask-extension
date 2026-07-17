@@ -106,29 +106,6 @@ describe('TokenAsset', () => {
       queryByRole('img', { name: messages.networkNameEthereum.message }),
     ).not.toBeInTheDocument();
   });
-
-  it('hides balances when hideBalances is true', () => {
-    const { container, queryByText } = render(
-      <Asset asset={mockTokenAsset} hideBalances />,
-    );
-
-    expect(queryByText('$100.00')).not.toBeInTheDocument();
-    expect(queryByText('10.5 TEST')).not.toBeInTheDocument();
-    expect(container).toMatchSnapshot();
-  });
-
-  it('does not call onClick when token is disabled', () => {
-    const mockOnClick = jest.fn();
-    const { getByTestId } = render(
-      <Asset
-        asset={{ ...mockTokenAsset, disabled: true }}
-        onClick={mockOnClick}
-      />,
-    );
-
-    fireEvent.click(getByTestId('token-asset-0x1-TEST'));
-    expect(mockOnClick).not.toHaveBeenCalled();
-  });
 });
 
 describe('NFTAsset', () => {

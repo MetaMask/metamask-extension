@@ -69,14 +69,6 @@ import {
   useRedirectAfterDefaultPage,
 } from './useHomeRedirects';
 
-/** Survives StrictMode remounts within the same extension session. */
-let hasLookupSelectedNetworksRun = false;
-
-/** @internal */
-export function resetLookupSelectedNetworksForTesting(): void {
-  hasLookupSelectedNetworksRun = false;
-}
-
 function useHomeState() {
   const forgottenPassword = useSelector(
     (state: MetaMaskReduxState) => state.metamask.forgottenPassword,
@@ -196,22 +188,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (hasLookupSelectedNetworksRun) {
-      return () => {
-        // no-op
-      };
-    }
-
-    hasLookupSelectedNetworksRun = true;
     lookupSelectedNetworksAction();
-
-    return () => {
-      // Reset on the next tick so React 18 StrictMode's immediate unmount/remount
-      // sequence still dedupes the effect, while genuine later mounts can re-run it.
-      setTimeout(() => {
-        hasLookupSelectedNetworksRun = false;
-      }, 0);
-    };
   }, [lookupSelectedNetworksAction]);
 
   const onSupportLinkClick = useCallback(() => {

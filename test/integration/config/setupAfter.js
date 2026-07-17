@@ -24,34 +24,6 @@ jestPreviewConfigure({
   publicFolder: 'test/integration/config/assets', // No need to configure if `publicFolder` is `public`
 });
 
-// Prevent Rive WASM (RuntimeLoader.awaitInstance) from blocking act() under
-// React 18. The loader's awaitInstance() never resolves in a Jest/jsdom
-// environment, causing async tests to hang until timeout.
-// We keep the RuntimeLoader object so existing guards (typeof RuntimeLoader ===
-// 'undefined') continue to work, but override awaitInstance to resolve
-// immediately so act() can settle.
-jest.mock('@rive-app/react-canvas', () => {
-  const actual = jest.requireActual('@rive-app/react-canvas');
-
-  return {
-    ...actual,
-    RuntimeLoader: {
-      ...(actual.RuntimeLoader ?? {}),
-      // Ensure act() can settle in jsdom
-      awaitInstance: () => Promise.resolve(),
-      loadRuntime: () => Promise.resolve(),
-      getInstance: () => undefined,
-      callBackQueue: [],
-      wasmURL: '',
-      // Allow wasmBinary to be set (used by RiveWasmProvider)
-      get wasmBinary() {
-        return undefined;
-      },
-      set wasmBinary(_v) {},
-    },
-  };
-});
-
 // Mock Pay-related components to avoid importing large dependency trees
 // These components are not used by existing integration tests
 jest.mock(

@@ -1983,7 +1983,7 @@
       "packages": {
         "gulp-sourcemaps>debug-fabulous>debug": true,
         "gulp-sourcemaps>debug-fabulous>memoizee": true,
-        "gulp-watch>object-assign": true
+        "react>object-assign": true
       }
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": {
@@ -3410,7 +3410,7 @@
         "chokidar": true,
         "gulp-watch>fancy-log": true,
         "eslint>glob-parent": true,
-        "gulp-watch>object-assign": true,
+        "react>object-assign": true,
         "gulp-watch>path-is-absolute": true,
         "gulp-zip>plugin-error": true,
         "gulp-watch>readable-stream": true,
@@ -4526,7 +4526,7 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "gulp-watch>object-assign": true,
+        "react>object-assign": true,
         "prop-types>react-is": true
       }
     },
@@ -6720,7 +6720,7 @@
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
-        "gulp-watch>object-assign": true,
+        "react>object-assign": true,
         "mockttp>express>qs": true
       }
     },

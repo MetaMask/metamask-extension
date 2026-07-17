@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -6,7 +6,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useEnableMetametrics,
   useDisableMetametrics,
@@ -35,7 +35,7 @@ const MetametricsToggle = ({
   fromDefaultSettings?: boolean;
 }) => {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
   const { disableMetametrics, error: disableMetametricsError } =
@@ -52,42 +52,39 @@ const MetametricsToggle = ({
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
     if (isParticipated) {
       await enableMetametrics();
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.TurnOnMetaMetrics)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            isProfileSyncingEnabled: isBackupAndSyncEnabled,
-            participateInMetaMetrics: isOptedIn,
-            location: fromDefaultSettings ? 'Default Settings' : 'Settings',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TurnOnMetaMetrics,
+        properties: {
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
+          participateInMetaMetrics: isOptedIn,
+          location: fromDefaultSettings ? 'Default Settings' : 'Settings',
+        },
+      });
     } else {
       // disable data collection for marketing if participate in meta metrics is set to false
       if (dataCollectionForMarketing) {
         await setDataCollectionForMarketing(false);
       }
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            isProfileSyncingEnabled: isBackupAndSyncEnabled,
-            participateInMetaMetrics: isOptedIn,
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TurnOffMetaMetrics,
+        properties: {
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
+          participateInMetaMetrics: isOptedIn,
+        },
+      });
 
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            location: 'Settings',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
+          location: 'Settings',
+        },
+      });
 
       await disableMetametrics();
     }

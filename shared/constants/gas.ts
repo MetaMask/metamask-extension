@@ -154,15 +154,3 @@ export type TxGasFees = {
   /** Estimate level user selected. */
   userFeeLevel: string;
 };
-
-export type AdvancedGasFeePreferences = {
-  userFeeLevel: string;
-  maxBaseFee?: string;
-  priorityFee?: string;
-  gasPrice?: string;
-};
-
-export type AdvancedGasFeePreferencesByChain = Record<
-  string,
-  Record<string, AdvancedGasFeePreferences>
->;

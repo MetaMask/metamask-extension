@@ -39,7 +39,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 218,
+      "currentMigrationVersion": 216,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -2046,6 +2046,7 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
+      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -2316,6 +2317,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 218
+    "version": 216
   }
 }

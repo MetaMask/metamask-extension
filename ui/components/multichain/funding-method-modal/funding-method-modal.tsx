@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId } from '@metamask/utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Modal,
@@ -19,8 +19,9 @@ import {
   getMultichainCurrentNetwork,
   getMultichainDefaultToken,
 } from '../../../selectors/multichain';
-import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
-import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import useRamps, {
+  RampsMetaMaskEntry,
+} from '../../../hooks/ramps/useRamps/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getAnalyticsId,
@@ -30,6 +31,7 @@ import {
   getSelectedAccount,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ChainId } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -52,7 +54,7 @@ export const FundingMethodModal = ({
 }: FundingMethodModalProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { goToBuy } = useRampsNavigation();
+  const { openBuyCryptoInPdapp } = useRamps();
   const { address: accountAddress } = useSelector(getSelectedAccount);
   const { chainId } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
@@ -102,13 +104,7 @@ export const FundingMethodModal = ({
     createEventBuilder,
   ]);
 
-  const handleBuyCryptoClick = useCallback(async () => {
-    const opened = await goToBuy({ chainId: chainId as Hex | CaipChainId });
-    // The ramps gate can block the buy (e.g. service disruption, unsupported
-    // region) and show its own modal; don't report a buy click in that case.
-    if (!opened) {
-      return;
-    }
+  const handleBuyCryptoClick = useCallback(() => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -124,7 +120,8 @@ export const FundingMethodModal = ({
         })
         .build(),
     );
-  }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy]);
+    openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
+  }, [chainId, symbol, trackEvent, createEventBuilder, openBuyCryptoInPdapp]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>

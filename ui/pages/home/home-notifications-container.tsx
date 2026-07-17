@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
@@ -47,16 +47,6 @@ import type { MetaMaskReduxState } from '../../store/store';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
-/** Survives StrictMode remounts within the same extension session. */
-const activatedNewNetworkConfigurationIds = new Set<string>();
-let lastPendingNetworkConfigurationId = '';
-
-/** @internal */
-export function resetActivatedNewNetworkConfigurationIdsForTesting(): void {
-  activatedNewNetworkConfigurationIds.clear();
-  lastPendingNetworkConfigurationId = '';
-}
-
 /**
  * Self-contained container for all home-page banner notifications.
  * Reads state from Redux, owns the new-network activation effect, and manages
@@ -79,53 +69,38 @@ export const HomeNotificationsContainer = memo(function () {
   const infuraBlocked = useSelector(getInfuraBlocked);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
-  // Computed once: these values do not depend on Redux state.
-  const isBrowserDeprecated = useMemo(() => getIsBrowserDeprecated(), []);
-  const isPopupEnvironment = useMemo(
-    () => getEnvironmentType() === ENVIRONMENT_TYPE_POPUP,
-    [],
+  const showOutdatedBrowserWarning = useSelector(
+    (state: MetaMaskReduxState) =>
+      getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
   );
-
-  const showOutdatedBrowserWarningRaw = useSelector(
-    getShowOutdatedBrowserWarning,
-  );
-  const showOutdatedBrowserWarning =
-    isBrowserDeprecated && showOutdatedBrowserWarningRaw;
 
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const seedPhraseReminderSelector = useMemo(
-    () => (state: MetaMaskReduxState) =>
-      selectedAccount
-        ? getShouldShowSeedPhraseReminder(state, selectedAccount)
-        : false,
-    [selectedAccount],
+  const shouldShowSeedPhraseReminder = useSelector(
+    (state: MetaMaskReduxState) => {
+      const account = getSelectedInternalAccount(state);
+      return account ? getShouldShowSeedPhraseReminder(state, account) : false;
+    },
   );
-  const shouldShowSeedPhraseReminder = useSelector(seedPhraseReminderSelector);
 
-  const web3ShimUsageAlertEnabled = useSelector(
-    getWeb3ShimUsageAlertEnabledness,
-  );
-  const hasActiveTabPermissions = useSelector(activeTabHasPermissions);
-  const web3ShimUsageStateForOrigin = useSelector((state: MetaMaskReduxState) =>
-    originOfCurrentTab
-      ? getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab)
-      : undefined,
-  );
-  const shouldShowWeb3ShimUsageNotification = useMemo(
-    () =>
-      isPopupEnvironment &&
-      web3ShimUsageAlertEnabled &&
-      hasActiveTabPermissions &&
-      web3ShimUsageStateForOrigin === Web3ShimUsageAlertStates.recorded,
-    [
-      isPopupEnvironment,
-      web3ShimUsageAlertEnabled,
-      hasActiveTabPermissions,
-      web3ShimUsageStateForOrigin,
-    ],
+  const shouldShowWeb3ShimUsageNotification = useSelector(
+    (state: MetaMaskReduxState) => {
+      if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+        return false;
+      }
+      if (!getWeb3ShimUsageAlertEnabledness(state)) {
+        return false;
+      }
+      if (!activeTabHasPermissions(state)) {
+        return false;
+      }
+      const origin = getOriginOfCurrentTab(state);
+      return (
+        getWeb3ShimUsageStateForOrigin(state, origin) ===
+        Web3ShimUsageAlertStates.recorded
+      );
+    },
   );
 
   const clearNewNetworkAdded = useCallback(
@@ -160,44 +135,29 @@ export const HomeNotificationsContainer = memo(function () {
   }, [dispatch]);
 
   // When a new network is added, activate it and clear the pending flag.
+  const prevNetworkConfigIdRef = useRef(newNetworkAddedConfigurationId);
   useEffect(() => {
-    if (!newNetworkAddedConfigurationId) {
-      if (lastPendingNetworkConfigurationId) {
-        activatedNewNetworkConfigurationIds.delete(
-          lastPendingNetworkConfigurationId,
-        );
-        lastPendingNetworkConfigurationId = '';
-      }
-      return;
+    const prev = prevNetworkConfigIdRef.current;
+    prevNetworkConfigIdRef.current = newNetworkAddedConfigurationId;
+    if (
+      newNetworkAddedConfigurationId &&
+      prev !== newNetworkAddedConfigurationId
+    ) {
+      dispatch(setActiveNetwork(newNetworkAddedConfigurationId));
+      clearNewNetworkAdded();
     }
-
-    const configurationId = newNetworkAddedConfigurationId;
-    lastPendingNetworkConfigurationId = configurationId;
-    clearNewNetworkAdded();
-
-    if (activatedNewNetworkConfigurationIds.has(configurationId)) {
-      return;
-    }
-
-    activatedNewNetworkConfigurationIds.add(configurationId);
-    dispatch(setActiveNetwork(configurationId));
   }, [newNetworkAddedConfigurationId, dispatch, clearNewNetworkAdded]);
 
-  const outdatedBrowserDescription = useMemo(
-    () =>
-      // isMv3ButOffscreenDocIsMissing is a build-time constant — no need in deps
-      isMv3ButOffscreenDocIsMissing ? (
-        <div>
-          <Text>{t('outdatedBrowserNotification')}</Text>
-          <br />
-          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
-            {t('noHardwareWalletOrSnapsSupport')}
-          </Text>
-        </div>
-      ) : (
-        t('outdatedBrowserNotification')
-      ),
-    [t],
+  const outdatedBrowserDescription = isMv3ButOffscreenDocIsMissing ? (
+    <div>
+      <Text>{t('outdatedBrowserNotification')}</Text>
+      <br />
+      <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
+        {t('noHardwareWalletOrSnapsSupport')}
+      </Text>
+    </div>
+  ) : (
+    t('outdatedBrowserNotification')
   );
 
   const notificationItems = [
