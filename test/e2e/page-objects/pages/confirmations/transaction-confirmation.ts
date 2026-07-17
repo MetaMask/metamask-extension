@@ -45,7 +45,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="edit-gas-fee-item-custom"]';
 
   private readonly gasFeeCloseToastMessage: RawLocator =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly gasFeeEstimate = (amount: string): RawLocator => ({
     text: amount,

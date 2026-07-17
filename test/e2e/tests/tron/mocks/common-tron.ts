@@ -400,9 +400,8 @@ export async function createStatefulTronAccountMock(
       return {
         statusCode: 200,
         json: {
-          code: 'TRANSACTION_EXPIRATION_ERROR',
+          result: true,
           txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
-          message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
         },
       };
     });

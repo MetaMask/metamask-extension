@@ -41,9 +41,11 @@ type TokenAssetProps = AssetRowProps & {
 
 const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
   const nftData = asset;
-  const { collection, name, tokenId, image, standard, balance } = nftData;
+  const { collection, name, tokenId, image, standard, balance, disabled } =
+    nftData;
 
   const nftItemSrc = useNftImageUrl(image as string);
+  const handleClick = disabled ? undefined : onClick;
 
   // Calculate ERC1155 display text
   let erc1155Text = null;
@@ -64,11 +66,12 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
       className="send-asset"
       data-testid="nft-asset"
       display={Display.Flex}
-      onClick={onClick}
+      onClick={handleClick}
       paddingTop={3}
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
       <Box marginRight={4} display={Display.Flex} style={{ minWidth: 32 }}>
         <BadgeWrapper
