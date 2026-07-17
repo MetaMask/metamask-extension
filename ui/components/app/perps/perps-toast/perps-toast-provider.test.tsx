@@ -4,11 +4,17 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { toast, Toaster } from '../../../ui/toast/toast';
 import {
   PerpsToastProvider,
   PERPS_TOAST_KEYS,
   usePerpsToast,
 } from './perps-toast-provider';
+
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment-type'),
+  isInteractiveUI: () => true,
+}));
 
 const ToastHarness = () => {
   const { replacePerpsToast, replacePerpsToastByKey, hidePerpsToast } =
@@ -210,11 +216,18 @@ const expectSuccessToastIcon = () => {
 };
 
 const expectPerpsToastLayout = () => {
-  expect(screen.getByTestId('perps-toast-banner-base')).toHaveClass(
-    'perps-toast',
-  );
-  expect(screen.getByTestId('perps-toast')).toHaveClass('items-center');
+  expect(screen.getByTestId('perps-toast')).toBeInTheDocument();
 };
+
+function renderPerpsToastProvider() {
+  return renderWithProvider(
+    <PerpsToastProvider>
+      <ToastHarness />
+      <Toaster />
+    </PerpsToastProvider>,
+    getStore(),
+  );
+}
 
 const expectLoadingToastIcon = () => {
   const loadingIcon = screen.getByTestId('perps-toast-icon-loading');
@@ -244,15 +257,11 @@ const expectErrorAvatarToastIcon = () => {
 describe('PerpsToastProvider', () => {
   afterEach(() => {
     jest.useRealTimers();
+    toast.remove();
   });
 
   it('shows and hides a toast from context actions', () => {
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
     expect(screen.getByText('Submitting order...')).toBeInTheDocument();
@@ -262,12 +271,7 @@ describe('PerpsToastProvider', () => {
   });
 
   it('replaces the currently visible toast', () => {
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
     expect(screen.getByText('Submitting order...')).toBeInTheDocument();
@@ -280,12 +284,7 @@ describe('PerpsToastProvider', () => {
   it('auto-hides success toasts', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Success' }));
     expect(screen.getByText('Successful trade!')).toBeInTheDocument();
@@ -300,12 +299,7 @@ describe('PerpsToastProvider', () => {
   it('maps order submitted key to info variant without auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Info' }));
     expect(
@@ -326,12 +320,7 @@ describe('PerpsToastProvider', () => {
   it('maps trade success key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Key Success' }));
     expect(
@@ -352,12 +341,7 @@ describe('PerpsToastProvider', () => {
   it('maps order placed key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Placed' }),
@@ -379,12 +363,7 @@ describe('PerpsToastProvider', () => {
   it('maps order filled key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Filled' }),
@@ -406,12 +385,7 @@ describe('PerpsToastProvider', () => {
   it('maps order failed key to error variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Order Failed' }),
@@ -433,12 +407,7 @@ describe('PerpsToastProvider', () => {
   it('maps close failed key to avatar warning error variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Close Failed' }),
@@ -460,12 +429,7 @@ describe('PerpsToastProvider', () => {
   it('maps partial close in-progress key to info variant without auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', {
@@ -489,12 +453,7 @@ describe('PerpsToastProvider', () => {
   it('maps partial close success key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Partial Close Success' }),
@@ -516,12 +475,7 @@ describe('PerpsToastProvider', () => {
   it('maps partial close failed key to avatar warning error variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Partial Close Failed' }),
@@ -543,12 +497,7 @@ describe('PerpsToastProvider', () => {
   it('maps update failed key to avatar warning error variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Update Failed' }),
@@ -570,12 +519,7 @@ describe('PerpsToastProvider', () => {
   it('maps margin add success key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Add Success' }),
@@ -597,12 +541,7 @@ describe('PerpsToastProvider', () => {
   it('maps margin remove success key to success variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Remove Success' }),
@@ -624,12 +563,7 @@ describe('PerpsToastProvider', () => {
   it('maps margin adjustment failed key to error variant with auto-hide', () => {
     jest.useFakeTimers();
 
-    renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+    renderPerpsToastProvider();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Show Key Margin Adjustment Failed' }),
@@ -649,22 +583,12 @@ describe('PerpsToastProvider', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the toast via portal to document.body, not inside the provider subtree', () => {
-    const { container } = renderWithProvider(
-      <PerpsToastProvider>
-        <ToastHarness />
-      </PerpsToastProvider>,
-      getStore(),
-    );
+  it('renders the toast via the shared Toaster component', () => {
+    renderPerpsToastProvider();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
 
     expect(screen.getByText('Submitting order...')).toBeInTheDocument();
-    expect(
-      container.querySelector('[data-testid="perps-toast"]'),
-    ).not.toBeInTheDocument();
-    expect(
-      document.body.querySelector('[data-testid="perps-toast"]'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-toast')).toBeInTheDocument();
   });
 });

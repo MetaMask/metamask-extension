@@ -11,17 +11,20 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { selectPerpsLastWithdrawResult } from '../../../selectors/perps-controller';
-import { Toast } from '../../multichain/toast';
+import { useToaster } from 'react-hot-toast';
+import { toast } from '../../ui/toast/toast';
 
-/**
- * Home-screen toast for Perps withdrawal completion.
- *
- * `PerpsController` sets `lastWithdrawResult` when `withdraw` finishes; the
- * withdraw page navigates here on success so users see confirmation after leaving
- * the flow. Dismissal clears controller state via `perpsClearWithdrawResult`.
- */
+const TOAST_ID = 'perps-withdraw-toast';
+const TOAST_DURATION = 5 * SECOND;
+
+const clearWithdrawResult = () =>
+  submitRequestToBackground('perpsClearWithdrawResult', []).catch(
+    () => undefined,
+  );
+
 export function PerpsWithdrawToast() {
   const t = useI18nContext();
+  const { toasts } = useToaster();
   const { formatCurrency } = useFormatters();
   const lastWithdrawResult = useSelector(selectPerpsLastWithdrawResult);
   const [dismissed, setDismissed] = useState(false);
@@ -32,57 +35,72 @@ export function PerpsWithdrawToast() {
 
   const dismissToast = useCallback(() => {
     setDismissed(true);
-    submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
-      // Non-blocking: toast is already dismissed locally
-    });
+    clearWithdrawResult();
   }, []);
 
-  const autoHideDelay = 5 * SECOND;
+  useEffect(() => {
+    if (dismissed || !lastWithdrawResult) {
+      toast.remove(TOAST_ID);
+      return undefined;
+    }
 
-  if (dismissed || !lastWithdrawResult) {
-    return null;
-  }
+    const isSuccess = lastWithdrawResult.success === true;
+    const amountNum = parseFloat(lastWithdrawResult.amount);
+    const amountLabel = Number.isFinite(amountNum)
+      ? formatCurrency(amountNum, 'USD')
+      : lastWithdrawResult.amount;
 
-  const isSuccess = lastWithdrawResult.success === true;
-  const amountNum = parseFloat(lastWithdrawResult.amount);
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatCurrency(amountNum, 'USD')
-    : lastWithdrawResult.amount;
+    const title = isSuccess
+      ? t('perpsWithdrawToastSuccessTitle')
+      : t('perpsWithdrawToastErrorTitle');
 
-  const toastText = isSuccess
-    ? t('perpsWithdrawToastSuccessTitle')
-    : t('perpsWithdrawToastErrorTitle');
+    const description = isSuccess
+      ? t('perpsWithdrawToastSuccessDescription', [amountLabel])
+      : lastWithdrawResult.error || t('perpsWithdrawFailed');
 
-  const description = isSuccess
-    ? t('perpsWithdrawToastSuccessDescription', [amountLabel])
-    : lastWithdrawResult.error || t('perpsWithdrawFailed');
+    const content = {
+      title,
+      description,
+      id: TOAST_ID,
+    };
+    const options = {
+      duration: TOAST_DURATION,
+      removeDelay: 0,
+      icon: isSuccess ? (
+        <DsIcon
+          name={DsIconName.Confirmation}
+          color={DsIconColor.SuccessDefault}
+          size={DsIconSize.Lg}
+        />
+      ) : (
+        <DsIcon
+          name={DsIconName.CircleX}
+          color={DsIconColor.ErrorDefault}
+          size={DsIconSize.Lg}
+        />
+      ),
+    };
 
-  const startAdornment = isSuccess ? (
-    <DsIcon
-      name={DsIconName.Confirmation}
-      color={DsIconColor.SuccessDefault}
-      size={DsIconSize.Lg}
-    />
-  ) : (
-    <DsIcon
-      name={DsIconName.CircleX}
-      color={DsIconColor.ErrorDefault}
-      size={DsIconSize.Lg}
-    />
-  );
+    if (isSuccess) {
+      toast.success(content, options);
+    } else {
+      toast.error(content, options);
+    }
 
-  return (
-    <Toast
-      key={`perps-withdraw-toast-${lastWithdrawResult.timestamp}`}
-      dataTestId="perps-withdraw-toast"
-      className="perps-toast self-center w-full max-w-[408px]"
-      contentProps={{ className: 'items-center' }}
-      text={toastText}
-      description={description}
-      startAdornment={startAdornment}
-      onClose={dismissToast}
-      autoHideTime={autoHideDelay}
-      onAutoHideToast={dismissToast}
-    />
-  );
+    const timeoutId = setTimeout(dismissToast, TOAST_DURATION);
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.remove(TOAST_ID);
+    };
+  }, [dismissed, dismissToast, formatCurrency, lastWithdrawResult, t]);
+
+  useEffect(() => {
+    const item = toasts.find((entry) => entry.id === TOAST_ID);
+    if (!dismissed && lastWithdrawResult && item?.dismissed) {
+      dismissToast();
+    }
+  }, [dismissToast, dismissed, lastWithdrawResult, toasts]);
+
+  return null;
 }

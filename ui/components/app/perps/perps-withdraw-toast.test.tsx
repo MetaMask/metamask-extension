@@ -6,7 +6,13 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { toast, Toaster } from '../../ui/toast/toast';
 import { PerpsWithdrawToast } from './perps-withdraw-toast';
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  isInteractiveUI: () => true,
+}));
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
@@ -16,7 +22,21 @@ const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
 >;
 
+function renderToast(store: ReturnType<typeof configureStore>) {
+  return renderWithProvider(
+    <>
+      <PerpsWithdrawToast />
+      <Toaster />
+    </>,
+    store,
+  );
+}
+
 describe('PerpsWithdrawToast', () => {
+  afterEach(() => {
+    toast.remove();
+  });
+
   const baseResult = {
     amount: '50',
     asset: 'USDC',
@@ -34,7 +54,7 @@ describe('PerpsWithdrawToast', () => {
       },
     });
 
-    renderWithProvider(<PerpsWithdrawToast />, store);
+    renderToast(store);
 
     expect(screen.getByTestId('perps-withdraw-toast')).toBeInTheDocument();
     expect(
@@ -51,7 +71,7 @@ describe('PerpsWithdrawToast', () => {
       },
     });
 
-    renderWithProvider(<PerpsWithdrawToast />, store);
+    renderToast(store);
 
     await user.click(
       screen.getByRole('button', { name: messages.close.message }),
@@ -68,7 +88,7 @@ describe('PerpsWithdrawToast', () => {
       },
     });
 
-    renderWithProvider(<PerpsWithdrawToast />, store);
+    renderToast(store);
 
     expect(
       screen.queryByTestId('perps-withdraw-toast'),

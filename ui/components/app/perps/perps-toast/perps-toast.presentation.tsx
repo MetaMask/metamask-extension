@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactElement } from 'react';
 import {
   AvatarIcon,
   AvatarIconSeverity,
@@ -140,7 +140,7 @@ export const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
 
 export const getPerpsToastIcon = ({
   icon,
-}: PerpsToastPresentation): ReactNode => {
+}: PerpsToastPresentation): ReactElement => {
   if (icon.type === 'spinner') {
     return (
       <Box
