@@ -1,15 +1,56 @@
+import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { isSnapId } from '@metamask/snaps-utils';
-
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  validateSwitchEthereumChainParams,
   switchChain,
+  validateSwitchEthereumChainParams,
+  type SwitchChainHooks,
 } from './ethereum-chain-utils';
 
-/** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} SwitchEthereumChainHandler */
+type SwitchEthereumChainParams = [
+  {
+    chainId: string;
+  },
+];
 
-/** @type {SwitchEthereumChainHandler} */
+export type SwitchEthereumChainRequest = {
+  origin: string;
+  params?: SwitchEthereumChainParams;
+};
+
+export type SwitchEthereumChainHooks = Pick<
+  SwitchChainHooks,
+  | 'getCaveat'
+  | 'getEnabledNetworks'
+  | 'hasApprovalRequestsForOrigin'
+  | 'rejectApprovalRequestsForOrigin'
+  | 'requestPermittedChainsPermissionIncrementalForOrigin'
+  | 'requestUserApproval'
+  | 'setActiveNetwork'
+  | 'setEnabledNetworks'
+  | 'setTokenNetworkFilter'
+> & {
+  getCurrentChainIdForDomain: (origin: string) => string;
+  getNetworkConfigurationByChainId: (
+    chainId: string,
+  ) => NetworkConfiguration | undefined;
+};
+
+type SwitchEthereumChainConstraint = MethodHandler<
+  SwitchEthereumChainHooks,
+  never,
+  SwitchEthereumChainParams,
+  null,
+  { origin: string }
+>;
+
 export const switchEthereumChainHandler = {
   implementation: switchEthereumChainImplementation,
   hookNames: {
@@ -25,9 +66,8 @@ export const switchEthereumChainHandler = {
     getEnabledNetworks: true,
     hasApprovalRequestsForOrigin: true,
   },
-};
+} satisfies SwitchEthereumChainConstraint;
 
-/** @type {Record<MESSAGE_TYPE['SWITCH_ETHEREUM_CHAIN'], SwitchEthereumChainHandler>} */
 const switchEthereumChainHandlers = {
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChainHandler,
 };
@@ -35,10 +75,10 @@ const switchEthereumChainHandlers = {
 export default switchEthereumChainHandlers;
 
 async function switchEthereumChainImplementation(
-  req,
-  res,
-  _next,
-  end,
+  req: SwitchEthereumChainRequest,
+  res: PendingJsonRpcResponse<null>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
@@ -51,13 +91,13 @@ async function switchEthereumChainImplementation(
     setEnabledNetworks,
     getEnabledNetworks,
     hasApprovalRequestsForOrigin,
-  },
-) {
+  }: SwitchEthereumChainHooks,
+): Promise<void> {
   let chainId;
   try {
     chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
-    return end(error);
+    return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
   }
 
   const { origin } = req;
@@ -72,7 +112,7 @@ async function switchEthereumChainImplementation(
   const networkClientIdToSwitchTo =
     networkConfigurationForRequestedChainId?.rpcEndpoints[
       networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
-    ].networkClientId;
+    ]?.networkClientId;
 
   if (!networkClientIdToSwitchTo) {
     return end(

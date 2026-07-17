@@ -1,3 +1,4 @@
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import * as Multichain from '@metamask/chain-agnostic-permission';
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
@@ -24,8 +25,8 @@ describe('Ethereum Chain Utils', () => {
       rejectApprovalRequestsForOrigin: jest.fn(),
       requestUserApproval: jest.fn(),
       hasApprovalRequestsForOrigin: jest.fn(),
-      toNetworkConfiguration: {},
-      fromNetworkConfiguration: {},
+      toNetworkConfiguration: {} as NetworkConfiguration,
+      fromNetworkConfiguration: {} as NetworkConfiguration,
       ...mks,
     };
     const response: { result?: true } = {};

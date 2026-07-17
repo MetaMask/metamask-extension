@@ -1,3 +1,5 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
@@ -5,7 +7,11 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   isPrefixedFormattedHexString,
@@ -14,7 +20,74 @@ import {
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
 
-export function validateChainId(chainId) {
+type SwitchEthereumChainParams = {
+  chainId: string;
+};
+
+type AddEthereumChainNativeCurrency = {
+  decimals: number;
+  symbol: string;
+};
+
+type AddEthereumChainParameter = {
+  blockExplorerUrls?: string[];
+  chainId: string;
+  chainName: string;
+  iconUrls?: string[];
+  nativeCurrency: AddEthereumChainNativeCurrency | null;
+  rpcUrls: string[];
+};
+
+type RequestPermittedChainsPermissionIncrementalArgs = {
+  autoApprove?: boolean;
+  chainId: string;
+  metadata?: {
+    isSwitchEthereumChain: true;
+  };
+};
+
+type Caip25Caveat = {
+  value: Parameters<typeof getPermittedEthChainIds>[0];
+};
+
+type RequestUserApprovalArgs = {
+  origin?: string;
+  requestData: Record<string, unknown>;
+  type: (typeof ApprovalType)[keyof typeof ApprovalType];
+};
+
+export type SwitchChainHooks = {
+  autoApprove?: boolean;
+  fromNetworkConfiguration?: NetworkConfiguration;
+  getCaveat: (args: {
+    caveatType: typeof Caip25CaveatType;
+    target: typeof Caip25EndowmentPermissionName;
+  }) => Caip25Caveat | null | undefined;
+  getEnabledNetworks: (namespace: string) => Record<string, unknown>;
+  hasApprovalRequestsForOrigin?: () => boolean;
+  isAddFlow?: boolean;
+  isSwitchFlow?: boolean;
+  origin?: string;
+  rejectApprovalRequestsForOrigin?: () => void;
+  requestPermittedChainsPermissionIncrementalForOrigin: (
+    args: RequestPermittedChainsPermissionIncrementalArgs,
+  ) => Promise<unknown>;
+  requestUserApproval?: (args: RequestUserApprovalArgs) => Promise<unknown>;
+  setActiveNetwork: (networkClientId: string) => Promise<unknown> | void;
+  setEnabledNetworks: (chainId: string) => void;
+  setTokenNetworkFilter: (chainId: string) => void;
+  toNetworkConfiguration?: NetworkConfiguration;
+};
+
+export type ValidatedAddEthereumChainParams = {
+  chainId: Hex;
+  chainName: string;
+  firstValidBlockExplorerUrl: string | null;
+  firstValidRPCUrl: string;
+  ticker: string;
+};
+
+export function validateChainId(chainId: unknown): Hex {
   const lowercasedChainId =
     typeof chainId === 'string' ? chainId.toLowerCase() : null;
   if (!isPrefixedFormattedHexString(lowercasedChainId)) {
@@ -23,16 +96,20 @@ export function validateChainId(chainId) {
     });
   }
 
-  if (!isSafeChainId(parseInt(chainId, 16))) {
+  const validatedChainId = lowercasedChainId as string;
+
+  if (!isSafeChainId(parseInt(validatedChainId, 16))) {
     throw rpcErrors.invalidParams({
       message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
 
-  return lowercasedChainId;
+  return validatedChainId as Hex;
 }
 
-export function validateSwitchEthereumChainParams(req) {
+export function validateSwitchEthereumChainParams(req: {
+  params?: [SwitchEthereumChainParams] | unknown[];
+}): Hex {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -40,7 +117,9 @@ export function validateSwitchEthereumChainParams(req) {
       )}`,
     });
   }
-  const { chainId, ...otherParams } = req.params[0];
+
+  const { chainId, ...otherParams } = req
+    .params[0] as SwitchEthereumChainParams & Record<string, unknown>;
 
   if (Object.keys(otherParams).length > 0) {
     throw rpcErrors.invalidParams({
@@ -53,7 +132,9 @@ export function validateSwitchEthereumChainParams(req) {
   return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params) {
+export function validateAddEthereumChainParams(
+  params: unknown,
+): ValidatedAddEthereumChainParams {
   if (!params || typeof params !== 'object') {
     throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -69,11 +150,10 @@ export function validateAddEthereumChainParams(params) {
     nativeCurrency,
     rpcUrls,
     ...otherParams
-  } = params;
+  } = params as AddEthereumChainParameter & Record<string, unknown>;
 
   const otherKeys = Object.keys(otherParams).filter(
-    // iconUrls is a valid optional but not currently used parameter
-    (v) => !['iconUrls'].includes(v),
+    (value) => !['iconUrls'].includes(value),
   );
 
   if (otherKeys.length > 0) {
@@ -82,14 +162,14 @@ export function validateAddEthereumChainParams(params) {
     });
   }
 
-  const _chainId = validateChainId(chainId);
+  const validatedChainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
-  const isLocalhostOrHttps = (urlString) => {
+  const isLocalhostOrHttps = (urlString: string): boolean => {
     const url = getValidUrl(urlString);
     return (
       url !== null &&
@@ -101,9 +181,9 @@ export function validateAddEthereumChainParams(params) {
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
   const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
-    ? blockExplorerUrls.find((blockExplorerUrl) =>
+    ? (blockExplorerUrls.find((blockExplorerUrl) =>
         isLocalhostOrHttps(blockExplorerUrl),
-      )
+      ) ?? null)
     : null;
 
   if (!firstValidRPCUrl) {
@@ -118,7 +198,7 @@ export function validateAddEthereumChainParams(params) {
     });
   }
 
-  const _chainName =
+  const validatedChainName =
     chainName.length > 100 ? chainName.substring(0, 100) : chainName;
 
   if (nativeCurrency !== null) {
@@ -151,8 +231,8 @@ export function validateAddEthereumChainParams(params) {
   }
 
   return {
-    chainId: _chainId,
-    chainName: _chainName,
+    chainId: validatedChainId,
+    chainName: validatedChainName,
     firstValidBlockExplorerUrl,
     firstValidRPCUrl,
     ticker,
@@ -165,31 +245,16 @@ export function validateAddEthereumChainParams(params) {
  *
  * @param response - The JSON RPC request's response object.
  * @param end - The JSON RPC request's end callback.
- * @param {string} chainId - The chainId being switched to.
- * @param {string} networkClientId - The network client being switched to.
- * @param {object} hooks - The hooks object.
- * @param {string} hooks.origin - The origin sending this request.
- * @param {boolean} hooks.isAddFlow - Variable to check if its add flow.
- * @param {boolean} hooks.isSwitchFlow - Variable to check if its switch flow.
- * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
- * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
- * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
- * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
- * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
- * @param {Function} hooks.setEnabledNetworks - The callback to set the enabled networks.
- * @param {Function} hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
- * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
- * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
- * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
- * @param {object} hooks.toNetworkConfiguration - Network configutation of network switching to.
- * @param {object} hooks.fromNetworkConfiguration - Network configutation of network switching from.
- * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
+ * @param chainId - The chainId being switched to.
+ * @param networkClientId - The network client being switched to.
+ * @param hooks - The hooks object.
+ * @returns A null response on success or an error on failure.
  */
 export async function switchChain(
-  response,
-  end,
-  chainId,
-  networkClientId,
+  response: { result?: unknown },
+  end: JsonRpcEngineEndCallback,
+  chainId: string,
+  networkClientId: string,
   {
     origin,
     isAddFlow,
@@ -206,8 +271,8 @@ export async function switchChain(
     hasApprovalRequestsForOrigin,
     toNetworkConfiguration,
     fromNetworkConfiguration,
-  },
-) {
+  }: SwitchChainHooks,
+): Promise<void> {
   try {
     const caip25Caveat = getCaveat({
       target: Caip25EndowmentPermissionName,
@@ -217,8 +282,8 @@ export async function switchChain(
     if (caip25Caveat) {
       const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
-      if (!ethChainIds.includes(chainId)) {
-        let metadata;
+      if (!ethChainIds.includes(chainId as Hex)) {
+        let metadata: RequestPermittedChainsPermissionIncrementalArgs['metadata'];
         if (isSwitchFlow) {
           metadata = {
             isSwitchEthereumChain: true,
@@ -234,7 +299,7 @@ export async function switchChain(
         !isAddFlow &&
         !autoApprove
       ) {
-        await requestUserApproval({
+        await requestUserApproval?.({
           origin,
           type: ApprovalType.SwitchEthereumChain,
           requestData: {
@@ -250,19 +315,15 @@ export async function switchChain(
       });
     }
 
-    if (!isSnapId(origin)) {
+    const isOriginSnap = origin ? isSnapId(origin) : false;
+
+    if (!isOriginSnap) {
       rejectApprovalRequestsForOrigin?.();
     }
 
     await setActiveNetwork(networkClientId);
 
-    // FIXME: `setTokenNetworkFilter` and `getEnabledNetworks` is currently breaking Snaps flow when ENS Snap
-    // calls `wallet_switchEthereumChain` to auto-adjusts its network if necessary. For now we add this guard
-    // but we want to come back and add remove the bandaid in favour of a more future proof solution for
-    // this edge case. issue: https://github.com/MetaMask/metamask-extension/issues/35409
-    if (!isSnapId(origin)) {
-      // keeping this for backward compatibility in case we need to rollback REMOVE_GNS feature flag
-      // this will keep tokenNetworkFilter in sync with enabledNetworkMap while we roll this feature out
+    if (!isOriginSnap) {
       setTokenNetworkFilter(chainId);
 
       if (isPrefixedFormattedHexString(chainId)) {
@@ -274,7 +335,9 @@ export async function switchChain(
           setEnabledNetworks(chainId);
         }
       } else {
-        const { namespace } = parseCaipChainId(chainId);
+        const { namespace } = parseCaipChainId(
+          chainId as `${string}:${string}`,
+        );
         const existingEnabledNetworks = getEnabledNetworks(namespace);
         const existingChainIds = Object.keys(existingEnabledNetworks);
         if (!existingChainIds.includes(chainId)) {
@@ -286,6 +349,15 @@ export async function switchChain(
     response.result = null;
     return end();
   } catch (error) {
-    return end(error);
+    return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
   }
 }
+
+const EthChainUtils = {
+  validateChainId,
+  validateSwitchEthereumChainParams,
+  validateAddEthereumChainParams,
+  switchChain,
+};
+
+export default EthChainUtils;

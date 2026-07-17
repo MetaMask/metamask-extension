@@ -16,6 +16,7 @@ import './development/wdyr';
 import '../../shared/constants/infura-project-id';
 
 import * as reactDevtoolsCore from 'react-devtools-core';
+import type { Substream } from '@metamask/object-multiplex/dist/Substream';
 
 if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
   const { initialize, connectToDevTools } = reactDevtoolsCore;
@@ -39,6 +40,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui';
 import {
+  type EnvironmentType,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -46,7 +48,12 @@ import {
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  type TraceContext,
+} from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -55,14 +62,38 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
-/**
- * @type {HTMLElement}
- */
 const container = document.getElementById('app-content');
 
-/**
- * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
- */
+type ActiveTab = {
+  id?: browser.Tabs.Tab['id'] | string;
+  title?: string;
+  url?: string;
+  origin?: string;
+  protocol?: string;
+};
+
+type BackgroundConnection = {
+  onNotification: (
+    handler: (data: {
+      method?: string;
+      params?: unknown[];
+    }) => Promise<void> | void,
+  ) => void;
+  startSendingPatches: () => Promise<void>;
+};
+
+type UiSubstreams = {
+  controller: Substream;
+  provider: Substream;
+};
+
+function getContainer(): HTMLElement {
+  if (!container) {
+    throw new Error('UI container not found');
+  }
+
+  return container;
+}
 
 /**
  * An error thrown if the phishing warning page takes too long to load.
@@ -70,13 +101,15 @@ const container = document.getElementById('app-content');
 class PhishingWarningPageTimeoutError extends Error {
   constructor() {
     super('Timeout failed');
+    this.name = 'PhishingWarningPageTimeoutError';
   }
 }
 
 start().catch(log.error);
 
-async function start() {
+async function start(): Promise<void> {
   const startTime = performance.now();
+  const containerElement = getContainer();
 
   const traceContext = trace({
     name: TraceName.UIStartup,
@@ -95,10 +128,10 @@ async function start() {
   });
 
   // create platform global
-  global.platform = new ExtensionPlatform();
+  globalThis.platform = new ExtensionPlatform();
 
   // identify window type (popup, notification)
-  const windowType = getEnvironmentType();
+  const windowType = getEnvironmentType() as EnvironmentType;
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
@@ -107,16 +140,19 @@ async function start() {
   // handle any errors that occur at any time
   const criticalErrorHandler = new CriticalStartupErrorHandler(
     extensionPort,
-    container,
+    containerElement,
   );
   criticalErrorHandler.install();
 
   const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
+  const backgroundConnection = metaRPCClientFactory(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    subStreams.controller as any,
+  ) as BackgroundConnection;
   connectToBackground(backgroundConnection, handleStartUISync);
 
-  async function handleStartUISync(initialState) {
+  async function handleStartUISync(initialState: unknown): Promise<void> {
     endTrace({ name: TraceName.BackgroundConnect });
     criticalErrorHandler.startUiSyncReceived();
 
@@ -155,7 +191,7 @@ async function start() {
  * Load the phishing warning page temporarily to ensure the service
  * worker has been registered, so that the warning page works offline.
  */
-async function loadPhishingWarningPage() {
+async function loadPhishingWarningPage(): Promise<void> {
   // Check session storage for whether we've already initialized the phishing warning
   // service worker in this browser session and do not attempt to re-initialize if so.
   const phishingSWMemoryFetch = await browser.storage.session.get(
@@ -167,11 +203,11 @@ async function loadPhishingWarningPage() {
   }
 
   const currentPlatform = getPlatform();
-  let iframe;
+  let iframe: HTMLIFrameElement | undefined;
 
   try {
     const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
+      process.env.PHISHING_WARNING_PAGE_URL as string,
     );
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
@@ -183,9 +219,9 @@ async function loadPhishingWarningPage() {
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
 
     // Create "deferred Promise" to allow passing resolve/reject to event handlers
-    let deferredResolve;
-    let deferredReject;
-    const loadComplete = new Promise((resolve, reject) => {
+    let deferredResolve!: () => void;
+    let deferredReject!: (reason?: Error) => void;
+    const loadComplete = new Promise<void>((resolve, reject) => {
       deferredResolve = resolve;
       deferredReject = reject;
     });
@@ -195,7 +231,12 @@ async function loadPhishingWarningPage() {
     iframe.addEventListener('load', deferredResolve);
 
     // This step initiates the page loading.
-    window.document.body.appendChild(iframe);
+    const { body } = window.document;
+    if (!body) {
+      throw new Error('Document body not found');
+    }
+
+    body.appendChild(iframe);
 
     // This timeout ensures that this iframe gets cleaned up in a reasonable
     // timeframe, and ensures that the "initialization complete" message
@@ -236,16 +277,16 @@ async function loadPhishingWarningPage() {
 }
 
 async function initializeUiWithTab(
-  activeTab,
-  backgroundConnection,
-  windowType,
-  traceContext,
-  initialState,
-) {
+  activeTab: ActiveTab,
+  backgroundConnection: BackgroundConnection,
+  windowType: EnvironmentType,
+  traceContext: TraceContext,
+  initialState: unknown,
+): Promise<void> {
   try {
     const store = await launchMetamaskUi({
       activeTab,
-      container,
+      container: getContainer(),
       backgroundConnection,
       traceContext,
       initialState,
@@ -261,21 +302,23 @@ async function initializeUiWithTab(
     const { metamask: { completedOnboarding } = {} } = state;
 
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
-      global.platform.openExtensionInBrowser();
+      globalThis.platform.openExtensionInBrowser();
     }
   } catch (error) {
     // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
     // run and removed the repair listener, so a restore link would be non-functional.
     await displayCriticalErrorMessage(
-      container,
+      getContainer(),
       CriticalErrorTranslationKey.TroubleStarting,
-      error,
+      error as Error,
       undefined,
     );
   }
 }
 
-async function queryCurrentActiveTab(windowType) {
+async function queryCurrentActiveTab(
+  windowType: EnvironmentType,
+): Promise<ActiveTab> {
   // Shims the activeTab for E2E test runs only if the
   // "activeTabOrigin" querystring key=value is set
   if (process.env.IN_TEST) {
@@ -283,7 +326,7 @@ async function queryCurrentActiveTab(windowType) {
     const mockUrl = searchParams.get('activeTabOrigin');
     if (mockUrl) {
       const { origin, protocol } = new URL(mockUrl);
-      const returnUrl = {
+      const returnUrl: ActiveTab = {
         id: 'mock-site',
         title: 'Mock Site',
         url: mockUrl,
@@ -303,13 +346,19 @@ async function queryCurrentActiveTab(windowType) {
     return {};
   }
 
-  const tabs = await browser.tabs
-    .query({ active: true, currentWindow: true })
-    .catch((e) => {
-      checkForLastErrorAndLog() || log.error(e);
-    });
+  const tabs =
+    (await browser.tabs
+      .query({ active: true, currentWindow: true })
+      .catch((e) => {
+        checkForLastErrorAndLog() || log.error(e);
+        return undefined;
+      })) ?? [];
 
   const [activeTab] = tabs;
+  if (!activeTab) {
+    return {};
+  }
+
   const { id, title, url } = activeTab;
   const { origin, protocol } = url ? new URL(url) : {};
 
@@ -327,7 +376,9 @@ async function queryCurrentActiveTab(windowType) {
  * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
-function connectSubstreams(connectionStream) {
+function connectSubstreams(
+  connectionStream: ExtensionPortStream,
+): UiSubstreams {
   const mx = setupMultiplex(connectionStream);
 
   const controllerSubstream = mx.createStream('controller');
@@ -346,7 +397,9 @@ function connectSubstreams(connectionStream) {
  *
  * @param {Substream} connectionStream - PortStream instance establishing a background connection
  */
-async function setupProviderConnection(connectionStream) {
+async function setupProviderConnection(
+  connectionStream: Substream,
+): Promise<void> {
   const providerStream = new StreamProvider(connectionStream, {
     rpcMiddleware: [createIdRemapMiddleware()],
   });
@@ -354,5 +407,6 @@ async function setupProviderConnection(connectionStream) {
   providerStream.on('error', console.error.bind(console));
 
   await providerStream.initialize();
-  global.ethereumProvider = providerStream;
+  globalThis.ethereumProvider =
+    providerStream as unknown as typeof globalThis.ethereumProvider;
 }

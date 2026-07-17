@@ -1,8 +1,10 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
+import type { Breadcrumb, Event as SentryEvent } from '@sentry/types';
 import { logger } from '@sentry/utils';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
+
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
@@ -23,18 +25,72 @@ import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
+type SentryClientOptions = NonNullable<Parameters<typeof Sentry.init>[0]>;
+type BeforeBreadcrumbHandler = NonNullable<
+  SentryClientOptions['beforeBreadcrumb']
+>;
+type RewriteErrorMessage = (errorMessage: string) => string;
+
+type SentrySpanLike = {
+  op?: string;
+  description?: string;
+  name?: string;
+};
+
+type SentryStackFrame = {
+  filename?: string;
+};
+
+type SentryExceptionValue = {
+  value?: string;
+  stacktrace?: {
+    frames?: SentryStackFrame[];
+  };
+};
+
+type SentryBreadcrumb = Breadcrumb & {
+  category?: string;
+  data?: Record<string, unknown>;
+  message?: string;
+};
+
+type SentryReport = Omit<
+  SentryEvent,
+  | 'breadcrumbs'
+  | 'contexts'
+  | 'exception'
+  | 'extra'
+  | 'request'
+  | 'spans'
+  | 'tags'
+> & {
+  breadcrumbs?: SentryBreadcrumb[];
+  contexts?: Record<string, unknown>;
+  exception?: {
+    values?: SentryExceptionValue[];
+  };
+  extra?: Record<string, unknown>;
+  request?: {
+    url?: string;
+  };
+  spans?: SentrySpanLike[];
+  tags?: Record<string, string>;
+};
+
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
-const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
-const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
+const METAMASK_BUILD_TYPE: string | undefined = process.env.METAMASK_BUILD_TYPE;
+const METAMASK_DEBUG: string | undefined = process.env.METAMASK_DEBUG;
+const METAMASK_ENVIRONMENT: string | undefined =
+  process.env.METAMASK_ENVIRONMENT;
 const RELEASE = getSentryRelease(
-  METAMASK_ENVIRONMENT,
-  process.env.METAMASK_VERSION,
+  METAMASK_ENVIRONMENT ?? '',
+  process.env.METAMASK_VERSION ?? '',
 );
-const SENTRY_DSN = process.env.SENTRY_DSN;
-const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DSN: string | undefined = process.env.SENTRY_DSN;
+const SENTRY_DSN_DEV: string | undefined = process.env.SENTRY_DSN_DEV;
+const SENTRY_DSN_PERFORMANCE: string | undefined =
+  process.env.SENTRY_DSN_PERFORMANCE;
 const SENTRY_DISTRIBUTED_TRACING_ENABLED =
   !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
@@ -42,7 +98,7 @@ const SENTRY_DISTRIBUTED_TRACING_ENABLED =
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
 const SENTRY_DSN_FAKE = 'https://fake@sentry.io/0000000';
 
-export const ERROR_URL_ALLOWLIST = {
+export const ERROR_URL_ALLOWLIST: Record<string, string> = {
   CRYPTOCOMPARE: 'cryptocompare.com',
   COINGECKO: 'coingecko.com',
   ETHERSCAN: 'etherscan.io',
@@ -50,7 +106,7 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-export default function setupSentry() {
+export default function setupSentry(): typeof Sentry | undefined {
   if (!RELEASE) {
     throw new Error('Missing release');
   }
@@ -78,10 +134,10 @@ export default function setupSentry() {
  * Deep-clone a Sentry report.
  * If `cloneDeep` throws (unexpected graph), returns the original reference.
  *
- * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {Record<string, unknown>} Cloned report, or original reference on failure.
+ * @param report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns Cloned report, or original reference on failure.
  */
-function safeCloneReport(report) {
+function safeCloneReport<T>(report: T): T {
   try {
     return cloneDeep(report);
   } catch (err) {
@@ -90,7 +146,7 @@ function safeCloneReport(report) {
   }
 }
 
-function getClientOptions() {
+function getClientOptions(): SentryClientOptions {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
@@ -100,13 +156,18 @@ function getClientOptions() {
     // still holds as previousEvent — rewriteReportUrls changes stack frame filenames in place,
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
-    beforeSend: (report) => rewriteReport(safeCloneReport(report)),
+    beforeSend: (report) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rewriteReport(safeCloneReport(report as SentryReport)) as any,
     beforeSendTransaction: (report) => {
-      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      const transaction = rewriteTransactionReport(
+        safeCloneReport(report as SentryReport),
+      );
       dropLowValueMarkSpans(transaction);
-      return transaction;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return transaction as any;
     },
-    debug: METAMASK_DEBUG,
+    debug: Boolean(METAMASK_DEBUG),
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
@@ -155,10 +216,10 @@ function getClientOptions() {
 /**
  * Compute the tracesSampleRate depending on testing condition.
  *
- * @param {string} sentryTarget
+ * @param sentryTarget
  * @returns tracesSampleRate to setup Sentry
  */
-function getTracesSampleRate(sentryTarget) {
+function getTracesSampleRate(sentryTarget: string | undefined): number {
   if (sentryTarget === SENTRY_DSN_FAKE) {
     return 1.0;
   }
@@ -191,7 +252,7 @@ function getTracesSampleRate(sentryTarget) {
  * Get CI tags passed from the test environment, through manifest.json,
  * and give them to the Sentry client.
  */
-function setCITags() {
+function setCITags(): void {
   const { ci } = getManifestFlags();
 
   if (ci?.enabled) {
@@ -210,7 +271,7 @@ function setCITags() {
   }
 }
 
-function getSentryEnvironment() {
+function getSentryEnvironment(): string | undefined {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
   }
@@ -218,7 +279,7 @@ function getSentryEnvironment() {
   return `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 }
 
-function getSentryTarget() {
+function getSentryTarget(): string | undefined {
   const manifestFlags = getManifestFlags();
 
   if (
@@ -245,7 +306,7 @@ function getSentryTarget() {
   return SENTRY_DSN;
 }
 
-function setSentryClient() {
+function setSentryClient(): true {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
@@ -255,13 +316,18 @@ function setSentryClient() {
    * This emulates NW.js which disables these validations.
    * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
    */
-  globalThis.nw = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const globalWithNw: { nw?: object } = globalThis as any;
+  globalWithNw.nw = {};
 
   /**
    * Sentry checks session tracking support by looking for global history object and functions inside it.
    * Scuttling sets this property to undefined which breaks Sentry logic and crashes background.
    */
-  globalThis.history ??= {};
+  const globalWithHistory: { history?: unknown } = globalThis;
+  if (globalWithHistory.history === undefined) {
+    globalWithHistory.history = {};
+  }
 
   log('Updating client', {
     environment,
@@ -285,10 +351,10 @@ function setSentryClient() {
  * regex match for a url with a `chrome-extension` or `moz-extension`
  * protocol, and an empty string otherwise.
  *
- * @param {string} url - The URL to check.
- * @returns {string} An empty string if the URL was internal, or the unmodified URL otherwise.
+ * @param url - The URL to check.
+ * @returns An empty string if the URL was internal, or the unmodified URL otherwise.
  */
-function hideUrlIfNotInternal(url) {
+function hideUrlIfNotInternal(url: string): string {
   const re = /^(chrome-extension|moz-extension):\/\//u;
   if (!url.match(re)) {
     return '';
@@ -299,9 +365,9 @@ function hideUrlIfNotInternal(url) {
 /**
  * Returns a method that handles the Sentry breadcrumb using a specific method to get the extension state
  *
- * @returns {(breadcrumb: object) => object} A method that modifies a Sentry breadcrumb object
+ * @returns A method that modifies a Sentry breadcrumb object
  */
-export function beforeBreadcrumb() {
+export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
   return (breadcrumb) => {
     if (!getState) {
       return null;
@@ -328,10 +394,10 @@ export function beforeBreadcrumb() {
  * extension reads (snap manifests / locale files, and content-hashed
  * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
  *
- * @param {string} url - The request URL.
- * @returns {boolean} Whether to create a span for the request.
+ * @param url - The request URL.
+ * @returns Whether to create a span for the request.
  */
-export function shouldCreateSpanForRequest(url) {
+export function shouldCreateSpanForRequest(url: string): boolean {
   // Do not create spans for high-volume remote fetches with no per-request
   // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
   // config files re-fetched on a constant poll cadence (chainid.network chain
@@ -365,26 +431,30 @@ export function shouldCreateSpanForRequest(url) {
  * data.from, data.to and data.url. Performs a deep address scrub for use when
  * an event is about to be sent (not on every breadcrumb capture).
  *
- * @param {object} breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
- * @returns {object} A modified Sentry breadcrumb object.
+ * @param breadcrumb - A Sentry breadcrumb object: https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/
+ * @returns A modified Sentry breadcrumb object.
  */
-export function removeUrlsFromBreadCrumb(breadcrumb) {
-  if (breadcrumb?.data?.url) {
-    breadcrumb.data.url = hideUrlIfNotInternal(breadcrumb.data.url);
+export function removeUrlsFromBreadCrumb(
+  breadcrumb: SentryBreadcrumb,
+): SentryBreadcrumb {
+  const { data } = breadcrumb;
+
+  if (typeof data?.url === 'string') {
+    data.url = hideUrlIfNotInternal(data.url);
   }
-  if (breadcrumb?.data?.to) {
-    breadcrumb.data.to = hideUrlIfNotInternal(breadcrumb.data.to);
+  if (typeof data?.to === 'string') {
+    data.to = hideUrlIfNotInternal(data.to);
   }
-  if (breadcrumb?.data?.from) {
-    breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
+  if (typeof data?.from === 'string') {
+    data.from = hideUrlIfNotInternal(data.from);
   }
   // Sanitize any account addresses that may appear in the breadcrumb message or
   // remaining data values.
-  if (typeof breadcrumb?.message === 'string') {
+  if (typeof breadcrumb.message === 'string') {
     breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
   }
-  if (breadcrumb?.data) {
-    breadcrumb.data = sanitizeAddressesFromObject(breadcrumb.data);
+  if (data) {
+    breadcrumb.data = sanitizeAddressesFromObject(data);
   }
   return breadcrumb;
 }
@@ -394,9 +464,9 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  * transactions). The report must already be cloned (see `safeCloneReport` in
  * `beforeSend` / `beforeSendTransaction`) so breadcrumb mutation is safe.
  *
- * @param {object} report - A Sentry event object.
+ * @param report - A Sentry event object.
  */
-export function sanitizeBreadcrumbsInReport(report) {
+export function sanitizeBreadcrumbsInReport(report: SentryReport): void {
   if (!Array.isArray(report.breadcrumbs)) {
     return;
   }
@@ -415,15 +485,19 @@ const LOW_VALUE_TRACE_MARKS = new Set([
  * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
  * transaction event in place. Measures and all other spans are kept.
  *
- * @param {object} report - A Sentry transaction event object.
+ * @param report - A Sentry transaction event object.
  */
-export function dropLowValueMarkSpans(report) {
+export function dropLowValueMarkSpans(report: SentryReport): void {
   if (!Array.isArray(report.spans)) {
     return;
   }
   report.spans = report.spans.filter((span) => {
     const markName = span?.description ?? span?.name;
-    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+    return !(
+      span?.op === 'mark' &&
+      markName &&
+      LOW_VALUE_TRACE_MARKS.has(markName)
+    );
   });
 }
 
@@ -432,10 +506,10 @@ export function dropLowValueMarkSpans(report) {
  * {@link rewriteReport} handles errors via `beforeSend`; transactions use
  * `beforeSendTransaction` instead.
  *
- * @param {object} report - A Sentry transaction event object.
- * @returns {object} The modified report (same reference).
+ * @param report - A Sentry transaction event object.
+ * @returns The modified report (same reference).
  */
-export function rewriteTransactionReport(report) {
+export function rewriteTransactionReport(report: SentryReport): SentryReport {
   sanitizeBreadcrumbsInReport(report);
   return report;
 }
@@ -444,10 +518,10 @@ export function rewriteTransactionReport(report) {
  * Receives a Sentry event object and modifies it before the error is sent to Sentry.
  * Sanitizes messages/URLs and attaches app state.
  *
- * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
- * @returns {object} The modified report (same reference).
+ * @param report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns The modified report (same reference).
  */
-export function rewriteReport(report) {
+export function rewriteReport(report: SentryReport): SentryReport {
   try {
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
@@ -485,8 +559,9 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
-    report.tags.storageKind =
-      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
+    report.tags.storageKind = String(
+      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown',
+    );
   } catch (err) {
     log('Error rewriting report', err);
   }
@@ -497,9 +572,9 @@ export function rewriteReport(report) {
  * Receives a Sentry event object and modifies it so that urls are removed from any of its
  * error messages.
  *
- * @param {object} report - the report to modify
+ * @param report - the report to modify
  */
-function sanitizeUrlsFromErrorMessages(report) {
+function sanitizeUrlsFromErrorMessages(report: SentryReport): void {
   rewriteErrorMessages(report, (errorMessage) => {
     let newErrorMessage = errorMessage;
     const re = /(([-.+a-zA-Z]+:\/\/)|(www\.))\S+[@:.]\S+/gu;
@@ -517,7 +592,7 @@ function sanitizeUrlsFromErrorMessages(report) {
         ) {
           newErrorMessage = newErrorMessage.replace(url, '**');
         }
-      } catch (e) {
+      } catch {
         newErrorMessage = newErrorMessage.replace(url, '**');
       }
     });
@@ -529,9 +604,9 @@ function sanitizeUrlsFromErrorMessages(report) {
  * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
  * any of its error messages.
  *
- * @param {object} report - the report to modify
+ * @param report - the report to modify
  */
-function sanitizeAddressesFromErrorMessages(report) {
+function sanitizeAddressesFromErrorMessages(report: SentryReport): void {
   rewriteErrorMessages(report, (errorMessage) =>
     sanitizeAddressesFromString(errorMessage),
   );
@@ -556,10 +631,10 @@ const NON_EVM_ADDRESS_REGEXES = [
 /**
  * Sanitizes EVM and non-EVM account addresses from a string.
  *
- * @param {string} text - The string to sanitize addresses from.
- * @returns {string} The string with any addresses replaced by a mask.
+ * @param text - The string to sanitize addresses from.
+ * @returns The string with any addresses replaced by a mask.
  */
-function sanitizeAddressesFromString(text) {
+function sanitizeAddressesFromString(text: string): string {
   // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
   // the base58 patterns below.
   let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
@@ -577,36 +652,42 @@ function sanitizeAddressesFromString(text) {
  * `data.arguments` holds live references (e.g. the thrown `Error`) that the
  * extension may still use after the event is sent.
  *
- * @param {*} value - The value to sanitize addresses from.
- * @param {WeakMap} [seen] - Maps already-visited inputs to their sanitized copy,
+ * @param value - The value to sanitize addresses from.
+ * @param seen - Maps already-visited inputs to their sanitized copy,
  * so shared references stay consistent and cyclic structures terminate.
- * @returns {*} The sanitized value (a copy for objects/arrays).
+ * @returns The sanitized value (a copy for objects/arrays).
  */
-function sanitizeAddressesFromObject(value, seen = new WeakMap()) {
+function sanitizeAddressesFromObject<T>(
+  value: T,
+  seen: WeakMap<object, unknown> = new WeakMap(),
+): T {
   if (typeof value === 'string') {
-    return sanitizeAddressesFromString(value);
+    return sanitizeAddressesFromString(value) as T;
   }
   // Leave primitives (and null) untouched.
   if (value === null || typeof value !== 'object') {
     return value;
   }
+
+  const objectValue = value as object;
+
   // Reuse the sanitized copy for any reference we've already processed, so shared
   // references stay consistent and cyclic structures don't loop forever.
-  if (seen.has(value)) {
-    return seen.get(value);
+  if (seen.has(objectValue)) {
+    return seen.get(objectValue) as T;
   }
 
   if (Array.isArray(value)) {
-    const copy = [];
-    seen.set(value, copy);
+    const copy: unknown[] = [];
+    seen.set(objectValue, copy);
     for (let i = 0; i < value.length; i++) {
       copy[i] = sanitizeAddressesFromObject(value[i], seen);
     }
-    return copy;
+    return copy as T;
   }
 
-  const copy = {};
-  seen.set(value, copy);
+  const copy: Record<string, unknown> = {};
+  seen.set(objectValue, copy);
   // `Error` carries its address-bearing data on `message`/`stack`, which are
   // non-enumerable and so invisible to the `Object.keys` walk below. These show
   // up e.g. in console breadcrumbs, whose `data.arguments` holds the raw thrown
@@ -618,20 +699,25 @@ function sanitizeAddressesFromObject(value, seen = new WeakMap()) {
     if (typeof value.stack === 'string') {
       copy.stack = sanitizeAddressesFromString(value.stack);
     }
+    if (typeof value.name === 'string') {
+      copy.name = value.name;
+    }
   }
-  for (const key of Object.keys(value)) {
-    copy[key] = sanitizeAddressesFromObject(value[key], seen);
+
+  const recordValue = value as Record<string, unknown>;
+  for (const key of Object.keys(recordValue)) {
+    copy[key] = sanitizeAddressesFromObject(recordValue[key], seen);
   }
-  return copy;
+  return copy as T;
 }
 
 /**
  * Receives a Sentry event object and sanitizes account addresses from its
  * error parameters (`extra` and `contexts`).
  *
- * @param {object} report - the report to modify
+ * @param report - the report to modify
  */
-function sanitizeAddressesFromReportData(report) {
+function sanitizeAddressesFromReportData(report: SentryReport): void {
   if (report.extra) {
     report.extra = sanitizeAddressesFromObject(report.extra);
   }
@@ -640,7 +726,7 @@ function sanitizeAddressesFromReportData(report) {
   }
 }
 
-function simplifyErrorMessages(report) {
+function simplifyErrorMessages(report: SentryReport): void {
   rewriteErrorMessages(report, (errorMessage) => {
     // simplify ethjs error messages
     let simplifiedErrorMessage = extractEthjsErrorMessage(errorMessage);
@@ -657,13 +743,16 @@ function simplifyErrorMessages(report) {
   });
 }
 
-function rewriteErrorMessages(report, rewriteFn) {
+function rewriteErrorMessages(
+  report: SentryReport,
+  rewriteFn: RewriteErrorMessage,
+): void {
   // rewrite top level message
   if (typeof report.message === 'string') {
     report.message = rewriteFn(report.message);
   }
   // rewrite each exception message
-  if (report.exception && report.exception.values) {
+  if (report.exception?.values) {
     report.exception.values.forEach((item) => {
       if (typeof item.value === 'string') {
         item.value = rewriteFn(item.value);
@@ -672,25 +761,23 @@ function rewriteErrorMessages(report, rewriteFn) {
   }
 }
 
-function rewriteReportUrls(report) {
+function rewriteReportUrls(report: SentryReport): void {
   if (report.request?.url) {
     // update request url
     report.request.url = toMetamaskUrl(report.request.url);
   }
 
   // update exception stack trace
-  if (report.exception && report.exception.values) {
+  if (report.exception?.values) {
     report.exception.values.forEach((item) => {
-      if (item.stacktrace) {
-        item.stacktrace.frames.forEach((frame) => {
-          frame.filename = toMetamaskUrl(frame.filename);
-        });
-      }
+      item.stacktrace?.frames?.forEach((frame) => {
+        frame.filename = toMetamaskUrl(frame.filename);
+      });
     });
   }
 }
 
-function toMetamaskUrl(origUrl) {
+function toMetamaskUrl(origUrl?: string): string | undefined {
   if (!globalThis.location?.origin) {
     return origUrl;
   }
@@ -703,50 +790,61 @@ function toMetamaskUrl(origUrl) {
   return metamaskUrl;
 }
 
-function integrateLogging() {
+function integrateLogging(): void {
   if (!METAMASK_DEBUG) {
     return;
   }
 
-  for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
-      const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
-      internalLog(message, ...args.slice(1));
+  for (const loggerType of ['log', 'error'] as const) {
+    logger[loggerType] = (...args: unknown[]) => {
+      const [firstArg, ...rest] = args;
+      const message =
+        typeof firstArg === 'string'
+          ? firstArg.replace(`Sentry Logger [${loggerType}]: `, '')
+          : String(firstArg);
+      internalLog(message, ...rest);
     };
   }
 
   log('Integrated logging');
 }
 
-function addDebugListeners() {
+function addDebugListeners(): void {
   if (!METAMASK_DEBUG) {
     return;
   }
 
   const client = Sentry.getClient();
 
-  client?.on('beforeEnvelope', (event) => {
+  client?.on('beforeEnvelope', (event: unknown) => {
     if (isCompletedSessionEnvelope(event)) {
       log('Completed session', event);
     }
   });
 
-  client?.on('afterSendEvent', (event) => {
-    const type = getEventType(event);
-    log(type, event);
+  client?.on('afterSendEvent', (event: unknown) => {
+    const sentryEvent = event as SentryEvent;
+    const type = getEventType(sentryEvent);
+    log(type, sentryEvent);
   });
 
   log('Added debug listeners');
 }
 
-function isCompletedSessionEnvelope(envelope) {
-  const type = envelope?.[1]?.[0]?.[0]?.type;
-  const data = envelope?.[1]?.[0]?.[1] ?? {};
+type SessionEnvelope = [
+  unknown,
+  Array<[{ type?: string }, { status?: string }]>?,
+];
+
+function isCompletedSessionEnvelope(envelope: unknown): boolean {
+  const sessionEnvelope = envelope as SessionEnvelope;
+  const type = sessionEnvelope?.[1]?.[0]?.[0]?.type;
+  const data = sessionEnvelope?.[1]?.[0]?.[1] ?? {};
 
   return type === 'session' && data.status === 'exited';
 }
 
-function getEventType(event) {
+function getEventType(event: SentryEvent): string {
   if (event.type === 'transaction') {
     return 'Trace';
   }
