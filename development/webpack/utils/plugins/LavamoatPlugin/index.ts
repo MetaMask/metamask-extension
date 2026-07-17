@@ -131,7 +131,10 @@ export const lavamoatPlugin = (args: Args) =>
             scuttleGlobalThis: {
               enabled: true,
               // Globals used by the service worker
-              exceptions: ['importScripts'],
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'importScripts',
+              ],
             },
           },
         };

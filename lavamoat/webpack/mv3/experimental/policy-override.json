@@ -35,7 +35,7 @@
         "devicePixelRatio": true
       }
     },
-    "@sentry/utils": {
+    "@sentry/core": {
       "globals": {
         "performance.now": true,
         "performance.timeOrigin": true,
