@@ -38,6 +38,7 @@ describe('LavamoatPlugin', () => {
       const result = runtimeConfig(mockChunk('service-worker.ts')) as {
         mode: string;
         embeddedOptions?: {
+          globalAliases?: string[];
           scuttleGlobalThis?: {
             enabled: boolean;
             exceptions: (string | RegExp)[];
@@ -46,6 +47,10 @@ describe('LavamoatPlugin', () => {
       };
 
       assert.strictEqual(result.mode, 'safe');
+      assert.deepStrictEqual(result.embeddedOptions?.globalAliases, [
+        'self',
+        'globalThis',
+      ]);
       const exceptions =
         result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
       assert.ok(

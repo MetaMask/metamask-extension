@@ -128,6 +128,8 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
+            // Match the aliases provided by a real service worker global.
+            globalAliases: ['self', 'globalThis'],
             scuttleGlobalThis: {
               enabled: true,
               // Globals used by the service worker
