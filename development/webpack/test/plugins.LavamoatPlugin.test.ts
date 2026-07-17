@@ -56,6 +56,10 @@ describe('LavamoatPlugin', () => {
         exceptions.includes('importScripts'),
         'importScripts must remain available to the Webpack chunk loader',
       );
+      assert.ok(
+        exceptions.includes('addEventListener'),
+        'Sentry must be able to register service worker event listeners',
+      );
       assert.ok(inlineLockdown.test('service-worker.js'));
     });
 
