@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Параметры счета"
   },
-  "accountPermissionToast": {
-    "message": "Разрешения счета обновлены"
-  },
   "accountSelectionRequired": {
     "message": "Вам необходимо выбрать счет!"
   },

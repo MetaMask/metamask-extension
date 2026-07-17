@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "账户选项"
   },
-  "accountPermissionToast": {
-    "message": "账户许可已更新"
-  },
   "accountSelectionRequired": {
     "message": "您需要选择一个账户！"
   },

@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Hesap Seçenekleri"
   },
-  "accountPermissionToast": {
-    "message": "Hesap izinleri güncellendi"
-  },
   "accountSelectionRequired": {
     "message": "Bir hesap seçmeniz gerekiyor!"
   },
