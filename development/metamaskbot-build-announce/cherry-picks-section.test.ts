@@ -230,9 +230,7 @@ describe('cherry-picks-section', () => {
       expect(section).toContain('<a id="whats-in-this-rc-28063612297"></a>');
       expect(section).toContain('<a id="cherry-picks-28063612297"></a>');
       expect(section).toContain('<a id="changelog-28063612297"></a>');
-      expect(section).toContain(
-        'Changelog (1 commits from main at RC cut)',
-      );
+      expect(section).toContain('Changelog (1 commits from main at RC cut)');
     });
 
     it('labels changelog as release-branch fallback when applicable', () => {
