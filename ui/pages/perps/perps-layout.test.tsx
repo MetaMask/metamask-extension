@@ -72,13 +72,40 @@ jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-describe('PerpsLayout', () => {
-  const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
-  const store = configureStore({
+const mockHydrateFromControllerCache = jest.fn();
+const mockSetUseTerminalApi = jest.fn();
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    hydrateFromControllerCache: mockHydrateFromControllerCache,
+    setUseTerminalApi: mockSetUseTerminalApi,
+  }),
+}));
+
+const MARKET_ENTRIES = [{ symbol: 'BTC' }, { symbol: 'ETH' }];
+
+// Seed the real `perpsTerminalBackendEnabled` remote feature flag into the
+// store so the actual `getIsPerpsTerminalBackendEnabled` selector (and its
+// manifest-merged remote-flag wiring) runs, instead of stubbing the selector
+// module.
+const makeStore = (terminalBackendEnabled: boolean) =>
+  configureStore({
     metamask: {
       ...mockState.metamask,
+      activeProvider: 'hyperliquid',
+      isTestnet: false,
+      cachedMarketDataByProvider: {
+        'hyperliquid:mainnet': { data: MARKET_ENTRIES, timestamp: 1000 },
+      },
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        perpsTerminalBackendEnabled: terminalBackendEnabled,
+      },
     },
   });
+
+describe('PerpsLayout', () => {
+  const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+  const store = makeStore(false);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -149,5 +176,25 @@ describe('PerpsLayout', () => {
       );
       unmount();
     }).not.toThrow();
+  });
+
+  it('seeds the markets channel from the controller cache when terminal backend is disabled', () => {
+    renderWithProvider(<PerpsLayout />, makeStore(false));
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(false);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: MARKET_ENTRIES }),
+      expect.anything(),
+    );
+  });
+
+  it('does not seed markets from the direct-provider cache when terminal backend is enabled', () => {
+    renderWithProvider(<PerpsLayout />, makeStore(true));
+
+    expect(mockSetUseTerminalApi).toHaveBeenCalledWith(true);
+    expect(mockHydrateFromControllerCache).toHaveBeenCalledWith(
+      expect.objectContaining({ markets: undefined }),
+      expect.anything(),
+    );
   });
 });

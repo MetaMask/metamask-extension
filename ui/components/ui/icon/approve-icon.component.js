@@ -28,10 +28,6 @@ const Approve = ({ className, size, color }) => (
   </svg>
 );
 
-Approve.defaultProps = {
-  className: undefined,
-};
-
 Approve.propTypes = {
   /**
    * Additional className

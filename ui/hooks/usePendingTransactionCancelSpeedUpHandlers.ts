@@ -1,8 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  type MouseEvent as ReactMouseEvent,
-} from 'react';
+import { useCallback, type MouseEvent as ReactMouseEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   TransactionStatus,
@@ -11,8 +7,8 @@ import {
 import { EditGasModes } from '../../shared/constants/gas';
 import { MetaMetricsEventCategory } from '../../shared/constants/metametrics';
 import { useTransactionModalContext } from '../contexts/transaction-modal';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import { abortTransactionSigning } from '../store/actions';
+import { useAnalytics } from './useAnalytics';
 
 type UsePendingTransactionCancelSpeedUpHandlersParams = {
   primaryTransaction: TransactionMeta;
@@ -32,39 +28,41 @@ export const usePendingTransactionCancelSpeedUpHandlers = ({
 }: UsePendingTransactionCancelSpeedUpHandlersParams) => {
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { id, status } = primaryTransaction;
 
   const onSpeedUp = useCallback(
     (event: ReactMouseEvent) => {
       event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Speed Up"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
-          legacy_event: true,
-        },
-      });
+      trackEvent(
+        createEventBuilder('Clicked "Speed Up"')
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            action: 'Activity Log',
+            // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
+            legacy_event: true,
+          })
+          .build(),
+      );
       setEditGasMode(EditGasModes.speedUp);
       openModal('cancelSpeedUpTransaction');
     },
-    [openModal, setEditGasMode, trackEvent],
+    [openModal, setEditGasMode, trackEvent, createEventBuilder],
   );
 
   const onCancel = useCallback(
     (event: ReactMouseEvent) => {
       event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Cancel"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
-          legacy_event: true,
-        },
-      });
+      trackEvent(
+        createEventBuilder('Clicked "Cancel"')
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            action: 'Activity Log',
+            // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
+            legacy_event: true,
+          })
+          .build(),
+      );
       if (status === TransactionStatus.approved) {
         dispatch(abortTransactionSigning(id));
       } else {
@@ -72,7 +70,15 @@ export const usePendingTransactionCancelSpeedUpHandlers = ({
         openModal('cancelSpeedUpTransaction');
       }
     },
-    [trackEvent, openModal, setEditGasMode, status, dispatch, id],
+    [
+      trackEvent,
+      createEventBuilder,
+      openModal,
+      setEditGasMode,
+      status,
+      dispatch,
+      id,
+    ],
   );
 
   return { onSpeedUp, onCancel };

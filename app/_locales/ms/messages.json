@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambah alias"
   },
@@ -181,9 +178,6 @@
   "custom": {
     "message": "Lanjutan"
   },
-  "customToken": {
-    "message": "Token Tersuai"
-  },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
   },
@@ -334,9 +328,6 @@
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Mesti memilih sekurang-kurangnya 1 token."
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -504,9 +495,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "signed": {
     "message": "Ditandatangani"

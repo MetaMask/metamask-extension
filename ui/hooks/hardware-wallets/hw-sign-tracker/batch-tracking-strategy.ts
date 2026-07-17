@@ -4,10 +4,19 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { EventResult, TrackingStrategy } from './types';
-import { classifySignedEvent } from './shared-filters';
+import type {
+  EventResult,
+  SignedEventClassifier,
+  TrackingStrategy,
+} from './types';
+import { defaultEventClassifier } from './shared-filters';
 import { UNKNOWN_BATCH_ID } from './constants';
-import { applyRetryGenerationBump, shouldIgnoreBatchEvent } from './utils';
+import {
+  applyRetryGenerationBump,
+  getStatusAction,
+  shouldIgnoreBatchEvent,
+} from './utils';
+import { NO_ACTION } from './types';
 
 /**
  * Batch-mode tracking strategy. Tracks transactions by batchId.
@@ -63,24 +72,34 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    * `#handleFailed` (which ignores stale/non-current batches).
    *
    * @param transactionMeta - The updated transaction.
+   * @param classifySignedTransactionType - Signed transaction type classifier.
    * @returns The resulting action, or `{ action: null }` to emit nothing.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult {
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedTransactionType: SignedEventClassifier = defaultEventClassifier,
+  ): EventResult {
     const { status, type } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
 
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
     if (status === TransactionStatus.signed) {
-      return this.#handleSigned(transactionMeta, batchId, type);
+      return this.#handleSigned(
+        transactionMeta,
+        batchId,
+        type,
+        classifySignedTransactionType,
+      );
     }
 
     if (status === TransactionStatus.failed) {
-      return this.#handleFailed(transactionMeta);
+      return this.#handleFailed(transactionMeta, wasTracked);
     }
 
-    return { action: null };
+    return NO_ACTION;
   }
 
   /**
@@ -94,6 +113,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
    */
   processRejected(transactionMeta: TransactionMeta): EventResult {
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
@@ -102,9 +122,10 @@ export class BatchTrackingStrategy implements TrackingStrategy {
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
-      return { action: null };
+      return NO_ACTION;
     }
 
     return {
@@ -124,6 +145,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   processFinished(transactionMeta: TransactionMeta): EventResult {
     const { status } = transactionMeta;
     const batchId = transactionMeta.batchId ?? UNKNOWN_BATCH_ID;
+    const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
 
@@ -132,27 +154,20 @@ export class BatchTrackingStrategy implements TrackingStrategy {
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
-      return { action: null };
+      return NO_ACTION;
     }
 
-    if (status === TransactionStatus.rejected) {
-      return {
-        action: {
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        },
-      };
-    }
-    if (status === TransactionStatus.failed) {
-      return {
-        action: {
-          type: HardwareWalletSignatureEvent.TransactionFailed,
-        },
-      };
+    if (
+      status === TransactionStatus.rejected ||
+      status === TransactionStatus.failed
+    ) {
+      return { action: getStatusAction(status) };
     }
 
-    return { action: null };
+    return NO_ACTION;
   }
 
   /**
@@ -184,34 +199,39 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     transactionMeta: TransactionMeta,
     batchId: string,
     type: TransactionType | undefined,
+    classifySignedTransactionType: SignedEventClassifier,
   ): EventResult {
     if (this.#currentBatchId === undefined) {
       this.#currentBatchId = batchId;
     } else if (this.#currentBatchId === null) {
       if (this.#staleBatchIds.has(batchId)) {
-        return { action: null };
+        return NO_ACTION;
       }
       this.#currentBatchId = batchId;
     } else if (batchId !== this.#currentBatchId) {
-      return { action: null };
+      return NO_ACTION;
     }
 
     if (!type) {
-      return { action: null };
+      return NO_ACTION;
     }
-    const action = classifySignedEvent(type);
-    return action ? { action } : { action: null };
+    const action = classifySignedTransactionType(transactionMeta);
+    return action ? { action } : NO_ACTION;
   }
 
-  #handleFailed(transactionMeta: TransactionMeta): EventResult {
+  #handleFailed(
+    transactionMeta: TransactionMeta,
+    wasTracked: boolean,
+  ): EventResult {
     if (
       shouldIgnoreBatchEvent(
         transactionMeta,
         this.#currentBatchId,
         this.#staleBatchIds,
+        wasTracked,
       )
     ) {
-      return { action: null };
+      return NO_ACTION;
     }
 
     return {

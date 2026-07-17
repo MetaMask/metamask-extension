@@ -17,39 +17,19 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   },
 }));
 
-// Mock MetaMetricsContext with a real React context so useContext works,
-// but replace Provider with Fragment so the createContext default value is used
-jest.mock('../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const _trackEvent = jest.fn();
-  const MetaMetricsContext = ReactActual.createContext({
-    trackEvent: _trackEvent,
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  MetaMetricsContext.Provider = (({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) =>
-    ReactActual.createElement(
-      ReactActual.Fragment,
-      null,
-      children,
-    )) as unknown as typeof MetaMetricsContext.Provider;
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __mockTrackEvent: _trackEvent,
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
-const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __mockTrackEvent: jest.Mock;
-}>('../../../contexts/metametrics');
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
@@ -171,8 +151,8 @@ describe('MusdConvertLink', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: expect.any(String),
         properties: expect.objectContaining({
+          category: expect.any(String),
           location: 'token_list_item',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           redirects_to: 'conversion_education_screen',

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
@@ -20,7 +20,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
@@ -49,12 +49,10 @@ import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_VARIANTS,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
-} from '../../../../shared/lib/ab-testing/perps-tab-badge';
+} from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
-import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
-import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
+import { ActivityList } from '../../../pages/activity/activity-list';
+import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
@@ -98,12 +96,9 @@ export const AccountOverviewTabs = ({
 
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
   const prefetchTransactions = usePrefetchTransactions();
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
@@ -179,26 +174,24 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // For ActivityListV3, ActivityScreenOpened is deferred to the list
-      // component so it can include accurate is_empty / pending_transactions
-      // after all data sources have loaded. For ActivityListV2 there is no
-      // equivalent deferred tracking, so fire immediately on click.
+
       if (
         tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        (tabName !== AccountOverviewTabKey.Activity ||
-          !isActivityListRedesignEnabled)
+        tabName !== AccountOverviewTabKey.Activity
       ) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Home,
-          event:
+        trackEvent(
+          createEventBuilder(
             ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
               tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
             ],
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            network_filter: networkFilterForMetrics,
-          },
-        });
+          )
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_filter: networkFilterForMetrics,
+            })
+            .build(),
+        );
       }
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({
@@ -208,7 +201,7 @@ export const AccountOverviewTabs = ({
     },
     [
       activeTabKey,
-      isActivityListRedesignEnabled,
+      createEventBuilder,
       networkFilterForMetrics,
       setActiveTabKey,
       dispatch,
@@ -242,7 +235,8 @@ export const AccountOverviewTabs = ({
         activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
-          className: 'px-4',
+          className:
+            'mx-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
         }}
       >
         {showTokens && (
@@ -342,11 +336,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              {isActivityListRedesignEnabled ? (
-                <ActivityListV3 />
-              ) : (
-                <ActivityListV2 />
-              )}
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}

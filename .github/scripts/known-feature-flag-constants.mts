@@ -52,6 +52,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/active-tab-domain-metrics.ts',
     exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
   },
+  {
+    key: 'PAY_EXTENDED_FEATURE_FLAG',
+    file: 'shared/lib/transaction/pay-prefill.ts',
+    exportName: 'PAY_EXTENDED_FEATURE_FLAG',
+  },
 ];
 
 /**

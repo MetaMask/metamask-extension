@@ -38,7 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const ADD_DEVICE_ROUTE = '/settings/add-device';
+export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -125,6 +125,14 @@ export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
+export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
+  '/settings/notifications/wallet-activity';
+export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
+  '/settings/notifications/perps';
+export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
+  '/settings/notifications/marketing';
+export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
+  '/settings/notifications/agentic-cli';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -134,7 +142,6 @@ export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
-export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -173,6 +180,12 @@ export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
 
 export const DEFI_ROUTE = '/defi';
 
+// Ramps (native buy) routes
+export const RAMPS_ROUTE = '/ramps';
+export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
+export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
+export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
+
 // Perps routes
 export const PERPS_ROUTE = '/perps';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
@@ -180,6 +193,7 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -188,9 +202,12 @@ export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
+export const ACTIVITY_ROUTE = '/activity';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
+  { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
+  { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   {
     path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
@@ -635,11 +652,6 @@ export const ROUTES = [
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',
-    trackInAnalytics: false,
-  },
-  {
-    path: CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-    label: 'Cross Chain Transaction Details',
     trackInAnalytics: false,
   },
   {

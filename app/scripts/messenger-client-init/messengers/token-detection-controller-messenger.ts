@@ -10,6 +10,7 @@ import {
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
+import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -61,6 +62,7 @@ type AllowedInitializationActions =
   | AssetsContractControllerGetBalancesInSingleCallAction
   | MetaMetricsControllerTrackEventAction
   | NetworkControllerGetStateAction
+  | OnboardingControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 export type TokenDetectionControllerInitMessenger = ReturnType<
@@ -90,6 +92,7 @@ export function getTokenDetectionControllerInitMessenger(
     actions: [
       'AssetsContractController:getBalancesInSingleCall',
       'MetaMetricsController:trackEvent',
+      'OnboardingController:getState',
       'PreferencesController:getState',
     ],
   });
