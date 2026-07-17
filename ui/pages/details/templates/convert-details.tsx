@@ -52,12 +52,7 @@ function useSentToken(
   }, [baseToken, sourceTransaction, tokenAddress, userAddress]);
 }
 
-export function ConvertDetails({
-  item,
-}: {
-  // The swap/convert/lending/wrap family share a single ActivityData member
-  // with a union discriminant, so it can't be narrowed to `type: 'convert'`
-  // alone; the template-loader routes only convert items here at runtime.
+type Props = {
   item: Extract<
     ActivityListItem,
     {
@@ -71,7 +66,9 @@ export function ConvertDetails({
         | 'unwrap';
     }
   >;
-}) {
+};
+
+export function ConvertDetails({ item }: Props) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const transactionMeta = useTransactionMeta(item.hash);
