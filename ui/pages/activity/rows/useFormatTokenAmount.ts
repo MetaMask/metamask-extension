@@ -1,24 +1,17 @@
 import { useCallback } from 'react';
 import {
   applyDisplaySign,
-  getHumanReadableTokenAmount,
   getDisplaySignPrefix,
+  getHumanReadableTokenAmount,
 } from '../../../../shared/lib/activity/fiat';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { shouldShowPlusSign } from '../helpers';
 
 export function useFormatTokenAmount() {
   const { formatTokenAmount } = useFormatters();
 
   return useCallback(
-    (
-      token: TokenAmount | undefined,
-      activityType?: ActivityListItem['type'],
-    ) => {
+    (token: TokenAmount | undefined, options: { showPlus?: boolean } = {}) => {
       if (!token) {
         return undefined;
       }
@@ -30,7 +23,7 @@ export function useFormatTokenAmount() {
       }
 
       const signPrefix = getDisplaySignPrefix(token.direction, {
-        showPlus: activityType ? shouldShowPlusSign(activityType) : true,
+        showPlus: options.showPlus ?? true,
       });
 
       const formatted = formatTokenAmount(

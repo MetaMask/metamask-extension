@@ -7,12 +7,13 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
+  mockTokenMetadataApis,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -29,9 +30,17 @@ describe('Token List', function () {
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+          balance: '1',
+        },
+      ],
+    },
     manifestFlags: {
       remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
+        extensionUxTokenManagementFilter: true,
       },
     },
   };
@@ -42,6 +51,9 @@ describe('Token List', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
@@ -50,19 +62,20 @@ describe('Token List', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
+          '18',
         );
 
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
         );
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           tokenAddress,
         );
       },
@@ -87,6 +100,9 @@ describe('Token List', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+          ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': marketDataNative,
             [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
@@ -106,20 +122,21 @@ describe('Token List', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           chainId,
           tokenAddress,
           symbol,
+          '18',
         );
-        await assetListPage.dismissTokenImportedMessage();
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.dismissTokenImportedMessage();
+        await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.checkTokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );

@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import AssetsSettingsPage from '../../page-objects/pages/settings/assets-settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
@@ -22,18 +22,18 @@ describe('Hide tokens without balance', function (this: Suite) {
         smartContract,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
       async ({ driver, localNodes }) => {
         await login(driver, { localNode: localNodes[0] });
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.importCustomTokenByChain(
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
           'TST2',
@@ -41,7 +41,7 @@ describe('Hide tokens without balance', function (this: Suite) {
         );
 
         // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
         await tokenList.checkTokenItemNumber(3);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('TST');

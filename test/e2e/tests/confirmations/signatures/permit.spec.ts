@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../constants';
+import { WINDOW_TITLES, DAPP_HOST_ADDRESS } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -140,15 +140,22 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const permitConfirmation = new PermitConfirmation(driver);
+  const contractPetName = '0xCcCCc...ccccC';
+  const ownerName = 'Account 1';
+  const spenderAddress = '0x5B38D...eddC4';
+  const permitValue = '3,000';
+  const permitNonce = '0';
+  const permitDeadline = '09 June 3554, 16:53';
+
   await permitConfirmation.clickCollapseSectionButton();
-  await permitConfirmation.verifyOrigin();
-  await permitConfirmation.verifyContractPetName();
-  await permitConfirmation.verifyPrimaryType();
-  await permitConfirmation.verifyOwner();
-  await permitConfirmation.verifySpender();
-  await permitConfirmation.verifyValue();
-  await permitConfirmation.verifyNonce();
-  await permitConfirmation.verifyDeadline();
+  await permitConfirmation.checkOrigin(DAPP_HOST_ADDRESS);
+  await permitConfirmation.checkAddressValue(contractPetName);
+  await permitConfirmation.checkPrimaryType('Permit');
+  await permitConfirmation.checkAddressName(ownerName);
+  await permitConfirmation.checkAddressValue(spenderAddress);
+  await permitConfirmation.checkDataTreeField('value', permitValue);
+  await permitConfirmation.checkDataTreeField('nonce', permitNonce);
+  await permitConfirmation.checkDataTreeField('deadline', permitDeadline);
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {

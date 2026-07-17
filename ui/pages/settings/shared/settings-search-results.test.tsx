@@ -50,6 +50,53 @@ describe('SettingsSearchResults', () => {
     ).toBeInTheDocument();
   });
 
+  it('collapses a duplicated sub-page title in the breadcrumb', () => {
+    const sectionItem: SettingsSearchResult = {
+      settingId: 'wallet-activity',
+      parentTabLabelKey: 'notifications',
+      tabLabelKey: 'notificationsSettingsWalletActivityTitle',
+      titleKey: 'notificationsSettingsWalletActivityTitle',
+      tabRoute: '/settings/notifications/wallet-activity',
+      iconName: 'Notification',
+    };
+
+    renderWithProvider(
+      <SettingsSearchResults
+        results={[sectionItem]}
+        onClickResult={jest.fn()}
+      />,
+      createMockStore(),
+    );
+
+    expect(
+      screen.getByText(
+        `${messages.notifications.message} > ${messages.notificationsSettingsWalletActivityTitle.message}`,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('collapses a tab item whose title matches the tab label', () => {
+    const allowNotificationsItem: SettingsSearchResult = {
+      settingId: 'allow-notifications',
+      tabLabelKey: 'notifications',
+      titleKey: 'notifications',
+      tabRoute: '/settings/notifications',
+      iconName: 'Notification',
+    };
+
+    renderWithProvider(
+      <SettingsSearchResults
+        results={[allowNotificationsItem]}
+        onClickResult={jest.fn()}
+      />,
+      createMockStore(),
+    );
+
+    expect(
+      screen.getByText(messages.notifications.message),
+    ).toBeInTheDocument();
+  });
+
   it('resolves passkey title keys with auth-method substitution', () => {
     const passkeyItem: SettingsSearchResult = {
       settingId: 'passkey',

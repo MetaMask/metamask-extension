@@ -125,7 +125,7 @@ exports[`PreferencesAndDisplayTab snapshot matches snapshot 1`] = `
               class="flex flex-row gap-2 items-center"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
               >
                 <img
                   alt="maskicon"

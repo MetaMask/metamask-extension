@@ -113,6 +113,7 @@ describe('BridgeQuotesModal', () => {
             {
               "best_quote_provider": "socket_across",
               "can_submit": true,
+              "feature_id": "unified_swap_bridge",
               "gas_included": false,
               "gas_included_7702": false,
               "is_best_quote": true,

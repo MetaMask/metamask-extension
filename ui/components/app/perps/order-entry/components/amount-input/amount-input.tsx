@@ -1,23 +1,19 @@
 import {
   Box,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   BorderRadius,
@@ -26,6 +22,7 @@ import {
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
@@ -35,6 +32,10 @@ import {
   isDigitsOnlyInput,
   isUnsignedDecimalInput,
 } from '../../utils';
+import {
+  getSizeDenomination,
+  setSizeDenomination,
+} from './size-denomination-store';
 
 const handleNumericFocusSelectAll = (
   event: React.FocusEvent<HTMLInputElement>,
@@ -43,10 +44,12 @@ const handleNumericFocusSelectAll = (
 };
 
 /**
- * AmountInput - Size section with dual USD/token inputs and percentage slider
+ * AmountInput - Size section with a single denomination-toggled input and slider
  *
- * Compact layout: "Size" label + "Available to trade XX USDC", two side-by-side
- * inputs (USD and token), slider with percentage pill. No preset buttons.
+ * Compact layout: "Available to trade XX USDC" row, a single Size input whose
+ * denomination toggles between USD (default) and the asset via a swap icon, and
+ * a slider with a percentage pill. USD remains the internal source of truth
+ * (`amount`); the asset value is derived from it. No preset buttons.
  * @param options0
  * @param options0.amount
  * @param options0.onAmountChange
@@ -81,11 +84,23 @@ export const AmountInput = ({
 }: AmountInputProps) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
+  const { privacyMode } = useSelector(getPreferences);
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
-  const tokenInputRef = useRef<HTMLInputElement | null>(null);
-  const shouldSelectTokenOnEditRef = useRef(false);
+
+  // Active input denomination ('usd' default). Persisted per-market for the
+  // current session so navigating away and back keeps the last-used choice.
+  const [denomination, setDenomination] = useState(() =>
+    getSizeDenomination(asset),
+  );
+  const isUsdDenomination = denomination === 'usd';
+
+  // Re-read the stored denomination whenever the market changes so each market
+  // keeps its own last-used choice.
+  useEffect(() => {
+    setDenomination(getSizeDenomination(asset));
+  }, [asset]);
 
   useEffect(() => {
     setPercentInputValue(String(balancePercent));
@@ -116,14 +131,6 @@ export const AmountInput = ({
   const [isEditingToken, setIsEditingToken] = useState(false);
   const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
 
-  useEffect(() => {
-    if (!isEditingToken || !shouldSelectTokenOnEditRef.current) {
-      return;
-    }
-    shouldSelectTokenOnEditRef.current = false;
-    tokenInputRef.current?.select();
-  }, [isEditingToken, tokenInputValue]);
-
   // When not editing, derive the displayed token value from the current amount
   // rather than syncing via an effect — avoids a stale intermediate render.
   const displayedTokenValue = isEditingToken
@@ -145,8 +152,15 @@ export const AmountInput = ({
     return `${formatPositionSize(totalPositionSize, szDecimals)} ${getDisplaySymbol(asset)}`;
   }, [asset, currentPositionSize, szDecimals]);
 
+  // Floor to 2 decimals instead of rounding. At 100% the size is computed as
+  // availableBalance * leverage; rounding up (toFixed) could push the amount
+  // above that budget, so marginRequired (amount / leverage) exceeded the
+  // available balance by a sub-cent and the order form showed a false
+  // "Insufficient funds" error. Flooring guarantees the amount never exceeds
+  // availableBalance * leverage, mirroring mobile's Math.floor in
+  // usePerpsOrderForm (handlePercentageAmount / handleMaxAmount).
   const formatAmount = useCallback(
-    (value: number): string => value.toFixed(2),
+    (value: number): string => (Math.floor(value * 100) / 100).toFixed(2),
     [],
   );
 
@@ -240,10 +254,12 @@ export const AmountInput = ({
   );
 
   const handleTokenFocus = useCallback(
-    (_event: React.FocusEvent<HTMLInputElement>) => {
-      shouldSelectTokenOnEditRef.current = true;
+    (event: React.FocusEvent<HTMLInputElement>) => {
       setTokenInputValue(unGroupedTokenDisplay);
       setIsEditingToken(true);
+      // The displayed value is unchanged on focus (it already equals
+      // unGroupedTokenDisplay), so selecting the current text is safe here.
+      event.target.select();
     },
     [unGroupedTokenDisplay],
   );
@@ -251,6 +267,17 @@ export const AmountInput = ({
   const handleTokenBlur = useCallback(() => {
     setIsEditingToken(false);
   }, []);
+
+  const handleToggleDenomination = useCallback(() => {
+    // Exit any in-progress token draft so the field re-derives from the USD
+    // amount (the source of truth) after switching denominations.
+    setIsEditingToken(false);
+    setDenomination((prev) => {
+      const next = prev === 'usd' ? 'asset' : 'usd';
+      setSizeDenomination(asset, next);
+      return next;
+    });
+  }, [asset]);
 
   const handleSliderChange = useCallback(
     (_event: Event, value: number | number[]) => {
@@ -356,82 +383,74 @@ export const AmountInput = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodySm}>
+          <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
-          </Text>
-          <Icon
-            name={IconName.AddCircle}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-            aria-label="Add Funds"
+          </SensitiveText>
+          <ButtonIcon
+            iconName={IconName.AddCircle}
+            size={ButtonIconSize.Xs}
+            iconProps={{ color: IconColor.IconAlternative }}
+            ariaLabel="Add Funds"
+            type="button"
             onClick={onAddFunds}
-            className="bg-transparent border-0 p-0 cursor-pointer flex items-center"
             data-testid="amount-input-add-funds"
           />
         </Box>
       </Box>
 
-      {/* Size label */}
-      <Text variant={TextVariant.BodySm}>{t('perpsSize')}</Text>
-
-      {/* Two side-by-side inputs: USD (left), Token (right) */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Box className="flex-1 min-w-0">
-          <TextField
-            size={TextFieldSize.Md}
-            value={amount}
-            onChange={handleAmountChange}
-            onFocus={handleNumericFocusSelectAll}
-            onBlur={handleAmountBlur}
-            placeholder={usdPlaceholder}
-            borderRadius={BorderRadius.MD}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            className="w-full"
-            data-testid="amount-input-field"
-            autoFocus={autoFocus}
-            inputRef={usdInputRef}
-            inputProps={{ inputMode: 'decimal' }}
-            startAccessory={
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                $
-              </Text>
-            }
-          />
-        </Box>
-        <Box className="flex-1 min-w-0">
-          <TextField
-            size={TextFieldSize.Md}
-            value={displayedTokenValue}
-            onChange={handleTokenAmountChange}
-            onFocus={handleTokenFocus}
-            onBlur={handleTokenBlur}
-            placeholder="0"
-            inputRef={tokenInputRef}
-            borderRadius={BorderRadius.MD}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            className="w-full"
-            data-testid="amount-input-token-field"
-            inputProps={{ inputMode: 'decimal' }}
-            endAccessory={
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {getDisplaySymbol(asset)}
-              </Text>
-            }
-          />
-        </Box>
-      </Box>
+      {/* Single size input with a USD/asset denomination toggle */}
+      <TextField
+        size={TextFieldSize.Md}
+        value={isUsdDenomination ? amount : displayedTokenValue}
+        onChange={
+          isUsdDenomination ? handleAmountChange : handleTokenAmountChange
+        }
+        onFocus={
+          isUsdDenomination ? handleNumericFocusSelectAll : handleTokenFocus
+        }
+        onBlur={isUsdDenomination ? handleAmountBlur : handleTokenBlur}
+        placeholder={isUsdDenomination ? usdPlaceholder : '0'}
+        borderRadius={BorderRadius.MD}
+        borderWidth={0}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        className="w-full"
+        data-testid="amount-input-field"
+        autoFocus={autoFocus}
+        inputRef={usdInputRef}
+        inputProps={{
+          inputMode: 'decimal',
+          style: { textAlign: 'right' },
+        }}
+        startAccessory={
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('perpsSize')}
+          </Text>
+        }
+        endAccessory={
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              data-testid="amount-input-denomination-unit"
+            >
+              {isUsdDenomination ? 'USD' : getDisplaySymbol(asset)}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.SwapHorizontal}
+              size={ButtonIconSize.Xs}
+              iconProps={{ color: IconColor.IconAlternative }}
+              ariaLabel="Toggle size denomination"
+              type="button"
+              onClick={handleToggleDenomination}
+              data-testid="toggle-denomination"
+            />
+          </Box>
+        }
+      />
 
       <Box
         flexDirection={BoxFlexDirection.Row}

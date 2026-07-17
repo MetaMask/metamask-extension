@@ -62,7 +62,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div
@@ -162,7 +162,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div

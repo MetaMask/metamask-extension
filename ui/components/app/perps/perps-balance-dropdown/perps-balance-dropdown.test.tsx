@@ -9,6 +9,26 @@ import {
   invokePerpsBalanceAction,
 } from './perps-balance-dropdown';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
+
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
@@ -249,5 +269,53 @@ describe('PerpsBalanceDropdown', () => {
       expect(onAddFunds).not.toHaveBeenCalled();
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks the total balance when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown />, privacyStore);
+
+      expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+      expect(screen.getByText('••••••')).toBeInTheDocument();
+    });
+
+    it('masks the P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+      expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
+      expect(screen.getAllByText('••••••')).toHaveLength(3);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      renderWithProvider(<PerpsBalanceDropdown hasPositions />, privacyStore);
+
+      const pnl = screen.getByTestId('perps-balance-dropdown-pnl-value');
+      const roe = screen.getByTestId('perps-balance-dropdown-roe-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
+    });
+  });
+
+  it('uses the success color for a profitable P&L outside of privacy mode', () => {
+    renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
+
+    expect(screen.getByTestId('perps-balance-dropdown-pnl-value')).toHaveClass(
+      'text-success-default',
+    );
   });
 });

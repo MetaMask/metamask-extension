@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
   getGasIncludedSwapFixtures,
   getGasless7702SwapFixtures,
@@ -36,9 +36,9 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(1);
-        await activityList.checkTxAction({
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAction({
           action: 'Swapped ETH to USDC',
           confirmedTx: 1,
         });
@@ -71,14 +71,14 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(2);
-        await activityList.checkTxAction({
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(2);
+        await activityTab.checkTxAction({
           action: 'Swapped USDC to DAI',
           confirmedTx: 0,
           txIndex: 1,
         });
-        await activityList.checkTxAction({
+        await activityTab.checkTxAction({
           action: 'Approved spending cap',
           confirmedTx: 0,
           txIndex: 2,
@@ -111,9 +111,9 @@ describe('Gasless swap tests', function (this: Suite) {
         await bridgePage.submitQuoteAndDismiss();
 
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedBridgeTransactionActivity(1);
-        await activityList.checkTxAction({
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAction({
           action: 'Swapped ETH to USDC',
           confirmedTx: 1,
         });

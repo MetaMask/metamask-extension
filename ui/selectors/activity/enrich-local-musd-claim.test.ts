@@ -4,10 +4,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { mapLocalTransaction } from '@metamask/client-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { mapLocalTransaction } from '../../../shared/lib/activity/adapters/local-transaction';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   DISTRIBUTOR_CLAIM_ABI,
@@ -74,12 +74,10 @@ function mapMusdClaimGroup(
     transactions: [fullTransaction],
   } as unknown as TransactionGroup;
 
-  const activity = enrichLocalMusdClaimActivity(
+  const result = enrichLocalMusdClaimActivity(
     mapLocalTransaction(transactionGroup),
     transactionGroup,
   );
-  const result = { ...activity };
-  delete result.raw;
   return result;
 }
 
@@ -145,8 +143,9 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
+      hash: '0xmusdclaim',
       data: {
-        hash: '0xmusdclaim',
+        from,
         token: {
           amount: '5000000',
           direction: 'in',
@@ -223,8 +222,9 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778633400000,
+      hash: '0xmusdclaimconfirmed',
       data: {
-        hash: '0xmusdclaimconfirmed',
+        from,
         token: {
           amount: '5000000',
           direction: 'in',
@@ -299,12 +299,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144' as const,
       status: 'success' as const,
       timestamp: 1,
-      raw: {
-        type: 'apiEvmTransaction' as const,
-        data: {},
-      },
+      hash: '0xapi',
       data: {
-        hash: '0xapi',
         token: {
           direction: 'in' as const,
           symbol: 'mUSD',

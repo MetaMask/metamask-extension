@@ -16,8 +16,9 @@ import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../../hooks/useTheme';
 import {
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getDataCollectionForMarketing,
 } from '../../../../../selectors';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
@@ -25,8 +26,12 @@ import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 export const BatchSellEmptySelectTokens = () => {
   const t = useI18nContext();
   const theme = useTheme();
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const defiIcon =
@@ -38,12 +43,12 @@ export const BatchSellEmptySelectTokens = () => {
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_batch_sell_empty',
-      metaMetricsId,
+      analyticsId,
       isMetaMetricsEnabled ?? undefined,
       isMarketingEnabled,
     );
     globalThis.platform.openTab({ url });
-  }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);
+  }, [analyticsId, isMetaMetricsEnabled, isMarketingEnabled]);
 
   return (
     <Box

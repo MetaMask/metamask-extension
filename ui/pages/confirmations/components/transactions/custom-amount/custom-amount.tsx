@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   Display,
   FlexDirection,
@@ -10,7 +11,6 @@ import {
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import {

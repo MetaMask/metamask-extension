@@ -7,6 +7,10 @@ import {
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../../../shared/constants/metametrics';
 import {
+  createEventBuilder,
+  type AnalyticsEvent,
+} from '../../../../../shared/lib/analytics/create-event-builder';
+import {
   buildHardwareWalletRecoverySegmentProperties,
   mapHardwareWalletRecoveryErrorType,
 } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
@@ -14,6 +18,11 @@ import {
   createHardwareWalletError,
   HardwareWalletType,
 } from '../../../../contexts/hardware-wallets';
+import type { QrErrorFlowContext } from '../qr-error-content';
+import {
+  ScanErrorCategory,
+  type ScanErrorClassification,
+} from '../qr-utils/qr-utils';
 import {
   CameraReadyState,
   type CameraReadyStateValue,
@@ -61,28 +70,66 @@ export function createQrCameraSyntheticError(
  * @param eventName - The Segment event name to fire.
  * @param errorCode - The SDK error code representing the camera permission issue.
  * @param errorTypeViewCount - The current monotonic view count for this error type.
- * @returns A ready-to-use `trackEvent` argument.
+ * @returns A ready-to-use analytics event.
  */
 export function buildQrCameraRecoveryTrackEventArgs(
   eventName: MetaMetricsEventName,
   errorCode: ErrorCode,
   errorTypeViewCount: number,
-): {
-  category: string;
-  event: MetaMetricsEventName;
-  properties: Record<string, Json>;
-} {
+): AnalyticsEvent {
   const syntheticError = createQrCameraSyntheticError(errorCode);
-  return {
-    category: MetaMetricsEventCategory.Accounts,
-    event: eventName,
-    properties: buildHardwareWalletRecoverySegmentProperties({
-      location: MetaMetricsHardwareWalletRecoveryLocation.Connection,
-      deviceType: MetaMetricsHardwareWalletDeviceType.QrHardware,
-      deviceModel: 'N/A',
-      errorType: mapHardwareWalletRecoveryErrorType(syntheticError),
-      errorTypeViewCount,
-      error: syntheticError,
-    }),
+  return createEventBuilder(eventName)
+    .addCategory(MetaMetricsEventCategory.Accounts)
+    .addProperties(
+      buildHardwareWalletRecoverySegmentProperties({
+        location: MetaMetricsHardwareWalletRecoveryLocation.Connection,
+        deviceType: MetaMetricsHardwareWalletDeviceType.QrHardware,
+        deviceModel: 'N/A',
+        errorType: mapHardwareWalletRecoveryErrorType(syntheticError),
+        errorTypeViewCount,
+        error: syntheticError,
+      }),
+    )
+    .build();
+}
+
+/**
+ * Builds a complete `trackEvent` argument for a QR scan-failed event.
+ *
+ * Every category includes `error_category`, `is_ur_format`, and `flow`.
+ * `received_ur_type` is added for `wrong_ur_type`; `raw_message` is added
+ * for `scan_exception`.
+ *
+ * @param classification - The structured scan error from {@link classifyScanResult}.
+ * @param flow - Whether the scan occurred during pairing or signing.
+ * @returns A ready-to-use analytics event.
+ */
+export function buildQrScanFailedTrackEventArgs(
+  classification: ScanErrorClassification,
+  flow: QrErrorFlowContext,
+): AnalyticsEvent {
+  const properties: Record<string, Json> = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    error_category: classification.category,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    is_ur_format: classification.isUrFormat,
+    flow,
   };
+
+  if (classification.category === ScanErrorCategory.WrongUrType) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    properties.received_ur_type = classification.receivedUrType;
+  }
+
+  if (classification.category === ScanErrorCategory.ScanException) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    properties.raw_message = classification.rawMessage;
+  }
+
+  return createEventBuilder(MetaMetricsEventName.QrHardwareScanFailed)
+    .addCategory(MetaMetricsEventCategory.Accounts)
+    .addProperties(properties)
+    .build();
 }

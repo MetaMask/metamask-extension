@@ -170,11 +170,15 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 212,
+      "currentMigrationVersion": 218,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -197,8 +201,9 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -339,7 +344,11 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
@@ -349,6 +358,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -424,17 +445,12 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": false,
       "eventsBeforeMetricsOptIn": [],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
     },
@@ -552,6 +568,18 @@
           "isEvm": false,
           "name": "Solana Devnet",
           "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
+        },
+        "stellar:pubnet": {
+          "chainId": "stellar:pubnet",
+          "isEvm": false,
+          "name": "Stellar",
+          "nativeCurrency": "stellar:pubnet/slip44:148"
+        },
+        "stellar:testnet": {
+          "chainId": "stellar:testnet",
+          "isEvm": false,
+          "name": "Stellar Testnet",
+          "nativeCurrency": "stellar:testnet/slip44:148"
         },
         "tron:2494104990": {
           "chainId": "tron:2494104990",
@@ -895,6 +923,10 @@
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": false,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
+        "stellar": {
+          "stellar:pubnet": false,
+          "stellar:testnet": false
+        },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
@@ -959,13 +991,10 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1029,7 +1058,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -1045,7 +1073,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1093,7 +1123,8 @@
     },
     "ProfileMetricsController": {
       "initialDelayEndTimestamp": 1770282498299,
-      "initialEnqueueCompleted": true,
+      "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1110,6 +1141,18 @@
           }
         ]
       }
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
@@ -1154,7 +1197,13 @@
           "subscriptionId": null
         }
       },
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": {
+        "account": "eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "lastFreshOptInStatusCheck": 1783610142869,
+        "lastPerpsDiscountRateFetched": null,
+        "perpsFeeDiscount": null,
+        "subscriptionId": null
+      },
       "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
@@ -1219,7 +1268,11 @@
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SnapController": {},
+    "SnapController": {
+      "unencryptedSnapStates": {
+        "npm:@metamask/solana-wallet-snap": "{\"keyringAccounts\":{\"688e01b8-3134-4ef4-80e6-8772bab38ef7\":{\"id\":\"688e01b8-3134-4ef4-80e6-8772bab38ef7\",\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0,\"type\":\"solana:data-account\",\"address\":\"4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer\",\"scopes\":[\"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp\",\"solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z\",\"solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1\"],\"options\":{\"entropySource\":\"01KGPGYE2JJGMXDJPEVXKPJ1JG\",\"derivationPath\":\"m/44'/501'/0'/0'\",\"index\":0},\"methods\":[\"signAndSendTransaction\",\"signTransaction\",\"signMessage\",\"signIn\"]}},\"mapInterfaceNameToId\":{},\"transactions\":{},\"signatures\":{},\"assetEntities\":{},\"tokenPrices\":{},\"subscriptions\":{},\"webSocketConnections\":{\"closeWebSocketConnectionsBackgroundEventId\":null}}"
+      }
+    },
     "SnapInterfaceController": {
       "interfaces": {}
     },
@@ -1260,6 +1313,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 212
+    "version": 218
   }
 }

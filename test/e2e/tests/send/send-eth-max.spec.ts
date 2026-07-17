@@ -10,7 +10,7 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction';
+import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';

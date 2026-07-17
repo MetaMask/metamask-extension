@@ -12,9 +12,10 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/bundle_size.json`,
+    expect(links.bundleSizeDebug.url).toBe(
+      `${HOST}/bundle-size/chrome.debug.json`,
     );
+    expect(links.bundleSizeStats.url).toBe(`${HOST}/bundle-size/chrome.json`);
     expect(links.interactionStats.url).toBe(
       `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
@@ -48,23 +49,13 @@ describe('buildArtifactsBody', () => {
 
     const webpackBuildsIndex = result.indexOf('Webpack builds');
     const allArtifactsIndex = result.indexOf('all artifacts');
-    const deprecatedBuildsIndex = result.indexOf(
-      '<details><summary>Deprecated Browserify fallback builds</summary><ul>',
-    );
-    const browserifyBuildsIndex = result.indexOf('Browserify builds');
 
     expect(webpackBuildsIndex).toBeGreaterThan(-1);
     expect(allArtifactsIndex).toBeGreaterThan(webpackBuildsIndex);
-    expect(deprecatedBuildsIndex).toBeGreaterThan(allArtifactsIndex);
-    expect(browserifyBuildsIndex).toBeGreaterThan(deprecatedBuildsIndex);
     expect(result).toContain(
       `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
     );
-    expect(result).toContain(
-      `${HOST}/build-dist-browserify/builds/metamask-chrome-${VERSION}.zip`,
-    );
     expect(result).not.toContain('build-experimental-webpack');
-    expect(result).not.toContain('build-experimental-browserify');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).not.toContain('reused from');
     expect(result).toContain(
@@ -115,7 +106,7 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result).toContain(
-      `<a href="${HOST}/bundle-size/bundle_size.json">Bundle Size Stats</a>`,
+      `<a href="${HOST}/bundle-size/chrome.debug.json">Bundle Size Stats</a>`,
     );
     expect(result).toContain(
       `<a href="${HOST}/build-dist-webpack/bundle-analyzer/report.html">Bundle Analyzer</a>`,

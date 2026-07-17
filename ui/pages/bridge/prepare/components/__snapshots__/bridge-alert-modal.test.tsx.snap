@@ -110,7 +110,7 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -128,7 +128,7 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             />
             <div
-              class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+              class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
               data-testid="bridge-alert-modal-banner"
             >
               <svg
@@ -257,7 +257,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -376,7 +376,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -495,7 +495,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -614,7 +614,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -632,7 +632,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             />
             <div
-              class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+              class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
               data-testid="bridge-alert-modal-banner"
             >
               <svg
@@ -848,7 +848,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -866,7 +866,7 @@ exports[`BridgeAlertModal submit-cta should render when there is a price impact 
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
             />
             <div
-              class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+              class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
               data-testid="bridge-alert-modal-banner"
             >
               <svg

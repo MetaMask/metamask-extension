@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "עליך לבחור חשבון!"
   },
-  "addAcquiredTokens": {
-    "message": "הוספת הטוקנים שהשגת באמצעות MetaMask"
-  },
   "addAlias": {
     "message": "הוסף כינוי"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "מתקדם"
-  },
-  "customToken": {
-    "message": "אסימון מותאם אישית"
   },
   "decimal": {
     "message": "רמת דיוק עשרוני"
@@ -345,9 +339,6 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "mustSelectOne": {
-    "message": "חובה לבחור לפחות אסימון אחד."
-  },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
@@ -379,9 +370,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "מצלמת הרשת לא נמצאה"
-  },
-  "notEnoughGas": {
-    "message": "אין מספיק דלק"
   },
   "ofTextNofM": {
     "message": "של"
@@ -520,9 +508,6 @@
   },
   "sign": {
     "message": "חתימה"
-  },
-  "signatureRequest": {
-    "message": "בקשת חתימה"
   },
   "signed": {
     "message": "חתום"

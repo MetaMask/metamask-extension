@@ -174,6 +174,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(undefined);
     useSubscriptionPricingMock.mockReturnValue({
@@ -210,6 +211,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(activeSubscription);
 
@@ -247,6 +249,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(subscription);
 
@@ -268,6 +271,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(subscription);
 
@@ -301,6 +305,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(subscription);
 
@@ -349,6 +354,7 @@ describe('useShieldAddFundTrigger', () => {
       error: undefined,
       customerId: undefined,
       trialedProducts: [],
+      lastSubscription: undefined,
     });
     useUserSubscriptionByProductMock.mockReturnValue(subscription);
 

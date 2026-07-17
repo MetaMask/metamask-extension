@@ -5,6 +5,7 @@ import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
@@ -34,6 +35,7 @@ import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
+import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
@@ -88,68 +90,82 @@ const CrossChainSwap = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
 
+  const swapHeader = (
+    <Header
+      textProps={{ variant: TextVariant.headingSm }}
+      startAccessory={
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('back')}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onClick={handleBack}
+        />
+      }
+      endAccessory={
+        <ButtonIcon
+          iconName={IconName.Setting}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('settings')}
+          data-testid="bridge__header-settings-button"
+          onClick={() => {
+            setIsSettingsModalOpen(true);
+          }}
+        />
+      }
+    >
+      {t('swap')}
+    </Header>
+  );
+
   return (
-    <Page className="bridge__container">
-      <Header
-        textProps={{ variant: TextVariant.headingSm }}
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={handleBack}
-          />
+    <Routes>
+      {/*
+       * Behind the network management feature flag, token selection is shown on
+       * its own page instead of inside the prepare-bridge modal. It renders its
+       * own page shell, so it lives outside the shared swap header.
+       */}
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ASSETS_ROUTE)}
+        element={<BridgeAssetPickerPage />}
+      />
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <BridgeTransactionSettingsModal
+                isOpen={isSettingsModalOpen}
+                onClose={() => {
+                  setIsSettingsModalOpen(false);
+                }}
+              />
+              <PrepareBridgePage
+                onOpenSettings={() => setIsSettingsModalOpen(true)}
+              />
+            </Content>
+          </Page>
         }
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
+      />
+      <Route
+        path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <Content>
+                <AwaitingSignatures />
+              </Content>
+              <Footer>
+                <AwaitingSignaturesCancelButton />
+              </Footer>
+            </Content>
+          </Page>
         }
-      >
-        {t('swap')}
-      </Header>
-      <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
-      </Content>
-    </Page>
+      />
+    </Routes>
   );
 };
 

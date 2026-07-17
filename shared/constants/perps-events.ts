@@ -45,6 +45,10 @@ export const PERPS_EVENT_PROPERTY = {
   SCREEN_NAME: 'screen_name',
   ACTION_TYPE: 'action_type',
   ORDER_TIMESTAMP: 'order_timestamp',
+  MAX_SLIPPAGE_PCT: 'max_slippage_pct',
+  MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
+  ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
+  SETTING_TYPE: 'setting_type',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
@@ -62,6 +66,7 @@ export const PERPS_EVENT_VALUE = {
     FLIP_POSITION: 'flip_position',
     CREATE_TP_SL: 'create_tp_sl',
     UPDATE_TP_SL: 'update_tp_sl',
+    COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
   },
   INTERACTION_TYPE: {
     ORDER_TYPE_SELECTED: 'order_type_selected',
@@ -77,6 +82,9 @@ export const PERPS_EVENT_VALUE = {
     CLOSE_ALL_TAPPED: 'close_all_tapped',
     CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
+    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
+    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',
@@ -145,6 +153,13 @@ export const PERPS_EVENT_VALUE = {
     ORDERS: 'orders',
     FUNDING: 'funding',
     DEPOSITS: 'deposits',
+  },
+  MAX_SLIPPAGE_SOURCE: {
+    DEFAULT: 'default',
+    USER_CONFIGURED: 'user_configured',
+  },
+  SETTING_TYPE: {
+    SLIPPAGE: 'slippage',
   },
 } as const;
 

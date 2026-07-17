@@ -80,6 +80,7 @@ describe('Bridge asset selectors', () => {
             "balance": "5.030001",
             "chainId": "eip155:10",
             "decimals": 6,
+            "iconUrl": undefined,
             "name": "Compound",
             "rwaData": undefined,
             "symbol": "COMP",
@@ -90,6 +91,7 @@ describe('Bridge asset selectors', () => {
             "balance": "9535.2030001",
             "chainId": "eip155:10",
             "decimals": 9,
+            "iconUrl": undefined,
             "name": "Link",
             "rwaData": undefined,
             "symbol": "LINK",
@@ -148,6 +150,7 @@ describe('Bridge asset selectors', () => {
             "balance": "0.0000001848",
             "chainId": "eip155:1",
             "decimals": 10,
+            "iconUrl": undefined,
             "name": "Uniswap",
             "rwaData": undefined,
             "symbol": "UNI",
@@ -158,6 +161,7 @@ describe('Bridge asset selectors', () => {
             "balance": "0.000000001",
             "chainId": "eip155:1",
             "decimals": 9,
+            "iconUrl": undefined,
             "name": "Link",
             "rwaData": undefined,
             "symbol": "LINK",
@@ -182,6 +186,7 @@ describe('Bridge asset selectors', () => {
             "balance": "0.0000001848",
             "chainId": "eip155:1",
             "decimals": 10,
+            "iconUrl": undefined,
             "name": "Uniswap",
             "rwaData": undefined,
             "symbol": "UNI",
@@ -192,6 +197,7 @@ describe('Bridge asset selectors', () => {
             "balance": "0.000000001",
             "chainId": "eip155:1",
             "decimals": 9,
+            "iconUrl": undefined,
             "name": "Link",
             "rwaData": undefined,
             "symbol": "LINK",
@@ -211,6 +217,7 @@ describe('Bridge asset selectors', () => {
             "balance": "9535.2030001",
             "chainId": "eip155:10",
             "decimals": 9,
+            "iconUrl": undefined,
             "name": "Link",
             "rwaData": undefined,
             "symbol": "LINK",
@@ -221,6 +228,7 @@ describe('Bridge asset selectors', () => {
             "balance": "5.030001",
             "chainId": "eip155:10",
             "decimals": 6,
+            "iconUrl": undefined,
             "name": "Compound",
             "rwaData": undefined,
             "symbol": "COMP",
@@ -266,6 +274,76 @@ describe('Bridge asset selectors', () => {
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": 212.89214978478,
         }
       `);
+    });
+
+    it('uses allTokens as fallback when token is absent from tokensChainsCache', () => {
+      const FALLBACK_TOKEN_ADDRESS =
+        '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
+          },
+        },
+        metamaskStateOverrides: {
+          // Add the token to allTokens for the account but NOT to tokensChainsCache
+          allTokens: {
+            [CHAIN_IDS.MAINNET]: {
+              [MOCK_EVM_ACCOUNT.address]: [
+                {
+                  address: FALLBACK_TOKEN_ADDRESS,
+                  decimals: 18,
+                  symbol: 'FALL',
+                  name: 'Fallback Token',
+                  image: 'https://example.com/fall.png',
+                },
+              ],
+            },
+          },
+          tokenBalances: {
+            [MOCK_EVM_ACCOUNT.address]: {
+              [CHAIN_IDS.MAINNET]: {
+                [FALLBACK_TOKEN_ADDRESS]: '0xDE0B6B3A7640000', // 1e18 → "1"
+              },
+            },
+          },
+          // Override the cache so it does NOT contain FALLBACK_TOKEN_ADDRESS
+          tokensChainsCache: {
+            [CHAIN_IDS.MAINNET]: {
+              timestamp: 111111,
+              data: {},
+            },
+          },
+        },
+      });
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+      const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
+
+      const fallbackAsset = assetsWithBalance.find((a) =>
+        a.assetId.toLowerCase().includes(FALLBACK_TOKEN_ADDRESS),
+      );
+      expect(fallbackAsset).toBeDefined();
+      expect(fallbackAsset).toMatchObject({
+        symbol: 'FALL',
+        name: 'Fallback Token',
+        decimals: 18,
+        iconUrl: 'https://example.com/fall.png',
+        balance: '1',
+        chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+      });
     });
 
     it('returns empty results when accountGroupId is undefined', () => {

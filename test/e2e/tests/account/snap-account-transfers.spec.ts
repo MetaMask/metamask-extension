@@ -9,11 +9,11 @@ import {
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
@@ -70,8 +70,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
 
@@ -81,9 +81,9 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-1 ETH');
-        await activityList.waitPendingTxToNotBeVisible();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('-1 ETH');
+        await activityTab.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
@@ -139,8 +139,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
 
@@ -153,9 +153,9 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         });
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-1 ETH');
-        await activityList.waitPendingTxToNotBeVisible();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('-1 ETH');
+        await activityTab.waitPendingTxToNotBeVisible();
 
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
@@ -202,8 +202,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({
@@ -216,9 +216,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
 
         // check the transaction is failed in MetaMask activity list
         await new HomePage(driver).checkPageIsLoaded();
-        await new ActivityListPage(
-          driver,
-        ).checkFailedTxNumberDisplayedInActivity();
+        await new ActivityTab(driver).checkFailedTxNumberDisplayedInActivity();
       },
     );
   });

@@ -25,6 +25,7 @@ import {
   TokenStandard,
 } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
+import { isValidHexAddress } from './hexstring-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
 const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
@@ -50,6 +51,23 @@ const ABI_PERMIT_2_APPROVE = {
   type: 'function',
 };
 
+// Legacy OpenZeppelin pre-2.0 approval methods. Renamed to
+// `increaseAllowance`/`decreaseAllowance` in OZ v2.0.0 (PR #1293, Sep 2018)
+// and removed entirely in OZ v5.0.0. Still exposed by immortal tokens such as
+// LINK (0x5149...86CA), stLINK (0xb8b2...3cD5), and BAT (0x0D87...87EF).
+// Scoped to `increaseApproval` only — it is the function actively weaponized
+// against MetaMask users (PSAFE-415, CoW Swap DNS hijack Apr 14 2026).
+const ABI_LEGACY_INCREASE_APPROVAL = {
+  inputs: [
+    { internalType: 'address', name: '_spender', type: 'address' },
+    { internalType: 'uint256', name: '_addedValue', type: 'uint256' },
+  ],
+  name: 'increaseApproval',
+  outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+  stateMutability: 'nonpayable',
+  type: 'function',
+};
+
 type InferTransactionTypeResult = {
   // The type of transaction
   type: TransactionType;
@@ -64,6 +82,7 @@ const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 const USDCInterface = new Interface(abiFiatTokenV2);
 const permit2Interface = new Interface([ABI_PERMIT_2_APPROVE]);
+const legacyApprovalInterface = new Interface([ABI_LEGACY_INCREASE_APPROVAL]);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -164,6 +183,7 @@ export function parseStandardTokenTransactionData(data: string) {
     erc1155Interface,
     USDCInterface,
     permit2Interface,
+    legacyApprovalInterface,
   ];
 
   for (const iface of interfaces) {
@@ -518,6 +538,44 @@ export function parseApprovalTransactionData(data: Hex):
     tokenAddress,
     spender,
   };
+}
+
+/**
+ * Resolves the ERC-20 contract address for approval transactions.
+ * Permit2 approvals encode the token in calldata; standard ERC-20 approvals
+ * use `txParams.to`.
+ *
+ * @param transaction - Transaction metadata with tx params and transfer info.
+ * @returns Token contract address, if one can be resolved.
+ */
+export function resolveApprovalTokenContractAddress(
+  transaction: Pick<TransactionMeta, 'txParams' | 'transferInformation'>,
+) {
+  const { to, data } = transaction.txParams;
+  const transferContractAddress =
+    transaction.transferInformation?.contractAddress;
+  const parsed = data ? parseApprovalTransactionData(data as Hex) : undefined;
+
+  if (
+    parsed?.name === 'approve' &&
+    parsed.tokenAddress &&
+    isValidHexAddress(parsed.tokenAddress, { allowNonPrefixed: false })
+  ) {
+    return parsed.tokenAddress;
+  }
+
+  if (to && isValidHexAddress(to, { allowNonPrefixed: false })) {
+    return to;
+  }
+
+  if (
+    transferContractAddress &&
+    isValidHexAddress(transferContractAddress, { allowNonPrefixed: false })
+  ) {
+    return transferContractAddress;
+  }
+
+  return undefined;
 }
 
 /**

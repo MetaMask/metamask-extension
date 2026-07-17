@@ -42,6 +42,7 @@ describe('NetworkConstants', () => {
         MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
         Tempo: CHAIN_IDS.TEMPO_MAINNET,
         Arc: CHAIN_IDS.ARC,
+        'Robinhood Chain': CHAIN_IDS.ROBINHOOD_CHAIN,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -86,11 +87,11 @@ describe('NetworkConstants', () => {
       expect(polygonRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
-    it('zkSync Era entry should not use Infura', () => {
+    it('zkSync Era entry should use Infura', () => {
       const [zksyncEraRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.ZKSYNC_ERA,
       );
-      expect(zksyncEraRpc.rpcEndpoints[0].url).not.toContain('infura.io');
+      expect(zksyncEraRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
 
     it('base entry should use Infura', () => {

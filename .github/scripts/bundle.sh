@@ -29,6 +29,7 @@ export QUICKNODE_SEI_URL=""
 export QUICKNODE_MONAD_URL=""
 export QUICKNODE_HYPEREVM_URL=""
 export QUICKNODE_ARC_URL=""
+export QUICKNODE_ROBINHOOD_URL=""
 export SEGMENT_BETA_WRITE_KEY=""
 export SEGMENT_EXPERIMENTAL_WRITE_KEY=""
 export SEGMENT_FLASK_WRITE_KEY=""
@@ -62,7 +63,11 @@ yarn
 # which the webpack:lavamoat build script loads)
 yarn webpack:tsc
 
-# 7. Run the production build command
+# 7. Set the epoch to the package.json mtime; this is used to set the mtime of the files in the generated zip.
+SOURCE_DATE_EPOCH="$(node -p "Math.floor(require('node:fs').statSync('package.json').mtimeMs / 1000)")"
+export SOURCE_DATE_EPOCH
+
+# 8. Run the production build command
 if [ "${1:-}" = "--flask" ]; then
   yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
 else

@@ -52,7 +52,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -127,7 +127,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -172,7 +172,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     <p
       class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
     >
-      Includes 0.875% MM fee. Approves token for bridge.
+      Includes 0.875% MetaMask fee. Approves token for bridge.
     </p>
     <div
       class=""
@@ -238,7 +238,7 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -321,7 +321,7 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -488,7 +488,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -563,7 +563,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -643,10 +643,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           style="width: 32px;"
         >
-          0:00
+          0:30
         </p>
         <div
           class=""
@@ -674,7 +674,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -749,7 +749,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>

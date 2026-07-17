@@ -5,6 +5,8 @@ import {
 import { QrErrorType } from '../qr-error-content';
 import {
   classifyScanResult,
+  isQrMismatchedTransactionError,
+  QrMismatchedTransactionError,
   scanCategoryToQrErrorType,
   ScanErrorCategory,
   type ScanClassificationInput,
@@ -472,6 +474,12 @@ describe('scanCategoryToQrErrorType', () => {
     );
   });
 
+  it('maps MismatchedSignId to MismatchedTransaction', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.MismatchedSignId)).toBe(
+      QrErrorType.MismatchedTransaction,
+    );
+  });
+
   it('falls back to UrDecodeError for unknown categories', () => {
     const unknownCategory = 'future_category' as never;
     expect(scanCategoryToQrErrorType(unknownCategory)).toBe(
@@ -515,5 +523,32 @@ describe('ScanErrorClassification type discrimination', () => {
       expect(result.rawMessage).toBe('crash');
       expect(typeof result.isUrFormat).toBe('boolean');
     }
+  });
+});
+
+describe('QrMismatchedTransactionError', () => {
+  it('extends Error so it can flow through generic error handling', () => {
+    expect(new QrMismatchedTransactionError()).toBeInstanceOf(Error);
+  });
+
+  it('is detected by isQrMismatchedTransactionError', () => {
+    expect(
+      isQrMismatchedTransactionError(new QrMismatchedTransactionError()),
+    ).toBe(true);
+  });
+
+  it('does not detect a plain Error sharing the same message', () => {
+    // Guard must rely on the instance, not the message string, so a
+    // look-alike error is still routed through the generic error path.
+    expect(
+      isQrMismatchedTransactionError(new Error('QrMismatchedTransactionError')),
+    ).toBe(false);
+  });
+
+  it('does not detect unrelated errors or non-error values', () => {
+    expect(isQrMismatchedTransactionError(new Error('other'))).toBe(false);
+    expect(isQrMismatchedTransactionError('not-an-error')).toBe(false);
+    expect(isQrMismatchedTransactionError(null)).toBe(false);
+    expect(isQrMismatchedTransactionError(undefined)).toBe(false);
   });
 });

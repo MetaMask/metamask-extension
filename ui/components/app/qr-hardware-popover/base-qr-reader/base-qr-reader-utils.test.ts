@@ -8,11 +8,17 @@ import {
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../../../shared/constants/metametrics';
 import { HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { QrErrorFlowContext } from '../qr-error-content';
+import {
+  ScanErrorCategory,
+  type ScanErrorClassification,
+} from '../qr-utils/qr-utils';
 import { CameraReadyState } from './base-qr-reader.types';
 import {
   cameraReadyStateToErrorCode,
   createQrCameraSyntheticError,
   buildQrCameraRecoveryTrackEventArgs,
+  buildQrScanFailedTrackEventArgs,
 } from './base-qr-reader-utils';
 
 describe('base-qr-reader-utils', () => {
@@ -66,8 +72,8 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraDenied,
         1,
       );
-      expect(args.category).toBe(MetaMetricsEventCategory.Accounts);
-      expect(args.event).toBe(
+      expect(args.properties.category).toBe(MetaMetricsEventCategory.Accounts);
+      expect(args.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
       );
     });
@@ -127,7 +133,7 @@ describe('base-qr-reader-utils', () => {
         1,
       );
       expect(Object.keys(properties).sort()).toStrictEqual(
-        [...HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS].sort(),
+        [...HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS, 'category'].sort(),
       );
     });
 
@@ -137,7 +143,7 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraDenied,
         2,
       );
-      expect(ctaArgs.event).toBe(
+      expect(ctaArgs.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
       );
 
@@ -146,9 +152,125 @@ describe('base-qr-reader-utils', () => {
         ErrorCode.PermissionCameraPromptDismissed,
         1,
       );
-      expect(successArgs.event).toBe(
+      expect(successArgs.name).toBe(
         MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
       );
+    });
+  });
+
+  describe('buildQrScanFailedTrackEventArgs', () => {
+    it('returns QrHardwareScanFailed event with Accounts category', () => {
+      const classification: ScanErrorClassification = {
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      };
+      const args = buildQrScanFailedTrackEventArgs(
+        classification,
+        QrErrorFlowContext.Pairing,
+      );
+      expect(args.name).toBe(MetaMetricsEventName.QrHardwareScanFailed);
+      expect(args.properties.category).toBe(MetaMetricsEventCategory.Accounts);
+    });
+
+    it('includes error_category, is_ur_format, and flow for non_ur_qr_scanned', () => {
+      const classification: ScanErrorClassification = {
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      };
+      const { properties } = buildQrScanFailedTrackEventArgs(
+        classification,
+        QrErrorFlowContext.Pairing,
+      );
+      expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+        error_category: 'non_ur_qr_scanned',
+        is_ur_format: false,
+        flow: 'pairing',
+      });
+    });
+
+    it('includes received_ur_type only for wrong_ur_type', () => {
+      const classification: ScanErrorClassification = {
+        category: ScanErrorCategory.WrongUrType,
+        isUrFormat: true,
+        receivedUrType: 'eth-signature',
+      };
+      const { properties } = buildQrScanFailedTrackEventArgs(
+        classification,
+        QrErrorFlowContext.Pairing,
+      );
+      expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+        error_category: 'wrong_ur_type',
+        is_ur_format: true,
+        flow: 'pairing',
+        received_ur_type: 'eth-signature',
+      });
+    });
+
+    it('includes raw_message only for scan_exception', () => {
+      const classification: ScanErrorClassification = {
+        category: ScanErrorCategory.ScanException,
+        isUrFormat: true,
+        rawMessage: 'cbor decode failure',
+      };
+      const { properties } = buildQrScanFailedTrackEventArgs(
+        classification,
+        QrErrorFlowContext.Signing,
+      );
+      expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+        error_category: 'scan_exception',
+        is_ur_format: true,
+        flow: 'signing',
+        raw_message: 'cbor decode failure',
+      });
+    });
+
+    it('includes only base properties for ur_decode_error', () => {
+      const classification: ScanErrorClassification = {
+        category: ScanErrorCategory.UrDecodeError,
+        isUrFormat: true,
+      };
+      const { properties } = buildQrScanFailedTrackEventArgs(
+        classification,
+        QrErrorFlowContext.Signing,
+      );
+      expect(properties).toStrictEqual({
+        category: MetaMetricsEventCategory.Accounts,
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+        error_category: 'ur_decode_error',
+        is_ur_format: true,
+        flow: 'signing',
+      });
+    });
+
+    it('is_ur_format is boolean for every category', () => {
+      const categories: ScanErrorClassification[] = [
+        { category: ScanErrorCategory.NonUrQrScanned, isUrFormat: false },
+        {
+          category: ScanErrorCategory.WrongUrType,
+          isUrFormat: true,
+          receivedUrType: 'crypto-hdkey',
+        },
+        { category: ScanErrorCategory.UrDecodeError, isUrFormat: true },
+        {
+          category: ScanErrorCategory.ScanException,
+          isUrFormat: true,
+          rawMessage: 'error',
+        },
+      ];
+
+      for (const classification of categories) {
+        const { properties } = buildQrScanFailedTrackEventArgs(
+          classification,
+          QrErrorFlowContext.Pairing,
+        );
+        expect(typeof properties.is_ur_format).toBe('boolean');
+      }
     });
   });
 });

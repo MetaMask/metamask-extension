@@ -50,7 +50,10 @@ const createMockRequest = (
   method: string,
   params: Json[] = [],
   origin: string = 'https://example.com',
-): JsonRpcRequest & { origin?: string; networkClientId: string } => ({
+): JsonRpcRequest & {
+  origin?: string;
+  networkClientId: string;
+} => ({
   method,
   params,
   id: 1,
@@ -78,9 +81,10 @@ const createTransactionParams = (
 const createMiddleware = (
   options: {
     chainId?: Hex | null;
+    requestUrl?: string;
   } = {},
 ) => {
-  const { chainId } = options;
+  const { chainId, requestUrl } = options;
 
   const networkController = {
     state: {
@@ -119,6 +123,7 @@ const createMiddleware = (
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       getPermittedAccounts,
+      requestUrl,
     ),
     appStateController,
     networkController,
@@ -555,6 +560,57 @@ describe('createTrustSignalsMiddleware', () => {
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
         );
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('scans both contract and spender addresses for legacy increaseApproval transactions (PSAFE-415)', async () => {
+        // Real calldata for `increaseApproval(SPENDER, 100)`, selector 0xd73dd623.
+        // This is the function used by stLINK and LINK that previously
+        // bypassed the trust signals middleware entirely.
+        const increaseApprovalData = `0xd73dd623000000000000000000000000${TEST_ADDRESSES.SPENDER.slice(
+          2,
+        ).toLowerCase()}0000000000000000000000000000000000000000000000000000000000000064`;
+
+        parseApprovalTransactionDataMock.mockReturnValue({
+          name: 'increaseApproval',
+          spender: TEST_ADDRESSES.SPENDER as `0x${string}`,
+          amountOrTokenId: undefined,
+          isApproveAll: false,
+          isRevokeAll: false,
+          tokenAddress: undefined,
+        });
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const {
+          middleware,
+          appStateController,
+          networkController,
+          phishingController,
+        } = createMiddleware();
+
+        const req = createMockRequest('eth_sendTransaction', [
+          createTransactionParams({ data: increaseApprovalData }),
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.SPENDER,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
     });
@@ -1122,6 +1178,26 @@ describe('createTrustSignalsMiddleware', () => {
   });
 
   describe('eth_request_accounts', () => {
+    it('scans full URL when url with path is present', async () => {
+      const fullUrl = 'https://example.com/swap/review?token=eth';
+      const { middleware, phishingController } = createMiddleware({
+        requestUrl: fullUrl,
+      });
+      const origin = 'https://example.com';
+      const req = createMockRequest(
+        MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        [],
+        origin,
+      );
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(fullUrl);
+      expect(next).toHaveBeenCalled();
+    });
+
     it('scans URL when origin is present', async () => {
       const { middleware, phishingController } = createMiddleware();
       const origin = 'https://example.com';

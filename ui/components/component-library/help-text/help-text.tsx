@@ -13,6 +13,13 @@ import {
   HelpTextSeverity,
 } from './help-text.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the HelpText component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#helptext-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-helptext--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/HelpText | Component Source}
+ */
 export const HelpText: HelpTextComponent = forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

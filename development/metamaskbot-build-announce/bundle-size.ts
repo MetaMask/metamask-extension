@@ -41,8 +41,13 @@ export function getPercentageChange(from: number, to: number): number {
 
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
 const BUNDLE_SIZE_THRESHOLD = 1_000;
-const bundleParts = ['background', 'ui', 'common'] as const;
-type BundlePart = (typeof bundleParts)[number];
+type BundlePart =
+  | 'background'
+  | 'ui'
+  | 'common'
+  | 'other'
+  | 'contentScripts'
+  | 'zip';
 
 /**
  * Fetches bundle size stats and builds the bundle size diff collapsible section.
@@ -63,14 +68,19 @@ export async function buildBundleSizeDiffSection(
   }
 
   // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
-  const prBundleSizeStats: Record<string, { size: number }> =
+  const prBundleSizeStats: Record<string, number> =
     await prBundleSizeStatsResponse.json();
 
-  const prSizes: Record<BundlePart, number> = {
-    background: prBundleSizeStats.background.size,
-    ui: prBundleSizeStats.ui.size,
-    common: prBundleSizeStats.common.size,
-  };
+  const bundleParts: BundlePart[] = [
+    'background',
+    'ui',
+    'common',
+    'other',
+    'contentScripts',
+  ];
+  if (prBundleSizeStats.zip !== undefined) {
+    bundleParts.push('zip');
+  }
 
   const baselineCommitHashes = bundleSizeBaselineCommitHashes
     .split(/\s+/u)
@@ -107,42 +117,46 @@ export async function buildBundleSizeDiffSection(
       if (baselineCommitHash) {
         const baselineStats = devBundleSizeStats[baselineCommitHash];
 
-        const devSizes: Record<BundlePart, number> = {
-          background: baselineStats.background ?? 0,
-          ui: baselineStats.ui ?? 0,
-          common: baselineStats.common ?? 0,
+        const getDevSize = (part: BundlePart) => baselineStats[part];
+        const getDiff = (part: BundlePart) => {
+          const devSize = getDevSize(part);
+          return devSize === undefined
+            ? undefined
+            : prBundleSizeStats[part] - devSize;
         };
 
-        const diffs: Record<BundlePart, number> = {
-          background: 0,
-          ui: 0,
-          common: 0,
+        sizeRows = bundleParts.map((part) => {
+          const devSize = getDevSize(part);
+
+          if (devSize === undefined) {
+            return `${part}: n/a`;
+          }
+
+          const diff = prBundleSizeStats[part] - devSize;
+
+          return `${part}: ${getHumanReadableSize(diff)} (${getPercentageChange(
+            devSize,
+            prBundleSizeStats[part],
+          )}%)`;
+        });
+
+        const getCombinedDiff = (...parts: BundlePart[]) => {
+          const diffs = parts.map(getDiff);
+
+          return diffs.every((diff): diff is number => diff !== undefined)
+            ? diffs.reduce((sum, diff) => sum + diff, 0)
+            : undefined;
         };
 
-        for (const part of bundleParts) {
-          diffs[part] = prSizes[part] - devSizes[part];
-        }
-
-        sizeRows = bundleParts.map(
-          (part) =>
-            `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
-              devSizes[part],
-              prSizes[part],
-            )}%)`,
+        const sizeDiffBackground = getCombinedDiff('background', 'common');
+        const sizeDiffUi = getCombinedDiff('ui', 'common');
+        const warningDiffs = [sizeDiffBackground, sizeDiffUi].filter(
+          (diff): diff is number => diff !== undefined,
         );
 
-        const sizeDiffBackground = diffs.background + diffs.common;
-        const sizeDiffUi = diffs.ui + diffs.common;
-
-        if (
-          sizeDiffBackground > BUNDLE_SIZE_THRESHOLD ||
-          sizeDiffUi > BUNDLE_SIZE_THRESHOLD
-        ) {
+        if (warningDiffs.some((diff) => diff > BUNDLE_SIZE_THRESHOLD)) {
           sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
-        } else if (
-          sizeDiffBackground < -BUNDLE_SIZE_THRESHOLD ||
-          sizeDiffUi < -BUNDLE_SIZE_THRESHOLD
-        ) {
+        } else if (warningDiffs.some((diff) => diff < -BUNDLE_SIZE_THRESHOLD)) {
           sizeDiffWarning = `🚀 Bundle size reduced!`;
         }
       } else {
@@ -158,7 +172,9 @@ export async function buildBundleSizeDiffSection(
 
   const bundleSizeContent = `<ul>${(
     sizeRows ??
-    bundleParts.map((part) => `${part}: ${getHumanReadableSize(prSizes[part])}`)
+    bundleParts.map(
+      (part) => `${part}: ${getHumanReadableSize(prBundleSizeStats[part])}`,
+    )
   )
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;

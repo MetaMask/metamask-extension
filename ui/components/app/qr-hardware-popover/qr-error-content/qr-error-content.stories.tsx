@@ -19,6 +19,7 @@ Presentational component for QR scan error states during hardware wallet pairing
 - **NonUrQrCode** (State 3) - scanned data is not a UR code. Copy differs between pairing and signing.
 - **WrongUrType** (State 4) - valid UR, but the type is wrong for this flow. Copy differs between pairing and signing.
 - **UrDecodeError** (State 5) - the UR decoder encountered an error. Copy is universal (same for pairing and signing).
+- **MismatchedTransaction** (State 6) - signature QR belongs to a different transaction. Copy is universal (signing flow only).
 
 **Buttons**
 - **Learn more** (secondary) - opens the MetaMask support article.
@@ -45,6 +46,7 @@ Presentational component for QR scan error states during hardware wallet pairing
         QrErrorType.NonUrQrCode,
         QrErrorType.WrongUrType,
         QrErrorType.UrDecodeError,
+        QrErrorType.MismatchedTransaction,
       ],
       description: 'Which QR scan error state to display.',
     },
@@ -111,6 +113,16 @@ export const UrDecodeError: Story = {
   args: {
     errorType: QrErrorType.UrDecodeError,
     flowContext: QrErrorFlowContext.Pairing,
+    onTryAgain: () => undefined,
+  },
+};
+
+/** State 6 - Signature QR belongs to a different transaction. */
+export const MismatchedTransaction: Story = {
+  name: 'State 6: Mismatched Transaction',
+  args: {
+    errorType: QrErrorType.MismatchedTransaction,
+    flowContext: QrErrorFlowContext.Signing,
     onTryAgain: () => undefined,
   },
 };

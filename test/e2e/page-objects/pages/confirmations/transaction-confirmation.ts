@@ -45,7 +45,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="edit-gas-fee-item-custom"]';
 
   private readonly gasFeeCloseToastMessage: RawLocator =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly gasFeeEstimate = (amount: string): RawLocator => ({
     text: amount,
@@ -269,11 +269,12 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.gasFeeEstimate(amount));
   }
 
-  async checkGasFeeFiat(amountFiat: string) {
-    await this.driver.findElement({
-      css: this.gasFeeFiatText,
-      text: amountFiat,
-    });
+  async checkGasFeeFiat(amountFiat: string, timeout = 20_000): Promise<void> {
+    console.log(`Checking gas fee fiat ${amountFiat} is displayed`);
+    await this.driver.waitForSelector(
+      { css: this.gasFeeFiatText, text: amountFiat },
+      { timeout },
+    );
   }
 
   async checkGasFeeLabel(label: string): Promise<void> {
@@ -367,7 +368,7 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.assertElementNotPresent(
       { css: this.networkName, text: network },
       {
-        waitAtLeastGuard: 1000,
+        waitAtLeastGuard: 3000,
       },
     );
   }

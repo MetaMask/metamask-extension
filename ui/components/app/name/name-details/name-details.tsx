@@ -14,7 +14,6 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
@@ -239,7 +238,7 @@ export default function NameDetails({
     variation,
   });
 
-  const nameSources = useSelector(getNameSources, isEqual);
+  const nameSources = useSelector(getNameSources);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();

@@ -13,9 +13,10 @@ type MetaMetricsState = {
   completedMetaMetricsOnboarding?: unknown;
 };
 
-export type MetaMetricsParticipation = {
-  participateInMetaMetrics: boolean | null;
-  metaMetricsId?: string;
+export type AnalyticsParticipation = {
+  analyticsId?: string;
+  optedIn: boolean;
+  completedMetaMetricsOnboarding: boolean;
 } | null;
 
 /**
@@ -26,24 +27,30 @@ export function getState(): SentryAppStateSnapshot {
 }
 
 /**
- * Resolves MetaMetrics participation: sync snapshot first, then persisted / backup.
+ * Resolves analytics state: sync snapshot first, then persisted / backup.
  */
-export async function getMetaMetricsState(): Promise<MetaMetricsParticipation> {
+export async function getAnalyticsState(): Promise<AnalyticsParticipation> {
   const flags = getManifestFlags();
 
   if (flags.ci && flags.sentry?.forceEnable) {
-    return { participateInMetaMetrics: true, metaMetricsId: undefined };
+    return {
+      analyticsId: undefined,
+      optedIn: true,
+      completedMetaMetricsOnboarding: true,
+    };
   }
 
   const appState = getState();
 
   if (appState.state || appState.persistedState) {
-    return getMetaMetricsStateFromAppState(appState);
+    return getAnalyticsStateFromAppState(appState);
   }
 
   try {
-    const persistedState = await globalThis.stateHooks.getPersistedState();
-    return getMetaMetricsStateFromPersistedState(persistedState);
+    const persistedState = await globalThis.stateHooks.getPersistedState({
+      reportErrors: false,
+    });
+    return getAnalyticsStateFromPersistedState(persistedState);
   } catch (error) {
     log('Error retrieving persisted state, falling back to backup', error);
     try {
@@ -52,7 +59,7 @@ export async function getMetaMetricsState(): Promise<MetaMetricsParticipation> {
         return null;
       }
       const backupState = await getBackupState();
-      return getMetaMetricsStateFromBackupState(backupState);
+      return getAnalyticsStateFromBackupState(backupState);
     } catch (backupError) {
       log('Error retrieving backup state', backupError);
       return null;
@@ -61,64 +68,64 @@ export async function getMetaMetricsState(): Promise<MetaMetricsParticipation> {
 }
 
 /**
- * Returns MetaMetrics state from app snapshot (persisted vs in-memory `state`).
+ * Returns analytics state from app snapshot (persisted vs in-memory `state`).
  * @param appState
  */
-export function getMetaMetricsStateFromAppState(
+export function getAnalyticsStateFromAppState(
   appState: SentryAppStateSnapshot,
-): MetaMetricsParticipation {
+): AnalyticsParticipation {
   if (appState.persistedState) {
-    return getMetaMetricsStateFromPersistedState(appState.persistedState);
+    return getAnalyticsStateFromPersistedState(appState.persistedState);
   }
   if (appState.state) {
     const state = appState.state as Record<string, unknown>;
     if ('metamask' in state && state.metamask !== undefined) {
-      return getMetaMetricsStateFromUIState(state.metamask);
+      return getAnalyticsStateFromUIState(state.metamask);
     }
-    return getMetaMetricsStateFromControllerState(state);
+    return getAnalyticsStateFromControllerState(state);
   }
   return null;
 }
 
 /**
- * Returns MetaMetrics state from persisted state (e.g. extension storage).
+ * Returns analytics state from persisted state (e.g. extension storage).
  * @param persistedState
  */
-function getMetaMetricsStateFromPersistedState(
+function getAnalyticsStateFromPersistedState(
   persistedState: unknown,
-): Exclude<MetaMetricsParticipation, null> {
+): Exclude<AnalyticsParticipation, null> {
   const data = (
     persistedState as { data?: Record<string, unknown> } | undefined
   )?.data;
-  return getMetaMetricsStateFromControllerState(data);
+  return getAnalyticsStateFromControllerState(data);
 }
 
 /**
- * Returns MetaMetrics state from backup state (e.g. IndexedDB).
+ * Returns analytics state from backup state (e.g. IndexedDB).
  * @param backupState
  */
-function getMetaMetricsStateFromBackupState(
+function getAnalyticsStateFromBackupState(
   backupState: Backup | null,
-): Exclude<MetaMetricsParticipation, null> {
-  return getMetaMetricsStateFromControllerState(backupState);
+): Exclude<AnalyticsParticipation, null> {
+  return getAnalyticsStateFromControllerState(backupState);
 }
 
-function getMetaMetricsStateFromUIState(
+function getAnalyticsStateFromUIState(
   metamaskState: unknown,
-): Exclude<MetaMetricsParticipation, null> {
+): Exclude<AnalyticsParticipation, null> {
   const { analyticsId, completedMetaMetricsOnboarding, optedIn } =
     metamaskState as AnalyticsState & MetaMetricsState;
 
   return {
-    participateInMetaMetrics:
-      completedMetaMetricsOnboarding === true ? optedIn === true : null,
-    metaMetricsId: typeof analyticsId === 'string' ? analyticsId : undefined,
+    analyticsId: typeof analyticsId === 'string' ? analyticsId : undefined,
+    optedIn: optedIn === true,
+    completedMetaMetricsOnboarding: completedMetaMetricsOnboarding === true,
   };
 }
 
-function getMetaMetricsStateFromControllerState(
+function getAnalyticsStateFromControllerState(
   state: unknown,
-): Exclude<MetaMetricsParticipation, null> {
+): Exclude<AnalyticsParticipation, null> {
   const controllerState = isRecord(state) ? state : {};
   const analyticsController = getControllerState<AnalyticsState>(
     controllerState.AnalyticsController,
@@ -127,16 +134,13 @@ function getMetaMetricsStateFromControllerState(
     controllerState.MetaMetricsController,
   );
 
-  const { analyticsId } = analyticsController ?? {};
-  const participateInMetaMetrics =
-    analyticsController &&
-    metaMetricsController?.completedMetaMetricsOnboarding === true
-      ? analyticsController.optedIn === true
-      : null;
+  const { analyticsId, optedIn } = analyticsController ?? {};
 
   return {
-    participateInMetaMetrics,
-    metaMetricsId: typeof analyticsId === 'string' ? analyticsId : undefined,
+    analyticsId: typeof analyticsId === 'string' ? analyticsId : undefined,
+    optedIn: optedIn === true,
+    completedMetaMetricsOnboarding:
+      metaMetricsController?.completedMetaMetricsOnboarding === true,
   };
 }
 

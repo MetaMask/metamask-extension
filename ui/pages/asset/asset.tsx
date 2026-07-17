@@ -1,6 +1,6 @@
 import { Nft } from '@metamask/assets-controllers';
-import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
-import React, { useEffect } from 'react';
+import { CaipChainId, Hex } from '@metamask/utils';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -8,49 +8,18 @@ import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
+import { getFungibleAssetForRoute } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+import {
+  getRouteAssetChainId,
+  LocationStateToken,
+  useRouteAssetToken,
+} from './hooks/useRouteAssetToken';
+import { resolveAssetRouteLookup } from './util';
 
 type LocationState = {
-  token?: {
-    address: string;
-    symbol: string;
-    name: string;
-    chainId: string;
-    image?: string;
-    isNative?: boolean;
-    decimals: number;
-  };
-};
-
-/**
- * Firefox and Chrome process the asset params differently due to how they handle decoding fragments.
- * E.g. With a route of `/asset/solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3AXXX`
- * (where the solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3AXXX is an encoded version of the asset id)
- *
- * - Chrome will decode the above path as `{chainId}/{asset}`
- * - Chrome will decode the `asset` param as solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:XXX
- * - Chrome will therefore leave the `id` param as undefined.
- *
- * - Firefox will decode the above path as `{chainId}/{asset}/{id}`
- * - Firefox will decode the `asset` param as solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
- * - Firefox will therefore leave the `id` param as token:XXX
- *
- * @param params - route params
- * @param params.chainId
- * @param params.asset
- * @param params.id
- * @returns
- */
-export const processAssetParams = (
-  params: Partial<{ chainId: Hex | CaipChainId; asset: string; id: string }>,
-) => {
-  const { chainId, asset, id } = params;
-  const isCaipChain = chainId ? isCaipChainId(chainId) : false;
-  const rawAsset = isCaipChain && asset && id ? `${asset}/${id}` : asset;
-  const decodedAsset = rawAsset ? decodeURIComponent(rawAsset) : undefined;
-  return { chainId, asset, id, decodedAsset };
+  token?: LocationStateToken;
 };
 
 const Asset = () => {
@@ -62,21 +31,20 @@ const Asset = () => {
   const location = useLocation();
   const locationState = location.state as LocationState | undefined;
 
-  const { chainId, id, decodedAsset } = processAssetParams(params);
+  const { chainId, id, decodedAsset, assetId } =
+    resolveAssetRouteLookup(params);
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
   const ownedToken = useSelector((state) =>
-    getTokenByAccountAndAddressAndChainId(
-      state,
-      undefined, // Defaults to the selected account
-      decodedAsset,
-      chainId as Hex | CaipChainId,
-    ),
+    getFungibleAssetForRoute(state, { assetId, chainId, decodedAsset }),
   );
 
-  // Use token from location state as fallback when user doesn't own the token
-  const token = ownedToken ?? locationState?.token;
+  const { token, isLoading, hasError } = useRouteAssetToken({
+    ownedToken,
+    locationStateToken: locationState?.token,
+    assetId,
+  });
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
@@ -90,27 +58,32 @@ const Asset = () => {
     el?.scroll(0, 0);
   }, []);
 
-  const content = (() => {
+  const renderContent = useCallback(() => {
     if (nft) {
       return <NftDetails nft={nft} nftChainId={chainId} />;
     }
 
-    const isInvalid = !token || !chainId;
+    if (isLoading) {
+      return null;
+    }
+
+    const isInvalid = !token || !chainId || hasError;
     if (isInvalid) {
       return <Navigate to={DEFAULT_ROUTE} />;
     }
 
-    const shouldShowToken = !token.isNative && token.address;
-    if (shouldShowToken) {
-      return <TokenAsset chainId={chainId as Hex} token={token} />;
+    const displayChainId = getRouteAssetChainId(token, chainId) as Hex;
+
+    if (token.isNative) {
+      return <NativeAsset chainId={displayChainId} token={token} />;
     }
 
-    return <NativeAsset chainId={chainId as Hex} token={token} />;
-  })();
+    return <TokenAsset chainId={displayChainId} token={token} />;
+  }, [chainId, hasError, isLoading, nft, token]);
 
   return (
     <ScrollContainer className="main-container asset__container">
-      {content}
+      {renderContent()}
     </ScrollContainer>
   );
 };

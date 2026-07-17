@@ -27,33 +27,45 @@ type State = {
 };
 
 /**
- * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ * Determines if the privacy policy toast should be shown based on the current
+ * date and whether the new privacy policy toast was clicked or closed.
+ *
+ * Returns a primitive boolean so React-Redux's default `===` comparison
+ * prevents unnecessary re-renders without custom memoization.
  *
  * @param state - The application state containing the privacy policy data.
- * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
+ * @returns True if the toast should be shown.
  */
-export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
-  showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate?: number | null;
-} {
+export function selectShowPrivacyPolicyToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
   const {
     newPrivacyPolicyToastClickedOrClosed,
     newPrivacyPolicyToastShownDate,
     onboardingDate,
   } = state.metamask || {};
+
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
 
-  const showPrivacyPolicyToast =
+  return (
     !newPrivacyPolicyToastClickedOrClosed &&
     currentDate >= newPrivacyPolicyDate &&
     getIsPrivacyToastRecent(newPrivacyPolicyToastShownDate) &&
-    // users who onboarded before the privacy policy date should see the notice
-    // and
-    // old users who don't have onboardingDate set should see the notice
-    (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
+    (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf())
+  );
+}
 
-  return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
+/**
+ * Reads the date the privacy policy toast was last shown from state.
+ *
+ * @param state - The application state.
+ * @returns The timestamp, or null/undefined if never shown.
+ */
+export function selectNewPrivacyPolicyToastShownDate(
+  state: Pick<State, 'metamask'>,
+): number | null | undefined {
+  return state.metamask?.newPrivacyPolicyToastShownDate;
 }
 
 /**

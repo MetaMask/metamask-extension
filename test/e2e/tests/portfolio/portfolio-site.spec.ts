@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { emptyHtmlPage } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -13,7 +13,7 @@ describe('Portfolio site', function () {
       .forGet('https://app.metamask.io/explore/tokens')
       .withQuery({
         metamaskEntry: 'ext_portfolio_button',
-        metametricsId: MOCK_META_METRICS_ID,
+        metametricsId: MOCK_ANALYTICS_ID,
         metricsEnabled: 'true',
         marketingEnabled: 'false',
       })
@@ -31,8 +31,9 @@ describe('Portfolio site', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -45,7 +46,7 @@ describe('Portfolio site', function () {
 
         // Verify site
         await driver.waitForUrl({
-          url: `https://app.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
+          url: `https://app.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_ANALYTICS_ID}&metricsEnabled=true&marketingEnabled=false`,
         });
         await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',

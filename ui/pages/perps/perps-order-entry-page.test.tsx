@@ -17,8 +17,8 @@ import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -33,9 +33,44 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSlippage';
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
+
+const mockAnalyticsTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockAnalyticsTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../components/app/compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
@@ -48,6 +83,7 @@ const enterAmount = (value: string) => {
 };
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -118,7 +154,29 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
 }));
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
+const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
+  estimatedSlippageBps: 50 as number | null,
+  isReady: true,
+}));
+const mockUsePerpsMaxSlippage = jest.fn(
+  (): UsePerpsMaxSlippageReturn => ({
+    maxSlippageBps: 300,
+    maxSlippageSource: 'default',
+    setMaxSlippage: jest.fn(),
+    isLoading: false,
+  }),
+);
+
+jest.mock('../../hooks/perps/usePerpsEstimatedSlippage', () => ({
+  usePerpsEstimatedSlippage: () => mockUsePerpsEstimatedSlippage(),
+}));
+
+jest.mock('../../hooks/perps/usePerpsMaxSlippage', () => ({
+  usePerpsMaxSlippage: () => mockUsePerpsMaxSlippage(),
 }));
 
 const mockStreamManagerBase = {
@@ -285,6 +343,7 @@ describe('PerpsOrderEntryPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsSlippageConfig2: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -311,6 +370,7 @@ describe('PerpsOrderEntryPage', () => {
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
     mockTriggerDeposit.mockClear();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -327,6 +387,16 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveMarketData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
+    });
+    mockUsePerpsEstimatedSlippage.mockReturnValue({
+      estimatedSlippageBps: 50,
+      isReady: true,
+    });
+    mockUsePerpsMaxSlippage.mockReturnValue({
+      maxSlippageBps: 300,
+      maxSlippageSource: 'default',
+      setMaxSlippage: jest.fn(),
+      isLoading: false,
     });
   });
 
@@ -422,7 +492,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
     });
 
-    it('disables submit and shows the minimum-order message when no order size has been entered', () => {
+    it('prefills the default testnet market order amount on new market orders', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -430,11 +500,8 @@ describe('PerpsOrderEntryPage', () => {
       const amountContainer = screen.getByTestId('amount-input-field');
       const amountInput = amountContainer.querySelector('input');
 
-      expect(amountInput?.value).toBe('');
-      expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent(
-        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
-      );
+      expect(amountInput?.value).toBe('10');
+      expect(submitButton).not.toBeDisabled();
     });
 
     it('disables submit when the user enters an amount below the $10 minimum', () => {
@@ -621,6 +688,24 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
+    });
+
+    it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped add-funds action. Real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      const store = mockStore(createMockState());
+
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
@@ -830,6 +915,205 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('disables submit while max slippage preference is loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: 50,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: true,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(
+        screen.queryByTestId('perps-order-slippage-exceeds-indicator'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not open slippage config modal while max slippage preference is loading', async () => {
+      const setMaxSlippage = jest.fn().mockResolvedValue(undefined);
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: 50,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage,
+        isLoading: true,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-slippage-row'),
+        ).toBeDisabled();
+      });
+
+      fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));
+
+      expect(
+        screen.queryByTestId('perps-slippage-config-modal'),
+      ).not.toBeInTheDocument();
+      expect(setMaxSlippage).not.toHaveBeenCalled();
+    });
+
+    it('disables submit while slippage estimate is still loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: null,
+        isReady: false,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+    });
+
+    it('shows resolved max slippage while estimate is still loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: null,
+        isReady: false,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-slippage-value'),
+        ).toHaveTextContent(
+          tEn('perpsSlippageRowFormatPending', [`${bpsToPercent(300)}`]),
+        );
+      });
+    });
+
+    it('blocks submit and shows slippage error when estimated slippage exceeds max', async () => {
+      const estimatedSlippageBps = 50;
+      const maxSlippageBps = 10;
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('perps-order-submit-error')).toHaveTextContent(
+        tEn('perpsSlippageExceedsMax', [
+          bpsToPercent(estimatedSlippageBps).toFixed(2),
+          bpsToPercent(maxSlippageBps).toFixed(2),
+        ]),
+      );
+    });
+
+    it('clears slippage submit error after max slippage is saved from config modal', async () => {
+      const estimatedSlippageBps = 50;
+      const maxSlippageBps = 10;
+      const setMaxSlippage = jest.fn().mockResolvedValue(undefined);
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage,
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(
+        screen.getByTestId('perps-order-submit-error'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-slippage-config-set'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('perps-slippage-config-preset-3'));
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-slippage-config-set'));
+      });
+
+      expect(setMaxSlippage).toHaveBeenCalledWith(300);
+      expect(
+        screen.queryByTestId('perps-order-submit-error'),
+      ).not.toBeInTheDocument();
+    });
+
     it('disables submit when auto-close take profit is invalid', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -909,32 +1193,19 @@ describe('PerpsOrderEntryPage', () => {
 
   describe('analytics tracking', () => {
     const renderWithTracking = () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       const store = mockStore(createMockState());
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsOrderEntryPage />
-        </MetaMetricsContext.Provider>,
-        store,
-      );
+      renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
-        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      const screenViewedCalls = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
       );
 
       expect(screenViewedCalls).toHaveLength(1);
       expect(screenViewedCalls[0][0]).toEqual(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
-          category: MetaMetricsEventCategory.Perps,
+          name: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
             [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
               PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
             [PERPS_EVENT_PROPERTY.SOURCE]:

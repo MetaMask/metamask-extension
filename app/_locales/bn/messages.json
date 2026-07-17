@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "আপনাকে একটি অ্যাকাউন্ট নির্বাচন করতে হবে!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
-  },
   "addAlias": {
     "message": "উপনাম যোগ করুন"
   },
@@ -177,9 +174,6 @@
   },
   "custom": {
     "message": "উন্নত"
-  },
-  "customToken": {
-    "message": "কাস্টম টোকেন"
   },
   "decimal": {
     "message": "নির্ভুলতার দশমিক"
@@ -345,9 +339,6 @@
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },
-  "mustSelectOne": {
-    "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"
@@ -379,9 +370,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "ওয়েবক্যাম খুঁজে পাওয়া যায় নি"
-  },
-  "notEnoughGas": {
-    "message": "পর্যাপ্ত গ্যাস নেই"
   },
   "ofTextNofM": {
     "message": "এর"
@@ -520,9 +508,6 @@
   },
   "sign": {
     "message": "স্বাক্ষর করুন"
-  },
-  "signatureRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
   },
   "signed": {
     "message": "স্বাক্ষরিত"

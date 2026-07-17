@@ -9,8 +9,8 @@ import CreateContractModal from '../../../page-objects/pages/dialog/create-contr
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
@@ -60,8 +60,8 @@ describe('Trezor Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -123,9 +123,9 @@ describe('Trezor Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
-        await activityListPage.checkTxAmountInActivity(`-1.5 ${symbol}`);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({ action: `Sent ${symbol}` });
+        await activityTab.checkTxAmountInActivity(`-1.5 ${symbol}`);
       },
     );
   });
@@ -177,11 +177,11 @@ describe('Trezor Hardware', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText(
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTransactionActivityByText(
           'Approved spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });
@@ -222,7 +222,7 @@ describe('Trezor Hardware', function (this: Suite) {
         });
         await testDappPage.checkPageIsLoaded();
 
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         const homePage = new HomePage(driver);
         // Increase token allowance
         await testDappPage.clickERC20IncreaseAllowanceButton();
@@ -233,10 +233,10 @@ describe('Trezor Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.goToActivityList();
-        await activityListPage.checkTransactionActivityByText(
+        await activityTab.checkTransactionActivityByText(
           'Increased spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });

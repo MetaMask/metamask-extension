@@ -32,29 +32,48 @@ export default function init() {
 
       switch (msg.action) {
         case TrezorAction.init:
-          TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
-            if (event.type !== DEVICE.CONNECT) {
-              return;
-            }
+          // `@trezor/connect-web`'s SDK is a singleton that lives for the
+          // lifetime of the offscreen document, independent of the background
+          // keyring it serves. When the keyring is recreated (e.g. the user
+          // cancels the connect flow and starts it again) `init` runs a second
+          // time while the previous core (iframe or Suite Desktop) is still
+          // mounted, and `CoreInIframe.init` throws `Init_AlreadyInitialized`.
+          // That would leave `sendResponse` uncalled and hang MetaMask on
+          // "Looking for your Trezor" state. Disposing first tears down any stale
+          // connection so each request re-opens a fresh one. The core mode is
+          // intentionally left to the SDK's default ('auto') / caller-provided
+          // setting so users can connect through Trezor Suite Desktop or the
+          // remote iframe.
+          Promise.resolve()
+            .then(() => TrezorConnectSDK.dispose())
+            .catch(() => undefined)
+            .then(() => {
+              TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
+                if (event.type !== DEVICE.CONNECT) {
+                  return;
+                }
 
-            if (event.payload.features?.model) {
-              chrome.runtime.sendMessage({
-                target: OffscreenCommunicationTarget.extension,
-                event: OffscreenCommunicationEvents.trezorDeviceConnect,
-                payload: {
-                  model: event.payload.features.model,
-                  minorVersion: event.payload.features.minor_version,
-                },
+                if (event.payload.features?.model) {
+                  chrome.runtime.sendMessage({
+                    target: OffscreenCommunicationTarget.extension,
+                    event: OffscreenCommunicationEvents.trezorDeviceConnect,
+                    payload: {
+                      model: event.payload.features.model,
+                      minorVersion: event.payload.features.minor_version,
+                    },
+                  });
+                }
               });
-            }
-          });
 
-          TrezorConnectSDK.init({
-            ...msg.params,
-            env: 'webextension',
-          }).then(() => {
-            sendResponse();
-          });
+              return TrezorConnectSDK.init({
+                ...msg.params,
+                env: 'webextension',
+              });
+            })
+            .then(() => sendResponse())
+            // Resolve the bridge even if init fails so it does not hang; the
+            // subsequent call surfaces the real error to the UI.
+            .catch(() => sendResponse());
 
           break;
 

@@ -6,7 +6,7 @@ import BaseQrReader, {
   CBOR_ENCODING,
   SIGNING_EXPECTED_UR_TYPES,
 } from '../../base-qr-reader';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { QrMismatchedTransactionError } from '../../qr-utils/qr-utils';
 import type { QrReaderProps } from './qr-reader.types';
 
 /**
@@ -30,8 +30,6 @@ const QrReader = ({
   setErrorTitle,
   setErrorActive,
 }: QrReaderProps) => {
-  const t = useI18nContext();
-
   const handleSuccess = useCallback(
     async (ur: UR) => {
       const ethSignature = ETHSignature.fromCBOR(ur.cbor);
@@ -39,8 +37,7 @@ const QrReader = ({
       const signId = uuid.stringify(buffer as Uint8Array);
 
       if (signId !== requestId) {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-        throw new Error(t('QRHardwareMismatchedSignId'));
+        throw new QrMismatchedTransactionError();
       }
 
       return await submitQRHardwareSignature({
@@ -48,7 +45,7 @@ const QrReader = ({
         cbor: ur.cbor.toString(CBOR_ENCODING),
       });
     },
-    [submitQRHardwareSignature, requestId, setErrorTitle, t],
+    [submitQRHardwareSignature, requestId],
   );
 
   return (

@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
@@ -29,8 +31,12 @@ const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
@@ -41,14 +47,16 @@ const useRamps = (
 
         let numericChainId = '';
         if (isEvmChainId(_chainId)) {
-          numericChainId = hexToNumber(_chainId).toString();
+          // EVM chain ids may arrive as hex or CAIP (`eip155:1`); normalize to
+          // hex first so callers can pass whichever format they already have.
+          numericChainId = hexToNumber(formatChainIdToHex(_chainId)).toString();
         } else {
           numericChainId = _chainId;
         }
 
         params.set('chainId', numericChainId);
-        if (metaMetricsId) {
-          params.set('metametricsId', metaMetricsId);
+        if (analyticsId) {
+          params.set('metametricsId', analyticsId);
         }
         params.set('metricsEnabled', String(isMetaMetricsEnabled === true));
         if (isMarketingEnabled) {
@@ -62,7 +70,7 @@ const useRamps = (
         return `${DEFAULT_PORTFOLIO_URL}/buy`;
       }
     },
-    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
+    [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, metamaskEntry],
   );
 
   const openBuyCryptoInPdapp = useCallback(
