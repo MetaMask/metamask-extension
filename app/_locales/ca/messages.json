@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Has de seleccionar un compte!"
   },
-  "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
-  },
   "addAlias": {
     "message": "Afegeix un àlies"
   },
@@ -177,9 +174,6 @@
   },
   "custom": {
     "message": "Configuració avançada"
-  },
-  "customToken": {
-    "message": "Fitxa a Mida"
   },
   "decimal": {
     "message": "Decimals de precisió"
@@ -335,9 +329,6 @@
   },
   "metamaskVersion": {
     "message": "Versió MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Has de seleccionar "
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
@@ -505,9 +496,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signatureRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "signed": {
     "message": "Signat"

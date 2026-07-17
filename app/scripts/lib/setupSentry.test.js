@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
+import { matchesBackendTarget } from './sentry-trace-propagation';
 import {
+  dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
   rewriteReport,
   rewriteTransactionReport,
@@ -346,6 +348,74 @@ describe('Setup Sentry', () => {
     });
   });
 
+  describe('dropLowValueMarkSpans', () => {
+    it('drops the listed low-value mark spans, keeping the transaction and other marks/spans', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', description: 'sentry-tracing-init' },
+          { op: 'mark', description: 'mm-hero-painted' },
+          { op: 'mark', description: 'first-contentful-paint' },
+          { op: 'http.client', description: 'GET /foo' },
+        ],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.transaction).toBe('ui.popup');
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', description: 'first-contentful-paint' },
+        { op: 'http.client', description: 'GET /foo' },
+      ]);
+    });
+
+    it('keeps a non-mark span even if its description matches a low-value mark name', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [{ op: 'http.client', description: 'sentry-tracing-init' }],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'http.client', description: 'sentry-tracing-init' },
+      ]);
+    });
+
+    it('leaves a transaction without a low-value mark unchanged', () => {
+      const spans = [
+        { op: 'mark', description: 'first-contentful-paint' },
+        { op: 'http.client', description: 'GET /foo' },
+      ];
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans,
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual(spans);
+    });
+
+    it('does not throw when the transaction has no spans array', () => {
+      const testReport = { type: 'transaction', transaction: 'ui.popup' };
+      expect(() => dropLowValueMarkSpans(testReport)).not.toThrow();
+      expect(testReport.spans).toBeUndefined();
+    });
+
+    it('matches the mark name on the `name` field (SDK v10 forward-compat)', () => {
+      const testReport = {
+        type: 'transaction',
+        transaction: 'ui.popup',
+        spans: [
+          { op: 'mark', name: 'sentry-tracing-init' },
+          { op: 'mark', name: 'first-contentful-paint' },
+        ],
+      };
+      dropLowValueMarkSpans(testReport);
+      expect(testReport.spans).toStrictEqual([
+        { op: 'mark', name: 'first-contentful-paint' },
+      ]);
+    });
+  });
+
   describe('shouldCreateSpanForRequest', () => {
     it('should return false for snap manifest fetches', () => {
       expect(
@@ -452,6 +522,25 @@ describe('Setup Sentry', () => {
       expect(
         shouldCreateSpanForRequest('https://token.api.cx.metamask.io/tokens/1'),
       ).toStrictEqual(true);
+    });
+
+    it('never filters a backend trace-propagation target', () => {
+      // Filtering these spans client-side orphans the backend's subtree of
+      // the trace — see the constraint note on `shouldCreateSpanForRequest`.
+      const backendUrls = [
+        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=abc',
+        'https://bridge.api.cx.metamask.io/getQuoteStream?walletAddress=0x0',
+        'https://accounts.api.cx.metamask.io/v5/multiaccount/balances',
+        'https://authentication.api.cx.metamask.io/api/v2/srp/login',
+        'https://oidc.api.cx.metamask.io/oauth2/token',
+        'https://tokens.api.cx.metamask.io/v2/supportedNetworks',
+        'https://gas.api.cx.metamask.io/networks/1/suggestedGasFees',
+        'https://subscription.api.cx.metamask.io/v1/subscriptions',
+      ];
+      for (const url of backendUrls) {
+        expect(matchesBackendTarget(url)).toStrictEqual(true);
+        expect(shouldCreateSpanForRequest(url)).toStrictEqual(true);
+      }
     });
   });
 

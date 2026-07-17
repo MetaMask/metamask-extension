@@ -162,9 +162,11 @@ export function useTransactionCustomAmount({
       // before the debounced `isInputChanged` catches up.
       userEditedRef.current = true;
 
-      let newAmount = value.replace(/^0+/u, '') || '0';
+      // The input allows a comma as decimal separator, but BigNumber throws
+      // on commas, so normalize it to a dot before it reaches state.
+      let newAmount = value.replace(',', '.').replace(/^0+/u, '') || '0';
 
-      if (newAmount.startsWith('.') || newAmount.startsWith(',')) {
+      if (newAmount.startsWith('.')) {
         newAmount = `0${newAmount}`;
       }
 

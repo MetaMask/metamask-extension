@@ -104,7 +104,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Measure: Review transaction
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount('0.00001');
         await sendPage.pressContinueButton();
         steps.push(

@@ -7,6 +7,7 @@ import {
   useRive,
   useRiveFile,
 } from '@rive-app/react-canvas';
+import log from 'loglevel';
 import { Box } from '@metamask/design-system-react';
 
 import {
@@ -68,10 +69,10 @@ const GenericHardwareWalletAnimation = ({
 
   useEffect(() => {
     if (wasmError) {
-      console.error('[Rive] Failed to load WASM:', wasmError);
+      log.error('[Rive] Failed to load WASM:', wasmError);
     }
     if (bufferError) {
-      console.error('[Rive] Failed to load buffer:', bufferError);
+      log.error('[Rive] Failed to load buffer:', bufferError);
     }
   }, [wasmError, bufferError]);
 

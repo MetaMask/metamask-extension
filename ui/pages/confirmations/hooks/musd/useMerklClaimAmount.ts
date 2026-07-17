@@ -9,7 +9,7 @@ import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatAmount } from '../../components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../../shared/lib/format-amount';
 import {
   MERKL_CLAIM_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,

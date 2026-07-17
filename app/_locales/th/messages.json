@@ -191,9 +191,6 @@
   "message": {
     "message": "ข้อความ"
   },
-  "mustSelectOne": {
-    "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
-  },
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
@@ -282,9 +279,6 @@
   },
   "sign": {
     "message": "เซ็นชื่อ"
-  },
-  "signatureRequest": {
-    "message": "ขอลายเซ็น"
   },
   "signed": {
     "message": "ลงชื่อแล้ว"

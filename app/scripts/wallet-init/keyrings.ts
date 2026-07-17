@@ -16,7 +16,6 @@ import {
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
-import { Messenger } from '@metamask/messenger';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -31,7 +30,12 @@ import {
   RootMessengerActions,
   RootMessengerEvents,
 } from '../lib/messenger';
-import { SnapKeyringBuilderMessenger } from '../lib/snap-keyring/types';
+import { getSnapKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
+import {
+  getSnapKeyringV2BuilderMessenger,
+  snapKeyringV2AdaptedAsV1Builder,
+  snapKeyringV2Builder,
+} from '../lib/snap-keyring/snap-keyring-v2';
 
 /**
  * Constructor signature shared by every V2 hardware-keyring wrapper.
@@ -80,7 +84,7 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
 }
 
 /**
- * Build the list of V2 keyring builders for the hardware wallets.
+ * Build the list of V2 keyring builders for the hardware wallets and Snaps.
  *
  * Each builder wraps the legacy hardware keyring (created by
  * `getKeyringBuilders`) in its V2 wrapper, keyed by the legacy keyring's
@@ -97,23 +101,35 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
     buildHardwareV2Builder(TrezorKeyringV2, TrezorKeyring.type),
     buildHardwareV2Builder(OneKeyKeyringV2, OneKeyKeyring.type),
+    // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
+    // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
+    // KeyringController vault management. The same inner instance is retrieved via
+    // `unwrap()` below so both v1 and v2 entries share the same underlying object —
+    // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
+    snapKeyringV2Builder(),
   ];
 }
 
+/**
+ * Build the list of keyring builders for the hardware wallets.
+ *
+ * @param messenger - The root messenger.
+ * @returns The keyring builders to register with the `KeyringController`.
+ */
 export function getKeyringBuilders(
   messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
 ) {
   const overrides = process.env.IN_TEST
     ? {
-        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         trezorBridge: require('../../../test/stub/keyring-bridge')
           .FakeTrezorBridge,
-        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         ledgerBridge: require('../../../test/stub/keyring-bridge')
           .FakeLedgerBridge,
-        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
         qrBridge: require('../../../test/stub/keyring-bridge').FakeQrBridge,
       }
@@ -164,42 +180,19 @@ export function getKeyringBuilders(
     );
   }
 
-  const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
-    namespace: 'SnapKeyring',
-    parent: messenger,
-  });
-
-  messenger.delegate({
-    messenger: snapKeyringMessenger,
-    actions: [
-      'ApprovalController:addRequest',
-      'ApprovalController:acceptRequest',
-      'ApprovalController:rejectRequest',
-      'ApprovalController:startFlow',
-      'ApprovalController:endFlow',
-      'ApprovalController:showSuccess',
-      'ApprovalController:showError',
-      'PhishingController:testOrigin',
-      'PhishingController:maybeUpdateState',
-      'KeyringController:getAccounts',
-      'KeyringController:persistAllKeyrings',
-      'AccountsController:setSelectedAccount',
-      'AccountsController:getAccountByAddress',
-      'AccountsController:setAccountName',
-      'AccountsController:listMultichainAccounts',
-      'AccountsController:updateAccounts',
-      'SnapController:handleRequest',
-      'SnapController:getSnap',
-      'SnapController:isMinimumPlatformVersion',
-      'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
-      'MetaMetricsController:trackEvent',
-      'LegacyBackgroundApiService:removeAccount',
-    ],
-  });
-
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
-  keyrings.push(snapKeyringBuilder(snapKeyringMessenger));
+  keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));
+
+  // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
+  // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
+  // KeyringController vault management. The same inner instance is retrieved via
+  // `unwrap()` below so both v1 and v2 entries share the same underlying object —
+  // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
+  keyrings.push(
+    snapKeyringV2AdaptedAsV1Builder(
+      getSnapKeyringV2BuilderMessenger(messenger),
+    ),
+  );
 
   return keyrings;
 }
