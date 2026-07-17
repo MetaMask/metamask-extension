@@ -85,7 +85,7 @@ const run = (state: ReturnType<typeof buildState>) => {
     state,
   );
   // Assert on the resulting modal state rather than spying on
-  // `store.dispatch` — `useAppDispatch()` captures the store's dispatch
+  // `store.dispatch` — `useDispatch()` captures the store's dispatch
   // reference at render time, before a post-render `jest.spyOn` swap would
   // apply, so a dispatch spy set up after render never observes the call.
   const getModalName = () => store.getState().appState.modal.modalState.name;

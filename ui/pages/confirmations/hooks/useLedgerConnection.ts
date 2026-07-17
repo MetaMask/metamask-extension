@@ -21,10 +21,10 @@ import type { MetaMaskSlice } from '../../../ducks/metamask/types';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const useLedgerConnection = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<
     SignatureRequestType & TransactionMeta
   >();

@@ -25,7 +25,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -72,7 +72,7 @@ const TokenAsset = ({
   const isEvm = isEvmChainId(chainId);
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Fetch token data from tokenList

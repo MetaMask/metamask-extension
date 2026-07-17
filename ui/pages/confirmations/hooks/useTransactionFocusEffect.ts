@@ -6,7 +6,7 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
   TransactionType.batch,
@@ -23,7 +23,7 @@ export const useTransactionFocusEffect = () => {
   const { currentConfirmation } = useConfirmContext();
   const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [focusedConfirmationId, setFocusedConfirmationId] = useState<
     string | null
   >(null);

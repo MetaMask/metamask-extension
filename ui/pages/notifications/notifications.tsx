@@ -40,12 +40,12 @@ import {
   getNotificationPreferences,
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
 const useFeatureAnnouncementsEnabled = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
     useSafeState(false);
 
@@ -171,7 +171,7 @@ export default function Notifications() {
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const fromPath = searchParams.get('from') ?? undefined;
 

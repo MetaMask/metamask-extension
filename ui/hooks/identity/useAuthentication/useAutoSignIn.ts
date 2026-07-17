@@ -11,7 +11,7 @@ import {
   selectNeedsProfilePairing,
 } from '../../../selectors/identity/authentication';
 import { requestProfilePairing } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useSignIn } from './useSignIn';
 
 /**
@@ -31,7 +31,7 @@ export function useAutoSignIn(): {
   autoSignIn: () => Promise<void>;
   shouldAutoSignIn: boolean;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [hasNewKeyrings, setHasNewKeyrings] = useState(false);
   const { signIn } = useSignIn();
 

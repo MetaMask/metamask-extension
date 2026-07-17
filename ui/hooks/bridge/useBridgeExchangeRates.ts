@@ -5,10 +5,10 @@ import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export const useBridgeExchangeRates = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);

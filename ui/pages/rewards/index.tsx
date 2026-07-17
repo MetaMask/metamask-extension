@@ -10,13 +10,13 @@ import {
   setRewardsDeeplinkUrl,
 } from '../../ducks/rewards';
 import { REWARDS_DEEPLINK_HOST } from '../../components/app/rewards/utils/constants';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 const RewardsPage = () => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (rewardsEnabled) {

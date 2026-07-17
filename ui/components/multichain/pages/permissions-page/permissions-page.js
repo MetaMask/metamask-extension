@@ -49,7 +49,7 @@ import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-me
 import { transitionForward } from '../../../ui/transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { Toast, ToastContainer } from '../../toast';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 
 const PermissionsPage = () => {
@@ -58,7 +58,7 @@ const PermissionsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const runCloseTransition = useGlobalMenuRouteTransition();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const headerRef = useRef();
 
   const fromPath = searchParams.get('from') ?? undefined;

@@ -26,7 +26,7 @@ import {
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * useState that only applies updates while mounted. Prevents
@@ -80,7 +80,7 @@ export function useListNotifications(): {
   isLoading: boolean;
   error?: unknown;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useSafeState<boolean>(false);
   const [error, setError] = useSafeState<unknown>(null);
@@ -130,7 +130,7 @@ export function useCreateNotifications(): {
   createNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [error, setError] = useSafeState<string | null>(null);
 
   const createNotifications = useCallback(async () => {
@@ -166,7 +166,7 @@ export function useEnableNotifications(): {
   enableNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hasMarketingConsent = Boolean(
     useSelector(getDataCollectionForMarketing),
   );
@@ -209,7 +209,7 @@ export function useDisableNotifications(): {
   disableNotifications: () => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [error, setError] = useSafeState<string | null>(null);
 
   const disableNotifications = useCallback(async () => {
@@ -243,7 +243,7 @@ export function useMarkNotificationAsRead(): {
     notifications: MarkAsReadNotificationsParam,
   ) => Promise<void>;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const markNotificationAsRead = useCallback(
     async (notifications: MarkAsReadNotificationsParam) => {

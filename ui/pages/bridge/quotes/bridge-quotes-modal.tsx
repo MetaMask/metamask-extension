@@ -40,14 +40,14 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { insufficientBal } = useSelector(getQuoteRequest);
 

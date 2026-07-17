@@ -25,13 +25,13 @@ import { isMaintainedLocale } from '../../../../shared/constants/locales';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { Divider } from '../shared';
 import { transitionBack } from '../../../components/ui/transition';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type LocaleEntry = (typeof locales)[number];
 
 const LanguageSubPage = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentLocale = useSelector(
     (state: MetaMaskReduxState) => state.metamask.currentLocale,

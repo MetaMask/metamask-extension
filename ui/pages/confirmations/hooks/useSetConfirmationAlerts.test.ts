@@ -7,12 +7,12 @@ import {
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../helpers/constants/design-system';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import useSetConfirmationAlerts from './useSetConfirmationAlerts';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -44,7 +44,7 @@ const mockState = getMockPersonalSignConfirmStateForRequest(
 describe('useSetConfirmationAlerts', () => {
   it('updates confirmation alerts', () => {
     const mockDispatch = jest.fn();
-    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
     (useConfirmationAlerts as jest.Mock).mockReturnValue(alerts);
 
     renderHookWithConfirmContextProvider(
@@ -60,7 +60,7 @@ describe('useSetConfirmationAlerts', () => {
 
   it('clears confirmation alerts on unmount', () => {
     const mockDispatch = jest.fn();
-    (useAppDispatch as jest.Mock).mockReturnValue(mockDispatch);
+    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
 
     const { unmount } = renderHookWithConfirmContextProvider(
       () => useSetConfirmationAlerts(),

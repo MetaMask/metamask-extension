@@ -13,7 +13,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -34,7 +34,7 @@ export default function WelcomeLogin({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
   const navigate = useNavigate();

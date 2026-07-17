@@ -47,7 +47,7 @@ import { getEditedNetwork } from '../../selectors/selectors';
 import { SettingsHeader } from '../settings/shared/settings-header';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
@@ -122,7 +122,7 @@ const NetworksPageFormBody = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const NetworksPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();

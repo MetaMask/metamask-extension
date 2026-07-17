@@ -21,7 +21,7 @@ import {
 } from '../../../store/actions';
 import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
 import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type GasFeeEstimatesUnion =
   | EthGasPriceEstimate
@@ -88,7 +88,7 @@ export function useLegacyCancelSpeedupFlow({
   transaction,
   gasFeeEstimates,
 }: UseLegacyCancelSpeedupFlowParams): UseLegacyCancelSpeedupFlowReturn {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const cancelTransaction = useCallback(() => {
     const gasPrice = getReplacementGasPrice(

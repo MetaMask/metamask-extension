@@ -2,11 +2,11 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 
 jest.mock('../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 // Mock dependencies
@@ -23,8 +23,8 @@ jest.mock('../selectors', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 const mockUpdateBalancesFoAccounts =
   updateBalancesFoAccounts as jest.MockedFunction<

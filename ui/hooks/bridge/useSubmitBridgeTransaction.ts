@@ -33,7 +33,7 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
@@ -55,7 +55,7 @@ export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);

@@ -55,7 +55,7 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   MetaMetricsEventCategory,
@@ -191,7 +191,7 @@ function PrivacyPolicyToast() {
 
 function PermittedNetworkToast() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const isPermittedNetworkToastOpen = useSelector(
     (state) => state.appState.showPermittedNetworkToastOpen,
@@ -249,7 +249,7 @@ function PermittedNetworkToast() {
 
 function InfuraSwitchToast() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
   const autoHideDelay = 5 * SECOND;
@@ -490,7 +490,7 @@ function StorageErrorToast() {
 
 function SidePanelMigrationToast() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const showSidePanelMigrationToast = useSelector(
     selectShowSidePanelMigrationToast,

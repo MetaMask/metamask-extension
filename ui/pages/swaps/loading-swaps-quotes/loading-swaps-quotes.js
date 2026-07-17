@@ -35,7 +35,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({
@@ -45,7 +45,7 @@ export default function LoadingSwapsQuotes({
 }) {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
   const animationEventEmitter = useRef(new EventEmitter());

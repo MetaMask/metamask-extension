@@ -43,7 +43,7 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
@@ -57,7 +57,7 @@ export default function RecoveryPhrase({
 }: RecoveryPhraseProps) {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const { trackEvent, createEventBuilder } = useAnalytics();

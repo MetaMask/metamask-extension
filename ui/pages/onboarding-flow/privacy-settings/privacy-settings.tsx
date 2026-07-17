@@ -73,7 +73,7 @@ import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and
 import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
 import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
 import type { MetaMaskReduxState } from '../../../store/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -82,7 +82,7 @@ const ANIMATION_TIME = 500;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PrivacySettings() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);

@@ -86,7 +86,7 @@ import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
 } from '../../helpers/utils/caip25-permissions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -194,7 +194,7 @@ function getNonEvmRequestedCaipChainIds(
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function PermissionsConnect() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();

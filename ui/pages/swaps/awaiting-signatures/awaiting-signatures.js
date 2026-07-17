@@ -31,13 +31,13 @@ import SwapsFooter from '../swaps-footer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);

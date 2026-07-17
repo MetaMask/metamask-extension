@@ -2,11 +2,11 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { setGasSponsorshipOptOut } from '../../../../store/actions';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useGasSponsorshipPreference } from './useGasSponsorshipPreference';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -16,7 +16,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../../../shared/lib/selectors/preferences');
 jest.mock('../../../../store/actions');
 
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetPreferences = jest.mocked(getPreferences);
 const mockSetGasSponsorshipOptOut = jest.mocked(setGasSponsorshipOptOut);

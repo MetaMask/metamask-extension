@@ -16,12 +16,12 @@ import { Icon, IconName, Text } from '../../../components/component-library';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export default function NotificationPage({ notificationKey }) {
   const t = useContext(I18nContext);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // TODO: Either add default values or redirect a user out if a notificationKey value is not supported.
   let title = '';

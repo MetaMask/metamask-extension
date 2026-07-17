@@ -64,7 +64,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -218,7 +218,7 @@ export const TokenListItemComponent = ({
   const showScamWarning =
     isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const navigate = useNavigate();
   const [showTokenInsights, setShowTokenInsights] = useState(false);

@@ -35,7 +35,7 @@ import {
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type OnboardingAppHeaderProps = {
   isWelcomePage: boolean;
@@ -48,7 +48,7 @@ export default function OnboardingAppHeader({
   isWelcomePage = false,
   location,
 }: OnboardingAppHeaderProps) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { pathname } = location;
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);

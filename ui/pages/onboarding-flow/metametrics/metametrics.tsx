@@ -43,7 +43,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -119,7 +119,7 @@ function MetametricsCheckboxOption({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const isFirefox = useIsFirefox();
 

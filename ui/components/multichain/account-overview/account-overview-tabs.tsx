@@ -39,7 +39,7 @@ import {
   setDefaultHomeActiveTabName,
   setPerpsTabBadgeSeen,
 } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
@@ -98,7 +98,7 @@ export const AccountOverviewTabs = ({
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const prefetchTransactions = usePrefetchTransactions();
 

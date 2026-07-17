@@ -11,7 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { showImportNftsModal } from '../../../../../store/actions';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 export type NftEmptyStateProps = {
   className?: string;
@@ -21,7 +21,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
   const t = useI18nContext();
   const theme = useSelector(getTheme);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // Theme-aware icon
   const nftIcon =

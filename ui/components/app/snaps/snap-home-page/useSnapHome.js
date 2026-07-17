@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import {
   handleSnapRequest,
   forceUpdateMetamaskState,
 } from '../../../../store/actions';
 
 export function useSnapHome({ snapId }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
   const [error, setError] = useState(undefined);

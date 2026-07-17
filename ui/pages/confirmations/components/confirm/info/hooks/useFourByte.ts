@@ -7,10 +7,10 @@ import {
 } from '../../../../../../selectors';
 import { getContractMethodData } from '../../../../../../store/actions';
 import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
-import { useAppDispatch } from '../../../../../../store/hooks';
+import { useDispatch } from '../../../../../../store/hooks';
 
 export const useFourByte = ({ to, data }: { to?: Hex; data?: Hex }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isFourByteEnabled = useSelector(getUse4ByteResolution);
   const transactionTo = to as Hex | undefined;
   const transactionData = data as Hex | undefined;

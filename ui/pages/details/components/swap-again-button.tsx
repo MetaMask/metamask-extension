@@ -15,7 +15,7 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export function SwapAgainButton({
   destinationToken,
@@ -25,7 +25,7 @@ export function SwapAgainButton({
   sourceToken: TokenAmount | undefined;
 }) {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { navigateToBridgePage } = useBridgeNavigation();
 
   const buttonLabelKey = useMemo(() => {

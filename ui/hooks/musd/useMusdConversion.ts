@@ -40,7 +40,7 @@ import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/rout
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 
 // ============================================================================
@@ -127,7 +127,7 @@ function findExistingPendingMusdConversion(params: {
  * @returns Object with state and actions for mUSD conversion
  */
 export function useMusdConversion(): UseMusdConversionResult {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);

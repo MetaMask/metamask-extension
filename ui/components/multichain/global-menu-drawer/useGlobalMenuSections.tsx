@@ -73,7 +73,7 @@ import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscri
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -87,7 +87,7 @@ export function useGlobalMenuSections(
   onClose: () => void,
 ): GlobalMenuSection[] {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { captureCommonExistingShieldSubscriptionEvents } =

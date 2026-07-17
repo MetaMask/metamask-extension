@@ -26,14 +26,14 @@ import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import NetworkListItem from './network-list-item/network-list-item';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function MultiRpcEditModal() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 

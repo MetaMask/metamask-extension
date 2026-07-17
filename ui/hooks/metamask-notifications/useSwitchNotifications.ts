@@ -11,7 +11,7 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
@@ -20,7 +20,7 @@ export function useSwitchAccountNotificationsChange(): {
   onChange: (addresses: string[], state: boolean) => Promise<void>;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +52,7 @@ export function useSwitchAccountNotificationsChange(): {
 }
 
 function useRefetchAccountSettings() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const getAccountSettings = useCallback(async (accounts: string[]) => {
     try {

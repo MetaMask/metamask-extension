@@ -56,7 +56,7 @@ import {
   sortNetworks,
 } from '../../../../shared/lib/network.utils';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   MetaMetricsEventCategory,
@@ -86,7 +86,7 @@ const POPOVER_MAX_HEIGHT = 320;
 export const DappBarEVMNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
 > = ({ referenceElement, isOpen, onClose }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
 

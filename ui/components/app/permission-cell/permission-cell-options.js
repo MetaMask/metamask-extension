@@ -18,7 +18,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const PermissionCellOptions = ({
   snapId,
@@ -26,7 +26,7 @@ export const PermissionCellOptions = ({
   description,
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const ref = useRef(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);

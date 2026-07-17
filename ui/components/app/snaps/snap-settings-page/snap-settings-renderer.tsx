@@ -16,11 +16,11 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export const SnapSettingsRenderer = () => {
   const [searchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext();
 
   const snapId = searchParams.get('snapId');

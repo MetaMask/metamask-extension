@@ -19,7 +19,7 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { isMaintainedLocale } from '../../../shared/constants/locales';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -95,7 +95,7 @@ export const useCarouselManagement = ({
   enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const slides = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);

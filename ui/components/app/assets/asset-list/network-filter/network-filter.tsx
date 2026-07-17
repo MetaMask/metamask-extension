@@ -39,7 +39,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -55,7 +55,7 @@ const NetworkFilter = ({
   showTokenFiatBalance = true,
 }: SortControlProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);

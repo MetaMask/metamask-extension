@@ -8,7 +8,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { addNetwork } from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 /**
  * Manages the EVM network required for Perps deposits.
@@ -21,7 +21,7 @@ import { useAppDispatch } from '../../../../store/hooks';
  * the chain the controller actually deposits to, which is always Arbitrum One.
  */
 export const usePerpsNetworkManagement = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );

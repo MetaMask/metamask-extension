@@ -45,7 +45,7 @@ import {
 } from '../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 const Header = ({ approvalId }) => {
   const t = useI18nContext();
@@ -187,7 +187,7 @@ const MessageBody = forwardRef(
     },
     ref,
   ) => {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const { trackEvent, createEventBuilder } = useAnalytics();
     const t = useI18nContext();
 
@@ -329,7 +329,7 @@ const Footer = ({
   mostRecentOverviewPage,
   messageData,
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();

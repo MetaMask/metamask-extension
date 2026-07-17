@@ -9,12 +9,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ASSET_ITEMS } from '../search-config';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { SettingsToggleItem } from './settings-toggle-item';
 
 export const DisplayNftMediaToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
   const useNftDetection = useSelector(getUseNftDetection);

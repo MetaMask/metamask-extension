@@ -6,13 +6,13 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
 import { Toast } from '../../multichain/toast/toast';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsErrorToast() {
   const { isOpen, title, description, actionText, onActionClick } =
     useSelector(selectErrorToast);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
     dispatch(

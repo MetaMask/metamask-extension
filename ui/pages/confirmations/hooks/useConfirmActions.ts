@@ -12,11 +12,11 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentConfirmation, goBackTo } =
     useConfirmContext<TransactionMeta>();

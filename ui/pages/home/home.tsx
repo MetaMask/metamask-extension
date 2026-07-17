@@ -57,7 +57,7 @@ import {
   setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import type { MetaMaskReduxState } from '../../store/types';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { ConnectedStatusPopoverContainer } from './connected-status-popover-container';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import { ShieldCohortContainer } from './shield-cohort-container';
@@ -127,7 +127,7 @@ function useHomeState() {
 }
 
 function useHomeActions() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   return useMemo(
     () => ({

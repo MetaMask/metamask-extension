@@ -8,7 +8,7 @@ import {
 import { setSlippage } from '../../ducks/bridge/actions';
 import { getFromToken, getToToken } from '../../ducks/bridge/selectors';
 import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 // This hook doesn't return anything as it only dispatches slippage updates
 // The slippage value can be accessed via getSlippage selector
@@ -22,7 +22,7 @@ import { useAppDispatch } from '../../store/hooks';
  * - Supports Solana AUTO mode (undefined)
  */
 export function useSmartSlippage(): void {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const isRWAEnabled = useSelector(getIsRWATokensEnabled);

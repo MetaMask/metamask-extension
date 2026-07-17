@@ -11,12 +11,12 @@ import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { getSelectedNetworkClientId } from '../../../../../shared/lib/selectors/networks';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const allNfts = useSelector(getNfts);
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),

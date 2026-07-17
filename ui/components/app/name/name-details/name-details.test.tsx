@@ -18,11 +18,11 @@ import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../../store/actions', () => ({
@@ -180,13 +180,13 @@ describe('NameDetails', () => {
   const store = configureStore()(STATE_MOCK);
   const setNameMock = jest.mocked(setName);
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
-  const useAppDispatchMock = jest.mocked(useAppDispatch);
+  const useDispatchMock = jest.mocked(useDispatch);
   const useSelectorMock = jest.mocked(useSelector);
   const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useAppDispatchMock.mockReturnValue(jest.fn());
+    useDispatchMock.mockReturnValue(jest.fn());
 
     useDisplayNameMock.mockReturnValue({
       name: null,
@@ -601,7 +601,7 @@ describe('NameDetails', () => {
 
   describe('metrics', () => {
     it('sends open modal event', async () => {
-      useAppDispatchMock.mockReturnValue(
+      useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           results: {
             [SOURCE_ID_MOCK]: {

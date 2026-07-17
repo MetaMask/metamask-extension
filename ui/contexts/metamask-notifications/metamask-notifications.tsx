@@ -20,7 +20,7 @@ import { getNotificationPreferences } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   hasNotificationSubscriptionExpired,
@@ -101,7 +101,7 @@ export function useBasicFunctionalityDisableEffect() {
 }
 
 export function useFetchInitialNotificationsEffect() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );

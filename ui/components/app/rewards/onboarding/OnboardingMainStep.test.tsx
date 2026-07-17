@@ -13,7 +13,7 @@ import {
   selectOptinAllowedForGeoLoading,
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
-import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import OnboardingMainStep from './OnboardingMainStep';
 
 import {
@@ -23,7 +23,7 @@ import {
 } from './constants';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -125,7 +125,7 @@ const mockedUseValidateReferralCode = jest.requireMock(
   '../../../../hooks/rewards/useValidateReferralCode',
 ).useValidateReferralCode as jest.Mock;
 const mockedUseSelector = useSelector as jest.Mock;
-const mockedUseAppDispatch = useAppDispatch as jest.Mock;
+const mockedUseAppDispatch = useDispatch as jest.Mock;
 const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 type SelectorState = {

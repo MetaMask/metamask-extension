@@ -27,7 +27,7 @@ import {
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -39,7 +39,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PasswordOutdatedModal() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const isSeedlessPwdOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const { trackEvent, createEventBuilder } = useAnalytics();

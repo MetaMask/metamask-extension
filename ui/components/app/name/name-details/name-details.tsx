@@ -57,7 +57,7 @@ import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -162,7 +162,7 @@ function getInitialSources(
 }
 
 function useProposedNames(value: string, type: NameType, variation: string) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { proposedNames } = useName(value, type, variation);
 
   // Track latest proposed names without resetting polling interval.
@@ -244,7 +244,7 @@ export default function NameDetails({
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext();
 
   const formattedValue = formatValue(value, type);

@@ -18,7 +18,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -65,7 +65,7 @@ const fetchAssetMetadata = async (
  * It also clears the search params after setting the values.
  */
 export const usePrefillFromSearchQuery = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());

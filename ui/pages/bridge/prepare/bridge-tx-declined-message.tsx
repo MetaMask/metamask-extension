@@ -10,10 +10,10 @@ import {
   ButtonLink,
 } from '../../../components/component-library';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const BridgeTxDeclinedMessage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   return (
     <Text

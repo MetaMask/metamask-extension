@@ -22,7 +22,7 @@ import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -83,7 +83,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   type SortKeys = 'title' | 'tokenFiatAmount';
   const handleSort = useCallback(

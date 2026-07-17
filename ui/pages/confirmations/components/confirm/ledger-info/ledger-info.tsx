@@ -28,12 +28,12 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const inE2eTest =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';

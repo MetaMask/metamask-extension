@@ -23,7 +23,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
@@ -32,7 +32,7 @@ export const SelectRpcUrlModal = ({
   networkConfiguration?: NetworkConfiguration;
   onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
   const chainId = location.state?.chainId;
 

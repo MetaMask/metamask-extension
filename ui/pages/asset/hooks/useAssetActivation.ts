@@ -19,7 +19,7 @@ import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
@@ -31,7 +31,7 @@ import { useAppDispatch } from '../../../store/hooks';
  */
 export const useAssetActivation = ({ asset }: { asset: Asset }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // For non trusline asset, assetId and chainId are undefined.
   let assetId: CaipAssetType | undefined;

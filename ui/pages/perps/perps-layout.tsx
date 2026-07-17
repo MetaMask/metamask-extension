@@ -16,7 +16,7 @@ import {
 } from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -57,7 +57,7 @@ export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { pathname, search } = useLocation();
 
   const selectedAddress = useSelector(

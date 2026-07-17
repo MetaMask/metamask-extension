@@ -11,7 +11,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { selectNftsByChainId } from '../../../selectors';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export function useAssetDetails(
   tokenAddress,
@@ -20,7 +20,7 @@ export function useAssetDetails(
   chainId,
 ) {
   const isMounted = useRef(false);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // state selectors
   const nfts = useSelector((state) => selectNftsByChainId(state, chainId));

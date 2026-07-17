@@ -18,7 +18,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   endTrace,
@@ -35,7 +35,7 @@ export const AddMultichainAccount = ({
   walletId,
 }: AddMultichainAccountProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const {

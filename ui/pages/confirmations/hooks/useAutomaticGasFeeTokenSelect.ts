@@ -6,13 +6,13 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export function useAutomaticGasFeeTokenSelect() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const {
     isSupported: isGaslessSupported,
     isSmartTransaction,

@@ -32,7 +32,7 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -201,7 +201,7 @@ export const useAvailableTokenBalances = (params: {
 export const useSubscriptionPricing = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
 
   const { pending, error } = useAsyncResult(async () => {

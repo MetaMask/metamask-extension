@@ -15,7 +15,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -58,7 +58,7 @@ export function EditContactForm({
   onSuccess,
 }: EditContactFormProps) {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);

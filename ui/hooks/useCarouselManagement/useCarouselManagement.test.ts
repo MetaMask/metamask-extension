@@ -13,12 +13,12 @@ import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accoun
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useCarouselManagement } from './useCarouselManagement';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 jest.mock('../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('./fetchCarouselSlidesFromContentful');
@@ -38,7 +38,7 @@ jest.mock('../../store/actions', () => ({
 const mockFetch = jest.mocked(fetchCarouselSlidesFromContentful);
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 
 const slide = (
   variableName: string,

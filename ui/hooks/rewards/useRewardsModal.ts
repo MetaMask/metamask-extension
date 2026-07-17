@@ -5,7 +5,7 @@ import {
   selectRewardsDeeplinkUrl,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
 
 /**
@@ -14,7 +14,7 @@ import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
  * form or the QR code based on the user's opt-in state.
  */
 export const useRewardsModal = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);

@@ -44,7 +44,7 @@ import {
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
@@ -66,7 +66,7 @@ export function resetActivatedNewNetworkConfigurationIdsForTesting(): void {
  */
 export const HomeNotificationsContainer = memo(function () {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [canShowBlockageNotification, setCanShowBlockageNotification] =
     useState(true);

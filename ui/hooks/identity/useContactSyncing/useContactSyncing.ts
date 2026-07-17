@@ -10,7 +10,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * A utility used internally to decide if contact syncing should be dispatched
@@ -49,7 +49,7 @@ export const useShouldDispatchContactSyncing = () => {
  * and error state.
  */
 export const useContactSyncing = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const shouldDispatchContactSyncing = useShouldDispatchContactSyncing();
 

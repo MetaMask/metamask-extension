@@ -6,11 +6,11 @@ import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import NameDisplay from './name-display';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -23,13 +23,13 @@ jest.mock('../../../../hooks/useDisplayName', () => ({
 }));
 
 describe('NameDisplay', () => {
-  const useAppDispatchMock = jest.mocked(useAppDispatch);
+  const useDispatchMock = jest.mocked(useDispatch);
   const useSelectorMock = jest.mocked(useSelector);
   const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useAppDispatchMock.mockReturnValue(jest.fn());
+    useDispatchMock.mockReturnValue(jest.fn());
     useSelectorMock.mockReturnValue(jest.fn());
   });
 

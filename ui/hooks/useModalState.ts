@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { closeNetworkMenu, hideModal } from '../store/actions';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 
 export function useModalState() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const closeModals = useCallback(() => {
     dispatch(closeNetworkMenu());

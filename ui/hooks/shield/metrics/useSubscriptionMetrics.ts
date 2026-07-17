@@ -16,7 +16,7 @@ import {
   getShieldMarketingTrackingProps,
 } from '../../../../shared/lib/shield';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -46,7 +46,7 @@ import {
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts

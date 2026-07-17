@@ -31,7 +31,7 @@ import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import type { MetaMaskReduxState } from '../../store/types';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
@@ -165,7 +165,7 @@ async function updateStateFromUrl(
 export const DeepLink = () => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   // it's technically not possible for a natural flow to reach this page
   // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
   // to this "interstitial" page, or uses their back button, we should show

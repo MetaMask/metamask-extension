@@ -16,7 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount } from '../../../store/actions';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { captureException } from '../../../../shared/lib/sentry';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const AccountDetailsAuthenticate = ({
   address,
@@ -25,7 +25,7 @@ export const AccountDetailsAuthenticate = ({
   setShowHoldToReveal,
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('');

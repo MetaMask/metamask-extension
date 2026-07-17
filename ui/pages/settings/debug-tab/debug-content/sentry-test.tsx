@@ -23,7 +23,7 @@ import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { setCurrentLocale } from '../../../../store/actions';
 import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -184,7 +184,7 @@ function GenerateTrace() {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const handleClick = async () => {
     const localeMessages = await fetchLocale(currentLocale);
     flushSync(() => {

@@ -7,7 +7,7 @@ import { EditGasModes } from '../../shared/constants/gas';
 import { MetaMetricsEventCategory } from '../../shared/constants/metametrics';
 import { useTransactionModalContext } from '../contexts/transaction-modal';
 import { abortTransactionSigning } from '../store/actions';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 import { useAnalytics } from './useAnalytics';
 
 type UsePendingTransactionCancelSpeedUpHandlersParams = {
@@ -27,7 +27,7 @@ export const usePendingTransactionCancelSpeedUpHandlers = ({
   setEditGasMode,
 }: UsePendingTransactionCancelSpeedUpHandlersParams) => {
   const { openModal } = useTransactionModalContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { id, status } = primaryTransaction;
 

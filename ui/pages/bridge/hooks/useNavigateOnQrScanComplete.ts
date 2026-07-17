@@ -12,7 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.
@@ -23,7 +23,7 @@ import { useAppDispatch } from '../../../store/hooks';
  */
 export function useNavigateOnQrScanComplete(): void {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
   const lastQrScanCompletedSuccessfully = useSelector(
     getLastQrScanCompletedSuccessfully,

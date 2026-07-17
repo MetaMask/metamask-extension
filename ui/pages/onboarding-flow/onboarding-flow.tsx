@@ -83,7 +83,7 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -120,7 +120,7 @@ const toRelativePath = (path: string) =>
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const navigate = useNavigate();

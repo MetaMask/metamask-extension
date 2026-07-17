@@ -31,7 +31,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const AdvancedGasPriceModal = ({
   setActiveModal,
@@ -41,7 +41,7 @@ export const AdvancedGasPriceModal = ({
   handleCloseModals: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

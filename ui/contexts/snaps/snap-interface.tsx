@@ -12,7 +12,7 @@ import {
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -72,7 +72,7 @@ export const SnapInterfaceContextProvider = ({
   snapId,
   initialState,
 }: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
   // UI. It's kept in a ref to avoid useless re-rendering of the entire tree of

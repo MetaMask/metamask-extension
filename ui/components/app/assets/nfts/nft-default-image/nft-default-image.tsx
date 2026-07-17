@@ -9,7 +9,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 type NftDefaultImageProps = {
   className: string;
@@ -23,7 +23,7 @@ export default function NftDefaultImage({
   clickable,
 }: NftDefaultImageProps) {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   return (
     <Box

@@ -8,10 +8,10 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { addNetwork } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const useEnsureNetworkEnabled = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );

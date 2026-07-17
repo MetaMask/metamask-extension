@@ -7,11 +7,11 @@ import { replaceMusdConversionTransactionForPayToken } from '../../components/ap
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 import { useTransactionPayToken } from '../../pages/confirmations/hooks/pay/useTransactionPayToken';
 import { rejectPendingApproval } from '../../store/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useMusdPaymentToken } from './useMusdPaymentToken';
 
 jest.mock('../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -55,8 +55,8 @@ jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
   updateTransactionPaymentToken: jest.fn(),
 }));
 
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 const mockUseConfirmContext = useConfirmContext as jest.Mock;
 const mockUseTransactionPayToken = useTransactionPayToken as jest.Mock;

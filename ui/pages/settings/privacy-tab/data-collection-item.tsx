@@ -18,7 +18,7 @@ import {
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   MetaMetricsEventCategory,
@@ -28,7 +28,7 @@ import {
 
 export const DataCollectionToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);

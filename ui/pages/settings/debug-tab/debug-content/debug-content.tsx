@@ -33,7 +33,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
@@ -41,7 +41,7 @@ import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
 const DebugContent = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // This translation call is only required for the "Generate Page Crash" test button.

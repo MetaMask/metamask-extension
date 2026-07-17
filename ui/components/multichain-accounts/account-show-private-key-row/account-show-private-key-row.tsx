@@ -21,7 +21,7 @@ import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import { AccountDetailsAuthenticate } from '../../multichain/account-details/account-details-authenticate';
 import { AccountDetailsKey } from '../../multichain/account-details/account-details-key';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type AccountShowPrivateKeyRowProps = {
   account: InternalAccount;
@@ -31,7 +31,7 @@ export const AccountShowPrivateKeyRow = ({
   account,
 }: AccountShowPrivateKeyRowProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [privateKey, setPrivateKey] = useState('');
   const [showPrivateKeyModal, setShowPrivateKeyModal] = useState(false);

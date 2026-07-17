@@ -3,11 +3,11 @@ import type { CaipAssetType } from '@metamask/utils';
 import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
 import type { SendAssetEntry } from '../types';
 import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 import { useBatchSellTradesFetching } from './useBatchSellTradesFetching';
 
 jest.mock('../../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -26,7 +26,7 @@ jest.mock('lodash', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUpdateBatchSellTrades = jest.mocked(updateBatchSellTrades);
 
 const ASSET_A_ID = 'eip155:1/erc20:0xaaa' as CaipAssetType;

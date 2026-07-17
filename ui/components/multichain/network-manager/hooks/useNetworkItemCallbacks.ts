@@ -27,7 +27,7 @@ import {
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export type NetworkItemCallbacks = {
   onDelete?: () => void;
@@ -39,7 +39,7 @@ export type NetworkItemCallbacks = {
 };
 
 export const useNetworkItemCallbacks = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [, setSearchParams] = useSearchParams();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);

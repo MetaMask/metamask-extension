@@ -53,7 +53,7 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   PasskeyEnrollmentSteps,
@@ -83,7 +83,7 @@ export default function SetupPasskeyContent({
   onNext,
   password,
 }: SetupPasskeyContentProps) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,

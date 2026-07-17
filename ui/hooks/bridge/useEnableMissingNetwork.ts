@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { getEnabledNetworksByNamespace } from '../../selectors';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
 import { setEnabledAllPopularNetworks } from '../../store/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Ensures that any missing network gets added to the NetworkEnabledMap (which handles network polling)
@@ -18,7 +18,7 @@ import { useAppDispatch } from '../../store/hooks';
  */
 export const useEnableMissingNetwork = () => {
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const enableMissingNetwork = useCallback(
     (chainId: Hex | CaipChainId) => {

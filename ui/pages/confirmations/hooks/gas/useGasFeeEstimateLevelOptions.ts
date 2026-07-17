@@ -19,7 +19,7 @@ import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { usePersistGasFeePreference } from './usePersistGasFeePreference';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
 
@@ -42,7 +42,7 @@ export const useGasFeeEstimateLevelOptions = ({
   handleCloseModals: () => void;
 }): GasOption[] => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

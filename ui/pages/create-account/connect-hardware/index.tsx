@@ -60,7 +60,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -120,7 +120,7 @@ const getErrorMessage = (
 const ConnectHardwareForm = () => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const dispatch: MetaMaskReduxDispatch = useAppDispatch();
+  const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
 
   // Selectors

@@ -25,11 +25,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { transitionBack } from '../../../components/ui/transition';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { AUTO_LOCK_OPTIONS } from './auto-lock-utils';
 
 const AutoLockSubPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();

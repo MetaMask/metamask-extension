@@ -65,7 +65,7 @@ import {
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
@@ -82,7 +82,7 @@ import CryptoAccountDisplay from './components/crypto-account-display';
 const TransactionShield = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();

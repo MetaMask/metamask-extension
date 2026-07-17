@@ -21,7 +21,7 @@ import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
 import { useOptIn } from '../../../hooks/rewards/useOptIn';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
 import { getStorageItem } from '../../../../shared/lib/storage-helpers';
-import { useAppSelector, useAppDispatch } from '../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 import { RewardsBadge } from './RewardsBadge';
 import { REWARDS_BADGE_HIDDEN } from './utils/constants';
@@ -33,7 +33,7 @@ import { REWARDS_BADGE_HIDDEN } from './utils/constants';
 export const RewardsPointsBalance = () => {
   const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);

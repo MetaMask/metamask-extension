@@ -20,7 +20,7 @@ import {
   updateSwapsUserFeeLevel,
 } from '../../../store/actions';
 import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   decGWEIToHexWEI,
@@ -60,7 +60,7 @@ export const useTransactionFunctions = ({
   transaction,
   setRetryTxMeta = undefined,
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const getTxMeta = useCallback(() => {
     if (

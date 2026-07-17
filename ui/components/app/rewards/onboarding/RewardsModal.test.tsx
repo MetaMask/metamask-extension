@@ -15,11 +15,11 @@ import {
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import type { MetaMaskReduxState } from '../../../../store/store';
-import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import RewardsModal from './RewardsModal';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -44,7 +44,7 @@ jest.mock('../RewardsQRCode', () => () => (
 ));
 
 const mockedUseSelector = useSelector as jest.Mock;
-const mockedUseAppDispatch = useAppDispatch as jest.Mock;
+const mockedUseAppDispatch = useDispatch as jest.Mock;
 const mockedUseAppSelector = useAppSelector as jest.Mock;
 
 function setupSelectors({

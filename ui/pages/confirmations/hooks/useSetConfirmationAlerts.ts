@@ -5,11 +5,11 @@ import {
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 const useSetConfirmationAlerts = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;

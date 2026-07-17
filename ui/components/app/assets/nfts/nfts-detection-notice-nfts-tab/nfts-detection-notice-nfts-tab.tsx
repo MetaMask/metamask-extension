@@ -13,7 +13,7 @@ import {
 import { SECOND } from '../../../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { BannerAlert } from '../../../../component-library';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 const nftDetectionEnabledToastId = 'enabled-nft-auto-detection';
 const autoHideToastDelay = 5 * SECOND;
@@ -22,7 +22,7 @@ const autoHideToastDelay = 5 * SECOND;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const allChainIds = useSelector(getAllChainsToPoll);
 

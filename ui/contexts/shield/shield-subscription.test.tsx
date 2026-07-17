@@ -9,7 +9,7 @@ import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
 import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   ShieldSubscriptionProvider,
@@ -18,7 +18,7 @@ import {
 } from './shield-subscription';
 
 jest.mock('../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -38,7 +38,7 @@ jest.mock('../../store/actions', () => ({
   setShowShieldEntryModalOnce: jest.fn(),
 }));
 
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(redux.useSelector);
 
 describe('ShieldSubscriptionProvider', () => {

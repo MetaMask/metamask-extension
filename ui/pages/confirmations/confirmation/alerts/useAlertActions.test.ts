@@ -5,11 +5,11 @@ import { getMockPersonalSignConfirmState } from '../../../../../test/data/confir
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { AlertActionKey } from '../../../../components/app/confirm/info/row/constants';
 import * as ConfirmationNavigation from '../../hooks/useConfirmationNavigation';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useAlertsActions } from './useAlertsActions';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({

@@ -9,7 +9,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -601,7 +601,7 @@ export const routeConfig = [
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);

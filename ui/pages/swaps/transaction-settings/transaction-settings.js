@@ -34,7 +34,7 @@ import { ModalContent } from '../../../components/component-library/modal-conten
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export default function TransactionSettings({
   onSelect,
@@ -46,7 +46,7 @@ export default function TransactionSettings({
   destinationTokenSymbol,
 }) {
   const t = useContext(I18nContext);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const [customValue, setCustomValue] = useState(() => {
     if (

@@ -16,12 +16,12 @@ import {
   getUnapprovedTransaction,
   selectPendingApprovalsForNavigation,
 } from '../../../../../selectors';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
 
 jest.mock('../../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({

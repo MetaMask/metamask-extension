@@ -15,7 +15,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -51,7 +51,7 @@ export const SnapUIAccountSelector = ({
 }: SnapUIAccountSelectorProps) => {
   const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const internalAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );

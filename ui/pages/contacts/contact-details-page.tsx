@@ -22,7 +22,7 @@ import {
 } from '../../selectors/snaps/address-book';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { removeFromAddressBook } from '../../store/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -34,7 +34,7 @@ import { ViewContactContent } from './components/view-contact-content';
 export function ContactDetailsPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const lastTrackedContactKeyRef = useRef<string | null>(null);
   const { chainId, address } = useParams<{

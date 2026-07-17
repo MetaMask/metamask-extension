@@ -58,7 +58,7 @@ import {
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -209,7 +209,7 @@ export const CoinOverview = ({
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { privacyMode } = useSelector(getPreferences);

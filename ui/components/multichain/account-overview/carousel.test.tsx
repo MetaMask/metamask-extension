@@ -10,11 +10,11 @@ import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CarouselWithEmptyState } from '../carousel';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { Carousel } from './carousel';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -81,7 +81,7 @@ const renderCarousel = () => render(<Carousel />);
 describe('AccountOverview Carousel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useAppDispatch).mockReturnValue(jest.fn());
+    jest.mocked(useDispatch).mockReturnValue(jest.fn());
     jest.mocked(useSelector).mockImplementation((selector) => {
       if (selector === getAppIsLoading) {
         return false;

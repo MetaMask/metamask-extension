@@ -45,7 +45,7 @@ import { TraceName } from '../../../../shared/lib/trace';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -79,7 +79,7 @@ const generateQuizWords = (
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const t = useI18nContext();

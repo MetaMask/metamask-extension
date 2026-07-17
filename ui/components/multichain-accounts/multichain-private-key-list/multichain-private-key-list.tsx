@@ -67,7 +67,7 @@ import {
 import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
@@ -99,7 +99,7 @@ const MultichainPrivateKeyList = ({
   goBack,
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [password, setPassword] = useState<string>('');

@@ -5,11 +5,11 @@ import { useConfirmContext } from '../context/confirm';
 import { resolvePendingApproval } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import type { AddEthereumChainContext } from '../external/add-ethereum-chain/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 // Ported from templates/add-ethereum-chain.js
 export const useAddEthereumChain = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<AddEthereumChainContext>();
   const { id, origin, requestData } = currentConfirmation ?? {};
 

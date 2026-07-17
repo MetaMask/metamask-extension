@@ -7,7 +7,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   BackgroundColor,
@@ -51,7 +51,7 @@ const BACKGROUND_COLOR_MAP = {
 };
 
 export default function TransactionIcon({ status, category }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const color = COLOR_MAP[status] || IconColor.primaryDefault;
   const backgroundColor =

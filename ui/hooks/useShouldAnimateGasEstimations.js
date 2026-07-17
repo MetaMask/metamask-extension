@@ -6,12 +6,12 @@ import {
   getGasLoadingAnimationIsShowing,
   toggleGasLoadingAnimation,
 } from '../ducks/app/app';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const isGasLoadingAnimationActive = useSelector(
     getGasLoadingAnimationIsShowing,

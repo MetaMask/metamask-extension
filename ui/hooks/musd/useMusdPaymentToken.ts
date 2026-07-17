@@ -28,7 +28,7 @@ import {
 } from '../../store/actions';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Return type for useMusdPaymentToken hook
@@ -61,7 +61,7 @@ export type UseMusdPaymentTokenResult = {
 export function useMusdPaymentToken(): UseMusdPaymentTokenResult {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { setPayToken } = useTransactionPayToken();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [isReplacing, setIsReplacing] = useState(false);

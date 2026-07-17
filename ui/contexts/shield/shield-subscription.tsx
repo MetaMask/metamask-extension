@@ -22,7 +22,7 @@ import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -77,7 +77,7 @@ export const useShieldSubscriptionContext = () => {
 export const ShieldSubscriptionProvider = ({
   children,
 }: React.PropsWithChildren<unknown>) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );

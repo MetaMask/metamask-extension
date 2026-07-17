@@ -21,7 +21,7 @@ import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 
@@ -31,7 +31,7 @@ import { useAssetSecurityData } from './useAssetSecurityData';
  */
 export const useBridgeAlerts = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const formattedPriceImpactPercentage = useSelector(
     getFormattedPriceImpactPercentage,

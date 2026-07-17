@@ -18,12 +18,12 @@ import {
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();

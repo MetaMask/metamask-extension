@@ -93,7 +93,7 @@ import {
 } from '../../../../shared/lib/shield';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import {
   setLastUsedSubscriptionPaymentDetails,
   setPendingRedirectRoute,
@@ -112,7 +112,7 @@ const ShieldPlan = () => {
   const { search } = useLocation();
   const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,

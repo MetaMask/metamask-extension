@@ -29,7 +29,7 @@ import {
 } from '../../../../shared/constants/swaps';
 import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export default function SwapsBannerAlert({
   swapsErrorKey,
@@ -37,7 +37,7 @@ export default function SwapsBannerAlert({
   currentSlippage,
 }) {
   const t = useContext(I18nContext);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   let severity = SEVERITIES.DANGER;
   let title;
   let description;

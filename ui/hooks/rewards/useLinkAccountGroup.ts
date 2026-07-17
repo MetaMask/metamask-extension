@@ -16,7 +16,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type LinkStatusReport = {
@@ -33,7 +33,7 @@ type UseLinkAccountGroupResult = {
 export const useLinkAccountGroup = (
   accountGroupId?: AccountGroupId,
 ): UseLinkAccountGroupResult => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const internalAccountsForGroup = useSelector((state) =>

@@ -40,7 +40,7 @@ import {
 } from '../../../ducks/bridge/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   BridgeAssetPickerContent,
@@ -56,7 +56,7 @@ import {
  */
 const BridgeAssetPickerPage = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isSourcePickerOpen = useSelector(getIsSrcAssetPickerOpen);

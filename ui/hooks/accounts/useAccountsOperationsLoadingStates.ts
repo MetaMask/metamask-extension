@@ -3,7 +3,7 @@ import { useMemo, useEffect } from 'react';
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { useI18nContext } from '../useI18nContext';
 import { forceUpdateMetamaskState } from '../../store/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 type AppState = {
   metamask: AccountTreeController['state'];
@@ -11,7 +11,7 @@ type AppState = {
 
 export const useAccountsOperationsLoadingStates = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isAccountTreeSyncingInProgress = useSelector(
     (state: AppState) => state.metamask.isAccountTreeSyncingInProgress,
   );

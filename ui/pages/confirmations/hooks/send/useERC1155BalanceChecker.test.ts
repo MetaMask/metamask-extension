@@ -5,11 +5,11 @@ import {
   getERC1155BalanceOf,
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../../store/actions');
@@ -22,8 +22,8 @@ const mockFindNetworkClientIdByChainId =
 const mockGetERC1155BalanceOf = getERC1155BalanceOf as jest.MockedFunction<
   typeof getERC1155BalanceOf
 >;
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 const mockDispatch = jest.fn();
 

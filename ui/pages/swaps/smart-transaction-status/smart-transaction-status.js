@@ -55,7 +55,7 @@ import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -67,7 +67,7 @@ export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const fetchParams = useSelector(getFetchParams, isEqual) || {};
   const {

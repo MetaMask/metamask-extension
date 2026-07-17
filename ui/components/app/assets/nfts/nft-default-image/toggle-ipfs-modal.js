@@ -16,7 +16,7 @@ import {
   setIsIpfsGatewayEnabled,
 } from '../../../../../store/actions';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../../../shared/constants/network';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 import {
   Size,
@@ -26,7 +26,7 @@ import {
 
 export const ToggleIpfsModal = ({ onClose }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   return (
     <Modal isOpen onClose={onClose} className="toggle-ipfs-modal">

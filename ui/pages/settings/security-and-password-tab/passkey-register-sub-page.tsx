@@ -44,7 +44,7 @@ import {
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 import {
   MetaMetricsEventCategory,
@@ -78,7 +78,7 @@ const PasskeyRegisterSteps = {
 export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],

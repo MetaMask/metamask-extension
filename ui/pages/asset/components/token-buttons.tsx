@@ -27,7 +27,7 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
   token,
@@ -40,7 +40,7 @@ const TokenButtons = ({
   /** When true, disables the swap button because the stock market is closed */
   isMarketClosed?: boolean;
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();

@@ -13,7 +13,7 @@ import {
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   isQrHardwareSignRequest,
@@ -53,7 +53,7 @@ export function useHwSwapQrState({
   confirmationTxData,
   stepTrackingResetKey,
 }: UseHardwareWalletQrStateOptions) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
 

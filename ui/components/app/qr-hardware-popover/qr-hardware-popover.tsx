@@ -26,7 +26,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -76,7 +76,7 @@ const QRHardwarePopover = () => {
     txDataRef.current = txData;
   }
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
     () => dispatch(cancelQrCodeScan()),
     [dispatch],

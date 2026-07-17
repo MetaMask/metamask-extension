@@ -6,11 +6,11 @@ import {
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
 } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import RecoveryPhraseReminder from './recovery-phrase-reminder';
 
 export function RecoveryPhraseReminderContainer() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const showRecoveryPhraseReminder = useSelector(getShowRecoveryPhraseReminder);
   const isPrimarySeedPhraseBackedUp = useSelector(
     getIsPrimarySeedPhraseBackedUp,

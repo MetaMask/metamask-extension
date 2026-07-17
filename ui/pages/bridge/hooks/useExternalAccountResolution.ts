@@ -15,7 +15,7 @@ import {
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
@@ -30,7 +30,7 @@ export const useExternalAccountResolution = ({
   isDestinationBitcoin = false,
   isDestinationTron = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 

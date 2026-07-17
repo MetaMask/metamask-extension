@@ -62,7 +62,7 @@ import {
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
@@ -90,7 +90,7 @@ const filterNetworks = <
 
 const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(network.chainId);
   const networkImageUrl =
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -172,7 +172,7 @@ export const NetworksPageList = ({
   footerContent,
 }: NetworksPageListProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);

@@ -12,7 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { SettingItemProps } from '../types';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { SettingsToggleItem } from './settings-toggle-item';
 
 const selectAlwaysFalse = (): boolean => false;
@@ -51,7 +51,7 @@ export const createToggleItem = (
 ): React.ComponentType<SettingItemProps> => {
   const ToggleItem = () => {
     const t = useI18nContext();
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const { trackEvent, createEventBuilder } = useAnalytics();
     const value = useSelector(config.selector);
     const disabled = useSelector(config.disabledSelector ?? selectAlwaysFalse);

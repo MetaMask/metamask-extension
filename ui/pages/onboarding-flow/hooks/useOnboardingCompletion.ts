@@ -46,7 +46,7 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -55,7 +55,7 @@ import { useAppDispatch } from '../../../store/hooks';
  */
 export function useOnboardingCompletion() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const isSidePanelEnabled = useSidePanelEnabled();
 

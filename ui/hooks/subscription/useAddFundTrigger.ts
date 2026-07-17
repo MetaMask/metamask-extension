@@ -11,7 +11,7 @@ import {
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/types';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useAsyncCallback } from '../useAsync';
 import { MINUTE } from '../../../shared/constants/time';
@@ -109,7 +109,7 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
  *
  */
 export const useHandleShieldAddFundTrigger = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,

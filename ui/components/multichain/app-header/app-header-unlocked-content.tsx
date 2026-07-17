@@ -39,7 +39,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -53,7 +53,7 @@ export const AppHeaderUnlockedContent = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';

@@ -29,7 +29,7 @@ import {
 } from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 const LIST_ITEM_BASE =
   'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
@@ -76,7 +76,7 @@ const SupportListItem = ({
 
 export const PerpsSupportLearn = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const { track } = usePerpsEventTracking();

@@ -23,11 +23,11 @@ import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { AVATAR_OPTIONS } from './account-identicon-utils';
 
 const AccountIdenticonSubPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { avatarType } = useSelector(getPreferences);

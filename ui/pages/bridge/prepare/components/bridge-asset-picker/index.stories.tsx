@@ -13,7 +13,7 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import configureStore from '../../../../../store/store';
 import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
 import { BridgeAssetPicker } from '.';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 const storybook = {
   title: 'Pages/Bridge/AssetPicker',
@@ -48,7 +48,7 @@ export const BridgeAssetPickerStory = () => {
   const networks = useSelector(getFromChains);
   const account = useSelector(getFromAccount);
   const token = useSelector(getFromToken);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   if (!token || !account?.address) {
     return null;

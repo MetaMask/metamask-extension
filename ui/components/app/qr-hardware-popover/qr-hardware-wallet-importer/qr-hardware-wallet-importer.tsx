@@ -6,7 +6,7 @@ import BaseQrReader, {
   CBOR_ENCODING,
   PAIRING_EXPECTED_UR_TYPES,
 } from '../base-qr-reader';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importer.types';
 
 /**
@@ -27,7 +27,7 @@ const QRHardwareWalletImporter = ({
   setErrorActive,
 }: QRHardwareWalletImporterProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const handleSuccess = useCallback(
     async (ur: UR) => {

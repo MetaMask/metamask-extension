@@ -18,7 +18,7 @@ import {
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { shortenString } from '../../../helpers/utils/util';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -42,7 +42,7 @@ export const AccountDetailsDisplay = ({
   accountType,
   onExportClick,
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()

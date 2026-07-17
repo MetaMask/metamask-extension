@@ -30,7 +30,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 // Set to true when a rewards season is active and points estimation should run.
 const REWARDS_SEASON_ACTIVE = false;
@@ -110,7 +110,7 @@ export const useRewardsWithQuote = ({
   fromAddressAccount,
   chainId,
 }: UseRewardsWithQuoteParams): UseRewardsResult => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [estimatedPoints, setEstimatedPoints] = useState<number | null>(null);
   const [shouldShowRewardsRow, setShouldShowRewardsRow] = useState(false);

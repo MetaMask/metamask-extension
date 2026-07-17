@@ -4,14 +4,14 @@ import { isCrossChain } from '@metamask/bridge-controller';
 import { setEvmBalances } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
  * This sets the latest balance for the fromToken and the native token on the src chain
  */
 export const useLatestBalance = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
 
   /**

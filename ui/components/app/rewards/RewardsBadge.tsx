@@ -10,7 +10,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setRewardsBadgeHidden } from '../../../ducks/rewards';
 import { setStorageItem } from '../../../../shared/lib/storage-helpers';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { REWARDS_BADGE_HIDDEN } from './utils/constants';
 import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
@@ -34,7 +34,7 @@ export const RewardsBadge = ({
   onClick?: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = useCallback(() => {

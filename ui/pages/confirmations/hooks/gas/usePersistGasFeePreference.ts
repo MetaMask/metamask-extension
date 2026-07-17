@@ -3,10 +3,10 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { type Hex } from '@metamask/utils';
 import { type AdvancedGasFeePreferences } from '../../../../../shared/constants/gas';
 import { setAdvancedGasFee } from '../../../../store/actions';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export function usePersistGasFeePreference() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   return useCallback(
     async (

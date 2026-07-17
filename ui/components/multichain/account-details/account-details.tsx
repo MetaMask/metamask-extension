@@ -32,7 +32,7 @@ import {
   getMetaMaskKeyrings,
 } from '../../../selectors';
 import { clearAccountDetails } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Modal,
@@ -58,7 +58,7 @@ type AccountDetailsProps = {
 
 export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);

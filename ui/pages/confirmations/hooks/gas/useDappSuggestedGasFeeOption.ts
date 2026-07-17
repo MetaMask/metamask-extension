@@ -12,7 +12,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
 
 const HEX_ZERO = '0x0';
@@ -29,7 +29,7 @@ export const useDappSuggestedGasFeeOption = ({
   const nativeTicker = useTransactionNativeTicker();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
   const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { dappSuggestedGasFees, id, origin, userFeeLevel } = transactionMeta;
 

@@ -37,7 +37,7 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -75,7 +75,7 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
  */
 export const useBridgeNavigation = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { search, pathname, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(

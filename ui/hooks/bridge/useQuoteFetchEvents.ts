@@ -12,13 +12,13 @@ import {
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const {
     isLoading,
     quotesRefreshCount,

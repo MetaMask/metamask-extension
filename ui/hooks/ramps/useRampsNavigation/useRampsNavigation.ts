@@ -25,7 +25,7 @@ import {
   selectTokens,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -123,7 +123,7 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * "tab opened" toast).
  */
 export default function useRampsNavigation() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { openBuyCryptoInPdapp } = useRamps();
 

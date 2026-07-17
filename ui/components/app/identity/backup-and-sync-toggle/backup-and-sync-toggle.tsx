@@ -38,7 +38,7 @@ import {
   onboardingToggleBasicFunctionalityOn,
 } from '../../../../ducks/app/app';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export const backupAndSyncToggleTestIds = {
   container: 'backup-and-sync-container',
@@ -64,7 +64,7 @@ export const BackupAndSyncToggle = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 

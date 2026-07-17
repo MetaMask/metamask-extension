@@ -9,11 +9,11 @@ import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { setTransactionActive } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { type Confirmation } from '../types/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -59,15 +59,15 @@ describe('useTransactionFocusEffect', () => {
   const useWindowFocusMock = useWindowFocus as jest.MockedFunction<
     typeof useWindowFocus
   >;
-  const useAppDispatchMock = useAppDispatch as jest.MockedFunction<
-    typeof useAppDispatch
+  const useDispatchMock = useDispatch as jest.MockedFunction<
+    typeof useDispatch
   >;
   const getEnvironmentTypeMock = getEnvironmentType as jest.MockedFunction<
     typeof getEnvironmentType
   >;
 
   beforeEach(() => {
-    useAppDispatchMock.mockReturnValue(dispatchMock);
+    useDispatchMock.mockReturnValue(dispatchMock);
     useWindowFocusMock.mockReturnValue(true);
     getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
     useConfirmContextMock.mockReturnValue(

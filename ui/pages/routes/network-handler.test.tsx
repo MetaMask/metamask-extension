@@ -6,7 +6,7 @@ import {
   getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { NetworkHandler } from './network-handler';
 
@@ -19,7 +19,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -44,7 +44,7 @@ describe('NetworkHandler', () => {
     totalUnapprovedConfirmationCount = 0;
     isUnlocked = true;
     mockDispatch.mockReset();
-    jest.mocked(useAppDispatch).mockReturnValue(mockDispatch);
+    jest.mocked(useDispatch).mockReturnValue(mockDispatch);
 
     jest.mocked(useAppSelector).mockImplementation((selector) => {
       if (selector === getNetworkToAutomaticallySwitchTo) {

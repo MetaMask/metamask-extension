@@ -65,7 +65,7 @@ import SwapsFooter from '../swaps-footer';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -82,7 +82,7 @@ export default function AwaitingSwap({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =

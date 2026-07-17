@@ -8,7 +8,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseCandidateSubscriptionIdReturn = {
@@ -20,7 +20,7 @@ type UseCandidateSubscriptionIdReturn = {
  */
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
 
     const isUnlocked = useSelector(getIsUnlocked);
     const isRewardsEnabled = useSelector(selectRewardsEnabled);

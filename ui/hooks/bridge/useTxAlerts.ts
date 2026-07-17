@@ -8,13 +8,13 @@ import {
   getFromAccount,
 } from '../../ducks/bridge/selectors';
 import { setTxAlerts } from '../../ducks/bridge/actions';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Sets tx alerts for the active quote
  */
 export const useTxAlerts = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const fromChain = useSelector(getFromChain);
   const { activeQuote } = useSelector(getBridgeQuotes);

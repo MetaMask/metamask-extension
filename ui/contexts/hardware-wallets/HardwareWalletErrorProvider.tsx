@@ -18,7 +18,7 @@ import {
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -88,7 +88,7 @@ type HardwareWalletErrorProviderProps = {
  * @param options0.children - Child components to render
  */
 const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,

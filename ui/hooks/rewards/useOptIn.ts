@@ -22,7 +22,7 @@ import {
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
@@ -53,7 +53,7 @@ type UseOptInOptions = {
 
 export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();

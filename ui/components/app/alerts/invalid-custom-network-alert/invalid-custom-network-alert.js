@@ -12,13 +12,13 @@ import Popover from '../../../ui/popover';
 import { Button, ButtonVariant } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
 const InvalidCustomNetworkAlert = ({ navigate }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
   const networkName = useSelector(getNetworkName);
 

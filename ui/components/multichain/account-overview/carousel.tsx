@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
@@ -15,7 +15,7 @@ import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 
 export const Carousel = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const isCarouselEnabled = Boolean(

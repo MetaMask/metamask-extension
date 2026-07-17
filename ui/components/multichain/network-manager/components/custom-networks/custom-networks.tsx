@@ -38,12 +38,12 @@ import {
   getShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
   const [, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

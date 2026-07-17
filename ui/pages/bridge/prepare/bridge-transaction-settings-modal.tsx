@@ -36,7 +36,7 @@ import { setSlippage } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 import { sanitizeAmountInput } from '../utils/quote';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -49,7 +49,7 @@ export const BridgeTransactionSettingsModal = ({
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   /**
    * The current slippage value in the quote request
    */

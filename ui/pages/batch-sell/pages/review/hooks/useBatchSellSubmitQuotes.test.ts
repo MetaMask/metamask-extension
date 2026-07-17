@@ -6,11 +6,11 @@ import { getFromAccount } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
 
 jest.mock('../../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -52,7 +52,7 @@ jest.mock('../../../../../helpers/constants/routes', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
 const mockGetMaybeHexChainId = jest.mocked(getMaybeHexChainId);

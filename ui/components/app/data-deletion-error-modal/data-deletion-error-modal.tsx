@@ -27,13 +27,13 @@ import {
   ButtonSize,
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DataDeletionErrorModal() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   function closeModal() {
     dispatch(hideDataDeletionErrorModal());

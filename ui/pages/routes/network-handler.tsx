@@ -6,10 +6,10 @@ import {
 } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { automaticallySwitchNetwork } from '../../store/actions';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 
 export const NetworkHandler = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
   );

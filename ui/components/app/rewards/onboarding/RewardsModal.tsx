@@ -25,7 +25,7 @@ import {
 import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
-import { useAppSelector, useAppDispatch } from '../../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../../store/hooks';
 import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import OnboardingMainStep from './OnboardingMainStep';
 
@@ -55,7 +55,7 @@ export default function RewardsModal({
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const theme = useTheme();
 

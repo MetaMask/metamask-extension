@@ -26,7 +26,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   BridgeNavigationOptions,
@@ -39,7 +39,7 @@ import {
  * @returns a function to navigate to the bridge page
  */
 const useBridging = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { navigateToBridgePage, bridgeState } = useBridgeNavigation();
   const lastSelectedChainId = useSelector(getLastSelectedChainId);

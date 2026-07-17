@@ -29,7 +29,7 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 import {
   TokenCellPercentChange,
@@ -65,7 +65,7 @@ export default function TokenCell({
   safeChains,
   musd,
 }: TokenCellProps) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isEvm = isEvmChainId(token.chainId);

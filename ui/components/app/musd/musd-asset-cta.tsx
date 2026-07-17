@@ -37,7 +37,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { addMusdConversionDismissedCtaKey } from '../../../store/actions';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { MUSD_CONVERSION_APY } from './constants';
 
 import {
@@ -96,7 +96,7 @@ export const MusdAssetCta = ({
   variant = 'card',
 }: MusdAssetCtaProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { startConversionFlow, educationSeen } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(

@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getEnabledChainIds } from '../selectors';
 import { updateBalancesFoAccounts } from '../store/actions';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Assets hook to update balance state for ALL accounts when account lists are displayed.
@@ -30,7 +30,7 @@ export const useAssetsUpdateAllAccountBalances = (): {
   updateBalances: () => Promise<void>;
 } => {
   const enabledChainIds = useSelector(getEnabledChainIds);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const updateBalances = useCallback(async () => {
     try {

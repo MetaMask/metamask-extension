@@ -7,11 +7,11 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { selectShowTermsOfUse } from '../../../selectors/home-modals';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import TermsOfUsePopup from './terms-of-use-popup';
 
 export function TermsOfUsePopupContainer() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const showTermsOfUse = useSelector(selectShowTermsOfUse);
 

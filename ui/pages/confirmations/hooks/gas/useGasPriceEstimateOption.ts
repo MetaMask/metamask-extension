@@ -16,7 +16,7 @@ import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
 import { usePersistGasFeePreference } from './usePersistGasFeePreference';
 
@@ -27,7 +27,7 @@ export const useGasPriceEstimateOption = ({
 }: {
   handleCloseModals: () => void;
 }): GasOption[] => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =

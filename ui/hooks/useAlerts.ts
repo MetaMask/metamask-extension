@@ -13,10 +13,10 @@ import {
   setAlertConfirmed as setAlertConfirmedAction,
 } from '../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../helpers/constants/design-system';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 
 const useAlerts = (ownerId: string) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const alerts: Alert[] = sortAlertsBySeverity(
     useSelector((state) => selectAlerts(state as AlertsState, ownerId)),

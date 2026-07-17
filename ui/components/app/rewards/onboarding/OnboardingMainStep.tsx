@@ -36,7 +36,7 @@ import {
   selectOptinAllowedForGeoLoading,
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
-import { useAppSelector, useAppDispatch } from '../../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../../store/hooks';
 import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
 import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
@@ -57,7 +57,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
   shieldSubscriptionId,
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { optin, optinLoading, optinError } = useOptIn({
     rewardPoints,

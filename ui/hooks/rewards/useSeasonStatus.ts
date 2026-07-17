@@ -17,7 +17,7 @@ import {
 } from '../../ducks/rewards';
 import { CandidateSubscriptionId } from '../../ducks/rewards/types';
 import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 type UseSeasonStatusOptions = {
   subscriptionId: CandidateSubscriptionId;
@@ -39,7 +39,7 @@ export const useSeasonStatus = ({
   subscriptionId,
   onAuthorizationError,
 }: UseSeasonStatusOptions): UseSeasonStatusReturn => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isUnlocked = useSelector(getIsUnlocked);
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 

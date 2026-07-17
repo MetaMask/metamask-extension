@@ -44,7 +44,7 @@ import {
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { useBoolean } from '../../hooks/useBoolean';
 import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -60,7 +60,7 @@ export default function ResetPasswordModal({
   const { value: resetWallet, toggle: handleResetWallet } = useBoolean();
   const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isPopupOrSidePanel = isPopupOrSidePanelEnvironment();
 
   const handleResetWalletConfirm = async () => {

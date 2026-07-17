@@ -8,7 +8,7 @@ import {
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { updatePreviousGasParams } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export type UseCancelSpeedupInitialGasParams = {
   effectiveTransaction: TransactionMeta;
@@ -54,7 +54,7 @@ export function useCancelSpeedupInitialGas({
 }: UseCancelSpeedupInitialGasParams): { isInitialGasReady: boolean } {
   const appliedInitialGasForTransactionIdRef = useRef<string | null>(null);
   const storedPreviousGasForTransactionIdRef = useRef<string | null>(null);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (currentModal !== CANCEL_SPEEDUP_MODAL) {

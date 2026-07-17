@@ -8,14 +8,14 @@ import {
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { DeeplinkQRCode } from '../deeplink-qr-code';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsQRCode() {
   const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
     dispatch(setRewardsModalOpen(false));

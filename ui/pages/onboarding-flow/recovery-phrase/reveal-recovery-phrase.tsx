@@ -58,7 +58,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -92,7 +92,7 @@ export default function RevealRecoveryPhrase({
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();

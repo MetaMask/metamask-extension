@@ -21,7 +21,7 @@ import {
   updateHiddenAccountsList,
 } from '../../../store/actions';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -36,7 +36,7 @@ export const AccountListItemMenu = ({
   isRemovable: _isRemovable, // Accepted for API compatibility; remove-account action is no longer shown
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);

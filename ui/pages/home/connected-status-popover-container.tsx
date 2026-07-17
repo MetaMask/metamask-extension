@@ -19,11 +19,11 @@ import {
 } from '../../components/component-library';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import type { MetaMaskReduxState } from '../../store/store';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export function ConnectedStatusPopoverContainer() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const connectedStatusPopoverHasBeenShown = useSelector(

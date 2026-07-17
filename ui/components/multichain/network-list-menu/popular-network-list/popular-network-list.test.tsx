@@ -7,11 +7,11 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import PopularNetworkList from './popular-network-list';
 
 jest.mock('../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -25,13 +25,13 @@ const STATE_MOCK = {
 
 describe('PopularNetworkList', () => {
   const store = configureStore()(STATE_MOCK);
-  const useAppDispatchMock = useAppDispatch as jest.Mock;
+  const useDispatchMock = useDispatch as jest.Mock;
   const useSelectorMock = useSelector as jest.Mock;
   const mockDispatch = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useAppDispatchMock.mockReturnValue(mockDispatch);
+    useDispatchMock.mockReturnValue(mockDispatch);
 
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getUnapprovedConfirmations) {
@@ -121,6 +121,6 @@ describe('PopularNetworkList', () => {
     const addButton = screen.getByTestId('test-add-button');
     fireEvent.click(addButton);
 
-    expect(useAppDispatchMock).toHaveBeenCalled();
+    expect(useDispatchMock).toHaveBeenCalled();
   });
 });

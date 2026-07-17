@@ -42,7 +42,7 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import type { MetaMaskReduxDispatch } from '../../store/types';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import {
   selectIsSignedIn,
   selectSessionData,
@@ -107,7 +107,7 @@ import {
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
@@ -165,7 +165,7 @@ export const useUserLastSubscriptionByProduct = (
 };
 
 export const useCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { captureShieldMembershipCancelledEvent } = useSubscriptionMetrics();
 
   const latestSubscriptionDuration = useMemo(() => {
@@ -229,7 +229,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { captureShieldSubscriptionRestartRequestEvent } =
     useSubscriptionMetrics();
 
@@ -275,7 +275,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -313,7 +313,7 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   subscription?: Subscription;
   newRecurringInterval?: RecurringInterval;
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -503,7 +503,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
  * @returns An object with the getSubscriptionEligibility function.
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
   const evmInternalAccount = useSelector((state) =>
@@ -587,7 +587,7 @@ export const useHandleSubscription = ({
   useTestClock?: boolean;
   rewardPoints?: number;
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
@@ -767,7 +767,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 }: {
   subscription?: Subscription;
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
     | Pick<
         TokenWithApprovalAmount,
@@ -850,7 +850,7 @@ export const useShieldRewards = (): {
   isRewardsSeason: boolean;
   hasAccountOptedIn: boolean;
 } => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,

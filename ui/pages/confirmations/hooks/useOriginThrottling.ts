@@ -5,7 +5,7 @@ import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling
 import { updateThrottledOriginState } from '../../../store/actions';
 
 import { selectThrottledOrigins } from '../../../selectors';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
@@ -26,7 +26,7 @@ const willNextRejectionReachThreshold = (
 };
 
 export function useOriginThrottling() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const throttledOrigins = useSelector(selectThrottledOrigins);
   const { currentConfirmation } = useCurrentConfirmation();
   const origin =

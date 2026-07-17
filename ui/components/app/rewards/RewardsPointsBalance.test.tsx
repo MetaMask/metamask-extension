@@ -13,7 +13,7 @@ import {
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
@@ -68,7 +68,7 @@ jest.mock('../../component-library/skeleton', () => ({
 }));
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
   useAppSelector: jest.fn(),
 }));
 
@@ -78,8 +78,8 @@ jest.mock('../../../../shared/lib/storage-helpers', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 
 const { useAppSelector } = jest.requireMock('../../../store/hooks');

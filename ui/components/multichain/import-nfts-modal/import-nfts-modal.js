@@ -37,7 +37,7 @@ import {
   ignoreTokens,
   updateNftDropDownState,
 } from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   Box,
@@ -75,7 +75,7 @@ const ACTION_MODES = {
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);

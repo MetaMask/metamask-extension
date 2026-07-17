@@ -12,10 +12,10 @@ import {
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export function useSmartTransactionFeatureFlags() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     id: transactionId,

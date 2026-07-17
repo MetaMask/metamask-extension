@@ -8,7 +8,7 @@ import {
   hideLoadingIndication,
 } from '../store/actions';
 import { getPna25Acknowledged } from '../selectors/metametrics';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.
@@ -21,7 +21,7 @@ export function useEnableMetametrics(): {
   loading: boolean;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +66,7 @@ export function useDisableMetametrics(): {
   loading: boolean;
   error: string | null;
 } {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

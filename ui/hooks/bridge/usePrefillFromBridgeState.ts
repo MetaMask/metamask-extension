@@ -12,7 +12,7 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getBridgeQuotes, getFromChains } from '../../ducks/bridge/selectors';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 /**
@@ -23,7 +23,7 @@ import { useBridgeNavigation } from './useBridgeNavigation';
  * or reset the bridge controller state and inputs.
  */
 export const usePrefillFromBridgeState = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
   const fromChains = useSelector(getFromChains);

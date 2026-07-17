@@ -33,7 +33,7 @@ import {
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -51,7 +51,7 @@ export const AppHeader = ({ location }) => {
   const { chainId, isEvm } = multichainNetwork;
   const networkIconSrc = getNetworkIcon(chainId, isEvm);
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const environmentType = getEnvironmentType();
   const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;

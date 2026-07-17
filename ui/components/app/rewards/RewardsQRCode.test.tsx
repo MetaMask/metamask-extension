@@ -9,12 +9,12 @@ import {
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import RewardsQRCode from './RewardsQRCode';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 // Mock react-redux hooks
@@ -65,8 +65,8 @@ jest.mock('qrcode-generator', () => {
 });
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 
 describe('RewardsQRCode', () => {

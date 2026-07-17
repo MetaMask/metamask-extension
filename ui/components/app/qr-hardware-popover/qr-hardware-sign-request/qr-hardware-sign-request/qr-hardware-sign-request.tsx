@@ -3,7 +3,7 @@ import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { completeQrCodeScan } from '../../../../../store/actions';
 import QrPlayer from '../qr-player';
 import QrReader from '../qr-reader';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 import {
   FlowStatus,
@@ -31,7 +31,7 @@ const QRHardwareSignRequest = ({
   setErrorTitle,
   setErrorActive,
 }: QRHardwareSignRequestProps) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [status, setStatus] = useState<FlowStatusValue>(FlowStatus.Play);
 
   useEffect(() => {

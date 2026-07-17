@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { syncSeedPhrases } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export const useSyncSRPs = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const [loading, setLoading] = useState(false);
 

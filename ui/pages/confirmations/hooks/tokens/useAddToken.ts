@@ -8,7 +8,7 @@ import {
 } from '../../../../store/actions';
 import { getAllTokens } from '../../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 const log = createProjectLogger('add-token');
 
@@ -23,7 +23,7 @@ export function useAddToken({
   symbol: string;
   tokenAddress: Hex;
 }) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const allTokens = useSelector(getAllTokens);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 

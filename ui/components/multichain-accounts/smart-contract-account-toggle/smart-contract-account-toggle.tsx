@@ -25,7 +25,7 @@ import {
   selectToggleState,
 } from '../../../ducks/smart-accounts/smart-accounts';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type SmartContractAccountToggleProps = {
   networkConfig: EIP7702NetworkConfiguration;
@@ -41,7 +41,7 @@ export const SmartContractAccountToggle = ({
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
   );

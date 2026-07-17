@@ -21,7 +21,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
@@ -31,7 +31,7 @@ import PrivateKeyImportView from './private-key';
 
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);

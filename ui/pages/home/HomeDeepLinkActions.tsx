@@ -5,7 +5,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { selectIsNetworkMenuOpen } from '../../selectors';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   DEEP_LINK_ORIGIN,
@@ -42,7 +42,7 @@ export const useHomeDeepLinkEffects = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const openNetworkSelectorModal = useCallback(() => {
     if (!isNetworkMenuOpen) {

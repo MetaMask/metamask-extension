@@ -24,7 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { transitionBack } from '../../../components/ui/transition';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const sortedCurrencies = [...availableCurrencies].sort((a, b) =>
   a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()),
@@ -36,7 +36,7 @@ const currencyOptions = sortedCurrencies.map(({ code, name }) => ({
 }));
 
 const CurrencySubPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const currentCurrency = useSelector(getCurrentCurrency).toLowerCase();

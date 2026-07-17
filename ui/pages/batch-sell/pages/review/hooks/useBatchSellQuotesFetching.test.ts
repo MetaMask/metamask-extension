@@ -25,11 +25,11 @@ import {
   mockUseSelectorPassthrough,
   BATCH_SELL_CHAIN_ID,
 } from '../../../../../../test/data/batch-sell';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 import { useBatchSellQuotesFetching } from './useBatchSellQuotesFetching';
 
 jest.mock('../../../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -75,7 +75,7 @@ jest.mock('lodash', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseAppDispatch = jest.mocked(useAppDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
 const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);

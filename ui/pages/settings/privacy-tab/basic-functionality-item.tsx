@@ -16,11 +16,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { PrivacyPolicyLink } from '../shared';
 import { PRIVACY_ITEMS } from '../search-config';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const useExternalServices = useSelector(getUseExternalServices);
   const isBasicFunctionalityConsolidationEnabled = useSelector(

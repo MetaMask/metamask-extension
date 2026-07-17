@@ -21,7 +21,7 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { NetworkConnectionBanner as NetworkConnectionBannerType } from '../../../../shared/constants/app-state';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 type BannerIcon = {
   color: IconColor;
@@ -234,7 +234,7 @@ const getBannerContent = (
 export const NetworkConnectionBanner = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const networkConnectionBanner = useNetworkConnectionBanner();
 
   const updateRpc = useCallback(() => {

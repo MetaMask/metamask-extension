@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 import { useModalProps } from './useModalProps';
 
 jest.mock('../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 const MOCK_PROPS = {

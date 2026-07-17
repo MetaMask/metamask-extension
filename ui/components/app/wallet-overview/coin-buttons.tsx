@@ -31,7 +31,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useAppSelector, useAppDispatch } from '../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -242,7 +242,7 @@ const CoinButtons = ({
   buyAssetId,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [showReceiveModal, setShowReceiveModal] = useState(false);

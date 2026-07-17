@@ -27,7 +27,7 @@ import { buildResults } from '../utils/buildResults';
 import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
 import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import { QUOTE_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 type Options = {
   enabled: boolean;
@@ -37,7 +37,7 @@ export const useBatchSellQuotesFetching = (
   { sendAssetsConfig, receivedAsset }: BatchSellQuotesConfig,
   { enabled }: Options,
 ) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const selectedAccount = useSelector(getFromAccount);
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);

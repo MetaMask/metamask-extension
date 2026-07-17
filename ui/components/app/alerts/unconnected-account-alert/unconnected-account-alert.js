@@ -22,7 +22,7 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 import {
   Icon,
@@ -36,7 +36,7 @@ const { ERROR, LOADING } = ALERT_STATE;
 
 const UnconnectedAccountAlert = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,

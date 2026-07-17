@@ -100,7 +100,7 @@ import {
   TextFieldSearchSize,
 } from '../../components/component-library';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 import {
   MetaMetricsEventCategory,
@@ -388,7 +388,7 @@ const getImportedTokensWithoutBalances = ({
 
 export const TokenManagementPage = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const runCloseTransition = useGlobalMenuRouteTransition();

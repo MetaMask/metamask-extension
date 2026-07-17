@@ -33,7 +33,7 @@ import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
-import { useAppDispatch } from '../../../../../../../store/hooks';
+import { useDispatch } from '../../../../../../../store/hooks';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
@@ -54,7 +54,7 @@ export const EditSpendingCapModal = ({
 }) => {
   const t = useI18nContext();
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();

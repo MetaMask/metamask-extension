@@ -18,11 +18,11 @@ import {
   selectCanShowLowPriorityModal,
 } from '../../selectors/home-modals';
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 export function DeeplinkQrCodeModalContainer() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const deepLinkQrCode = useSelector(getHomeDeepLinkQrCode);
   const canShow = useSelector(selectCanShowLowPriorityModal);
 

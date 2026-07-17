@@ -12,10 +12,10 @@ import {
 import { setEditedNetwork } from '../../../../store/actions';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useSendContext } from '../../context/send';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export const useUnreliableNetworkRpc = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { chainId } = useSendContext();
   const networkConfigurationsByChainId = useSelector(

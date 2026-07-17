@@ -21,7 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
@@ -76,7 +76,7 @@ import { ContactNetworks } from './contact-networks';
 
 export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);

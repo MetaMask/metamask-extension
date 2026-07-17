@@ -33,7 +33,7 @@ import {
 } from '../../store/actions';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
@@ -59,7 +59,7 @@ export const BasicFunctionalityOff = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const useExternalServices = useSelector(getUseExternalServices);
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,

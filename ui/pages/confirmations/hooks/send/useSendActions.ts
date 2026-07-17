@@ -20,7 +20,7 @@ import {
   submitEvmTransaction,
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
 
@@ -32,7 +32,7 @@ type SnapConfirmSendResult = {
 
 export const useSendActions = () => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     asset,

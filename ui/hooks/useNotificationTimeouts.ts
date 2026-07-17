@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { deleteNotificationsById } from '../store/actions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-import { useAppDispatch } from '../store/hooks';
+import { useDispatch } from '../store/hooks';
 
 /**
  * This hook is used to enforce lifecycles for snap notifications.
@@ -14,7 +14,7 @@ import { useAppDispatch } from '../store/hooks';
  * @returns A function that creates a timeout to delete a notification.
  */
 export const useSnapNotificationTimeouts = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const setNotificationTimeout = useCallback(
     (id: string) => {

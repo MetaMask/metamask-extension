@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { TRADES_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
 import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const useBatchSellTradesFetching = (
   {
@@ -23,7 +23,7 @@ export const useBatchSellTradesFetching = (
   },
   { enabled }: { enabled: boolean },
 ) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const latestArgsRef = useRef({ data, entries, chain });
   latestArgsRef.current = { data, entries, chain };
 

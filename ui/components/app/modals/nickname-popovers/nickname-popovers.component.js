@@ -12,13 +12,13 @@ import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
 import { getMultichainNetwork } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';
 const ADD_NICKNAME_POPOVER = 'ADD_NICKNAME_POPOVER';
 
 const NicknamePopovers = ({ address, onClose }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const [popoverToDisplay, setPopoverToDisplay] = useState(
     SHOW_NICKNAME_POPOVER,

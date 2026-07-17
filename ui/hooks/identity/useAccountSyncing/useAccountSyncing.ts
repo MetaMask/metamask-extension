@@ -13,7 +13,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * A utility used internally to decide if account syncing should be dispatched
@@ -52,7 +52,7 @@ export const useShouldDispatchAccountSyncing = () => {
  * and error state.
  */
 export const useAccountSyncing = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const shouldDispatchAccountSyncing = useShouldDispatchAccountSyncing();
 
@@ -77,7 +77,7 @@ export const useAccountSyncing = () => {
  * Custom hook to delete a user's account syncing data from user storage
  */
 export const useDeleteAccountSyncingDataFromUserStorage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const dispatchDeleteAccountSyncingData = useCallback(async () => {
     try {
       await dispatch(deleteAccountSyncingDataFromUserStorage());

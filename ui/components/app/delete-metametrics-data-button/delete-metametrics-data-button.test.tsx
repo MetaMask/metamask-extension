@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
@@ -19,7 +19,7 @@ import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn().mockReturnValue((action: unknown) => {
+  useDispatch: jest.fn().mockReturnValue((action: unknown) => {
     if (typeof action === 'function') {
       return action(jest.fn(), jest.fn());
     }
@@ -54,12 +54,12 @@ jest.mock('../../../store/actions', () => ({
 
 describe('DeleteMetaMetricsDataButton', () => {
   const useSelectorMock = useSelector as jest.Mock;
-  const useAppDispatchMock = useAppDispatch as jest.Mock;
+  const useDispatchMock = useDispatch as jest.Mock;
   const mockDispatch = jest.fn();
 
   beforeEach(() => {
     mockTrackEvent.mockClear();
-    useAppDispatchMock.mockReturnValue(mockDispatch);
+    useDispatchMock.mockReturnValue(mockDispatch);
     (createMetaMetricsDataDeletionTask as jest.Mock).mockResolvedValue(
       undefined,
     );

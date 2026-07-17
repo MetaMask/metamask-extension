@@ -133,7 +133,7 @@ import {
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -276,7 +276,7 @@ const PerpsMarketDetailPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const isDark = theme === 'dark';
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();

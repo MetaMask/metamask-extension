@@ -60,7 +60,7 @@ import {
 } from '../../../../shared/lib/shield';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
@@ -71,7 +71,7 @@ const ShieldEntryModal = ({
   onClose?: () => void;
 }) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const { captureShieldEntryModalEvent, captureShieldCtaClickedEvent } =

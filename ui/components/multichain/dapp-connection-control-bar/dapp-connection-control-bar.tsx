@@ -55,7 +55,7 @@ import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 /**
@@ -70,7 +70,7 @@ import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-po
  */
 export const DappConnectionControlBar = memo(() => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const [isNetworkPopoverOpen, setIsNetworkPopoverOpen] = useState(false);

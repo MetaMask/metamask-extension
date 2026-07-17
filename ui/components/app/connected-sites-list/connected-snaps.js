@@ -20,13 +20,13 @@ import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
 import { SnapIcon } from '../snaps/snap-icon';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
   const onDisconnect = (snapId) => {

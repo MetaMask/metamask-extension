@@ -17,13 +17,13 @@ import {
   IconName,
 } from '../../component-library';
 import { SECOND } from '../../../../shared/constants/time';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 
 export function ImportedTokensNotificationContainer() {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const newTokensImported = useSelector(getNewTokensImported);
   const newTokensImportedError = useSelector(getNewTokensImportedError);
 

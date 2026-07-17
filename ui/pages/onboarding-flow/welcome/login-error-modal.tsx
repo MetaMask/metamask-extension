@@ -35,7 +35,7 @@ import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { resetWallet } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
@@ -66,7 +66,7 @@ export default function LoginErrorModal({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
   const socialLoginType = useSelector(getSocialLoginType);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isTelegramOutdated = loginError === LOGIN_ERROR.TELEGRAM_OUTDATED;

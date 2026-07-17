@@ -9,12 +9,12 @@ import {
 } from '../../../store/actions';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { useEIP7702Account } from './useEIP7702Account';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -63,7 +63,7 @@ describe('useEIP7702Account', () => {
     addTransactionAndRouteToConfirmationPage,
   );
 
-  const useAppDispatchMock = jest.mocked(useAppDispatch);
+  const useDispatchMock = jest.mocked(useDispatch);
   const getCodeMock = jest.mocked(getCode);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
@@ -75,7 +75,7 @@ describe('useEIP7702Account', () => {
       id: TRANSACTION_ID_MOCK,
       type: 'MockAction',
     });
-    useAppDispatchMock.mockReturnValue(mockDispatch);
+    useDispatchMock.mockReturnValue(mockDispatch);
 
     useConfirmationNavigationMock.mockReturnValue({
       confirmations: [],
@@ -134,7 +134,7 @@ describe('useEIP7702Account', () => {
         navigateToId: navigateToIdMock,
       } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
 
-      useAppDispatchMock.mockReturnValue(
+      useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
@@ -159,7 +159,7 @@ describe('useEIP7702Account', () => {
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
 
-      useAppDispatchMock.mockReturnValue(
+      useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
@@ -209,7 +209,7 @@ describe('useEIP7702Account', () => {
         navigateToId: navigateToIdMock,
       } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
 
-      useAppDispatchMock.mockReturnValue(
+      useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
@@ -234,7 +234,7 @@ describe('useEIP7702Account', () => {
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
 
-      useAppDispatchMock.mockReturnValue(
+      useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,

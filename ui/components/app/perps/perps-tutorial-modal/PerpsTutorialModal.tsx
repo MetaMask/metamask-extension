@@ -31,7 +31,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -48,7 +48,7 @@ type PerpsTutorialModalProps = {
 const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   const isOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const { track } = usePerpsEventTracking();
   usePerpsEventTracking({

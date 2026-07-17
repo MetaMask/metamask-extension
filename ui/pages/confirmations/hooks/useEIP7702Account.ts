@@ -16,7 +16,7 @@ import {
   selectDefaultRpcEndpointByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../shared/lib/selectors/networks';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export function useEIP7702Account(
@@ -24,7 +24,7 @@ export function useEIP7702Account(
     chainId: '0x',
   },
 ) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
   const defaultRpcEndpoint = useSelector(

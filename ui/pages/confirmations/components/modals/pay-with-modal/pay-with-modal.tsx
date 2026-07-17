@@ -28,7 +28,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useDispatch } from '../../../../../store/hooks';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -37,7 +37,7 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();

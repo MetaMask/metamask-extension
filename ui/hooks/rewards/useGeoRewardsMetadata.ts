@@ -6,7 +6,7 @@ import {
 } from '../../ducks/rewards';
 import { getRewardsGeoMetadata } from '../../store/actions';
 import { RewardsGeoMetadata } from '../../../shared/types/rewards';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 
 type UseGeoRewardsMetadataProps = {
   enabled?: boolean;
@@ -24,7 +24,7 @@ type UseGeoRewardsMetadataReturn = {
 export const useGeoRewardsMetadata = ({
   enabled = true,
 }: UseGeoRewardsMetadataProps): UseGeoRewardsMetadataReturn => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const isLoadingRef = useRef(false);
 
   const fetchGeoRewardsMetadata = useCallback(async (): Promise<void> => {

@@ -4,7 +4,7 @@ import { isResolvableName } from '../../../../helpers/utils/util';
 import { findConfusablesInRecipient } from '../../utils/sendValidations';
 import { lookupDomainName } from '../../../../ducks/domains';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 type Resolution = {
   resolvedAddress?: string;
@@ -44,7 +44,7 @@ function isBurnOrZeroAddress(address: string | undefined): boolean {
 }
 
 export const useNameValidation = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const processResolutions = useCallback(
     (resolutions: Resolution[], domain: string) => {

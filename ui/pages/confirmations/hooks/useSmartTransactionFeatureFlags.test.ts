@@ -9,11 +9,11 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import { useSmartTransactionFeatureFlags } from './useSmartTransactionFeatureFlags';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -81,11 +81,11 @@ describe('useSmartTransactionFeatureFlags', () => {
   const fetchSmartTransactionsLivenessMock = jest.mocked(
     fetchSmartTransactionsLiveness,
   );
-  const useAppDispatchMock = jest.mocked(useAppDispatch);
+  const useDispatchMock = jest.mocked(useDispatch);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    useAppDispatchMock.mockReturnValue(jest.fn());
+    useDispatchMock.mockReturnValue(jest.fn());
     fetchSmartTransactionsLivenessMock.mockReturnValue(() => Promise.resolve());
   });
 

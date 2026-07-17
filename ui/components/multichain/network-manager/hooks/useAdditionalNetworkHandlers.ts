@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import { hideModal, addNetwork } from '../../../../store/actions';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 export const useAdditionalNetworkHandlers = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(

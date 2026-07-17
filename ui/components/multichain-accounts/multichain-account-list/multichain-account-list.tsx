@@ -63,7 +63,7 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -111,7 +111,7 @@ export const MultichainAccountList = ({
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox;
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();

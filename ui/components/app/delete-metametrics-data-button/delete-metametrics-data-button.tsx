@@ -30,7 +30,7 @@ import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import DataDeletionErrorModal from '../data-deletion-error-modal';
 import { formatDate } from '../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -57,7 +57,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       ref: PolymorphicRef<C>,
     ) => {
       const t = useI18nContext();
-      const dispatch = useAppDispatch();
+      const dispatch = useDispatch();
       const [deletionRequestedThisSession, setDeletionRequestedThisSession] =
         useState(false);
 

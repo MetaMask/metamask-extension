@@ -28,7 +28,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useDispatch } from '../../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -58,7 +58,7 @@ export enum ACTION_MODE {
 }
 
 export const useNetworkChangeHandlers = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [multichainNetworks] = useSelector(

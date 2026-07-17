@@ -17,7 +17,7 @@ import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
-import { useAppDispatch } from '../../store/hooks';
+import { useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseLinkAccountAddressResult = {
@@ -27,7 +27,7 @@ type UseLinkAccountAddressResult = {
 };
 
 export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const { trackEvent, createEventBuilder } = useAnalytics();

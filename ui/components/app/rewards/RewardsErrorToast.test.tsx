@@ -3,11 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 import { setErrorToast } from '../../../ducks/rewards';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 import RewardsErrorToast from './RewardsErrorToast';
 
 jest.mock('../../../store/hooks', () => ({
-  useAppDispatch: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-redux', () => {
@@ -19,8 +19,8 @@ jest.mock('react-redux', () => {
 });
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseAppDispatch = useAppDispatch as jest.MockedFunction<
-  typeof useAppDispatch
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
 >;
 
 describe('RewardsErrorToast', () => {

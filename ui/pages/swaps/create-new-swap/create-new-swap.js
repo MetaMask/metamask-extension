@@ -17,13 +17,13 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwapsDefaultToken } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { useAppDispatch } from '../../../store/hooks';
+import { useDispatch } from '../../../store/hooks';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 

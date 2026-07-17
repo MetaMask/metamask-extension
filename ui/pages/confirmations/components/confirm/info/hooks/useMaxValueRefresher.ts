@@ -21,7 +21,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
-import { useAppDispatch } from '../../../../../../store/hooks';
+import { useDispatch } from '../../../../../../store/hooks';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 /**
@@ -42,7 +42,7 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
 export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const {
     chainId,
     id: transactionId,
