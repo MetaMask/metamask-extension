@@ -128,9 +128,6 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
-            // Match service worker globals and Webpack's configured `global`
-            // alias, without adding a synthetic `window`.
-            globalAliases: ['self', 'global', 'globalThis'],
             scuttleGlobalThis: {
               enabled: true,
               // Globals used by the service worker
