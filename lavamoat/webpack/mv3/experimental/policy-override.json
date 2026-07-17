@@ -48,8 +48,6 @@
         "onunhandledrejection": "write",
         "addEventListener": true,
         "PerformanceObserver": true,
-        "chrome.app": true,
-        "chrome.runtime": true,
         "location": false,
         "location.href": true,
         "top": true
