@@ -497,9 +497,6 @@
   "sign": {
     "message": "Underskriv"
   },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
-  },
   "signed": {
     "message": "Underskrevet"
   },

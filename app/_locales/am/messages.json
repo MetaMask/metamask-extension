@@ -497,9 +497,6 @@
   "sign": {
     "message": "ፈርም"
   },
-  "signatureRequest": {
-    "message": "የፊርማ ጥያቄ"
-  },
   "signed": {
     "message": "ተፈርሟል"
   },

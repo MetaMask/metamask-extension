@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import { Box, Text } from '@metamask/design-system-react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -16,8 +15,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsModal } from '../details/transaction-details-modal';
+import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
@@ -83,6 +84,15 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     onVisible: fetchNextVisiblePage,
   });
 
+  useEffect(() => {
+    const onPopState = () => {
+      setSelectedItem(null);
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
   const handleClick = (item: ActivityListItem) => {
     if (!item.hash) {
       return;
@@ -98,21 +108,35 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         .build(),
     );
     setSelectedItem(item);
+
+    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
+    const alreadyOnDetails = window.location.hash.includes(
+      `${TX_DETAILS_ROUTE}/`,
+    );
+
+    if (alreadyOnDetails) {
+      window.history.replaceState(null, '', detailsHash);
+      return;
+    }
+
+    window.history.pushState(null, '', detailsHash);
   };
 
   const handleClose = () => {
-    if (selectedItem) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
-          .addCategory(MetaMetricsEventCategory.Navigation)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            activity_type: selectedItem.type,
-          })
-          .build(),
-      );
+    if (!selectedItem) {
+      return;
     }
-    setSelectedItem(null);
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          activity_type: selectedItem.type,
+        })
+        .build(),
+    );
+    window.history.back();
   };
 
   return (
@@ -137,9 +161,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         itemRef={itemRef}
         listEmptyComponent={
           isInitialLoading ? (
-            <Box className="p-4">
-              <Text>{t('loading')}</Text>
-            </Box>
+            <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
           )

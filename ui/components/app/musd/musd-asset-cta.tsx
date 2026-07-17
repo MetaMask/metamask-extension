@@ -44,7 +44,7 @@ import {
   resolveMusdConversionCtaRedirectsTo,
 } from './musd-events';
 
-// Runtime path: app/images/ is copied to images/ in the build (see development/build/static.js)
+// Runtime path: app/images/ is copied to images/ by the build
 const MUSD_EDUCATION_COIN_IMAGE = './images/musd-icon-no-background-2x.png';
 
 // ============================================================================

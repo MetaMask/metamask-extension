@@ -113,6 +113,7 @@ import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -388,6 +389,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -1047,7 +1049,27 @@ export const TokenManagementPage = () => {
         return;
       }
 
+      const tokenAddedEvent = createEventBuilder(
+        MetaMetricsEventName.TokenAdded,
+      )
+        .addCategory(MetaMetricsEventCategory.Wallet)
+        .addSensitiveProperties({
+          [METRICS_PROPERTIES.chainId]:
+            payload.hexChainId ?? payload.caipChainId,
+          [METRICS_PROPERTIES.tokenStandard]: payload.isEvm
+            ? ERC20
+            : TokenStandard.none,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.tokenContractAddress]: payload.assetReference,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: payload.decimals,
+          [METRICS_PROPERTIES.tokenSymbol]: payload.symbol,
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+        })
+        .build();
+
       if (unstageHide(stagedKey)) {
+        trackEvent(tokenAddedEvent);
         return;
       }
       removeCommittedHideKey(stagedKey);
@@ -1094,6 +1116,7 @@ export const TokenManagementPage = () => {
               : []),
           ]);
 
+          trackEvent(tokenAddedEvent);
           return;
         }
 
@@ -1112,6 +1135,7 @@ export const TokenManagementPage = () => {
               ]
             : []),
         ]);
+        trackEvent(tokenAddedEvent);
       } finally {
         removePendingKey(stagedKey);
       }
@@ -1122,9 +1146,11 @@ export const TokenManagementPage = () => {
       getAccountForChain,
       getNetworkMeta,
       isAssetsUnifiedStateInBuild,
+      createEventBuilder,
       removePendingKey,
       removeCommittedHideKey,
       stageHide,
+      trackEvent,
       unstageHide,
     ],
   );
@@ -1134,9 +1160,9 @@ export const TokenManagementPage = () => {
       event.preventDefault();
       commitStagedHides()
         .catch(() => undefined)
-        .finally(() => navigate(DEFAULT_ROUTE));
+        .finally(() => runCloseTransition(() => navigate(DEFAULT_ROUTE)));
     },
-    [commitStagedHides, navigate],
+    [commitStagedHides, navigate, runCloseTransition],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {

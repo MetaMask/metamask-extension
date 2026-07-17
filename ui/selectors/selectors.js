@@ -494,6 +494,14 @@ export const getMetaMaskCachedBalances = createSelector(
  * @returns {Function} A parameterized selector.
  */
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+// Cache recent per-chain NFT lookups for views that switch among a small set of
+// networks during a render cycle. Ten entries accommodate the current
+// multichain asset-view network fanout without expanding the LRU unnecessarily.
+const NFT_SELECTOR_CACHE_SIZE = 10;
+// Cache recent chainId + address-list combinations for token trust signal lookups
+// across asset pages and confirmation flows. Thirty entries supports several
+// address-list variants across a handful of active networks in a single view.
+const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
  * Get MetaMask accounts, including account name and balance.
@@ -1307,7 +1315,9 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-export const selectNftsByChainId = createSelector(
+export const selectNftsByChainId = createParameterizedSelector(
+  NFT_SELECTOR_CACHE_SIZE,
+)(
   getSelectedInternalAccount,
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
@@ -1978,45 +1988,65 @@ export const getSwapsDefaultToken = createSelector(
  * @param state - The Redux state
  * @param {string} [overrideChainId] - (Optional) The chainId to check
  * @returns {boolean} Whether the chainId is a swaps chain
+ *
+ * Parameterized selector with per-chainId LRU cache to prevent cache thrashing
+ * when called with different chainIds during multi-chain operations.
  */
-export function getIsSwapsChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
-  const chainId = overrideChainId ?? currentChainId;
-  const isDevelopment =
-    process.env.METAMASK_ENVIRONMENT === 'development' ||
-    process.env.METAMASK_ENVIRONMENT === 'testing';
-  return isDevelopment
-    ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
-}
+export const getIsSwapsChain = createParameterizedSelector(20)(
+  getCurrentChainId,
+  (_, overrideChainId) => overrideChainId,
+  (currentChainId, overrideChainId) => {
+    const chainId = overrideChainId ?? currentChainId;
+    const isDevelopment =
+      process.env.METAMASK_ENVIRONMENT === 'development' ||
+      process.env.METAMASK_ENVIRONMENT === 'testing';
+    return isDevelopment
+      ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
+      : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
+  },
+);
 
 export function selectHasBridgeQuotes(state) {
   return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 
 /**
- * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * Internal helper that returns the effective default chain ID for bridge checks.
+ * For EVM networks, returns the Hex chainId. For non-EVM, returns the CAIP chainId.
+ *
  * @param state - The Redux state
- * @param overrideChainId - The chainId to check
- * @returns {boolean} Whether the chainId is a bridge chain
+ * @returns {string} The effective chain ID
  */
-export function getIsBridgeChain(state, overrideChainId) {
+const getBridgeDefaultChainId = (state) => {
   const account = getSelectedInternalAccount(state);
   const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
     state,
     account,
   );
-
-  let currentChainId = selectedMultiChainId;
-
-  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
+  // While we do not support the multichain network on EVM chains (ex: mainnet is eip155:1), use the old chainId
   if (isEvmNetwork) {
-    currentChainId = getCurrentChainId(state);
+    return getCurrentChainId(state);
   }
+  return selectedMultiChainId;
+};
 
-  const chainId = overrideChainId ?? currentChainId;
-  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-}
+/**
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * @param state - The Redux state
+ * @param overrideChainId - The chainId to check
+ * @returns {boolean} Whether the chainId is a bridge chain
+ *
+ * Parameterized selector with per-chainId LRU cache to prevent cache thrashing
+ * when called with different chainIds during multi-chain operations.
+ */
+export const getIsBridgeChain = createParameterizedSelector(20)(
+  getBridgeDefaultChainId,
+  (_, overrideChainId) => overrideChainId,
+  (defaultChainId, overrideChainId) => {
+    const chainId = overrideChainId ?? defaultChainId;
+    return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+  },
+);
 
 // Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
 // only bridgeConfig should invalidate consumers of bridge feature flags.
@@ -3020,28 +3050,31 @@ export function getTokenScanCache(state) {
  * @returns {Record<string, TokenScanCacheResult>}
  *
  */
-export const getTokenScanResultsForAddresses = createParameterizedSelector(30)(
-  getTokenScanCache,
-  (_state, chainId) => chainId,
-  (_state, _chainId, tokenAddresses) => tokenAddresses,
-  (tokenScanCache, chainId, tokenAddresses) => {
-    if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
-      return {};
-    }
-
-    const results = {};
-    tokenAddresses.forEach((tokenAddress) => {
-      if (tokenAddress) {
-        const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-        if (tokenScanCache?.[cacheKey]) {
-          results[cacheKey] = tokenScanCache[cacheKey];
-        }
+export const getTokenScanResultsForAddresses =
+  createParameterizedShallowEqualSelector(
+    TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
+  )(
+    getTokenScanCache,
+    (_state, chainId) => chainId,
+    (_state, _chainId, tokenAddresses) => tokenAddresses,
+    (tokenScanCache, chainId, tokenAddresses) => {
+      if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
+        return {};
       }
-    });
 
-    return results;
-  },
-);
+      const results = {};
+      tokenAddresses.forEach((tokenAddress) => {
+        if (tokenAddress) {
+          const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
+          if (tokenScanCache?.[cacheKey]) {
+            results[cacheKey] = tokenScanCache[cacheKey];
+          }
+        }
+      });
+
+      return results;
+    },
+  );
 
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
