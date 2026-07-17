@@ -21,6 +21,9 @@ const RELEASE_TAG_LIST_PATTERN = 'v*.*.*';
 const SKIP_MERGE_COMMIT_SUBJECT =
   /^Merge (branch|pull request|remote-tracking)/u;
 
+/** Conventional-commit `release` type, with or without scope (`release:`, `release(runway):`). */
+const RELEASE_COMMIT_SUBJECT = /^release(\(.*\))?:/u;
+
 // GitHub-hosted Ubuntu runners install Git here; avoid resolving it via PATH.
 const GIT_EXECUTABLE = '/usr/bin/git';
 
@@ -170,7 +173,9 @@ export function extractWhatsInRc(): WhatsInRcResult {
     // bumps) because features land via cherry-picks on the release branch.
     const isOnlyReleaseCommits =
       changelog.length > 0 &&
-      changelog.every((commit) => commit.subject.startsWith('release:'));
+      changelog.every((commit) =>
+        RELEASE_COMMIT_SUBJECT.test(commit.subject.trim()),
+      );
 
     if (changelog.length === 0 || isOnlyReleaseCommits) {
       changelog = getCommitsBetween(previousTag, 'HEAD', false);
@@ -234,6 +239,7 @@ export function buildWhatsInRcSection(
   const { cherryPicks, changelog, previousTag, changelogFromReleaseBranch } =
     result;
   const anchorId = getWhatsInRcAnchorId(anchorSuffix);
+  const cherryPicksAnchorId = getCherryPicksAnchorId(anchorSuffix);
 
   let section = `<a id="${anchorId}"></a>
 ### :cherries: What's in this RC
@@ -241,15 +247,20 @@ export function buildWhatsInRcSection(
 `;
 
   if (cherryPicks.length === 0 && changelog.length === 0) {
-    return `${section}<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`;
+    // Still emit the cherry-picks anchor so Slack deep links have a target.
+    return `${section}<a id="${cherryPicksAnchorId}"></a>
+<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`;
   }
 
   if (cherryPicks.length > 0) {
     section += buildCommitsTable(
       cherryPicks,
       `Cherry-picks (${cherryPicks.length} commits)`,
-      getCherryPicksAnchorId(anchorSuffix),
+      cherryPicksAnchorId,
     );
+  } else {
+    // Slack always links to #cherry-picks-{runId}; keep a target when empty.
+    section += `<a id="${cherryPicksAnchorId}"></a>\n`;
   }
 
   if (changelog.length > 0) {
@@ -272,9 +283,11 @@ export function buildWhatsInRcFailureSection(
 ): string {
   const errorMsg = error ? `: ${escapeHtml(error)}` : '';
   const anchorId = getWhatsInRcAnchorId(anchorSuffix);
+  const cherryPicksAnchorId = getCherryPicksAnchorId(anchorSuffix);
   return `<a id="${anchorId}"></a>
 ### :cherries: What's in this RC
 
+<a id="${cherryPicksAnchorId}"></a>
 <p><i>Unable to extract cherry-picks and changelog${errorMsg}</i></p>
 
 `;
