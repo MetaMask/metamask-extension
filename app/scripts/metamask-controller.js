@@ -202,6 +202,7 @@ import {
   TraceName,
   TraceOperation,
   getPerformanceTimestamp,
+  serializeTraceContext,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
@@ -7611,13 +7612,14 @@ export default class MetamaskController extends EventEmitter {
           startTrace: (options) => {
             // Must return a JSON-serializable TraceContext: spreading the raw
             // Sentry Span leaks internal `undefined` fields that fail the snap
-            // response's JSON validation, and only the `SerializedTraceContext`
-            // shape round-trips into a later `startTrace` `parentContext`.
+            // response's JSON validation. `serializeTraceContext` produces the
+            // `SerializedTraceContext` shape (name/id + W3C `traceparent`) that
+            // round-trips into a later `startTrace` `parentContext`.
             const span = trace(options);
-            const spanContext = span?.spanContext?.();
-            return spanContext
-              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
-              : {};
+            return serializeTraceContext(span, {
+              name: options.name,
+              id: options.id,
+            });
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
