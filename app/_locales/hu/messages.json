@@ -509,9 +509,6 @@
   "sign": {
     "message": "Aláír"
   },
-  "signatureRequest": {
-    "message": "Aláírási kérelem"
-  },
   "signed": {
     "message": "Aláírva"
   },

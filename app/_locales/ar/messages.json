@@ -513,9 +513,6 @@
   "sign": {
     "message": "توقيع"
   },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
-  },
   "signed": {
     "message": "مسجل الدخول"
   },

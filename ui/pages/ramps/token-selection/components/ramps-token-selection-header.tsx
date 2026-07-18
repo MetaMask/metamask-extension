@@ -19,12 +19,15 @@ export type RampsTokenSelectionHeaderProps = {
   title: string;
   subtitle?: string;
   onBack: () => void;
+  /** Screen-specific back button test id for shared selection headers. */
+  backButtonTestId?: string;
 };
 
 export default function RampsTokenSelectionHeader({
   title,
   subtitle,
   onBack,
+  backButtonTestId = 'ramps-selection-back',
 }: RampsTokenSelectionHeaderProps) {
   const t = useI18nContext();
 
@@ -37,7 +40,7 @@ export default function RampsTokenSelectionHeader({
       <ButtonBase
         onClick={onBack}
         className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid={backButtonTestId}
         aria-label={t('back')}
       >
         <Icon

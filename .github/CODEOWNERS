@@ -289,7 +289,6 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 # Build
 development/build/                                    @MetaMask/extension-platform @itsyoboieltr
 development/webpack/                                  @MetaMask/extension-platform @itsyoboieltr
-development/generate-lavamoat-policies.js             @MetaMask/extension-platform @itsyoboieltr
 /babel.config.js                                      @MetaMask/extension-platform
 /tsconfig.json                                        @MetaMask/extension-platform
 /tsconfig.*.json                                      @MetaMask/extension-platform

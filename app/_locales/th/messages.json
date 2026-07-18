@@ -280,9 +280,6 @@
   "sign": {
     "message": "เซ็นชื่อ"
   },
-  "signatureRequest": {
-    "message": "ขอลายเซ็น"
-  },
   "signed": {
     "message": "ลงชื่อแล้ว"
   },

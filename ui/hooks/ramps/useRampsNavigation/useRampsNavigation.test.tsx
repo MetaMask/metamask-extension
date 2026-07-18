@@ -274,6 +274,36 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
+  it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'setRampsSelectedToken') {
+        throw new Error('Token not found');
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+    const opened = await goToBuy(result, { assetId });
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('intent with supported assetId matches case-insensitively', async () => {
     const catalogAssetId = 'eip155:1/erc20:0xAbC';
     const { result } = run(

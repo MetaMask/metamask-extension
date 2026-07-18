@@ -50,7 +50,7 @@ export type MetricComparison = {
 
 export type BenchmarkEntryComparison = {
   benchmarkName: string;
-  source?: string; // e.g., 'chrome-browserify'
+  source?: string; // e.g., 'chrome-webpack'
   relativeMetrics: MetricComparison[];
   absoluteViolations: ThresholdViolation[];
   hasRegression: boolean;

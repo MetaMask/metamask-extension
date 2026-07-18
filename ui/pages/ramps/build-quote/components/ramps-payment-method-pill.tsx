@@ -3,6 +3,7 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  ButtonBase,
   Icon,
   IconColor,
   IconName,
@@ -15,11 +16,13 @@ import Spinner from '../../../../components/ui/spinner';
 export type RampsPaymentMethodPillProps = {
   label: string;
   isLoading?: boolean;
+  onClick?: () => void;
 };
 
 export default function RampsPaymentMethodPill({
   label,
   isLoading = false,
+  onClick,
 }: RampsPaymentMethodPillProps) {
   if (isLoading) {
     return (
@@ -33,23 +36,29 @@ export default function RampsPaymentMethodPill({
   }
 
   return (
-    <Box
-      className="inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
+    <ButtonBase
+      onClick={onClick}
+      isDisabled={!onClick}
+      className="inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
       data-testid="ramps-payment-method-pill"
     >
-      <Icon
-        name={IconName.Card}
-        size={IconSize.Sm}
-        color={IconColor.IconDefault}
-      />
-      <Text fontWeight={FontWeight.Medium}>{label}</Text>
-      <Icon
-        name={IconName.ArrowDown}
-        size={IconSize.Sm}
-        color={IconColor.IconDefault}
-      />
-    </Box>
+      <Box
+        className="inline-flex items-center gap-2"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Icon
+          name={IconName.Card}
+          size={IconSize.Sm}
+          color={IconColor.IconDefault}
+        />
+        <Text fontWeight={FontWeight.Medium}>{label}</Text>
+        <Icon
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+          color={IconColor.IconDefault}
+        />
+      </Box>
+    </ButtonBase>
   );
 }

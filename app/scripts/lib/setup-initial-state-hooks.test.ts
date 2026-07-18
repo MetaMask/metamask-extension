@@ -91,20 +91,7 @@ describe('setup-initial-state-hooks', () => {
   });
 
   describe('isBackgroundContext (via module behavior)', () => {
-    it('detects browserify MV3 background (app-init.js)', async () => {
-      setSelfHref('chrome-extension://abc123/scripts/app-init.js');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
-
-      await importFresh();
-
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
-        initialize: true,
-      });
-    });
-
-    it('detects webpack MV3 background (service-worker.js)', async () => {
+    it('detects Chrome MV3 background (service-worker.js)', async () => {
       setSelfHref('chrome-extension://abc123/service-worker.js');
       const { FixtureExtensionStore } = jest.requireMock(
         '../../../shared/lib/stores/fixture-extension-store',

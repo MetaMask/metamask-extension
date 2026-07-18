@@ -512,9 +512,6 @@
   "sign": {
     "message": "Parakstīt"
   },
-  "signatureRequest": {
-    "message": "Paraksta pieprasījums"
-  },
   "signed": {
     "message": "Parakstīts"
   },

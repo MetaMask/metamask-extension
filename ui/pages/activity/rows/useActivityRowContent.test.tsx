@@ -78,4 +78,66 @@ describe('useActivityRowContent', () => {
       'activity_assetDeactivation_success_description|USDC',
     );
   });
+
+  it('falls back to source-only swap copy when destination is missing', () => {
+    const activity = {
+      type: 'swap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        sourceToken: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '378900000000000',
+          decimals: 18,
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_swapIncomplete_success_title|ETH',
+    );
+    expect(result.current.subtitle).toBe('activity_swap_success_description');
+  });
+
+  it('keeps full swap copy when destination is present', () => {
+    const activity = {
+      type: 'swap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        sourceToken: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+        },
+        destinationToken: {
+          direction: 'in',
+          symbol: 'USDC',
+          amount: '2',
+          decimals: 6,
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_swap_success_title|ETH,USDC',
+    );
+  });
 });

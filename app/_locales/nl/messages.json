@@ -225,9 +225,6 @@
   "sign": {
     "message": "Teken"
   },
-  "signatureRequest": {
-    "message": "Ondertekeningsverzoek"
-  },
   "stateLogs": {
     "message": "Staatslogboeken"
   },

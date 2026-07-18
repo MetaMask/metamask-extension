@@ -494,9 +494,6 @@
   "sign": {
     "message": "Ingia kwenye akaunti"
   },
-  "signatureRequest": {
-    "message": "Ombi la Saini"
-  },
   "signed": {
     "message": "Imesainiwa"
   },

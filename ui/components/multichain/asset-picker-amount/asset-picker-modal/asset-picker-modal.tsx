@@ -6,11 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
-import type {
-  Token,
-  TokenListMap,
-  TokenListToken,
-} from '@metamask/assets-controllers';
+import type { Token } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
@@ -40,8 +36,6 @@ import {
   getAllTokens,
   getSelectedEvmInternalAccount,
   getTokenExchangeRates,
-  getTokenList,
-  getUseExternalServices,
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
@@ -53,8 +47,6 @@ import {
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getNativeTokenName } from '../../../../ducks/bridge/utils';
 import {
@@ -69,10 +61,7 @@ import {
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
 import { Numeric } from '../../../../../shared/lib/Numeric';
-import {
-  isEvmChainId,
-  isTronSpecialAsset,
-} from '../../../../../shared/lib/asset-utils';
+import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
@@ -205,19 +194,6 @@ export function AssetPickerModal({
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
-
-  const allowExternalServices = useSelector(getUseExternalServices);
-  // Swaps top tokens
-  const { value: topTokens } = useAsyncResult<
-    { address: Hex }[] | undefined
-  >(async () => {
-    if (allowExternalServices && selectedNetwork?.chainId) {
-      return await fetchTopAssetsList(selectedNetwork.chainId);
-    }
-    return undefined;
-  }, [selectedNetwork?.chainId, allowExternalServices]);
-
   /**
    * Generates a list of tokens sorted in this order
    * - native tokens with balance
@@ -226,8 +202,6 @@ export function AssetPickerModal({
    * - matches URL token parameter
    * - matches search query
    * - detected tokens (without balance)
-   * - popularity
-   * - all other tokens
    */
   const tokenListGenerator = useCallback(
     function* (
@@ -238,7 +212,7 @@ export function AssetPickerModal({
       ) => boolean,
     ): Generator<
       | AssetWithDisplayData<NativeAsset>
-      | ((Token | TokenListToken) & {
+      | (Token & {
           chainId: string;
           balance?: string;
           string?: string;
@@ -316,28 +290,6 @@ export function AssetPickerModal({
           yield { ...token, chainId: currentChainId };
         }
       }
-
-      // Return early when SOLANA is selected since blocked and top tokens are not available
-      // All available solana tokens are in the multichainTokensWithBalance results
-      if (!isEvmChainId(selectedNetwork?.chainId)) {
-        return;
-      }
-
-      // For EVM tokens only
-      // topTokens are sorted by popularity
-      for (const topToken of topTokens ?? []) {
-        const token: TokenListToken =
-          evmTokenMetadataByAddress?.[topToken.address];
-        if (token && addToken(token.symbol, token.address, currentChainId)) {
-          yield { ...token, chainId: currentChainId };
-        }
-      }
-
-      for (const token of Object.values(evmTokenMetadataByAddress)) {
-        if (addToken(token.symbol, token.address, currentChainId)) {
-          yield { ...token, chainId: currentChainId };
-        }
-      }
     },
     [
       nativeCurrency,
@@ -348,8 +300,6 @@ export function AssetPickerModal({
       selectedNetwork?.chainId,
       multichainTokensWithBalance,
       allDetectedTokens,
-      topTokens,
-      evmTokenMetadataByAddress,
     ],
   );
 
@@ -412,7 +362,6 @@ export function AssetPickerModal({
               token.address
                 ? ({
                     ...token,
-                    ...evmTokenMetadataByAddress[token.address.toLowerCase()],
                     type: AssetType.token,
                   } as AssetWithDisplayData<ERC20Asset>)
                 : token,
@@ -420,7 +369,6 @@ export function AssetPickerModal({
               conversionRate,
               currentCurrency,
               token.chainId,
-              evmTokenMetadataByAddress,
             )
           : (token as unknown as AssetWithDisplayData<ERC20Asset>);
 
@@ -434,7 +382,7 @@ export function AssetPickerModal({
         filteredTokens.push(tokenWithBalanceData);
       }
 
-      if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+      if (filteredTokens.length >= MAX_UNOWNED_TOKENS_RENDERED) {
         break;
       }
     }
@@ -449,7 +397,6 @@ export function AssetPickerModal({
     customTokenListGenerator,
     tokenListGenerator,
     action,
-    evmTokenMetadataByAddress,
     tokenConversionRates,
     conversionRate,
     currentCurrency,

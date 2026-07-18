@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MetaMaskLogo from '@metamask/logo';
 import { debounce } from 'lodash';
 import { getFoxMeshJson } from '../../../../shared/lib/build-types';
@@ -26,25 +26,13 @@ function Mascot({
 }) {
   const mascotContainerRef = useRef(null);
   const directionTargetMapRef = useRef(null);
-  const logoRef = useRef(null);
   const animationEventEmitterRef = useRef(animationEventEmitter);
   animationEventEmitterRef.current = animationEventEmitter;
   const prevFollowMouseRef = useRef(followMouse);
+  // Capture the sizing/follow props at first render so we don't make them reactive dependencies of the mount effect.
+  const initialLogoOptionsRef = useRef({ followMouse, width, height });
 
-  if (!logoRef.current) {
-    logoRef.current = MetaMaskLogo({
-      followMouse,
-      pxNotRatio: true,
-      width,
-      height,
-      meshJson: getFoxMeshJson(),
-      verticalFieldOfView: Math.PI / 37.5,
-      near: 100,
-      far: 340,
-    });
-  }
-
-  const logo = logoRef.current;
+  const [logo, setLogo] = useState(null);
 
   useEffect(() => {
     const mascotContainer = mascotContainerRef.current;
@@ -52,36 +40,57 @@ function Mascot({
       return undefined;
     }
 
-    mascotContainer.appendChild(logo.container);
+    const {
+      followMouse: initialFollowMouse,
+      width: initialWidth,
+      height: initialHeight,
+    } = initialLogoOptionsRef.current;
+    const logoViewer = MetaMaskLogo({
+      followMouse: initialFollowMouse,
+      pxNotRatio: true,
+      width: initialWidth,
+      height: initialHeight,
+      meshJson: getFoxMeshJson(),
+      verticalFieldOfView: Math.PI / 37.5,
+      near: 100,
+      far: 340,
+    });
+    setLogo(logoViewer);
+
+    mascotContainer.appendChild(logoViewer.container);
     directionTargetMapRef.current = directionTargetGenerator(
       mascotContainer.getBoundingClientRect(),
     );
 
-    const refollowMouse = debounce(logo.setFollowMouse.bind(logo, true), 1000);
-    const unfollowMouse = logo.setFollowMouse.bind(logo, false);
+    const refollowMouse = debounce(
+      logoViewer.setFollowMouse.bind(logoViewer, true),
+      1000,
+    );
+    const unfollowMouse = logoViewer.setFollowMouse.bind(logoViewer, false);
 
     const lookAt = (target) => {
       unfollowMouse();
-      logo.lookAtAndRender(target);
+      logoViewer.lookAtAndRender(target);
       refollowMouse();
     };
 
     const emitter = animationEventEmitterRef.current;
-    const setFollowMouseHandler = logo.setFollowMouse.bind(logo);
+    const setFollowMouseHandler = logoViewer.setFollowMouse.bind(logoViewer);
 
     emitter.on('point', lookAt);
     emitter.on('setFollowMouse', setFollowMouseHandler);
 
     return () => {
       emitter.removeAllListeners();
-      logo.container.remove();
-      logo.stopAnimation();
+      logoViewer.container.remove();
+      logoViewer.stopAnimation();
+      setLogo(null);
     };
-  }, [logo]);
+  }, []);
 
   useEffect(() => {
     const directionTargetMap = directionTargetMapRef.current;
-    if (!directionTargetMap) {
+    if (!logo || !directionTargetMap) {
       return;
     }
 
@@ -93,6 +102,10 @@ function Mascot({
   }, [lookAtDirection, lookAtTarget, logo]);
 
   useEffect(() => {
+    if (!logo) {
+      return;
+    }
+
     if (prevFollowMouseRef.current === followMouse) {
       return;
     }

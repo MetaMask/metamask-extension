@@ -4,7 +4,9 @@
  * Posts a Block Kit message when a release-candidate Main workflow completes, aligned with
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
- * Build URLs include main Chrome/Firefox Webpack artifacts plus the deprecated Browserify fallback.
+ * Build URLs include main Chrome/Firefox Webpack artifacts.
+ * Slack also links to run-specific PR comment anchors for cherry-picks and full RC notes
+ * (same pattern as Mobile after MetaMask/metamask-mobile#32969).
  *
  * Local / manual testing
  * ----------------------
@@ -47,7 +49,6 @@ type SlackPayload = {
 };
 
 type MainBrowserLinks = {
-  browserify: BuildLinks['browserify']['main'];
   webpack: BuildLinks['webpack']['main'];
 };
 
@@ -88,7 +89,6 @@ function getExtensionMainBuildLinks(
     version: packageVersion,
   });
   return {
-    browserify: buildLinks.browserify.main,
     webpack: buildLinks.webpack.main,
   };
 }
@@ -242,7 +242,6 @@ function buildSlackMessage(options: {
 
   const buildIdLabel = `run ${runId}`;
 
-  const b = links.browserify;
   const w = links.webpack;
 
   const blocks: Record<string, unknown>[] = [
@@ -291,30 +290,6 @@ function buildSlackMessage(options: {
         },
       ],
     },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '*📦 Deprecated main build zips (Browserify)*',
-      },
-    },
-    {
-      type: 'section',
-      fields: [
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.chrome)
-            ? `*Chrome (MV3):*\n<${b.chrome}|Download zip>`
-            : '*Chrome (MV3):*\n_Not available_',
-        },
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.firefox)
-            ? `*Firefox (MV2):*\n<${b.firefox}|Download zip>`
-            : '*Firefox (MV2):*\n_Not available_',
-        },
-      ],
-    },
   ];
 
   if (hasChangelog && changelogText) {
@@ -338,14 +313,17 @@ function buildSlackMessage(options: {
     });
   }
 
+  // Match Mobile: link Slack to the run-specific PR comment anchors.
+  // GitHub prefixes user-provided anchor IDs with `user-content-`.
   if (prNumber) {
+    const cherryPicksLink = `<${REPO_URL}/pull/${prNumber}#user-content-cherry-picks-${runId}|View cherry-picks>`;
     blocks.push(
       { type: 'divider' },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*:cherries: What's in this RC:* <${REPO_URL}/pull/${prNumber}#user-content-whats-in-this-rc-${runId}|View details>`,
+          text: `*🍒 Cherry-picks:* ${cherryPicksLink}`,
         },
       },
     );
@@ -353,21 +331,25 @@ function buildSlackMessage(options: {
 
   const footerBits = [
     actionsRunUrl ? `<${actionsRunUrl}|View Build Pipeline>` : null,
-    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|View full release notes>`,
+    prNumber
+      ? `<${REPO_URL}/pull/${prNumber}#user-content-whats-in-this-rc-${runId}|View full RC notes>`
+      : null,
   ].filter(Boolean);
 
-  blocks.push(
-    { type: 'divider' },
-    {
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: footerBits.join(' | '),
-        },
-      ],
-    },
-  );
+  if (footerBits.length > 0) {
+    blocks.push(
+      { type: 'divider' },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: footerBits.join(' | '),
+          },
+        ],
+      },
+    );
+  }
 
   return {
     blocks,
@@ -391,6 +373,8 @@ async function postToSlack(
         channel: channelName,
         blocks: payload.blocks,
         text: payload.text,
+        unfurl_links: false,
+        unfurl_media: false,
       }),
     });
 
@@ -475,7 +459,6 @@ export async function main(): Promise<void> {
   const links: MainBrowserLinks = hostUrlOk
     ? getExtensionMainBuildLinks(trimmedHostUrl, packageVersion)
     : {
-        browserify: { chrome: '', firefox: '' },
         webpack: { chrome: '', firefox: '' },
       };
 

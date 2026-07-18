@@ -512,9 +512,6 @@
   "sign": {
     "message": "ಸಹಿ"
   },
-  "signatureRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
-  },
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
   },

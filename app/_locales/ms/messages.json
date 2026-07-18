@@ -496,9 +496,6 @@
   "sign": {
     "message": "Tandatangan"
   },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
-  },
   "signed": {
     "message": "Ditandatangani"
   },

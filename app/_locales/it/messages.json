@@ -911,9 +911,6 @@
   "sign": {
     "message": "Firma"
   },
-  "signatureRequest": {
-    "message": "Firma Richiesta"
-  },
   "signed": {
     "message": "Firmata"
   },
@@ -1056,10 +1053,6 @@
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenToToken": {
-    "message": "Scambia da $1 a $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTransactionComplete": {
     "message": "Transazione completata"

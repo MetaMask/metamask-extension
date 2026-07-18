@@ -78,13 +78,13 @@ describe('build-quote utils', () => {
           selectedTokenAssetId: matching,
           tokensLoading: true,
         }),
-        // Failed / unfinished pre-select after load must redirect, not spin forever
-        intentRedirectWhenLoadFinishedWithoutToken: resolveBuildQuoteViewKind({
+        // UI store may lag behind background pre-select — keep loading
+        intentLoadingWhenLoadFinishedWithoutToken: resolveBuildQuoteViewKind({
           intentAssetId: intent,
           selectedTokenAssetId: undefined,
           tokensLoading: false,
         }),
-        intentRedirectWhenLoadFinishedWithMismatch: resolveBuildQuoteViewKind({
+        intentLoadingWhenLoadFinishedWithMismatch: resolveBuildQuoteViewKind({
           intentAssetId: intent,
           selectedTokenAssetId: mismatch,
           tokensLoading: false,

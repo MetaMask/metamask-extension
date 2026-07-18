@@ -26,8 +26,10 @@ export default function RampsBuildQuoteView({
   showPaymentMethodSpinner,
   displayedQuoteError,
   providerStatusLabel,
+  isQuoteLoading,
   canContinue,
   handleBack,
+  handlePaymentMethodPress,
   handleAmountChange,
   handleContinue,
 }: RampsBuildQuoteReadyViewModel) {
@@ -43,6 +45,7 @@ export default function RampsBuildQuoteView({
         title={pageTitle}
         subtitle={pageSubtitle}
         onBack={handleBack}
+        backButtonTestId="ramps-build-quote-back"
       />
 
       <Box
@@ -76,6 +79,7 @@ export default function RampsBuildQuoteView({
           <RampsPaymentMethodPill
             label={paymentMethodLabel}
             isLoading={showPaymentMethodSpinner}
+            onClick={handlePaymentMethodPress}
           />
         </Box>
 
@@ -112,6 +116,7 @@ export default function RampsBuildQuoteView({
             className="w-full"
             onClick={handleContinue}
             isDisabled={!canContinue}
+            isLoading={isQuoteLoading}
             data-testid="ramps-build-quote-continue"
           >
             {t('continue')}

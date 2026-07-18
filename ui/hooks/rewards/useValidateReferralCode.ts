@@ -83,13 +83,13 @@ export const useValidateReferralCode = (
       setIsValidating(false);
       setError('');
       setIsVipCode(false);
-    } else if (!isReferralCodeFormatValid(normalized)) {
-      setIsValidating(false);
-      setError(REFERRAL_CODE_INVALID_ERROR);
-      setIsVipCode(false);
-    } else {
+    } else if (isReferralCodeFormatValid(normalized)) {
       setIsValidating(true);
       setError('');
+      setIsVipCode(false);
+    } else {
+      setIsValidating(false);
+      setError(REFERRAL_CODE_INVALID_ERROR);
       setIsVipCode(false);
     }
   }

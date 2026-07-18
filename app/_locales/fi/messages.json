@@ -509,9 +509,6 @@
   "sign": {
     "message": "Allekirjoita"
   },
-  "signatureRequest": {
-    "message": "Allekirjoitus pyydetään"
-  },
   "signed": {
     "message": "Allekirjoitettu"
   },
