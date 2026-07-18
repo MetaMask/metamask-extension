@@ -44,8 +44,8 @@ import {
   getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import Callout from '../../../components/ui/callout';
 import { Box } from '../../../components/component-library';
+import { BannerAlert } from '@metamask/design-system-react';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
@@ -608,16 +608,13 @@ export default function ConfirmationPage({
                 Object.values(alertState[pendingConfirmation.id])
                   .filter((alert) => alert.dismissed === false)
                   .map((alert, idx, filtered) => (
-                    <Callout
-                      key={alert.id}
-                      severity={alert.severity}
-                      dismiss={() => dismissAlert(alert.id)}
-                      isFirst={idx === 0}
-                      isLast={idx === filtered.length - 1}
-                      isMultiple={filtered.length > 1}
+                    <BannerAlert
+                    key={alert.id}
+                    severity={alert.severity}
+                    onClose={() => dismissAlert(alert.id)}
                     >
-                      <MetaMaskTemplateRenderer sections={alert.content} />
-                    </Callout>
+                    <MetaMaskTemplateRenderer sections={alert.content} />
+                  </BannerAlert>
                   ))
               }
               style={
@@ -641,13 +638,12 @@ export default function ConfirmationPage({
               cancelText={templatedValues.cancelText}
               loading={loading}
               submitAlerts={submitAlerts.map((alert, idx) => (
-                <Callout
+                <BannerAlert
                   key={alert.id}
                   severity={alert.severity}
-                  isFirst={idx === 0}
                 >
                   <MetaMaskTemplateRenderer sections={alert.content} />
-                </Callout>
+                </BannerAlert>
               ))}
             />
           )}
