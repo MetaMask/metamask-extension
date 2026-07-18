@@ -643,10 +643,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           style="width: 32px;"
         >
-          0:00
+          0:30
         </p>
         <div
           class=""

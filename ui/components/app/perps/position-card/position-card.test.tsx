@@ -20,6 +20,17 @@ const mockStore = configureStore({
   },
 });
 
+// Store with the perpsShowFullAssetNames flag enabled so full asset names render.
+const mockStoreWithFullNames = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
+  },
+});
+
 const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
   symbol: 'ETH',
   size: '2.5',
@@ -69,11 +80,11 @@ describe('PositionCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
-  it('displays the full asset name as the title while keeping the ticker next to the size', () => {
+  it('displays the full asset name as the title while keeping the ticker next to the size when the flag is enabled', () => {
     const position = createMockPosition({ symbol: 'BTC', size: '2.5' });
     renderWithProvider(
       <PositionCard position={position} assetName="Bitcoin" />,
-      mockStore,
+      mockStoreWithFullNames,
     );
 
     // Title shows the full name
@@ -81,6 +92,22 @@ describe('PositionCard', () => {
       screen.getByText(messages.networkNameBitcoin.message),
     ).toBeInTheDocument();
     // Size line keeps the ticker as its unit
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
+  });
+
+  it('shows only the ticker as the title when the full asset names flag is disabled', () => {
+    const position = createMockPosition({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <PositionCard position={position} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    // Full name is not rendered when the flag is off
+    expect(
+      screen.queryByText(messages.networkNameBitcoin.message),
+    ).not.toBeInTheDocument();
+    // Ticker is used as the title instead
+    expect(screen.getByText('BTC')).toBeInTheDocument();
     expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
 
@@ -175,6 +202,9 @@ describe('PositionCard', () => {
     expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
       '(15.79%)',
     );
+    expect(screen.getByTestId('position-card-roe-ETH')).toHaveClass(
+      'text-success-default',
+    );
   });
 
   it('displays ROE percentage for a losing position', () => {
@@ -188,6 +218,9 @@ describe('PositionCard', () => {
     expect(screen.getByTestId('position-card-roe-BTC')).toHaveTextContent(
       '(-16.67%)',
     );
+    expect(screen.getByTestId('position-card-roe-BTC')).toHaveClass(
+      'text-error-default',
+    );
   });
 
   it('does not render ROE when returnOnEquity is not a number', () => {
@@ -200,5 +233,43 @@ describe('PositionCard', () => {
     expect(
       screen.queryByTestId('position-card-roe-ETH'),
     ).not.toBeInTheDocument();
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks size, value, P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({ symbol: 'ETH', size: '2.5' });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      expect(screen.queryByText('2.5 ETH')).not.toBeInTheDocument();
+      expect(screen.queryByText('$7,125')).not.toBeInTheDocument();
+      expect(screen.queryByText('+$375.00')).not.toBeInTheDocument();
+      expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getAllByText('••••••')).toHaveLength(4);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({
+        symbol: 'ETH',
+        unrealizedPnl: '375.00',
+      });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      const roe = screen.getByTestId('position-card-roe-ETH');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
+    });
   });
 });

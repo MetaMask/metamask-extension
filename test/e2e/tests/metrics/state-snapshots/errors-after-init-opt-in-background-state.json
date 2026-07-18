@@ -68,7 +68,6 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
@@ -98,8 +97,7 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
@@ -255,6 +253,7 @@
   "OnboardingController": {
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
+    "hasSeenOnboardingCompletionPage": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -276,7 +275,6 @@
     "advancedGasFee": {},
     "currentLocale": "en",
     "dismissSeedBackUpReminder": false,
-    "enableMV3TimestampSave": true,
     "featureFlags": {},
     "forgottenPassword": false,
     "ipfsGateway": "string",
@@ -331,6 +329,17 @@
   },
   "ProfileMetricsController": "object",
   "QrSyncController": "object",
+  "RampsController": {
+    "countries": "object",
+    "nativeProviders": "object",
+    "orders": "object",
+    "paymentMethods": "object",
+    "providerAutoSelected": "boolean",
+    "providers": "object",
+    "requests": "object",
+    "tokens": "object",
+    "userRegion": null
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",
