@@ -2014,10 +2014,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Kakailanganin mong kumpirmahin ang 2 transaksyon sa iyong hardware wallet:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Mga detalye ng bridge",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2022,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Pumili ng halaga"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Tingnan sa $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Ang transaksyon na ito ay naka-live sa dalawang network. Ipinapakita ng isang link ang pinagmulan; ipinapakita ng isa pa ang pupuntahan sa sandaling makumpirma ito."
@@ -2313,42 +2306,11 @@
   "bridgeSendLoading": {
     "message": "Ipinapadala mula sa chain ng pinagmulan"
   },
-  "bridgeStatusComplete": {
-    "message": "Kumpleto na",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Pumalya",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Kasalukuyang isinasagawa",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "Nakatanggap ng $1 sa $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Tumatanggap ng $1 sa $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Nag-swap ng $1 para sa $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Nagsa-swap ng $1 para sa $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Kahina-hinala"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Kahina-hinalang token"
-  },
-  "bridgeTo": {
-    "message": "I-bridge sa"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "Ang $1 ay isang mapaminsalang token."
@@ -2364,56 +2326,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Walang katugmang mga token \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transaksyon $1 sa 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Na-bridge"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Ibini-bridge"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Makipag-ugnayan sa"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Suporta sa MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Nagtagal na ba ito nang higit sa 3 oras?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Katayuan"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Nai-swap"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Nagsu-swap"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Time stamp"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 nang $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 sa",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Kabuuang bayad sa gas"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Nakatanggap ka ng"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Nagpadala ka ng"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Gamitin ang max na pinapayagan"
@@ -2431,12 +2343,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Kinakailangan ang minimum na $1 na reserbang balanse",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Na-bridge"
-  },
-  "bridgedToChain": {
-    "message": "Na-bridge papunta sa $1"
   },
   "bridging": {
     "message": "Ibini-bridge"
@@ -3463,10 +3369,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Tatanggap na address"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "Destinasyong Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Mga detalye"
@@ -5503,10 +5405,6 @@
     "message": "Mga detalye ng bonus na pwedeng i-claim",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "I-convert ang $1 sa mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Mga detalye ng bonus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5889,14 +5787,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Pinagana ang autodetection ng NFT"
   },
-  "nftBought": {
-    "message": "Bumili ng $1"
-  },
   "nftEmptyDescription": {
     "message": "Malawak ang mundo ng mga NFT. Simulan mo na ang iyong koleksyon ngayon."
-  },
-  "nftMinted": {
-    "message": "Nag-mint ng $1"
   },
   "nftOptions": {
     "message": "Mga Pagpipilian sa NFT"
@@ -7075,9 +6967,6 @@
   "perpsDateYesterday": {
     "message": "Kahapon"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Mga Pinondohang Perp"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Nabigo ang pag-bridge"
   },
@@ -7735,10 +7624,6 @@
   },
   "perpsWithdraw": {
     "message": "Mag-withdraw"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Mag-withdraw perps",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Tinatayang oras"
@@ -8463,10 +8348,6 @@
   "revokePermission": {
     "message": "Bawiin ang pahintulot"
   },
-  "revokePermissionTitle": {
-    "message": "Alisin ang $1 pahintulot",
-    "description": "The token symbol that is being revoked"
-  },
   "revokeSimulationDetailsDesc": {
     "message": "Inaalis mo ang pahintulot ng ibang tao na gastusin ang mga token mula sa iyong account."
   },
@@ -8937,14 +8818,6 @@
   "sent": {
     "message": "Ipinadala"
   },
-  "sentSpecifiedTokens": {
-    "message": "Nagpadala ng $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Ipinadala ang $1 bilang $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -8953,10 +8826,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Kahilingang mag-withdraw"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Aprubahan ang $1 nang walang limitasyon sa paggastos",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "I-set up",
@@ -9659,9 +9528,6 @@
   },
   "sign": {
     "message": "Pumirma"
-  },
-  "signatureRequest": {
-    "message": "Kahilingan sa paglagda"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Makikita sa iyong wallet ang NFT kapag natanggap na ang bid."
@@ -10473,10 +10339,6 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDetailsTitle": {
-    "message": "Mga detalye ng swap",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Direktang kontrata"
   },
@@ -10680,10 +10542,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "Hindi maaaring i-swap ang token sa rehiyon na ito"
-  },
-  "swapTokenToToken": {
-    "message": "I-swap ang $1 sa $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "Ipagpalit ang mga token"
@@ -10959,10 +10817,6 @@
   "transactionIncludesTypes": {
     "message": "Kabilang sa transaksyong ito ang: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Protektado ang transaksyong ito. Kinansela namin ito para maiwasan ang hindi inaasahang pagkawala ng pondo.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
   },
@@ -10971,10 +10825,6 @@
   },
   "transactionSubmitted": {
     "message": "Naisumite ang transaksyon"
-  },
-  "transactionTotalGasFee": {
-    "message": "Kabuuang bayad sa gas",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Mga Transaksyon"
@@ -11300,9 +11150,6 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Tingnan ang mga detalye"
   },
   "viewOnBlockExplorer": {
     "message": "Tingnan sa block explorer"
