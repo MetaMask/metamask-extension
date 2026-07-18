@@ -25,6 +25,10 @@ class SendPage {
     testId: 'recipient-address-input',
   };
 
+  private readonly insufficientBalanceToCoverFeesError = {
+    text: 'Insufficient balance to cover fees',
+  };
+
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
   };
@@ -70,6 +74,11 @@ class SendPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkInsufficientBalanceToCoverFeesError(): Promise<void> {
+    console.log('Checking for insufficient balance to cover fees error');
+    await this.driver.waitForSelector(this.insufficientBalanceToCoverFeesError);
   }
 
   async checkInsufficientFundsError(): Promise<void> {

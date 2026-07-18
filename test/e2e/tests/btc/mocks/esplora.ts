@@ -1,3 +1,4 @@
+import { sha256 } from '@noble/hashes/sha256';
 import { Mockttp } from 'mockttp';
 import {
   DEFAULT_BTC_ADDRESS,
@@ -611,6 +612,332 @@ export async function mockInitialFullScan(mockServer: Mockttp) {
 
   // Catch-all for debugging
   await mockBroadcastTx(mockServer);
+  await mockCatchAllBitcoin(mockServer);
+}
+
+/**
+ * Chain tip block, matching the latest entry returned by mockBlocks.
+ * The broadcast (spend) transaction is confirmed in this block so the Snap
+ * can reconcile the pending send into a confirmed one.
+ */
+const TIP_BLOCK_HEIGHT = 932936;
+const TIP_BLOCK_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+
+type EsploraTx = {
+  txid: string;
+  version: number;
+  locktime: number;
+  vin: unknown[];
+  vout: unknown[];
+  size: number;
+  weight: number;
+  fee: number;
+  status: {
+    confirmed: boolean;
+    block_height: number;
+    block_hash: string;
+    block_time: number;
+  };
+};
+
+/**
+ * Builds an Esplora-shaped transaction object from the raw hex that the Snap
+ * broadcasts, marked as confirmed in the chain tip block. The txid is derived
+ * from the raw transaction, so it matches the pending tx the Snap already
+ * tracks and reconciles it to confirmed rather than creating a duplicate.
+ *
+ * @param rawHex - The raw signed transaction hex from the POST /tx body.
+ */
+/**
+ * Reads a Bitcoin varint at the given offset.
+ *
+ * @param buf - The buffer to read from.
+ * @param offset - The byte offset to read at.
+ * @returns A tuple of the decoded value and the offset past it.
+ */
+function readVarInt(buf: Buffer, offset: number): [number, number] {
+  const first = buf[offset];
+  if (first < 0xfd) {
+    return [first, offset + 1];
+  }
+  if (first === 0xfd) {
+    return [buf.readUInt16LE(offset + 1), offset + 3];
+  }
+  if (first === 0xfe) {
+    return [buf.readUInt32LE(offset + 1), offset + 5];
+  }
+  return [Number(buf.readBigUInt64LE(offset + 1)), offset + 9];
+}
+
+/**
+ * Parses the raw broadcast transaction hex and builds an Esplora-shaped
+ * transaction marked confirmed in the chain tip block. The txid is the
+ * double-SHA256 of the legacy (non-witness) serialization reversed, matching
+ * the id the Snap computes for the tx it broadcast, so the pending send is
+ * reconciled to confirmed rather than duplicated.
+ *
+ * bitcoinjs-lib would do this more concisely but it is ESM-only and breaks the
+ * browserify test bundle, so the parse is done by hand with @noble/hashes.
+ *
+ * @param rawHex - The raw signed transaction hex from the POST /tx body.
+ */
+function buildConfirmedSpendTx(rawHex: string): EsploraTx {
+  const buf = Buffer.from(rawHex, 'hex');
+
+  const version = buf.readUInt32LE(0);
+  const versionBytes = buf.subarray(0, 4);
+  let offset = 4;
+  // Skip the SegWit marker + flag when present; both are excluded from the txid.
+  if (buf[offset] === 0x00 && buf[offset + 1] === 0x01) {
+    offset += 2;
+  }
+
+  const inputsStart = offset;
+  const [inputCount, afterInputCount] = readVarInt(buf, offset);
+  offset = afterInputCount;
+  const vin = [];
+  for (let i = 0; i < inputCount; i += 1) {
+    const prevTxid = Buffer.from(buf.subarray(offset, offset + 32))
+      .reverse()
+      .toString('hex');
+    offset += 32;
+    const prevVout = buf.readUInt32LE(offset);
+    offset += 4;
+    const [scriptLen, afterScriptLen] = readVarInt(buf, offset);
+    offset = afterScriptLen + scriptLen;
+    const sequence = buf.readUInt32LE(offset);
+    offset += 4;
+    vin.push({
+      txid: prevTxid,
+      vout: prevVout,
+      prevout: {
+        scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
+        scriptpubkey_type: 'v0_p2wpkh',
+        scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+        value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
+      },
+      scriptsig: '',
+      scriptsig_asm: '',
+      is_coinbase: false,
+      sequence,
+    });
+  }
+  const inputsEnd = offset;
+
+  const outputsStart = offset;
+  const [outputCount, afterOutputCount] = readVarInt(buf, offset);
+  offset = afterOutputCount;
+  const vout = [];
+  for (let i = 0; i < outputCount; i += 1) {
+    const value = Number(buf.readBigUInt64LE(offset));
+    offset += 8;
+    const [scriptLen, afterScriptLen] = readVarInt(buf, offset);
+    offset = afterScriptLen;
+    const scriptpubkey = buf
+      .subarray(offset, offset + scriptLen)
+      .toString('hex');
+    offset += scriptLen;
+    vout.push({ scriptpubkey, scriptpubkey_type: 'v0_p2wpkh', value });
+  }
+  const outputsEnd = offset;
+
+  const locktimeBytes = buf.subarray(buf.length - 4);
+  const locktime = buf.readUInt32LE(buf.length - 4);
+
+  // Legacy serialization: version + inputs + outputs + locktime (no witness).
+  const legacy = Buffer.concat([
+    versionBytes,
+    buf.subarray(inputsStart, inputsEnd),
+    buf.subarray(outputsStart, outputsEnd),
+    locktimeBytes,
+  ]);
+  const txid = Buffer.from(sha256(sha256(legacy)))
+    .reverse()
+    .toString('hex');
+
+  return {
+    txid,
+    version,
+    locktime,
+    vin,
+    vout,
+    size: rawHex.length / 2,
+    weight: rawHex.length * 2,
+    fee: 281,
+    status: {
+      confirmed: true,
+      block_height: TIP_BLOCK_HEIGHT,
+      block_hash: TIP_BLOCK_HASH,
+      block_time: 1768825157,
+    },
+  };
+}
+
+/**
+ * Variant of mockInitialFullScan whose broadcast + scan endpoints are stateful:
+ * once the Snap broadcasts a send, the same transaction is returned by the
+ * scripthash/tx endpoints as confirmed in the chain tip block. This lets the
+ * send flow be asserted through to a confirmed status in Activity.
+ *
+ * @param mockServer - The mock server instance
+ */
+export async function mockInitialFullScanWithConfirmedSend(
+  mockServer: Mockttp,
+) {
+  // A send is confirmed only after the Snap broadcasts it, so the confirmed
+  // spend tx is captured at broadcast time and replayed on subsequent scans.
+  let confirmedSpendTx: EsploraTx | null = null;
+
+  await mockBlocks(mockServer);
+  await mockBlocksTipHeight(mockServer);
+  await mockBlocksTipHash(mockServer);
+  await mockScriptHashUtxo(mockServer);
+  await mockFeeEstimates(mockServer);
+
+  // POST /tx: capture the broadcast, derive its txid, mark it confirmed.
+  await mockServer
+    .forPost(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx$/u,
+    )
+    .always()
+    .thenCallback(async (request) => {
+      const rawHex = (await request.body.getText())?.trim() ?? '';
+      try {
+        confirmedSpendTx = buildConfirmedSpendTx(rawHex);
+        console.log(
+          `[BTC MOCK] Broadcast captured, confirmed txid: ${confirmedSpendTx.txid}`,
+        );
+        return { statusCode: 200, body: confirmedSpendTx.txid };
+      } catch (error) {
+        console.log(
+          `[BTC MOCK] Failed to parse broadcast tx: ${String(error)}`,
+        );
+        return {
+          statusCode: 200,
+          body: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        };
+      }
+    });
+
+  // scripthash/*/txs: include the confirmed spend once it has been broadcast.
+  await mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const scripthash = request.url.match(
+        /scripthash\/([a-f0-9]{64})\/txs/u,
+      )?.[1];
+
+      if (scripthash === E2E_BTC_SCRIPTHASH) {
+        const txs = confirmedSpendTx
+          ? [confirmedSpendTx, FUNDING_TX]
+          : [FUNDING_TX];
+        return { statusCode: 200, json: txs };
+      }
+      return { statusCode: 200, json: [] };
+    });
+
+  // tx/{txid}: resolve the confirmed spend, the funding tx and its prevout.
+  await mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx\/[a-f0-9]{64}$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const txid = request.url.match(/\/tx\/([a-f0-9]{64})$/u)?.[1];
+      if (confirmedSpendTx && txid === confirmedSpendTx.txid) {
+        return { statusCode: 200, json: confirmedSpendTx };
+      }
+      if (txid === FUNDING_TX_ID) {
+        return { statusCode: 200, json: FUNDING_TX };
+      }
+      if (txid === PREVOUT_TX_ID) {
+        return { statusCode: 200, json: PREVOUT_TX };
+      }
+      return { statusCode: 404, body: 'Transaction not found' };
+    });
+
+  // block/{hash}: resolve both the funding block and the chain tip block.
+  await mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block\/[a-f0-9]{64}$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const blockHash = request.url.match(/\/block\/([a-f0-9]{64})$/u)?.[1];
+      if (blockHash === TIP_BLOCK_HASH) {
+        return {
+          statusCode: 200,
+          json: {
+            id: TIP_BLOCK_HASH,
+            height: TIP_BLOCK_HEIGHT,
+            version: 1073676288,
+            timestamp: 1768825157,
+            tx_count: 1104,
+            size: 2006326,
+            weight: 3993304,
+            merkle_root:
+              '68b04e69caac6a24c585e8a357fd9a5de8b084bda8b043690efaafcd11343c2a',
+            previousblockhash: FUNDING_BLOCK_HASH,
+            mediantime: 1768823212,
+            nonce: 1426240500,
+            bits: 386001906,
+            difficulty: 146472570619930.78,
+          },
+        };
+      }
+      if (blockHash === FUNDING_BLOCK_HASH) {
+        return {
+          statusCode: 200,
+          json: {
+            id: FUNDING_BLOCK_HASH,
+            height: FUNDING_BLOCK_HEIGHT,
+            version: 536870912,
+            timestamp: 1768824955,
+            tx_count: 3161,
+            size: 1772079,
+            weight: 3993186,
+            merkle_root:
+              'd7ee3bf9abfd65a43de37042f52a889e68634c0332af467d90c2e1997d230888',
+            previousblockhash:
+              '00000000000000000000b64f4ad246c16dfcbb1e9a236639b4d1f256c9a4450c',
+            mediantime: 1768823066,
+            nonce: 1134465253,
+            bits: 386001906,
+            difficulty: 146472570619930.78,
+          },
+        };
+      }
+      return { statusCode: 404, body: 'Block not found' };
+    });
+
+  // block-height/{height}: resolve genesis, funding and tip heights.
+  await mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/\d+$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const height = request.url.match(/\/block-height\/(\d+)$/u)?.[1];
+      if (height === '0') {
+        return { statusCode: 200, body: GENESIS_BLOCK_HASH };
+      }
+      if (height === String(FUNDING_BLOCK_HEIGHT)) {
+        return { statusCode: 200, body: FUNDING_BLOCK_HASH };
+      }
+      if (height === String(TIP_BLOCK_HEIGHT)) {
+        return { statusCode: 200, body: TIP_BLOCK_HASH };
+      }
+      return {
+        statusCode: 200,
+        body: '0000000000000000000000000000000000000000000000000000000000000000',
+      };
+    });
+
+  await mockTxOutspends(mockServer);
   await mockCatchAllBitcoin(mockServer);
 }
 
