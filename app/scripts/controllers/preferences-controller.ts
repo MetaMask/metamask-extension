@@ -17,10 +17,6 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
-import type {
-  AdvancedGasFeePreferences,
-  AdvancedGasFeePreferencesByChain,
-} from '../../../shared/constants/gas';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
@@ -100,9 +96,10 @@ export type PreferencesControllerState = Omit<
   | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
-  advancedGasFee: AdvancedGasFeePreferencesByChain;
+  advancedGasFee: Record<string, Record<string, string>>;
   currentLocale: string;
   dismissSeedBackUpReminder: boolean;
+  enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
@@ -137,6 +134,7 @@ export const getDefaultPreferencesControllerState =
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
+    enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
     // ENS decentralized website resolution
@@ -238,6 +236,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   dismissSeedBackUpReminder: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  enableMV3TimestampSave: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -457,6 +461,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDismissSeedBackUpReminder',
   'setOverrideContentSecurityPolicyHeader',
   'setManageInstitutionalWallets',
+  'setServiceWorkerKeepAlivePreference',
   'setUseSidePanelAsDefault',
   'setShowDefaultAddress',
   'setDefaultAddressScope',
@@ -694,42 +699,20 @@ export class PreferencesController extends BaseController<
    *
    * @param options
    * @param options.chainId - The chainId the advancedGasFees should be set on
-   * @param options.account - The account the advancedGasFees should be set for
    * @param options.gasFeePreferences - The advancedGasFee options to set
    */
   setAdvancedGasFee({
-    account,
     chainId,
     gasFeePreferences,
   }: {
-    account: string;
     chainId: string;
-    gasFeePreferences?: AdvancedGasFeePreferences;
+    gasFeePreferences: Record<string, string>;
   }): void {
+    const { advancedGasFee } = this.state;
     this.update((state) => {
-      const normalizedAccount = account.toLowerCase();
-      const chainPreferences = state.advancedGasFee[chainId] ?? {};
-
-      if (!gasFeePreferences) {
-        const {
-          [normalizedAccount]: _removedPreference,
-          ...remainingChainPreferences
-        } = chainPreferences;
-
-        state.advancedGasFee = {
-          ...state.advancedGasFee,
-          [chainId]: remainingChainPreferences,
-        };
-
-        return;
-      }
-
       state.advancedGasFee = {
-        ...state.advancedGasFee,
-        [chainId]: {
-          ...chainPreferences,
-          [normalizedAccount]: gasFeePreferences,
-        },
+        ...advancedGasFee,
+        [chainId]: gasFeePreferences,
       };
     });
   }
@@ -978,6 +961,12 @@ export class PreferencesController extends BaseController<
   setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
       state.manageInstitutionalWallets = manageInstitutionalWallets;
+    });
+  }
+
+  setServiceWorkerKeepAlivePreference(value: boolean): void {
+    this.update((state) => {
+      state.enableMV3TimestampSave = value;
     });
   }
 

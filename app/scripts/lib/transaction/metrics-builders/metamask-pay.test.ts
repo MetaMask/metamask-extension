@@ -45,6 +45,22 @@ const TOTALS_MOCK = {
   },
 };
 
+const BRIDGE_QUOTE_MOCK = {
+  strategy: TransactionPayStrategy.Bridge,
+  request: { targetTokenAddress: '0xabc' },
+  dust: { usd: '0.01' },
+  original: {
+    metrics: {
+      latency: 1234,
+      attempts: 3,
+      buffer: 0.123,
+    },
+    quote: {
+      bridgeId: 'testBridge',
+    },
+  },
+};
+
 const RELAY_QUOTE_MOCK = {
   strategy: TransactionPayStrategy.Relay,
   request: { targetTokenAddress: '0xabc' },
@@ -395,6 +411,20 @@ describe('getMetaMaskPayProperties', () => {
   });
 
   describe('strategy and steps', () => {
+    it('sets mm_pay_strategy to mm_swaps_bridge for Bridge strategy', async () => {
+      const request = createPayRequest({
+        transactionMetricsRequest: {
+          ...createPayRequest().transactionMetricsRequest,
+          getTransactionPayData: jest.fn().mockReturnValue({
+            quotes: [BRIDGE_QUOTE_MOCK],
+          }),
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_strategy).toBe('mm_swaps_bridge');
+    });
+
     it('sets mm_pay_strategy to relay for Relay strategy', async () => {
       const request = createPayRequest({
         transactionMetricsRequest: {
@@ -414,7 +444,7 @@ describe('getMetaMaskPayProperties', () => {
         transactionMetricsRequest: {
           ...createPayRequest().transactionMetricsRequest,
           getTransactionPayData: jest.fn().mockReturnValue({
-            quotes: [RELAY_QUOTE_MOCK, RELAY_QUOTE_MOCK],
+            quotes: [BRIDGE_QUOTE_MOCK, BRIDGE_QUOTE_MOCK],
           }),
         },
       });
@@ -422,6 +452,42 @@ describe('getMetaMaskPayProperties', () => {
 
       expect(result.properties.mm_pay_transaction_step_total).toBe(3);
       expect(result.properties.mm_pay_transaction_step).toBe(3);
+    });
+  });
+
+  describe('bridge quote metrics', () => {
+    it('sets mm_pay_quotes_latency from bridge quote metrics', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          type: TransactionType.bridge,
+        },
+        transactionMetricsRequest: {
+          ...createPayRequest().transactionMetricsRequest,
+          getTransactionPayData: jest.fn().mockReturnValue({
+            quotes: [BRIDGE_QUOTE_MOCK],
+          }),
+          getAllTransactions: jest.fn().mockReturnValue([
+            {
+              id: 'tx-1',
+              type: TransactionType.bridge,
+              requiredTransactionIds: undefined,
+            },
+            {
+              id: 'parent-1',
+              type: TransactionType.perpsDeposit,
+              requiredTransactionIds: ['tx-1'],
+              metamaskPay: { chainId: '0x1', tokenAddress: '0xabc' },
+            },
+          ]),
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_quotes_latency).toBe(1234);
+      expect(result.properties.mm_pay_quotes_attempts).toBe(3);
+      expect(result.properties.mm_pay_quotes_buffer_size).toBe(0.123);
+      expect(result.properties.mm_pay_bridge_provider).toBe('testBridge');
     });
   });
 

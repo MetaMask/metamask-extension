@@ -378,12 +378,12 @@ describe('CustomTokenImportPage', () => {
           name: MetaMetricsEventName.ImportCustomTokenInteracted,
           properties: {
             category: MetaMetricsEventCategory.Wallet,
-            [METRICS_PROPERTIES.addedToken]: 1,
-            [METRICS_PROPERTIES.chainId]: '0x1',
-            [METRICS_PROPERTIES.clickedSecurityLink]: false,
           },
           sensitiveProperties: {
+            [METRICS_PROPERTIES.addedToken]: 1,
             [METRICS_PROPERTIES.assetType]: AssetType.token,
+            [METRICS_PROPERTIES.chainId]: '0x1',
+            [METRICS_PROPERTIES.clickedSecurityLink]: false,
             [METRICS_PROPERTIES.tokenContractAddress]:
               '0x1111111111111111111111111111111111111111',
             [METRICS_PROPERTIES.tokenStandard]: 'ERC20',

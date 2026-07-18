@@ -11,9 +11,6 @@ class SendPage {
 
   private readonly continueButton = { testId: 'send-continue-button' };
 
-  private readonly sendAlertAcknowledgeButton =
-    '[data-testid="send-alert-modal-acknowledge-button"]';
-
   private readonly header = {
     tag: 'h4',
     text: 'Send',
@@ -221,24 +218,6 @@ class SendPage {
     return value as string;
   }
 
-  /**
-   * Waits until the amount input value matches the expected amount (compared
-   * numerically). Prefer this over reading the value once, which races the fill.
-   *
-   * @param expectedAmount - The expected amount.
-   */
-  async checkAmountInputValue(expectedAmount: string): Promise<void> {
-    console.log(`Waiting for amount input value to be ${expectedAmount}`);
-    await this.driver.waitUntil(
-      async () => {
-        const inputElement = await this.driver.findElement(this.amountInput);
-        const value = await inputElement.getAttribute('value');
-        return parseFloat(value) === parseFloat(expectedAmount);
-      },
-      { interval: 100, timeout: 5000 },
-    );
-  }
-
   async isContinueButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.continueButton, {
@@ -250,20 +229,6 @@ class SendPage {
     }
     console.log('Continue button enabled');
     return true;
-  }
-
-  async checkContinueButtonEnabled(): Promise<void> {
-    console.log('Waiting for continue button to be enabled');
-    await this.driver.waitForSelector(this.continueButton, {
-      state: 'enabled',
-    });
-  }
-
-  async checkContinueButtonDisabled(): Promise<void> {
-    console.log('Waiting for continue button to be disabled');
-    await this.driver.waitForSelector(this.continueButton, {
-      state: 'disabled',
-    });
   }
 
   async waitForSendAmountBalance(): Promise<void> {
@@ -284,27 +249,6 @@ class SendPage {
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
     await this.driver.clickElement(this.continueButton);
-    await this.acknowledgeSendAlertIfPresent();
-  }
-
-  /**
-   * Acknowledges the first-time recipient send alert when it appears after Continue.
-   * The alert is async; a short wait avoids racing React 18 mount on slower flows.
-   */
-  async acknowledgeSendAlertIfPresent(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.sendAlertAcknowledgeButton, {
-        timeout: 2000,
-      });
-    } catch (error) {
-      if ((error as { name?: string }).name === 'TimeoutError') {
-        console.log('No send alert modal to acknowledge');
-        return;
-      }
-      throw error;
-    }
-    console.log('Acknowledging send alert modal');
-    await this.driver.clickElement(this.sendAlertAcknowledgeButton);
   }
 
   async pressOnAmountInput(key: string): Promise<void> {

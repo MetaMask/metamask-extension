@@ -1,8 +1,5 @@
 import { toHex } from '@metamask/controller-utils';
-import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { merge } from 'lodash';
 
@@ -11,7 +8,6 @@ import {
   genUnapprovedContractInteractionConfirmation,
   mockBridgeQuotes,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
-import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import * as DappSwapContext from '../../../../context/dapp-swap';
@@ -31,7 +27,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
@@ -48,48 +43,24 @@ describe('useFeeCalculations', () => {
   it('returns the correct estimate for a transaction', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-      chainId: CHAIN_IDS.SEPOLIA,
     }) as TransactionMeta;
-
-    transactionMeta.containerTypes = [
-      TransactionContainerType.EnforcedSimulations,
-    ];
-    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
-    transactionMeta.txParams.gas = toHex(87790);
-
-    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
-      metamask: {
-        currencyRates: {
-          SepoliaETH: {
-            conversionRate: 0,
-          },
-        },
-        networkConfigurationsByChainId: {
-          [CHAIN_IDS.SEPOLIA]: {
-            nativeCurrency: 'SepoliaETH',
-            ticker: 'SepoliaETH',
-          },
-        },
-      },
-    });
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
-      mockStateWithSepoliaNativeTicker,
+      mockState,
     );
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": "$0.07",
         "calculateGasEstimate": [Function],
-        "estimatedFeeFiat": "$0.14",
+        "estimatedFeeFiat": "$0.07",
         "estimatedFeeFiatWith18SignificantDigits": null,
-        "estimatedFeeNative": "0.0003",
-        "estimatedFeeNativeHex": "0xe4010fb9f92a",
-        "maxFeeFiat": "$0.14",
+        "estimatedFeeNative": "0.0001",
+        "estimatedFeeNativeHex": "0x720087dcfc95",
+        "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
-        "maxFeeHex": "0xe4010fb9f92a",
-        "maxFeeNative": "0.0003",
+        "maxFeeHex": "0x720087dcfc95",
+        "maxFeeNative": "0.0001",
       }
     `);
 
@@ -127,7 +98,6 @@ describe('useFeeCalculations', () => {
 
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -156,7 +126,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -187,7 +156,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$0.06",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -215,7 +183,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$2.57",
         "estimatedFeeFiatWith18SignificantDigits": null,
@@ -267,7 +234,6 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "addedProtectionFeeFiat": null,
         "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "$3.24",
         "estimatedFeeFiatWith18SignificantDigits": null,

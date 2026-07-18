@@ -1143,6 +1143,9 @@
   "addCustomToken": {
     "message": "Add a custom token"
   },
+  "addDevice": {
+    "message": "Sync with mobile"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1229,27 +1232,6 @@
   "addWallet": {
     "message": "Add wallet"
   },
-  "add_device_error_connection": {
-    "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
-  },
-  "add_device_error_expired": {
-    "message": "This sync session expired. Start again to generate a new QR code."
-  },
-  "add_device_error_generic": {
-    "message": "Something went wrong while syncing with your phone. Please try again."
-  },
-  "add_device_error_invalid_code": {
-    "message": "The verification code was incorrect. Start again to try syncing your phone."
-  },
-  "add_device_error_rejected": {
-    "message": "The sync was cancelled on your phone. Start again to try syncing."
-  },
-  "add_device_error_sync_failed": {
-    "message": "We couldn't finish syncing your accounts to your phone. Please try again."
-  },
-  "add_device_error_title": {
-    "message": "Sync couldn't be completed"
-  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 imported accounts were synced to your phone.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1291,9 +1273,6 @@
   "add_device_syncing_title": {
     "message": "Importing accounts"
   },
-  "add_device_try_again": {
-    "message": "Try again"
-  },
   "add_device_validating_desc": {
     "message": "Establishing a secure, encrypted connection with your phone."
   },
@@ -1311,10 +1290,6 @@
   },
   "addedProtectionDescription": {
     "message": "You're interacting with an unknown address. This helps prevent malicious transactions."
-  },
-  "addedProtectionIncludesNetworkFee": {
-    "message": "Includes $1 for added protection",
-    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
@@ -3866,9 +3841,6 @@
   "enter_verification_code_expires_in": {
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Too many incorrect attempts. Start with a new QR code."
   },
   "enter_your_password": {
     "message": "Enter your password"
@@ -8229,6 +8201,9 @@
     "message": "Expires in $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "Something went wrong scanning the QR code. Generate a new one to try again."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "This QR code is for a different transaction. Cancel and try again, making sure to scan the QR code shown in MetaMask with your hardware wallet first.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8293,93 +8268,6 @@
   },
   "quotedTotalCost": {
     "message": "Total cost: $1"
-  },
-  "rampsBuyToken": {
-    "message": "Buy $1",
-    "description": "$1 is the token symbol being purchased"
-  },
-  "rampsBuyingViaProvider": {
-    "message": "Buying via $1",
-    "description": "$1 is the ramp provider name"
-  },
-  "rampsEligibilityFailedDescription": {
-    "message": "Please try again, or contact support if this keeps happening."
-  },
-  "rampsEligibilityFailedTitle": {
-    "message": "We couldn’t verify your region"
-  },
-  "rampsErrorLoadingPaymentMethods": {
-    "message": "Error loading payment methods"
-  },
-  "rampsErrorLoadingTokens": {
-    "message": "Error loading tokens"
-  },
-  "rampsNoPaymentMethodsAvailable": {
-    "message": "No payment methods are available."
-  },
-  "rampsNoTokensAvailable": {
-    "message": "No tokens available"
-  },
-  "rampsOnNetwork": {
-    "message": "on $1",
-    "description": "$1 is the network name"
-  },
-  "rampsPaymentDelayBusinessDay": {
-    "message": "business day"
-  },
-  "rampsPaymentDelayBusinessDays": {
-    "message": "business days"
-  },
-  "rampsPaymentDelayHour": {
-    "message": "hour"
-  },
-  "rampsPaymentDelayHours": {
-    "message": "hours"
-  },
-  "rampsPaymentDelayInstant": {
-    "message": "Instant"
-  },
-  "rampsPaymentDelayLessThan": {
-    "message": "Less than"
-  },
-  "rampsPaymentDelayMinute": {
-    "message": "min"
-  },
-  "rampsPaymentDelayMinutes": {
-    "message": "mins"
-  },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Max $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
-  "rampsPaymentMethodMinLimit": {
-    "message": "Min $1",
-    "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Failed to fetch quote."
-  },
-  "rampsSelectPaymentMethod": {
-    "message": "Select payment method"
-  },
-  "rampsServiceDisruptionDescription": {
-    "message": "We’re experiencing a service disruption. Please try again later."
-  },
-  "rampsServiceDisruptionTitle": {
-    "message": "Buying is temporarily unavailable"
-  },
-  "rampsShowAllTokens": {
-    "message": "Show all tokens"
-  },
-  "rampsUnsupportedDescription": {
-    "message": "Buying crypto isn’t supported in your region yet."
-  },
-  "rampsUnsupportedTitle": {
-    "message": "Buying isn’t available here"
   },
   "rank": {
     "message": "Rank"
@@ -8592,6 +8480,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "The operation completed successfully."
+  },
+  "retryTransaction": {
+    "message": "Retry transaction"
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
@@ -10932,9 +10823,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
-  },
-  "syncAccounts": {
-    "message": "Sync with mobile"
   },
   "syncing": {
     "message": "Syncing..."

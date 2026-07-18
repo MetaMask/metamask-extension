@@ -1,11 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 let index = 0;
@@ -13,8 +6,10 @@ let extraSheet;
 
 const insertRule = (css) => {
   if (!extraSheet) {
+    // First time, create an extra stylesheet for adding rules
     extraSheet = document.createElement('style');
     document.getElementsByTagName('head')[0].appendChild(extraSheet);
+    // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
     extraSheet = extraSheet.sheet || extraSheet.styleSheet;
   }
 
@@ -24,6 +19,7 @@ const insertRule = (css) => {
 };
 
 const insertKeyframesRule = (keyframes) => {
+  // random name
   // eslint-disable-next-line no-plusplus
   const name = `anim_${++index}${Number(new Date())}`;
   let css = `@keyframes ${name} {`;
@@ -103,44 +99,61 @@ const removeEndEventListener = (node, eventListener) => {
   if (endEvents.length === 0) {
     return;
   }
-  endEvents.forEach((endEvent) => {
+  endEvents.forEach(function (endEvent) {
     removeEventListener(node, endEvent, eventListener);
   });
 };
 
 const addEndEventListener = (node, eventListener) => {
   if (endEvents.length === 0) {
+    // If CSS transitions are not supported, trigger an "end animation"
+    // event immediately.
     window.setTimeout(eventListener, 0);
     return;
   }
-  endEvents.forEach((endEvent) => {
+  endEvents.forEach(function (endEvent) {
     addEventListener(node, endEvent, eventListener);
   });
 };
 
-const FadeModal = forwardRef(function FadeModal(
-  {
-    backdrop = true,
-    backdropStyle = {},
-    closeOnClick = true,
-    contentStyle = {},
-    keyboard = true,
-    modalStyle = {},
-    onShow = () => undefined,
-    onHide = () => undefined,
-    children = [],
-    testId = '',
-  },
-  ref,
-) {
-  const contentRef = useRef(null);
-  const [willHide, setWillHide] = useState(true);
-  const [hidden, setHidden] = useState(true);
+class FadeModal extends Component {
+  content = null;
 
-  const addTransitionListener = useCallback((node, handle) => {
+  static propTypes = {
+    backdrop: PropTypes.bool,
+    backdropStyle: PropTypes.object,
+    closeOnClick: PropTypes.bool,
+    contentStyle: PropTypes.object,
+    keyboard: PropTypes.bool,
+    modalStyle: PropTypes.object,
+    onShow: PropTypes.func,
+    onHide: PropTypes.func,
+    children: PropTypes.node,
+    testId: PropTypes.string,
+  };
+
+  static defaultProps = {
+    testId: '',
+    onShow: () => undefined,
+    onHide: () => undefined,
+    keyboard: true,
+    backdrop: true,
+    closeOnClick: true,
+    modalStyle: {},
+    backdropStyle: {},
+    contentStyle: {},
+    children: [],
+  };
+
+  state = {
+    willHide: true,
+    hidden: true,
+  };
+
+  addTransitionListener = (node, handle) => {
     if (node) {
-      const endListener = (event) => {
-        if (event && event.target !== node) {
+      const endListener = function (e) {
+        if (e && e.target !== node) {
           return;
         }
         removeEndEventListener(node, endListener);
@@ -148,141 +161,136 @@ const FadeModal = forwardRef(function FadeModal(
       };
       addEndEventListener(node, endListener);
     }
-  }, []);
+  };
 
-  const leave = useCallback(() => {
-    setHidden(true);
-    onHide();
-  }, [onHide]);
-
-  const enter = useCallback(() => {
-    onShow();
-  }, [onShow]);
-
-  const hide = useCallback(() => {
-    if (hidden) {
-      return;
+  handleBackdropClick = () => {
+    if (this.props.closeOnClick) {
+      this.hide();
     }
-    setWillHide(true);
-  }, [hidden]);
+  };
 
-  const show = useCallback(() => {
-    if (!hidden) {
-      return;
+  hasHidden = () => {
+    return this.state.hidden;
+  };
+
+  render() {
+    if (this.state.hidden) {
+      return null;
     }
 
-    setWillHide(false);
-    setHidden(false);
-
-    setTimeout(() => {
-      addTransitionListener(contentRef.current, enter);
-    }, 0);
-  }, [addTransitionListener, enter, hidden]);
-
-  const closeOnEsc = useCallback(
-    (event) => {
-      if (keyboard && (event.key === 'Escape' || event.keyCode === 27)) {
-        hide();
-      }
-    },
-    [hide, keyboard],
-  );
-
-  const listenKeyboard = useCallback(
-    (event) => {
-      if (typeof keyboard === 'function') {
-        keyboard(event);
-      } else {
-        closeOnEsc(event);
-      }
-    },
-    [closeOnEsc, keyboard],
-  );
-
-  useImperativeHandle(ref, () => ({
-    show,
-    hide,
-    hasHidden: () => hidden,
-  }));
-
-  useEffect(() => {
-    window.addEventListener('keydown', listenKeyboard, true);
-    return () => {
-      window.removeEventListener('keydown', listenKeyboard, true);
+    const { willHide } = this.state;
+    const { modalStyle, testId } = this.props;
+    const backdropStyle = {
+      animationName: willHide
+        ? animation.hideBackdropAnimation
+        : animation.showBackdropAnimation,
+      animationTimingFunction: (willHide ? animation.hide : animation.show)
+        .animationTimingFunction,
+      ...this.props.backdropStyle,
     };
-  }, [listenKeyboard]);
+    const contentStyle = {
+      animationDuration: (willHide ? animation.hide : animation.show)
+        .animationDuration,
+      animationName: willHide
+        ? animation.hideContentAnimation
+        : animation.showContentAnimation,
+      animationTimingFunction: (willHide ? animation.hide : animation.show)
+        .animationTimingFunction,
+      ...this.props.contentStyle,
+    };
 
-  useEffect(() => {
-    if (willHide && !hidden && contentRef.current) {
-      addTransitionListener(contentRef.current, leave);
+    const backdrop = this.props.backdrop ? (
+      <div
+        className="modal__backdrop"
+        style={backdropStyle}
+        onClick={this.props.closeOnClick ? this.handleBackdropClick : null}
+      />
+    ) : undefined;
+
+    if (willHide) {
+      this.addTransitionListener(this.content, this.leave);
     }
-  }, [addTransitionListener, hidden, leave, willHide]);
 
-  const handleBackdropClick = useCallback(() => {
-    if (closeOnClick) {
-      hide();
-    }
-  }, [closeOnClick, hide]);
-
-  if (hidden) {
-    return null;
+    return (
+      <span>
+        <div className="modal" style={modalStyle} data-testid={testId}>
+          <div
+            className="modal__content"
+            ref={(el) => (this.content = el)}
+            tabIndex="-1"
+            style={contentStyle}
+          >
+            {this.props.children}
+          </div>
+        </div>
+        {backdrop}
+      </span>
+    );
   }
 
-  const resolvedBackdropStyle = {
-    animationName: willHide
-      ? animation.hideBackdropAnimation
-      : animation.showBackdropAnimation,
-    animationTimingFunction: (willHide ? animation.hide : animation.show)
-      .animationTimingFunction,
-    ...backdropStyle,
-  };
-  const resolvedContentStyle = {
-    animationDuration: (willHide ? animation.hide : animation.show)
-      .animationDuration,
-    animationName: willHide
-      ? animation.hideContentAnimation
-      : animation.showContentAnimation,
-    animationTimingFunction: (willHide ? animation.hide : animation.show)
-      .animationTimingFunction,
-    ...contentStyle,
+  leave = () => {
+    this.setState({
+      hidden: true,
+    });
+    this.props.onHide(this.state.hideSource);
   };
 
-  const backdropElement = backdrop ? (
-    <div
-      className="modal__backdrop"
-      style={resolvedBackdropStyle}
-      onClick={closeOnClick ? handleBackdropClick : null}
-    />
-  ) : undefined;
+  enter = () => {
+    this.props.onShow();
+  };
 
-  return (
-    <span>
-      <div className="modal" style={modalStyle} data-testid={testId}>
-        <div
-          className="modal__content"
-          ref={contentRef}
-          tabIndex="-1"
-          style={resolvedContentStyle}
-        >
-          {children}
-        </div>
-      </div>
-      {backdropElement}
-    </span>
-  );
-});
+  show = () => {
+    if (!this.state.hidden) {
+      return;
+    }
 
-FadeModal.propTypes = {
-  backdrop: PropTypes.bool,
-  backdropStyle: PropTypes.object,
-  closeOnClick: PropTypes.bool,
-  contentStyle: PropTypes.object,
-  keyboard: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-  modalStyle: PropTypes.object,
-  onShow: PropTypes.func,
-  onHide: PropTypes.func,
-  children: PropTypes.node,
-  testId: PropTypes.string,
-};
+    this.setState({
+      willHide: false,
+      hidden: false,
+    });
+
+    setTimeout(
+      function () {
+        this.addTransitionListener(this.content, this.enter);
+      }.bind(this),
+      0,
+    );
+  };
+
+  hide = () => {
+    if (this.hasHidden()) {
+      return;
+    }
+
+    this.setState({
+      willHide: true,
+    });
+  };
+
+  listenKeyboard = (event) => {
+    if (typeof this.props.keyboard === 'function') {
+      this.props.keyboard(event);
+    } else {
+      this.closeOnEsc(event);
+    }
+  };
+
+  closeOnEsc = (event) => {
+    if (
+      this.props.keyboard &&
+      (event.key === 'Escape' || event.keyCode === 27)
+    ) {
+      this.hide();
+    }
+  };
+
+  UNSAFE_componentDidMount = () => {
+    window.addEventListener('keydown', this.listenKeyboard, true);
+  };
+
+  UNSAFE_componentWillUnmount = () => {
+    window.removeEventListener('keydown', this.listenKeyboard, true);
+  };
+}
 
 export default FadeModal;

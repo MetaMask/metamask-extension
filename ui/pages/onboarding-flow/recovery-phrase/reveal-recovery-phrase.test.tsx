@@ -13,29 +13,8 @@ import {
 import { getSeedPhrase } from '../../../store/actions';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-  MetaMetricsEventVerificationMethod,
-} from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import RevealRecoveryPhrase from './reveal-recovery-phrase';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
 const mockGeneratePasskeyAuthenticationOptions = jest
@@ -244,32 +223,6 @@ describe('RevealRecoveryPhrase', () => {
         ONBOARDING_REVIEW_SRP_ROUTE,
         { replace: true },
       );
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        name: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          category: MetaMetricsEventCategory.Keys,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-        },
-        sensitiveProperties: {},
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        name: MetaMetricsEventName.KeyExportRevealed,
-        properties: {
-          category: MetaMetricsEventCategory.Keys,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-        },
-        sensitiveProperties: {},
-      });
     });
   });
 
@@ -297,36 +250,6 @@ describe('RevealRecoveryPhrase', () => {
       messages.unlockPageIncorrectPassword.message,
     );
     expect(errorMessage).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        name: MetaMetricsEventName.KeyExportRequested,
-        properties: {
-          category: MetaMetricsEventCategory.Keys,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-        },
-        sensitiveProperties: {},
-      });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        name: MetaMetricsEventName.KeyExportFailed,
-        properties: {
-          category: MetaMetricsEventCategory.Keys,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: MetaMetricsEventVerificationMethod.Password,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-          reason: 'Incorrect password',
-        },
-        sensitiveProperties: {},
-      });
-    });
   });
 
   it('clears error when user types after incorrect password', async () => {

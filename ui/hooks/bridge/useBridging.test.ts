@@ -11,7 +11,6 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import {
@@ -356,9 +355,7 @@ describe('useBridging', () => {
         'Home',
       ],
       [
-        buildAssetRoutePath(
-          getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
-        ),
+        '/asset/0xa/',
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: '',
@@ -370,9 +367,7 @@ describe('useBridging', () => {
         },
       ],
       [
-        buildAssetRoutePath(
-          'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-        ),
+        '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: '',
@@ -408,9 +403,7 @@ describe('useBridging', () => {
         },
       ],
       [
-        buildAssetRoutePath(
-          'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-        ),
+        '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           pathname: BRIDGE_PREPARE_PATH,
           search: `from=${encodeURIComponent('eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d')}`,

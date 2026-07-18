@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { Recipient } from '../../UI/recipient';
 import {
@@ -11,7 +11,6 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useDeferredSearchQuery } from '../../../../../hooks/useDeferredSearchQuery';
 import { useSendRecipientFilter } from '../../../hooks/send/useSendRecipientFilter';
 import { RecipientFilterInput } from '../recipient-filter-input';
 
@@ -104,11 +103,7 @@ export const RecipientList = ({
   hideModal: () => void;
   onToChange: (address: string) => void;
 }) => {
-  const {
-    query: searchQuery,
-    setQuery: setSearchQuery,
-    deferredQuery: deferredSearchQuery,
-  } = useDeferredSearchQuery();
+  const [searchQuery, setSearchQuery] = useState('');
   const recipients = useRecipients();
   const contactRecipients = recipients.filter(
     (recipient) => recipient.contactName,
@@ -120,7 +115,7 @@ export const RecipientList = ({
     useSendRecipientFilter({
       contactRecipients,
       accountRecipients,
-      searchQuery: deferredSearchQuery,
+      searchQuery,
     });
 
   const handleSelectRecipient = useCallback(

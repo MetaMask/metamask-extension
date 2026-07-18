@@ -4,11 +4,11 @@ import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockPerpsDepositToast = jest.fn(() => null);
+const mockUsePerpsWithdrawTransactionToasts = jest.fn();
 const mockUseMusdConversionToastStatus = jest.fn(() => ({
   activeTransactionId: undefined,
 }));
 const mockUseMusdConversionConfirmTrace = jest.fn();
-const mockUseMerklClaimStatus = jest.fn();
 const mockIsInteractiveUI = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -33,8 +33,9 @@ jest.mock('../../../hooks/musd', () => ({
     mockUseMusdConversionConfirmTrace(...args),
 }));
 
-jest.mock('../../../hooks/musd/useMerklClaimStatus', () => ({
-  useMerklClaimStatus: () => mockUseMerklClaimStatus(),
+jest.mock('./usePerpsWithdrawTransactionToasts', () => ({
+  usePerpsWithdrawTransactionToasts: () =>
+    mockUsePerpsWithdrawTransactionToasts(),
 }));
 
 jest.mock('./transaction-event-toast-listener', () => ({
@@ -61,17 +62,17 @@ describe('ToastListener', () => {
   it('mounts toast hooks in interactive UI', () => {
     renderToastListener({ isInteractive: true });
 
+    expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionToastStatus).toHaveBeenCalledTimes(1);
     expect(mockUseMusdConversionConfirmTrace).toHaveBeenCalledWith('');
-    expect(mockUseMerklClaimStatus).toHaveBeenCalledTimes(1);
   });
 
   it('does not mount toast listeners in non-interactive UI', () => {
     renderToastListener({ isInteractive: false });
 
     expect(mockPerpsDepositToast).not.toHaveBeenCalled();
+    expect(mockUsePerpsWithdrawTransactionToasts).not.toHaveBeenCalled();
     expect(mockUseMusdConversionToastStatus).not.toHaveBeenCalled();
     expect(mockUseMusdConversionConfirmTrace).not.toHaveBeenCalled();
-    expect(mockUseMerklClaimStatus).not.toHaveBeenCalled();
   });
 });

@@ -2,12 +2,10 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   getAccountAddressRelationship,
-  GasFeeEstimateLevel,
   SavedGasFees,
   TransactionController,
   TransactionMeta,
   TransactionType,
-  UserFeeLevel,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
@@ -240,47 +238,10 @@ async function checkFirstTimeInteraction(
 
 function getSavedGasFees(
   { messenger }: { messenger: TransactionControllerInitMessenger },
-  transactionMeta: TransactionMeta,
+  chainId: string,
 ): SavedGasFees | undefined {
-  const account = transactionMeta.txParams.from?.toLowerCase();
-
-  if (!account || transactionMeta.metamaskPay) {
-    return undefined;
-  }
-
   const { advancedGasFee } = messenger.call('PreferencesController:getState');
-  const savedGasFeePreference =
-    advancedGasFee[transactionMeta.chainId]?.[account];
-
-  if (!savedGasFeePreference) {
-    return undefined;
-  }
-
-  const savedGasFeeLevel = getSavedGasFeeLevel(
-    savedGasFeePreference.userFeeLevel,
-  );
-
-  if (!savedGasFeeLevel) {
-    return undefined;
-  }
-
-  const savedGasFees: SavedGasFees = {
-    level: savedGasFeeLevel,
-  };
-
-  if (savedGasFeePreference.maxBaseFee) {
-    savedGasFees.maxBaseFee = savedGasFeePreference.maxBaseFee;
-  }
-
-  if (savedGasFeePreference.priorityFee) {
-    savedGasFees.priorityFee = savedGasFeePreference.priorityFee;
-  }
-
-  if (savedGasFeePreference.gasPrice) {
-    savedGasFees.gasPrice = savedGasFeePreference.gasPrice;
-  }
-
-  return savedGasFees;
+  return advancedGasFee[chainId] as unknown as SavedGasFees | undefined;
 }
 
 async function getSimulationConfig(
@@ -363,17 +324,4 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
     transaction,
     DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES,
   );
-}
-
-function getSavedGasFeeLevel(
-  userFeeLevel: string,
-): SavedGasFees['level'] | undefined {
-  const savedGasFeeLevels = [
-    GasFeeEstimateLevel.Low,
-    GasFeeEstimateLevel.Medium,
-    GasFeeEstimateLevel.High,
-    UserFeeLevel.CUSTOM,
-  ] as const;
-
-  return savedGasFeeLevels.find((level) => level === userFeeLevel);
 }

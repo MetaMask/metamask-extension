@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
@@ -20,6 +20,8 @@ export const ShieldCohortContainer = memo(() => {
     (state: MetaMaskReduxState) => state.metamask.isSignedIn,
   );
 
+  const [shouldEvaluate, setShouldEvaluate] = useState(true);
+
   // Seed the pending cohort on mount when it has not been set yet.
   useEffect(() => {
     if (!pendingShieldCohort) {
@@ -27,15 +29,18 @@ export const ShieldCohortContainer = memo(() => {
     }
   }, [dispatch, pendingShieldCohort]);
 
-  // Evaluate once the user is signed in. evaluateCohortEligibility dedupes
-  // repeated calls for the same cohort within a session.
+  // One-shot evaluation once the user is signed in.
   useEffect(() => {
-    if (!pendingShieldCohort || !isSignedIn) {
-      return;
+    if (shouldEvaluate && pendingShieldCohort && isSignedIn) {
+      evaluateCohortEligibility(pendingShieldCohort);
+      setShouldEvaluate(false);
     }
-
-    evaluateCohortEligibility(pendingShieldCohort);
-  }, [pendingShieldCohort, evaluateCohortEligibility, isSignedIn]);
+  }, [
+    shouldEvaluate,
+    pendingShieldCohort,
+    evaluateCohortEligibility,
+    isSignedIn,
+  ]);
 
   return null;
 });

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
@@ -56,11 +56,8 @@ export const AggregatedBalance = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const showNativeTokenAsMain = useMemo(
-    () =>
-      showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
-    [showNativeTokenAsMainBalance, enabledNetworks],
-  );
+  const showNativeTokenAsMain =
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
 
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
@@ -71,34 +68,27 @@ export const AggregatedBalance = ({
   );
 
   const multichainAssetsRates = useSelector(getAssetsRates);
+  const isNonEvmRatesAvailable = Object.keys(multichainAssetsRates).length > 0;
 
-  const isNonEvmRatesAvailable = useMemo(
-    () => Object.keys(multichainAssetsRates).length > 0,
-    [multichainAssetsRates],
+  const formattedFiatDisplay = formatWithThreshold(
+    multichainAggregatedBalance,
+    0.0,
+    locale,
+    {
+      style: 'currency',
+      currency: currentCurrency.toUpperCase(),
+    },
   );
 
-  const formattedFiatDisplay = useMemo(
-    () =>
-      formatWithThreshold(multichainAggregatedBalance, 0.0, locale, {
-        style: 'currency',
-        currency: currentCurrency.toUpperCase(),
-      }),
-    [multichainAggregatedBalance, locale, currentCurrency],
-  );
-
-  const formattedTokenDisplay = useMemo(
-    () =>
-      formatWithThreshold(
-        parseFloat(multichainNativeTokenBalance.amount.toString()),
-        0.0,
-        locale,
-        {
-          minimumFractionDigits: 0,
-          maximumFractionDigits:
-            MULTICHAIN_NETWORK_DECIMAL_PLACES[currentNetwork.chainId] || 5,
-        },
-      ),
-    [multichainNativeTokenBalance, locale, currentNetwork.chainId],
+  const formattedTokenDisplay = formatWithThreshold(
+    parseFloat(multichainNativeTokenBalance.amount.toString()),
+    0.0,
+    locale,
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits:
+        MULTICHAIN_NETWORK_DECIMAL_PLACES[currentNetwork.chainId] || 5,
+    },
   );
 
   return (

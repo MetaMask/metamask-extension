@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
   },
+  "addDevice": {
+    "message": "Синхронизировать с мобильным устройством"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "Выполняется импорт счетов"
-  },
-  "add_device_try_again": {
-    "message": "Повторить попытку"
   },
   "add_device_validating_desc": {
     "message": "Установление безопасного зашифрованного соединения с вашим телефоном."
@@ -8129,6 +8129,9 @@
     "message": "Истекает через $1 с",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "Что-то пошло не так при сканировании QR-кода. Сгенерируйте новый, чтобы попробовать еще раз."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Этот QR-код предназначен для другой транзакции. Отмените и повторите попытку, предварительно отсканировав QR-код, показанный в MetaMask, с помощью своего аппаратного кошелька.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8193,9 +8196,6 @@
   },
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "Нет доступных токенов"
   },
   "rank": {
     "message": "Рейтинг"
@@ -8408,6 +8408,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "Операция выполнена."
+  },
+  "retryTransaction": {
+    "message": "Повторить транзакцию"
   },
   "reusedTokenNameWarning": {
     "message": "В токене здесь используется символ другого токена, который вы отслеживаете. Это может запутать или ввести в заблуждение."
@@ -10748,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
-  },
-  "syncAccounts": {
-    "message": "Синхронизировать с мобильным устройством"
   },
   "syncing": {
     "message": "Синхронизируется..."

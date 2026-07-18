@@ -141,6 +141,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
             class="request-decrypt-message__message-text"
           >
             {"domain":{"chainId":97,"name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"}}
+            
           </div>
           <div
             class="request-decrypt-message__message-cover"
@@ -330,6 +331,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
           <div
             class="request-decrypt-message__message-text"
           >
+            
             This message cannot be decrypted due to error: Decrypt inline error
           </div>
           <div
@@ -519,6 +521,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
             class="request-decrypt-message__message-text"
           >
             raw message
+            
           </div>
           <div
             class="request-decrypt-message__message-cover request-decrypt-message__message-lock--pressed"

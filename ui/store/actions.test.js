@@ -6,7 +6,6 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
-import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
@@ -36,11 +35,6 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
-
-const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
-  type: 'Buffer',
-  data: actions.encodeSeedPhraseForBackground(seedPhrase),
-});
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -183,19 +177,23 @@ describe('Actions', () => {
     });
 
     it('should create KeyChain, vault and Backup in the background', async () => {
-      const mockSeedPhrase = 'mock seed phrase';
-      const mockSerializedSeedPhrase =
-        toSerializedSeedPhraseBuffer(mockSeedPhrase);
       const store = mockStore();
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
+      const mockSeedPhrase = 'mock seed phrase';
+      const mockEncodedSeedPhrase = Array.from(
+        Buffer.from(mockSeedPhrase).values(),
+      );
 
       const createSeedPhraseBackupStub = sinon.stub().resolves();
-      const createNewVaultAndGetSeedPhraseStub = sinon
+      const createNewVaultAndKeychainStub = sinon
         .stub()
-        .resolves(mockSerializedSeedPhrase);
+        .resolves(mockKeyrings[0]);
+      const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
 
       background.getApi.returns({
         createSeedPhraseBackup: createSeedPhraseBackupStub,
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
+        getSeedPhrase: getSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -203,12 +201,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
       expect(
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
-          mockSerializedSeedPhrase.data,
-          mockUlid,
+          mockEncodedSeedPhrase,
+          mockKeyrings[0].metadata.id,
         ),
       ).toStrictEqual(true);
     });
@@ -824,102 +823,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('encodeSeedPhraseForBackground', () => {
-    it('encodes a seed phrase as UTF-8 byte values', () => {
-      const seedPhrase = 'abandon abandon abandon';
-
-      expect(actions.encodeSeedPhraseForBackground(seedPhrase)).toStrictEqual(
-        Array.from(stringToBytes(seedPhrase)),
-      );
-    });
-  });
-
-  describe('decodeSeedPhraseFromBackground', () => {
-    const seedPhrase = 'abandon abandon abandon';
-
-    it('decodes a JSON-serialized Buffer from the background', () => {
-      expect(
-        actions.decodeSeedPhraseFromBackground(
-          toSerializedSeedPhraseBuffer(seedPhrase),
-        ),
-      ).toStrictEqual(seedPhrase);
-    });
-
-    it('decodes a Uint8Array from the background', () => {
-      expect(
-        actions.decodeSeedPhraseFromBackground(
-          new Uint8Array(actions.encodeSeedPhraseForBackground(seedPhrase)),
-        ),
-      ).toStrictEqual(seedPhrase);
-    });
-  });
-
-  describe('#createNewVaultAndGetSeedPhrase', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls createNewVaultAndGetSeedPhrase in a single background request', async () => {
-      const store = mockStore();
-      const mockSeedPhrase = 'test seed phrase';
-      const mockSerializedSeedPhrase =
-        toSerializedSeedPhraseBuffer(mockSeedPhrase);
-
-      const createNewVaultAndGetSeedPhraseStub = sinon
-        .stub()
-        .resolves(mockSerializedSeedPhrase);
-
-      background.getApi.returns({
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const seedPhrase = await store.dispatch(
-        actions.createNewVaultAndGetSeedPhrase('password'),
-      );
-
-      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
-      expect(createNewVaultAndGetSeedPhraseStub.calledWith('password')).toBe(
-        true,
-      );
-      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
-    });
-  });
-
-  describe('#unlockAndGetSeedPhrase', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls unlockAndGetSeedPhrase in a single background request', async () => {
-      const store = mockStore();
-      const mockSeedPhrase = 'test seed phrase';
-      const mockSerializedSeedPhrase =
-        toSerializedSeedPhraseBuffer(mockSeedPhrase);
-
-      const unlockAndGetSeedPhraseStub = sinon
-        .stub()
-        .resolves(mockSerializedSeedPhrase);
-
-      background.getApi.returns({
-        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const seedPhrase = await store.dispatch(
-        actions.unlockAndGetSeedPhrase('password'),
-      );
-
-      expect(unlockAndGetSeedPhraseStub.callCount).toStrictEqual(1);
-      expect(unlockAndGetSeedPhraseStub.calledWith('password')).toBe(true);
-      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
-    });
-  });
-
   describe('#createNewVaultAndRestore', () => {
     afterEach(() => {
       sinon.restore();
@@ -999,7 +902,7 @@ describe('Actions', () => {
       const verifyPassword = sinon.stub().resolves();
       const getSeedPhrase = sinon
         .stub()
-        .resolves(toSerializedSeedPhraseBuffer('test'));
+        .resolves(Array.from(Buffer.from('test').values()));
 
       background.getApi.returns({ verifyPassword, getSeedPhrase });
       setBackgroundConnection(background.getApi());
@@ -1053,7 +956,7 @@ describe('Actions', () => {
 
       const exportSeedPhraseWithPasskey = sinon
         .stub()
-        .resolves(toSerializedSeedPhraseBuffer('test seed'));
+        .resolves(Array.from(Buffer.from('test seed').values()));
 
       background.getApi.returns({ exportSeedPhraseWithPasskey });
       setBackgroundConnection(background.getApi());
@@ -3273,6 +3176,50 @@ describe('Actions', () => {
         store.dispatch(actions.setCompletedOnboarding()),
       ).rejects.toThrow('error');
 
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#setServiceWorkerKeepAlivePreference', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends a value to background', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
+      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
+        1,
+      );
+      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
+        true,
+      );
+    });
+
+    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .rejects(new Error('error'));
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });

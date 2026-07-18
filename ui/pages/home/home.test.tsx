@@ -4,7 +4,7 @@ import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { setBackgroundConnection } from '../../store/background-connection';
-import Home, { resetLookupSelectedNetworksForTesting } from './home';
+import Home from './home';
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -89,7 +89,6 @@ jest.mock('../../../shared/lib/build-types', () => ({
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   attemptCloseNotificationPopup: jest.fn(),
-  lookupSelectedNetworks: jest.fn(() => ({ type: 'MOCK_LOOKUP' })),
 }));
 jest.mock('./useHomeRedirects', () => ({
   useRedirectAfterDefaultPage: jest.fn(),
@@ -124,7 +123,6 @@ function renderHome(storeOverrides: Record<string, unknown> = {}) {
 
 beforeEach(() => {
   jest.clearAllMocks();
-  resetLookupSelectedNetworksForTesting();
   setBackgroundConnection(backgroundConnectionMock as never);
 });
 
@@ -152,18 +150,6 @@ describe('Home', () => {
     const { Navigate } = jest.requireMock('react-router-dom');
     renderHome({ forgottenPassword: true });
     expect(Navigate).toHaveBeenCalled();
-  });
-
-  it('calls lookupSelectedNetworks once per session under StrictMode', () => {
-    const { lookupSelectedNetworks } = jest.requireMock('../../store/actions');
-    const store = createStore();
-    renderWithProvider(
-      <React.StrictMode>
-        <Home />
-      </React.StrictMode>,
-      store,
-    );
-    expect(lookupSelectedNetworks).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -38,7 +38,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
@@ -53,7 +53,7 @@ import { useBoolean } from '../../../hooks/useBoolean';
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -105,12 +105,7 @@ export function BasicConfigurationModal() {
           },
         };
 
-    trackEvent(
-      createEventBuilder(event.event)
-        .addCategory(event.category)
-        .addProperties(event.properties)
-        .build(),
-    );
+    trackEvent(event);
 
     if (isExternalServicesEnabled || onboardingFlow) {
       dispatch(setParticipateInMetaMetrics(false));

@@ -40,6 +40,7 @@ exports[`error template matches the snapshot 1`] = `
             <div
               class="actionable-message actionable-message--danger"
             >
+              
               <div
                 class="actionable-message__message"
               >

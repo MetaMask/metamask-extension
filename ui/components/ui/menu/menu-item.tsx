@@ -46,11 +46,7 @@ type MenuItemProps = {
   to?: string;
   /** React Router location state (e.g. { prevPath } for back navigation) */
   state?: object;
-  onClick?: (
-    event:
-      | React.MouseEvent<HTMLAnchorElement>
-      | React.MouseEvent<HTMLButtonElement>,
-  ) => void;
+  onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
   showInfoDot?: boolean;

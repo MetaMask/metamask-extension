@@ -5,6 +5,7 @@ import {
 import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   getAttentionRequiredApprovalCount,
   rejectOriginApprovals,
@@ -32,17 +33,20 @@ function createApprovalControllerMock(
 
 describe('Approval Utils', () => {
   describe('getAttentionRequiredApprovalCount', () => {
-    it('returns the total number of pending approvals', () => {
+    it('excludes smart transaction status page approvals', () => {
       const approvalController = createApprovalControllerMock([
         { id: ID_MOCK, type: ApprovalType.Transaction },
-        { id: ID_MOCK_2, type: ApprovalType.PersonalSign },
+        {
+          id: ID_MOCK_2,
+          type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+        },
       ]);
 
       expect(
         getAttentionRequiredApprovalCount({
           approvalController,
         }),
-      ).toBe(2);
+      ).toBe(1);
     });
   });
 

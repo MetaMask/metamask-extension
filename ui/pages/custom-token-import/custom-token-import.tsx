@@ -467,15 +467,13 @@ export const CustomTokenImportPage = () => {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.ImportCustomTokenInteracted)
           .addCategory(MetaMetricsEventCategory.Wallet)
-          .addProperties({
+          .addSensitiveProperties({
             [METRICS_PROPERTIES.addedToken]: addedToken,
+            [METRICS_PROPERTIES.tokenSymbol]: symbol,
+            [METRICS_PROPERTIES.tokenContractAddress]: address,
             [METRICS_PROPERTIES.chainId]: selectedNetwork,
             [METRICS_PROPERTIES.clickedSecurityLink]:
               clickedSecurityLinkRef.current,
-          })
-          .addSensitiveProperties({
-            [METRICS_PROPERTIES.tokenSymbol]: symbol,
-            [METRICS_PROPERTIES.tokenContractAddress]: address,
             [METRICS_PROPERTIES.assetType]: AssetType.token,
             [METRICS_PROPERTIES.tokenStandard]: ERC20,
           })

@@ -29,6 +29,7 @@ import {
 } from './smart-transactions';
 import type {
   SubmitSmartTransactionRequest,
+  AllowedActions,
   AllowedEvents,
 } from './smart-transactions';
 
@@ -37,6 +38,8 @@ const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
 const uuid = 'uuid';
 const txId = '1';
+
+let addRequestCallback: () => void;
 
 const createSignedTransaction = () => {
   return '0xf86c098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a76400008025a02b79f322a625d623a2bb2911e0c6b3e7eaf741a7c7c5d2e8c67ef3ff4acf146ca01ae168fea63dc3391b75b586c8a7c0cb55cdf3b8e2e4d8e097957a3a56c6f2c5';
@@ -58,10 +61,14 @@ type WithRequestOptions = {
 type WithRequestCallback<ReturnValue> = ({
   request,
   messenger,
+  addRequestSpy,
+  updateRequestStateSpy,
   submitSignedTransactionsSpy,
 }: {
   request: SubmitSmartTransactionRequest;
   messenger: SmartTransactionsControllerMessenger;
+  addRequestSpy: jest.Mock;
+  updateRequestStateSpy: jest.Mock;
   submitSignedTransactionsSpy: jest.SpyInstance;
 }) => ReturnValue;
 
@@ -79,13 +86,32 @@ function withRequest<ReturnValue>(
     | MessengerActions<SmartTransactionsControllerMessenger>
     | TransactionControllerGetNonceLockAction
     | TransactionControllerGetTransactionsAction
-    | TransactionControllerUpdateTransactionAction,
+    | TransactionControllerUpdateTransactionAction
+    | AllowedActions,
     | MessengerEvents<SmartTransactionsControllerMessenger>
     | NetworkControllerStateChangeEvent
     | AllowedEvents
   >({
     namespace: MOCK_ANY_NAMESPACE,
   });
+
+  const addRequestSpy = jest.fn().mockImplementation(() => {
+    return new Promise<void>((resolve) => {
+      addRequestCallback = () => {
+        resolve();
+      };
+    });
+  });
+  messenger.registerActionHandler(
+    'ApprovalController:addRequest',
+    addRequestSpy,
+  );
+
+  const updateRequestStateSpy = jest.fn();
+  messenger.registerActionHandler(
+    'ApprovalController:updateRequestState',
+    updateRequestStateSpy,
+  );
 
   // Register RemoteFeatureFlagController:getState handler for the new controller
   messenger.registerActionHandler(
@@ -191,11 +217,17 @@ function withRequest<ReturnValue>(
   return fn({
     request,
     messenger: smartTransactionsControllerMessenger,
+    addRequestSpy,
+    updateRequestStateSpy,
     submitSignedTransactionsSpy,
   });
 }
 
 describe('submitSmartTransactionHook', () => {
+  beforeEach(() => {
+    addRequestCallback = () => undefined;
+  });
+
   it('does not submit a transaction that is not a smart transaction', async () => {
     await withRequest(
       {
@@ -314,7 +346,13 @@ describe('submitSmartTransactionHook', () => {
 
   it('submits a smart transaction with an already signed transaction', async () => {
     await withRequest(
-      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+      async ({
+        request,
+        messenger,
+        addRequestSpy,
+        updateRequestStateSpy,
+        submitSignedTransactionsSpy,
+      }) => {
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -342,6 +380,39 @@ describe('submitSmartTransactionHook', () => {
             transactionMeta: request.transactionMeta,
           }),
         );
+        addRequestCallback();
+        expect(addRequestSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: uuid,
+            origin: 'http://localhost',
+            type: 'smartTransaction:showSmartTransactionStatusPage',
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
+                status: 'pending',
+                uuid,
+                creationTime: expect.any(Number),
+              }),
+              isDapp: true,
+              txId,
+            }),
+          }),
+          false,
+        );
+        expect(updateRequestStateSpy).toHaveBeenCalledWith({
+          id: uuid,
+          requestState: {
+            smartTransaction: {
+              uuid,
+              status: 'success',
+              statusMetadata: {
+                minedHash:
+                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
+              },
+            },
+            isDapp: true,
+            txId,
+          },
+        });
       },
     );
   });
@@ -353,7 +424,13 @@ describe('submitSmartTransactionHook', () => {
           signedTransactionInHex: undefined,
         },
       },
-      async ({ request, messenger, submitSignedTransactionsSpy }) => {
+      async ({
+        request,
+        messenger,
+        addRequestSpy,
+        updateRequestStateSpy,
+        submitSignedTransactionsSpy,
+      }) => {
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -394,12 +471,411 @@ describe('submitSmartTransactionHook', () => {
             transactionMeta: request.transactionMeta,
           }),
         );
+        addRequestCallback();
+        expect(addRequestSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: uuid,
+            origin: 'http://localhost',
+            type: 'smartTransaction:showSmartTransactionStatusPage',
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
+                status: 'pending',
+                uuid,
+                creationTime: expect.any(Number),
+              }),
+              isDapp: true,
+              txId,
+            }),
+          }),
+          false,
+        );
+        expect(updateRequestStateSpy).toHaveBeenCalledWith({
+          id: uuid,
+          requestState: {
+            smartTransaction: {
+              uuid,
+              status: 'success',
+              statusMetadata: {
+                minedHash:
+                  '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356',
+              },
+            },
+            isDapp: true,
+            txId,
+          },
+        });
       },
     );
+  });
+
+  it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
+    await withRequest(
+      async ({
+        request,
+        messenger,
+        addRequestSpy,
+        updateRequestStateSpy,
+        submitSignedTransactionsSpy,
+      }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          addRequestCallback();
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+        });
+        const result = await submitSmartTransactionHook(request);
+        expect(result).toEqual({ transactionHash: txHash });
+        const { txParams } = request.transactionMeta || {};
+        expect(
+          request.transactionController.approveTransactionsWithSameNonce,
+        ).not.toHaveBeenCalled();
+        expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            signedTransactions: [request.signedTransactionInHex],
+            signedCanceledTransactions: [],
+            txParams,
+            transactionMeta: request.transactionMeta,
+          }),
+        );
+        expect(addRequestSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: uuid,
+            origin: 'http://localhost',
+            type: 'smartTransaction:showSmartTransactionStatusPage',
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
+                status: 'pending',
+                uuid,
+                creationTime: expect.any(Number),
+              }),
+              isDapp: true,
+              txId,
+            }),
+          }),
+          false,
+        );
+        expect(updateRequestStateSpy).not.toHaveBeenCalled();
+      },
+    );
+  });
+
+  describe('shouldShowStatusPage logic', () => {
+    it('does not show status page for bridge transaction type', async () => {
+      await withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.bridge,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // No approval is created for bridge transactions.
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('does not show status page for shieldSubscriptionApprove transaction type', async () => {
+      await withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.shieldSubscriptionApprove,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // No approval is created for shieldSubscriptionApprove transactions.
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('creates a headless approval for simpleSend transaction type', async () => {
+      await withRequest(async ({ request, messenger, addRequestSpy }) => {
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+
+        await submitSmartTransactionHook(request);
+
+        // A headless approval is created for simpleSend transactions.
+        expect(addRequestSpy).toHaveBeenCalled();
+      });
+    });
+
+    it('creates a headless approval for bridge transaction type when there are batch transactions', async () => {
+      await withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.bridge,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // A headless approval is created for bridge transactions with batch
+          // transactions.
+          expect(addRequestSpy).toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('creates a headless approval for simpleSend with batch transactions', async () => {
+      await withRequest(
+        {
+          options: {
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // A headless approval is created for simpleSend with batch
+          // transactions.
+          expect(addRequestSpy).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('smart transaction status approval', () => {
+    const baseFeatureFlags = {
+      extensionActive: true,
+      mobileActive: false,
+      expectedDeadline: 45,
+      maxDeadline: 150,
+      extensionReturnTxHashAsap: false,
+      extensionReturnTxHashAsapBatch: false,
+    };
+
+    it('creates a headless approval request without starting an approval flow', async () => {
+      await withRequest(
+        {
+          options: {
+            featureFlags: {
+              ...baseFeatureFlags,
+            },
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: { minedHash: txHash },
+            } as SmartTransaction);
+          });
+
+          const result = await submitSmartTransactionHook(request);
+          expect(addRequestSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              id: uuid,
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+            }),
+            false,
+          );
+          expect(result).toEqual({ transactionHash: txHash });
+        },
+      );
+    });
+
+    it('creates a headless approval request for batch transactions', async () => {
+      await withRequest(
+        {
+          options: {
+            featureFlags: {
+              ...baseFeatureFlags,
+            },
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: { minedHash: txHash },
+            } as SmartTransaction);
+          });
+
+          const result = await submitSmartTransactionHook(request);
+          expect(addRequestSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              id: uuid,
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+            }),
+            false,
+          );
+          expect(result).toEqual({ transactionHash: txHash });
+        },
+      );
+    });
   });
 });
 
 describe('submitBatchSmartTransactionHook', () => {
+  beforeEach(() => {
+    addRequestCallback = () => undefined;
+  });
+
   it('does not submit a transaction that is not a smart transaction', async () => {
     await withRequest(
       {
@@ -516,6 +992,74 @@ describe('submitBatchSmartTransactionHook', () => {
             }),
           }),
         );
+      },
+    );
+  });
+
+  it('submits batch transaction and handles approval flow correctly', async () => {
+    await withRequest(
+      async ({ request, messenger, addRequestSpy, updateRequestStateSpy }) => {
+        request.smartTransactionsController.submitSignedTransactions = jest.fn(
+          async (_) => {
+            return {
+              uuid,
+              txHashes: ['hash1', 'hash2'],
+            };
+          },
+        );
+
+        setImmediate(() => {
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'pending',
+            uuid,
+            statusMetadata: {
+              minedHash: '',
+            },
+          } as SmartTransaction);
+          messenger.publish('SmartTransactionsController:smartTransaction', {
+            status: 'success',
+            uuid,
+            statusMetadata: {
+              minedHash: txHash,
+            },
+          } as SmartTransaction);
+        });
+
+        await submitBatchSmartTransactionHook(request);
+        expect(addRequestSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: uuid,
+            origin: 'http://localhost',
+            type: 'smartTransaction:showSmartTransactionStatusPage',
+            requestState: expect.objectContaining({
+              smartTransaction: expect.objectContaining({
+                status: 'pending',
+                uuid,
+                creationTime: expect.any(Number),
+              }),
+              isDapp: true,
+              txId,
+            }),
+          }),
+          false,
+        );
+
+        addRequestCallback();
+
+        expect(updateRequestStateSpy).toHaveBeenCalledWith({
+          id: uuid,
+          requestState: {
+            smartTransaction: {
+              uuid,
+              status: 'success',
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            },
+            isDapp: true,
+            txId,
+          },
+        });
       },
     );
   });

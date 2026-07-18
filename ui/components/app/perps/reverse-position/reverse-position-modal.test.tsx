@@ -317,20 +317,6 @@ describe('ReversePositionModal', () => {
 
       expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
     });
-
-    it('strips the DEX prefix from a HIP-3 market symbol in the estimated size label', () => {
-      const hip3Position = { ...longPosition, symbol: 'xyz:TSLA' };
-
-      renderWithProvider(
-        <ReversePositionModal {...defaultProps} position={hip3Position} />,
-        mockStore,
-      );
-
-      expect(
-        screen.getByTestId('perps-reverse-est-size-value'),
-      ).toHaveTextContent('2.5 TSLA');
-      expect(screen.queryByText(/xyz:/u)).not.toBeInTheDocument();
-    });
   });
 
   describe('short position', () => {

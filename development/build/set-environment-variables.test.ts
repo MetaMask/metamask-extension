@@ -28,7 +28,6 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'SEEDLESS_ONBOARDING_ENABLED',
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
-  'QR_SYNC_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
 ];
@@ -54,7 +53,6 @@ function getVariablesForSetEnvironmentVariables() {
     SEEDLESS_ONBOARDING_ENABLED: 'false',
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
-    QR_SYNC_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
@@ -85,40 +83,5 @@ describe('setEnvironmentVariables', () => {
     expect(variables.isDeclared('TELEGRAM_CLIENT_ID')).toBe(false);
     expect(variables.get('METAMASK_BUILD_NAME')).toBe('MetaMask');
     expect(variables.get('METAMASK_BUILD_TYPE')).toBe('main');
-  });
-
-  it('enables Add Device Sync in test builds', () => {
-    const variables = getVariablesForSetEnvironmentVariables();
-
-    setEnvironmentVariables({
-      buildName: 'MetaMask',
-      isDevBuild: false,
-      isTestBuild: true,
-      buildType: 'main',
-      environment: ENVIRONMENT.TESTING,
-      variables,
-      version: '1.0.0',
-    });
-
-    expect(variables.get('QR_SYNC_ENABLED')).toBe('true');
-    expect(variables.get('IN_TEST')).toBe(true);
-  });
-
-  it('respects QR_SYNC_ENABLED from config for non-test builds', () => {
-    const variables = getVariablesForSetEnvironmentVariables();
-
-    variables.set('QR_SYNC_ENABLED', 'true');
-
-    setEnvironmentVariables({
-      buildName: 'MetaMask',
-      isDevBuild: true,
-      isTestBuild: false,
-      buildType: 'main',
-      environment: ENVIRONMENT.DEVELOPMENT,
-      variables,
-      version: '1.0.0',
-    });
-
-    expect(variables.get('QR_SYNC_ENABLED')).toBe('true');
   });
 });

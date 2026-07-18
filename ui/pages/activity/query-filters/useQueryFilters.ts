@@ -5,8 +5,7 @@ import type {
 } from '@metamask/core-backend';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction } from '@metamask/client-utils';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { mapApiEvmTransactions } from '../../../../shared/lib/activity/adapters/api-evm-transactions';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
@@ -39,7 +38,9 @@ export function useQueryFilters(queryFilters: Props) {
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
       ];
       // This really should be moved to the API
-      const activityFilters: ((activity: ActivityListItem) => boolean)[] = [
+      const activityFilters: ((
+        activity: ReturnType<typeof mapApiEvmTransactions>,
+      ) => boolean)[] = [
         (activity) => !assetId || activityMatchesAssetId(activity, assetId),
       ];
 
@@ -52,7 +53,7 @@ export function useQueryFilters(queryFilters: Props) {
               txFilters.every((filter) => filter(transaction)),
             )
             .map((transaction) =>
-              mapApiTransaction({ subjectAddress, transaction }),
+              mapApiEvmTransactions({ subjectAddress, transaction }),
             )
             .map((activity) => {
               const hash = activity.hash?.toLowerCase();

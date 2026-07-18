@@ -35,11 +35,11 @@ import {
   THEME_ROUTE,
   PRIVACY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
-  SYNC_ACCOUNTS_ROUTE,
+  ADD_DEVICE_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import {
-  getIsQrSyncEnabled,
+  getIsAddDeviceSyncEnabled,
   getIsPerpsIncludedInBuild,
 } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -59,15 +59,6 @@ export type SettingsRouteMeta = {
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
-  /**
-   * If true, the route's component is mounted by the top-level app router
-   * (outside `SettingsLayout`) rather than by the nested Settings router.
-   * Used for full-page routes whose path is not under `/settings` (e.g.
-   * `/sync-accounts`). These are excluded from `SETTINGS_RENDERABLE_ROUTES`
-   * so the Settings router does not also mount a nested `/settings/<path>`
-   * child that would duplicate headers and skip `hideAppHeader` matching.
-   */
-  externalRoute?: boolean;
 };
 
 export const SETTINGS_ROOT_SECTIONS: readonly {
@@ -93,7 +84,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
-      ...(getIsQrSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
+      ...(getIsAddDeviceSyncEnabled() ? [ADD_DEVICE_ROUTE] : []),
     ],
   },
 ] as const;
@@ -336,17 +327,15 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
-  // --- Sync Accounts tab (only when QR_SYNC_ENABLED=true) ---
-  ...(getIsQrSyncEnabled()
+  // --- Add Device tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
+  ...(getIsAddDeviceSyncEnabled()
     ? {
-        [SYNC_ACCOUNTS_ROUTE]: {
-          labelKey: 'syncAccounts',
-          component: mmLazy(() => import('./sync-accounts/index.ts')),
+        [ADD_DEVICE_ROUTE]: {
+          labelKey: 'addDevice',
+          parentPath: SETTINGS_ROUTE,
+          component: mmLazy(() => import('./add-device-tab/index.ts')),
           isTab: true,
           iconName: IconName.Mobile,
-          // Mounted top-level at `/sync-accounts` by the app router, not nested
-          // under `/settings`. Excluded from SETTINGS_RENDERABLE_ROUTES below.
-          externalRoute: true,
         },
       }
     : {}),
@@ -456,14 +445,12 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
   }));
 
 /**
- * All routes that have a component and are rendered by the nested Settings
- * router (for generating Route elements). Excludes `externalRoute` entries,
- * which are mounted top-level by the app router.
+ * All routes that have a component (for generating Route elements).
  */
 export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, RenderableRouteMeta] => {
     const [, meta] = entry;
-    return Boolean(meta.component) && !meta.externalRoute;
+    return Boolean(meta.component);
   })
   .map(([path, meta]) => ({
     path,

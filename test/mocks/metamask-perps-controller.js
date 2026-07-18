@@ -117,17 +117,6 @@ function mockGetMarketTypeFilter(market) {
   return mockIsHip3Market(market) ? 'new' : 'crypto';
 }
 
-function mockGetPerpsDisplaySymbol(symbol) {
-  if (!symbol || typeof symbol !== 'string') {
-    return symbol;
-  }
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-}
-
 /**
  * Proxy-based mock for PERPS_ERROR_CODES.
  * Any property access returns the property name as a string, so code like
@@ -204,5 +193,4 @@ module.exports = {
   MARKET_CATEGORIES: mockMarketCategories,
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
-  getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
 };

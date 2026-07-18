@@ -437,7 +437,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
-      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -608,7 +607,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
-      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -997,7 +995,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
-      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -1226,7 +1223,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
-      style="height: 0px;"
     >
       <div
         class="mm-box"

@@ -55,12 +55,14 @@ jest.mock('../../../hooks/musd', () => ({
   }),
 }));
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
-jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy }),
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
 }));
 
 const createMockStore = (overrides = {}) => {
@@ -225,7 +227,7 @@ describe('MusdBuyGetCta', () => {
       ).toBeInTheDocument();
     });
 
-    it('routes through goToBuy with the selected chain when row is clicked for BUY variant', () => {
+    it('opens buy crypto page when row is clicked for BUY variant', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -238,15 +240,10 @@ describe('MusdBuyGetCta', () => {
       const ctaElement = screen.getByTestId('multichain-token-list-button');
       fireEvent.click(ctaElement);
 
-      // goToBuy owns the flag-off Portfolio fallback (with this chain) and the
-      // flag-on in-app routing.
-      expect(mockGoToBuy).toHaveBeenCalledWith({
-        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-        chainId: '0x1',
-      });
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
     });
 
-    it('routes through goToBuy when inner CTA button is clicked for BUY variant', () => {
+    it('opens buy crypto page when inner CTA button is clicked for BUY variant', () => {
       const store = createMockStore();
       renderWithProvider(
         <MusdBuyGetCta
@@ -260,28 +257,7 @@ describe('MusdBuyGetCta', () => {
         screen.getByRole('button', { name: messages.musdBuyMusd.message }),
       );
 
-      expect(mockGoToBuy).toHaveBeenCalledWith({
-        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-        chainId: '0x1',
-      });
-    });
-
-    it('does not route to buy for the GET variant', () => {
-      const store = createMockStore();
-      renderWithProvider(
-        <MusdBuyGetCta
-          variant={BuyGetMusdCtaVariant.GET}
-          selectedChainId="0x1"
-        />,
-        store,
-      );
-
-      fireEvent.click(
-        screen.getByRole('button', { name: messages.musdGetMusd.message }),
-      );
-
-      expect(mockGoToBuy).not.toHaveBeenCalled();
-      expect(mockStartConversionFlow).toHaveBeenCalled();
+      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledWith('0x1');
     });
   });
 

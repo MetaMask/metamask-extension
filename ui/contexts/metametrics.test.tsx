@@ -8,12 +8,8 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../store/background-connection';
-import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
-import {
-  MetaMetricsContext,
-  MetaMetricsProvider,
-  resetPreviousTrackedPagePathForTesting,
-} from './metametrics';
+import { trackAnalyticsEvent } from '../store/actions';
+import { MetaMetricsContext, MetaMetricsProvider } from './metametrics';
 
 jest.mock('../hooks/useSegmentContext', () => ({
   useSegmentContext: jest.fn(() => ({})),
@@ -87,7 +83,6 @@ describe('MetaMetricsProvider', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    resetPreviousTrackedPagePathForTesting();
   });
 
   it('buffers events when participation is enabled but analyticsId is missing', async () => {
@@ -189,52 +184,5 @@ describe('MetaMetricsProvider', () => {
 
     expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
-  });
-
-  it('tracks page views only once across provider remounts', async () => {
-    const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
-    const store = mockStore({
-      metamask: {
-        analyticsId: '0x123',
-        completedMetaMetricsOnboarding: true,
-        optedIn: true,
-      },
-    });
-
-    const router = createMemoryRouter(
-      [
-        {
-          path: '*',
-          element: (
-            <MetaMetricsProvider>
-              <div data-testid="child" />
-            </MetaMetricsProvider>
-          ),
-        },
-      ],
-      { initialEntries: ['/'] },
-    );
-
-    const { unmount } = render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>,
-    );
-
-    await waitFor(() => {
-      expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
-    });
-
-    unmount();
-
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>,
-    );
-
-    await waitFor(() => {
-      expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
-    });
   });
 });

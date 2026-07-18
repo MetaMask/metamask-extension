@@ -23,6 +23,7 @@ import {
 } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
+import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
@@ -41,6 +42,12 @@ jest.mock('react-redux', () => {
 jest.mock('../../../../hooks/useTokenFiatAmount', () => {
   return {
     useTokenFiatAmount: jest.fn(),
+  };
+});
+
+jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
+  return {
+    useIsOriginalTokenSymbol: jest.fn(),
   };
 });
 
@@ -111,6 +118,8 @@ describe('Token Cell', () => {
       preferences: {},
     },
   };
+
+  (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {

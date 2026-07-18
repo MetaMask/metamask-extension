@@ -24,7 +24,7 @@ import {
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 
 const QUOTE_MOCK = {
-  strategy: TransactionPayStrategy.Relay,
+  strategy: TransactionPayStrategy.Test,
 } as TransactionPayQuote<Json>;
 
 const REQUIRED_TOKEN_MOCK = {

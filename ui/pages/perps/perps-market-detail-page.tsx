@@ -91,7 +91,7 @@ import {
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
-  getDisplaySymbol,
+  getDisplayName,
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
@@ -1047,7 +1047,7 @@ const PerpsMarketDetailPage = () => {
               color={TextColor.TextAlternative}
             >
               {t('perpsMarketNotFoundDescription', [
-                getDisplaySymbol(safeDecodeURIComponent(symbol) ?? symbol),
+                getDisplayName(safeDecodeURIComponent(symbol) ?? symbol),
               ])}
             </Text>
           </Box>
@@ -1056,7 +1056,7 @@ const PerpsMarketDetailPage = () => {
     );
   }
 
-  const displayName = getDisplaySymbol(market.symbol);
+  const displayName = getDisplayName(market.symbol);
   // Full market name (e.g. "Bitcoin"), gated behind the feature flag and falling
   // back to the ticker when disabled or unavailable.
   const fullName = showFullAssetNames
@@ -1407,7 +1407,7 @@ const PerpsMarketDetailPage = () => {
                       : `${formatPositionSize(
                           Math.abs(parseFloat(position.size)),
                           marketInfo?.szDecimals,
-                        )} ${getDisplaySymbol(position.symbol)}`}
+                        )} ${getDisplayName(position.symbol)}`}
                   </SensitiveText>
                 </Box>
 

@@ -36,11 +36,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import {
-  getPositionDirection,
-  buildPerpsVipTrackingData,
-  getDisplaySymbol,
-} from '../utils';
+import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
@@ -109,7 +105,7 @@ export const ReversePositionModal = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${getDisplaySymbol(position.symbol)}`;
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
 
   const {
     feeRate,

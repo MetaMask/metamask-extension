@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
@@ -329,12 +329,10 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     fireEvent.click(buyButton as HTMLElement);
-    await waitFor(() =>
-      expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
-    );
+    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
-  it('sends an event when clicking the Buy button', async () => {
+  it('sends an event when clicking the Buy button', () => {
     mockTrackEvent.mockClear();
     const storeWithBtcBuyable = getStore();
 
@@ -348,8 +346,6 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
 
-    // handleBuyAndSellOnClick awaits the async goToBuy gate before tracking.
-    await waitFor(() => expect(mockTrackEvent).toHaveBeenCalled());
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.NavBuyButtonClicked,

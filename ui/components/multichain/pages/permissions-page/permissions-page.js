@@ -46,7 +46,6 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
-import { transitionForward } from '../../../ui/transition';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
 import { Toast, ToastContainer } from '../../toast';
 import { ConnectionListItem } from './connection-list-item';
@@ -127,14 +126,12 @@ const PermissionsPage = () => {
   }, [dispatch, mergedConnectionsList, subjects]);
 
   const handleConnectionClick = (connection) => {
-    transitionForward(() =>
-      navigate({
-        pathname: REVIEW_PERMISSIONS,
-        search: createSearchParams({
-          origin: connection.origin,
-        }).toString(),
-      }),
-    );
+    navigate({
+      pathname: REVIEW_PERMISSIONS,
+      search: createSearchParams({
+        origin: connection.origin,
+      }).toString(),
+    });
   };
 
   const renderConnectionsList = (connectionList) =>

@@ -4,7 +4,6 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import type { Transaction } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { useDeferredValue } from '../../../hooks/useDeferredValue';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { useItemInView } from '../../../hooks/useItemInView';
@@ -60,7 +59,6 @@ export const ActivityList = ({ filter }: Props) => {
 
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-  const deferredEnabledNetworks = useDeferredValue(enabledNetworks);
 
   // Clear modal state on account switch
   useEffect(() => {
@@ -100,13 +98,11 @@ export const ActivityList = ({ filter }: Props) => {
       PENDING_STATUS_HASH,
     ).filter((group) => {
       const chainId = group.initialTransaction?.chainId;
-      return (
-        !chainId || deferredEnabledNetworks.includes(toEvmCaipChainId(chainId))
-      );
+      return !chainId || enabledNetworks.includes(toEvmCaipChainId(chainId));
     });
 
     let filteredNonEvmTransactions = nonEvmTransactions.filter((tx) =>
-      deferredEnabledNetworks.includes(tx.chain),
+      enabledNetworks.includes(tx.chain),
     );
 
     // Asset-page filtering: narrow by chain and asset scope
@@ -135,13 +131,7 @@ export const ActivityList = ({ filter }: Props) => {
       filteredLocalTransactions,
       filteredNonEvmTransactions,
     };
-  }, [
-    data,
-    nonEvmTransactions,
-    localTransactions,
-    deferredEnabledNetworks,
-    filter,
-  ]);
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {

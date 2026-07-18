@@ -1,89 +1,123 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Component } from 'react';
+import { I18nContext } from '../../contexts/i18n';
 import ConnectedSitesList from '../../components/app/connected-sites-list';
 import Popover from '../../components/ui/popover/popover.component';
 import { Button, ButtonVariant } from '../../components/component-library';
-import { useI18nContext } from '../../hooks/useI18nContext';
 
-export default function ConnectedSites({
-  accountLabel,
-  closePopover,
-  connectedSubjects,
-  disconnectAllAccounts,
-  disconnectAccount,
-  getOpenMetamaskTabsIds,
-  permittedAccountsByOrigin,
-  tabToConnect = null,
-  requestAccountsPermission,
-}) {
-  const t = useI18nContext();
-  const [sitePendingDisconnect, setSitePendingDisconnect] = useState(null);
+export default class ConnectedSites extends Component {
+  static contextType = I18nContext;
 
-  useEffect(() => {
+  static defaultProps = {
+    tabToConnect: null,
+  };
+
+  static propTypes = {
+    accountLabel: PropTypes.string.isRequired,
+    closePopover: PropTypes.func.isRequired,
+    connectedSubjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+    disconnectAllAccounts: PropTypes.func.isRequired,
+    disconnectAccount: PropTypes.func.isRequired,
+    getOpenMetamaskTabsIds: PropTypes.func.isRequired,
+    permittedAccountsByOrigin: PropTypes.objectOf(
+      PropTypes.arrayOf(PropTypes.string),
+    ).isRequired,
+    tabToConnect: PropTypes.object,
+    requestAccountsPermission: PropTypes.func.isRequired,
+  };
+
+  state = {
+    sitePendingDisconnect: null,
+  };
+
+  componentDidMount() {
+    const { getOpenMetamaskTabsIds } = this.props;
     getOpenMetamaskTabsIds();
-  }, [getOpenMetamaskTabsIds]);
+  }
 
-  const clearPendingDisconnect = useCallback(() => {
-    setSitePendingDisconnect(null);
-  }, []);
+  setPendingDisconnect = (subjectKey) => {
+    this.setState({
+      sitePendingDisconnect: {
+        subjectKey,
+      },
+    });
+  };
 
-  const setPendingDisconnect = useCallback((subjectKey) => {
-    setSitePendingDisconnect({ subjectKey });
-  }, []);
+  clearPendingDisconnect = () => {
+    this.setState({
+      sitePendingDisconnect: null,
+    });
+  };
 
-  const handleDisconnectAccount = useCallback(() => {
+  disconnectAccount = () => {
+    const { disconnectAccount } = this.props;
+    const { sitePendingDisconnect } = this.state;
+
     disconnectAccount(sitePendingDisconnect.subjectKey);
-    clearPendingDisconnect();
-  }, [
-    clearPendingDisconnect,
-    disconnectAccount,
-    sitePendingDisconnect?.subjectKey,
-  ]);
+    this.clearPendingDisconnect();
+  };
 
-  const handleDisconnectAllAccounts = useCallback(() => {
+  disconnectAllAccounts = () => {
+    const { disconnectAllAccounts } = this.props;
+    const { sitePendingDisconnect } = this.state;
+
     disconnectAllAccounts(sitePendingDisconnect.subjectKey);
-    clearPendingDisconnect();
-  }, [
-    clearPendingDisconnect,
-    disconnectAllAccounts,
-    sitePendingDisconnect?.subjectKey,
-  ]);
+    this.clearPendingDisconnect();
+  };
 
-  const renderConnectedSitesList = () => (
-    <ConnectedSitesList
-      connectedSubjects={connectedSubjects}
-      onDisconnect={setPendingDisconnect}
-    />
-  );
+  renderConnectedSitesList() {
+    return (
+      <ConnectedSitesList
+        connectedSubjects={this.props.connectedSubjects}
+        onDisconnect={this.setPendingDisconnect}
+      />
+    );
+  }
 
-  const renderConnectedSitesPopover = () => (
-    <Popover
-      className="connected-sites"
-      title={t('connectedSites')}
-      subtitle={
-        connectedSubjects.length
-          ? t('connectedSitesDescription', [accountLabel])
-          : t('connectedSitesEmptyDescription', [accountLabel])
-      }
-      onClose={closePopover}
-      footer={
-        tabToConnect ? (
-          <a
-            className="connected-sites__text-button"
-            onClick={requestAccountsPermission}
-          >
-            {t('connectManually')}
-          </a>
-        ) : null
-      }
-      footerClassName="connected-sites__add-site-manually"
-    >
-      {renderConnectedSitesList()}
-    </Popover>
-  );
+  renderConnectedSitesPopover() {
+    const {
+      accountLabel,
+      closePopover,
+      connectedSubjects,
+      tabToConnect,
+      requestAccountsPermission,
+    } = this.props;
+    const t = this.context;
 
-  const renderDisconnectPopover = () => {
-    const { subjectKey } = sitePendingDisconnect;
+    return (
+      <Popover
+        className="connected-sites"
+        title={t('connectedSites')}
+        subtitle={
+          connectedSubjects.length
+            ? t('connectedSitesDescription', [accountLabel])
+            : t('connectedSitesEmptyDescription', [accountLabel])
+        }
+        onClose={closePopover}
+        footer={
+          tabToConnect ? (
+            <a
+              className="connected-sites__text-button"
+              onClick={requestAccountsPermission}
+            >
+              {t('connectManually')}
+            </a>
+          ) : null
+        }
+        footerClassName="connected-sites__add-site-manually"
+      >
+        {this.renderConnectedSitesList()}
+      </Popover>
+    );
+  }
+
+  renderDisconnectPopover() {
+    const { closePopover, permittedAccountsByOrigin } = this.props;
+    const t = this.context;
+    const {
+      sitePendingDisconnect: { subjectKey },
+    } = this.state;
+
     const numPermittedAccounts = permittedAccountsByOrigin[subjectKey].length;
 
     return (
@@ -97,14 +131,14 @@ export default function ConnectedSites({
             <div className="connected-sites__footer-row">
               <Button
                 variant={ButtonVariant.Secondary}
-                onClick={clearPendingDisconnect}
+                onClick={this.clearPendingDisconnect}
                 block
               >
                 {t('cancel')}
               </Button>
               <Button
                 variant={ButtonVariant.Primary}
-                onClick={handleDisconnectAccount}
+                onClick={this.disconnectAccount}
                 block
               >
                 {t('disconnect')}
@@ -114,7 +148,7 @@ export default function ConnectedSites({
               <div className="connected-sites__footer-row">
                 <a
                   className="connected-sites__text-button"
-                  onClick={handleDisconnectAllAccounts}
+                  onClick={this.disconnectAllAccounts}
                 >
                   {t('disconnectAllAccounts')}
                 </a>
@@ -125,23 +159,12 @@ export default function ConnectedSites({
         footerClassName="connected-sites__confirmation"
       />
     );
-  };
+  }
 
-  return sitePendingDisconnect
-    ? renderDisconnectPopover()
-    : renderConnectedSitesPopover();
+  render() {
+    const { sitePendingDisconnect } = this.state;
+    return sitePendingDisconnect
+      ? this.renderDisconnectPopover()
+      : this.renderConnectedSitesPopover();
+  }
 }
-
-ConnectedSites.propTypes = {
-  accountLabel: PropTypes.string.isRequired,
-  closePopover: PropTypes.func.isRequired,
-  connectedSubjects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  disconnectAllAccounts: PropTypes.func.isRequired,
-  disconnectAccount: PropTypes.func.isRequired,
-  getOpenMetamaskTabsIds: PropTypes.func.isRequired,
-  permittedAccountsByOrigin: PropTypes.objectOf(
-    PropTypes.arrayOf(PropTypes.string),
-  ).isRequired,
-  tabToConnect: PropTypes.object,
-  requestAccountsPermission: PropTypes.func.isRequired,
-};

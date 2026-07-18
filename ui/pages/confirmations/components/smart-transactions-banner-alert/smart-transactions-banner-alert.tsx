@@ -30,12 +30,6 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
-const selectAlertEnabled = (state: {
-  metamask: { alertEnabledness?: { [key: string]: boolean } };
-}) =>
-  state.metamask.alertEnabledness?.[AlertTypes.smartTransactionsMigration] !==
-  false;
-
 export const SmartTransactionsBannerAlert = React.memo(
   ({ marginType = 'default' }: SmartTransactionsBannerAlertProps) => {
     const t = useI18nContext();
@@ -48,7 +42,14 @@ export const SmartTransactionsBannerAlert = React.memo(
       currentConfirmation = null;
     }
 
-    const alertEnabled = useSelector(selectAlertEnabled);
+    const alertEnabled = useSelector(
+      (state: {
+        metamask: { alertEnabledness?: { [key: string]: boolean } };
+      }) =>
+        state.metamask.alertEnabledness?.[
+          AlertTypes.smartTransactionsMigration
+        ] !== false,
+    );
 
     const smartTransactionsOptIn = useSelector(
       getSmartTransactionsOptInStatusInternal,

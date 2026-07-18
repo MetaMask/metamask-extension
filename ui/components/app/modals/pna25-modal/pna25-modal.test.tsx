@@ -7,23 +7,9 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../../test/lib/render-helpers-navigate';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { setPna25Acknowledged } from '../../../../store/actions';
 import Pna25Modal from './pna25-modal';
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -32,9 +18,24 @@ jest.mock('../../../../store/actions', () => ({
 
 const mockStore = configureMockStore([thunk]);
 
+const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
+
 function renderComponent() {
   const store = mockStore(mockState);
-  return renderWithProvider(<Pna25Modal />, store);
+  return renderWithProvider(
+    <MetaMetricsContext.Provider
+      value={mockMetaMetricsContext as typeof mockMetaMetricsContext}
+    >
+      <Pna25Modal />
+    </MetaMetricsContext.Provider>,
+    store,
+  );
 }
 
 describe('Pna25Modal', () => {

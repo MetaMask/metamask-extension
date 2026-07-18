@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
@@ -13,11 +19,11 @@ import {
   assignUserToCohort,
   setPendingShieldCohort,
   setShowShieldEntryModalOnce,
+  subscriptionsStartPolling,
 } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
-import { SUBSCRIPTIONS_POLLING_INPUT } from '../../../shared/constants/subscriptions';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
@@ -28,18 +34,6 @@ import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscripti
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
-import usePolling from '../../hooks/usePolling';
-import {
-  subscriptionsStartPolling,
-  subscriptionsStopPolling,
-} from './subscriptionsPollingActions';
-
-const evaluatedShieldCohortsThisSession = new Set<string>();
-
-/** @internal */
-export function resetEvaluatedShieldCohortsForTesting(): void {
-  evaluatedShieldCohortsThisSession.clear();
-}
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -166,17 +160,12 @@ export const ShieldSubscriptionProvider = ({
   evaluateCohortEligibilityRef.current = async (
     entrypointCohort: string,
   ): Promise<void> => {
-    if (evaluatedShieldCohortsThisSession.has(entrypointCohort)) {
-      return;
-    }
-
     try {
       if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
         return;
       }
 
       if (isShieldSubscriptionActive) {
-        evaluatedShieldCohortsThisSession.add(entrypointCohort);
         dispatch(
           setShowShieldEntryModalOnce({
             show: false,
@@ -188,8 +177,6 @@ export const ShieldSubscriptionProvider = ({
       if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
         return;
       }
-
-      evaluatedShieldCohortsThisSession.add(entrypointCohort);
 
       // Clear the pending cohort before any async work to prevent a race
       // condition: if #assignPostTxCohort sets POST_TX while the eligibility
@@ -282,7 +269,6 @@ export const ShieldSubscriptionProvider = ({
         }
       }
     } catch (error) {
-      evaluatedShieldCohortsThisSession.delete(entrypointCohort);
       // Restore the pending cohort so it can be retried on the next
       // componentDidUpdate cycle instead of being silently lost.
       try {
@@ -311,22 +297,23 @@ export const ShieldSubscriptionProvider = ({
     [],
   );
 
-  const shouldPoll =
-    isMetaMaskShieldFeatureEnabled &&
-    isBasicFunctionalityEnabled &&
-    isSignedIn &&
-    isUnlocked;
-
-  usePolling({
-    startPolling: subscriptionsStartPolling,
-    stopPollingByPollingToken: (pollingToken: string) => {
-      subscriptionsStopPolling(pollingToken).catch((error) => {
-        log.warn('[subscriptionsStopPolling] error', error);
-      });
-    },
-    input: SUBSCRIPTIONS_POLLING_INPUT,
-    enabled: shouldPoll,
-  });
+  useEffect(() => {
+    if (
+      isMetaMaskShieldFeatureEnabled &&
+      isBasicFunctionalityEnabled &&
+      isSignedIn &&
+      isUnlocked
+    ) {
+      // start polling for the subscriptions
+      dispatch(subscriptionsStartPolling());
+    }
+  }, [
+    isMetaMaskShieldFeatureEnabled,
+    isSignedIn,
+    dispatch,
+    isUnlocked,
+    isBasicFunctionalityEnabled,
+  ]);
 
   /**
    * Memoize the context value to prevent creating a new object reference

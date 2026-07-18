@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ToastContent } from './toast';
 
-jest.mock('../status-icon/status-icon', () => ({
+jest.mock('../icon/status-icon', () => ({
   StatusIcon: () => null,
 }));
 

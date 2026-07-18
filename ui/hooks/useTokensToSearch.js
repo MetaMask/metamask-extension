@@ -4,7 +4,11 @@ import BigNumber from 'bignumber.js';
 import { uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getTokenExchangeRates, getSwapsDefaultToken } from '../selectors';
+import {
+  getTokenExchangeRates,
+  getSwapsDefaultToken,
+  getTokenList,
+} from '../selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
@@ -21,6 +25,7 @@ export function getRenderableTokenData(
   conversionRate,
   currentCurrency,
   chainId,
+  tokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
@@ -76,7 +81,7 @@ export function getRenderableTokenData(
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name,
+    secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -84,7 +89,7 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name,
+    name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
     image: token.image || token.iconUrl,
   };
@@ -101,6 +106,7 @@ export function useTokensToSearch({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const tokenList = useSelector(getTokenList);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
@@ -111,6 +117,7 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     chainId,
+    tokenList,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -150,6 +157,7 @@ export function useTokensToSearch({
         conversionRate,
         currentCurrency,
         chainId,
+        tokenList,
       );
       if (tokenBucketPriority === TokenBucketPriority.owned) {
         if (
@@ -205,6 +213,7 @@ export function useTokensToSearch({
     currentCurrency,
     memoizedDefaultToken,
     chainId,
+    tokenList,
     tokenBucketPriority,
   ]);
 }

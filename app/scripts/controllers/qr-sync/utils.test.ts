@@ -1,8 +1,4 @@
-import {
-  ErrorCode as MwpCoreErrorCode,
-  SessionError as MwpCoreSessionError,
-  SessionRequest,
-} from '@metamask/mobile-wallet-protocol-core';
+import { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
 import {
   QR_SYNC_PHASES,
   QrSyncErrorCodes,
@@ -19,8 +15,6 @@ import {
   isQrSyncOffer,
   normalizeQrSyncMessage,
   parseJsonMessage,
-  parseMwpError,
-  shouldReportQrSyncErrorToSentry,
 } from './utils';
 import { QrSyncOffer } from './types';
 
@@ -282,134 +276,5 @@ describe('qr-sync utils', () => {
         message: 'Mobile error',
       });
     });
-  });
-
-  describe('parseMwpError', () => {
-    it('returns the default unknown error for non-session errors', () => {
-      expect(parseMwpError(new Error('Relay unavailable'))).toStrictEqual({
-        code: QrSyncErrorCodes.UNKNOWN,
-        message: QrSyncErrorMessages.UNKNOWN,
-      });
-    });
-
-    it('returns the default unknown error for non-error values', () => {
-      expect(parseMwpError(undefined)).toStrictEqual({
-        code: QrSyncErrorCodes.UNKNOWN,
-        message: QrSyncErrorMessages.UNKNOWN,
-      });
-    });
-
-    it('maps OTP_MAX_ATTEMPTS_REACHED to OTP_ATTEMPTS_EXCEEDED', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED,
-        'Too many attempts.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
-        message: 'Too many attempts.',
-      });
-    });
-
-    it('maps OTP_ENTRY_TIMEOUT to OTP_EXPIRED', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.OTP_ENTRY_TIMEOUT,
-        'OTP entry timed out.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.OTP_EXPIRED,
-        message: 'OTP entry timed out.',
-      });
-    });
-
-    it('maps OTP_INCORRECT to OTP_INVALID', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.OTP_INCORRECT,
-        'Incorrect code',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.OTP_INVALID,
-        message: 'Incorrect code',
-      });
-    });
-
-    it('maps REQUEST_EXPIRED to QR_EXPIRED', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.REQUEST_EXPIRED,
-        'Did not receive handshake offer from wallet in time.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.QR_EXPIRED,
-        message: 'Did not receive handshake offer from wallet in time.',
-      });
-    });
-
-    it('maps SESSION_EXPIRED to SESSION_EXPIRED', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.SESSION_EXPIRED,
-        'Session expired.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.SESSION_EXPIRED,
-        message: 'Session expired.',
-      });
-    });
-
-    it('maps TRANSPORT_DISCONNECTED to CHANNEL_DISCONNECTED', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.TRANSPORT_DISCONNECTED,
-        'Transport disconnected.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
-        message: 'Transport disconnected.',
-      });
-    });
-
-    it('keeps the unknown code for unmapped session error codes', () => {
-      const error = new MwpCoreSessionError(
-        MwpCoreErrorCode.UNKNOWN,
-        'Something went wrong.',
-      );
-
-      expect(parseMwpError(error)).toStrictEqual({
-        code: QrSyncErrorCodes.UNKNOWN,
-        message: 'Something went wrong.',
-      });
-    });
-  });
-
-  describe('shouldReportQrSyncErrorToSentry', () => {
-    const UNEXPECTED_ERROR_CODES = [
-      QrSyncErrorCodes.SYNC_FAILED,
-      QrSyncErrorCodes.UNKNOWN,
-    ];
-
-    for (const code of UNEXPECTED_ERROR_CODES) {
-      it(`returns true for unexpected error code ${code}`, () => {
-        expect(shouldReportQrSyncErrorToSentry(code)).toBe(true);
-      });
-    }
-
-    const EXPECTED_FLOW_ERROR_CODES = [
-      QrSyncErrorCodes.CHANNEL_DISCONNECTED,
-      QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
-      QrSyncErrorCodes.OTP_EXPIRED,
-      QrSyncErrorCodes.OTP_INVALID,
-      QrSyncErrorCodes.QR_EXPIRED,
-      QrSyncErrorCodes.SESSION_EXPIRED,
-      QrSyncErrorCodes.SYNC_REJECTED,
-    ];
-
-    for (const code of EXPECTED_FLOW_ERROR_CODES) {
-      it(`returns false for expected flow error code ${code}`, () => {
-        expect(shouldReportQrSyncErrorToSentry(code)).toBe(false);
-      });
-    }
   });
 });

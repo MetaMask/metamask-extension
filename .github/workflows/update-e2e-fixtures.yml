@@ -30,22 +30,9 @@ jobs:
     needs: is-cross-repo-pr
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          permissions: |
-            actions: read
-            contents: write
-            pull_requests: write
 
       - name: React to the comment
         run: |
@@ -57,7 +44,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           REPO: ${{ github.repository }}
 
   prepare:
@@ -67,9 +54,6 @@ jobs:
     needs: is-cross-repo-pr
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
-    permissions:
-      id-token: write
-      contents: read
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
@@ -77,21 +61,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          permissions: |
-            actions: read
-            statuses: read
-            contents: write
-            pull_requests: write
-
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
@@ -108,7 +81,7 @@ jobs:
         id: branch
         run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       # The build-reuse feature skips the build jobs on a PR's Main run when its
@@ -121,7 +94,7 @@ jobs:
         id: find-dist
         uses: actions/github-script@v8
         with:
-          github-token: ${{ steps.token.outputs.token }}
+          github-token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
             const { stdout: headOut } = await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { silent: true });
@@ -151,7 +124,7 @@ jobs:
           echo "Successfully downloaded dist artifact."
         env:
           RUN_ID: ${{ steps.find-dist.outputs.run-id }}
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v6
@@ -233,29 +206,16 @@ jobs:
       - update-fixtures
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     environment: default-branch
-    permissions:
-      id-token: write
-      contents: read
     steps:
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          permissions: |
-            actions: read
-            contents: write
-            pull_requests: write
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ steps.token.outputs.token }}
+          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Download updated fixtures
@@ -292,7 +252,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.fixture-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -324,23 +284,10 @@ jobs:
       - is-cross-repo-pr
       - check-status
     environment: default-branch
-    permissions:
-      id-token: write
-      contents: read
     steps:
-      - name: Get token
-        id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
-        with:
-          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
-          permissions: |
-            actions: read
-            contents: write
-            pull_requests: write
-
       - uses: actions/checkout@v6
         with:
-          token: ${{ steps.token.outputs.token }}
+          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Post comment if the update failed
         run: |
@@ -349,6 +296,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "E2E fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
           fi
         env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'

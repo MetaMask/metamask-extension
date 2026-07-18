@@ -156,11 +156,6 @@ export type MessengerClientInitRequest<
   seedlessOperationMutex: Mutex;
 
   /**
-   * The mutex used to serialize vault creation, seed export, and locking.
-   */
-  createVaultMutex: Mutex;
-
-  /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
    *

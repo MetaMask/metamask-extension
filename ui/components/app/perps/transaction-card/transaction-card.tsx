@@ -14,7 +14,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { PerpsFillTag } from '../perps-fill-tag';
-import { getDisplaySymbol } from '../utils';
+import { getDisplayName } from '../utils';
 import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
@@ -54,7 +54,7 @@ export const TransactionCard = ({
   screenName,
 }: TransactionCardProps) => {
   const t = useI18nContext();
-  const displayName = getDisplaySymbol(transaction.symbol);
+  const displayName = getDisplayName(transaction.symbol);
 
   const handleClick = useCallback(() => {
     if (onClick) {

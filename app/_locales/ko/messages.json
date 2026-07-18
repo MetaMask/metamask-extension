@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "맞춤형 토큰 추가"
   },
+  "addDevice": {
+    "message": "모바일과 동기화"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "신뢰할 수 있는 경우에만 이 RPC 공급입체를 추가하세요. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "계정 가져오기"
-  },
-  "add_device_try_again": {
-    "message": "다시 시도"
   },
   "add_device_validating_desc": {
     "message": "휴대전화와 안전한 암호화 연결을 설정하고 있습니다."
@@ -8137,6 +8137,9 @@
     "message": "$1초 후 만료",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "QR 코드를 스캔하는 중 오류가 발생했습니다. 새 QR 코드를 생성한 후 다시 시도하세요."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "다른 거래를 위한 QR 코드입니다. 취소한 후 다시 시도해 주세요. 하드웨어 지갑으로 MetaMask에 표시된 QR 코드를 스캔했는지 먼저 확인해 주세요.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8201,9 +8204,6 @@
   },
   "quotedTotalCost": {
     "message": "총비용: $1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "사용 가능한 토큰 없음"
   },
   "rank": {
     "message": "순위"
@@ -8416,6 +8416,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "작업을 완료했습니다."
+  },
+  "retryTransaction": {
+    "message": "트랜잭션 재시도"
   },
   "reusedTokenNameWarning": {
     "message": "여기에 있는 토큰은 사용자가 주시 중인 다른 토큰의 기호를 재사용하기 때문에 혼동되거나 속기 쉽습니다."
@@ -10756,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
-  },
-  "syncAccounts": {
-    "message": "모바일과 동기화"
   },
   "syncing": {
     "message": "동기화 중..."

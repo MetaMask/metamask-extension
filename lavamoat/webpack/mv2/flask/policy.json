@@ -1040,15 +1040,6 @@
         "@metamask/base-controller": true
       }
     },
-    "@metamask/client-utils": {
-      "packages": {
-        "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
-        "@metamask/keyring-api": true,
-        "@metamask/transaction-controller": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/compliance-controller": {
       "globals": {
         "URL": true
@@ -1072,7 +1063,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/wallet>@metamask/connectivity-controller": {
+    "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -1598,7 +1589,7 @@
         "@metamask/delegation-core": true,
         "@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
-        "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2054,7 +2045,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/phishing-controller>@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
@@ -2180,14 +2171,6 @@
         "cockatiel": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -2310,7 +2293,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -2462,7 +2445,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2532,11 +2515,12 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2555,7 +2539,7 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/user-operation-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "webpack>events": true,
@@ -2647,7 +2631,7 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/wallet>@metamask/connectivity-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
@@ -4402,7 +4386,7 @@
       "packages": {
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
-        "gulp-watch>object-assign": true
+        "react>object-assign": true
       }
     },
     "nock>debug": {
@@ -5687,6 +5671,11 @@
         "mockttp>express>safe-buffer": true
       }
     },
+    "react": {
+      "packages": {
+        "react>object-assign": true
+      }
+    },
     "react-chartjs-2": {
       "globals": {
         "setTimeout": true
@@ -5775,13 +5764,11 @@
         "clipboardData": true,
         "console.error": true,
         "document": true,
-        "event": true,
-        "queueMicrotask": true,
         "removeEventListener": true,
-        "reportError": true,
         "setTimeout": true
       },
       "packages": {
+        "react>object-assign": true,
         "react": true,
         "react-dom>scheduler": true
       }
@@ -6381,15 +6368,12 @@
     "react-dom>scheduler": {
       "globals": {
         "MessageChannel": true,
+        "cancelAnimationFrame": true,
         "clearTimeout": true,
-        "console.error": true,
-        "navigator": true,
+        "console": true,
         "performance": true,
-        "setImmediate": true,
+        "requestAnimationFrame": true,
         "setTimeout": true
-      },
-      "packages": {
-        "core-js-pure": true
       }
     },
     "ethers>@ethersproject/json-wallets>scrypt-js": {

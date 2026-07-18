@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { QrSyncControllerState } from '../../../app/scripts/controllers/qr-sync/types';
 import {
+  QR_SYNC_PHASES,
   QR_SYNC_TERMINAL_PHASES,
   type QrSyncPhase,
 } from '../../../shared/constants/qr-sync';
@@ -39,6 +40,11 @@ export const selectIsQrSyncTerminal = createSelector(
       phase as (typeof QR_SYNC_TERMINAL_PHASES)[number],
     );
   },
+);
+
+export const selectShouldCreateQrSyncSession = createSelector(
+  [selectQrSyncPhase],
+  (phase) => phase === QR_SYNC_PHASES.IDLE,
 );
 
 export function isQrSyncPhase(

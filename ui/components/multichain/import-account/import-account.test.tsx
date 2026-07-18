@@ -5,12 +5,6 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
-import {
-  MetaMetricsEventAccountImportType,
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ImportAccount } from './import-account';
 
@@ -18,21 +12,6 @@ jest.mock('../../../store/actions', () => ({
   importNewAccount: jest.fn(),
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
-  };
-});
 
 const mockedActions = jest.mocked(actions);
 
@@ -217,86 +196,6 @@ describe('ImportAccount', () => {
 
       await waitFor(() => {
         expect(queryByText('Invalid private key')).toBeInTheDocument();
-      });
-    });
-
-    it('tracks a failed private key import with the private key import type', async () => {
-      mockedActions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(new Error('Invalid private key')),
-      );
-
-      const { getByLabelText, getByText } = renderImportAccount();
-
-      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
-      fireEvent.change(privateKeyInput, {
-        target: { value: 'invalid-key' },
-      });
-
-      fireEvent.click(getByText(messages.import.message));
-
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      });
-
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.AccountAddFailed,
-        properties: {
-          category: MetaMetricsEventCategory.Accounts,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Imported,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_import_type: MetaMetricsEventAccountImportType.PrivateKey,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_suggested_name: true,
-        },
-        sensitiveProperties: {},
-      });
-    });
-
-    it('tracks a failed json import with the json import type', async () => {
-      mockedActions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(new Error('Invalid JSON file')),
-      );
-
-      const { getByRole, getByTestId, getByText } = renderImportAccount();
-
-      fireEvent.change(getByRole('combobox'), {
-        target: { value: 'JSON File' },
-      });
-
-      const fileInput = getByTestId('file-input');
-      const mockFile = new File(['0'], 'test.json');
-
-      fireEvent.change(fileInput, {
-        target: { files: [mockFile] },
-      });
-
-      await waitFor(() => {
-        expect(getByText(messages.import.message)).not.toBeDisabled();
-      });
-
-      fireEvent.click(getByText(messages.import.message));
-
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-      });
-
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.AccountAddFailed,
-        properties: {
-          category: MetaMetricsEventCategory.Accounts,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Imported,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_import_type: MetaMetricsEventAccountImportType.Json,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: 0,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_suggested_name: true,
-        },
-        sensitiveProperties: {},
       });
     });
 

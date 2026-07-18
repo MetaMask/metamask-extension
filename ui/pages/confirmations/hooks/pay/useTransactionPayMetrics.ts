@@ -86,6 +86,10 @@ export function useTransactionPayMetrics() {
       props.mm_pay_dust_usd = nonGasQuote.dust.usd;
     }
 
+    if (strategy === TransactionPayStrategy.Bridge) {
+      props.mm_pay_strategy = 'mm_swaps_bridge';
+    }
+
     if (strategy === TransactionPayStrategy.Relay) {
       props.mm_pay_strategy = 'relay';
     }

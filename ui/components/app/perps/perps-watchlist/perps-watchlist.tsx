@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
-import { MarketRow } from '../market-row';
+import { PerpsMarketCard } from '../perps-market-card';
 
 /**
  * PerpsWatchlist displays a list of watched markets.
@@ -26,10 +26,8 @@ export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
   const navigate = useNavigate();
 
   const handleMarketClick = useCallback(
-    (market: PerpsMarketData) => {
-      navigate(
-        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
-      );
+    (symbol: string) => {
+      navigate(`${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`);
     },
     [navigate],
   );
@@ -57,11 +55,15 @@ export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
       </Box>
       <Box flexDirection={BoxFlexDirection.Column}>
         {markets.map((market) => (
-          <MarketRow
+          <PerpsMarketCard
             key={market.symbol}
-            market={market}
-            displayMetric="volume"
-            onPress={handleMarketClick}
+            symbol={market.symbol}
+            name={market.name}
+            price={market.price}
+            change24hPercent={market.change24hPercent}
+            volume={market.volume}
+            maxLeverage={market.maxLeverage}
+            onClick={handleMarketClick}
             data-testid={`perps-watchlist-${market.symbol}`}
           />
         ))}

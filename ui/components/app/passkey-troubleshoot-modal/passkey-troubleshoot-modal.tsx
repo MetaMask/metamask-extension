@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   Button,
@@ -24,8 +24,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useSegmentContext } from '../../../hooks/useSegmentContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 
@@ -43,8 +42,7 @@ export default function PasskeyTroubleshootModal({
   onOpenFullScreen,
 }: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const baseProperties = useMemo(
     () => ({
@@ -61,53 +59,53 @@ export default function PasskeyTroubleshootModal({
       return;
     }
     hasTrackedView.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTroubleshoot)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          ...baseProperties,
-          cta: 'modal',
-        })
-        .build(),
-    );
-  }, [baseProperties, createEventBuilder, trackEvent]);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'modal',
+      },
+    });
+  }, [baseProperties, trackEvent]);
 
-  const handleContactSupportTrackEvent = useCallback(() => {
+  const handleContactSupportTrackEvent = () => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
+      {
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
           url: ZENDESK_URLS.PASSKEYS,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
     );
-  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
+  };
 
   const handleOpenFullScreen = () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTroubleshoot)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          ...baseProperties,
-          cta: 'full_screen',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'full_screen',
+      },
+    });
     onOpenFullScreen();
     onClose();
   };
 
   const handleStillHavingTrouble = () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyTroubleshoot)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          ...baseProperties,
-          cta: 'support',
-        })
-        .build(),
-    );
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'support',
+      },
+    });
     handleContactSupportTrackEvent();
     onClose();
   };

@@ -16,7 +16,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { MarketRow } from '../market-row';
+import { PerpsMarketCard } from '../perps-market-card';
 import { PERPS_CONSTANTS } from '../constants';
 import type { PerpsMarketData } from '../types';
 
@@ -29,10 +29,8 @@ export const PerpsExploreMarkets = ({ markets }: PerpsExploreMarketsProps) => {
   const navigate = useNavigate();
 
   const handleMarketClick = useCallback(
-    (market: PerpsMarketData) => {
-      navigate(
-        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
-      );
+    (symbol: string) => {
+      navigate(`${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`);
     },
     [navigate],
   );
@@ -63,11 +61,15 @@ export const PerpsExploreMarkets = ({ markets }: PerpsExploreMarketsProps) => {
         {markets
           .slice(0, PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT)
           .map((market) => (
-            <MarketRow
+            <PerpsMarketCard
               key={market.symbol}
-              market={market}
-              displayMetric="volume"
-              onPress={handleMarketClick}
+              symbol={market.symbol}
+              name={market.name}
+              price={market.price}
+              change24hPercent={market.change24hPercent}
+              volume={market.volume}
+              maxLeverage={market.maxLeverage}
+              onClick={handleMarketClick}
               data-testid={`explore-markets-${market.symbol.replaceAll(':', '-')}`}
             />
           ))}

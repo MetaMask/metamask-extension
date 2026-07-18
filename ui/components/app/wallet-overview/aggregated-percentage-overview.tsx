@@ -89,48 +89,37 @@ export const AggregatedPercentageOverview = ({
     }, 0); // Initial total1dAgo is 0
   }, [orderedTokenList, tokensMarketData, currentChainId]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
-  const { amountChange, formattedPercentChange, formattedAmountChange, color } =
-    useMemo(() => {
-      const totalBalance: number = Number(totalFiatBalance);
-      const totalBalance1dAgo = totalFiat1dAgo;
-      const change = totalBalance - totalBalance1dAgo;
-      const percentageChange = (change / totalBalance1dAgo) * 100 || 0;
+  const totalBalance: number = Number(totalFiatBalance);
+  const totalBalance1dAgo = totalFiat1dAgo;
 
-      const fmtPctChange = formatValue(
-        change === 0 ? 0 : percentageChange,
-        true,
-      );
+  const amountChange = totalBalance - totalBalance1dAgo;
+  const percentageChange = (amountChange / totalBalance1dAgo) * 100 || 0;
 
-      let fmtAmountChange = '';
-      if (isValidAmount(change)) {
-        fmtAmountChange = (change as number) >= 0 ? '+' : '';
-        fmtAmountChange += formatCurrencyCompact(change, fiatCurrency);
-      }
+  const formattedPercentChange = formatValue(
+    amountChange === 0 ? 0 : percentageChange,
+    true,
+  );
 
-      let derivedColor = TextColor.textAlternative;
-      if (!privacyMode && isValidAmount(change)) {
-        if ((change as number) === 0) {
-          derivedColor = TextColor.textAlternative;
-        } else if ((change as number) > 0) {
-          derivedColor = TextColor.successDefault;
-        } else {
-          derivedColor = TextColor.errorDefault;
-        }
-      }
+  let formattedAmountChange = '';
+  if (isValidAmount(amountChange)) {
+    formattedAmountChange = (amountChange as number) >= 0 ? '+' : '';
 
-      return {
-        amountChange: change,
-        formattedPercentChange: fmtPctChange,
-        formattedAmountChange: fmtAmountChange,
-        color: derivedColor,
-      };
-    }, [
-      totalFiatBalance,
-      totalFiat1dAgo,
-      formatCurrencyCompact,
-      fiatCurrency,
-      privacyMode,
-    ]);
+    formattedAmountChange += formatCurrencyCompact(amountChange, fiatCurrency);
+  }
+
+  let color = TextColor.textAlternative;
+
+  if (!privacyMode && isValidAmount(amountChange)) {
+    if ((amountChange as number) === 0) {
+      color = TextColor.textAlternative;
+    } else if ((amountChange as number) > 0) {
+      color = TextColor.successDefault;
+    } else {
+      color = TextColor.errorDefault;
+    }
+  } else {
+    color = TextColor.textAlternative;
+  }
 
   return (
     <Skeleton
@@ -183,59 +172,44 @@ export const AggregatedMultichainPercentageOverview = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const {
-    singleDayPercentChange,
-    singleDayAmountChange,
-    signPrefix,
-    color,
-    localizedAmountChange,
-    localizedPercentChange,
-  } = useMemo(() => {
-    const pctChange = historicalAggregatedBalances.P1D.percentChange;
-    const amtChange = historicalAggregatedBalances.P1D.amountChange;
-    const prefix = pctChange >= 0 ? '+' : '-';
+  let color = TextColor.textAlternative;
 
-    let derivedColor = TextColor.textAlternative;
-    if (!privacyMode && isValidAmount(pctChange)) {
-      if ((pctChange as number) === 0) {
-        derivedColor = TextColor.textAlternative;
-      } else if ((pctChange as number) > 0) {
-        derivedColor = TextColor.successDefault;
-      } else {
-        derivedColor = TextColor.errorDefault;
-      }
+  const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
+  const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
+  const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';
+
+  if (!privacyMode && isValidAmount(singleDayPercentChange)) {
+    if ((singleDayPercentChange as number) === 0) {
+      color = TextColor.textAlternative;
+    } else if ((singleDayPercentChange as number) > 0) {
+      color = TextColor.successDefault;
+    } else {
+      color = TextColor.errorDefault;
     }
+  } else {
+    color = TextColor.textAlternative;
+  }
 
-    const fmtAmountChange = formatWithThreshold(
-      Math.abs(amtChange),
-      0.01,
-      locale,
-      {
-        style: 'currency',
-        currency: currentCurrency,
-      },
-    );
+  const localizedAmountChange = formatWithThreshold(
+    Math.abs(singleDayAmountChange),
+    0.01,
+    locale,
+    {
+      style: 'currency',
+      currency: currentCurrency,
+    },
+  );
 
-    const fmtPercentChange = formatWithThreshold(
-      Math.abs(pctChange) / 100,
-      0.0001,
-      locale,
-      {
-        style: 'percent',
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      },
-    );
-
-    return {
-      singleDayPercentChange: pctChange,
-      singleDayAmountChange: amtChange,
-      signPrefix: prefix,
-      color: derivedColor,
-      localizedAmountChange: fmtAmountChange,
-      localizedPercentChange: fmtPercentChange,
-    };
-  }, [historicalAggregatedBalances, privacyMode, locale, currentCurrency]);
+  const localizedPercentChange = formatWithThreshold(
+    Math.abs(singleDayPercentChange) / 100,
+    0.0001,
+    locale,
+    {
+      style: 'percent',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    },
+  );
 
   return (
     <Skeleton

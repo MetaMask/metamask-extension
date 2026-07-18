@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -19,7 +19,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Display,
   JustifyContent,
@@ -59,7 +59,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
@@ -197,19 +197,18 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       <HoldToRevealModal
         isOpen={showHoldToReveal}
         onClose={() => {
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.KeyExportCanceled)
-              .addCategory(MetaMetricsEventCategory.Keys)
-              .addProperties({
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                key_type: MetaMetricsEventKeyType.Pkey,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                hd_entropy_index: hdEntropyIndex,
-              })
-              .build(),
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.Keys,
+            event: MetaMetricsEventName.KeyExportCanceled,
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              key_type: MetaMetricsEventKeyType.Pkey,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: hdEntropyIndex,
+            },
+          });
           setPrivateKey('');
           setShowHoldToReveal(false);
         }}

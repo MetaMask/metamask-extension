@@ -190,65 +190,91 @@ function generateLargeMockData(size: number): MockAsset[] {
 // Generate a large dataset for testing
 const largeDataset = generateLargeMockData(10000); // 10,000 mock assets
 
-// Define the sorting tests for large datasets. Correctness at scale is asserted
-// here; avoid wall-clock timing assertions in unit tests (they are flaky on CI).
+// Define the sorting tests for large datasets
 describe('sortAssets function - large dataset handling', () => {
+  const MAX_EXECUTION_TIME_MS = 500; // Set max allowed execution time (in milliseconds)
+
   test('sorts large dataset by name in ascending order', () => {
+    const startTime = Date.now();
     const sortedByName = sortAssets(largeDataset, {
       key: 'name',
       sortCallback: 'alphaNumeric',
       order: 'asc',
     });
 
+    const endTime = Date.now();
+    const executionTime = endTime - startTime;
+
     expect(sortedByName[0].name).toBe('Asset A');
     expect(sortedByName[sortedByName.length - 1].name).toBe('Asset Z');
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by balance in ascending order', () => {
+    const startTime = Date.now();
     const sortedByBalance = sortAssets(largeDataset, {
       key: 'balance',
       sortCallback: 'numeric',
       order: 'asc',
     });
+
+    const endTime = Date.now();
+    const executionTime = endTime - startTime;
 
     const balances = sortedByBalance.map((asset) => asset.balance);
     expect(balances).toEqual(
       balances.slice().sort((a, b) => parseInt(a, 10) - parseInt(b, 10)),
     );
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by balance in descending order', () => {
+    const startTime = Date.now();
     const sortedByBalance = sortAssets(largeDataset, {
       key: 'balance',
       sortCallback: 'numeric',
       order: 'dsc',
     });
 
+    const endTime = Date.now();
+    const executionTime = endTime - startTime;
+
     const balances = sortedByBalance.map((asset) => asset.balance);
     expect(balances).toEqual(
       balances.slice().sort((a, b) => parseInt(b, 10) - parseInt(a, 10)),
     );
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by createdAt (date) in ascending order', () => {
+    const startTime = Date.now();
     const sortedByDate = sortAssets(largeDataset, {
       key: 'createdAt',
       sortCallback: 'date',
       order: 'asc',
     });
 
+    const endTime = Date.now();
+    const executionTime = endTime - startTime;
+
     const dates = sortedByDate.map((asset) => asset.createdAt.getTime());
     expect(dates).toEqual(dates.slice().sort((a, b) => a - b));
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 
   test('sorts large dataset by createdAt (date) in descending order', () => {
+    const startTime = Date.now();
     const sortedByDate = sortAssets(largeDataset, {
       key: 'createdAt',
       sortCallback: 'date',
       order: 'dsc',
     });
 
+    const endTime = Date.now();
+    const executionTime = endTime - startTime;
+
     const dates = sortedByDate.map((asset) => asset.createdAt.getTime());
     expect(dates).toEqual(dates.slice().sort((a, b) => b - a));
+    expect(executionTime).toBeLessThan(MAX_EXECUTION_TIME_MS);
   });
 });

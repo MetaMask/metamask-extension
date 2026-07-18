@@ -86,10 +86,10 @@ export const Tabs = <TKey extends string = string>({
 
   useEffect(() => {
     const childIndex = findChildByKey(activeTab);
-    if (childIndex >= 0) {
+    if (childIndex >= 0 && activeTabIndex !== childIndex) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTab, findChildByKey]);
+  }, [activeTab, findChildByKey, activeTabIndex]);
 
   const clampedIndex =
     getValidChildren.length > 0
@@ -113,8 +113,8 @@ export const Tabs = <TKey extends string = string>({
       const direction = tabIndex > clampedIndex ? 'forward' : 'backward';
 
       const applyUpdate = () => {
-        onTabClick?.(tabKey);
         setActiveTabIndex(tabIndex);
+        onTabClick?.(tabKey);
       };
 
       if (animated) {

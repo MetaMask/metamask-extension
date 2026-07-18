@@ -158,10 +158,9 @@ describe('Unconnected Account Alert', () => {
 
     const dontShowCheckbox = getByRole('checkbox');
 
-    expect(dontShowCheckbox).not.toBeChecked();
-    expect(dontShowCheckbox).toHaveAttribute('aria-checked', 'false');
+    expect(dontShowCheckbox.checked).toStrictEqual(false);
     fireEvent.click(dontShowCheckbox);
-    expect(dontShowCheckbox).toHaveAttribute('aria-checked', 'true');
+    expect(dontShowCheckbox.checked).toStrictEqual(true);
   });
 
   it('clicks dismiss button and calls dismissAlert action', () => {

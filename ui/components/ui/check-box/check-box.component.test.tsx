@@ -30,7 +30,6 @@ describe('CheckBox Component', () => {
     );
     const checkbox = getByRole('checkbox') as HTMLInputElement;
     expect(checkbox).toHaveProperty('indeterminate', true);
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
   });
 
   it('renders with boolean true for checked', () => {

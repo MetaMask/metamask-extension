@@ -8,7 +8,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
   Text,
@@ -50,9 +49,8 @@ import {
   useMusdConversionTokens,
   useCanBuyMusd,
 } from '../../../hooks/musd';
-import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
-  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -110,7 +108,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { openBuyCryptoInPdapp } = useRamps();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -186,21 +184,8 @@ const MusdEducationScreen = () => {
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
-      await goToBuy({
-        // Pre-select mUSD (mainnet) so the in-app flow lands on build-quote
-        // instead of the token-selection page; chainId is only used for the
-        // flag-off Portfolio fallback.
-        assetId: getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID) as
-          | CaipAssetType
-          | undefined,
-        chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-      });
-      // Flag off opens Portfolio in a new tab, so send the user home; flag on
-      // navigates in-app (build-quote, or a blocking modal on the education
-      // screen), so leave routing to goToBuy.
-      if (!isRampsEnabled) {
-        navigate(DEFAULT_ROUTE);
-      }
+      openBuyCryptoInPdapp(MUSD_CONVERSION_DEFAULT_CHAIN_ID);
+      navigate(DEFAULT_ROUTE);
       return;
     }
 
@@ -241,8 +226,7 @@ const MusdEducationScreen = () => {
     isDeeplinkNoTokensContinueHome,
     isDeeplink,
     isGeoBlocked,
-    goToBuy,
-    isRampsEnabled,
+    openBuyCryptoInPdapp,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,

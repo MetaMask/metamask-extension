@@ -13,7 +13,6 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
-import type { LocalActivityListItem } from './types';
 
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
@@ -37,7 +36,7 @@ export function activityMatchesAssetId(
 }
 
 function getActivityCellStatus(
-  data: LocalActivityListItem,
+  data: ActivityListItem,
   transactionGroup?: TransactionGroup,
 ): {
   txStatus: string;
@@ -77,7 +76,7 @@ function getActivityCellStatus(
   return { txStatus };
 }
 
-export function useActivityCellStatus(data: LocalActivityListItem): {
+export function useActivityCellStatus(data: ActivityListItem): {
   txStatus: string;
   pendingSubtitleKey?: string;
   transactionGroup?: TransactionGroup;

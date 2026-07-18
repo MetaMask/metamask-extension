@@ -1,9 +1,6 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
-import {
-  BatchTransactionParams,
-  TransactionContainerType,
-} from '@metamask/transaction-controller';
+import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
@@ -150,21 +147,10 @@ describe('BatchSimulationDetails', () => {
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    const { getByTestId, getByText } = render(
-      genUnapprovedContractInteractionConfirmation({
-        containerTypes: [TransactionContainerType.EnforcedSimulations],
-        nestedTransactions: [NESTED_TRANSACTION_MOCK],
-        simulationData: {
-          tokenBalanceChanges: [],
-        },
-      }),
-    );
+    const { getByText } = render();
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123.6')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
-    expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
-      'mm-box--margin-bottom-2',
-    );
   });
 
   it('renders unlimited ERC-20 approve row', () => {

@@ -59,10 +59,9 @@ export const AccountGroupBalance = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const caipChainId = useMemo(
-    () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
-    [chainId],
-  );
+  const caipChainId = isCaipChainId(chainId)
+    ? chainId
+    : formatChainIdToCaip(chainId);
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
@@ -71,28 +70,19 @@ export const AccountGroupBalance = ({
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
 
-  const isEvm = useMemo(() => isEvmChainId(chainId), [chainId]);
+  const isEvm = isEvmChainId(chainId);
 
-  const isTestnetSelected = useMemo(
-    () =>
-      Boolean(
-        Object.keys(enabledNetworks).length === 1 &&
-        TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
-      ),
-    [enabledNetworks],
+  const isTestnetSelected = Boolean(
+    Object.keys(enabledNetworks).length === 1 &&
+    TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
   );
 
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
   const networks = useSelector(getMultichainNetwork);
-  const showNativeTokenAsMain = useMemo(
-    () =>
-      Boolean(
-        showNativeTokenAsMainBalance &&
-        Object.keys(enabledNetworks).length === 1,
-      ),
-    [showNativeTokenAsMainBalance, enabledNetworks],
+  const showNativeTokenAsMain = Boolean(
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
   );
 
   const showConversionForTestnets = useSelector(getShowFiatInTestnets);

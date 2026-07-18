@@ -294,6 +294,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,

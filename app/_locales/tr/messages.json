@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "Özel bir token ekle"
   },
+  "addDevice": {
+    "message": "Mobil ile senkronize et"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "Hesaplar içe aktarılıyor"
-  },
-  "add_device_try_again": {
-    "message": "Tekrar deneyin"
   },
   "add_device_validating_desc": {
     "message": "Telefonunuzla güvenli, şifrelenmiş bağlantı kuruluyor."
@@ -8137,6 +8137,9 @@
     "message": "Süresinin dolmasına kalan: $1sn",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "QR kodu taranırken bir şeyler ters gitti. Yeni bir tane oluşturup tekrar deneyin."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Bu QR kodu farklı bir işlem içindir. İptal edip tekrar deneyin ve önce donanım cüzdanınızla MetaMask'te gösterilen QR kodunu taradığınızdan emin olun.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8201,9 +8204,6 @@
   },
   "quotedTotalCost": {
     "message": "Toplam maliyet: $1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "tokenlar yok"
   },
   "rank": {
     "message": "Sıralama"
@@ -8416,6 +8416,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "İşlem başarılı bir şekilde tamamlandı."
+  },
+  "retryTransaction": {
+    "message": "İşlemi tekrar dene"
   },
   "reusedTokenNameWarning": {
     "message": "Buradaki bir token izlediğiniz başka bir tokenden sembol kullanıyor, bu kafa karıştırıcı veya aldatıcı olabilir."
@@ -10756,9 +10759,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Sembol en fazla 11 karakter olmalıdır."
-  },
-  "syncAccounts": {
-    "message": "Mobil ile senkronize et"
   },
   "syncing": {
     "message": "Senkronize ediliyor..."

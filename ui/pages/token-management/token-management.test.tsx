@@ -14,7 +14,6 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -27,7 +26,6 @@ const METRICS_PROPERTIES = {
   tokenDecimalPrecision: 'token_decimal_precision',
   tokenStandard: 'token_standard',
   tokenSymbol: 'token_symbol',
-  sourceConnectionMethod: 'source_connection_method',
   viewState: 'view_state',
 } as const;
 
@@ -131,6 +129,10 @@ const mockTokenSearch = {
   } as MockSearchState,
   spy: jest.fn(),
 };
+
+jest.mock('../../hooks/useDebouncedValue', () => ({
+  useDebouncedValue: <Value,>(value: Value) => value,
+}));
 
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: {
@@ -1166,18 +1168,6 @@ describe('TokenManagementPage', () => {
       name: 'USD Coin',
       symbol: 'USDC',
     });
-    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: MetaMetricsEventName.TokenAdded,
-        sensitiveProperties: expect.objectContaining({
-          [METRICS_PROPERTIES.sourceConnectionMethod]:
-            MetaMetricsTokenEventSource.ManageTokens,
-          [METRICS_PROPERTIES.tokenContractAddress]: usdcAddress,
-          [METRICS_PROPERTIES.tokenSymbol]: 'USDC',
-        }),
-      }),
-      expect.anything(),
-    );
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
@@ -1213,85 +1203,6 @@ describe('TokenManagementPage', () => {
       name: 'USD Coin',
       symbol: 'USDC',
     });
-  });
-
-  it('keeps a browse result in place when it becomes imported while the view is open', async () => {
-    const aadTokenAddress = '0x00000000000000000000000000000000000000aa';
-    const aadTokenAssetId = `eip155:1/erc20:${aadTokenAddress}`;
-    const aadToken = {
-      accountId: mainnetToken.accountId,
-      accountType: 'eip155:eoa',
-      assetId: aadTokenAssetId,
-      address: aadTokenAddress,
-      chainId: '0x1',
-      image: '',
-      name: 'Aardvark Token',
-      symbol: 'AAD',
-      decimals: 18,
-      isNative: false,
-      rawBalance: '0x0',
-      balance: '0',
-      fiat: {
-        balance: 0,
-        currency: 'usd',
-        conversionRate: 0,
-      },
-    };
-
-    setTokenSearchState({
-      results: [
-        {
-          assetId: aadTokenAssetId,
-          symbol: 'AAD',
-          decimals: 18,
-          name: 'Aardvark Token',
-        },
-      ],
-    });
-
-    const initialState = createState();
-    const { store } = renderPage(initialState);
-
-    const getRows = () =>
-      Array.from(document.querySelectorAll('[data-testid]')).filter((node) => {
-        const testId = node.getAttribute('data-testid') ?? '';
-        return (
-          testId.startsWith('token-management-cell-') &&
-          !testId.endsWith('-network-badge') &&
-          !testId.endsWith('-toggle')
-        );
-      });
-
-    const importedRow = screen.getByTestId(
-      `token-management-cell-0x1:${mainnetToken.address}`,
-    );
-    const browseRow = screen.getByTestId(
-      `token-management-cell-search-${aadTokenAssetId.toLowerCase()}`,
-    );
-    const initialRows = getRows();
-
-    expect(initialRows.indexOf(browseRow)).toBeGreaterThan(
-      initialRows.indexOf(importedRow),
-    );
-
-    const nextState = createState({
-      accountGroupAssets: {
-        '0x1': [aadToken, mainnetToken, nativeToken],
-      },
-    });
-
-    store.replaceReducer((() => nextState) as never);
-    store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
-
-    const importedAadRow = await screen.findByTestId(
-      `token-management-cell-0x1:${aadTokenAddress}`,
-    );
-    const updatedRows = getRows();
-
-    expect(importedAadRow).toBe(browseRow);
-    expect(updatedRows.indexOf(importedAadRow)).toBe(
-      initialRows.indexOf(browseRow),
-    );
   });
 
   it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {

@@ -583,9 +583,7 @@ export const NetworksForm = ({
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item, items) =>
-            items.length > 1 && item.type !== RpcEndpointType.Infura
-          }
+          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({

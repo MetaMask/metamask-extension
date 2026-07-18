@@ -23,7 +23,6 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { getToAccounts } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
@@ -35,14 +34,6 @@ import {
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
 }));
-
-jest.mock('../../../hooks/bridge/useCountdownTimer', () => ({
-  useCountdownTimer: jest.fn(),
-}));
-
-const mockUseCountdownTimer = useCountdownTimer as jest.MockedFunction<
-  typeof useCountdownTimer
->;
 
 const mockUseRewards = useRewards as jest.MockedFunction<typeof useRewards>;
 const mockOnOpenPriceImpactWarningModal = jest.fn();
@@ -60,7 +51,6 @@ describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewards.mockReturnValue(defaultUseRewardsReturn);
-    mockUseCountdownTimer.mockReturnValue(30);
   });
 
   it('renders a four-row skeleton while the quote card is loading', () => {

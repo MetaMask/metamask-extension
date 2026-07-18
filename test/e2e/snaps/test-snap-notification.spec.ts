@@ -45,7 +45,13 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
+
+        // close the drawer by clicking the back button
+        await headerNavbar.clickDrawerBackButton();
+
+        // click the notification options and validate the message in the notification list
+        await headerNavbar.clickNotificationsOptions();
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from within MetaMask!',
@@ -89,7 +95,13 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
+        await headerNavbar.checkNotificationCountInMenuOption(1);
+
+        // this click will close the menu
+        await headerNavbar.clickDrawerBackButton();
+
+        // click the notification options
+        await headerNavbar.clickNotificationsOptions();
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from MetaMask, click here for an expanded view!',

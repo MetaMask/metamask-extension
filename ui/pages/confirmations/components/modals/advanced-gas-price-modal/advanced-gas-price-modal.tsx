@@ -30,8 +30,6 @@ import { GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
-import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
-import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
 
 export const AdvancedGasPriceModal = ({
   setActiveModal,
@@ -42,7 +40,6 @@ export const AdvancedGasPriceModal = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -73,18 +70,8 @@ export const AdvancedGasPriceModal = ({
         ...pickBy(gasParams, Boolean),
       }),
     );
-    await persistGasFeePreference(transactionMeta, {
-      userFeeLevel: UserFeeLevel.CUSTOM,
-      gasPrice: hexWEIToDecGWEI(gasParams.gasPrice),
-    });
     handleCloseModals();
-  }, [
-    transactionMeta,
-    gasParams,
-    handleCloseModals,
-    dispatch,
-    persistGasFeePreference,
-  ]);
+  }, [transactionMeta?.id, gasParams, handleCloseModals, dispatch]);
 
   const navigateToEstimatesModal = useCallback(() => {
     setActiveModal(GasModalType.EstimatesModal);

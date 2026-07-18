@@ -18,7 +18,6 @@ import {
   fetchAssetMetadata,
   toAssetId,
   fetchAssetMetadataForAssetIds,
-  getNativeAssetId,
   isEvmChainId,
   isTronSpecialAsset,
 } from './asset-utils';
@@ -38,23 +37,6 @@ jest.mock('./fetch-with-timeout', () => ({
 describe('asset-utils', () => {
   const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
   const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
-
-  describe('getNativeAssetId', () => {
-    it('returns the native asset id for a supported chain', () => {
-      expect(getNativeAssetId('eip155:1')).toBe(
-        getNativeAssetForChainId('eip155:1').assetId,
-      );
-    });
-
-    it('returns undefined when no chainId is given', () => {
-      expect(getNativeAssetId(undefined)).toBeUndefined();
-    });
-
-    it('returns undefined for a chain unknown to the asset map', () => {
-      // getNativeAssetForChainId throws on custom/unsupported networks.
-      expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
-    });
-  });
 
   describe('toAssetId', () => {
     beforeEach(() => {

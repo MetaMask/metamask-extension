@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -28,7 +28,7 @@ import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,26 +41,16 @@ export default function PasswordOutdatedModal() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isSeedlessPwdOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const hasTrackedView = useRef(false);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    if (!isSeedlessPwdOutdated) {
-      hasTrackedView.current = false;
-      return;
+    if (isSeedlessPwdOutdated) {
+      trackEvent({
+        event: MetaMetricsEventName.PasswordOutdatedModalViewed,
+        category: MetaMetricsEventCategory.App,
+      });
     }
-
-    if (hasTrackedView.current) {
-      return;
-    }
-
-    hasTrackedView.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasswordOutdatedModalViewed)
-        .addCategory(MetaMetricsEventCategory.App)
-        .build(),
-    );
-  }, [createEventBuilder, isSeedlessPwdOutdated, trackEvent]);
+  }, [isSeedlessPwdOutdated, trackEvent]);
 
   return (
     <Modal

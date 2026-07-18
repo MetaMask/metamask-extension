@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
 import {
@@ -6,7 +6,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCompletedMetaMetricsOnboarding,
@@ -36,7 +36,7 @@ import type { MetaMaskReduxState } from '../../../store/store';
 export function MetaMetricsConsentContainer() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const dataCollectionForMarketing = useSelector(
     (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
@@ -48,31 +48,29 @@ export function MetaMetricsConsentContainer() {
 
   const handleClose = useCallback(() => {
     dispatch(setDataCollectionForMarketing(false));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          [MetaMetricsUserTrait.HasMarketingConsent]: false,
-          location: 'marketing_consent_modal',
-        })
-        .build(),
-    );
-  }, [createEventBuilder, dispatch, trackEvent]);
+    trackEvent({
+      category: MetaMetricsEventCategory.Home,
+      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      properties: {
+        [MetaMetricsUserTrait.HasMarketingConsent]: false,
+        location: 'marketing_consent_modal',
+      },
+    });
+  }, [dispatch, trackEvent]);
 
   const handleConsent = useCallback(
     (consent: boolean) => {
       dispatch(setDataCollectionForMarketing(consent));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-          .addCategory(MetaMetricsEventCategory.Home)
-          .addProperties({
-            [MetaMetricsUserTrait.HasMarketingConsent]: consent,
-            location: 'marketing_consent_modal',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
+          location: 'marketing_consent_modal',
+        },
+      });
     },
-    [createEventBuilder, dispatch, trackEvent],
+    [dispatch, trackEvent],
   );
 
   if (dataCollectionForMarketing !== null || !isMetaMetricsEnabled) {

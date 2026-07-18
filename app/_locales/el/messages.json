@@ -1095,6 +1095,9 @@
   "addCustomToken": {
     "message": "Προσθήκη προσαρμοσμένου token"
   },
+  "addDevice": {
+    "message": "Συγχρονισμός με κινητό"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1221,9 +1224,6 @@
   },
   "add_device_syncing_title": {
     "message": "Εισαγωγή λογαριασμών"
-  },
-  "add_device_try_again": {
-    "message": "Προσπαθήστε ξανά"
   },
   "add_device_validating_desc": {
     "message": "Δημιουργία ασφαλούς, κρυπτογραφημένης σύνδεσης με το τηλέφωνό σας."
@@ -8129,6 +8129,9 @@
     "message": "Λήγει σε $1δ",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
+  "qrCodeScanError": {
+    "message": "Κάτι πήγε στραβά κατά τη σάρωση του κωδικού QR. Δημιουργήστε έναν νέο και προσπαθήστε ξανά."
+  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8193,9 +8196,6 @@
   },
   "quotedTotalCost": {
     "message": "Συνολικό κόστος: $1"
-  },
-  "rampsNoTokensAvailable": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens"
   },
   "rank": {
     "message": "Κατάταξη"
@@ -8408,6 +8408,9 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "Η λειτουργία ολοκληρώθηκε με επιτυχία."
+  },
+  "retryTransaction": {
+    "message": "Επανάληψη συναλλαγής"
   },
   "reusedTokenNameWarning": {
     "message": "Ένα token εδώ επαναχρησιμοποιεί ένα σύμβολο από ένα άλλο token που παρακολουθείτε, αυτό μπορεί να προκαλέσει σύγχυση ή να είναι παραπλανητικό."
@@ -10748,9 +10751,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Το σύμβολο πρέπει να αποτελείται από 11 ή λιγότερους χαρακτήρες."
-  },
-  "syncAccounts": {
-    "message": "Συγχρονισμός με κινητό"
   },
   "syncing": {
     "message": "Γίνεται συγχρονισμός..."
