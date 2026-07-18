@@ -44,7 +44,7 @@ import {
   getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import Callout from '../../../components/ui/callout';
+import { BannerAlert } from '../../../components/component-library';
 import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
@@ -608,16 +608,13 @@ export default function ConfirmationPage({
                 Object.values(alertState[pendingConfirmation.id])
                   .filter((alert) => alert.dismissed === false)
                   .map((alert, idx, filtered) => (
-                    <Callout
+                    <BannerAlert
                       key={alert.id}
                       severity={alert.severity}
-                      dismiss={() => dismissAlert(alert.id)}
-                      isFirst={idx === 0}
-                      isLast={idx === filtered.length - 1}
-                      isMultiple={filtered.length > 1}
+                      onClose={() => dismissAlert(alert.id)}
                     >
                       <MetaMaskTemplateRenderer sections={alert.content} />
-                    </Callout>
+                    </BannerAlert>
                   ))
               }
               style={
@@ -641,13 +638,12 @@ export default function ConfirmationPage({
               cancelText={templatedValues.cancelText}
               loading={loading}
               submitAlerts={submitAlerts.map((alert, idx) => (
-                <Callout
+                <BannerAlert
                   key={alert.id}
                   severity={alert.severity}
-                  isFirst={idx === 0}
                 >
                   <MetaMaskTemplateRenderer sections={alert.content} />
-                </Callout>
+                </BannerAlert>
               ))}
             />
           )}

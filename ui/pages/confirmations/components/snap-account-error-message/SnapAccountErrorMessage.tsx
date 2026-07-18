@@ -1,7 +1,6 @@
 import React from 'react';
 
-import ActionableMessage from '../../../../components/ui/actionable-message';
-import { Text } from '../../../../components/component-library';
+import { Text, BannerAlert, BannerAlertSeverity } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SnapAccountErrorMessage = ({
@@ -37,11 +36,12 @@ const SnapAccountErrorMessage = ({
         )}
       </Text>
       {Boolean(error) && (
-        <ActionableMessage
-          type={'danger'}
-          message={error}
-          dataTestId={'snap-account-error-message-error'}
-        ></ActionableMessage>
+        <BannerAlert
+          severity={BannerAlertSeverity.Danger}
+          data-testid="snap-account-error-message-error"
+        >
+          {error}
+        </BannerAlert>
       )}
     </>
   );
