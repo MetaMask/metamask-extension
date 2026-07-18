@@ -14,12 +14,27 @@ const serveHandler = require('serve-handler');
  */
 const createStaticServer = (options) => {
   return http.createServer((request, response) => {
-    if (request.url.startsWith('/node_modules/')) {
-      request.url = request.url.slice(14);
+    // Explicitly allow only certain "safe" node_modules packages (e.g., jquery/dist, bootstrap/dist)
+    if (request.url.startsWith('/node_modules/jquery/')) {
+      request.url = request.url.slice('/node_modules/jquery'.length);
       return serveHandler(request, response, {
         directoryListing: false,
-        public: path.resolve('./node_modules'),
+        public: path.resolve('./node_modules/jquery/dist'),
       });
+    }
+    if (request.url.startsWith('/node_modules/bootstrap/')) {
+      request.url = request.url.slice('/node_modules/bootstrap'.length);
+      return serveHandler(request, response, {
+        directoryListing: false,
+        public: path.resolve('./node_modules/bootstrap/dist'),
+      });
+    }
+
+    // All other /node_modules/ requests are denied
+    if (request.url.startsWith('/node_modules/')) {
+      response.statusCode = 404;
+      response.end('Not found');
+      return;
     }
 
     // Handle test-dapp-multichain URLs by removing the prefix
