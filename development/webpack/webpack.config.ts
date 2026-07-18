@@ -604,28 +604,15 @@ const config = {
       // https://github.com/mozilla/addons-linter/issues/4942
       maxSize: 1 << 22,
       minSize: 1,
-      // Optimize duplication and caching by splitting chunks by shared
-      // modules and cache group.
+      // Optimize duplication by splitting chunkable JavaScript modules into
+      // shared chunks. Keep app and dependency modules in the same cache group
+      // so Webpack can pack them together.
       cacheGroups: {
         js: {
-          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          // ts/mts/tsx/js/mjs/jsx files, including node_modules
+          test: /\.(?:m?[tj]s|[tj]sx?)$/u,
           name: 'js',
           chunks: isChunkableInitial,
-        },
-        vendor: {
-          // js/mjs files in node_modules or subdirectories of node_modules
-          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
-          name: 'vendor',
-          chunks: isChunkableInitial,
-        },
-        asyncJs: {
-          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
-          chunks: isChunkableAsync,
-          // Avoid minChunks: 1: it creates extra single-use async chunks
-          // without reducing the initial entrypoint payload.
-          minChunks: 2,
         },
       },
     },
