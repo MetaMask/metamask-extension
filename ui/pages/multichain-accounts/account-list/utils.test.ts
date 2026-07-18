@@ -114,6 +114,24 @@ describe('filterWalletsByGroupNameOrAddress', () => {
     expect(result['entropy:01JKAF3PJ247KAM6C03G5Q0NP8']).toBeDefined();
   });
 
+  it('matches short queries against mixed-case account names', () => {
+    const mixedCaseMetadata: Record<AccountGroupId, NormalizedGroupMetadata> = {
+      ...mockGroupsMetadata,
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+        name: 'Nick Primary',
+        accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+      },
+    };
+
+    const result = filterWalletsByGroupNameOrAddress(
+      mockWallets,
+      'ni',
+      mixedCaseMetadata,
+    );
+
+    expect(result['entropy:01JKAF3DSGM3AB87EM9N0K41AJ']).toBeDefined();
+  });
+
   it('returns empty object when no matches are found', () => {
     const result = filterWalletsByGroupNameOrAddress(
       mockWallets,
