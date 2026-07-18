@@ -2,23 +2,19 @@ import React from 'react';
 import {
   Box,
   BoxFlexDirection,
-  Button,
-  TextButton,
-  ButtonVariant,
-  Text,
-  TextAlign,
-  TextVariant,
-  TextColor,
-} from '@metamask/design-system-react';
-
-import {
+  ButtonsAlignment,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../component-library';
+  TextButton,
+  Text,
+  TextAlign,
+  TextVariant,
+  TextColor,
+} from '@metamask/design-system-react';
 
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,7 +36,10 @@ export const MarketClosedModal = ({
     <Modal isOpen={isOpen} onClose={onClose} data-testid="market-closed-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('bridgeMarketClosedModalTitle')}
         </ModalHeader>
         <ModalBody>
@@ -72,16 +71,14 @@ export const MarketClosedModal = ({
             </Text>
           </Box>
         </ModalBody>
-        <ModalFooter>
-          <Button
-            isFullWidth
-            variant={ButtonVariant.Secondary}
-            onClick={onClose}
-            data-testid="market-closed-modal-close"
-          >
-            {t('done')}
-          </Button>
-        </ModalFooter>
+        <ModalFooter
+          buttonsAlignment={ButtonsAlignment.Vertical}
+          secondaryButtonProps={{
+            onClick: onClose,
+            'data-testid': 'market-closed-modal-close',
+            children: t('done'),
+          }}
+        />
       </ModalContent>
     </Modal>
   );
