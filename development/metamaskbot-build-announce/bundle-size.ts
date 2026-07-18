@@ -1,5 +1,24 @@
 import type { ArtifactLinks } from './artifacts';
 
+const bundlePartLabels = {
+  background: 'background',
+  ui: 'ui',
+  common: 'common',
+  other: 'other',
+  contentScripts: 'content scripts',
+} as const;
+
+type BundlePart = keyof typeof bundlePartLabels;
+type BundleSizeSummary = Partial<Record<string, number>>;
+type StoredBundleSizeData = Record<string, BundleSizeSummary>;
+
+const bundleParts = Object.keys(bundlePartLabels) as BundlePart[];
+
+const bundleSizeTableHeader = [
+  '| Status | Bundle | Total | Diff | Change |',
+  '|:--:|---|---:|---:|---:|',
+].join('\n');
+
 /**
  * Converts a byte count to a human-readable string (e.g. "1.5 KiB").
  *
@@ -41,13 +60,281 @@ export function getPercentageChange(from: number, to: number): number {
 
 /** The threshold for whether to highlight a change in bundle size, in bytes. */
 const BUNDLE_SIZE_THRESHOLD = 1_000;
-type BundlePart =
-  | 'background'
-  | 'ui'
-  | 'common'
-  | 'other'
-  | 'contentScripts'
-  | 'zip';
+
+async function fetchJson(url: string, label: string): Promise<unknown> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${label}, status ${response.statusText}`);
+  }
+
+  return await response.json();
+}
+
+function getBundlePartSizes(
+  summary: BundleSizeSummary,
+): Record<BundlePart, number> {
+  return Object.fromEntries(
+    bundleParts.map((part) => [part, summary[part] ?? 0]),
+  ) as Record<BundlePart, number>;
+}
+
+function getBaselineSummary(
+  storedBundleSizeData: StoredBundleSizeData,
+  baselineCommitHashes: string[],
+): BundleSizeSummary | null {
+  const baselineCommitHash = baselineCommitHashes.find(
+    (commitHash) => storedBundleSizeData[commitHash],
+  );
+
+  return baselineCommitHash ? storedBundleSizeData[baselineCommitHash] : null;
+}
+
+function getHumanReadableDiffSize(bytes: number): string {
+  const size = getHumanReadableSize(bytes);
+
+  return bytes > 0 ? `+${size}` : size;
+}
+
+function getHumanReadablePercentageChange(change: number): string {
+  return `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+}
+
+function buildBundlePartRow({
+  part,
+  currentSize,
+  baselineSize,
+  status,
+}: {
+  part: BundlePart;
+  currentSize: number;
+  baselineSize?: number;
+  status?: string;
+}): string {
+  return buildSizeRow({
+    label: bundlePartLabels[part],
+    currentSize,
+    baselineSize,
+    status,
+  });
+}
+
+function buildSizeRow({
+  label,
+  currentSize,
+  baselineSize,
+  status,
+}: {
+  label: string;
+  currentSize: number;
+  baselineSize?: number;
+  status?: string;
+}): string {
+  const totalSize = getHumanReadableSize(currentSize);
+  const diff =
+    baselineSize === undefined
+      ? 'n/a'
+      : getHumanReadableDiffSize(currentSize - baselineSize);
+  const change =
+    baselineSize === undefined
+      ? 'n/a'
+      : getHumanReadablePercentageChange(
+          getPercentageChange(baselineSize, currentSize),
+        );
+
+  return `| ${status ?? ''} | ${label} | ${totalSize} | ${diff} | ${change} |`;
+}
+
+function getRowStatus({
+  currentSize,
+  baselineSize,
+}: {
+  currentSize: number;
+  baselineSize?: number;
+}): string | undefined {
+  if (baselineSize === undefined) {
+    return undefined;
+  }
+
+  return currentSize - baselineSize > BUNDLE_SIZE_THRESHOLD ? '🚨' : '✅';
+}
+
+function buildUnavailableComparisonContent(
+  currentSizes: Record<BundlePart, number>,
+  currentZipSize: number,
+  reason: string,
+): string {
+  const currentSizeRows = bundleParts.map((part) =>
+    buildBundlePartRow({
+      part,
+      currentSize: currentSizes[part],
+    }),
+  );
+  currentSizeRows.push(
+    buildSizeRow({
+      label: 'zip',
+      currentSize: currentZipSize,
+    }),
+  );
+
+  return [
+    `<small>${reason}</small>`,
+    '',
+    bundleSizeTableHeader,
+    ...currentSizeRows,
+  ].join('\n');
+}
+
+function buildCollapsibleSection(summary: string, body: string): string {
+  return [
+    '<details>',
+    `<summary><strong>${summary}</strong></summary>`,
+    '',
+    '<br>',
+    '',
+    body,
+    '',
+    '</details>',
+    '',
+  ].join('\n');
+}
+
+async function fetchOptionalBundleSizeSummary(
+  url: string,
+  label: string,
+): Promise<BundleSizeSummary | null> {
+  try {
+    return (await fetchJson(url, label)) as BundleSizeSummary;
+  } catch (error) {
+    console.log(`Skipping ${label}: ${String(error)}`);
+    return null;
+  }
+}
+
+async function fetchOptionalStoredBundleSizeData(
+  url: string,
+): Promise<StoredBundleSizeData | null> {
+  try {
+    return (await fetchJson(url, 'devBundleSizeStats')) as StoredBundleSizeData;
+  } catch (error) {
+    console.log(`Skipping devBundleSizeStats: ${String(error)}`);
+    return null;
+  }
+}
+
+function buildBundleSizeSection({
+  currentSummary,
+  storedBundleSizeData,
+  baselineCommitHashes,
+}: {
+  currentSummary: BundleSizeSummary | null;
+  storedBundleSizeData: StoredBundleSizeData | null;
+  baselineCommitHashes: string[];
+}): string {
+  if (!currentSummary) {
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      'Bundle size data unavailable.',
+    );
+  }
+
+  const currentSizes = getBundlePartSizes(currentSummary);
+  const currentZipSize = currentSummary.zip ?? 0;
+
+  if (baselineCommitHashes.length === 0) {
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      buildUnavailableComparisonContent(
+        currentSizes,
+        currentZipSize,
+        'No bundle-size baseline commit was available for this build, so diff values are omitted.',
+      ),
+    );
+  }
+
+  if (!storedBundleSizeData) {
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      buildUnavailableComparisonContent(
+        currentSizes,
+        currentZipSize,
+        'Bundle-size history data could not be loaded, so diff values are omitted.',
+      ),
+    );
+  }
+
+  const baselineSummary = getBaselineSummary(
+    storedBundleSizeData,
+    baselineCommitHashes,
+  );
+
+  if (!baselineSummary) {
+    return buildCollapsibleSection(
+      'Bundle Size Diffs',
+      buildUnavailableComparisonContent(
+        currentSizes,
+        currentZipSize,
+        'No matching bundle-size baseline was found in the history data, so diff values are omitted.',
+      ),
+    );
+  }
+
+  const sizeDiffRows = bundleParts.map((part) =>
+    buildBundlePartRow({
+      part,
+      currentSize: currentSizes[part],
+      baselineSize: baselineSummary[part],
+      status: getRowStatus({
+        currentSize: currentSizes[part],
+        baselineSize: baselineSummary[part],
+      }),
+    }),
+  );
+  sizeDiffRows.push(
+    buildSizeRow({
+      label: 'zip',
+      currentSize: currentZipSize,
+      baselineSize: baselineSummary.zip,
+      status: getRowStatus({
+        currentSize: currentZipSize,
+        baselineSize: baselineSummary.zip,
+      }),
+    }),
+  );
+
+  const getDiff = (part: BundlePart) =>
+    baselineSummary[part] === undefined
+      ? undefined
+      : currentSizes[part] - baselineSummary[part];
+  const commonDiff = getDiff('common');
+  const backgroundDiff = getDiff('background');
+  const uiDiff = getDiff('ui');
+  const sizeDiffsForWarning = [
+    backgroundDiff === undefined || commonDiff === undefined
+      ? undefined
+      : backgroundDiff + commonDiff,
+    uiDiff === undefined || commonDiff === undefined
+      ? undefined
+      : uiDiff + commonDiff,
+    getDiff('contentScripts'),
+  ].filter((diff): diff is number => diff !== undefined);
+
+  let sizeDiffWarning: string | undefined;
+  if (sizeDiffsForWarning.some((diff) => diff > BUNDLE_SIZE_THRESHOLD)) {
+    sizeDiffWarning = '[🚨 Warning! Bundle size has increased!]';
+  } else if (
+    sizeDiffsForWarning.some((diff) => diff < -BUNDLE_SIZE_THRESHOLD)
+  ) {
+    sizeDiffWarning = '[🚀 Bundle size reduced!]';
+  }
+
+  const sizeDiffTitle = `Bundle Size Diffs${sizeDiffWarning ? ` ${sizeDiffWarning}` : ''}`;
+
+  return buildCollapsibleSection(
+    sizeDiffTitle,
+    [bundleSizeTableHeader, ...sizeDiffRows].join('\n'),
+  );
+}
 
 /**
  * Fetches bundle size stats and builds the bundle size diff collapsible section.
@@ -60,129 +347,21 @@ export async function buildBundleSizeDiffSection(
   artifacts: ArtifactLinks,
   bundleSizeBaselineCommitHashes = '',
 ): Promise<string> {
-  const prBundleSizeStatsResponse = await fetch(artifacts.bundleSizeStats.url);
-  if (!prBundleSizeStatsResponse.ok) {
-    throw new Error(
-      `Failed to fetch prBundleSizeStats, status ${prBundleSizeStatsResponse.statusText}`,
-    );
-  }
-
-  // This annotation narrows the untyped json() result to the known schema of the bundle size stats artifact.
-  const prBundleSizeStats: Record<string, number> =
-    await prBundleSizeStatsResponse.json();
-
-  const bundleParts: BundlePart[] = [
-    'background',
-    'ui',
-    'common',
-    'other',
-    'contentScripts',
-  ];
-  if (prBundleSizeStats.zip !== undefined) {
-    bundleParts.push('zip');
-  }
-
   const baselineCommitHashes = bundleSizeBaselineCommitHashes
     .split(/\s+/u)
     .filter(Boolean);
+  const currentSummary = await fetchOptionalBundleSizeSummary(
+    artifacts.bundleSizeStats.url,
+    'bundleSizeStats',
+  );
+  const storedBundleSizeData =
+    baselineCommitHashes.length === 0
+      ? null
+      : await fetchOptionalStoredBundleSizeData(artifacts.bundleSizeData.url);
 
-  let sizeRows: string[] | undefined;
-  let sizeDiffWarning: string | undefined;
-  let noDiffReason: string | undefined;
-
-  if (baselineCommitHashes.length === 0) {
-    noDiffReason =
-      'No bundle-size baseline commit was available for this build, so diff values are omitted.';
-  } else {
-    try {
-      const devBundleSizeStatsResponse = await fetch(
-        artifacts.bundleSizeData.url,
-      );
-      if (!devBundleSizeStatsResponse.ok) {
-        throw new Error(
-          `Failed to fetch devBundleSizeStats, status ${devBundleSizeStatsResponse.statusText}`,
-        );
-      }
-
-      // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
-      const devBundleSizeStats: Record<
-        string,
-        Record<string, number>
-      > = await devBundleSizeStatsResponse.json();
-
-      const baselineCommitHash = baselineCommitHashes.find(
-        (commitHash) => devBundleSizeStats[commitHash],
-      );
-
-      if (baselineCommitHash) {
-        const baselineStats = devBundleSizeStats[baselineCommitHash];
-
-        const getDevSize = (part: BundlePart) => baselineStats[part];
-        const getDiff = (part: BundlePart) => {
-          const devSize = getDevSize(part);
-          return devSize === undefined
-            ? undefined
-            : prBundleSizeStats[part] - devSize;
-        };
-
-        sizeRows = bundleParts.map((part) => {
-          const devSize = getDevSize(part);
-
-          if (devSize === undefined) {
-            return `${part}: n/a`;
-          }
-
-          const diff = prBundleSizeStats[part] - devSize;
-
-          return `${part}: ${getHumanReadableSize(diff)} (${getPercentageChange(
-            devSize,
-            prBundleSizeStats[part],
-          )}%)`;
-        });
-
-        const getCombinedDiff = (...parts: BundlePart[]) => {
-          const diffs = parts.map(getDiff);
-
-          return diffs.every((diff): diff is number => diff !== undefined)
-            ? diffs.reduce((sum, diff) => sum + diff, 0)
-            : undefined;
-        };
-
-        const sizeDiffBackground = getCombinedDiff('background', 'common');
-        const sizeDiffUi = getCombinedDiff('ui', 'common');
-        const warningDiffs = [sizeDiffBackground, sizeDiffUi].filter(
-          (diff): diff is number => diff !== undefined,
-        );
-
-        if (warningDiffs.some((diff) => diff > BUNDLE_SIZE_THRESHOLD)) {
-          sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
-        } else if (warningDiffs.some((diff) => diff < -BUNDLE_SIZE_THRESHOLD)) {
-          sizeDiffWarning = `🚀 Bundle size reduced!`;
-        }
-      } else {
-        noDiffReason =
-          'No matching bundle-size baseline was found in the history data, so diff values are omitted.';
-      }
-    } catch (error) {
-      console.warn('Could not build bundle size diff section.', error);
-      noDiffReason =
-        'Bundle-size history data could not be loaded, so diff values are omitted.';
-    }
-  }
-
-  const bundleSizeContent = `<ul>${(
-    sizeRows ??
-    bundleParts.map(
-      (part) => `${part}: ${getHumanReadableSize(prBundleSizeStats[part])}`,
-    )
-  )
-    .map((row) => `<li>${row}</li>`)
-    .join('\n')}</ul>`;
-
-  const noDiffContent = noDiffReason ? `<small>${noDiffReason}</small>` : '';
-  const bundleSizeTitle = sizeRows
-    ? `Bundle size diffs${sizeDiffWarning ? ` [${sizeDiffWarning}]` : ''}`
-    : 'Bundle sizes';
-
-  return `<details><summary>${bundleSizeTitle}</summary>${bundleSizeContent}${noDiffContent}</details>\n\n`;
+  return buildBundleSizeSection({
+    currentSummary,
+    storedBundleSizeData,
+    baselineCommitHashes,
+  });
 }
