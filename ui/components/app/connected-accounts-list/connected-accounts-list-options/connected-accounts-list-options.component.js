@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import { Menu } from '../../../ui/menu';
+import Popover from '../../../ui/popover';
 import { IconName, ButtonIcon } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -10,7 +10,7 @@ const ConnectedAccountsListOptions = ({
   onHideOptions,
   show,
 }) => {
-  const ref = useRef(false);
+  const ref = useRef(null);
   const t = useI18nContext();
 
   return (
@@ -22,9 +22,9 @@ const ConnectedAccountsListOptions = ({
         ariaLabel={t('options')}
       />
       {show ? (
-        <Menu
-          anchorElement={ref.current}
-          onHide={onHideOptions}
+        <Popover
+          referenceElement={ref.current}
+          onClose={onHideOptions}
           popperOptions={{
             modifiers: [
               { name: 'preventOverflow', options: { altBoundary: true } },
@@ -32,7 +32,7 @@ const ConnectedAccountsListOptions = ({
           }}
         >
           {children}
-        </Menu>
+        </Popover>
       ) : null}
     </div>
   );
