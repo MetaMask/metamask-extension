@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import Modal from '../../modal';
-import TextField from '../../../ui/text-field';
+import { TextField, TextFieldType } from '../../../component-library';
 import {
   TextVariant,
   BlockSize,
@@ -104,17 +104,16 @@ const CustomizeNonce = ({
           </Box>
           <div className="customize-nonce-modal__input">
             <TextField
-              type="number"
-              data-testid="custom-nonce-input"
-              min="0"
+              type={TextFieldType.Number}
+              testId="custom-nonce-input"
+              inputProps={{ min: 0 }}
               placeholder={defaultNonce}
               onChange={(e) => {
                 // Prevent decimal nonce values
                 const sanitizedValue = e.target.value.replace(/[.,]/gu, '');
                 setCustomNonce(sanitizedValue);
               }}
-              fullWidth
-              margin="dense"
+              width={BlockSize.Full}
               value={customNonce}
               id="custom-nonce-id"
             />
