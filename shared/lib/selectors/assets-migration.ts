@@ -92,6 +92,7 @@ export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
       state.metamask?.remoteFeatureFlags ?? {},
   ],
   (remoteFeatureFlags) => {
+    return false;
     if (!getIsAssetsUnifiedStateIncludedInBuild()) {
       return false;
     }
