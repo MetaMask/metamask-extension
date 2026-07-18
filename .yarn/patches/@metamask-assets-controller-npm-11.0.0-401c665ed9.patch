@@ -1,5 +1,5 @@
 diff --git a/dist/data-sources/TokenDataSource.cjs b/dist/data-sources/TokenDataSource.cjs
-index e3db944242bcb8957a71a4064ab1e97e0984f381..b7825e81a88e9c8dedde24d14f0e466e5e979fdd 100644
+index e3db944242bcb8957a71a4064ab1e97e0984f381..9bfb36daca8b9cfa44a57b6c4aa59563a6b684ae 100644
 --- a/dist/data-sources/TokenDataSource.cjs
 +++ b/dist/data-sources/TokenDataSource.cjs
 @@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -59,7 +59,28 @@ index e3db944242bcb8957a71a4064ab1e97e0984f381..b7825e81a88e9c8dedde24d14f0e466e
   * - Merges fetched metadata into the response
   *
   * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
-@@ -172,8 +192,12 @@ class TokenDataSource {
+@@ -169,11 +189,33 @@ class TokenDataSource {
+                     }
+                 }
+             }
++
++            // Also fetch metadata for balances that are missing it
++            if (response.assetsBalance) {
++                for (const accountBalances of Object.values(response.assetsBalance)) {
++                    for (const assetId of Object.keys(accountBalances)) {
++                        if (response.assetsInfo?.[assetId]?.image) {
++                            continue;
++                        }
++                        if (stateMetadata[assetId]?.image) {
++                            continue;
++                        }
++                        if ((0, evm_rpc_services_1.isStakingContractAssetId)(assetId)) {
++                            continue;
++                        }
++                        assetIdsNeedingMetadata.add(assetId);
++                    }
++                }
++            }
              if (assetIdsNeedingMetadata.size === 0) {
                  return next(ctx);
              }
@@ -74,7 +95,7 @@ index e3db944242bcb8957a71a4064ab1e97e0984f381..b7825e81a88e9c8dedde24d14f0e466e
              const supportedAssetIds = __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterAssetsByNetwork).call(this, [...assetIdsNeedingMetadata], supportedNetworks);
              if (supportedAssetIds.length === 0) {
                  return next(ctx);
-@@ -216,14 +240,16 @@ class TokenDataSource {
+@@ -216,14 +258,16 @@ class TokenDataSource {
                          nonEvmTokenIds.push(assetId);
                      }
                  }
@@ -96,7 +117,7 @@ index e3db944242bcb8957a71a4064ab1e97e0984f381..b7825e81a88e9c8dedde24d14f0e466e
                      id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
                  // Non-EVM: Blockaid bulk scan.
                  // Custom assets (user-imported) bypass Blockaid filtering.
-@@ -300,6 +326,23 @@ async function _TokenDataSource_getSupportedNetworks() {
+@@ -300,6 +344,23 @@ async function _TokenDataSource_getSupportedNetworks() {
          log('Failed to fetch supported networks', { error });
          return new Set();
      }
@@ -147,7 +168,7 @@ index f785d61b324fe44ce1251fbdc8c3737c814a2d21..71bbc034d92ccf4b8a6e95ebc1619e8b
   *
   * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
 diff --git a/dist/data-sources/TokenDataSource.mjs b/dist/data-sources/TokenDataSource.mjs
-index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..dde9f1a9eed548313576e9a612e46e5a76c84d06 100644
+index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..2d5114e066b3a084f2984ad80a0e642fc4441713 100644
 --- a/dist/data-sources/TokenDataSource.mjs
 +++ b/dist/data-sources/TokenDataSource.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -207,7 +228,28 @@ index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..dde9f1a9eed548313576e9a612e46e5a
   * - Merges fetched metadata into the response
   *
   * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
-@@ -169,8 +189,12 @@ export class TokenDataSource {
+@@ -166,11 +186,33 @@ export class TokenDataSource {
+                     }
+                 }
+             }
++
++            // Also fetch metadata for balances that are missing it
++            if (response.assetsBalance) {
++                for (const accountBalances of Object.values(response.assetsBalance)) {
++                    for (const assetId of Object.keys(accountBalances)) {
++                        if (response.assetsInfo?.[assetId]?.image) {
++                            continue;
++                        }
++                        if (stateMetadata[assetId]?.image) {
++                            continue;
++                        }
++                        if (isStakingContractAssetId(assetId)) {
++                            continue;
++                        }
++                        assetIdsNeedingMetadata.add(assetId);
++                    }
++                }
++            }
              if (assetIdsNeedingMetadata.size === 0) {
                  return next(ctx);
              }
@@ -222,7 +264,7 @@ index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..dde9f1a9eed548313576e9a612e46e5a
              const supportedAssetIds = __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterAssetsByNetwork).call(this, [...assetIdsNeedingMetadata], supportedNetworks);
              if (supportedAssetIds.length === 0) {
                  return next(ctx);
-@@ -213,14 +237,16 @@ export class TokenDataSource {
+@@ -213,14 +255,16 @@ export class TokenDataSource {
                          nonEvmTokenIds.push(assetId);
                      }
                  }
@@ -244,7 +286,7 @@ index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..dde9f1a9eed548313576e9a612e46e5a
                      id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
                  // Non-EVM: Blockaid bulk scan.
                  // Custom assets (user-imported) bypass Blockaid filtering.
-@@ -296,6 +322,23 @@ async function _TokenDataSource_getSupportedNetworks() {
+@@ -296,6 +340,23 @@ async function _TokenDataSource_getSupportedNetworks() {
          log('Failed to fetch supported networks', { error });
          return new Set();
      }

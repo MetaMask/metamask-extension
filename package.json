@@ -314,7 +314,7 @@
     "@metamask/assets-controller@npm:^9.1.0": "^11.0.0",
     "@metamask/messenger": "^2.0.0",
     "@metamask/network-enablement-controller@npm:^5.4.1": "patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch",
-    "@metamask/assets-controller@npm:^10.2.0": "^11.0.0",
+    "@metamask/assets-controller@npm:^10.2.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch",
     "@metamask/assets-controller@npm:^11.0.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch"
   },
   "dependencies": {
