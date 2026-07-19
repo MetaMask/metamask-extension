@@ -196,7 +196,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
 
       <dialog
         ref={dialogRef}
-        className="transaction-details-dialog"
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default"
         onClose={handleClose}
       >
         <TransactionDetails

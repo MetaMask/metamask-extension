@@ -22,9 +22,9 @@ export function ActivityRowLayout({
 }: Readonly<ActivityRowLayoutProps>) {
   return (
     <div className="[container-name:list-item] [container-type:inline-size]">
-      <button
-        type="button"
-        className="grid w-full min-h-[62px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 border-0 bg-transparent px-4 py-2 text-left text-inherit transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
+      <div
+        className="grid min-h-[62px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-2 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
+        role="button"
         data-testid="activity-list-item"
         data-tx-status={txStatus}
         onClick={onClick}
@@ -66,7 +66,7 @@ export function ActivityRowLayout({
             </Text>
           )}
         </div>
-      </button>
+      </div>
     </div>
   );
 }

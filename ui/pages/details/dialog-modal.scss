@@ -1,12 +1,5 @@
-.transaction-details-dialog {
-  width: 100%;
+.dialog-modal {
   max-width: clamp(var(--width-sm), 85vw, var(--width-max));
-  height: 100dvh;
-  max-height: 100dvh;
-  margin: 0 auto;
-  padding: 0;
-  border: none;
-  background: var(--color-background-default);
   opacity: 0;
   transform: scale(var(--page-scale-distance));
 
@@ -16,24 +9,23 @@
     transition:
       opacity var(--page-transition-duration) var(--page-transition-ease-out),
       transform var(--page-transition-duration) var(--page-transition-ease-out),
-      display var(--page-transition-duration) var(--page-transition-ease-out)
-        allow-discrete;
+      display var(--page-transition-duration) var(--page-transition-ease-out) allow-discrete;
   }
 }
 
-.app--sidepanel .transaction-details-dialog {
+.app--sidepanel .dialog-modal {
   max-width: var(--width-max-sidepanel);
 }
 
 @starting-style {
-  .transaction-details-dialog[open] {
+  .dialog-modal[open] {
     opacity: 0;
     transform: scale(var(--page-scale-distance));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .transaction-details-dialog[open] {
+  .dialog-modal[open] {
     transition-duration: 0.01ms;
   }
 }
