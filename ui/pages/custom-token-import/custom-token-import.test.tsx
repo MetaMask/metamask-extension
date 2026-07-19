@@ -65,9 +65,8 @@ jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
   ),
 );
 
-// The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`
-// and `tokenInfoGetter`. Replace them with deterministic stubs so the unit
-// test never reaches the background script.
+// The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`.
+// Replace it with a deterministic stub so the unit test never reaches the background script.
 jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
@@ -83,32 +82,11 @@ jest.mock('../../store/actions', () => {
   };
 });
 
-jest.mock('../../helpers/utils/token-util', () => {
-  const actual = jest.requireActual('../../helpers/utils/token-util');
-  const mockTokenListLookup = jest.fn(async () => ({
-    symbol: 'APE',
-    decimals: 18,
-    name: 'ApeCoin',
-  }));
-  return {
-    ...actual,
-    tokenInfoGetter: () => mockTokenListLookup,
-    mockTokenListLookup,
-  };
-});
-
-type TokenUtilModuleWithMock =
-  typeof import('../../helpers/utils/token-util') & {
-    mockTokenListLookup: jest.Mock;
-  };
-
-const getMockedTokenUtil = () =>
-  jest.requireMock('../../helpers/utils/token-util') as TokenUtilModuleWithMock;
-
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as {
     addImportedTokens: jest.Mock;
     importCustomAssetsBatch: jest.Mock;
+    getTokenStandardAndDetailsByChain: jest.Mock;
   };
 
 const ASSETS_UNIFY_STATE_FLAG_ON = {
@@ -181,11 +159,11 @@ describe('CustomTokenImportPage', () => {
     const actions = getMockedActions();
     actions.addImportedTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
-    const tokenUtil = getMockedTokenUtil();
-    tokenUtil.mockTokenListLookup.mockReset();
-    tokenUtil.mockTokenListLookup.mockResolvedValue({
+    actions.getTokenStandardAndDetailsByChain.mockClear();
+    actions.getTokenStandardAndDetailsByChain.mockResolvedValue({
+      standard: 'ERC20',
       symbol: 'APE',
-      decimals: 18,
+      decimals: '18',
       name: 'ApeCoin',
     });
   });
@@ -310,11 +288,6 @@ describe('CustomTokenImportPage', () => {
   });
 
   it('fills symbol and decimals from RPC when the token list returns only empty placeholders', async () => {
-    getMockedTokenUtil().mockTokenListLookup.mockResolvedValue({
-      symbol: '',
-      decimals: '0',
-      name: '',
-    });
     renderPage();
 
     fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
@@ -444,9 +417,9 @@ describe('CustomTokenImportPage', () => {
       await waitFor(() => {
         const metadataArg = actions.importCustomAssetsBatch.mock.calls[0][2];
         const metadata = metadataArg[expectedAssetId];
-        // tokenInfoGetter mock returns name: 'ApeCoin' and symbol: 'APE'.
-        // These must be stored separately; the symbol must not be used in place
-        // of the name.
+        // getTokenStandardAndDetailsByChain mock returns name: 'ApeCoin' and
+        // symbol: 'APE'. These must be stored separately; the symbol must not
+        // be used in place of the name.
         expect(metadata.name).toBe('ApeCoin');
         expect(metadata.symbol).toBe('APE');
         expect(metadata.name).not.toBe(metadata.symbol);

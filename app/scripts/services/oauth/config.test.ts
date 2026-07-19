@@ -1,8 +1,6 @@
-import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   BuildTypeEnv,
-  getProfilePairingEnv,
   isDevOrTestBuild,
   isProductionBuild,
   isReleaseCandidateBuild,
@@ -240,35 +238,4 @@ describe('build environment helpers', () => {
     });
   });
 
-  describe('getProfilePairingEnv', () => {
-    it('returns PRD in production', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.PRD);
-    });
-
-    it('returns PRD in release candidate', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.PRD);
-    });
-
-    it('returns DEV in development', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.DEV);
-    });
-
-    it('returns DEV in testing', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.DEV);
-    });
-
-    it('returns UAT for other environments', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.STAGING;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.UAT);
-    });
-  });
 });
