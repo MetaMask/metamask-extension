@@ -135,11 +135,41 @@ const selectFiatBalanceByChain = createSelector(
   },
 );
 
+/**
+ * Determines whether a held asset can be offered as a batch-sell source
+ * token: it must have a positive balance, not itself be one of the chain's
+ * destination stablecoins, and not be an excluded RWA/tokenized asset.
+ *
+ * @param asset - The held asset to evaluate.
+ * @param stablecoinSet - Lowercased set of the chain's destination stablecoin asset ids.
+ */
+const isEligibleBatchSellAsset = (
+  asset: BridgeToken,
+  stablecoinSet: Set<string>,
+): boolean => {
+  if (
+    !asset.balance ||
+    Number.isNaN(Number(asset.balance)) ||
+    Number(asset.balance) <= 0
+  ) {
+    return false;
+  }
+  if (stablecoinSet.has(asset.assetId.toLowerCase())) {
+    return false;
+  }
+  if (isStockRWAToken(asset) || asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)) {
+    return false;
+  }
+  return true;
+};
+
 export const getAvailableBatchSellNetworks = createSelector(
   getNetworksWithPositiveBalanceForSelectedAccount,
   selectFiatBalanceByChain,
   getBridgeFeatureFlags,
-  (networksWithBalance, fiatBalanceByChain, bridgeFeatureFlags) =>
+  (state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, getSelectedAccountGroup(state)),
+  (networksWithBalance, fiatBalanceByChain, bridgeFeatureFlags, assetsByAssetId) =>
     Object.entries(networksWithBalance)
       .filter(([chainId]) => {
         if (!BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId)) {
@@ -149,7 +179,19 @@ export const getAvailableBatchSellNetworks = createSelector(
         const stablecoins =
           bridgeFeatureFlags?.chains?.[caipChainId]?.batchSellDestStablecoins ??
           [];
-        return stablecoins.length > 0;
+        if (stablecoins.length === 0) {
+          return false;
+        }
+        // Only surface the network if it has at least one asset that would
+        // actually show up in the token picker for it.
+        const stablecoinSet = new Set(
+          stablecoins.map((id) => id.toLowerCase()),
+        );
+        return Object.values(assetsByAssetId ?? {}).some(
+          (asset) =>
+            asset.chainId === chainId &&
+            isEligibleBatchSellAsset(asset, stablecoinSet),
+        );
       })
       .map(([chainId, network]) => ({
         chainId: chainId as CaipChainId,
@@ -242,28 +284,11 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
     const stablecoinSet = new Set(stablecoins.map((id) => id.toLowerCase()));
 
     return Object.values(assetsByAssetId)
-      .filter((asset) => {
-        if (asset.chainId !== selectedChainId) {
-          return false;
-        }
-        if (
-          !asset.balance ||
-          Number.isNaN(Number(asset.balance)) ||
-          Number(asset.balance) <= 0
-        ) {
-          return false;
-        }
-        if (stablecoinSet.has(asset.assetId.toLowerCase())) {
-          return false;
-        }
-        if (
-          isStockRWAToken(asset) ||
-          asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)
-        ) {
-          return false;
-        }
-        return true;
-      })
+      .filter(
+        (asset) =>
+          asset.chainId === selectedChainId &&
+          isEligibleBatchSellAsset(asset, stablecoinSet),
+      )
       .map((asset): BatchSellAsset => {
         const { tokenFiatPrice, percentageChange } =
           resolveTokenFiatPriceAndChange(asset, marketData, assetsRates);
