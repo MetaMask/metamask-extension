@@ -108,6 +108,36 @@ describe('Sentry', () => {
         tags: { [TRACE_ID_TAG]: 'existing-trace-id', foo: 'bar' },
       });
     });
+
+    it('preserves a scope-callback hint and sets trace_id on the scope', () => {
+      jest.spyOn(console, 'error').mockImplementation(jest.fn());
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+      jest.mocked(globalThis.sentry.getActiveSpan).mockReturnValue({
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'trace-123',
+        }),
+      } as unknown as Sentry.Span);
+
+      const testError = new Error('Test error');
+      const callerCallback = jest.fn((scope) => scope);
+
+      captureException(testError, callerCallback);
+
+      // The hint handed to Sentry must still be a function (callback preserved),
+      // not replaced by a plain tags object — otherwise the callback's scope
+      // mutations would be dropped.
+      const passedHint = captureExceptionSpy.mock.calls[0][1];
+      expect(typeof passedHint).toBe('function');
+
+      // Running the wrapper sets the trace id and invokes the caller's callback.
+      const scope = { setTag: jest.fn() } as unknown as Sentry.Scope;
+      (passedHint as (s: Sentry.Scope) => Sentry.Scope)(scope);
+      expect(scope.setTag).toHaveBeenCalledWith(TRACE_ID_TAG, 'trace-123');
+      expect(callerCallback).toHaveBeenCalledWith(scope);
+    });
   });
 
   describe('captureMessage', () => {

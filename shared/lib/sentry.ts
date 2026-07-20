@@ -39,6 +39,19 @@ function getCaptureExceptionHintWithTraceId(
     return hint;
   }
 
+  // A scope-callback hint must be preserved and invoked. The object path below
+  // would replace the callback with a plain tags object, so Sentry would never
+  // run it and the caller's scope mutations would be lost. Wrap it instead: set
+  // the trace id as a default on the scope, then run the caller's callback,
+  // which may override it.
+  if (typeof hint === 'function') {
+    const scopeCallback = hint as (scope: Sentry.Scope) => Sentry.Scope;
+    return ((scope: Sentry.Scope) => {
+      scope.setTag(TRACE_ID_TAG, traceId);
+      return scopeCallback(scope);
+    }) as SentryCaptureExceptionHint;
+  }
+
   return {
     ...hintWithTags,
     tags: {
