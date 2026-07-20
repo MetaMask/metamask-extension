@@ -38,7 +38,7 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const ADD_DEVICE_ROUTE = '/settings/add-device';
+export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -142,7 +142,6 @@ export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
-export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -180,6 +179,12 @@ export const DEEP_LINK_ROUTE = '/link';
 export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
 
 export const DEFI_ROUTE = '/defi';
+
+// Ramps (native buy) routes
+export const RAMPS_ROUTE = '/ramps';
+export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
+export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
+export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -647,11 +652,6 @@ export const ROUTES = [
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',
-    trackInAnalytics: false,
-  },
-  {
-    path: CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-    label: 'Cross Chain Transaction Details',
     trackInAnalytics: false,
   },
   {

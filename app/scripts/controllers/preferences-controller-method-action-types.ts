@@ -157,6 +157,7 @@ export type PreferencesControllerSetUseTransactionSimulationsAction = {
  *
  * @param options
  * @param options.chainId - The chainId the advancedGasFees should be set on
+ * @param options.account - The account the advancedGasFees should be set for
  * @param options.gasFeePreferences - The advancedGasFee options to set
  */
 export type PreferencesControllerSetAdvancedGasFeeAction = {
@@ -328,11 +329,6 @@ export type PreferencesControllerSetManageInstitutionalWalletsAction = {
   handler: PreferencesController['setManageInstitutionalWallets'];
 };
 
-export type PreferencesControllerSetServiceWorkerKeepAlivePreferenceAction = {
-  type: `PreferencesController:setServiceWorkerKeepAlivePreference`;
-  handler: PreferencesController['setServiceWorkerKeepAlivePreference'];
-};
-
 export type PreferencesControllerSetUseSidePanelAsDefaultAction = {
   type: `PreferencesController:setUseSidePanelAsDefault`;
   handler: PreferencesController['setUseSidePanelAsDefault'];
@@ -422,7 +418,6 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetDismissSeedBackUpReminderAction
   | PreferencesControllerSetOverrideContentSecurityPolicyHeaderAction
   | PreferencesControllerSetManageInstitutionalWalletsAction
-  | PreferencesControllerSetServiceWorkerKeepAlivePreferenceAction
   | PreferencesControllerSetUseSidePanelAsDefaultAction
   | PreferencesControllerSetShowDefaultAddressAction
   | PreferencesControllerSetDefaultAddressScopeAction

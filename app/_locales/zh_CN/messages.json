@@ -1095,9 +1095,6 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
-  "addDevice": {
-    "message": "与移动设备同步"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "仅当您确定可以信任此 RPC 提供商时才能添加它。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1224,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "正在导入账户"
+  },
+  "add_device_try_again": {
+    "message": "请重试"
   },
   "add_device_validating_desc": {
     "message": "正在与您的手机建立安全的加密连接。"
@@ -2014,10 +2014,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },
-  "bridgeDetailsTitle": {
-    "message": "桥接详情",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2022,6 @@
   },
   "bridgeEnterAmount": {
     "message": "选择金额"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "在 $1 上查看"
   },
   "bridgeExplorerPopupDescription": {
     "message": "此交易存在于两个网络上。一个链接显示来源，另一个则在确认后显示目标地址。"
@@ -2313,42 +2306,11 @@
   "bridgeSendLoading": {
     "message": "正从源链发送"
   },
-  "bridgeStatusComplete": {
-    "message": "完成",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "失败",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "正在进行中",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "在 $2 上收到了 $1",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "正在 $2 上接收 $1",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "已用 $1 兑换 $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "正在用 $1 兑换 $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "可疑"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "可疑代币"
-  },
-  "bridgeTo": {
-    "message": "桥接至"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 是恶意代币。"
@@ -2364,56 +2326,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "没有代币与“$1”匹配"
-  },
-  "bridgeTransactionProgress": {
-    "message": "交易 $1（共 2 笔）"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "已桥接"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "桥接"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "联系"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 支持团队"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "超过 3 小时了吗？"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "随机数"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "状态"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "已兑换"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "正在兑换"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "时间戳"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 的 $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 位于",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "燃料费总额"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "您收到了"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "您发送了"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "使用最大允许值"
@@ -2431,12 +2343,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "需要最低 $1 储备金余额",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "已桥接"
-  },
-  "bridgedToChain": {
-    "message": "已桥接至 $1"
   },
   "bridging": {
     "message": "桥接"
@@ -3204,9 +3110,6 @@
   "decimal": {
     "message": "小数精度"
   },
-  "decimalsMustZerotoTen": {
-    "message": "小数位至少为0，且不得超过36。"
-  },
   "decrypt": {
     "message": "解密"
   },
@@ -3463,10 +3366,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "接收地址"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "目标交易 ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "详细信息"
@@ -5503,10 +5402,6 @@
     "message": "可领取奖励详情",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "将 $1 兑换为 mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "奖励详情",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5889,14 +5784,8 @@
   "nftAutoDetectionEnabled": {
     "message": "已启用 NFT 自动检测"
   },
-  "nftBought": {
-    "message": "已购买 $1"
-  },
   "nftEmptyDescription": {
     "message": "NFT 世界广阔无限，立即开启您的收藏之旅。"
-  },
-  "nftMinted": {
-    "message": "已铸造 $1"
   },
   "nftOptions": {
     "message": "NFT 期权"
@@ -7075,9 +6964,6 @@
   "perpsDateYesterday": {
     "message": "昨天"
   },
-  "perpsDepositActivityTitle": {
-    "message": "已注资的永续合约"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "跨链桥操作失败"
   },
@@ -7736,10 +7622,6 @@
   "perpsWithdraw": {
     "message": "提取"
   },
-  "perpsWithdrawActivityTitle": {
-    "message": "永续合约提现",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "预计时间"
   },
@@ -8129,9 +8011,6 @@
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "扫描二维码时出现问题。请生成新的二维码后重试。"
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "此二维码对应另一笔交易。请取消并重试，确保先用您的硬件钱包扫描 MetaMask 中显示的二维码。",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8196,6 +8075,9 @@
   },
   "quotedTotalCost": {
     "message": "总成本：$1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "无可用代币"
   },
   "rank": {
     "message": "排名"
@@ -8409,9 +8291,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "操作已成功完成。"
   },
-  "retryTransaction": {
-    "message": "重试交易"
-  },
   "reusedTokenNameWarning": {
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
   },
@@ -8465,10 +8344,6 @@
   },
   "revokePermission": {
     "message": "撤销权限"
-  },
-  "revokePermissionTitle": {
-    "message": "撤销 $1 许可",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "您正在删除某人从您的账户中花费代币的许可。"
@@ -8940,14 +8815,6 @@
   "sent": {
     "message": "已发送"
   },
-  "sentSpecifiedTokens": {
-    "message": "已发送 $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "将 $1 作为 $2 发送",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepolia测试网络"
   },
@@ -8956,10 +8823,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "提取请求"
-  },
-  "setApprovalForAllTitle": {
-    "message": "批准$1，且无消费限制",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "设置",
@@ -9662,9 +9525,6 @@
   },
   "sign": {
     "message": "签名"
-  },
-  "signatureRequest": {
-    "message": "签名请求"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "当接受出价时，NFT 将反映在您的钱包中。"
@@ -10476,10 +10336,6 @@
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
   },
-  "swapDetailsTitle": {
-    "message": "兑换详情",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "直接合约"
   },
@@ -10684,10 +10540,6 @@
   "swapTokenNotAvailable": {
     "message": "在此地区无法兑换代币"
   },
-  "swapTokenToToken": {
-    "message": "用 $1 交换 $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "兑换代币"
   },
@@ -10751,6 +10603,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
+  },
+  "syncAccounts": {
+    "message": "与移动设备同步"
   },
   "syncing": {
     "message": "同步中……"
@@ -10959,10 +10814,6 @@
   "transactionIncludesTypes": {
     "message": "本交易包含：$1。"
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "此交易已受到保护。我们已取消交易，以免造成意外资金损失。",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "交易设置"
   },
@@ -10971,10 +10822,6 @@
   },
   "transactionSubmitted": {
     "message": "已提交交易"
-  },
-  "transactionTotalGasFee": {
-    "message": "燃料费总额",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "交易"
@@ -11300,9 +11147,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "查看详情"
   },
   "viewOnBlockExplorer": {
     "message": "在区块浏览器上查看"
