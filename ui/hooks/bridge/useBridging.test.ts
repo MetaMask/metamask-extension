@@ -223,6 +223,7 @@ describe('useBridging', () => {
             replace: false,
             state: {
               ...expectedState,
+              sendBundle: null,
               token: expectedState.token
                 ? {
                     ...expectedState.token,
@@ -577,6 +578,7 @@ describe('useBridging', () => {
           replace: false,
           state: {
             ...expectedState,
+            sendBundle: null,
             token: expectedState.token
               ? {
                   ...expectedState.token,

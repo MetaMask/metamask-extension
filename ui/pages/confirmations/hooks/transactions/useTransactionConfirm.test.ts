@@ -83,6 +83,19 @@ jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
 jest.mock('../gas/useGasSponsorshipPreference');
 
+const mockNavigateToHwSigningPage = jest.fn();
+jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
+  useBridgeNavigation: () => ({
+    navigateToHwSigningPage: mockNavigateToHwSigningPage,
+  }),
+}));
+
+const mockUseSendBundleAmountSymbol = jest.fn();
+jest.mock('../../../../hooks/hardware-wallets/useSendBundleAmountSymbol', () => ({
+  useSendBundleAmountSymbol: (...args: unknown[]) =>
+    mockUseSendBundleAmountSymbol(...args),
+}));
+
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;
 
@@ -106,6 +119,8 @@ function runHook({
 } = {}) {
   const confirmation = genUnapprovedContractInteractionConfirmation({
     gasFeeTokens,
+    isGasFeeSponsored,
+    isExternalSign,
     selectedGasFeeToken,
   });
   if (type) {
@@ -114,18 +129,9 @@ function runHook({
 
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens,
-        isGasFeeSponsored,
-        isExternalSign,
-        selectedGasFeeToken,
-      }),
-      {
-        appState: {
-          customNonceValue,
-        },
-        metamask: {},
+    getMockConfirmStateForTransaction(confirmation, {
+      appState: {
+        customNonceValue,
       },
       metamask: {},
     }),
@@ -145,6 +151,7 @@ describe('useTransactionConfirm', () => {
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
   const useGasSponsorshipPreferenceMock = jest.mocked(
     useGasSponsorshipPreference,
   );
