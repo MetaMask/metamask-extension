@@ -1,5 +1,5 @@
 import type { CaipAssetType } from '@metamask/utils';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -8,8 +8,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
@@ -86,27 +86,8 @@ const AssetList = ({
   const { hasMusdBalance } = useMusdBalance();
   const { selectedChainId } = useMusdNetworkFilter();
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  const hasTrackedTokenScreenViewedRef = useRef(false);
-  useEffect(() => {
-    if (hasTrackedTokenScreenViewedRef.current) {
-      return;
-    }
-    hasTrackedTokenScreenViewedRef.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          network_filter: networkFilter,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          entry_point: entryPoint,
-        })
-        .build(),
-    );
-  }, [trackEvent, createEventBuilder, networkFilter, entryPoint]);
+  useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
   // Use the centralized token filter that includes min balance check
   // This is the source of truth for which tokens are eligible for mUSD conversion

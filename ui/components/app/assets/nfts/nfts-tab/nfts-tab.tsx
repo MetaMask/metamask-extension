@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -8,7 +8,6 @@ import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
-  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
@@ -21,9 +20,8 @@ import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
-import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useScreenViewedEvent } from '../../../../../hooks/useScreenViewedEvent';
 import {
-  MetaMetricsEventCategory,
   MetaMetricsEventName,
   ScreenViewedEntryPoint,
 } from '../../../../../../shared/constants/metametrics';
@@ -42,9 +40,6 @@ export default function NftsTab({
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
-
   const { collections } = useNftsCollections();
 
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
@@ -57,24 +52,7 @@ export default function NftsTab({
     }
   }, [nftsStillFetchingIndication]);
 
-  const hasTrackedRef = useRef(false);
-  useEffect(() => {
-    if (hasTrackedRef.current) {
-      return;
-    }
-    hasTrackedRef.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.NftScreenViewed)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          network_filter: networkFilter,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          entry_point: entryPoint,
-        })
-        .build(),
-    );
-  }, [trackEvent, createEventBuilder, networkFilter, entryPoint]);
+  useScreenViewedEvent(MetaMetricsEventName.NftScreenViewed, entryPoint);
 
   const handleNftClick = (nft: NFT) => {
     transitionForward(() =>
