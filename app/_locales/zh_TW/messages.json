@@ -278,9 +278,6 @@
   "decimal": {
     "message": "小數點位數"
   },
-  "decimalsMustZerotoTen": {
-    "message": "小數點位數至少為 0，至多為 36。"
-  },
   "decrypt": {
     "message": "解密"
   },
@@ -856,9 +853,6 @@
   },
   "sign": {
     "message": "簽署"
-  },
-  "signatureRequest": {
-    "message": "請求簽署"
   },
   "signed": {
     "message": "已簽署"

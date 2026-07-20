@@ -40,10 +40,12 @@ export function isTokenStateSettled(
  * Resolves whether build-quote should keep waiting, recover via redirect, or
  * render the ready screen.
  *
- * When navigation passes an `assetId` intent, we wait only while tokens are
- * still loading. Once loading finishes without a matching selection, redirect
- * to token selection — otherwise a failed pre-select leaves the user stuck on
- * the loading overlay forever.
+ * When navigation passes an `assetId` intent, keep showing loading until the UI
+ * store mirrors that selection. `setRampsSelectedToken` finishes in the
+ * background before the UI Redux mirror updates, so treating a brief mismatch
+ * as a failed pre-select caused an immediate redirect back to token selection
+ * (appearing as a double-click). Permanent pre-select failures are handled by
+ * `goToBuy` (it does not navigate when pre-select fails).
  * @param options0
  * @param options0.intentAssetId
  * @param options0.selectedTokenAssetId
@@ -63,11 +65,17 @@ export function resolveBuildQuoteViewKind({
     selectedTokenAssetId,
   );
 
-  if (tokensLoading && (!selectedTokenAssetId || !tokenStateIsSettled)) {
+  // Intent navigation: wait for the UI store to catch up with background
+  // pre-select. Do not redirect on mismatch — that races the state bridge.
+  if (intentAssetId && !tokenStateIsSettled) {
     return 'loading';
   }
 
-  if (!selectedTokenAssetId || !tokenStateIsSettled) {
+  if (tokensLoading && !selectedTokenAssetId) {
+    return 'loading';
+  }
+
+  if (!selectedTokenAssetId) {
     return 'redirect';
   }
 

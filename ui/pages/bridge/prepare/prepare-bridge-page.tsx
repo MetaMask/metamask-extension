@@ -590,7 +590,10 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
             paddingInline={4}
+            paddingTop={4}
             paddingBottom={4}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
