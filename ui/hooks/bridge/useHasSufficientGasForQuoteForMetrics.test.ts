@@ -1,11 +1,13 @@
 import {
   BridgeAssetV2,
   ChainId,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
   selectMinimumBalanceForRentExemptionInSOL,
-  type QuoteMetadata,
-  type QuoteResponseV1,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
-import { zeroAddress } from 'ethereumjs-util';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
@@ -34,21 +36,47 @@ const mockGetQuoteRequest =
 const mockSelectMinReserve =
   selectMinimumBalanceForRentExemptionInSOL as unknown as jest.Mock;
 
-const NATIVE_TOKEN = { assetId: zeroAddress() };
+const NATIVE_TOKEN = getNativeAssetForChainId(ChainId.ETH);
 const ERC20_TOKEN = {
-  assetId: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  assetId:
+    'eip155:10/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as const,
+  decimals: 6,
 };
 
 const buildQuote = (
+  token: BridgeAssetV2,
   totalNetworkFee: string,
   sentAmount: string,
   srcChainId?: number | string,
 ) =>
   ({
-    quote: { srcChainId },
-    totalNetworkFee: { amount: totalNetworkFee },
-    sentAmount: { amount: sentAmount },
-  }) as unknown as QuoteResponseV1 & QuoteMetadata;
+    quote: {
+      src: {
+        asset: token,
+        amount: new BigNumber(sentAmount)
+          .mul(Math.pow(10, token.decimals))
+          .toFixed(),
+        normalizedAmount: sentAmount,
+      },
+      feeData: {
+        network: [
+          {
+            amount: new BigNumber(totalNetworkFee)
+              .mul(Math.pow(10, 18))
+              .toFixed(),
+            normalizedAmount: totalNetworkFee,
+            asset: getNativeAssetForChainId(srcChainId ?? 1),
+          },
+        ],
+      },
+    },
+    chainId: formatChainIdToCaip(srcChainId ?? 1),
+    estimatedProcessingTimeInSeconds: 0,
+    namespace: KnownCaipNamespace.Eip155,
+  }) as unknown as QuoteResponse;
 
 const renderUseHasSufficientGasForQuoteForMetrics = () =>
   renderHookWithProvider(
@@ -76,13 +104,17 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
 
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
-    expect(result.current(buildQuote('10', '80', ChainId.ETH))).toBeNull();
+    expect(
+      result.current(buildQuote(NATIVE_TOKEN, '10', '80', ChainId.ETH)),
+    ).toBeNull();
   });
 
   it('returns true for a native quote when the balance covers fee + sent amount', () => {
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
-    expect(result.current(buildQuote('10', '80', ChainId.ETH))).toBe(true);
+    expect(
+      result.current(buildQuote(NATIVE_TOKEN, '10', '80', ChainId.ETH)),
+    ).toBe(true);
   });
 
   it('returns false for a non-native quote when the balance is at or below the fee', () => {
@@ -91,7 +123,9 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
 
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
-    expect(result.current(buildQuote('50', '80', ChainId.ETH))).toBe(false);
+    expect(
+      result.current(buildQuote(ERC20_TOKEN, '50', '80', ChainId.ETH)),
+    ).toBe(false);
   });
 
   it('applies the Solana rent reserve based on quoteRequest.srcChainId', () => {
@@ -101,7 +135,7 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
     // 100 - 10 - 80 - 15 <= 0 -> insufficient
-    expect(result.current(buildQuote('10', '80'))).toBe(false);
+    expect(result.current(buildQuote(NATIVE_TOKEN, '10', '80'))).toBe(false);
   });
 
   it('does not apply the reserve for a non-Solana chain even when one is configured', () => {
@@ -111,7 +145,7 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
     // reserve resolves to '0' -> 100 - 10 - 80 > 0 -> sufficient
-    expect(result.current(buildQuote('10', '80'))).toBe(true);
+    expect(result.current(buildQuote(NATIVE_TOKEN, '10', '80'))).toBe(true);
   });
 
   it('falls back to the quote srcChainId when there is no quote request', () => {
@@ -121,7 +155,16 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
     const { result } = renderUseHasSufficientGasForQuoteForMetrics();
 
     // quote.quote.srcChainId is Solana -> reserve applied -> insufficient
-    expect(result.current(buildQuote('10', '80', ChainId.SOLANA))).toBe(false);
+    expect(
+      result.current(
+        buildQuote(
+          getNativeAssetForChainId(ChainId.SOLANA),
+          '10',
+          '80',
+          ChainId.SOLANA,
+        ),
+      ),
+    ).toBe(false);
   });
 
   it('returns a stable callback across rerenders when inputs are unchanged', () => {
@@ -145,9 +188,8 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
   it('returns null when the native balance is missing', () => {
     expect(
       computeHasSufficientGasForQuoteForMetrics({
-        quote: buildQuote('10', '80'),
+        quote: buildQuote(NATIVE_TOKEN, '10', '80'),
         nativeBalance: '',
-        fromToken: nativeToken,
         minimumBalanceToKeep: '5',
       }),
     ).toBeNull();
@@ -158,7 +200,6 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
       computeHasSufficientGasForQuoteForMetrics({
         quote: null,
         nativeBalance: '100',
-        fromToken: nativeToken,
         minimumBalanceToKeep: '5',
       }),
     ).toBeNull();
@@ -167,9 +208,8 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
   it('returns null for the native MAX case (balance minus sent amount is not positive)', () => {
     expect(
       computeHasSufficientGasForQuoteForMetrics({
-        quote: buildQuote('10', '100'),
+        quote: buildQuote(NATIVE_TOKEN, '10', '100'),
         nativeBalance: '100',
-        fromToken: nativeToken,
         minimumBalanceToKeep: '5',
       }),
     ).toBeNull();
@@ -179,9 +219,8 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
     it('returns true when balance covers fee + sent amount + reserve', () => {
       expect(
         computeHasSufficientGasForQuoteForMetrics({
-          quote: buildQuote('10', '80'),
+          quote: buildQuote(NATIVE_TOKEN, '10', '80'),
           nativeBalance: '100',
-          fromToken: nativeToken,
           minimumBalanceToKeep: '5',
         }),
       ).toBe(true);
@@ -190,9 +229,8 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
     it('returns false when balance does not cover fee + sent amount + reserve', () => {
       expect(
         computeHasSufficientGasForQuoteForMetrics({
-          quote: buildQuote('10', '80'),
+          quote: buildQuote(NATIVE_TOKEN, '10', '80'),
           nativeBalance: '100',
-          fromToken: nativeToken,
           minimumBalanceToKeep: '15',
         }),
       ).toBe(false);
@@ -203,20 +241,22 @@ describe('computeHasSufficientGasForQuoteForMetrics', () => {
     it('returns true when balance is greater than the network fee', () => {
       expect(
         computeHasSufficientGasForQuoteForMetrics({
-          quote: buildQuote('50', '80'),
+          quote: buildQuote(ERC20_TOKEN, '50', '80'),
           nativeBalance: '100',
-          fromToken: erc20Token,
           minimumBalanceToKeep: '999',
         }),
       ).toBe(true);
     });
 
     it('returns false when balance is at or below the network fee', () => {
+      const quote = buildQuote(ERC20_TOKEN, '50', '80');
+      expect(quote.quote.feeData.network?.[0].amount).toMatchInlineSnapshot(
+        `"50000000000000000000"`,
+      );
       expect(
         computeHasSufficientGasForQuoteForMetrics({
-          quote: buildQuote('50', '80'),
+          quote,
           nativeBalance: '50',
-          fromToken: erc20Token,
           minimumBalanceToKeep: '0',
         }),
       ).toBe(false);

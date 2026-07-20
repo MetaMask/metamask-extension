@@ -73,6 +73,8 @@ export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
   ? BRIDGE_DEV_API_BASE_URL
   : BRIDGE_PROD_API_BASE_URL;
 
+export const BRIDGE_DEBUG_ENABLED = process.env.BRIDGE_DEBUG === 'true';
+
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
   string

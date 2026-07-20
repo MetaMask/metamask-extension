@@ -84,9 +84,7 @@ type UseRewardsParams = {
 };
 
 type UseRewardsWithQuoteParams = {
-  quote: NonNullable<
-    NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
-  > | null;
+  quote: QuoteResponse['quote'] | null;
   fromAddress: string | null | undefined;
   fromAddressAccount?: InternalAccount | null;
   chainId: string | null | undefined;

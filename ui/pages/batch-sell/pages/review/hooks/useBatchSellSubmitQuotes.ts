@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type {
-  QuoteMetadata,
-  QuoteResponseV1,
-} from '@metamask/bridge-controller';
+import type { QuoteResponse } from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import {
@@ -16,9 +13,10 @@ import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { parseCaipAssetType } from '@metamask/utils';
 
 type UseBatchSellSubmitQuotesArgs = {
-  quoteResponses: ((QuoteResponseV1 & QuoteMetadata) | null)[];
+  quoteResponses: (QuoteResponse | null)[];
   receivedAsset: BatchSellAsset;
 };
 
@@ -41,7 +39,7 @@ export default function useBatchSellSubmitQuotes({
 }: UseBatchSellSubmitQuotesArgs) {
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const srcChainId = quoteResponses.find((q) => q)?.quote.srcChainId;
+  const srcChainId = quoteResponses.find((q) => q)?.chainId;
   const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>
     getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),

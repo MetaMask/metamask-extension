@@ -82,12 +82,12 @@ function renderWithQuote(
     createBridgeMockStore({
       bridgeSliceOverrides: {
         fromToken: {
-          address: quote.quote.srcAsset.address,
-          symbol: quote.quote.srcAsset.symbol,
+          address: quote.quote.src.asset.assetId,
+          symbol: quote.quote.src.asset.symbol,
         },
         toToken: {
-          address: quote.quote.destAsset.address,
-          symbol: quote.quote.destAsset.symbol,
+          address: quote.quote.dest.asset.assetId,
+          symbol: quote.quote.dest.asset.symbol,
         },
       },
       bridgeStateOverrides: {
@@ -497,12 +497,12 @@ describe('HardwareWalletSignatures', () => {
       createBridgeMockStore({
         bridgeSliceOverrides: {
           fromToken: {
-            address: quote.quote.srcAsset.address,
-            symbol: quote.quote.srcAsset.symbol,
+            address: quote.quote.src.asset.assetId,
+            symbol: quote.quote.src.asset.symbol,
           },
           toToken: {
-            address: quote.quote.destAsset.address,
-            symbol: quote.quote.destAsset.symbol,
+            address: quote.quote.dest.asset.assetId,
+            symbol: quote.quote.dest.asset.symbol,
           },
         },
         bridgeStateOverrides: {
@@ -562,12 +562,12 @@ describe('HardwareWalletSignatures', () => {
         createBridgeMockStore({
           bridgeSliceOverrides: {
             fromToken: {
-              address: quote.quote.srcAsset.address,
-              symbol: quote.quote.srcAsset.symbol,
+              address: quote.quote.src.asset.assetId,
+              symbol: quote.quote.src.asset.symbol,
             },
             toToken: {
-              address: quote.quote.destAsset.address,
-              symbol: quote.quote.destAsset.symbol,
+              address: quote.quote.dest.asset.assetId,
+              symbol: quote.quote.dest.asset.symbol,
             },
           },
           bridgeStateOverrides: {

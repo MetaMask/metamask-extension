@@ -42,7 +42,7 @@ export default function AwaitingSignatures() {
 
   // Navigate to activity tab when QR scan is completed
   useNavigateOnQrScanComplete();
-  const fromAmount = activeQuote?.sentAmount?.amount;
+  const fromAmount = activeQuote?.quote.src.normalizedAmount;
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
@@ -76,10 +76,10 @@ export default function AwaitingSignatures() {
         .addSensitiveProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+          token_from_amount: activeQuote?.quote.src.amount ?? '',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
+          token_to_amount: activeQuote?.quote.dest.amount ?? '',
         })
         .build(),
     );
@@ -129,7 +129,7 @@ export default function AwaitingSignatures() {
                     ? 'unifiedSwapAllowSwappingOf'
                     : 'bridgeAllowSwappingOf',
                   [
-                    activeQuote.sentAmount?.amount,
+                    activeQuote.quote.src.normalizedAmount,
                     fromToken?.symbol,
                     fromChain?.name,
                   ],

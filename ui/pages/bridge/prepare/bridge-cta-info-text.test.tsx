@@ -1,5 +1,5 @@
 import React from 'react';
-import { QuoteResponseV1, RequestStatus } from '@metamask/bridge-controller';
+import { RequestStatus } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -14,13 +14,13 @@ const createDiscountedQuoteWithoutApproval = () =>
       ...quote.quote,
       feeData: {
         ...quote.quote.feeData,
-        metabridge: {
-          ...quote.quote.feeData.metabridge,
+        metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+          ...fee,
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
           discountType: 'vip',
-        },
+        })),
       },
     },
   }));

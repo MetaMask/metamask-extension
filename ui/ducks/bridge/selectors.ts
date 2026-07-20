@@ -14,12 +14,12 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
-  type QuoteMetadata,
-  type QuoteResponseV1,
+  type QuoteResponse,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
   isNonEvmChainId,
+  sumAmounts,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -727,14 +727,7 @@ export const getBridgeQuotes = createSelector(
       sortOrder,
       selectedQuote,
     });
-    return {
-      ...quotes,
-      activeQuote:
-        // TODO move this to controller
-        quotes.sortedQuotes.find(
-          (q) => q.quote.requestId === selectedQuote?.quote.requestId,
-        ) ?? quotes.recommendedQuote,
-    };
+    return quotes;
   },
 );
 
@@ -800,13 +793,14 @@ export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 export const getActiveQuotePriceData = (state: BridgeAppState) =>
   getBridgeQuotes(state).activeQuote?.quote?.priceData;
 
+//deprecated
 export const getPriceImpact = createSelector(
   [
     (state: BridgeAppState) =>
       getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact,
   ],
   (priceImpact) => {
-    const priceImpactNumber = Number(priceImpact);
+    const priceImpactNumber = Number(priceImpact?.amount);
     if (Number.isNaN(priceImpactNumber)) {
       return null;
     }
@@ -814,15 +808,17 @@ export const getPriceImpact = createSelector(
   },
 );
 
+//deprecated
 export const getFormattedPriceImpactPercentage = createSelector(
   [getPriceImpact],
   (priceImpact) => formatPriceImpactPercentage(priceImpact),
 );
-
+//deprecated
 export const getFormattedPriceImpactFiat = createSelector(
   [
     (state: BridgeAppState) =>
-      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
+      getBridgeQuotes(state).activeQuote?.quote?.priceData?.priceImpact
+        ?.valueInCurrency,
     getCurrentCurrency,
   ],
   (priceImpact, currentCurrency) =>
@@ -905,17 +901,23 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
       fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
     );
 
+    const totalNetworkFee = sumAmounts(
+      activeQuote?.quote?.feeData?.network,
+      activeQuote?.quote?.feeData?.relayer,
+    )?.normalizedAmount;
+
     if (
       isBitcoinNativeReserveChain &&
-      activeQuote?.totalNetworkFee?.amount &&
-      activeQuote?.sentAmount?.amount &&
+      totalNetworkFee &&
+      activeQuote?.quote?.src?.normalizedAmount &&
       nativeBalance &&
       validatedSrcAmount &&
-      new BigNumber(activeQuote.totalNetworkFee.amount).gt(0)
+      new BigNumber(totalNetworkFee).gt(0)
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
-      const totalNetworkFee = new BigNumber(activeQuote.totalNetworkFee.amount);
-      const sentAmount = new BigNumber(activeQuote.sentAmount.amount);
+      const sentAmount = new BigNumber(
+        activeQuote.quote?.src?.normalizedAmount,
+      );
 
       if (
         nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
@@ -970,31 +972,30 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
 /**
  * @param quote - The quote whose gas cost is being checked
  * @param nativeBalance - The from-account native balance
- * @param fromToken - The selected source token
+ * @param fromAssetId - The selected source token's assetId
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
 export const isNativeBalanceInsufficientForQuote = (
-  quote: QuoteResponseV1 & QuoteMetadata,
+  quote: QuoteResponse,
   nativeBalance: string,
-  fromToken: ReturnType<typeof getFromToken>,
+  fromAssetId: CaipAssetType,
   minimumBalanceToKeep: string,
 ): boolean => {
-  if (!quote.totalNetworkFee?.amount) {
-    return false;
-  }
-  if (isNativeAddress(fromToken.assetId)) {
-    if (quote.sentAmount?.amount) {
-      return new BigNumber(nativeBalance)
-        .sub(quote.totalNetworkFee.amount)
-        .sub(quote.sentAmount.amount)
+  return isNativeAddress(fromAssetId)
+    ? new BigNumber(nativeBalance)
+        .sub(
+          sumAmounts(
+            quote?.quote?.feeData?.network,
+            quote?.quote?.feeData?.relayer,
+          )?.normalizedAmount ?? '0',
+        )
+        .sub(quote.quote?.src?.normalizedAmount ?? '0')
         .sub(minimumBalanceToKeep)
-        .lte(0);
-    }
-    return false;
-  }
-  return new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+        .lte(0)
+    : new BigNumber(nativeBalance).lte(
+        quote?.quote?.feeData?.network?.[0].normalizedAmount ?? '0',
+      );
 };
-
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
  * exemption). Returns '0' for chains with no reserve requirement.
@@ -1011,7 +1012,7 @@ export const resolveMinimumBalanceToKeep = (
     : '0';
 
 export const computeQuoteValidationErrors = (
-  quote: (QuoteMetadata & QuoteResponseV1) | undefined | null,
+  quote: QuoteResponse | undefined | null,
   {
     priceImpactThresholds: { warning, error },
     isHardwareWalletAccount,
@@ -1048,23 +1049,30 @@ export const computeQuoteValidationErrors = (
     ? gasIncluded
     : gasIncluded || gasIncluded7702 || gasSponsored;
 
-  const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
+  const srcChainId = quoteRequest?.srcChainId ?? quote?.chainId;
   const minimumBalanceToKeep = resolveMinimumBalanceToKeep(
     srcChainId,
     minimumBalanceForRentExemptionInSOL,
   );
 
   const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
+  const totalNetworkFee = sumAmounts(
+    quote?.quote?.feeData?.network,
+    quote?.quote?.feeData?.relayer,
+  );
   const isNetworkFeeUnavailable = Boolean(
     quote &&
     srcChainId &&
     (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
     !isGasless &&
-    (quote.totalNetworkFee?.amount === undefined ||
-      new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
+    (totalNetworkFee?.normalizedAmount === undefined ||
+      new BigNumber(totalNetworkFee?.normalizedAmount ?? '0').lte(0)),
   );
 
-  const parsedPriceImpactNumber = Number(quote?.quote?.priceData?.priceImpact);
+  const parsedPriceImpactNumber = Number(
+    quote?.quote?.priceData?.priceImpact?.amount,
+  );
+
   const priceImpactNumber = Number.isNaN(parsedPriceImpactNumber)
     ? null
     : parsedPriceImpactNumber;
@@ -1096,7 +1104,7 @@ export const computeQuoteValidationErrors = (
       isNativeBalanceInsufficientForQuote(
         quote,
         nativeBalance,
-        fromToken,
+        fromToken.assetId,
         minimumBalanceToKeep,
       ),
     ),
@@ -1107,13 +1115,15 @@ export const computeQuoteValidationErrors = (
         ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
         : false,
     isEstimatedReturnLow:
-      quote?.sentAmount?.valueInCurrency &&
-      quote?.adjustedReturn?.valueInCurrency &&
+      quote?.quote?.src?.valueInCurrency &&
+      quote?.quote?.priceData?.adjustedReturn?.valueInCurrency &&
       fromTokenInputValue
-        ? new BigNumber(quote.adjustedReturn.valueInCurrency).lt(
+        ? new BigNumber(
+            quote.quote?.priceData?.adjustedReturn?.valueInCurrency,
+          ).lt(
             new BigNumber(
               1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-            ).times(quote.sentAmount.valueInCurrency),
+            ).times(quote.quote?.src?.valueInCurrency),
           )
         : false,
     isPriceImpactWarning: Boolean(
@@ -1245,9 +1255,8 @@ export const getWarningLabels = (
   isTxAlertPresent && warnings.push('tx_alert');
   isStockMarketClosed && warnings.push('market_closed');
   isQuoteExpired && warnings.push('quote_expired');
-  isInsufficientNativeReserve &&
-    // @ts-expect-error: market_closed is not a valid QuoteWarning yet
-    warnings.push('insufficient_native_reserve');
+  // @ts-expect-error: insufficient_native_reserve is not a valid QuoteWarning yet
+  isInsufficientNativeReserve && warnings.push('insufficient_native_reserve');
   isNetworkFeeUnavailable &&
     warnings.push('network_fee_unavailable' as QuoteWarning);
   return warnings;

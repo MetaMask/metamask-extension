@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { type QuoteResponseV1 } from '@metamask/bridge-controller';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -8,10 +8,13 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
   locale: string,
-  amount: string,
+  amount: string | undefined | null = '',
   symbol: string = '',
   roundingMode?: number,
 ) => {
+  if (!amount) {
+    return '0';
+  }
   const stringifiedAmount = formatAmount(
     locale,
     new BigNumber(amount),
@@ -98,11 +101,6 @@ export function formatNetworkFee(
   return formatCurrency(amount.toString(), currency, 2);
 }
 
-export const formatProviderLabel = (args?: {
-  bridgeId: QuoteResponseV1['quote']['bridgeId'];
-  bridges: QuoteResponseV1['quote']['bridges'];
-}): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
-
 export const sanitizeAmountInput = (
   textToSanitize: string,
   dropNumbersAfterSecondDecimal = true,
@@ -142,7 +140,7 @@ export const isQuoteExpiredOrInvalid = ({
   toToken,
   isQuoteExpired,
 }: {
-  activeQuote: QuoteResponseV1 | null;
+  activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
   isQuoteExpired: boolean;
 }): boolean => {
@@ -154,7 +152,7 @@ export const isQuoteExpiredOrInvalid = ({
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
     return (
-      activeQuote.quote.destAsset.assetId.toLowerCase() !==
+      activeQuote.quote.dest.asset.assetId.toLowerCase() !==
       toToken.assetId.toLowerCase()
     );
   }
@@ -186,11 +184,11 @@ export const bpsToPercentage = (
   return (bpsValue / 100).toString();
 };
 
-export const readMmFee = (quote: QuoteResponseV1) => {
+export const readMmFee = (quote: QuoteResponse) => {
   // Get the fee percentage from the quote or fallback to default
-  const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
-  const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
-  const discountType = quote.quote.feeData?.metabridge?.discountType;
+  const quoteBpsFee = quote.quote.feeData?.metabridge?.[0]?.quoteBpsFee;
+  const baseBpsFee = quote.quote.feeData?.metabridge?.[0]?.baseBpsFee;
+  const discountType = quote.quote.feeData?.metabridge?.[0]?.discountType;
   const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
   const baseFeePercentage = bpsToPercentage(baseBpsFee);
 

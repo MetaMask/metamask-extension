@@ -1,7 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE, isCrossChain } from '@metamask/bridge-controller';
+import {
+  BRIDGE_MM_FEE_RATE,
+  isCrossChain,
+  sumAmounts,
+} from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
+import { KnownCaipNamespace, parseCaipAssetType } from '@metamask/utils';
 import { PopoverPosition, Text } from '../../../components/component-library';
 import {
   getBridgeQuotes,
@@ -33,10 +38,17 @@ export const BridgeCTAInfoText = () => {
   const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   const hasMMFee = new BigNumber(
-    activeQuote?.quote.feeData.metabridge.amount ?? '0',
+    activeQuote
+      ? (sumAmounts(activeQuote.quote.feeData.metabridge)?.amount ?? '0')
+      : '0',
   ).gt(0);
 
-  const hasApproval = activeQuote?.approval;
+  const hasApproval =
+    activeQuote &&
+    (activeQuote.namespace === KnownCaipNamespace.Eip155 ||
+      activeQuote.namespace === KnownCaipNamespace.Tron)
+      ? activeQuote.approval
+      : undefined;
 
   if (!activeQuote) {
     return null;
@@ -55,7 +67,10 @@ export const BridgeCTAInfoText = () => {
       ? t('bridgeFeeDisclaimer', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
       : null,
     showApprovalText &&
-      (isCrossChain(activeQuote.quote.srcChainId, activeQuote.quote.destChainId)
+      (isCrossChain(
+        activeQuote.chainId,
+        parseCaipAssetType(activeQuote.quote.dest.asset.assetId).chainId,
+      )
         ? t('willApproveAmountForBridging')
         : t('willApproveAmountForSwapping')),
   ]
@@ -85,13 +100,13 @@ export const BridgeCTAInfoText = () => {
         >
           {isUsingHardwareWallet
             ? t('bridgeApprovalWarningForHardware', [
-                activeQuote.sentAmount?.amount,
-                activeQuote.quote.srcAsset.symbol,
-                activeQuote.quote.destAsset.symbol,
+                activeQuote.quote.src.normalizedAmount,
+                activeQuote.quote.src.asset.symbol,
+                activeQuote.quote.dest.asset.symbol,
               ])
             : t('bridgeApprovalWarning', [
-                activeQuote.sentAmount?.amount,
-                activeQuote.quote.srcAsset.symbol,
+                activeQuote.quote.src.normalizedAmount,
+                activeQuote.quote.src.asset.symbol,
               ])}
         </Tooltip>
       ) : null}

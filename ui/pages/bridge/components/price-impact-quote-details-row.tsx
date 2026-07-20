@@ -13,10 +13,12 @@ import { PopoverPosition } from '../../../components/component-library';
 import {
   getValidationErrors,
   getFormattedPriceImpactPercentage,
+  getBridgeQuotes,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { JustifyContent } from '../../../helpers/constants/design-system';
 import { Row, Tooltip } from '../layout';
+import { formatPriceImpactPercentage } from '../utils/price-impact';
 
 type PriceImpactRowProps = {
   onOpenPriceImpactWarningModal: () => void;
@@ -30,7 +32,10 @@ export const PriceImpactQuoteDetailsRow = ({
     getValidationErrors,
     shallowEqual,
   );
-  const formattedPriceImpact = useSelector(getFormattedPriceImpactPercentage);
+  const { activeQuote } = useSelector(getBridgeQuotes);
+  const formattedPriceImpact = formatPriceImpactPercentage(
+    activeQuote?.quote.priceData?.priceImpact?.amount,
+  );
 
   const priceImpactTextColor = useMemo(() => {
     if (isPriceImpactWarning) {

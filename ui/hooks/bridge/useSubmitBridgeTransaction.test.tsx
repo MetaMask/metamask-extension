@@ -5,6 +5,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
 import type {
   QuoteMetadata,
+  QuoteResponse,
   QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
@@ -30,6 +31,7 @@ import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
+import { mergeQuoteMetadata } from '@metamask/bridge-controller';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -219,10 +221,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-        ...ETH_11_USDC_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+          ETH_11_USDC_TO_ARB_METADATA,
+        );
 
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
@@ -255,10 +258,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
-        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
-        ...OP_0_005_ETH_TO_ARB_METADATA,
-      };
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata =
+        mergeQuoteMetadata(
+          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+          OP_0_005_ETH_TO_ARB_METADATA,
+        );
       await act(async () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
       });

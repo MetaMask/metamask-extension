@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   getNativeAssetForChainId,
-  QuoteResponseV1,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';

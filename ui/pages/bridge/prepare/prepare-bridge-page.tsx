@@ -455,7 +455,7 @@ const PrepareBridgePage = ({
               }
               onClick={() => {
                 const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                  unvalidatedQuote?.quote.dest.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -543,20 +543,20 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
+              unvalidatedQuote?.quote.dest.valueInCurrency ?? undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.toTokenAmount?.amount
+              value: unvalidatedQuote?.quote.dest.normalizedAmount
                 ? formatTokenAmount(
                     locale,
-                    unvalidatedQuote.toTokenAmount.amount,
+                    unvalidatedQuote.quote.dest.normalizedAmount,
                   )
                 : '0',
               autoFocus: false,
-              className: unvalidatedQuote?.toTokenAmount?.amount
+              className: unvalidatedQuote?.quote.dest.normalizedAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
