@@ -19,10 +19,7 @@ import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets
 import { t } from '../../../shared/lib/translate';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { MULTICHAIN_ACCOUNT_TYPE_TO_NAME } from '../../../shared/constants/multichain/accounts';
-
-type LocalizationContext = {
-  t: (key: string, ...args: unknown[]) => string;
-};
+import type { I18nFunction } from '../../contexts/i18n';
 
 type LabelAccount = {
   address: string;
@@ -42,22 +39,34 @@ type AccountLabel = {
   icon: IconName | null;
 };
 
+function translateToString(translate: I18nFunction, key: string): string {
+  const translation = translate(key);
+
+  if (typeof translation !== 'string') {
+    throw new Error(`Expected translation for "${key}" to be a string`);
+  }
+
+  return translation;
+}
+
 export function getAccountNameErrorMessage(
-  accounts: { metadata?: { name?: string } }[],
-  context: LocalizationContext,
+  accounts: { metadata?: { name?: string } }[] | undefined,
+  context: { t: I18nFunction },
   newAccountName?: string,
   defaultAccountName?: string,
 ): { isValidAccountName: boolean; errorMessage: string | undefined } {
-  const isDuplicateAccountName = accounts.some(
-    (item) =>
-      item.metadata?.name?.toLowerCase() === newAccountName?.toLowerCase(),
-  );
+  const isDuplicateAccountName =
+    accounts?.some(
+      (item) =>
+        item.metadata?.name?.toLowerCase() === newAccountName?.toLowerCase(),
+    ) ?? false;
 
   const isEmptyAccountName = !newAccountName || newAccountName === '';
 
-  const localizedWordForAccount = context
-    .t('newAccountNumberName')
-    .replace(' $1', '');
+  const localizedWordForAccount = translateToString(
+    context.t,
+    'newAccountNumberName',
+  ).replace(' $1', '');
 
   // Match strings starting with ${localizedWordForAccount} and then any numeral, case insensitive
   // Trim spaces before and after
@@ -78,11 +87,11 @@ export function getAccountNameErrorMessage(
     errorMessage = InvisibleCharacter; // Using an invisible character, so the spacing stays
     // constant
   } else if (isDuplicateAccountName) {
-    errorMessage = context.t('accountNameDuplicate');
+    errorMessage = translateToString(context.t, 'accountNameDuplicate');
   } else if (isReservedAccountName) {
-    errorMessage = context.t('accountNameReserved');
+    errorMessage = translateToString(context.t, 'accountNameReserved');
   } else if (isEmptyAccountName) {
-    errorMessage = context.t('required');
+    errorMessage = translateToString(context.t, 'required');
   }
 
   return { isValidAccountName, errorMessage };
