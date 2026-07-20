@@ -1,5 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import type { PaymentMethod } from '@metamask/ramps-controller';
 import {
   Box,
@@ -7,8 +8,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
+import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
+import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import Spinner from '../../../components/ui/spinner';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -22,6 +27,10 @@ import {
   getProviderBuyLimit,
 } from './utils/format-payment-method-limits';
 
+type PaymentMethodLocationState = {
+  amount?: number;
+};
+
 /**
  * Ramps buy-flow payment method selection screen.
  *
@@ -31,6 +40,8 @@ import {
 export function RampsPaymentMethodScreen() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const {
     paymentMethods,
     paymentMethodsLoading,
@@ -38,6 +49,7 @@ export function RampsPaymentMethodScreen() {
     paymentMethodsError,
     selectedPaymentMethod,
     selectedProvider,
+    selectedToken,
     userRegion,
     setSelectedPaymentMethod,
   } = useRampsController();
@@ -45,6 +57,48 @@ export function RampsPaymentMethodScreen() {
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
+
+  const amount =
+    (location.state as PaymentMethodLocationState | null)?.amount ?? 0;
+  const walletAddress = selectedAccount?.address ?? '';
+  const assetId = selectedToken?.assetId
+    ? normalizeAssetIdForApi(selectedToken.assetId)
+    : '';
+  const tokenSymbol = selectedToken?.symbol ?? '';
+
+  const paymentMethodIds = useMemo(
+    () => paymentMethods.map((paymentMethod) => paymentMethod.id),
+    [paymentMethods],
+  );
+
+  const quoteFetchParams = useMemo(
+    () =>
+      amount > 0 &&
+      walletAddress &&
+      assetId &&
+      !paymentMethodsLoading &&
+      paymentMethodIds.length > 0
+        ? {
+            amount,
+            walletAddress,
+            assetId,
+            redirectUrl: getRampCallbackBaseUrl(),
+            providers: selectedProvider ? [selectedProvider.id] : undefined,
+            paymentMethods: paymentMethodIds,
+          }
+        : null,
+    [
+      amount,
+      walletAddress,
+      assetId,
+      selectedProvider,
+      paymentMethodIds,
+      paymentMethodsLoading,
+    ],
+  );
+
+  const { data: quotes, loading: quotesLoading } =
+    useRampsQuotes(quoteFetchParams);
 
   // Keep cached methods visible if a background refetch fails.
   const showError = Boolean(paymentMethodsError) && paymentMethods.length === 0;
@@ -151,26 +205,47 @@ export function RampsPaymentMethodScreen() {
     >
       <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          {paymentMethods.map((paymentMethod) => (
-            <RampsPaymentMethodListItem
-              key={paymentMethod.id}
-              paymentMethod={paymentMethod}
-              isSelected={selectedPaymentMethod?.id === paymentMethod.id}
-              isDisabled={isSelecting}
-              limitText={formatPaymentMethodLimits(
-                getProviderBuyLimit(
-                  selectedProvider,
-                  fiatCurrency,
-                  paymentMethod.id,
-                ),
-                formatFiat,
-                t,
-              )}
-              onClick={() => {
-                handlePaymentMethodSelect(paymentMethod).catch(() => undefined);
-              }}
-            />
-          ))}
+          {paymentMethods.map((paymentMethod) => {
+            const matchedQuote =
+              quotes?.success?.find(
+                (quote) => quote.quote?.paymentMethod === paymentMethod.id,
+              ) ?? null;
+            const hasQuoteError =
+              !quotesLoading && quotes !== null && matchedQuote === null;
+            const quoteErrorMessage = hasQuoteError
+              ? t('rampsQuoteUnavailable')
+              : undefined;
+
+            return (
+              <RampsPaymentMethodListItem
+                key={paymentMethod.id}
+                paymentMethod={paymentMethod}
+                isSelected={selectedPaymentMethod?.id === paymentMethod.id}
+                isDisabled={isSelecting || hasQuoteError}
+                limitText={formatPaymentMethodLimits(
+                  getProviderBuyLimit(
+                    selectedProvider,
+                    fiatCurrency,
+                    paymentMethod.id,
+                  ),
+                  formatFiat,
+                  t,
+                )}
+                showQuote={amount > 0}
+                quote={matchedQuote}
+                quoteLoading={quotesLoading}
+                quoteError={hasQuoteError}
+                quoteErrorMessage={quoteErrorMessage}
+                currency={fiatCurrency}
+                tokenSymbol={tokenSymbol}
+                onClick={() => {
+                  handlePaymentMethodSelect(paymentMethod).catch(
+                    () => undefined,
+                  );
+                }}
+              />
+            );
+          })}
         </Box>
       </ScrollContainer>
     </RampsSelectionPage>
