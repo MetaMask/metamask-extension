@@ -66,9 +66,6 @@
   "decimal": {
     "message": "Decimalen van precisie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
   "done": {
     "message": "Gedaan"
   },
