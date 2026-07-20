@@ -171,7 +171,6 @@ import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
   MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerTrackEventAction,
   MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
@@ -277,7 +276,6 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerTrackEventAction
   | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
