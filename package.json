@@ -448,7 +448,7 @@
     "@metamask/subscription-controller": "^6.2.0",
     "@metamask/transaction-controller": "^69.0.0",
     "@metamask/transaction-pay-controller": "^24.0.3",
-    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.31.0-preview-665def5",
+    "@metamask/tron-wallet-snap": "^1.32.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.11.0",
     "@metamask/wallet": "^7.0.1",
