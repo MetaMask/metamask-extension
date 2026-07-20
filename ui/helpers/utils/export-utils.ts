@@ -75,8 +75,7 @@ async function saveFileUsingFilePicker(
   data: string,
   contentType: ExportableContentType,
 ): Promise<void> {
-  const blobOptions = { contentType };
-  const blob = new window.Blob([data], blobOptions);
+  const blob = new window.Blob([data], { type: contentType });
   const fileExtension = ExtensionForContentType[contentType];
 
   const handle = await (
