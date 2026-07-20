@@ -38,6 +38,21 @@ type ConnectivityChangeListener = (
   callback: (state: { connectivityStatus: string }) => void,
 ) => () => void;
 
+/**
+ * Opens the server-aggregated order-book subscription on a dedicated
+ * Hyperliquid WebSocket connection (separate from the controller's shared
+ * socket) and returns an unsubscribe function. Injected so this file never
+ * value-imports the ESM-only Hyperliquid SDK, keeping the bridge Jest-friendly.
+ */
+type SubscribeAggregatedOrderBook = (params: {
+  symbol: string;
+  levels?: number;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+  callback: (data: unknown) => void;
+  onStatusChange?: (status: 'connecting' | 'connected' | 'error') => void;
+}) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
   onControllerStateChange: StateChangeListener;
@@ -47,6 +62,7 @@ type PerpsStreamBridgeOptions = {
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   isTerminalBackendEnabled: () => boolean;
+  subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
   emit: EmitFn;
 };
 
@@ -98,6 +114,8 @@ export class PerpsStreamBridge {
   readonly #isConnectionAlive: () => boolean;
 
   readonly #isTerminalBackendEnabled: () => boolean;
+
+  readonly #subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
 
   readonly #emit: EmitFn;
 
@@ -180,6 +198,7 @@ export class PerpsStreamBridge {
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
     this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
+    this.#subscribeAggregatedOrderBook = options.subscribeAggregatedOrderBook;
     this.#emit = options.emit;
   }
 
@@ -805,11 +824,16 @@ export class PerpsStreamBridge {
   }
 
   /**
-   * Activate a second, independent order-book subscription that uses
-   * server-side aggregation (`nSigFigs`/`mantissa`). This is kept separate from
-   * the raw `orderBook` channel so surfaces that need full-precision depth
-   * (top-of-book mid, slippage estimation) are never disturbed by the order
-   * book panel's coarser grouping.
+   * Activate the server-aggregated order-book subscription (`nSigFigs` /
+   * `mantissa`) for the order-book panel's grouped ladder.
+   *
+   * Unlike the raw `orderBook` channel — which runs on the controller's shared
+   * WebSocket — this runs on a dedicated Hyperliquid connection. The SDK routes
+   * `l2Book` events by `coin` only, so a raw and an aggregated subscription for
+   * the same coin on the same socket cross-contaminate (the coarse ladder and
+   * the precise spread/slippage clobber each other). Isolating the aggregated
+   * subscription on its own socket removes the collision: that socket carries a
+   * single `l2Book` stream and the shared socket is never touched by grouping.
    *
    * @param params - Subscription parameters.
    * @param params.symbol - Market symbol.
@@ -827,9 +851,11 @@ export class PerpsStreamBridge {
     this.#tearDownChannel('orderBookAggregated');
     if (symbol) {
       this.#addDynamicSubscription('orderBookAggregated', () =>
-        this.#controller.subscribeToOrderBook({
+        this.#subscribeAggregatedOrderBook({
           ...params,
           callback: (data: unknown) => this.#emit('orderBookAggregated', data),
+          onStatusChange: (status) =>
+            this.#emit('orderBookAggregatedStatus', status),
         }),
       );
     }

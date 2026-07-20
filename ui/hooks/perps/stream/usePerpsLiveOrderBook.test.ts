@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLiveOrderBook } from './usePerpsLiveOrderBook';
@@ -127,7 +127,8 @@ describe('usePerpsLiveOrderBook', () => {
       );
 
       const resetKey = mockUsePerpsChannel.mock.calls[0][2];
-      expect(resetKey).toBe('BTC:3:2');
+      // Trailing `:0` is the reconnect nonce (bumped by reconnect()).
+      expect(resetKey).toBe('BTC:3:2:0');
     });
 
     it('keeps the raw channel reset key symbol-only', () => {
@@ -135,6 +136,53 @@ describe('usePerpsLiveOrderBook', () => {
 
       const resetKey = mockUsePerpsChannel.mock.calls[0][2];
       expect(resetKey).toBe('BTC');
+    });
+
+    it('reads status from the orderBookAggregatedStatus channel', () => {
+      const orderBookAggregated = { name: 'aggregated' };
+      const orderBookAggregatedStatus = { name: 'status' };
+      const streamManager = { orderBookAggregated, orderBookAggregatedStatus };
+
+      renderHook(() =>
+        usePerpsLiveOrderBook({
+          symbol: 'BTC',
+          channel: 'orderBookAggregated',
+          nSigFigs: 4,
+        }),
+      );
+
+      // Second usePerpsChannel call reads the status channel.
+      const getStatusChannel = mockUsePerpsChannel.mock.calls[1][0];
+      expect(getStatusChannel(streamManager as never)).toBe(
+        orderBookAggregatedStatus,
+      );
+    });
+
+    it('re-subscribes when reconnect() is called', () => {
+      const { result } = renderHook(() =>
+        usePerpsLiveOrderBook({
+          symbol: 'BTC',
+          channel: 'orderBookAggregated',
+          nSigFigs: 3,
+        }),
+      );
+
+      mockSubmitRequestToBackground.mockClear();
+
+      act(() => {
+        result.current.reconnect();
+      });
+
+      // The prior subscription is torn down and a fresh one is activated,
+      // which rebuilds the dedicated socket in the background.
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsDeactivateOrderBookAggregatedStream',
+        [],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsActivateOrderBookAggregatedStream',
+        [{ symbol: 'BTC', levels: undefined, nSigFigs: 3, mantissa: undefined }],
+      );
     });
   });
 });

@@ -80,6 +80,8 @@ describe('PerpsOrderBook', () => {
     mockUsePerpsLiveOrderBook.mockReturnValue({
       orderBook: mockOrderBook,
       isInitialLoading: false,
+      connectionStatus: 'connected',
+      reconnect: jest.fn(),
     });
   });
 
@@ -92,6 +94,8 @@ describe('PerpsOrderBook', () => {
       mockUsePerpsLiveOrderBook.mockReturnValue({
         orderBook: null,
         isInitialLoading: true,
+        connectionStatus: 'connecting',
+        reconnect: jest.fn(),
       });
 
       renderOrderBook();
@@ -105,6 +109,8 @@ describe('PerpsOrderBook', () => {
       mockUsePerpsLiveOrderBook.mockReturnValue({
         orderBook: null,
         isInitialLoading: false,
+        connectionStatus: 'connected',
+        reconnect: jest.fn(),
       });
 
       renderOrderBook();
@@ -112,6 +118,60 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByText(messages.perpsOrderBookNoData.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('connection error state', () => {
+    it('renders the connection-lost message and a reconnect button on error', () => {
+      mockUsePerpsLiveOrderBook.mockReturnValue({
+        orderBook: null,
+        isInitialLoading: false,
+        connectionStatus: 'error',
+        reconnect: jest.fn(),
+      });
+
+      renderOrderBook();
+
+      expect(
+        screen.getByText(messages.perpsOrderBookConnectionError.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-book-reconnect'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls reconnect when the reconnect button is clicked', () => {
+      const reconnect = jest.fn();
+      mockUsePerpsLiveOrderBook.mockReturnValue({
+        orderBook: null,
+        isInitialLoading: false,
+        connectionStatus: 'error',
+        reconnect,
+      });
+
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-reconnect'));
+
+      expect(reconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('prioritizes the error state over available ladder data', () => {
+      mockUsePerpsLiveOrderBook.mockReturnValue({
+        orderBook: mockOrderBook,
+        isInitialLoading: false,
+        connectionStatus: 'error',
+        reconnect: jest.fn(),
+      });
+
+      renderOrderBook();
+
+      expect(
+        screen.getByTestId('perps-order-book-connection-error'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-ask-row-0'),
+      ).not.toBeInTheDocument();
     });
   });
 

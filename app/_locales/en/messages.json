@@ -7432,6 +7432,9 @@
   "perpsOrderBookConfigTitle": {
     "message": "Listed by & Group by"
   },
+  "perpsOrderBookConnectionError": {
+    "message": "Order book connection lost"
+  },
   "perpsOrderBookDepthRatio": {
     "message": "Buy $1%, sell $2%",
     "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
@@ -7450,6 +7453,9 @@
   },
   "perpsOrderBookPrice": {
     "message": "Price"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconnect"
   },
   "perpsOrderBookResize": {
     "message": "Resize order book"

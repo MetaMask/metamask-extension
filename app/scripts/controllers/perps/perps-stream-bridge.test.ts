@@ -73,6 +73,7 @@ type BridgeOverrides = {
   onConnectivityChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
   isTerminalBackendEnabled?: () => boolean;
+  subscribeAggregatedOrderBook?: jest.Mock;
   emit?: jest.Mock;
 };
 
@@ -89,6 +90,9 @@ function createBridge(overrides: BridgeOverrides = {}) {
   const isConnectionAlive = overrides.isConnectionAlive ?? (() => true);
   const isTerminalBackendEnabled =
     overrides.isTerminalBackendEnabled ?? (() => false);
+  const subscribeAggregatedOrderBook =
+    overrides.subscribeAggregatedOrderBook ??
+    jest.fn().mockReturnValue(jest.fn());
 
   const bridge = new PerpsStreamBridge({
     controller,
@@ -99,6 +103,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
     isConnectionAlive,
     isTerminalBackendEnabled,
+    subscribeAggregatedOrderBook,
     emit,
   });
 
@@ -109,6 +114,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     controllerApi,
     onControllerStateChange,
     onConnectivityChange,
+    subscribeAggregatedOrderBook,
   };
 }
 
@@ -839,10 +845,14 @@ describe('PerpsStreamBridge', () => {
   });
 
   describe('perpsActivateOrderBookAggregatedStream / perpsDeactivateOrderBookAggregatedStream', () => {
-    it('subscribes to order book and emits on orderBookAggregated channel', async () => {
+    it('subscribes on the dedicated connection and emits on orderBookAggregated channel', async () => {
       const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest
+        .fn()
+        .mockReturnValue(jest.fn());
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
       });
       const api = bridge.bridgeApi();
 
@@ -859,14 +869,18 @@ describe('PerpsStreamBridge', () => {
         nSigFigs: 3,
       });
 
-      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+      // The aggregated stream uses the dedicated connection, never the shared
+      // controller socket.
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+      expect(subscribeAggregatedOrderBook).toHaveBeenCalledWith({
         symbol: 'ETH',
         levels: 20,
         nSigFigs: 3,
         mantissa: undefined,
         callback: expect.any(Function),
+        onStatusChange: expect.any(Function),
       });
-      const callback = controller.subscribeToOrderBook.mock.calls[0][0]
+      const callback = subscribeAggregatedOrderBook.mock.calls[0][0]
         .callback as (data: unknown) => void;
       callback({ bids: [], asks: [] });
       expect(emit).toHaveBeenCalledWith('orderBookAggregated', {
@@ -875,15 +889,40 @@ describe('PerpsStreamBridge', () => {
       });
     });
 
+    it('emits connection status on the orderBookAggregatedStatus channel', async () => {
+      const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest
+        .fn()
+        .mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3 });
+
+      const { onStatusChange } = subscribeAggregatedOrderBook.mock.calls[0][0];
+      onStatusChange('error');
+      expect(emit).toHaveBeenCalledWith('orderBookAggregatedStatus', 'error');
+    });
+
     it('runs independently of the raw order book stream', async () => {
       const controller = createMockController();
       const rawUnsub = jest.fn();
       const aggregatedUnsub = jest.fn();
-      controller.subscribeToOrderBook
-        .mockReturnValueOnce(rawUnsub)
-        .mockReturnValueOnce(aggregatedUnsub);
+      controller.subscribeToOrderBook.mockReturnValue(rawUnsub);
+      const subscribeAggregatedOrderBook = jest
+        .fn()
+        .mockReturnValue(aggregatedUnsub);
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
       });
       const api = bridge.bridgeApi();
 
@@ -899,8 +938,9 @@ describe('PerpsStreamBridge', () => {
         }) => Promise<void>
       )({ symbol: 'ETH', nSigFigs: 3 });
 
-      // Two independent subscriptions coexist for the same symbol.
-      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(2);
+      // Raw stream on the shared socket, aggregated on the dedicated connection.
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(1);
+      expect(subscribeAggregatedOrderBook).toHaveBeenCalledTimes(1);
       expect(rawUnsub).not.toHaveBeenCalled();
       expect(aggregatedUnsub).not.toHaveBeenCalled();
 
@@ -913,6 +953,9 @@ describe('PerpsStreamBridge', () => {
     it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
       const controller = createMockController();
       const controllerApi = createMockControllerApi();
+      const subscribeAggregatedOrderBook = jest
+        .fn()
+        .mockReturnValue(jest.fn());
       let resolveInit: () => void = () => undefined;
       controllerApi.perpsInit.mockReturnValue(
         new Promise<void>((resolve) => {
@@ -922,6 +965,7 @@ describe('PerpsStreamBridge', () => {
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
         controllerApi,
+        subscribeAggregatedOrderBook,
       });
       const api = bridge.bridgeApi();
 
@@ -937,7 +981,7 @@ describe('PerpsStreamBridge', () => {
       resolveInit();
       await activation;
 
-      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+      expect(subscribeAggregatedOrderBook).not.toHaveBeenCalled();
     });
   });
 

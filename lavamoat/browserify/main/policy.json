@@ -2132,7 +2132,7 @@
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid": true,
+        "@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
         "reselect": true,
         "uuid": true
@@ -3012,7 +3012,7 @@
         "@ngraveio/bc-ur>sha.js": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid": {
+    "@nktkas/hyperliquid": {
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
@@ -3029,12 +3029,12 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
+        "@nktkas/hyperliquid>@nktkas/rews": true,
+        "@nktkas/hyperliquid>@noble/hashes": true,
+        "@nktkas/hyperliquid>valibot": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
+    "@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
         "CloseEvent": true,
@@ -3141,7 +3141,7 @@
         "crypto": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": {
+    "@nktkas/hyperliquid>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -6895,7 +6895,7 @@
         "crypto": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid>valibot": {
+    "@nktkas/hyperliquid>valibot": {
       "globals": {
         "Blob": true,
         "File": true,

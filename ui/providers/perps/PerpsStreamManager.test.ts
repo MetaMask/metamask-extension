@@ -773,6 +773,18 @@ describe('PerpsStreamManager', () => {
       expect(rawCb).not.toHaveBeenCalled();
     });
 
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
+    });
+
     it('routes candles channel to candles.pushFromBackground', () => {
       const pushFromBackground = jest.fn();
       (

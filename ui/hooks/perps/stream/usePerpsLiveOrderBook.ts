@@ -1,6 +1,9 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import type {
+  OrderBookConnectionStatus,
+  PerpsStreamManager,
+} from '../../../providers/perps';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 
@@ -42,11 +45,25 @@ export type UsePerpsLiveOrderBookReturn = {
   orderBook: OrderBookData | null;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
+  /**
+   * Health of the underlying stream. Only meaningful for the
+   * `orderBookAggregated` channel (its dedicated socket); the raw channel
+   * always reports `connected`.
+   */
+  connectionStatus: OrderBookConnectionStatus;
+  /**
+   * Re-establishes the stream after a dropped connection. Tears the current
+   * subscription down and re-activates it (rebuilding the dedicated socket for
+   * the aggregated channel). No-op unless `manageStream` is enabled.
+   */
+  reconnect: () => void;
 };
 
 const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
 const getOrderBookAggregatedChannel = (sm: PerpsStreamManager) =>
   sm.orderBookAggregated;
+const getOrderBookAggregatedStatusChannel = (sm: PerpsStreamManager) =>
+  sm.orderBookAggregatedStatus;
 
 /**
  * Hook for real-time order book data via background stream notifications.
@@ -73,19 +90,34 @@ export function usePerpsLiveOrderBook(
   const activeSymbol = enabled ? symbol : undefined;
   const isAggregated = channel === 'orderBookAggregated';
 
+  // Bumped by reconnect() to force the activate effect to tear down and
+  // re-subscribe (which rebuilds the aggregated channel's dedicated socket).
+  const [reconnectNonce, setReconnectNonce] = useState(0);
+  const reconnect = useCallback(() => {
+    setReconnectNonce((nonce) => nonce + 1);
+  }, []);
+
   // For the aggregated channel, changing the server-side aggregation params
   // yields a structurally different book, so fold them into the reset key to
-  // drop the prior grouping's rows the instant the grouping changes.
+  // drop the prior grouping's rows the instant the grouping changes. The
+  // reconnect nonce is also folded in so a manual reconnect clears the stale
+  // book (and resets the status channel to `connecting`) while re-subscribing.
   let resetKey: string | undefined;
   if (activeSymbol) {
     resetKey = isAggregated
-      ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}`
+      ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${reconnectNonce}`
       : activeSymbol;
   }
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,
     null,
+    resetKey,
+  );
+
+  const { data: connectionStatus } = usePerpsChannel<OrderBookConnectionStatus>(
+    getOrderBookAggregatedStatusChannel,
+    'connecting',
     resetKey,
   );
 
@@ -109,10 +141,23 @@ export function usePerpsLiveOrderBook(
         // Best-effort teardown.
       });
     };
-  }, [manageStream, enabled, symbol, levels, nSigFigs, mantissa, isAggregated]);
+  }, [
+    manageStream,
+    enabled,
+    symbol,
+    levels,
+    nSigFigs,
+    mantissa,
+    isAggregated,
+    reconnectNonce,
+  ]);
 
   return {
     orderBook,
     isInitialLoading: isInitialLoading || !activeSymbol,
+    // The raw channel shares the always-on controller socket, so it has no
+    // independent health to report — treat it as connected.
+    connectionStatus: isAggregated ? connectionStatus : 'connected',
+    reconnect,
   };
 }

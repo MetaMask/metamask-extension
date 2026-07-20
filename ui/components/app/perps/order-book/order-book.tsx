@@ -13,7 +13,11 @@ import {
   Text,
   TextVariant,
   TextColor,
+  TextAlign,
   FontWeight,
+  Button,
+  ButtonVariant,
+  ButtonSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -330,15 +334,19 @@ export const PerpsOrderBook = ({
 
   // Server-aggregated book on its own dedicated channel/subscription (does not
   // disturb the raw channel). This drives the bid/ask ladder rows.
-  const { orderBook: aggregatedOrderBook, isInitialLoading } =
-    usePerpsLiveOrderBook({
-      symbol,
-      channel: 'orderBookAggregated',
-      enabled: isOpen,
-      levels: ORDER_BOOK_AGGREGATED_LEVELS,
-      nSigFigs: aggregationParams.nSigFigs,
-      mantissa: aggregationParams.mantissa,
-    });
+  const {
+    orderBook: aggregatedOrderBook,
+    isInitialLoading,
+    connectionStatus,
+    reconnect,
+  } = usePerpsLiveOrderBook({
+    symbol,
+    channel: 'orderBookAggregated',
+    enabled: isOpen,
+    levels: ORDER_BOOK_AGGREGATED_LEVELS,
+    nSigFigs: aggregationParams.nSigFigs,
+    mantissa: aggregationParams.mantissa,
+  });
 
   // The stream already aggregated server-side, so pass grouping=null (no
   // client-side re-bucketing); just trim to the display depth and rescale bars.
@@ -429,6 +437,25 @@ export const PerpsOrderBook = ({
     grouped && (grouped.bids.length > 0 || grouped.asks.length > 0),
   );
 
+  // The dedicated aggregated socket has dropped and exhausted its automatic
+  // reconnection attempts. Surface a clear message and a manual retry rather
+  // than an indefinite "Loading…" or a misleading "No data".
+  const hasConnectionError = connectionStatus === 'error';
+
+  const showPlaceholder =
+    hasConnectionError ||
+    isInitialLoading ||
+    !aggregatedOrderBook ||
+    !grouped ||
+    !hasLadder;
+
+  let placeholderMessage = t('perpsOrderBookNoData');
+  if (hasConnectionError) {
+    placeholderMessage = t('perpsOrderBookConnectionError');
+  } else if (isInitialLoading) {
+    placeholderMessage = t('perpsOrderBookLoading');
+  }
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -492,19 +519,35 @@ export const PerpsOrderBook = ({
       </Box>
 
       {/* Ladder */}
-      {isInitialLoading || !aggregatedOrderBook || !grouped || !hasLadder ? (
+      {showPlaceholder ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
+          gap={3}
           className="flex-1"
           padding={4}
+          data-testid={
+            hasConnectionError ? `${dataTestId}-connection-error` : undefined
+          }
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {isInitialLoading
-              ? t('perpsOrderBookLoading')
-              : t('perpsOrderBookNoData')}
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+          >
+            {placeholderMessage}
           </Text>
+          {hasConnectionError && (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Sm}
+              onClick={reconnect}
+              data-testid={`${dataTestId}-reconnect`}
+            >
+              {t('perpsOrderBookReconnect')}
+            </Button>
+          )}
         </Box>
       ) : (
         <Box

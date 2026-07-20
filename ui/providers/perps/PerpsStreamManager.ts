@@ -45,6 +45,15 @@ import {
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
 
+/**
+ * Health of the dedicated order-book aggregated socket, pushed from the
+ * background bridge on the `orderBookAggregatedStatus` channel.
+ * - `connecting`: opening or transiently reconnecting.
+ * - `connected`: subscription is live.
+ * - `error`: dropped and auto-reconnection exhausted; needs a manual reconnect.
+ */
+export type OrderBookConnectionStatus = 'connecting' | 'connected' | 'error';
+
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
@@ -107,6 +116,13 @@ class PerpsStreamManager {
    * the order-book panel's grouping.
    */
   orderBookAggregated: PerpsDataChannel<OrderBookData | null>;
+
+  /**
+   * Health of the dedicated aggregated order-book socket. Lets the order-book
+   * panel surface a reconnect affordance when its connection drops without
+   * disturbing the raw channel or the rest of the perps UI.
+   */
+  orderBookAggregatedStatus: PerpsDataChannel<OrderBookConnectionStatus>;
 
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
@@ -288,6 +304,13 @@ class PerpsStreamManager {
       initialValue: null,
       name: 'orderBookAggregated',
     });
+
+    this.orderBookAggregatedStatus =
+      new PerpsDataChannel<OrderBookConnectionStatus>({
+        connectFn: placeholderConnectFn,
+        initialValue: 'connecting',
+        name: 'orderBookAggregatedStatus',
+      });
 
     this.fills = new PerpsDataChannel<OrderFill[]>({
       connectFn: placeholderConnectFn,
@@ -478,6 +501,7 @@ class PerpsStreamManager {
       this.prices.reset();
       this.orderBook.reset();
       this.orderBookAggregated.reset();
+      this.orderBookAggregatedStatus.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
       this._lastStreamUpdateAt = 0;
@@ -599,6 +623,11 @@ class PerpsStreamManager {
       case 'orderBookAggregated':
         this.orderBookAggregated.pushData(data as OrderBookData);
         break;
+      case 'orderBookAggregatedStatus':
+        this.orderBookAggregatedStatus.pushData(
+          data as OrderBookConnectionStatus,
+        );
+        break;
       case 'candles': {
         const { symbol, interval } = payload;
         if (symbol && interval) {
@@ -693,6 +722,7 @@ class PerpsStreamManager {
     this.prices.clearCache();
     this.orderBook.clearCache();
     this.orderBookAggregated.clearCache();
+    this.orderBookAggregatedStatus.clearCache();
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
@@ -715,6 +745,7 @@ class PerpsStreamManager {
     this.prices.reset();
     this.orderBook.reset();
     this.orderBookAggregated.reset();
+    this.orderBookAggregatedStatus.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
