@@ -15,17 +15,18 @@ const ExtensionForContentType: Record<ExportableContentType, string> = {
  * A view of `window` that includes the File System Access API, which is not
  * part of the DOM lib bundled with our TypeScript config.
  */
-type FilePickerWindow = Window & {
-  showSaveFilePicker: (options: {
-    suggestedName: string;
-    types: { description: string; accept: Record<string, string[]> }[];
-  }) => Promise<{
-    createWritable: () => Promise<{
-      write: (data: unknown) => Promise<void>;
-      close: () => Promise<void>;
+type FilePickerWindow = Window &
+  Pick<typeof globalThis, 'Blob'> & {
+    showSaveFilePicker: (options: {
+      suggestedName: string;
+      types: { description: string; accept: Record<string, string[]> }[];
+    }) => Promise<{
+      createWritable: () => Promise<{
+        write: (data: unknown) => Promise<void>;
+        close: () => Promise<void>;
+      }>;
     }>;
-  }>;
-};
+  };
 
 /**
  * Export data as a file.
@@ -43,9 +44,9 @@ export async function exportAsFile(
     throw new Error(`Unsupported file type: ${contentType}`);
   }
 
-  if (supportsShowSaveFilePicker()) {
+  if (typeof window !== 'undefined' && supportsShowSaveFilePicker(window)) {
     // Preferred method for downloads
-    await saveFileUsingFilePicker(filename, data, contentType);
+    await saveFileUsingFilePicker(window, filename, data, contentType);
   } else {
     saveFileUsingDataUri(filename, data, contentType);
   }
@@ -53,34 +54,37 @@ export async function exportAsFile(
 
 /**
  * Notes if the browser supports the File System Access API.
+ * @param candidateWindow
  */
-function supportsShowSaveFilePicker(): boolean {
+function supportsShowSaveFilePicker(
+  candidateWindow: Window,
+): candidateWindow is FilePickerWindow {
   return (
-    typeof window !== 'undefined' &&
-    typeof (window as unknown as FilePickerWindow).showSaveFilePicker !==
-      'undefined' &&
-    typeof window.Blob !== 'undefined'
+    'showSaveFilePicker' in candidateWindow &&
+    typeof candidateWindow.showSaveFilePicker === 'function' &&
+    'Blob' in candidateWindow &&
+    typeof candidateWindow.Blob === 'function'
   );
 }
 
 /**
  * Saves a file using the File System Access API.
  *
+ * @param filePickerWindow
  * @param filename - The name of the file to export.
  * @param data - The data to export.
  * @param contentType - The content type of the file to export.
  */
 async function saveFileUsingFilePicker(
+  filePickerWindow: FilePickerWindow,
   filename: string,
   data: string,
   contentType: ExportableContentType,
 ): Promise<void> {
-  const blob = new window.Blob([data], { type: contentType });
+  const blob = new filePickerWindow.Blob([data], { type: contentType });
   const fileExtension = ExtensionForContentType[contentType];
 
-  const handle = await (
-    window as unknown as FilePickerWindow
-  ).showSaveFilePicker({
+  const handle = await filePickerWindow.showSaveFilePicker({
     suggestedName: filename,
     types: [
       {
