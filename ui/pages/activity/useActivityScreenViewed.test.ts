@@ -5,6 +5,7 @@ import React from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useActivityScreenViewed } from './useActivityScreenViewed';
 import type { ActivityListFilter } from './helpers';
@@ -131,5 +132,34 @@ describe('useActivityScreenViewed', () => {
     );
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('includes entry_point in properties when entryPoint is provided', () => {
+    renderHook(
+      () =>
+        useActivityScreenViewed({
+          ...defaultProps,
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+        }),
+      { wrapper: makeWrapper() },
+    );
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          entry_point: ScreenViewedEntryPoint.BottomNavClick,
+        }),
+      }),
+    );
+  });
+
+  it('does not include entry_point in properties when entryPoint is omitted', () => {
+    renderHook(() => useActivityScreenViewed(defaultProps), {
+      wrapper: makeWrapper(),
+    });
+
+    const [{ properties }] = mockTrackEvent.mock.calls[0];
+    expect(properties).not.toHaveProperty('entry_point');
   });
 });
