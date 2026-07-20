@@ -24,9 +24,15 @@ function clamp(value: number, min: number, max: number) {
 async function startTransition(
   direction: 'forward' | 'backward',
   update: () => void,
+  panel: HTMLElement | null,
 ) {
   if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
     document.documentElement.dataset.tabTransitionDirection = direction;
+    // Name the panel only during the tab switch; a persistent name would also be
+    // captured by unrelated (e.g. page) transitions, where it overflows.
+    if (panel) {
+      panel.style.viewTransitionName = 'tab-content';
+    }
 
     const transition = document.startViewTransition(update);
 
@@ -34,6 +40,9 @@ async function startTransition(
       await transition.finished;
     } finally {
       delete document.documentElement.dataset.tabTransitionDirection;
+      if (panel) {
+        panel.style.viewTransitionName = '';
+      }
     }
   } else {
     update();
@@ -52,6 +61,7 @@ export const Tabs = <TKey extends string = string>({
   ...props
 }: TabsProps<TKey>) => {
   const tabListRef = useRef<HTMLDivElement>(null);
+  const tabContentRef = useRef<HTMLDivElement>(null);
 
   // Helper function to get valid children, filtering out null/undefined/false values
   const getValidChildren = useMemo((): TabChild<TKey>[] => {
@@ -118,7 +128,7 @@ export const Tabs = <TKey extends string = string>({
       };
 
       if (animated) {
-        startTransition(direction, applyUpdate);
+        startTransition(direction, applyUpdate, tabContentRef.current);
       } else {
         applyUpdate();
       }
@@ -167,14 +177,7 @@ export const Tabs = <TKey extends string = string>({
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box
-        role="tabpanel"
-        {...tabContentProps}
-        style={{
-          ...tabContentProps?.style,
-          ...(animated ? { viewTransitionName: 'tab-content' } : undefined),
-        }}
-      >
+      <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
         {renderActiveTabContent()}
       </Box>
     </Box>
