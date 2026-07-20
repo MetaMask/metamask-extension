@@ -223,4 +223,25 @@ describe('NFTAsset', () => {
 
     expect(getByText('Native SegWit')).toBeInTheDocument();
   });
+
+  it('renders placeholder when both asset image and collection image are missing', () => {
+    mockUseNftImageUrl.mockReturnValue('');
+    const assetWithoutAnyImage = {
+      ...mockNFTERC721Asset,
+      image: undefined,
+      collection: {
+        ...mockNFTERC721Asset.collection,
+        imageUrl: undefined,
+      },
+    };
+    const { getByTestId } = render(<Asset asset={assetWithoutAnyImage} />);
+
+    const nftAsset = getByTestId('nft-asset');
+    expect(nftAsset).toBeInTheDocument();
+    
+    // Should maintain consistent dimensions even without image
+    const imageContainer = nftAsset.querySelector('[style*="width: 32px; height: 32px"]');
+    expect(imageContainer).toBeInTheDocument();
+    expect(imageContainer).toHaveStyle('height: 32px');
+  });
 });
