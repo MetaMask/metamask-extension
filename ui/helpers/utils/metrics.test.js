@@ -4,10 +4,7 @@ import {
   BlockaidResultType,
   SecurityAlertSource,
 } from '../../../shared/constants/security-provider';
-import {
-  getBlockaidMetricsProps,
-  getSwapAndSendMetricsProps,
-} from './metrics';
+import { getBlockaidMetricsProps, getSwapAndSendMetricsProps } from './metrics';
 
 const securityAlertResponse = {
   result_type: BlockaidResultType.Malicious,

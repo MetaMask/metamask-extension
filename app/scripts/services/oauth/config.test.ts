@@ -237,5 +237,4 @@ describe('build environment helpers', () => {
       expect(isReleaseCandidateBuild()).toBe(false);
     });
   });
-
 });

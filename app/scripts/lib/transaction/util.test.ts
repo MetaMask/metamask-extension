@@ -940,5 +940,4 @@ describe('Transaction Utils', () => {
       });
     });
   });
-
 });
