@@ -72,55 +72,6 @@ jobs:
     steps:
       - run: echo "Release approval granted."
 
-  # Production builds (4 variants) using yarn build prod.
-  build-dist-browserify:
-    name: Build prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-browserify
-      build-command: yarn build prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-dist-mv2-browserify:
-    name: Build prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-mv2-browserify
-      build-command: yarn build prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-flask-browserify:
-    name: Build Flask prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-browserify
-      build-command: yarn build --build-type flask prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
-  build-flask-mv2-browserify:
-    name: Build Flask prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - approve-release
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-browserify
-      build-command: yarn build --build-type flask prod
-      builds-from-run: ${{ github.run_id }}
-    secrets: inherit
-
   # Webpack production builds (4 variants) using yarn webpack:lavamoat:build.
   build-dist-webpack:
     name: Build prod webpack (Chrome MV3)
@@ -181,10 +132,6 @@ jobs:
     needs:
       - validate-branch
       - approve-release
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
       - build-dist-webpack
       - build-dist-mv2-webpack
       - build-flask-webpack
@@ -228,6 +175,7 @@ jobs:
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -247,42 +195,6 @@ jobs:
           skip-allow-scripts: true
           ref: ${{ needs.validate-branch.outputs.release-sha }}
           fetch-depth: 0
-
-      - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-dist-browserify
-          name: build-dist-browserify
-
-      - name: Publish main release to Sentry
-        run: yarn sentry:publish --dist-directory build-dist-browserify/dist
-
-      - name: Download artifact 'build-dist-mv2-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-dist-mv2-browserify
-          name: build-dist-mv2-browserify
-
-      - name: Publish main MV2 release to Sentry
-        run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
-
-      - name: Download artifact 'build-flask-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-flask-browserify
-          name: build-flask-browserify
-
-      - name: Publish Flask release to Sentry
-        run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
-
-      - name: Download artifact 'build-flask-mv2-browserify'
-        uses: actions/download-artifact@v7
-        with:
-          path: build-flask-mv2-browserify
-          name: build-flask-mv2-browserify
-
-      - name: Publish Flask MV2 release to Sentry
-        run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
       - name: Download artifact 'build-dist-webpack'
         uses: actions/download-artifact@v7
@@ -320,7 +232,7 @@ jobs:
       - name: Publish Flask MV2 webpack release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-webpack/dist
 
-      # SLSA build provenance attestation (INFRA-2665). Webpack zips only — browserify assets are deprecated fallbacks.
+      # SLSA build provenance attestation (INFRA-2665).
       - name: Attest webpack chrome artifact
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
         with:
@@ -370,8 +282,6 @@ jobs:
         id: amo-reviewer-s3
         continue-on-error: true
         uses: ./.github/actions/publish-amo-reviewer-artifacts
-        with:
-          firefox_bundle_script_ref: ${{ vars.FIREFOX_BUNDLE_SCRIPT_REF }}
 
       - name: Summary
         env:
@@ -382,10 +292,6 @@ jobs:
             echo ""
             echo "| Component | Status |"
             echo "|-----------|--------|"
-            echo "| Sentry (main) | ✅ Published |"
-            echo "| Sentry (main MV2) | ✅ Published |"
-            echo "| Sentry (Flask) | ✅ Published |"
-            echo "| Sentry (Flask MV2) | ✅ Published |"
             echo "| Sentry (main webpack) | ✅ Published |"
             echo "| Sentry (main MV2 webpack) | ✅ Published |"
             echo "| Sentry (Flask webpack) | ✅ Published |"
