@@ -9,14 +9,14 @@ type MockTransport = {
   options: { isTestnet: boolean };
   close: jest.Mock;
   socket: EventTarget;
+  subscribe: jest.Mock;
 };
-type MockClient = { l2Book: jest.Mock };
-type L2Listener = (data: unknown) => void;
+/** Invokes the connection's listener with the raw snapshot (wrapped as `detail`). */
+type L2Emit = (data: unknown) => void;
 
 type MockState = {
   transports: MockTransport[];
-  clients: MockClient[];
-  listeners: { params: unknown; listener: L2Listener }[];
+  listeners: { channel: string; params: unknown; listener: L2Emit }[];
   unsubscribe: jest.Mock;
   resolveSubscribe: boolean;
   rejectSubscribe: boolean;
@@ -25,7 +25,6 @@ type MockState = {
 jest.mock('@nktkas/hyperliquid', () => {
   const state: MockState = {
     transports: [],
-    clients: [],
     listeners: [],
     unsubscribe: jest.fn().mockResolvedValue(undefined),
     resolveSubscribe: true,
@@ -39,29 +38,35 @@ jest.mock('@nktkas/hyperliquid', () => {
 
     socket = new EventTarget();
 
+    subscribe = jest.fn(
+      (
+        channel: string,
+        params: unknown,
+        listener: (event: { detail: unknown }) => void,
+      ) => {
+        // Store an emitter that mirrors the SDK's CustomEvent delivery so tests
+        // can push a raw snapshot via `listeners[i].listener(rawData)`.
+        state.listeners.push({
+          channel,
+          params,
+          listener: (detail: unknown) => listener({ detail }),
+        });
+        if (state.rejectSubscribe) {
+          return Promise.reject(new Error('subscribe failed'));
+        }
+        return state.resolveSubscribe
+          ? Promise.resolve({ unsubscribe: state.unsubscribe })
+          : new Promise(() => undefined);
+      },
+    );
+
     constructor(options: { isTestnet: boolean }) {
       this.options = options;
       state.transports.push(this as unknown as MockTransport);
     }
   }
 
-  class SubscriptionClient {
-    l2Book = jest.fn((params: unknown, listener: L2Listener) => {
-      state.listeners.push({ params, listener });
-      if (state.rejectSubscribe) {
-        return Promise.reject(new Error('subscribe failed'));
-      }
-      return state.resolveSubscribe
-        ? Promise.resolve({ unsubscribe: state.unsubscribe })
-        : new Promise(() => undefined);
-    });
-
-    constructor() {
-      state.clients.push(this as unknown as MockClient);
-    }
-  }
-
-  return { WebSocketTransport, SubscriptionClient, mockState: state };
+  return { WebSocketTransport, mockState: state };
 });
 
 // eslint-disable-next-line import-x/first, import-x/no-namespace
@@ -80,7 +85,6 @@ const l2Level = (px: string, sz: string, n = 1) => ({ px, sz, n });
 
 beforeEach(() => {
   mockState.transports.length = 0;
-  mockState.clients.length = 0;
   mockState.listeners.length = 0;
   mockState.unsubscribe.mockClear();
   mockState.resolveSubscribe = true;
@@ -174,10 +178,14 @@ describe('AggregatedOrderBookConnection', () => {
 
     expect(mockState.transports).toHaveLength(1);
     expect(mockState.transports[0].options).toStrictEqual({ isTestnet: false });
+    expect(mockState.listeners[0].channel).toBe('l2Book');
+    // Runs in fast mode (5 levels) via the raw subscription payload.
     expect(mockState.listeners[0].params).toStrictEqual({
+      type: 'l2Book',
       coin: 'BTC',
       nSigFigs: 2,
-      mantissa: undefined,
+      mantissa: null,
+      fast: true,
     });
   });
 
@@ -230,7 +238,7 @@ describe('AggregatedOrderBookConnection', () => {
     connection.subscribe({ symbol: 'ETH', callback: jest.fn() });
 
     expect(mockState.transports).toHaveLength(1);
-    expect(mockState.clients).toHaveLength(1);
+    expect(mockState.transports[0].subscribe).toHaveBeenCalledTimes(2);
   });
 
   it('closes the transport once the last subscription is removed', async () => {

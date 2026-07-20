@@ -11,10 +11,15 @@
 class WebSocketTransport {
   constructor(options) {
     this.options = options;
+    this.socket = new EventTarget();
   }
 
   ready() {
     return Promise.resolve();
+  }
+
+  subscribe() {
+    return Promise.resolve({ unsubscribe: () => Promise.resolve() });
   }
 
   close() {
@@ -22,14 +27,4 @@ class WebSocketTransport {
   }
 }
 
-class SubscriptionClient {
-  constructor(config) {
-    this.config = config;
-  }
-
-  l2Book() {
-    return Promise.resolve({ unsubscribe: () => Promise.resolve() });
-  }
-}
-
-module.exports = { WebSocketTransport, SubscriptionClient };
+module.exports = { WebSocketTransport };

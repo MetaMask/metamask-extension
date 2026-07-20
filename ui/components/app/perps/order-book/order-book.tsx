@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -49,11 +43,6 @@ import type {
 } from './order-book.types';
 
 const DEPTH_BAR_OPACITY = 0.15;
-
-// Distance (px) from the bottom of the asks list within which the view is
-// treated as "following the best ask". Small enough that a deliberate scroll
-// up unpins, but tolerant of sub-pixel scroll rounding.
-const ASKS_BOTTOM_PIN_THRESHOLD_PX = 4;
 
 /**
  * Which side(s) of the ladder are shown. Cycled by the header view toggle:
@@ -369,38 +358,6 @@ export const PerpsOrderBook = ({
     [grouped],
   );
 
-  // The asks list is bottom-anchored (best ask nearest the spread), so a book
-  // deep enough to overflow otherwise starts scrolled to the top, hiding the
-  // best asks. Anchor to the bottom on open and when the depth changes, but only
-  // while the user is already at the bottom — if they've scrolled up to inspect
-  // deeper asks, leave their position alone. (Rank-keyed rows update in place,
-  // so live price ticks no longer reset the scroll; this handles the initial
-  // anchor and row-count changes from regrouping.)
-  const asksScrollRef = useRef<HTMLDivElement>(null);
-  const asksPinnedToBottomRef = useRef(true);
-
-  const handleAsksScroll = useCallback(() => {
-    const el = asksScrollRef.current;
-    if (!el) {
-      return;
-    }
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    asksPinnedToBottomRef.current =
-      distanceFromBottom <= ASKS_BOTTOM_PIN_THRESHOLD_PX;
-  }, []);
-
-  // Switching market re-arms the intent to follow the best ask at the bottom.
-  useLayoutEffect(() => {
-    asksPinnedToBottomRef.current = true;
-  }, [symbol]);
-
-  useLayoutEffect(() => {
-    const el = asksScrollRef.current;
-    if (el && showAsks && asksPinnedToBottomRef.current) {
-      el.scrollTop = el.scrollHeight;
-    }
-  }, [showAsks, reversedAsks]);
-
   const depthRatio = useMemo(
     () => (grouped ? getDepthRatio(grouped.bids, grouped.asks) : null),
     [grouped],
@@ -552,50 +509,39 @@ export const PerpsOrderBook = ({
       ) : (
         <Box
           flexDirection={BoxFlexDirection.Column}
-          className="flex-1 min-h-0 overflow-hidden"
+          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
         >
-          {/* Asks (sell) — fills the top half, anchored to the spread. The
-              scroll container stays top-anchored (a `justify-content: flex-end`
-              scroll box clips its overflowing top rows and can't scroll to
-              them); `mt-auto` on the inner list bottom-anchors the rows against
-              the spread while keeping every level reachable when it overflows. */}
+          {/* Asks (sell) — sit directly above the spread. The ladder is a
+              compact block anchored to the top of the panel (fast mode caps the
+              book at a few levels per side, so there is nothing to scroll to). */}
           {showAsks && (
-            <Box
-              ref={asksScrollRef}
-              onScroll={handleAsksScroll}
-              flexDirection={BoxFlexDirection.Column}
-              className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
-            >
-              <Box flexDirection={BoxFlexDirection.Column} className="mt-auto">
-                {reversedAsks.map((level, index) => (
-                  <OrderBookRow
-                    // Key by ladder rank, not price: the depth is fixed and each
-                    // row is a positional slot, so React reuses the same DOM node
-                    // and updates it in place across live ticks instead of
-                    // remounting every update — which is what reset the scroll
-                    // position to the top (and costs extra render work).
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`ask-${index}`}
-                    level={level}
-                    side="ask"
-                    currency={currency}
-                    metric={metric}
-                    maxTotal={grouped.maxTotal}
-                    szDecimals={szDecimals}
-                    onSelectPrice={onSelectPrice}
-                    selectPriceLabel={
-                      onSelectPrice
-                        ? t('perpsOrderBookUsePrice', [
-                            formatPerpsFiat(level.price, {
-                              ranges: PRICE_RANGES_UNIVERSAL,
-                            }),
-                          ])
-                        : undefined
-                    }
-                    testId={`${dataTestId}-ask-row-${index}`}
-                  />
-                ))}
-              </Box>
+            <Box flexDirection={BoxFlexDirection.Column} className="shrink-0">
+              {reversedAsks.map((level, index) => (
+                <OrderBookRow
+                  // Key by ladder rank, not price: each row is a positional slot,
+                  // so React reuses the same DOM node and updates it in place
+                  // across live ticks instead of remounting every update.
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`ask-${index}`}
+                  level={level}
+                  side="ask"
+                  currency={currency}
+                  metric={metric}
+                  maxTotal={grouped.maxTotal}
+                  szDecimals={szDecimals}
+                  onSelectPrice={onSelectPrice}
+                  selectPriceLabel={
+                    onSelectPrice
+                      ? t('perpsOrderBookUsePrice', [
+                          formatPerpsFiat(level.price, {
+                            ranges: PRICE_RANGES_UNIVERSAL,
+                          }),
+                        ])
+                      : undefined
+                  }
+                  testId={`${dataTestId}-ask-row-${index}`}
+                />
+              ))}
             </Box>
           )}
 
@@ -628,12 +574,9 @@ export const PerpsOrderBook = ({
             )}
           </Box>
 
-          {/* Bids (buy) — fills the bottom half, anchored to the spread */}
+          {/* Bids (buy) — sit directly below the spread, completing the block */}
           {showBids && (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
-            >
+            <Box flexDirection={BoxFlexDirection.Column} className="shrink-0">
               {grouped.bids.map((level, index) => (
                 <OrderBookRow
                   // Key by ladder rank, not price (see asks above): positional

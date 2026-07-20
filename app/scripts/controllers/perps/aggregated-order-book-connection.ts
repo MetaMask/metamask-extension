@@ -1,4 +1,4 @@
-import { SubscriptionClient, WebSocketTransport } from '@nktkas/hyperliquid';
+import { WebSocketTransport } from '@nktkas/hyperliquid';
 import type { OrderBookData } from '@metamask/perps-controller';
 
 /**
@@ -55,7 +55,9 @@ export type AggregatedOrderBookConnectionOptions = {
   isTestnet: () => boolean;
 };
 
-const DEFAULT_LEVELS = 20;
+// Fast mode streams 5 levels per side (slow mode streams 20). We run fast mode
+// for lower-latency ladder updates, so the book never carries more than this.
+const DEFAULT_LEVELS = 5;
 
 /**
  * Transforms a raw Hyperliquid `l2Book` snapshot into the `OrderBookData` shape
@@ -152,8 +154,6 @@ export class AggregatedOrderBookConnection {
 
   #transport: WebSocketTransport | null = null;
 
-  #client: SubscriptionClient | null = null;
-
   #transportIsTestnet = false;
 
   #activeCount = 0;
@@ -179,8 +179,8 @@ export class AggregatedOrderBookConnection {
    */
   subscribe(params: SubscribeAggregatedOrderBookParams): () => void {
     const levels = params.levels ?? DEFAULT_LEVELS;
-    const client = this.#ensureClient(this.#isTestnet());
-    const socket = this.#transport?.socket;
+    const transport = this.#ensureTransport(this.#isTestnet());
+    const { socket } = transport;
 
     let cancelled = false;
     let subscription: Subscription | null = null;
@@ -213,14 +213,23 @@ export class AggregatedOrderBookConnection {
 
     reportStatus('connecting');
 
-    client
-      .l2Book(
+    // The SDK's typed `l2Book` subscription drops unknown fields, so it can't
+    // request `fast` mode. Send the raw subscription payload through the
+    // transport directly (this is exactly what the typed method does, minus the
+    // validation) so `fast: true` reaches the server. The listener receives the
+    // SDK's `CustomEvent`, whose `detail` is the `l2Book` snapshot.
+    transport
+      .subscribe<HyperliquidL2BookEvent>(
+        'l2Book',
         {
+          type: 'l2Book',
           coin: params.symbol,
-          nSigFigs: params.nSigFigs,
-          mantissa: params.mantissa,
+          nSigFigs: params.nSigFigs ?? null,
+          mantissa: params.mantissa ?? null,
+          fast: true,
         },
-        (data: HyperliquidL2BookEvent) => {
+        (event: { detail: HyperliquidL2BookEvent }) => {
+          const data = event.detail;
           if (cancelled || data?.coin !== params.symbol || !data?.levels) {
             return;
           }
@@ -265,28 +274,26 @@ export class AggregatedOrderBookConnection {
     this.#closeTransport();
   }
 
-  #ensureClient(isTestnet: boolean): SubscriptionClient {
+  #ensureTransport(isTestnet: boolean): WebSocketTransport {
     if (
-      this.#client &&
+      this.#transport &&
       this.#transportIsTestnet === isTestnet &&
       !this.#terminated
     ) {
-      return this.#client;
+      return this.#transport;
     }
     // First use, the network changed, or the previous socket was terminated —
     // (re)create the dedicated transport.
     this.#closeTransport();
     const transport = new WebSocketTransport({ isTestnet });
     this.#transport = transport;
-    this.#client = new SubscriptionClient({ transport });
     this.#transportIsTestnet = isTestnet;
-    return this.#client;
+    return transport;
   }
 
   #closeTransport(): void {
     const transport = this.#transport;
     this.#transport = null;
-    this.#client = null;
     this.#activeCount = 0;
     this.#terminated = false;
     if (transport) {
