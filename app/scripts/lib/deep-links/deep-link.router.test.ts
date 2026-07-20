@@ -326,7 +326,7 @@ describe('DeepLinkRouter', () => {
     });
 
     describe('skipInterstitial routes', () => {
-      it('should redirect unsigned asset links directly without interstitial', async () => {
+      it('should redirect unsigned asset links to the interstitial', async () => {
         const tabId = 1;
         const url =
           'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f';
@@ -343,7 +343,7 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
+          url: 'chrome-extension://extension-id/home.html#link?u=%2Fasset%3FassetId%3Deip155%253A1%252Ferc20%253A0x6b175474e89094c44da98b954eedeac495271d0f',
         });
       });
     });

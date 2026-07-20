@@ -9,8 +9,8 @@ function assertPathDestination(
 }
 
 describe('assetRoute', () => {
-  it('is whitelisted to skip the deep link interstitial', () => {
-    expect(isDeepLinkRouteAllowedToBypassInterstitial(asset)).toBe(true);
+  it('does not bypass the deep link interstitial', () => {
+    expect(isDeepLinkRouteAllowedToBypassInterstitial(asset)).toBe(false);
   });
 
   type TestCase = {

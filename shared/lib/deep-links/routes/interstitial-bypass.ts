@@ -1,7 +1,6 @@
 import type { Route } from './route';
 
 const deepLinkInterstitialBypassRoutePathList = [
-  '/asset',
   '/buy',
   '/sell',
   '/batch-sell',
@@ -21,6 +20,9 @@ const deepLinkInterstitialBypassRoutePathList = [
 /**
  * Extension deep-link routes that follow mobile's whitelisted actions behavior
  * and bypass the interstitial regardless of signature status.
+ *
+ * `/asset` is intentionally excluded so CAIP-19 asset deep links still show the
+ * phishing interstitial when Skip Interstitial is disabled (ASSETS-3689).
  *
  * This is intentionally scoped to routes that exist in Extension.
  */
