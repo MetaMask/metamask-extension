@@ -309,8 +309,15 @@ const ConnectHardwareForm = () => {
           errorMessage === 'LEDGER_WRONG_APP'
         ) {
           setError(t('ledgerLocked') as string);
-        } else if (errorMessage.includes('timeout')) {
-          setError(t('ledgerTimeout') as string);
+        } else if (
+          errorMessage.includes('timeout') ||
+          errorMessage.includes('timed out')
+        ) {
+          setError(
+            (deviceName === HardwareDeviceNames.ledger
+              ? t('ledgerTimeout')
+              : t('hardwareWalletConnectionTimeout')) as string,
+          );
         } else if (ledgerErrorCode) {
           setError(
             `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
