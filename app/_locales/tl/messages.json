@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "Decimal na token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Ang mga decimal ay dapat na hindi bababa sa 0, at hihigit sa 36."
-  },
   "decrypt": {
     "message": "I-decrypt"
   },

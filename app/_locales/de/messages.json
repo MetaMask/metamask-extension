@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "Dezimalangabe der Präzision"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Dezimalzahlen müssen mindestens 0 und dürfen höchstens 36 betragen."
-  },
   "decrypt": {
     "message": "Entschlüsseln"
   },
