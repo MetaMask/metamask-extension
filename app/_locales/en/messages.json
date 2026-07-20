@@ -3183,9 +3183,6 @@
   "decimal": {
     "message": "Token decimal"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
-  },
   "decrypt": {
     "message": "Decrypt"
   },
@@ -10876,6 +10873,9 @@
   },
   "tokenDecimal": {
     "message": "Token decimal"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Enter a whole number between 0 and 36."
   },
   "tokenDetails": {
     "message": "Token details"
