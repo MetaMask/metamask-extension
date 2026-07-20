@@ -513,6 +513,20 @@ describe('PersistenceManager', () => {
         expect(manager.writesSuspended).toBe(false);
       });
 
+      it('clears suspended state when the feature flag is disabled', () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.suspendWrites('onSuspend');
+        expect(manager.writesSuspended).toBe(true);
+
+        manager.setShutdownSuspensionEnabled(false);
+
+        expect(manager.writesSuspended).toBe(false);
+
+        // Re-enabling must not inherit the previous suspension.
+        manager.setShutdownSuspensionEnabled(true);
+        expect(manager.writesSuspended).toBe(false);
+      });
+
       it('reports a single low-volume telemetry message per suspension', () => {
         manager.setShutdownSuspensionEnabled(true);
 

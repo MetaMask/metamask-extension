@@ -291,12 +291,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Enables or disables shutdown write-suspension. Disabled by default so the
    * behavior can be gated behind a feature flag and ramped safely. When
    * disabled, `set`/`persist` behave exactly as before (a shutdown write error
-   * is reported like any other failure).
+   * is reported like any other failure). Disabling also clears any in-session
+   * suspension so a later re-enable does not inherit a stale suspended state.
    *
    * @param enabled - Whether shutdown write-suspension is active.
    */
   setShutdownSuspensionEnabled(enabled: boolean) {
     this.#shutdownSuspensionEnabled = enabled;
+    if (!enabled) {
+      this.#writesSuspended = false;
+      this.#shutdownReported = false;
+    }
   }
 
   /**
