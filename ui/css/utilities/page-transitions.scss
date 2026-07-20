@@ -64,6 +64,35 @@
   mix-blend-mode: normal;
 }
 
+/*
+  The tab panel has its own `tab-content` view-transition group (for tab-switch
+  slides), which — unlike `root` — isn't clipped to the scroll viewport. During a
+  page transition the token list would be captured unclipped and overflow over
+  the bottom nav, so opt it out and let it animate as part of the clipped `root`.
+  Tab switches use `data-tab-transition-direction`, so they're unaffected.
+*/
+:root[data-page-transition] [role='tabpanel'] {
+  view-transition-name: none !important;
+}
+
+/*
+  The bottom nav is persistent across page transitions, so it should not animate —
+  keep it in its current state instead of crossfading it.
+*/
+::view-transition-group(bottom-nav-bar) {
+  animation-duration: 0s;
+}
+
+::view-transition-old(bottom-nav-bar),
+::view-transition-new(bottom-nav-bar) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(bottom-nav-bar) {
+  display: none;
+}
+
 /* Forward: old fades out, new fades in + scale up */
 :root[data-page-transition='forward']::view-transition-old(root) {
   animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
