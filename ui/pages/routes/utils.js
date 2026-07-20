@@ -68,9 +68,9 @@ export function getThemeFromRawTheme(theme) {
 // both functions and the data-pure-black attribute wiring. Tracked in TMCU-1083.
 export function setDocumentPureBlack(isPureBlackActive) {
   if (isPureBlackActive) {
-    document.documentElement.setAttribute('data-pure-black', 'true');
+    document.documentElement.dataset.pureBlack = 'true';
   } else {
-    document.documentElement.removeAttribute('data-pure-black');
+    delete document.documentElement.dataset.pureBlack;
   }
 }
 
