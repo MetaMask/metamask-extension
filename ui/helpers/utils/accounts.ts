@@ -1,5 +1,5 @@
 import {
-  CaipChainId,
+  type CaipChainId,
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
@@ -24,7 +24,7 @@ import type { I18nFunction } from '../../contexts/i18n';
 
 type LabelAccount = {
   address: string;
-  type: string;
+  type: CaipChainId;
   options?: { entropySource?: string };
   metadata: { snap: { id: string } };
 };
@@ -39,6 +39,18 @@ type AccountLabel = {
   label: string | null;
   icon: IconName | null;
 };
+
+function hasMultichainAccountTypeName(
+  type: CaipChainId,
+): type is keyof typeof MULTICHAIN_ACCOUNT_TYPE_TO_NAME {
+  return type in MULTICHAIN_ACCOUNT_TYPE_TO_NAME;
+}
+
+function getMultichainAccountTypeName(type: CaipChainId): string | undefined {
+  return hasMultichainAccountTypeName(type)
+    ? MULTICHAIN_ACCOUNT_TYPE_TO_NAME[type]
+    : undefined;
+}
 
 function translateToString(translate: I18nFunction, key: string): string {
   const translation = translate(key);
@@ -205,13 +217,13 @@ export function getAccountLabels(
 
       if (snapName) {
         labels.push({
-          label: `${snapName} (${t('beta') as string})`,
+          label: `${snapName} (${t('beta')})`,
           icon: IconName.Snaps,
         });
         break;
       }
       labels.push({
-        label: `${t('snaps') as string} (${t('beta') as string})`,
+        label: `${t('snaps')} (${t('beta')})`,
         icon: IconName.Snaps,
       });
       break;
@@ -221,14 +233,10 @@ export function getAccountLabels(
     }
   }
 
-  const { namespace } = parseCaipChainId(account.type as CaipChainId);
+  const { namespace } = parseCaipChainId(account.type);
   if (namespace === KnownCaipNamespace.Bip122) {
     labels.push({
-      label: `${
-        MULTICHAIN_ACCOUNT_TYPE_TO_NAME[
-          account.type as keyof typeof MULTICHAIN_ACCOUNT_TYPE_TO_NAME
-        ]
-      }`,
+      label: `${getMultichainAccountTypeName(account.type)}`,
       icon: null,
     });
   }

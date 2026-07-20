@@ -143,7 +143,6 @@ describe('Accounts', () => {
     });
 
     it('should return the correct label for imported accounts', () => {
-      mockAccount.metadata.keyring.type = KeyringType.imported;
       expect(
         getAccountLabels(
           KeyringType.imported,
@@ -154,35 +153,30 @@ describe('Accounts', () => {
     });
 
     it('should return the correct label for QR hardware wallet', () => {
-      mockAccount.metadata.keyring.type = KeyringType.qr;
       expect(
         getAccountLabels(KeyringType.qr, mockAccount, keyringsWithMetadata),
       ).toStrictEqual([{ label: HardwareKeyringNames.qr, icon: null }]);
     });
 
     it('should return the correct label for Trezor hardware wallet', () => {
-      mockAccount.metadata.keyring.type = KeyringType.trezor;
       expect(
         getAccountLabels(KeyringType.trezor, mockAccount, keyringsWithMetadata),
       ).toStrictEqual([{ label: HardwareKeyringNames.trezor, icon: null }]);
     });
 
     it('should return the correct label for OneKey hardware wallet', () => {
-      mockAccount.metadata.keyring.type = KeyringType.oneKey;
       expect(
         getAccountLabels(KeyringType.oneKey, mockAccount, keyringsWithMetadata),
       ).toStrictEqual([{ label: HardwareKeyringNames.oneKey, icon: null }]);
     });
 
     it('should return the correct label for Ledger hardware wallet', () => {
-      mockAccount.metadata.keyring.type = KeyringType.ledger;
       expect(
         getAccountLabels(KeyringType.ledger, mockAccount, keyringsWithMetadata),
       ).toStrictEqual([{ label: HardwareKeyringNames.ledger, icon: null }]);
     });
 
     it('should return the correct label for Lattice hardware wallet', () => {
-      mockAccount.metadata.keyring.type = KeyringType.lattice;
       expect(
         getAccountLabels(
           KeyringType.lattice,
@@ -193,7 +187,6 @@ describe('Accounts', () => {
     });
 
     it('should handle unhandled account types', () => {
-      mockAccount.metadata.keyring.type = 'unknown';
       expect(
         getAccountLabels('unknown', mockAccount, keyringsWithMetadata),
       ).toStrictEqual([]);
@@ -227,7 +220,6 @@ describe('Accounts', () => {
             mockSnapAccountWithName,
             keyringsWithMetadata,
             mockSnapName,
-            false,
           ),
         ).toStrictEqual([]);
       });
@@ -238,7 +230,6 @@ describe('Accounts', () => {
             KeyringType.snap,
             mockSnapAccountWithoutName,
             keyringsWithMetadata,
-            false,
           ),
         ).toStrictEqual([]);
       });
@@ -250,7 +241,6 @@ describe('Accounts', () => {
             mockSnapAccountWithName,
             keyringsWithMetadata,
             mockSnapName,
-            true,
           ),
         ).toStrictEqual([]);
       });
@@ -344,14 +334,15 @@ describe('Accounts', () => {
     });
 
     describe('Bitcoin account type label', () => {
-      it.each([
+      const cases = [
         [BtcAccountType.P2pkh, 'Legacy'],
         [BtcAccountType.P2sh, 'SegWit'],
         [BtcAccountType.P2wpkh, 'Native SegWit'],
         [BtcAccountType.P2tr, 'Taproot'],
-      ])(
-        'should show Bitcoin account type label: %s',
-        (type, expectedLabel) => {
+      ] as const;
+
+      cases.forEach(([type, expectedLabel]) => {
+        it(`shows the Bitcoin account type label for ${type}`, () => {
           const mockBitcoinAccount = {
             ...mockAccount,
             address: 'bc1q4degm5k044n9xv3ds7d8l6hfavydte6wn6sesw',
@@ -372,8 +363,8 @@ describe('Accounts', () => {
               keyringsWithMetadata,
             ),
           ).toStrictEqual([{ label: expectedLabel, icon: null }]);
-        },
-      );
+        });
+      });
     });
   });
 });
