@@ -1231,20 +1231,14 @@ function encodeProtobufVarint(value: number): Buffer {
   return Buffer.from(bytes);
 }
 
-function encodeProtobufVarintField(
-  fieldNumber: number,
-  value: number,
-): Buffer {
+function encodeProtobufVarintField(fieldNumber: number, value: number): Buffer {
   return Buffer.concat([
     encodeProtobufVarint(fieldNumber * 8),
     encodeProtobufVarint(value),
   ]);
 }
 
-function encodeProtobufBytesField(
-  fieldNumber: number,
-  value: Buffer,
-): Buffer {
+function encodeProtobufBytesField(fieldNumber: number, value: Buffer): Buffer {
   return Buffer.concat([
     encodeProtobufVarint(fieldNumber * 8 + 2),
     encodeProtobufVarint(value.length),
@@ -1341,9 +1335,7 @@ function buildTronQuoteResponse(fixture: TronQuoteFixture) {
   const minDestTokenAmount = String(
     BigInt(fixture.destAmount) - BigInt(fixture.destAmount) / 50n, // 2% slippage floor
   );
-  const grossSrcAmount = String(
-    BigInt(fixture.srcAmount) + BigInt(feeSun),
-  );
+  const grossSrcAmount = String(BigInt(fixture.srcAmount) + BigInt(feeSun));
   const trxAsset = buildTronAsset('TRX');
 
   return {
