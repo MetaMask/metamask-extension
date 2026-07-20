@@ -2,14 +2,15 @@ import { Action } from 'redux'; // Import types for actions
 import { createSelector } from 'reselect';
 import * as actionConstants from '../../store/actionConstants';
 import { getNormalizedLocale } from '../../../shared/constants/locales';
+import type { I18NMessageDict } from '../../../shared/lib/i18n';
 
 /**
  * Type for the locale messages part of the state
  */
 type LocaleMessagesState = {
-  current?: { [key: string]: string }; // Messages for the current locale
+  current?: I18NMessageDict; // Messages for the current locale
   currentLocale?: string; // User's selected locale (unsafe for Intl API)
-  en?: { [key: string]: string }; // English locale messages
+  en?: I18NMessageDict; // English locale messages
 };
 
 /**
@@ -18,7 +19,7 @@ type LocaleMessagesState = {
 type SetCurrentLocaleAction = Action & {
   type: typeof actionConstants.SET_CURRENT_LOCALE;
   payload: {
-    messages: { [key: string]: string };
+    messages: I18NMessageDict;
     locale: string;
   };
 };
@@ -93,7 +94,7 @@ export const getIntlLocale = createSelector(
  */
 export const getCurrentLocaleMessages = (
   state: AppState,
-): Record<string, string> | undefined => state.localeMessages.current;
+): I18NMessageDict | undefined => state.localeMessages.current;
 
 /**
  * This selector returns the English locale messages.
@@ -103,4 +104,4 @@ export const getCurrentLocaleMessages = (
  */
 export const getEnLocaleMessages = (
   state: AppState,
-): Record<string, string> | undefined => state.localeMessages.en;
+): I18NMessageDict | undefined => state.localeMessages.en;

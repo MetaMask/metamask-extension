@@ -50,10 +50,14 @@
   "localeMessages": {
     "currentLocale": "en",
     "current": {
-      "user": "user"
+      "user": {
+        "message": "user"
+      }
     },
     "en": {
-      "user": "user"
+      "user": {
+        "message": "user"
+      }
     }
   },
   "metamask": {

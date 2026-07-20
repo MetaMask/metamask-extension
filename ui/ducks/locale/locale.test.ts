@@ -48,7 +48,9 @@ describe('Locale Selectors', () => {
 
   describe('getCurrentLocaleMessages', () => {
     it('returns the current locale messages from the state', () => {
-      expect(getCurrentLocaleMessages(testData)).toEqual({ user: 'user' });
+      expect(getCurrentLocaleMessages(testData)).toEqual({
+        user: { message: 'user' },
+      });
     });
 
     it('returns undefined if there are no current locale messages', () => {
@@ -58,13 +60,15 @@ describe('Locale Selectors', () => {
           current: undefined,
         },
       };
-      expect(getCurrentLocaleMessages(newAppState)).toEqual(undefined);
+      expect(getCurrentLocaleMessages(newAppState)).toBeUndefined();
     });
   });
 
   describe('getEnLocaleMessages', () => {
     it('returns the English locale messages from the state', () => {
-      expect(getEnLocaleMessages(testData)).toEqual({ user: 'user' });
+      expect(getEnLocaleMessages(testData)).toEqual({
+        user: { message: 'user' },
+      });
     });
 
     it('returns undefined if there are no English locale messages', () => {
