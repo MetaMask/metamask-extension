@@ -8,7 +8,10 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import type MetamaskController from '../../../metamask-controller';
-import type { MetaMetricsController } from '../../../controllers/metametrics-controller';
+import type {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../../../shared/constants/metametrics';
 
 export type GetAccounts = MetamaskController['getPermittedAccounts'];
 
@@ -16,7 +19,10 @@ export type RequestPermissionsForOrigin = (
   requestedPermissions: RequestedPermissions,
 ) => ReturnType<GenericPermissionController['requestPermissions']>;
 
-export type SendMetrics = MetaMetricsController['trackEvent'];
+export type SendMetrics = (
+  payload: MetaMetricsEventPayload,
+  options?: MetaMetricsEventOptions,
+) => void;
 
 type Caip25Permission = ReturnType<
   typeof getCaip25PermissionFromLegacyPermissions

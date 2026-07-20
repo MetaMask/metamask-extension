@@ -19,47 +19,6 @@ on:
         required: false
 
 jobs:
-  test-e2e-firefox-browserify:
-    uses: ./.github/workflows/run-e2e.yml
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-browserify'] }}
-    with:
-      test-suite-name: test-e2e-firefox-browserify
-      build-artifact: build-test-mv2-browserify
-      build-command: yarn build:test:mv2
-      test-command: yarn test:e2e:firefox
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
-  test-e2e-firefox-flask:
-    uses: ./.github/workflows/run-e2e.yml
-    strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-flask'] }}
-    with:
-      test-suite-name: test-e2e-firefox-flask
-      build-artifact: build-test-flask-mv2-browserify
-      build-command: yarn build:test:flask:mv2
-      test-command: yarn test:e2e:firefox:flask
-      builds-from-run: ${{ inputs.builds-from-run }}
-      matrix-index: ${{ matrix.index }}
-      matrix-total: ${{ strategy.job-total }}
-
-  test-e2e-firefox-dist:
-    # Skip for cross-repo PRs — dist tests need secrets not available to external contributors.
-    # Deliberately allowed on fork repos so our test-forks can test the workflows if they set the secrets.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: test-e2e-firefox-dist
-      build-artifact: build-dist-mv2-browserify
-      test-command: yarn test:e2e:firefox:dist
-      builds-from-run: ${{ inputs.builds-from-run }}
-
   test-e2e-firefox-webpack:
     uses: ./.github/workflows/run-e2e.yml
     secrets:
@@ -70,7 +29,7 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-webpack
       build-artifact: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2
+      build-command: yarn build:test:mv2
       test-command: yarn test:e2e:firefox
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
@@ -84,7 +43,7 @@ jobs:
     with:
       test-suite-name: test-e2e-firefox-flask-webpack
       build-artifact: build-test-flask-mv2-webpack
-      build-command: yarn build:test:flask:webpack:mv2
+      build-command: yarn build:test:flask:mv2
       test-command: yarn test:e2e:firefox:flask
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
@@ -103,9 +62,6 @@ jobs:
 
   test-e2e-firefox-report:
     needs:
-      - test-e2e-firefox-browserify
-      - test-e2e-firefox-flask
-      - test-e2e-firefox-dist
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask-webpack
       - test-e2e-firefox-dist-webpack

@@ -39,6 +39,26 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
+  it('keeps clicked tab content visible while activeTab prop is still stale', () => {
+    const onTabClick = jest.fn();
+    const { getByText, queryByText } = render(
+      <Tabs activeTab="tab1" onTabClick={onTabClick}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    fireEvent.click(getByText('Tab 2'));
+
+    expect(onTabClick).toHaveBeenCalledWith('tab2');
+    expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
+    expect(getByText('Tab 2 Content')).toBeInTheDocument();
+  });
+
   it('renders with activeTab', () => {
     const { getByText, queryByText } = renderTabs({
       activeTab: 'tab2',

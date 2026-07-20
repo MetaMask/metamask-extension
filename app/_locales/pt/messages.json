@@ -197,6 +197,52 @@
   "activity_approveSpendingCap_success_title": {
     "message": "Teto de gastos aprovado"
   },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Falha ao ativar trustline"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Ativando trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Trustline ativada $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Falha ao desativar trustline"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Desativando trustline $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Trustline desativada $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_bridge_failed_description": {
     "message": "Falha na ponte"
   },
@@ -330,7 +376,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converteu $1",
+    "message": "Convertido para $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1049,9 +1095,6 @@
   "addCustomToken": {
     "message": "Adicionar um token personalizado"
   },
-  "addDevice": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Adicione esse provedor de RPC apenas se tiver certeza de que é confiável. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1081,7 +1124,7 @@
     "message": "Adicionar amigos e endereços confiáveis"
   },
   "addFromChainlist": {
-    "message": "Adicionar da Chainlist"
+    "message": "Adicionar pela Chainlist"
   },
   "addFunds": {
     "message": "Adicionar fundos"
@@ -1178,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "Importação de contas"
+  },
+  "add_device_try_again": {
+    "message": "Tentar novamente"
   },
   "add_device_validating_desc": {
     "message": "Estabelecendo uma conexão segura e criptografada com o seu telefone."
@@ -1483,16 +1529,16 @@
     "message": "Todas as redes"
   },
   "allPermissions": {
-    "message": "Conexões do dapp"
+    "message": "Conexões de dapps"
   },
   "allPopularNetworks": {
     "message": "Todas as redes populares"
   },
   "allTimeHigh": {
-    "message": "Alta histórica"
+    "message": "Máxima histórica"
   },
   "allTimeLow": {
-    "message": "Baixa histórica"
+    "message": "Mínima histórica"
   },
   "allTokens": {
     "message": "Todos os tokens"
@@ -1581,8 +1627,20 @@
   "asset": {
     "message": "Ativo"
   },
+  "assetActivate": {
+    "message": "Ativar",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Ative $1 na $2 para começar.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Não foi possível obter dados históricos"
+  },
+  "assetInactive": {
+    "message": "Desativar",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "Opções do ativo"
@@ -1956,10 +2014,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Será necessário confirmar 2 transações na sua carteira de hardware:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Detalhes da ponte",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -1968,9 +2022,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Selecione o valor"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Visualizar em $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Esta transação ocorre em duas redes. Um link mostra a origem, o outro mostra o destino após a confirmação."
@@ -2084,6 +2135,18 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Aviso de impacto no preço"
+  },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "Etapa $1 de $2: Escaneie este código QR com sua carteira",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "Última etapa: Escaneie o código QR exibido em sua carteira",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "Etapa $1 de $2: Escaneie o código QR exibido na sua carteira",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "Não há cotações disponíveis. Tente um valor menor."
@@ -2243,42 +2306,11 @@
   "bridgeSendLoading": {
     "message": "Enviando da cadeia de origem"
   },
-  "bridgeStatusComplete": {
-    "message": "Concluída",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Falhou",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Em andamento",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 recebido em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Recebendo $1 em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Realizado swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Realizando swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspeito"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Token suspeito"
-  },
-  "bridgeTo": {
-    "message": "Fazer ponte para"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 é um token malicioso."
@@ -2294,56 +2326,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Nenhum token corresponde a \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transação $1 de 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Realizando ponte"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Entre em contato com"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Suporte da MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Já se passaram mais de 3 horas?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Status"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Troca realizada"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Trocando"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Carimbo de data/hora"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 às $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 em",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Você recebeu"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Você enviou"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use o máximo permitido"
@@ -2361,12 +2343,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "É necessário um saldo mínimo de reserva de $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgedToChain": {
-    "message": "Ponte realizada para $1"
   },
   "bridging": {
     "message": "Realizando ponte"
@@ -2435,6 +2411,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "O símbolo deste token não corresponde ao nome ou ID da cadeia inseridos para a rede. Muitos tokens populares apresentam símbolos semelhantes, que podem ser usados por golpistas para induzir você ao erro de enviar um token mais valioso em troca. Verifique todos os detalhes antes de continuar."
   },
+  "chainlistLearnHowToStaySafe": {
+    "message": "Saiba como manter sua segurança.",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "Os dados da rede são provenientes da ChainList. Sempre verifique antes de adicionar. $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
+  },
   "chainlistNetworkDetails": {
     "message": "Símbolo: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
@@ -2468,7 +2452,7 @@
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
   },
   "circulatingSupply": {
-    "message": "Suprimento em circulação"
+    "message": "Oferta em circulação"
   },
   "clear": {
     "message": "Limpar"
@@ -2902,6 +2886,9 @@
   "contractInteraction": {
     "message": "Interação com o contrato"
   },
+  "convertAgain": {
+    "message": "Converter de novo"
+  },
   "convertTokenToNFTDescription": {
     "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
   },
@@ -3060,7 +3047,7 @@
     "message": "suporte ao cliente"
   },
   "dappConnections": {
-    "message": "Conexões do dapp"
+    "message": "Conexões de dapps"
   },
   "dappSuggested": {
     "message": "Site sugerido"
@@ -3123,9 +3110,6 @@
   "decimal": {
     "message": "Decimal do token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
-  },
   "decrypt": {
     "message": "Descriptografar"
   },
@@ -3157,6 +3141,12 @@
   },
   "deepLinkQrPredictTitle": {
     "message": "Mercados de previsão abertos em dispositivo móvel"
+  },
+  "deepLinkQrTrendingDescription": {
+    "message": "O Explore está disponível no MetaMask para dispositivos móveis. Escaneie este código com seu dispositivo móvel para usá-lo."
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "Abra o Explore no celular"
   },
   "deepLink_Caution": {
     "message": "Prossiga com cautela"
@@ -3254,6 +3244,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "a página de proteção de transações"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "a página do Explore"
   },
   "default": {
     "message": "Padrão"
@@ -3373,10 +3366,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Endereço de recebimento"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID da transação de destino",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Detalhes"
@@ -3856,7 +3845,7 @@
     "message": "Apelidos propostos"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "Buscaremos os apelidos propostos para os endereços com os quais você interage em fontes terceirizadas como Etherscan, Infura e Lens Protocol. Essas fontes poderão ver esses endereços e o seu endereço IP. O endereço da sua conta não será exposto a terceiros."
+    "message": "Buscaremos apelidos sugeridos para os endereços com os quais você interage em fontes de terceiros como Etherscan, Infura e Lens Protocol. Essas fontes poderão ver esses endereços e o seu endereço IP. O endereço da sua conta não será exposto a terceiros."
   },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Busca apelidos sugeridos para endereços com os quais você interage a partir de fontes de terceiros, como Etherscan, Infura e protocolo Lens."
@@ -4188,6 +4177,62 @@
   "hardware": {
     "message": "Hardware"
   },
+  "hardwareAllSetTitle": {
+    "message": "Tudo pronto",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "Quase pronto! Confirme novamente no seu dispositivo",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "Aprovar $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "Aprovado $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "Reconecte seu dispositivo e tente novamente",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "Reconecte seu dispositivo para continuar",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "Rejeitado",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "Reenviar transação",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "Enviar $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "Enviando $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "Enviou $1 $2",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "Gastador: $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "Para: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "Você rejeitou esta transação no seu dispositivo",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "Carteira de hardware conectada"
   },
@@ -4195,7 +4240,7 @@
     "message": "Continuar"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconectar",
+    "message": "Reconecte e tente novamente",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
@@ -4778,6 +4823,12 @@
   "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
     "message": "Instale e abra o app da Ethereum"
   },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Conecte sua Ledger ao computador"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "Tente conectar novamente"
+  },
   "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
     "message": "Desbloqueie seu dispositivo Ledger"
   },
@@ -4789,6 +4840,9 @@
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "O Ledger não está respondendo"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Certifique-se de que seu dispositivo Ledger esteja configurado com a Frase de Recuperação Secreta ou com a chave privada da conta selecionada"
   },
   "ledgerConnectionStatusGenericErrorTitle": {
     "message": "Ocorreu algum erro"
@@ -4962,7 +5016,7 @@
     "message": "Gerenciar"
   },
   "manageDefaultSettings": {
-    "message": "Gerenciar configurações de privacidade padrão"
+    "message": "Gerenciar configurações padrão"
   },
   "manageInstitutionalWallets": {
     "message": "Gerenciar carteiras institucionais"
@@ -5348,10 +5402,6 @@
     "message": "Detalhes do bônus resgatável",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Converter $1 para mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Detalhes do bônus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5555,7 +5605,7 @@
     "message": "Valores negativos não são permitidos"
   },
   "network": {
-    "message": "Ethereum:"
+    "message": "Rede"
   },
   "networkChanged": {
     "message": "Rede alterada"
@@ -5734,14 +5784,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Detecção automática de NFTs ativada"
   },
-  "nftBought": {
-    "message": "Comprou $1"
-  },
   "nftEmptyDescription": {
     "message": "Existe um mundo de NFTs por aí. Comece sua coleção hoje mesmo."
-  },
-  "nftMinted": {
-    "message": "Mintou $1"
   },
   "nftOptions": {
     "message": "Opções de NFT"
@@ -6175,7 +6219,7 @@
     "message": "Continuar"
   },
   "onboardingMetametricsDescription": {
-    "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
+    "message": "Solicitamos as permissões abaixo. Você pode desativar ou excluir seus dados de uso a qualquer momento."
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
@@ -6427,7 +6471,7 @@
     "message": "Insira sua nova senha para permanecer conectado à MetaMask."
   },
   "passwordNotLongEnough": {
-    "message": "A senha não é longa o suficiente"
+    "message": "A senha deve ter pelo menos 8 caracteres"
   },
   "passwordTermsWarning": {
     "message": "Se eu perder essa senha, a MetaMask não poderá redefini-la."
@@ -6920,9 +6964,6 @@
   "perpsDateYesterday": {
     "message": "Ontem"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Perps creditados"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Falha na ponte"
   },
@@ -6987,6 +7028,18 @@
   },
   "perpsFees": {
     "message": "Taxas"
+  },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Taxa da Hyperliquid",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "Taxa da MetaMask",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "Taxa do provedor",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
   },
   "perpsFilterAll": {
     "message": "Tudo"
@@ -7082,6 +7135,10 @@
   "perpsLiquidationPrice": {
     "message": "Preço de liquidação"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "Se o preço atingir esse ponto, suas posições serão liquidadas e você perderá sua margem. Uma alavancagem maior torna isso mais provável.",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "Long"
   },
@@ -7090,6 +7147,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "Remover margem aproxima mais o seu preço de liquidação. Certifique-se de ter margem de segurança suficiente."
+  },
+  "perpsMarginTooltip": {
+    "message": "A margem é o dinheiro que você investe para abrir uma negociação. Ela funciona como garantia, e é o máximo que você pode perder nessa negociação.",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "Mercado"
@@ -7561,10 +7622,6 @@
   "perpsWithdraw": {
     "message": "Sacar"
   },
-  "perpsWithdrawActivityTitle": {
-    "message": "Perps sacados",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tempo estimado"
   },
@@ -7954,9 +8011,6 @@
     "message": "Expira em $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Algo deu errado ao escanear o código QR. Gere um novo código para tentar novamente."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR serve para uma transação diferente. Cancele e tente novamente, certificando-se de escanear primeiro o código QR exibido no MetaMask com sua carteira de hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8005,6 +8059,14 @@
     "message": "Código QR errado",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "Leia o QR code final",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "Escanear próximo código QR",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "Na fila"
   },
@@ -8013,6 +8075,9 @@
   },
   "quotedTotalCost": {
     "message": "Custo total: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Nenhum token disponível"
   },
   "rank": {
     "message": "Classificação"
@@ -8226,9 +8291,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "A operação foi concluída com sucesso."
   },
-  "retryTransaction": {
-    "message": "Tentar transação novamente"
-  },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
@@ -8282,10 +8344,6 @@
   },
   "revokePermission": {
     "message": "Revogar permissão"
-  },
-  "revokePermissionTitle": {
-    "message": "Remover permissão de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Você está removendo a permissão de alguém para gastar tokens de sua conta."
@@ -8443,8 +8501,99 @@
   "scamQuestionnaireContinue": {
     "message": "Continuar"
   },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "Verificação de segurança"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "Não, eu conheço essa pessoa na vida real"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "Isso inclui aplicativos de namoro, redes sociais e chats em grupo — mesmo que vocês tenham conversado por vídeo."
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "Alguém que você só conhece pela internet pediu para você enviar isso?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "Sim, alguém que conheci na internet me disse para enviar isso"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "Pagar a um comerciante por algo que estou recebendo"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "Comprar bens ou serviços"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "Multas, impostos ou taxas oficiais solicitados em criptomoedas"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "Pagar à polícia ou a um órgão governamental"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "Enviar dinheiro para um parceiro, familiar ou amigo que precise"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "Ajudar alguém de quem gosto"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "Comprar criptomoedas, tokens ou uma oportunidade financeira"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "Investimento"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "Taxas de integração, equipamentos ou pagamentos por tarefa"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "Uma oportunidade de emprego ou algo relacionado ao trabalho"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "Transferir para si mesmo ou para uma carteira fria"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "Transferir fundos entre minhas próprias carteiras"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "Escolha a opção que melhor descreve este pagamento."
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "A que se refere este pagamento?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "Não, estou fazendo isso totalmente por conta própria"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "Isso pode ser feito por meio de uma chamada telefônica, videochamada ou compartilhamento de tela."
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "Há alguém orientando você nesta transação?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "Sim, alguém está me orientando passo a passo neste momento"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "Selecionar uma resposta"
+  },
   "scamQuestionnaireWarningContactSupport": {
     "message": "Falar com o suporte"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "Ignorar riscos e continuar mesmo assim"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "Continuar mesmo assim em $1s",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "Depois de enviados, seus fundos não podem ser recuperados."
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "Transações com criptomoedas são irreversíveis."
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "Com base em suas respostas e no histórico deste destinatário, esta transação pode ser um golpe."
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "Cancelar este pagamento"
   },
   "scamQuestionnaireWarningTitle": {
     "message": "Você pode estar sendo vítima de um golpe neste exato momento"
@@ -8643,6 +8792,10 @@
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
   },
+  "sendBundleHwGasPayment": {
+    "message": "Pagar taxa de rede com $1",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
+  },
   "sendSelectReceiveAsset": {
     "message": "Selecionar ativo para receber"
   },
@@ -8662,14 +8815,6 @@
   "sent": {
     "message": "Enviado"
   },
-  "sentSpecifiedTokens": {
-    "message": "Enviou $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Enviou $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Rede de teste Sepolia"
   },
@@ -8678,10 +8823,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Solicitação de saque"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Aprovar $1 sem limite de gastos",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configurar",
@@ -9385,9 +9526,6 @@
   "sign": {
     "message": "Assinar"
   },
-  "signatureRequest": {
-    "message": "Solicitação de assinatura"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "O NFT será refletido em sua carteira quando o lance for aceito."
   },
@@ -9787,6 +9925,18 @@
   "speedUpTransactionTitle": {
     "message": "Acelerar a transação"
   },
+  "spendableBalance": {
+    "message": "Disponível para gastar"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Reservado (bloqueado)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Valor"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Saldo total"
+  },
   "spender": {
     "message": "Gastador"
   },
@@ -10019,6 +10169,18 @@
   "statusNotConnected": {
     "message": "Não conectado"
   },
+  "stellarClassicTrustlineAddError": {
+    "message": "Algo deu errado ao adicionar esta trustline. Tente novamente.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Algo deu errado ao remover esta trustline. Tente novamente.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "Você ainda tem $1 $2 nesta carteira. Você deve enviar ou trocar tudo antes de desativar este ativo na Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
+  },
   "stillConnectingTo": {
     "message": "Ainda se conectando à $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10173,10 +10335,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "Corretora descentralizada"
-  },
-  "swapDetailsTitle": {
-    "message": "Detalhes da troca",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Contrato direto"
@@ -10382,10 +10540,6 @@
   "swapTokenNotAvailable": {
     "message": "O token não está disponível para troca nesta região"
   },
-  "swapTokenToToken": {
-    "message": "Trocar $1 por $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Trocar tokens"
   },
@@ -10449,6 +10603,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter até 11 caracteres."
+  },
+  "syncAccounts": {
+    "message": "Sincronizar com dispositivo móvel"
   },
   "syncing": {
     "message": "Sincronizando..."
@@ -10647,16 +10804,15 @@
   "transactionHistoryTotalGasFee": {
     "message": "Taxa de gás total"
   },
+  "transactionIdCopied": {
+    "message": "ID da transação copiada"
+  },
   "transactionIdLabel": {
     "message": "ID da transação",
     "description": "Label for the source transaction ID field."
   },
   "transactionIncludesTypes": {
     "message": "Esta transação inclui: $1."
-  },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Essa transação estava protegida. Nós a cancelamos para evitar a perda inesperada de fundos.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "Configurações da transação"
@@ -10666,10 +10822,6 @@
   },
   "transactionSubmitted": {
     "message": "Transação enviada"
-  },
-  "transactionTotalGasFee": {
-    "message": "Taxa de gás total",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transações"
@@ -10868,7 +11020,7 @@
     "message": "Excesso de tentativas. Tente de novo em "
   },
   "unlockToReveal": {
-    "message": "Desbloqueie para revelar",
+    "message": "Desbl. para revelar",
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
@@ -10995,9 +11147,6 @@
   "viewAddressOnExplorer": {
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Ver detalhes"
   },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"
