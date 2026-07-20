@@ -184,12 +184,9 @@ export async function getSymbolAndDecimalsAndName(
       getDecimals(tokenAddress, tokenList),
       getName(tokenAddress, tokenList),
     ]);
-    const fulfilled = results
+    const fulfilled: (string | undefined)[] = results
       .filter((result) => result.status === 'fulfilled')
-      .map(
-        (result) =>
-          (result as PromiseFulfilledResult<string | undefined>).value,
-      );
+      .map((result) => result.value);
 
     [symbol, decimals, name] = fulfilled;
   } catch (error) {
