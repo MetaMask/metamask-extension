@@ -9,10 +9,13 @@ export const GAS_FORM_ERRORS = {
   MAX_FEE_HIGH_WARNING: 'editGasMaxFeeHigh',
   MAX_FEE_IMBALANCE: 'editGasMaxFeeImbalance',
   GAS_PRICE_TOO_LOW: 'editGasPriceTooLow',
-};
+} as const;
+
+export type GasFormError =
+  (typeof GAS_FORM_ERRORS)[keyof typeof GAS_FORM_ERRORS];
 
 export function getGasFormErrorText(
-  type: string,
+  type: GasFormError,
   t: I18nFunction,
   { minimumGasLimit }: { minimumGasLimit?: string | number } = {},
 ): ReturnType<I18nFunction> {

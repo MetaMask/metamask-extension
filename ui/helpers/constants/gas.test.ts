@@ -35,14 +35,4 @@ describe('getGasFormErrorText', () => {
     expect(t).toHaveBeenCalledWith('editGasLimitOutOfBounds', ['']);
   });
 
-  it('returns an empty string for an unknown gas error', () => {
-    const t = jest.fn<ReturnType<I18nFunction>, Parameters<I18nFunction>>(
-      () => 'translated error',
-    );
-
-    const result = getGasFormErrorText('unknown', t);
-
-    expect(result).toBe('');
-    expect(t).not.toHaveBeenCalled();
-  });
 });
