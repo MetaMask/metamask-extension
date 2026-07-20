@@ -610,10 +610,21 @@ function startSpan<T>(
     );
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
-    initScope(scope, request);
-    return callback(spanOptions);
-  });
+  const runInIsolationScope = () =>
+    sentryWithIsolationScope((scope: Sentry.Scope) => {
+      initScope(scope, request);
+      return callback(spanOptions);
+    });
+
+  // `root: true` severs the active-span parent (above), but `withIsolationScope`
+  // alone only clones the propagation context, so the span keeps the ambient
+  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
+  // accumulates into the mega-trace, which is grouped by trace id — not by
+  // parent span. `startNewTrace` resets the propagation context to a fresh trace
+  // id, so the op peels off at the trace level, not merely the span level.
+  return root
+    ? sentryStartNewTrace(runInIsolationScope)
+    : runInIsolationScope();
 }
 
 function logTrace(
@@ -754,6 +765,18 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     } as unknown as Sentry.Scope;
 
     return callback(scope);
+  }
+
+  return actual(callback);
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryStartNewTrace<T>(callback: () => T): T {
+  const actual = globalThis.sentry?.startNewTrace;
+
+  if (!actual) {
+    return callback();
   }
 
   return actual(callback);
