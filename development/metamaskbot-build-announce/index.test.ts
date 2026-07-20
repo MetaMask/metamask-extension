@@ -56,6 +56,7 @@ function configureMocks(): void {
     changelog: [{ hash: 'def5678', subject: 'feat: new feature (#456)' }],
     mergeBase: 'base123',
     previousTag: 'v13.32.0',
+    changelogFromReleaseBranch: false,
   });
   cherryPicks.buildWhatsInRcSection.mockReturnValue('<p>whats-in-this-rc</p>');
   cherryPicks.buildWhatsInRcFailureSection.mockReturnValue(

@@ -185,9 +185,6 @@
   "decimal": {
     "message": "دقة بالكسور العشرية"
   },
-  "decimalsMustZerotoTen": {
-    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -512,9 +509,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"
