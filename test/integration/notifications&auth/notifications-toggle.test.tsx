@@ -121,16 +121,12 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      await verifyMetametricsEvent(
-        MetaMetricsEventName.NotificationsSettingsUpdated,
-        MetaMetricsEventCategory.NotificationSettings,
-        {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_type: 'master',
-          notification_channel: 'all',
-          enabled: false,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
+      expect(disableNotificationsCall?.[0]).toBe(
+        'disableMetamaskNotifications',
+      );
+
+      expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
+        'fetchAndUpdateMetamaskNotifications',
       );
     });
 
@@ -138,18 +134,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        was_profile_syncing_on: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: false,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: false,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });
@@ -200,15 +189,13 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      await verifyMetametricsEvent(
-        MetaMetricsEventName.NotificationsSettingsUpdated,
-        MetaMetricsEventCategory.NotificationSettings,
-        {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          settings_type: 'marketing',
-          notification_channel: 'in_app',
-          enabled: true,
-          /* eslint-enable @typescript-eslint/naming-convention */
+      expect(putNotificationPreferencesCall?.[0]).toBe(
+        'putNotificationPreferences',
+      );
+      expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
+        marketing: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: true,
         },
       });
       expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
@@ -222,15 +209,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'marketing_inAppNotificationsEnabled',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: false,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: true,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'marketing',
+        notification_channel: 'in_app',
+        enabled: true,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });
