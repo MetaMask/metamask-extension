@@ -18,7 +18,9 @@ import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockAnalyticsTrackEvent = jest.fn();
-const mockUsePerpsBottomNavSource = jest.fn(() => undefined);
+const mockUsePerpsBottomNavSource = jest.fn<
+  () => typeof PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR | undefined
+>(() => undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
