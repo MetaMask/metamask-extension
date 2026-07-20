@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { CaipAssetType } from '@metamask/utils';
 import {
@@ -27,6 +27,7 @@ import { buildResults } from '../utils/buildResults';
 import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
 import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import { QUOTE_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
+import { useDispatch } from '../../../../../store/hooks';
 
 type Options = {
   enabled: boolean;

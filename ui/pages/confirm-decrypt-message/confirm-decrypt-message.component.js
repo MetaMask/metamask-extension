@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'clsx';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
@@ -45,6 +45,7 @@ import {
 } from '../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
+import { useDispatch } from '../../store/hooks';
 
 const Header = ({ approvalId }) => {
   const t = useI18nContext();

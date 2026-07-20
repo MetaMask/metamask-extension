@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +35,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
+import { useDispatch } from '../../../store/hooks';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({

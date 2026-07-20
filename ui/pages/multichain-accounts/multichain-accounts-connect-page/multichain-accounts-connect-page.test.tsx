@@ -187,9 +187,8 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   },
 }));
 
-jest.mock('../../../../shared/lib/selectors/networks', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
-  getAllNetworkConfigurationsByCaipChainId: jest.fn(() => ({
+jest.mock('../../../../shared/lib/selectors/networks', () => {
+  const mockNetworkConfigurationsByCaipChainId = {
     'eip155:1': {
       chainId: 'eip155:1',
       name: 'Ethereum Mainnet',
@@ -218,8 +217,15 @@ jest.mock('../../../../shared/lib/selectors/networks', () => ({
       rpcUrls: ['https://sepolia.infura.io'],
       blockExplorerUrls: ['https://sepolia.etherscan.io'],
     },
-  })),
-}));
+  };
+
+  return {
+    ...jest.requireActual('../../../../shared/lib/selectors/networks'),
+    getAllNetworkConfigurationsByCaipChainId: jest.fn(
+      () => mockNetworkConfigurationsByCaipChainId,
+    ),
+  };
+});
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
@@ -227,9 +233,8 @@ jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
     '0xc5b2b5ae370876c0122910f92a13bef85a133e56',
 }));
 
-jest.mock('../../../selectors/multichain', () => ({
-  ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainNetwork: jest.fn(() => ({
+jest.mock('../../../selectors/multichain', () => {
+  const mockMultichainNetwork = {
     chainId: 'eip155:1',
     nickname: 'Ethereum Mainnet',
     isAddressCompatible: () => true,
@@ -245,8 +250,13 @@ jest.mock('../../../selectors/multichain', () => ({
         ticker: 'ETH',
       },
     },
-  })),
-}));
+  };
+
+  return {
+    ...jest.requireActual('../../../selectors/multichain'),
+    getMultichainNetwork: jest.fn(() => mockMultichainNetwork),
+  };
+});
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
   ...jest.requireActual('@metamask/chain-agnostic-permission'),

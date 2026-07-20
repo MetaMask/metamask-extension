@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
@@ -39,6 +39,7 @@ import {
   setDefaultHomeActiveTabName,
   setPerpsTabBadgeSeen,
 } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';

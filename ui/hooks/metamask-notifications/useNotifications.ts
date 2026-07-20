@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
 import {
@@ -26,6 +26,7 @@ import {
 } from '../../contexts/metamask-notifications/notification-storage-keys';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * useState that only applies updates while mounted. Prevents

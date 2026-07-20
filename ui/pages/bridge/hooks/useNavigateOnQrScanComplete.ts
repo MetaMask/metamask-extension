@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
   getActiveQrCodeScanRequest,
@@ -12,6 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.

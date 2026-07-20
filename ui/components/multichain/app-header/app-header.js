@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -33,6 +33,7 @@ import {
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/lib/network.utils';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';

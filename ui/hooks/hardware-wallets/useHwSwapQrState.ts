@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
@@ -13,6 +13,8 @@ import {
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { useDispatch } from '../../store/hooks';
+
 import {
   isQrHardwareSignRequest,
   cleanupPendingApproval,
@@ -51,7 +53,7 @@ export function useHwSwapQrState({
   confirmationTxData,
   stepTrackingResetKey,
 }: UseHardwareWalletQrStateOptions) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
 

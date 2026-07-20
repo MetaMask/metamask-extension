@@ -1,6 +1,6 @@
 import React, { useState, useCallback, ReactElement } from 'react';
 import { flushSync } from 'react-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { setCurrentLocale } from '../../../../store/actions';
 import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
+import { useDispatch } from '../../../../store/hooks';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));

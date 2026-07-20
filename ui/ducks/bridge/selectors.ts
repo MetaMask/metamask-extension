@@ -55,7 +55,10 @@ import {
 } from '@metamask/account-tree-controller';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
+import {
+  createDeepEqualSelector,
+  createParameterizedSelector,
+} from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
@@ -106,6 +109,7 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
+import type { MetaMaskReduxState } from '../../store/store';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -151,6 +155,19 @@ export type BridgeAppState = {
     };
   bridge: BridgeState;
 };
+
+/**
+ * Returns the bridge-relevant slices from the full Redux state.
+ *
+ * @param state - Full Redux state.
+ */
+export function getBridgeAppState(state: MetaMaskReduxState): BridgeAppState {
+  return {
+    // @ts-expect-error FlattenedBackgroundStateProxy matches the bridge metamask shape at runtime.
+    metamask: state.metamask,
+    bridge: state.bridge,
+  };
+}
 
 // getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
 const getAllBridgeableNetworks = createSelector(
@@ -1177,6 +1194,22 @@ const _getBaseValidationErrors = createDeepEqualSelector(
   },
 );
 
+const getValidationErrorsAtTime = createParameterizedSelector(20)(
+  (state: BridgeAppState) => _getBaseValidationErrors(state),
+  (state: BridgeAppState) => state,
+  (_state: BridgeAppState, currentTimeInMs?: number) => currentTimeInMs,
+  (baseErrors, state, currentTimeInMs) => ({
+    ...baseErrors,
+    isQuoteExpired: currentTimeInMs
+      ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
+      : false,
+    isStockMarketClosed:
+      currentTimeInMs === undefined
+        ? false
+        : getIsStockMarketClosed(state, currentTimeInMs),
+  }),
+);
+
 /**
  * Returns all validation errors for the current bridge/swap form state.
  * Pass `currentTimeInMs` to include stock market-closed status and quote expiration status
@@ -1186,16 +1219,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 export const getValidationErrors = (
   state: BridgeAppState,
   currentTimeInMs?: number,
-) => ({
-  ..._getBaseValidationErrors(state),
-  isQuoteExpired: currentTimeInMs
-    ? selectIsQuoteExpired(state.metamask, {}, currentTimeInMs)
-    : false,
-  isStockMarketClosed:
-    currentTimeInMs === undefined
-      ? false
-      : getIsStockMarketClosed(state, currentTimeInMs),
-});
+) => getValidationErrorsAtTime(state, currentTimeInMs);
 
 /**
  * Returns warning labels for metrics. Pass `currentTimeInMs` to include

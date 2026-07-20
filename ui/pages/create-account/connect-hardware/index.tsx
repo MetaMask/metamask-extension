@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react';
 import { upperFirst } from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
@@ -60,6 +60,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 

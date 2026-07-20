@@ -1,12 +1,17 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import { getFromAccount } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 const mockNavigate = jest.fn();
 
@@ -17,7 +22,6 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
@@ -48,7 +52,7 @@ jest.mock('../../../../../helpers/constants/routes', () => ({
 }));
 
 const mockDispatch = jest.fn();
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
 const mockGetMaybeHexChainId = jest.mocked(getMaybeHexChainId);
@@ -92,7 +96,7 @@ describe('useBatchSellSubmitQuotes', () => {
     jest.clearAllMocks();
 
     mockDispatch.mockResolvedValue(undefined);
-    mockUseDispatch.mockReturnValue(mockDispatch as never);
+    mockUseAppDispatch.mockReturnValue(mockDispatch as never);
 
     mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
     mockGetIsSmartTransaction.mockReturnValue(true);

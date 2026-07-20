@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -22,6 +21,7 @@ import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import { AccountDetailsAuthenticate } from '../../multichain/account-details/account-details-authenticate';
 import { AccountDetailsKey } from '../../multichain/account-details/account-details-key';
+import { useDispatch } from '../../../store/hooks';
 
 type AccountShowPrivateKeyRowProps = {
   account: InternalAccount;

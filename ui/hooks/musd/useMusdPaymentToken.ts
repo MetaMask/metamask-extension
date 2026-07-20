@@ -10,7 +10,6 @@
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -29,6 +28,7 @@ import {
 } from '../../store/actions';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Return type for useMusdPaymentToken hook

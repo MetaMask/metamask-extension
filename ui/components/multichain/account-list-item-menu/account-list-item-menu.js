@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { IconName, Text, TextVariant } from '@metamask/design-system-react';
@@ -21,6 +21,7 @@ import {
   updateHiddenAccountsList,
 } from '../../../store/actions';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Options';
 

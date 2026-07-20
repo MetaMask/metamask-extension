@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   type NavigateOptions,
   type To,
@@ -37,6 +37,7 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { useDispatch } from '../../store/hooks';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {

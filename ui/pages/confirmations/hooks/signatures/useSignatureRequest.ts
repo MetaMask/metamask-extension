@@ -3,7 +3,7 @@ import {
   SignatureRequestStatus,
   SignatureRequestType,
 } from '@metamask/signature-controller';
-import { useAppSelector } from '../../../../store/store';
+import { useAppSelector } from '../../../../store/hooks';
 import { selectUnapprovedSignatureRequestById } from '../../../../selectors/signatures';
 import { useConfirmationId } from '../useConfirmationId';
 

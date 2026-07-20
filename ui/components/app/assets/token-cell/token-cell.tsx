@@ -1,6 +1,5 @@
 import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
@@ -30,6 +29,8 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
+import { useDispatch } from '../../../../store/hooks';
+
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,

@@ -1,4 +1,4 @@
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
 import {
@@ -21,6 +21,7 @@ import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
+import { useDispatch } from '../../../store/hooks';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 

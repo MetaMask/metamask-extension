@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -44,6 +44,7 @@ import {
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { useBoolean } from '../../hooks/useBoolean';
 import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
+import { useDispatch } from '../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

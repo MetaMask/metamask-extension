@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
@@ -65,6 +65,7 @@ import SwapsFooter from '../swaps-footer';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { useDispatch } from '../../../store/hooks';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';

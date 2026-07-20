@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { validateRewardsReferralCode } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 
 export const REFERRAL_CODE_DEBOUNCE_MS = 1000;
 export const REFERRAL_CODE_MIN_LENGTH = 3;

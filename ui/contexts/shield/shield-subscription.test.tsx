@@ -9,15 +9,20 @@ import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
 import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
+import { useDispatch } from '../../store/hooks';
+
 import {
   ShieldSubscriptionProvider,
   useShieldSubscriptionContext,
   resetEvaluatedShieldCohortsForTesting,
 } from './shield-subscription';
 
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 jest.mock('../../hooks/subscription/useSubscription');
@@ -33,7 +38,7 @@ jest.mock('../../store/actions', () => ({
   setShowShieldEntryModalOnce: jest.fn(),
 }));
 
-const mockUseDispatch = jest.mocked(redux.useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(redux.useSelector);
 
 describe('ShieldSubscriptionProvider', () => {
@@ -45,7 +50,7 @@ describe('ShieldSubscriptionProvider', () => {
     jest.clearAllMocks();
     resetEvaluatedShieldCohortsForTesting();
 
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockUseSelector.mockImplementation((selector) => {
       if (selector === selectors.getUseExternalServices) {
         return true;

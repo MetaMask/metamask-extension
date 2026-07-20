@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -29,6 +28,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useDispatch } from '../../../../../store/hooks';
 
 export type PayWithModalProps = {
   isOpen: boolean;

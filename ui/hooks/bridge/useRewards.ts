@@ -1,7 +1,7 @@
 'use no memo';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
@@ -30,6 +30,7 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
+import { useDispatch } from '../../store/hooks';
 
 // Set to true when a rewards season is active and points estimation should run.
 const REWARDS_SEASON_ACTIVE = false;

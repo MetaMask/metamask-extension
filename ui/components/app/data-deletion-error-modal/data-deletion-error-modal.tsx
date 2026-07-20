@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -28,6 +27,7 @@ import {
   ButtonSize,
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
+import { useDispatch } from '../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

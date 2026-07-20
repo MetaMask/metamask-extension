@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -27,6 +26,7 @@ import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
+import { useDispatch } from '../../../../store/hooks';
 import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

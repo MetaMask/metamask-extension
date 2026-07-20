@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 const useSetConfirmationAlerts = () => {

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
@@ -72,6 +72,7 @@ import {
 } from '../passkey-verification';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { useDispatch } from '../../../store/hooks';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {

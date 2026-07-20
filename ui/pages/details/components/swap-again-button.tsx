@@ -8,7 +8,6 @@ import {
   FeatureId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import { useDispatch } from 'react-redux';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
@@ -16,6 +15,7 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
+import { useDispatch } from '../../../store/hooks';
 
 export function SwapAgainButton({
   destinationToken,

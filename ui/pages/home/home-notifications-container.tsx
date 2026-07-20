@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
   activeTabHasPermissions,
@@ -44,6 +44,7 @@ import {
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 

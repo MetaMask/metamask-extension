@@ -1,7 +1,8 @@
 import { useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getEnabledChainIds } from '../selectors';
 import { updateBalancesFoAccounts } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Assets hook to update balance state for ALL accounts when account lists are displayed.

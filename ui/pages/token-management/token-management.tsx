@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -100,6 +100,8 @@ import {
   TextFieldSearchSize,
 } from '../../components/component-library';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

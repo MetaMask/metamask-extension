@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   calculateSlippage,
   getSlippageReason,
@@ -8,6 +8,7 @@ import {
 import { setSlippage } from '../../ducks/bridge/actions';
 import { getFromToken, getToToken } from '../../ducks/bridge/selectors';
 import { getIsRWATokensEnabled } from '../../selectors/rwa/feature-flags';
+import { useDispatch } from '../../store/hooks';
 
 // This hook doesn't return anything as it only dispatches slippage updates
 // The slippage value can be accessed via getSlippage selector

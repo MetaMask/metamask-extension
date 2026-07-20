@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
 import { PerpsToastProvider } from '../../components/app/perps';
@@ -16,6 +16,7 @@ import {
 } from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
+import { useDispatch } from '../../store/hooks';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -56,7 +57,7 @@ export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
 
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { pathname, search } = useLocation();
 
   const selectedAddress = useSelector(

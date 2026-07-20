@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
   type QuoteMetadata,
@@ -40,6 +40,7 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useDispatch } from '../../../store/hooks';
 
 export const BridgeQuotesModal = ({
   onClose,

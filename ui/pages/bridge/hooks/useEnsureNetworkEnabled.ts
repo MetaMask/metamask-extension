@@ -3,14 +3,15 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { addNetwork } from '../../../store/actions';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 
 export const useEnsureNetworkEnabled = () => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );

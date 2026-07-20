@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
@@ -22,6 +22,8 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDispatch } from '../../../../store/hooks';
+
 import {
   Icon,
   IconName,

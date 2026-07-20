@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -44,6 +44,8 @@ import {
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

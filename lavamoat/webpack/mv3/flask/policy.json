@@ -606,7 +606,7 @@
         "@hello-pangea/dnd>raf-schd": true,
         "react": true,
         "react-dom": true,
-        "@hello-pangea/dnd>react-redux": true,
+        "react-redux": true,
         "redux": true,
         "@hello-pangea/dnd>use-memo-one": true
       }
@@ -3592,7 +3592,7 @@
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
         "react": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "react-redux>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
@@ -5986,19 +5986,6 @@
     },
     "react-redux": {
       "globals": {
-        "document": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-redux>hoist-non-react-statics": true,
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux>react-is": true
-      }
-    },
-    "@hello-pangea/dnd>react-redux": {
-      "globals": {
         "console.warn": true,
         "document": true
       },
@@ -6007,8 +5994,8 @@
         "react-redux>hoist-non-react-statics": true,
         "react": true,
         "react-dom": true,
-        "@metamask/snap-simple-keyring-site>react-is": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "react-redux>react-is": true,
+        "react-redux>use-sync-external-store": true
       }
     },
     "react-router-dom": {
@@ -6858,7 +6845,7 @@
         "tslib": true
       }
     },
-    "@tanstack/react-query>use-sync-external-store": {
+    "react-redux>use-sync-external-store": {
       "globals": {
         "document": true
       },

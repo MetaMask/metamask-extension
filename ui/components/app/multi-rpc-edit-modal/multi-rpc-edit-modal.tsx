@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   Box,
@@ -26,6 +26,7 @@ import { setShowMultiRpcModal } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { useDispatch } from '../../../store/hooks';
 import NetworkListItem from './network-list-item/network-list-item';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

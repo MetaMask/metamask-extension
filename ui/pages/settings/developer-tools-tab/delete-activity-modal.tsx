@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -26,6 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { resetAccount } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 
 type DeleteActivityModalProps = {
   onClose: () => void;

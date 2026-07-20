@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -36,10 +36,11 @@ import {
   selectOptinAllowedForGeoLoading,
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
-import { useAppSelector } from '../../../../store/store';
+import { useAppSelector, useDispatch } from '../../../../store/hooks';
 import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
 import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
+
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EthScope } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
@@ -65,6 +65,7 @@ import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../sel
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
+import { useDispatch } from '../../../../../store/hooks';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;

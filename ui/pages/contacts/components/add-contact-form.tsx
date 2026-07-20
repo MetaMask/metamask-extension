@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import {
   Box,
@@ -21,6 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
+import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,

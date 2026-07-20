@@ -665,7 +665,7 @@ const defaultAccountTreeState = getDefaultAccountTreeControllerState();
  *
  * @param state
  */
-const selectAccountTreeStateForBalances = createSelector(
+const selectAccountTreeStateForBalances = createDeepEqualSelector(
   [
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
@@ -868,7 +868,7 @@ const selectAssetsControllerStateForBalances = createSelector(
  * @param state - Redux state from which the required slices are derived.
  * @returns Aggregated balances structure for all wallets and groups.
  */
-export const selectBalanceForAllWallets = createSelector(
+export const selectBalanceForAllWallets = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     selectAssetsControllerStateForBalances,

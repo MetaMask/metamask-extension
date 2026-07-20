@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -20,6 +20,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const AdvancedDetailsButton = () => {
   const t = useI18nContext();

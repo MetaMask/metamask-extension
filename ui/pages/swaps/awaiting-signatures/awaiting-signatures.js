@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { I18nContext } from '../../../contexts/i18n';
@@ -31,6 +31,7 @@ import SwapsFooter from '../swaps-footer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
+import { useDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
