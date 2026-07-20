@@ -236,8 +236,15 @@ export function diffCoverage(
       removedSignatures.push(signature);
       continue;
     }
-    const baseTags = new Set(baseBySig.get(signature)?.[0]?.tagKeys ?? []);
-    const currTags = new Set(currBySig.get(signature)?.[0]?.tagKeys ?? []);
+    // Union tag coverage across every item sharing this signature — duplicates
+    // (e.g. two pageload transactions) can each carry different tags, so a tag
+    // counts as covered if any item in the group has it, not just the first.
+    const baseTags = new Set(
+      (baseBySig.get(signature) ?? []).flatMap((item) => item.tagKeys),
+    );
+    const currTags = new Set(
+      (currBySig.get(signature) ?? []).flatMap((item) => item.tagKeys),
+    );
     const added = [...currTags].filter((tag) => !baseTags.has(tag)).sort();
     const removed = [...baseTags].filter((tag) => !currTags.has(tag)).sort();
     if (added.length > 0 || removed.length > 0) {

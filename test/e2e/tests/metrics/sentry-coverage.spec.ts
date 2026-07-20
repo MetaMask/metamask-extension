@@ -45,9 +45,9 @@ const BASELINE_PATH = resolve(
 const UPDATE_BASELINE = process.env.UPDATE_SENTRY_COVERAGE_BASELINE === 'true';
 
 // The fixed flow emits three envelope categories; wait until all have arrived
-// (or the cap elapses) before snapshotting, so we never capture a half-flushed
-// batch: `session` is eager, the pageload `transaction`s follow UI Startup, and
-// the developer-options error `event` is the last to flush.
+// before snapshotting (failing if the cap elapses first), so we never capture a
+// half-flushed batch: `session` is eager, the pageload `transaction`s follow UI
+// Startup, and the developer-options error `event` is the last to flush.
 const REQUIRED_TYPES = ['session', 'event', 'transaction'];
 const MAX_WAIT_FOR_ENVELOPES_MS = 30_000;
 // Let stragglers (e.g. a second pageload transaction) accumulate after the
@@ -112,9 +112,10 @@ describe('Sentry coverage equivalence (#43819)', function () {
             'window.stateHooks.throwTestError("Sentry coverage equivalence error")',
           );
 
-          // Wait until all three envelope categories have been POSTed (or the cap
-          // elapses), then settle for stragglers — so we snapshot the full set,
-          // not just the eager session envelope.
+          // Wait until all three envelope categories have been POSTed, then
+          // settle for stragglers — so we snapshot the full set, not just the
+          // eager session envelope. A timeout here means the capture is
+          // incomplete, so fail loudly rather than snapshot/diff partial data.
           await driver
             .wait(async () => {
               const seen = await mockedEndpoint.getSeenRequests();
@@ -126,7 +127,12 @@ describe('Sentry coverage equivalence (#43819)', function () {
               );
               return REQUIRED_TYPES.every((type) => types.has(type));
             }, MAX_WAIT_FOR_ENVELOPES_MS)
-            .catch(() => undefined);
+            .catch(() => {
+              throw new Error(
+                `Timed out after ${MAX_WAIT_FOR_ENVELOPES_MS}ms waiting for all envelope categories ` +
+                  `(${REQUIRED_TYPES.join(', ')}); refusing to snapshot an incomplete capture.`,
+              );
+            });
           await driver.delay(SETTLE_MS);
 
           const requests = await mockedEndpoint.getSeenRequests();
