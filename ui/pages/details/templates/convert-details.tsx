@@ -74,10 +74,6 @@ export function ConvertDetails({ item }: Props) {
   const formatFiat = (value?: string) =>
     value ? format(Number(value), metamaskPayCurrency) : null;
 
-  if (!transactionMeta) {
-    return null;
-  }
-
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
@@ -103,11 +99,13 @@ export function ConvertDetails({ item }: Props) {
           />
         </Section>
 
-        <Section>
-          <TransactionDetailsProvider transactionMeta={transactionMeta}>
-            <TransactionDetailsSummary />
-          </TransactionDetailsProvider>
-        </Section>
+        {transactionMeta ? (
+          <Section>
+            <TransactionDetailsProvider transactionMeta={transactionMeta}>
+              <TransactionDetailsSummary />
+            </TransactionDetailsProvider>
+          </Section>
+        ) : null}
       </div>
 
       <Footer>
