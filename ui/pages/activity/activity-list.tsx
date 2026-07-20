@@ -87,7 +87,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
 
   useEffect(() => {
     const onPopState = () => {
-      dialogRef.current?.close();
+      dialogRef.current?.close?.();
     };
 
     window.addEventListener('popstate', onPopState);
@@ -112,7 +112,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     setSelectedItem(item);
 
     if (dialogRef.current && !dialogRef.current.open) {
-      dialogRef.current.showModal();
+      dialogRef.current.showModal?.();
     }
 
     const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
@@ -205,7 +205,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={selectedItem?.hash}
-          onBack={() => dialogRef.current?.close()}
+          onBack={() => dialogRef.current?.close?.()}
         />
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>
