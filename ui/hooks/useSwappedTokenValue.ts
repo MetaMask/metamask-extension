@@ -92,12 +92,12 @@ export function useSwappedTokenValue(
 
   const _swapTokenFiatAmount = useTokenFiatAmount(
     address,
-    swapTokenValue as string || '',
+    typeof swapTokenValue === 'string' ? swapTokenValue : '',
     symbol,
   );
   const _swapAndSendTokenFiatAmount = useTokenFiatAmount(
     primaryTransaction.sourceTokenAddress,
-    swapTokenValue as string,
+    typeof swapTokenValue === 'string' ? swapTokenValue : undefined,
     primaryTransaction.sourceTokenSymbol,
   );
 

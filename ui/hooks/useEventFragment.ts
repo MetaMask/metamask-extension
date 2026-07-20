@@ -67,7 +67,9 @@ export function useEventFragment(
         ...fragmentOptions,
         environmentType: getEnvironmentType(),
       } as MetaMetricsEventFragment).then((createdFragment) => {
-        setCreatedFragmentId((createdFragment as unknown as { id: string }).id);
+        setCreatedFragmentId(
+          (createdFragment as unknown as MetaMetricsEventFragment).id,
+        );
       });
     }
   }, [fragment, fragmentOptions]);
