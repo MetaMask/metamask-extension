@@ -781,8 +781,6 @@
   "ui/components/ui/dropdown/dropdown.js",
   "ui/components/ui/dropdown/dropdown.stories.js",
   "ui/components/ui/dropdown/index.js",
-  "ui/components/ui/editable-label/editable-label.stories.js",
-  "ui/components/ui/editable-label/index.js",
   "ui/components/ui/export-text-container/export-text-container.component.js",
   "ui/components/ui/export-text-container/export-text.stories.js",
   "ui/components/ui/export-text-container/index.js",
