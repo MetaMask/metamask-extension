@@ -96,7 +96,8 @@ describe('Transaction Selectors', () => {
     });
   });
   describe('smartTransactionsListSelector', () => {
-    const createSmartTransaction = (customParams = {}) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const createSmartTransaction = (customParams: any = {}) => {
       return {
         uuid: 'uuid1',
         status: customParams.status || SmartTransactionStatuses.SUCCESS,

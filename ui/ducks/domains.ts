@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import log from 'loglevel';
 
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -21,7 +21,40 @@ import { BURN_ADDRESS } from '../../shared/lib/hexstring-utils';
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
 
-const initialState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = Record<string, any>;
+
+type DomainResolution = Json & {
+  resolvedAddress: string;
+  resolvingSnap?: string;
+  addressBookEntryName?: string;
+};
+
+export type DomainState = {
+  stage: 'UNINITIALIZED' | 'INITIALIZED';
+  resolutions: DomainResolution[] | null;
+  error: string | null;
+  warning: string | null;
+  chainId: string | null;
+  domainName: string | null;
+}
+
+type RootState = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DNS: DomainState;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+type ResolutionCacheEntry = {
+  timestamp: number;
+  result: DomainResolution[];
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Dispatch = (...args: any[]) => any;
+
+const initialState: DomainState = {
   stage: 'UNINITIALIZED',
   resolutions: null,
   error: null,
@@ -38,19 +71,26 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    lookupStart: (state, action) => {
+    lookupStart: (state, action: PayloadAction<string>) => {
       state.domainName = action.payload;
       state.warning = 'loading';
       state.error = null;
     },
-    lookupEnd: (state, action) => {
+    lookupEnd: (
+      state,
+      action: PayloadAction<{
+        resolutions: DomainResolution[];
+        domainName: string;
+        chainId?: string;
+      }>,
+    ) => {
       // first clear out the previous state
       state.resolutions = null;
       state.error = null;
       state.warning = null;
       state.domainName = null;
       const { resolutions, domainName } = action.payload;
-      const filteredResolutions = resolutions.filter((resolution) => {
+      const filteredResolutions = resolutions.filter((resolution: DomainResolution) => {
         return (
           resolution.resolvedAddress !== BURN_ADDRESS &&
           resolution.resolvedAddress !== ZERO_X_ERROR_ADDRESS
@@ -62,7 +102,7 @@ const slice = createSlice({
         state.error = NO_RESOLUTION_FOR_DOMAIN;
       }
     },
-    enableDomainLookup: (state, action) => {
+    enableDomainLookup: (state, action: PayloadAction<string>) => {
       state.stage = 'INITIALIZED';
       state.error = null;
       state.resolutions = null;
@@ -76,7 +116,7 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(CHAIN_CHANGED, (state, action) => {
+    builder.addCase(CHAIN_CHANGED, (state, action: PayloadAction<string>) => {
       if (action.payload !== state.chainId) {
         state.stage = 'UNINITIALIZED';
       }
@@ -92,19 +132,22 @@ const { lookupStart, lookupEnd, enableDomainLookup, resetDomainResolution } =
 export { resetDomainResolution };
 
 export function initializeDomainSlice() {
-  return (dispatch, getState) => {
+  return (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     dispatch(enableDomainLookup(chainId));
   };
 }
 
-const resolutionCache = new Map();
+const resolutionCache = new Map<string, ResolutionCacheEntry>();
 const CACHE_TTL_MS = 60000;
 const MAX_CACHE_SIZE = 100;
 
-function enrichResolutionsWithAddressBook(resolutions, state) {
-  return resolutions.map((resolution) => ({
+function enrichResolutionsWithAddressBook(
+  resolutions: DomainResolution[],
+  state: RootState,
+) {
+  return resolutions.map((resolution: DomainResolution) => ({
     ...resolution,
     addressBookEntryName: getAddressBookEntry(state, resolution.resolvedAddress)
       ?.name,
@@ -124,7 +167,17 @@ function pruneExpiredCacheEntries() {
   }
 }
 
-export async function fetchResolutions({ domain, chainId, state, signal }) {
+export async function fetchResolutions({
+  domain,
+  chainId,
+  state,
+  signal,
+}: {
+  domain: string;
+  chainId: string;
+  state: RootState;
+  signal?: AbortSignal;
+}): Promise<DomainResolution[]> {
   const cacheKey = `${domain}:${chainId}`;
   const cached = resolutionCache.get(cacheKey);
 
@@ -150,7 +203,7 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
     return [];
   }
 
-  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId: string) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
     const chainIdCaveat = getChainIdsCaveat(permission);
     const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
@@ -162,8 +215,8 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
     if (lookupMatchersCaveat) {
       const { tlds, schemes } = lookupMatchersCaveat;
       return (
-        tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
-        schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
+        tlds?.some((tld: string) => domain.endsWith(`.${tld}`)) ||
+        schemes?.some((scheme: string) => domain.startsWith(`${scheme}:`))
       );
     }
 
@@ -175,7 +228,7 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
   }
 
   const results = await Promise.allSettled(
-    filteredNameLookupSnapsIds.map((snapId) => {
+    filteredNameLookupSnapsIds.map((snapId: string) => {
       return handleSnapRequest({
         snapId,
         origin: 'metamask',
@@ -197,7 +250,8 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
   }
 
   const filteredResults = results.reduce(
-    (successfulResolutions, result, idx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (successfulResolutions: DomainResolution[], result: PromiseSettledResult<any>, idx: number) => {
       if (result.status !== 'rejected' && result.value !== null) {
         const resolutions = result.value.resolvedAddresses.map(
           (resolution) => ({
@@ -221,7 +275,9 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
     // If still at max after pruning, remove oldest entry
     if (resolutionCache.size >= MAX_CACHE_SIZE) {
       const oldestKey = resolutionCache.keys().next().value;
-      resolutionCache.delete(oldestKey);
+      if (oldestKey) {
+        resolutionCache.delete(oldestKey);
+      }
     }
   }
 
@@ -234,8 +290,12 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
   return enrichResolutionsWithAddressBook(filteredResults, state);
 }
 
-export function lookupDomainName(domainName, chainId, signal) {
-  return async (dispatch, getState) => {
+export function lookupDomainName(
+  domainName: string,
+  chainId?: string | null,
+  signal?: AbortSignal,
+) {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
@@ -272,14 +332,14 @@ export function lookupDomainName(domainName, chainId, signal) {
   };
 }
 
-export function getDomainResolutions(state) {
+export function getDomainResolutions(state: RootState) {
   return state[name].resolutions;
 }
 
-export function getDomainError(state) {
+export function getDomainError(state: RootState) {
   return state[name].error;
 }
 
-export function getDomainWarning(state) {
+export function getDomainWarning(state: RootState) {
   return state[name].warning;
 }

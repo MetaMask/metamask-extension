@@ -8,7 +8,8 @@ import {
 } from './gas-action-constants';
 
 describe('Gas Duck', () => {
-  let tempDateNow;
+  let tempDateNow: typeof global.Date.now;
+
   beforeEach(() => {
     tempDateNow = global.Date.now;
 
@@ -23,7 +24,8 @@ describe('Gas Duck', () => {
 
   const mockState = {
     mockProp: 123,
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
   const initState = {
     customData: {
       price: null,

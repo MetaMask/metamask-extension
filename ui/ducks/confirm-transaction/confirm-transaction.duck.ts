@@ -1,3 +1,4 @@
+import type { AnyAction } from 'redux';
 import {
   conversionRateSelector,
   currentCurrencySelector,
@@ -21,8 +22,8 @@ import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 
-// Actions
-const createActionType = (action) => `metamask/confirm-transaction/${action}`;
+const createActionType = (action: string) =>
+  `metamask/confirm-transaction/${action}`;
 
 const UPDATE_TX_DATA = createActionType('UPDATE_TX_DATA');
 const UPDATE_TOKEN_DATA = createActionType('UPDATE_TOKEN_DATA');
@@ -36,8 +37,37 @@ const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS');
 const UPDATE_NONCE = createActionType('UPDATE_NONCE');
 const SET_MAX_VALUE_MODE = createActionType('SET_MAX_VALUE_MODE');
 
-// Initial state
-const initState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = Record<string, any>;
+type RootState = {
+  metamask: Json;
+  confirmTransaction?: {
+    txData?: Json;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Dispatch = (...args: any[]) => any;
+
+export type ConfirmTransactionState = {
+  txData: Json;
+  tokenData: Json;
+  tokenProps: Json;
+  fiatTransactionAmount: string;
+  fiatTransactionFee: string;
+  fiatTransactionTotal: string;
+  ethTransactionAmount: string;
+  ethTransactionFee: string;
+  ethTransactionTotal: string;
+  hexTransactionAmount: string;
+  hexTransactionFee: string;
+  hexTransactionTotal: string;
+  nonce: string | number;
+  maxValueMode: Record<string, boolean>;
+}
+
+const initState: ConfirmTransactionState = {
   txData: {},
   tokenData: {},
   tokenProps: {},
@@ -54,8 +84,10 @@ const initState = {
   maxValueMode: {},
 };
 
-// Reducer
-export default function reducer(state = initState, action = {}) {
+export default function reducer(
+  state: ConfirmTransactionState = initState,
+  action: AnyAction = {},
+): ConfirmTransactionState {
   switch (action.type) {
     case UPDATE_TX_DATA:
       return {
@@ -83,20 +115,18 @@ export default function reducer(state = initState, action = {}) {
         fiatTransactionAmount,
         ethTransactionAmount,
         hexTransactionAmount,
-      } = action.payload;
+      } = (action.payload ?? {}) as Partial<ConfirmTransactionState>;
       return {
         ...state,
         fiatTransactionAmount:
           fiatTransactionAmount || state.fiatTransactionAmount,
-        ethTransactionAmount:
-          ethTransactionAmount || state.ethTransactionAmount,
-        hexTransactionAmount:
-          hexTransactionAmount || state.hexTransactionAmount,
+        ethTransactionAmount: ethTransactionAmount || state.ethTransactionAmount,
+        hexTransactionAmount: hexTransactionAmount || state.hexTransactionAmount,
       };
     }
     case UPDATE_TRANSACTION_FEES: {
       const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } =
-        action.payload;
+        (action.payload ?? {}) as Partial<ConfirmTransactionState>;
       return {
         ...state,
         fiatTransactionFee: fiatTransactionFee || state.fiatTransactionFee,
@@ -106,19 +136,19 @@ export default function reducer(state = initState, action = {}) {
     }
     case UPDATE_TRANSACTION_TOTALS: {
       const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } =
-        action.payload;
+        (action.payload ?? {}) as Partial<ConfirmTransactionState>;
       return {
         ...state,
-        fiatTransactionTotal:
-          fiatTransactionTotal || state.fiatTransactionTotal,
-        ethTransactionTotal: ethTransactionTotal || state.ethTransactionTotal,
+        fiatTransactionTotal: fiatTransactionTotal || state.fiatTransactionTotal,
+        ethTransactionTotal:
+          ethTransactionTotal || state.ethTransactionTotal,
         hexTransactionTotal: hexTransactionTotal || state.hexTransactionTotal,
       };
     }
     case UPDATE_NONCE:
       return {
         ...state,
-        nonce: action.payload,
+        nonce: action.payload as ConfirmTransactionState['nonce'],
       };
     case CLEAR_CONFIRM_TRANSACTION:
       return {
@@ -138,69 +168,92 @@ export default function reducer(state = initState, action = {}) {
   }
 }
 
-// Action Creators
-export function updateTxData(txData) {
+export function updateTxData(txData: Json) {
   return {
     type: UPDATE_TX_DATA,
     payload: txData,
   };
 }
 
-export function updateTokenData(tokenData) {
+export function updateTokenData(tokenData: Json) {
   return {
     type: UPDATE_TOKEN_DATA,
     payload: tokenData,
   };
 }
 
-export function updateTokenProps(tokenProps) {
+export function updateTokenProps(tokenProps: Json) {
   return {
     type: UPDATE_TOKEN_PROPS,
     payload: tokenProps,
   };
 }
 
-export function updateTransactionAmounts(amounts) {
+export function updateTransactionAmounts(
+  amounts: Partial<
+    Pick<
+      ConfirmTransactionState,
+      | 'fiatTransactionAmount'
+      | 'ethTransactionAmount'
+      | 'hexTransactionAmount'
+    >
+  >,
+) {
   return {
     type: UPDATE_TRANSACTION_AMOUNTS,
     payload: amounts,
   };
 }
 
-export function updateTransactionFees(fees) {
+export function updateTransactionFees(
+  fees: Partial<
+    Pick<
+      ConfirmTransactionState,
+      'fiatTransactionFee' | 'ethTransactionFee' | 'hexTransactionFee'
+    >
+  >,
+) {
   return {
     type: UPDATE_TRANSACTION_FEES,
     payload: fees,
   };
 }
 
-export function updateTransactionTotals(totals) {
+export function updateTransactionTotals(
+  totals: Partial<
+    Pick<
+      ConfirmTransactionState,
+      | 'fiatTransactionTotal'
+      | 'ethTransactionTotal'
+      | 'hexTransactionTotal'
+    >
+  >,
+) {
   return {
     type: UPDATE_TRANSACTION_TOTALS,
     payload: totals,
   };
 }
 
-export function updateNonce(nonce) {
+export function updateNonce(nonce: ConfirmTransactionState['nonce']) {
   return {
     type: UPDATE_NONCE,
     payload: nonce,
   };
 }
 
-export function updateTxDataAndCalculate(txData) {
-  return (dispatch, getState) => {
+export function updateTxDataAndCalculate(txData: Json) {
+  return (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const currentCurrency = currentCurrencySelector(state);
     const conversionRate = conversionRateSelector(state);
-    const nativeCurrency = getNativeCurrency(state);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nativeCurrency = getNativeCurrency(state as any);
 
     dispatch(updateTxData(txData));
 
     const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
 
-    // if the gas price from our infura endpoint is null or undefined
-    // use the metaswap average price estimation as a fallback
     let { txParams: { gasPrice } = {} } = txData;
     if (!gasPrice) {
       gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
@@ -271,11 +324,11 @@ export function updateTxDataAndCalculate(txData) {
   };
 }
 
-export function setTransactionToConfirm(transactionId) {
-  return (dispatch, getState) => {
+export function setTransactionToConfirm(transactionId: string | number) {
+  return (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const unconfirmedTransactionsHash =
-      unconfirmedTransactionsHashSelector(state);
+      unconfirmedTransactionsHashSelector(state) ?? {};
     const transaction = unconfirmedTransactionsHash[transactionId];
 
     if (!transaction) {
@@ -291,8 +344,9 @@ export function setTransactionToConfirm(transactionId) {
         const { to: tokenAddress, data } = txParams;
 
         const tokenData = parseStandardTokenTransactionData(data);
-        const tokens = getTokens(state);
-        const currentToken = tokens?.find(({ address }) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const tokens = getTokens(state as any);
+        const currentToken = tokens?.find(({ address }: { address: string }) =>
           isEqualCaseInsensitive(tokenAddress, address),
         );
 
@@ -322,7 +376,10 @@ export function clearConfirmTransaction() {
   };
 }
 
-export function setMaxValueMode(transactionId, enabled) {
+export function setMaxValueMode(
+  transactionId: string,
+  enabled: boolean,
+) {
   return {
     type: SET_MAX_VALUE_MODE,
     payload: {

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
@@ -113,7 +113,53 @@ export const GAS_PRICES_LOADING_STATES = {
   COMPLETED: 'COMPLETED',
 };
 
-const initialState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = Record<string, any>;
+
+export type SwapsState = {
+  aggregatorMetadata: Json | null;
+  approveTxId: string | null;
+  tradeTxId: string | null;
+  balanceError: boolean | string;
+  fetchingQuotes: boolean;
+  fromToken: Json | null;
+  fromTokenInputValue: string;
+  fromTokenError: string | null;
+  isFeatureFlagLoaded: boolean;
+  maxSlippage: number;
+  quotesFetchStartTime: number | null;
+  reviewSwapClickedTimestamp: number | null;
+  topAssets: Json;
+  toToken: Json | null;
+  customGas: {
+    price: string | null;
+    limit: string | null;
+    loading: string;
+    priceEstimates: Json;
+    fallBackPrice: string | number | null;
+  };
+  currentSmartTransactionsError: string;
+  swapsSTXLoading: boolean;
+  transactionSettingsOpened: boolean;
+  latestAddedTokenTo: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
+
+type RootState = {
+  swaps: SwapsState;
+  metamask: Json;
+  appState: Json;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Dispatch = (...args: any[]) => any;
+type Navigate = (path: string) => void | Promise<void>;
+type TrackEvent = (payload: Json) => void;
+
+const initialState: SwapsState = {
   aggregatorMetadata: null,
   approveTxId: null,
   tradeTxId: null,
@@ -159,53 +205,68 @@ const slice = createSlice({
       state.balanceError = false;
       state.fetchingQuotes = false;
     },
-    setAggregatorMetadata: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setAggregatorMetadata: (state, action: PayloadAction<any>) => {
       state.aggregatorMetadata = action.payload;
     },
-    setBalanceError: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setBalanceError: (state, action: PayloadAction<any>) => {
       state.balanceError = action.payload;
     },
-    setFetchingQuotes: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFetchingQuotes: (state, action: PayloadAction<any>) => {
       state.fetchingQuotes = action.payload;
     },
-    setLatestAddedTokenTo: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setLatestAddedTokenTo: (state, action: PayloadAction<any>) => {
       state.latestAddedTokenTo = action.payload;
     },
-    setFromToken: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFromToken: (state, action: PayloadAction<any>) => {
       state.fromToken = action.payload;
     },
-    setFromTokenInputValue: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFromTokenInputValue: (state, action: PayloadAction<any>) => {
       state.fromTokenInputValue = action.payload;
     },
-    setFromTokenError: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFromTokenError: (state, action: PayloadAction<any>) => {
       state.fromTokenError = action.payload;
     },
-    setIsFeatureFlagLoaded: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setIsFeatureFlagLoaded: (state, action: PayloadAction<any>) => {
       state.isFeatureFlagLoaded = action.payload;
     },
-    setMaxSlippage: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setMaxSlippage: (state, action: PayloadAction<any>) => {
       state.maxSlippage = action.payload;
     },
-    setQuotesFetchStartTime: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setQuotesFetchStartTime: (state, action: PayloadAction<any>) => {
       state.quotesFetchStartTime = action.payload;
     },
-    setReviewSwapClickedTimestamp: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setReviewSwapClickedTimestamp: (state, action: PayloadAction<any>) => {
       state.reviewSwapClickedTimestamp = action.payload;
     },
-    setTopAssets: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setTopAssets: (state, action: PayloadAction<any>) => {
       state.topAssets = action.payload;
     },
-    setToToken: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setToToken: (state, action: PayloadAction<any>) => {
       state.toToken = action.payload;
     },
     swapCustomGasModalClosed: (state) => {
       state.customGas.price = null;
       state.customGas.limit = null;
     },
-    swapCustomGasModalPriceEdited: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    swapCustomGasModalPriceEdited: (state, action: PayloadAction<any>) => {
       state.customGas.price = action.payload;
     },
-    swapCustomGasModalLimitEdited: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    swapCustomGasModalLimitEdited: (state, action: PayloadAction<any>) => {
       state.customGas.limit = action.payload;
     },
     swapGasPriceEstimatesFetchStarted: (state) => {
@@ -214,14 +275,17 @@ const slice = createSlice({
     swapGasPriceEstimatesFetchFailed: (state) => {
       state.customGas.loading = GAS_PRICES_LOADING_STATES.FAILED;
     },
-    swapGasPriceEstimatesFetchCompleted: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    swapGasPriceEstimatesFetchCompleted: (state, action: PayloadAction<any>) => {
       state.customGas.priceEstimates = action.payload.priceEstimates;
       state.customGas.loading = GAS_PRICES_LOADING_STATES.COMPLETED;
     },
-    retrievedFallbackSwapsGasPrice: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    retrievedFallbackSwapsGasPrice: (state, action: PayloadAction<any>) => {
       state.customGas.fallBackPrice = action.payload;
     },
-    setCurrentSmartTransactionsError: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setCurrentSmartTransactionsError: (state, action: PayloadAction<any>) => {
       const isValidCurrentStxError =
         Object.values(StxErrorTypes).includes(action.payload) ||
         action.payload === undefined;
@@ -230,10 +294,12 @@ const slice = createSlice({
         : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
     },
-    setSwapsSTXSubmitLoading: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setSwapsSTXSubmitLoading: (state, action: PayloadAction<any>) => {
       state.swapsSTXLoading = action.payload || false;
     },
-    setTransactionSettingsOpened: (state, action) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setTransactionSettingsOpened: (state, action: PayloadAction<any>) => {
       state.transactionSettingsOpened = Boolean(action.payload);
     },
   },
@@ -245,63 +311,63 @@ export default reducer;
 
 // Selectors
 
-export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
+export const getAggregatorMetadata = (state: RootState) => state.swaps.aggregatorMetadata;
 
-export const getBalanceError = (state) => state.swaps.balanceError;
+export const getBalanceError = (state: RootState) => state.swaps.balanceError;
 
-export const getFromToken = (state) => state.swaps.fromToken;
+export const getFromToken = (state: RootState) => state.swaps.fromToken;
 
-export const getFromTokenError = (state) => state.swaps.fromTokenError;
+export const getFromTokenError = (state: RootState) => state.swaps.fromTokenError;
 
-export const getFromTokenInputValue = (state) =>
+export const getFromTokenInputValue = (state: RootState) =>
   state.swaps.fromTokenInputValue;
 
-export const getIsFeatureFlagLoaded = (state) =>
+export const getIsFeatureFlagLoaded = (state: RootState) =>
   state.swaps.isFeatureFlagLoaded;
 
-export const getSwapsSTXLoading = (state) => state.swaps.swapsSTXLoading;
+export const getSwapsSTXLoading = (state: RootState) => state.swaps.swapsSTXLoading;
 
-export const getMaxSlippage = (state) => state.swaps.maxSlippage;
+export const getMaxSlippage = (state: RootState) => state.swaps.maxSlippage;
 
-export const getTopAssets = (state) => state.swaps.topAssets;
+export const getTopAssets = (state: RootState) => state.swaps.topAssets;
 
-export const getToToken = (state) => state.swaps.toToken;
+export const getToToken = (state: RootState) => state.swaps.toToken;
 
-export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
+export const getFetchingQuotes = (state: RootState) => state.swaps.fetchingQuotes;
 
-export const getLatestAddedTokenTo = (state) => state.swaps.latestAddedTokenTo;
+export const getLatestAddedTokenTo = (state: RootState) => state.swaps.latestAddedTokenTo;
 
-export const getQuotesFetchStartTime = (state) =>
+export const getQuotesFetchStartTime = (state: RootState) =>
   state.swaps.quotesFetchStartTime;
 
-export const getReviewSwapClickedTimestamp = (state) =>
+export const getReviewSwapClickedTimestamp = (state: RootState) =>
   state.swaps.reviewSwapClickedTimestamp;
 
-export const getSwapsCustomizationModalPrice = (state) =>
+export const getSwapsCustomizationModalPrice = (state: RootState) =>
   state.swaps.customGas.price;
 
-export const getSwapsCustomizationModalLimit = (state) =>
+export const getSwapsCustomizationModalLimit = (state: RootState) =>
   state.swaps.customGas.limit;
 
-export const swapGasPriceEstimateIsLoading = (state) =>
+export const swapGasPriceEstimateIsLoading = (state: RootState) =>
   state.swaps.customGas.loading === GAS_PRICES_LOADING_STATES.LOADING;
 
-export const swapGasEstimateLoadingHasFailed = (state) =>
+export const swapGasEstimateLoadingHasFailed = (state: RootState) =>
   state.swaps.customGas.loading === GAS_PRICES_LOADING_STATES.INITIAL;
 
-export const getSwapGasPriceEstimateData = (state) =>
+export const getSwapGasPriceEstimateData = (state: RootState) =>
   state.swaps.customGas.priceEstimates;
 
-export const getSwapsFallbackGasPrice = (state) =>
+export const getSwapsFallbackGasPrice = (state: RootState) =>
   state.swaps.customGas.fallBackPrice;
 
-export const getCurrentSmartTransactionsError = (state) =>
+export const getCurrentSmartTransactionsError = (state: RootState) =>
   state.swaps.currentSmartTransactionsError;
 
-export const getTransactionSettingsOpened = (state) =>
+export const getTransactionSettingsOpened = (state: RootState) =>
   state.swaps.transactionSettingsOpened;
 
-export function shouldShowCustomPriceTooLowWarning(state) {
+export function shouldShowCustomPriceTooLowWarning(state: RootState) {
   const { average } = getSwapGasPriceEstimateData(state);
 
   const customGasPrice = getSwapsCustomizationModalPrice(state);
@@ -323,96 +389,96 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 
 // Background selectors
 
-const getSwapsState = (state) => state.metamask.swapsState;
+const getSwapsState = (state: RootState) => state.metamask.swapsState;
 
-export const getSwapsFeatureIsLive = (state) =>
+export const getSwapsFeatureIsLive = (state: RootState) =>
   state.metamask.swapsState.swapsFeatureIsLive;
 
-export const getSmartTransactionsError = (state) =>
+export const getSmartTransactionsError = (state: RootState) =>
   state.appState.smartTransactionsError;
 
-export const getSmartTransactionsErrorMessageDismissed = (state) =>
+export const getSmartTransactionsErrorMessageDismissed = (state: RootState) =>
   state.appState.smartTransactionsErrorMessageDismissed;
 
-export const getCurrentSmartTransactionsEnabled = (state) => {
+export const getCurrentSmartTransactionsEnabled = (state: RootState) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
   return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
-export const getSwapsQuoteRefreshTime = (state) =>
+export const getSwapsQuoteRefreshTime = (state: RootState) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
-export const getSwapsQuotePrefetchingRefreshTime = (state) =>
+export const getSwapsQuotePrefetchingRefreshTime = (state: RootState) =>
   state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
 
-export const getBackgroundSwapRouteState = (state) =>
+export const getBackgroundSwapRouteState = (state: RootState) =>
   state.metamask.swapsState.routeState;
 
-export const selectShowAwaitingSwapScreen = (state) =>
+export const selectShowAwaitingSwapScreen = (state: RootState) =>
   state.metamask.swapsState.routeState === 'awaiting';
 
-export const getCustomSwapsGas = (state) =>
+export const getCustomSwapsGas = (state: RootState) =>
   state.metamask.swapsState.customMaxGas;
 
-export const getCustomSwapsGasPrice = (state) =>
+export const getCustomSwapsGasPrice = (state: RootState) =>
   state.metamask.swapsState.customGasPrice;
 
-export const getCustomMaxFeePerGas = (state) =>
+export const getCustomMaxFeePerGas = (state: RootState) =>
   state.metamask.swapsState.customMaxFeePerGas;
 
-export const getCustomMaxPriorityFeePerGas = (state) =>
+export const getCustomMaxPriorityFeePerGas = (state: RootState) =>
   state.metamask.swapsState.customMaxPriorityFeePerGas;
 
-export const getSwapsUserFeeLevel = (state) =>
+export const getSwapsUserFeeLevel = (state: RootState) =>
   state.metamask.swapsState.swapsUserFeeLevel;
 
-export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
+export const getFetchParams = (state: RootState) => state.metamask.swapsState.fetchParams;
 
-export const getQuotes = (state) => state.metamask.swapsState.quotes;
+export const getQuotes = (state: RootState) => state.metamask.swapsState.quotes;
 
-export const selectHasSwapsQuotes = (state) =>
+export const selectHasSwapsQuotes = (state: RootState) =>
   Boolean(Object.values(state.metamask.swapsState.quotes || {}).length);
 
-export const getQuotesLastFetched = (state) =>
+export const getQuotesLastFetched = (state: RootState) =>
   state.metamask.swapsState.quotesLastFetched;
 
-export const getSelectedQuote = (state) => {
+export const getSelectedQuote = (state: RootState) => {
   const { selectedAggId, quotes } = getSwapsState(state);
   return quotes[selectedAggId];
 };
 
-export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey;
+export const getSwapsErrorKey = (state: RootState) => getSwapsState(state)?.errorKey;
 
-export const getShowQuoteLoadingScreen = (state) =>
+export const getShowQuoteLoadingScreen = (state: RootState) =>
   state.swaps.showQuoteLoadingScreen;
 
-export const getSwapsTokens = (state) => state.metamask.swapsState.tokens;
+export const getSwapsTokens = (state: RootState) => state.metamask.swapsState.tokens;
 
-export const getSwapsWelcomeMessageSeenStatus = (state) =>
+export const getSwapsWelcomeMessageSeenStatus = (state: RootState) =>
   state.metamask.swapsWelcomeMessageHasBeenShown;
 
-export const getTopQuote = (state) => {
+export const getTopQuote = (state: RootState) => {
   const { topAggId, quotes } = getSwapsState(state);
   return quotes[topAggId];
 };
 
-export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId;
+export const getApproveTxId = (state: RootState) => state.metamask.swapsState.approveTxId;
 
-export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId;
+export const getTradeTxId = (state: RootState) => state.metamask.swapsState.tradeTxId;
 
-export const getUsedQuote = (state) =>
+export const getUsedQuote = (state: RootState) =>
   getSelectedQuote(state) || getTopQuote(state);
 
 // Compound selectors
 
-export const getDestinationTokenInfo = (state) =>
+export const getDestinationTokenInfo = (state: RootState) =>
   getFetchParams(state)?.metaData?.destinationTokenInfo;
 
-export const getUsedSwapsGasPrice = (state) =>
+export const getUsedSwapsGasPrice = (state: RootState) =>
   getCustomSwapsGasPrice(state) || getSwapsFallbackGasPrice(state);
 
-export const getApproveTxParams = (state) => {
+export const getApproveTxParams = (state: RootState) => {
   const { approvalNeeded } =
     getSelectedQuote(state) || getTopQuote(state) || {};
 
@@ -425,13 +491,13 @@ export const getApproveTxParams = (state) => {
   return { ...approvalNeeded, gasPrice, data };
 };
 
-export const getCurrentSmartTransactions = (state) => {
+export const getCurrentSmartTransactions = (state: RootState) => {
   return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ];
 };
 
-export const getPendingSmartTransactions = (state) => {
+export const getPendingSmartTransactions = (state: RootState) => {
   const currentSmartTransactions = getCurrentSmartTransactions(state);
   if (!currentSmartTransactions || currentSmartTransactions.length === 0) {
     return [];
@@ -441,7 +507,7 @@ export const getPendingSmartTransactions = (state) => {
   );
 };
 
-export const getSmartTransactionFees = (state) => {
+export const getSmartTransactionFees = (state: RootState) => {
   const usedQuote = getUsedQuote(state);
   if (!usedQuote?.isGasIncludedTrade) {
     return state.metamask.smartTransactionsState?.fees;
@@ -452,11 +518,11 @@ export const getSmartTransactionFees = (state) => {
   };
 };
 
-export const getSmartTransactionEstimatedGas = (state) => {
+export const getSmartTransactionEstimatedGas = (state: RootState) => {
   return state.metamask.smartTransactionsState?.estimatedGas;
 };
 
-export const getSwapsNetworkConfig = (state) => {
+export const getSwapsNetworkConfig = (state: RootState) => {
   const {
     swapsQuoteRefreshTime,
     swapsQuotePrefetchingRefreshTime,
@@ -528,8 +594,8 @@ export {
   slice as swapsSlice,
 };
 
-export const navigateBackToPrepareSwap = (navigate) => {
-  return async (dispatch) => {
+export const navigateBackToPrepareSwap = (navigate: Navigate) => {
+  return async (dispatch: Dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
@@ -538,7 +604,7 @@ export const navigateBackToPrepareSwap = (navigate) => {
 };
 
 export const prepareForRetryGetQuotes = () => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(resetSwapsPostFetchState());
     dispatch(retriedGetQuotes());
@@ -546,14 +612,14 @@ export const prepareForRetryGetQuotes = () => {
 };
 
 export const prepareToLeaveSwaps = () => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
 };
 
-export const swapsQuoteSelected = (aggId) => {
-  return (dispatch) => {
+export const swapsQuoteSelected = (aggId: string) => {
+  return (dispatch: Dispatch) => {
     dispatch(swapCustomGasModalLimitEdited(null));
     dispatch(setSelectedQuoteAggId(aggId));
     dispatch(setSwapsTxGasLimit(''));
@@ -561,7 +627,7 @@ export const swapsQuoteSelected = (aggId) => {
 };
 
 export const fetchAndSetSwapsGasPriceInfo = () => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates());
 
     if (basicEstimates?.fast) {
@@ -570,7 +636,10 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
-const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
+const disableStxIfRegularTxInProgress = (
+  dispatch: Dispatch,
+  transactions?: Json[],
+) => {
   if (transactions?.length <= 0) {
     return;
   }
@@ -585,7 +654,7 @@ const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
 };
 
 export const fetchSwapsLivenessAndFeatureFlags = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
@@ -620,7 +689,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   };
 };
 
-const isTokenAlreadyAdded = (tokenAddress, tokens) => {
+const isTokenAlreadyAdded = (tokenAddress: string, tokens?: Json[]) => {
   if (!Array.isArray(tokens)) {
     return false;
   }
@@ -630,13 +699,13 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
 };
 
 export const fetchQuotesAndSetQuoteState = (
-  navigate,
-  inputValue,
-  maxSlippage,
-  trackEvent,
-  pageRedirectionDisabled,
+  navigate: Navigate,
+  inputValue: string | number,
+  maxSlippage: number,
+  trackEvent: TrackEvent,
+  pageRedirectionDisabled?: boolean,
 ) => {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const hdEntropyIndex = getHDEntropyIndex(state);
     const selectedNetwork = getSelectedNetwork(state);
@@ -746,10 +815,10 @@ export const fetchQuotesAndSetQuoteState = (
     const swapsTokens = getSwapsTokens(state);
 
     const sourceTokenInfo =
-      swapsTokens?.find(({ address }) => address === fromTokenAddress) ||
+      swapsTokens?.find(({ address }: { address: string }) => address === fromTokenAddress) ||
       selectedFromToken;
     const destinationTokenInfo =
-      swapsTokens?.find(({ address }) => address === toTokenAddress) ||
+      swapsTokens?.find(({ address }: { address: string }) => address === toTokenAddress) ||
       selectedToToken;
 
     dispatch(setFromToken(selectedFromToken));
@@ -763,7 +832,10 @@ export const fetchQuotesAndSetQuoteState = (
       getCurrentSmartTransactionsEnabled(state);
 
     // Helper function for case-insensitive address check in a Set
-    const checkAddressInSetCaseInsensitive = (addressSet, addressToCheck) => {
+    const checkAddressInSetCaseInsensitive = (
+      addressSet: Set<string>,
+      addressToCheck?: string,
+    ) => {
       if (!addressToCheck) {
         return false;
       }
@@ -791,22 +863,33 @@ export const fetchQuotesAndSetQuoteState = (
       createEventBuilder(MetaMetricsEventName.QuotesRequested)
         .addCategory(MetaMetricsEventCategory.Swaps)
         .addSensitiveProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_from: fromTokenSymbol,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_from_amount: String(inputValue),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to: toTokenSymbol,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           request_type: balanceError ? 'Quote' : 'Order',
           slippage: slippageForFetch,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           custom_slippage:
             slippageForFetch !== Slippage.default &&
             slippageForFetch !== Slippage.stable,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_hardware_wallet: hardwareWalletUsed,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hardware_wallet_type: hardwareWalletType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           stx_enabled: smartTransactionsEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           current_stx_enabled: currentSmartTransactionsEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
           anonymizedData: true,
         })
         .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         })
         .build(),
@@ -853,18 +936,28 @@ export const fetchQuotesAndSetQuoteState = (
           createEventBuilder('No Quotes Available')
             .addCategory(MetaMetricsEventCategory.Swaps)
             .addSensitiveProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_from: fromTokenSymbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_from_amount: String(inputValue),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_to: toTokenSymbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               request_type: balanceError ? 'Quote' : 'Order',
               slippage: slippageForFetch,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               custom_slippage:
                 slippageForFetch !== Slippage.default &&
                 slippageForFetch !== Slippage.stable,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               is_hardware_wallet: hardwareWalletUsed,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hardware_wallet_type: hardwareWalletType,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               stx_enabled: smartTransactionsEnabled,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               current_stx_enabled: currentSmartTransactionsEnabled,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
             })
             .build(),
@@ -889,27 +982,43 @@ export const fetchQuotesAndSetQuoteState = (
           createEventBuilder(MetaMetricsEventName.QuotesReceived)
             .addCategory(MetaMetricsEventCategory.Swaps)
             .addSensitiveProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_from: fromTokenSymbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_from_amount: String(inputValue),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_to: toTokenSymbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               token_to_amount: tokenToAmountToString,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               request_type: balanceError ? 'Quote' : 'Order',
               slippage: slippageForFetch,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               custom_slippage:
                 slippageForFetch !== Slippage.default &&
                 slippageForFetch !== Slippage.stable,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               response_time: Date.now() - fetchStartTime,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               best_quote_source: newSelectedQuote.aggregator,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               available_quotes: Object.values(fetchedQuotes)?.length,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               is_hardware_wallet: hardwareWalletUsed,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hardware_wallet_type: hardwareWalletType,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               stx_enabled: smartTransactionsEnabled,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               current_stx_enabled: currentSmartTransactionsEnabled,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: newSelectedQuote.isGasIncludedTrade,
               anonymizedData: true,
             })
             .addProperties({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             })
             .build(),
@@ -918,13 +1027,14 @@ export const fetchQuotesAndSetQuoteState = (
         dispatch(setInitialGasEstimate(selectedAggId));
       }
     } catch (e) {
+      const error = e as Error;
       // A newer swap request is running, so simply bail and let the newer request respond
-      if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+      if (error.message === SWAPS_FETCH_ORDER_CONFLICT) {
         log.debug(`Swap fetch order conflict detected; ignoring older request`);
         return;
       }
       // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
-      log.error(`Error fetching quotes: `, e);
+      log.error(`Error fetching quotes: `, error);
 
       dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES));
     }
@@ -938,8 +1048,13 @@ export const signAndSendSwapsSmartTransaction = ({
   trackEvent,
   navigate,
   additionalTrackingParams,
+}: {
+  unsignedTransaction: Json;
+  trackEvent: TrackEvent;
+  navigate: Navigate;
+  additionalTrackingParams?: Json;
 }) => {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
     const hdEntropyIndex = getHDEntropyIndex(state);
@@ -973,29 +1088,48 @@ export const signAndSendSwapsSmartTransaction = ({
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
     const swapMetaData = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_from: sourceTokenInfo.symbol,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_from_amount: String(swapTokenValue),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_to: destinationTokenInfo.symbol,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_to_amount: destinationValue,
       slippage,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       custom_slippage: slippage !== 2,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       best_quote_source: getTopQuote(state)?.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       available_quotes: getQuotes(state)?.length,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       other_quote_selected:
         usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       other_quote_selected_source:
         usedQuote.aggregator === getTopQuote(state)?.aggregator
           ? ''
           : usedQuote.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       average_savings: usedQuote.savings?.total,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       performance_savings: usedQuote.savings?.performance,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       fee_savings: usedQuote.savings?.fee,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_hardware_wallet: hardwareWalletUsed,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       hardware_wallet_type: hardwareWalletType,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       current_stx_enabled: currentSmartTransactionsEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
@@ -1004,6 +1138,7 @@ export const signAndSendSwapsSmartTransaction = ({
         .addCategory(MetaMetricsEventCategory.Swaps)
         .addSensitiveProperties(swapMetaData)
         .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         })
         .build(),
@@ -1017,8 +1152,11 @@ export const signAndSendSwapsSmartTransaction = ({
     ) {
       captureMessage('Invalid contract address', {
         extra: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_from: swapMetaData.token_from,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to: swapMetaData.token_to,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           contract_address: usedTradeTxParams.to,
         },
       });
@@ -1106,13 +1244,14 @@ export const signAndSendSwapsSmartTransaction = ({
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
-      console.log('signAndSendSwapsSmartTransaction error', e);
+      const error = e as Error;
+      console.log('signAndSendSwapsSmartTransaction error', error);
       dispatch(setSwapsSTXSubmitLoading(false));
       const {
         swaps: { isFeatureFlagLoaded },
       } = getState();
-      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
-        const errorObj = parseSmartTransactionsError(e.message);
+      if (error.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(error.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
@@ -1120,11 +1259,11 @@ export const signAndSendSwapsSmartTransaction = ({
 };
 
 export const signAndSendTransactions = (
-  navigate,
-  trackEvent,
-  additionalTrackingParams,
+  navigate: Navigate,
+  trackEvent: TrackEvent,
+  additionalTrackingParams?: Json,
 ) => {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const hdEntropyIndex = getHDEntropyIndex(state);
     const chainId = getCurrentChainId(state);
@@ -1254,32 +1393,54 @@ export const signAndSendTransactions = (
       getCurrentSmartTransactionsEnabled(state);
 
     const swapMetaData = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_from: sourceTokenInfo.symbol,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_from_amount: String(swapTokenValue),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_to: destinationTokenInfo.symbol,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_to_amount: destinationValue,
       slippage,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       custom_slippage: slippage !== 2,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       best_quote_source: getTopQuote(state)?.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       available_quotes: getQuotes(state)?.length,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       other_quote_selected:
         usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       other_quote_selected_source:
         usedQuote.aggregator === getTopQuote(state)?.aggregator
           ? ''
           : usedQuote.aggregator,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       gas_fees: gasEstimateTotalInUSD,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       estimated_gas: new BigNumber(estimatedGasLimit, 16).toString(10),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       suggested_gas_price: fastGasEstimate,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       average_savings: usedQuote.savings?.total,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       performance_savings: usedQuote.savings?.performance,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       fee_savings: usedQuote.savings?.fee,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       is_hardware_wallet: hardwareWalletUsed,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       hardware_wallet_type: getHardwareWalletType(state),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       current_stx_enabled: currentSmartTransactionsEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
       ...additionalTrackingParams,
     };
@@ -1297,6 +1458,7 @@ export const signAndSendTransactions = (
         .addCategory(MetaMetricsEventCategory.Swaps)
         .addSensitiveProperties(swapMetaData)
         .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         })
         .build(),
@@ -1305,8 +1467,11 @@ export const signAndSendTransactions = (
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_from: swapMetaData.token_from,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_to: swapMetaData.token_to,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           contract_address: usedTradeTxParams.to,
         },
       });
@@ -1365,7 +1530,7 @@ export const signAndSendTransactions = (
           await waitPromise;
         }
       } catch (e) {
-        debugLog('Approve transaction failed', e);
+        debugLog('Approve transaction failed', e as Error);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
         return;
@@ -1395,10 +1560,11 @@ export const signAndSendTransactions = (
         },
       });
     } catch (e) {
-      const errorKey = e.message.includes('EthAppPleaseEnableContractData')
+      const error = e as Error;
+      const errorKey = error.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
-      debugLog('Trade transaction failed', e);
+      debugLog('Trade transaction failed', error);
       await dispatch(setSwapsErrorKey(errorKey));
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
@@ -1415,7 +1581,7 @@ export const signAndSendTransactions = (
 };
 
 export function fetchMetaSwapsGasPriceEstimates() {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
 
@@ -1425,15 +1591,16 @@ export function fetchMetaSwapsGasPriceEstimates() {
     try {
       priceEstimates = await fetchSwapsGasPrices(chainId);
     } catch (e) {
-      log.warn('Fetching swaps gas prices failed:', e);
+      const error = e as Error;
+      log.warn('Fetching swaps gas prices failed:', error);
 
       // TODO: This works, but we should figure out why we are getting a JSON parse error
       if (
-        !e.message?.match(
+        !error.message?.match(
           /NetworkError|Fetch failed with status:|Unexpected end of JSON input/u,
         )
       ) {
-        throw e;
+        throw error;
       }
 
       dispatch(swapGasPriceEstimatesFetchFailed());
@@ -1469,8 +1636,12 @@ export function fetchSwapsSmartTransactionFees({
   unsignedTransaction,
   approveTxParams,
   fallbackOnNotEnoughFunds = false,
+}: {
+  unsignedTransaction: Json;
+  approveTxParams?: Json;
+  fallbackOnNotEnoughFunds?: boolean;
 }) {
-  return async (dispatch, getState) => {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     const {
       swaps: { isFeatureFlagLoaded },
     } = getState();
@@ -1479,8 +1650,9 @@ export function fetchSwapsSmartTransactionFees({
         fetchSmartTransactionFees(unsignedTransaction, approveTxParams),
       );
     } catch (e) {
-      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
-        const errorObj = parseSmartTransactionsError(e.message);
+      const error = e as Error;
+      if (error.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(error.message);
         if (
           fallbackOnNotEnoughFunds ||
           errorObj?.error !== StxErrorTypes.notEnoughFunds
@@ -1493,23 +1665,30 @@ export function fetchSwapsSmartTransactionFees({
   };
 }
 
-export function cancelSwapsSmartTransaction(uuid) {
-  return async (dispatch, getState) => {
+export function cancelSwapsSmartTransaction(uuid: string) {
+  return async (dispatch: Dispatch, getState: () => RootState) => {
     try {
       await dispatch(cancelSmartTransaction(uuid));
     } catch (e) {
+      const error = e as Error;
       const {
         swaps: { isFeatureFlagLoaded },
       } = getState();
-      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
-        const errorObj = parseSmartTransactionsError(e.message);
+      if (error.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(error.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
   };
 }
 
-export const useGetIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useGetIsEstimatedReturnLow = ({
+  usedQuote,
+  rawNetworkFees,
+}: {
+  usedQuote: Json;
+  rawNetworkFees: string | number | null;
+}) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,

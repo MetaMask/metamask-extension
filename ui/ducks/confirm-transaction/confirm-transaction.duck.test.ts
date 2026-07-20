@@ -58,7 +58,8 @@ describe('Confirm Transaction Duck', () => {
       maxValueMode: {
         '123abc': true,
       },
-    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
 
     it('should initialize state', () => {
       expect(ConfirmTransactionReducer(undefined, {})).toStrictEqual(
@@ -339,9 +340,11 @@ describe('Confirm Transaction Duck', () => {
         },
       };
 
-      const middlewares = [thunk];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const middlewares = [thunk as any];
       const mockStore = configureMockStore(middlewares);
-      const store = mockStore(mockState);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const store = mockStore(mockState as any);
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
@@ -349,7 +352,8 @@ describe('Confirm Transaction Duck', () => {
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ];
 
-      store.dispatch(actions.updateTxDataAndCalculate(txData));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      store.dispatch(actions.updateTxDataAndCalculate(txData) as any);
 
       const storeActions = store.getActions();
       expect(storeActions).toHaveLength(expectedActions.length);
@@ -388,9 +392,11 @@ describe('Confirm Transaction Duck', () => {
         },
         confirmTransaction: {},
       };
-      const middlewares = [thunk];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const middlewares = [thunk as any];
       const mockStore = configureMockStore(middlewares);
-      const store = mockStore(mockState);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const store = mockStore(mockState as any);
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
@@ -398,7 +404,8 @@ describe('Confirm Transaction Duck', () => {
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ];
 
-      store.dispatch(actions.setTransactionToConfirm(2603411941761054));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      store.dispatch(actions.setTransactionToConfirm(2603411941761054) as any);
       const storeActions = store.getActions();
       expect(storeActions).toHaveLength(expectedActions.length);
 

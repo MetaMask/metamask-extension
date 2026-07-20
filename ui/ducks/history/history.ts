@@ -1,28 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import type { MetaMaskReduxState } from '../../store/store';
 
-// Constants
+type RedirectAfterDefaultPage = {
+  path: string;
+  shouldRedirect: boolean;
+  address?: string;
+};
 
-const initialState = {
+type HistoryState = {
+  mostRecentOverviewPage: string;
+  redirectAfterDefaultPage: RedirectAfterDefaultPage | null;
+};
+
+const initialState: HistoryState = {
   mostRecentOverviewPage: DEFAULT_ROUTE,
-  redirectAfterDefaultPage: null, // { path: string, shouldRedirect: boolean, address?: string }
+  redirectAfterDefaultPage: null,
 };
 
 const name = 'history';
-
-// Slice (reducer plus auto-generated actions and action creators)
 
 const slice = createSlice({
   name,
   initialState,
   reducers: {
-    pageChanged: (state, action) => {
+    pageChanged: (state, action: PayloadAction<string>) => {
       const path = action.payload;
       if (path === DEFAULT_ROUTE || path.startsWith(ASSET_ROUTE)) {
         state.mostRecentOverviewPage = path;
 
-        // If we're going to the default page and have a redirect pending, clear it
         if (
           path === DEFAULT_ROUTE &&
           state.redirectAfterDefaultPage?.shouldRedirect
@@ -31,7 +38,10 @@ const slice = createSlice({
         }
       }
     },
-    setRedirectAfterDefaultPage: (state, action) => {
+    setRedirectAfterDefaultPage: (
+      state,
+      action: PayloadAction<{ path: string; address?: string }>,
+    ) => {
       const { path, address } = action.payload;
       state.redirectAfterDefaultPage = {
         path,
@@ -49,15 +59,12 @@ const { actions, reducer } = slice;
 
 export default reducer;
 
-// Selectors
-
-export const getMostRecentOverviewPage = (state) =>
+export const getMostRecentOverviewPage = (state: MetaMaskReduxState): string =>
   state[name].mostRecentOverviewPage;
 
-export const getRedirectAfterDefaultPage = (state) =>
-  state[name].redirectAfterDefaultPage;
-
-// Actions / action-creators
+export const getRedirectAfterDefaultPage = (
+  state: MetaMaskReduxState,
+): HistoryState['redirectAfterDefaultPage'] => state[name].redirectAfterDefaultPage;
 
 export const {
   pageChanged,

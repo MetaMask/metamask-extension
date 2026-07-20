@@ -1,3 +1,6 @@
+import type { AnyAction } from 'redux';
+import type { ThunkAction } from 'redux-thunk';
+
 import { captureException } from '../../../shared/lib/sentry';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
@@ -8,6 +11,8 @@ import {
 } from '../../store/actions';
 import { getInternalAccount, getOriginOfCurrentTab } from '../../selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import type { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import type { AlertState } from './enums';
 import {
   connectAccountFailed,
   connectAccountRequested,
@@ -26,14 +31,18 @@ export { dismissAlert, switchedToUnconnectedAccount };
 
 const name = AlertTypes.unconnectedAccount;
 
-// Selectors
+export const getAlertState = (state: MetaMaskReduxState): AlertState =>
+  state[name].state;
 
-export const getAlertState = (state) => state[name].state;
+type MetaMaskThunk<ReturnValue = void> = ThunkAction<
+  Promise<ReturnValue>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+>;
 
-// Thunk actions
-
-export const dismissAndDisableAlert = () => {
-  return async (dispatch) => {
+export const dismissAndDisableAlert = (): MetaMaskThunk => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await dispatch(disableAlertRequested());
       await setAlertEnabledness(name, false);
@@ -45,9 +54,13 @@ export const dismissAndDisableAlert = () => {
   };
 };
 
-export const switchToAccount = (accountId) => {
-  return async (dispatch, getState) => {
+export const switchToAccount = (accountId: string): MetaMaskThunk => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const state = getState();
+
     try {
       await dispatch(switchAccountRequested());
       await dispatch(setSelectedInternalAccount(accountId));
@@ -61,11 +74,15 @@ export const switchToAccount = (accountId) => {
   };
 };
 
-export const connectAccount = () => {
-  return async (dispatch, getState) => {
+export const connectAccount = (): MetaMaskThunk => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const state = getState();
     const { address: selectedAddress } = getSelectedInternalAccount(state);
     const origin = getOriginOfCurrentTab(state);
+
     try {
       await dispatch(connectAccountRequested());
       await dispatch(addPermittedAccount(origin, selectedAddress));

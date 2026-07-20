@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import txHelper from '../helpers/utils/tx-helper';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   getTransactionFee,
   addFiat,
@@ -46,7 +47,8 @@ import {
   unapprovedTypedMessagesSelector,
 } from './transactions';
 
-const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
+const unapprovedTxsSelector = (state: MetaMaskReduxState) =>
+  getUnapprovedTransactions(state);
 
 export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,
@@ -90,16 +92,21 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     ...unapprovedTypedMessages,
   }),
 );
-export const getUse4ByteResolution = (state) =>
+export const getUse4ByteResolution = (state: MetaMaskReduxState) =>
   state.metamask.use4ByteResolution;
-export const currentCurrencySelector = (state) =>
+export const currentCurrencySelector = (state: MetaMaskReduxState) =>
   getCurrencyRateControllerCurrentCurrency(state);
-export const conversionRateSelector = (state) =>
+export const conversionRateSelector = (state: MetaMaskReduxState) =>
   getCurrencyRateControllerCurrencyRates(state)[getProviderConfig(state).ticker]
     ?.conversionRate;
-export const txDataSelector = (state) => state.confirmTransaction?.txData;
+export const txDataSelector = (state: MetaMaskReduxState) =>
+  state.confirmTransaction?.txData;
 
-export const transactionFeeSelector = function (state, txData) {
+export const transactionFeeSelector = function (
+  state: MetaMaskReduxState,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  txData: any,
+) {
   const currentCurrency = currentCurrencySelector(state);
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
@@ -228,7 +235,10 @@ export const transactionFeeSelector = function (state, txData) {
   };
 };
 
-export function selectTransactionFeeById(state, transactionId) {
+export function selectTransactionFeeById(
+  state: MetaMaskReduxState,
+  transactionId: string | number,
+) {
   const transactionMetadata = selectTransactionMetadata(state, transactionId);
   return transactionFeeSelector(state, transactionMetadata ?? {});
 }
@@ -236,9 +246,9 @@ export function selectTransactionFeeById(state, transactionId) {
 // Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
 // chainId is optional parameter here
 export function selectTransactionAvailableBalance(
-  state,
-  transactionId,
-  chainId,
+  state: MetaMaskReduxState,
+  transactionId: string | number,
+  chainId?: string,
 ) {
   const sender = selectTransactionSender(state, transactionId);
 
@@ -262,9 +272,13 @@ export function selectTransactionAvailableBalance(
   const accounts = getMetaMaskAccounts(state, chainId);
   return accounts[sender]?.balance;
 }
-const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
+const maxValueModeSelector = (state: MetaMaskReduxState) =>
+  state.confirmTransaction.maxValueMode;
 
-export function selectMaxValueModeForTransaction(state, transactionId) {
+export function selectMaxValueModeForTransaction(
+  state: MetaMaskReduxState,
+  transactionId: string | number,
+) {
   const maxValueModes = maxValueModeSelector(state);
   return maxValueModes[transactionId];
 }
