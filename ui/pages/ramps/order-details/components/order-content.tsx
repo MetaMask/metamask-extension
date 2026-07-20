@@ -31,6 +31,16 @@ const FAILED_STATUSES = new Set<RampsOrderStatus>([
 ]);
 
 /**
+ * Determine whether an order status is pending/non-terminal.
+ * @param status - The order's current status.
+ * @returns True if the order has not reached a terminal (completed/failed)
+ * state.
+ */
+export function isPendingStatus(status: RampsOrderStatus): boolean {
+  return PENDING_STATUSES.has(status);
+}
+
+/**
  * Resolve the text color for an order status.
  * @param status - The order's current status.
  * @returns The design-system text color token for the status.
@@ -90,7 +100,7 @@ export function OrderContent({ order }: { order: RampsOrder }) {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
-  const isPending = PENDING_STATUSES.has(order.status);
+  const isPending = isPendingStatus(order.status);
   const fiatSymbol = order.fiatCurrency?.symbol ?? 'USD';
   const fiatDecimals = order.fiatCurrency?.decimals ?? 2;
 
@@ -167,6 +177,7 @@ export function OrderContent({ order }: { order: RampsOrder }) {
           type="button"
           onClick={() => handleCopy(order.providerOrderId)}
           data-testid="ramps-order-details-order-id"
+          aria-label={t('copyToClipboard')}
           className="flex items-center gap-1"
         >
           <Text variant={TextVariant.BodyMd}>

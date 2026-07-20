@@ -9,6 +9,10 @@ import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { OrderContent } from './order-content';
 
+// Pin the timezone so date snapshots are deterministic regardless of the
+// contributor's local timezone (formatDate renders in the local zone).
+process.env.TZ = 'UTC';
+
 jest.mock('copy-to-clipboard', () => jest.fn());
 
 const completedOrder = {
@@ -78,6 +82,13 @@ describe('OrderContent (completed)', () => {
       'provider-order-1234567890',
       expect.anything(),
     );
+  });
+
+  it('has an accessible name on the copy-order-id button', () => {
+    renderContent(completedOrder);
+    expect(
+      screen.getByRole('button', { name: 'Copy to clipboard' }),
+    ).toBe(screen.getByTestId('ramps-order-details-order-id'));
   });
 
   it('matches the completed snapshot', () => {

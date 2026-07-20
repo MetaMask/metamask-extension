@@ -56,6 +56,7 @@ exports[`OrderContent (completed) matches the completed snapshot 1`] = `
         Order ID
       </p>
       <button
+        aria-label="Copy to clipboard"
         class="flex items-center gap-1"
         data-testid="ramps-order-details-order-id"
         type="button"
@@ -186,6 +187,7 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
         Order ID
       </p>
       <button
+        aria-label="Copy to clipboard"
         class="flex items-center gap-1"
         data-testid="ramps-order-details-order-id"
         type="button"

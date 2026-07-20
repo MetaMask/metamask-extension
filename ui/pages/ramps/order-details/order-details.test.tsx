@@ -10,6 +10,10 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { RampsOrderDetailsScreen } from './order-details';
 import IndexDefaultExport from '.';
 
+// Pin the timezone so date snapshots are deterministic regardless of the
+// contributor's local timezone (formatDate renders in the local zone).
+process.env.TZ = 'UTC';
+
 const completedOrder = {
   providerOrderId: 'provider-order-1234567890',
   providerOrderLink: 'https://provider.example/order/1',
@@ -100,6 +104,43 @@ describe('RampsOrderDetailsScreen', () => {
 
     expect(screen.getByTestId('ramps-order-content')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('hides the refresh button for a terminal (completed) order', () => {
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue(completedOrder),
+      refreshOrder: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    expect(
+      screen.queryByTestId('ramps-order-details-refresh'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the refresh button for a non-terminal (pending) order', () => {
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue({
+        ...completedOrder,
+        status: RampsOrderStatus.Pending,
+      }),
+      refreshOrder: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    expect(
+      screen.getByTestId('ramps-order-details-refresh'),
+    ).toBeInTheDocument();
   });
 
   it('calls refreshOrder when retry is clicked for an existing order', async () => {

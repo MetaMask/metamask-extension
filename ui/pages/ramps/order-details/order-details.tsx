@@ -14,7 +14,7 @@ import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
-import OrderContent from './components/order-content';
+import OrderContent, { isPendingStatus } from './components/order-content';
 
 /**
  * Ramps order details screen. Renders a merged error state (covering both
@@ -97,14 +97,16 @@ export function RampsOrderDetailsScreen() {
         className="border-t border-border-muted px-4 py-3"
         flexDirection={BoxFlexDirection.Column}
       >
-        <Button
-          variant={ButtonVariant.Secondary}
-          onClick={handleRefresh}
-          data-testid="ramps-order-details-refresh"
-          isFullWidth
-        >
-          {t('rampsOrderDetailsRetry')}
-        </Button>
+        {isPendingStatus(order.status) ? (
+          <Button
+            variant={ButtonVariant.Secondary}
+            onClick={handleRefresh}
+            data-testid="ramps-order-details-refresh"
+            isFullWidth
+          >
+            {t('rampsOrderDetailsRetry')}
+          </Button>
+        ) : null}
         <Button
           variant={ButtonVariant.Primary}
           onClick={goToWalletOverview}
