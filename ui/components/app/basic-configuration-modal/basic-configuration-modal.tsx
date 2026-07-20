@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
+  toggleBasicFunctionality,
   toggleExternalServices,
 } from '../../../store/actions';
 import {
@@ -39,6 +40,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
@@ -57,6 +59,9 @@ export function BasicConfigurationModal() {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
+  );
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
   );
 
   const { pathname } = useLocation();
@@ -110,7 +115,11 @@ export function BasicConfigurationModal() {
     if (onboardingFlow) {
       dispatch(onboardingToggleBasicFunctionalityOff());
     } else {
-      dispatch(toggleExternalServices(!isExternalServicesEnabled));
+      dispatch(
+        isBasicFunctionalityConsolidationEnabled
+          ? toggleBasicFunctionality(!isExternalServicesEnabled)
+          : toggleExternalServices(!isExternalServicesEnabled),
+      );
     }
     closeModal();
   };

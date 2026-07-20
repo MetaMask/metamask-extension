@@ -3,6 +3,54 @@
   --tab-transition-duration: 200ms;
   --tab-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --tab-transition-distance: 12px;
+  --tabs-list-fade-size: 1.5rem;
+}
+
+.tablist-fade {
+  container-type: scroll-state;
+
+  &::before,
+  &::after {
+    content: '';
+    position: sticky;
+    z-index: 1;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: var(--tabs-list-fade-size);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--tab-transition-duration) var(--tab-transition-easing);
+  }
+
+  &::before {
+    inset-inline-start: 0;
+    margin-inline-end: calc(-1 * (1rem + var(--tabs-list-fade-size)));
+    background:
+      linear-gradient(
+        to right,
+        var(--color-background-default),
+        transparent
+      );
+
+    @container scroll-state(scrollable: inline-start) {
+      opacity: 1;
+    }
+  }
+
+  &::after {
+    inset-inline-end: 0;
+    margin-inline-start: calc(-1 * (1rem + var(--tabs-list-fade-size)));
+    background:
+      linear-gradient(
+        to right,
+        transparent,
+        var(--color-background-default)
+      );
+
+    @container scroll-state(scrollable: inline-end) {
+      opacity: 1;
+    }
+  }
 }
 
 /* Clip overflow and make size changes instant (don't animate height) */

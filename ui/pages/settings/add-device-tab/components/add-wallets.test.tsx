@@ -4,7 +4,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
-import { AddDeviceSettingsStep } from '../constant';
 import AddWallets from './add-wallets';
 
 jest.mock('../../../../selectors/multichain-accounts/account-tree', () => {
@@ -56,14 +55,16 @@ describe('AddWallets', () => {
     expect(screen.getByTestId('wallet-selection-list')).toBeInTheDocument();
   });
 
-  it('calls onAddWallets with the SyncingWallets step when continue is clicked', () => {
+  it('calls onAddWallets with the selected sync summary when continue is clicked', () => {
     const onAddWallets = jest.fn();
     render(onAddWallets);
 
     fireEvent.click(screen.getByText(messages.continue.message));
 
-    expect(onAddWallets).toHaveBeenCalledWith(
-      AddDeviceSettingsStep.SyncingWallets,
-    );
+    expect(onAddWallets).toHaveBeenCalledWith({
+      entropyIds: ['wallet1'],
+      syncedAccountCount: 1,
+      syncedWalletCount: 1,
+    });
   });
 });

@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
 import { TokenManagementPage } from './token-management';
 
@@ -27,6 +28,23 @@ const METRICS_PROPERTIES = {
   tokenSymbol: 'token_symbol',
   viewState: 'view_state',
 } as const;
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({})),
+}));
+
+const trackAnalyticsEventMock = jest.fn().mockResolvedValue(undefined);
+const backgroundConnectionMock = new Proxy(
+  {
+    trackAnalyticsEvent: trackAnalyticsEventMock,
+  },
+  {
+    get: (target, prop) =>
+      prop in target
+        ? target[prop as keyof typeof target]
+        : jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockTokenManagementLocationState = {
   current: null as unknown,
@@ -341,6 +359,8 @@ describe('TokenManagementPage', () => {
   beforeEach(() => {
     mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
+    trackAnalyticsEventMock.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
     const actions = getMockedActions();
     actions.addCustomAsset.mockClear();
@@ -384,6 +404,9 @@ describe('TokenManagementPage', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      analyticsId: 'test-analytics-id',
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
       selectedMultichainNetworkChainId,
       useExternalServices: true,
       preferences: {
@@ -426,11 +449,7 @@ describe('TokenManagementPage', () => {
     },
   });
 
-  const renderPage = (
-    state = createState(),
-    routeState?: unknown,
-    trackEvent = jest.fn(),
-  ) => {
+  const renderPage = (state = createState(), routeState?: unknown) => {
     mockTokenManagementLocationState.current = routeState ?? null;
     const store = configureStore({
       ...state,
@@ -441,8 +460,6 @@ describe('TokenManagementPage', () => {
         <TokenManagementPage />,
         store,
         TOKEN_MANAGEMENT_ROUTE,
-        undefined,
-        () => trackEvent,
       ),
     };
   };
@@ -528,48 +545,51 @@ describe('TokenManagementPage', () => {
   });
 
   it('tracks the manage tokens screen opening with the default view state', async () => {
-    const trackEvent = jest.fn();
-    renderPage(createState(), undefined, trackEvent);
+    renderPage(createState());
 
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenOpened,
-        properties: {
-          screen: 'manage_tokens',
-          [METRICS_PROPERTIES.viewState]: 'default',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenOpened,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'default',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
     );
   });
 
   it('tracks the manage tokens screen opening with the no-results view state', async () => {
-    const trackEvent = jest.fn();
     renderPage(
       createState({
         accountGroupAssets: {
           '0x1': [],
         },
       }),
-      undefined,
-      trackEvent,
     );
 
     await waitFor(() =>
-      expect(trackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.TokenScreenOpened,
-        properties: {
-          screen: 'manage_tokens',
-          [METRICS_PROPERTIES.viewState]: 'no_results',
-        },
-      }),
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenOpened,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'no_results',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
     );
   });
 
   it('navigates to the custom token import page from the sticky add custom token button', () => {
-    const trackEvent = jest.fn();
-    const { store } = renderPage(createState(), undefined, trackEvent);
+    renderPage(createState());
 
     const addCustomTokenButton = screen.getByTestId(
       'token-management-add-custom-token-button',
@@ -580,15 +600,18 @@ describe('TokenManagementPage', () => {
 
     fireEvent.click(addCustomTokenButton);
 
-    expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'MANAGE_TOKENS_CUSTOM_CTA',
-      },
-    });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenImportButtonClicked,
+        properties: {
+          category: MetaMetricsEventCategory.Navigation,
+          location: 'MANAGE_TOKENS_CUSTOM_CTA',
+        },
+        sensitiveProperties: {},
+      }),
+      expect.anything(),
+    );
   });
 
   it('shows and dismisses the custom token success toast from route state', async () => {
@@ -1219,9 +1242,8 @@ describe('TokenManagementPage', () => {
 
   it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
     const actions = getMockedActions();
-    const trackEvent = jest.fn();
 
-    const { unmount } = renderPage(createState(), undefined, trackEvent);
+    const { unmount } = renderPage(createState());
 
     const toggle = screen.getByTestId(
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
@@ -1232,19 +1254,24 @@ describe('TokenManagementPage', () => {
     expect(toggle.value).toBe('false');
     expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Wallet,
-      event: MetaMetricsEventName.TokenHidden,
-      sensitiveProperties: expect.objectContaining({
-        [METRICS_PROPERTIES.assetType]: AssetType.token,
-        [METRICS_PROPERTIES.chainId]: '0x1',
-        location: 'MANAGE_TOKENS',
-        [METRICS_PROPERTIES.tokenContractAddress]: mainnetToken.address,
-        [METRICS_PROPERTIES.tokenDecimalPrecision]: mainnetToken.decimals,
-        [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
-        [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenHidden,
+        properties: {
+          category: MetaMetricsEventCategory.Wallet,
+        },
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.chainId]: '0x1',
+          location: 'MANAGE_TOKENS',
+          [METRICS_PROPERTIES.tokenContractAddress]: mainnetToken.address,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: mainnetToken.decimals,
+          [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
+          [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
+        }),
       }),
-    });
+      expect.anything(),
+    );
 
     unmount();
 

@@ -728,13 +728,17 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @param {object} [options] - Click options
+   * @param {number} [options.retries] - The number of times to retry the click action if it fails
+   * @param {number} [options.timeout] - How long (ms) to wait for the element to be clickable on each attempt
    * @returns {Promise} promise that resolves to the WebElement
    */
-  async clickElement(rawLocator, retries = 3) {
+  async clickElement(rawLocator, { retries = 3, timeout = this.timeout } = {}) {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
-        const element = await this.findClickableElement(rawLocator);
+        const element = await this.findClickableElement(rawLocator, {
+          timeout,
+        });
         await element.click();
         return;
       } catch (error) {
@@ -756,7 +760,7 @@ class Driver {
           // obstruction so the next attempt can succeed.
           if (error.name === 'ElementClickInterceptedError') {
             try {
-              const el = await this.findElement(rawLocator);
+              const el = await this.findElement(rawLocator, timeout);
               await this.scrollToElement(el);
             } catch {
               // Element may have gone stale; the next iteration will re-find it.
@@ -859,17 +863,7 @@ class Driver {
    */
   async clickElementSafe(rawLocator, timeout = 2000) {
     try {
-      const locator = this.buildLocator(rawLocator);
-      const elements = await this.driver.wait(
-        until.elementsLocated(locator),
-        timeout,
-      );
-
-      await Promise.all([
-        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
-        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
-      ]);
-      await elements[0].click();
+      await this.clickElement(rawLocator, { timeout });
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -1296,7 +1290,7 @@ class Driver {
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
     const handle = await this.driver.getWindowHandle();
-    await this.clickElement(rawLocator, retries);
+    await this.clickElement(rawLocator, { retries });
     await this.waitForWindowToClose(handle);
   }
 

@@ -259,7 +259,7 @@ type StateHooks = {
   getMostRecentPersistedState?: () => any;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getPersistedState: () => Promise<any>;
+  getPersistedState: (options?: { reportErrors?: boolean }) => Promise<any>;
   getBackupState?: () => Promise<Backup | null>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

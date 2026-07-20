@@ -290,6 +290,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
+      case 'assetDeactivation':
+      case 'assetActivation': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
+        };
+      }
       default:
         return {
           avatarTokens: [],

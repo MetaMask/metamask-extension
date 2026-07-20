@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "eciesjs>@ecies/ciphers": {
+      "packages": {
+        "@noble/ciphers": true
+      }
+    },
     "@emotion/react>@emotion/cache": {
       "globals": {
         "document.head": true,
@@ -577,6 +582,33 @@
       },
       "packages": {
         "process": true
+      }
+    },
+    "@hello-pangea/dnd": {
+      "globals": {
+        "Element.prototype": true,
+        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "getComputedStyle": true,
+        "pageXOffset": true,
+        "pageYOffset": true,
+        "requestAnimationFrame": true,
+        "scrollBy": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@hello-pangea/dnd>css-box-model": true,
+        "@hello-pangea/dnd>memoize-one": true,
+        "@hello-pangea/dnd>raf-schd": true,
+        "react": true,
+        "react-dom": true,
+        "@hello-pangea/dnd>react-redux": true,
+        "redux": true,
+        "@hello-pangea/dnd>use-memo-one": true
       }
     },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
@@ -1234,24 +1266,6 @@
         "lodash": true
       }
     },
-    "@metamask/shield-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
     "@metamask/core-backend": {
       "globals": {
         "URL": true,
@@ -1307,7 +1321,8 @@
     },
     "@metamask/design-system-shared": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "react": true
       }
     },
     "@metamask/eip-5792-middleware": {
@@ -1849,6 +1864,33 @@
         "console.error": true
       }
     },
+    "@metamask/mobile-wallet-protocol-core": {
+      "globals": {
+        "Buffer.from": true,
+        "console.warn": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "async-mutex": true,
+        "buffer": true,
+        "@metamask/mobile-wallet-protocol-core>centrifuge": true,
+        "core-js-pure": true,
+        "@metamask/mobile-wallet-protocol-core>eventemitter3": true,
+        "@metamask/mobile-wallet-protocol-core>uuid": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-dapp-client": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/mobile-wallet-protocol-core": true,
+        "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": true,
+        "@metamask/mobile-wallet-protocol-dapp-client>uuid": true
+      }
+    },
     "@metamask/multichain-account-service": {
       "globals": {
         "clearTimeout": true,
@@ -2197,12 +2239,22 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+    "@metamask/ramps-controller": {
       "globals": {
-        "URL": true
+        "AbortController": true,
+        "URL": true,
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
       },
       "packages": {
-        "@metamask/controller-utils": true
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2278,12 +2330,12 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/shield-controller>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/shield-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "@metamask/shield-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -2564,7 +2616,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2657,9 +2709,22 @@
         "semver": true
       }
     },
+    "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@scure/base": true,
+        "buffer": true
+      }
+    },
     "@metamask/wallet": {
       "packages": {
         "@metamask/accounts-controller": true,
+        "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/connectivity-controller": true,
@@ -2669,6 +2734,7 @@
         "@metamask/network-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/storage-service": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -4197,6 +4263,30 @@
         "stream-browserify": true
       }
     },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "EventSource": true,
+        "EventTarget": true,
+        "MessageEvent": true,
+        "ReadableStream": true,
+        "SockJS": true,
+        "SuppressedError": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "WebSocket": true,
+        "WebTransport": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "fetch": true,
+        "localStorage": true,
+        "setTimeout": true
+      }
+    },
     "chalk": {
       "packages": {
         "chalk>ansi-styles": true,
@@ -4413,14 +4503,14 @@
         "msCrypto": true
       }
     },
-    "react-beautiful-dnd>css-box-model": {
+    "@hello-pangea/dnd>css-box-model": {
       "globals": {
         "getComputedStyle": true,
         "pageXOffset": true,
         "pageYOffset": true
       },
       "packages": {
-        "react-beautiful-dnd>css-box-model>tiny-invariant": true
+        "@hello-pangea/dnd>css-box-model>tiny-invariant": true
       }
     },
     "currency-formatter": {
@@ -4505,6 +4595,14 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>gopd": true
+      }
+    },
+    "eciesjs": {
+      "packages": {
+        "eciesjs>@ecies/ciphers": true,
+        "@noble/ciphers": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
       }
     },
     "@toruslabs/eccrypto>elliptic": {
@@ -5674,7 +5772,7 @@
         "queueMicrotask": true
       }
     },
-    "react-beautiful-dnd>raf-schd": {
+    "@hello-pangea/dnd>raf-schd": {
       "globals": {
         "cancelAnimationFrame": true,
         "requestAnimationFrame": true
@@ -5707,33 +5805,6 @@
     "react": {
       "packages": {
         "react>object-assign": true
-      }
-    },
-    "react-beautiful-dnd": {
-      "globals": {
-        "Element.prototype": true,
-        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "requestAnimationFrame": true,
-        "scrollBy": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-beautiful-dnd>css-box-model": true,
-        "react-beautiful-dnd>memoize-one": true,
-        "react-beautiful-dnd>raf-schd": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux": true,
-        "redux": true,
-        "react-beautiful-dnd>use-memo-one": true
       }
     },
     "react-chartjs-2": {
@@ -5921,6 +5992,20 @@
         "react": true,
         "react-dom": true,
         "react-redux>react-is": true
+      }
+    },
+    "@hello-pangea/dnd>react-redux": {
+      "globals": {
+        "console.warn": true,
+        "document": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react-redux>hoist-non-react-statics": true,
+        "react": true,
+        "react-dom": true,
+        "@metamask/snap-simple-keyring-site>react-is": true,
+        "@tanstack/react-query>use-sync-external-store": true
       }
     },
     "react-router-dom": {
@@ -6757,7 +6842,7 @@
         "react": true
       }
     },
-    "react-beautiful-dnd>use-memo-one": {
+    "@hello-pangea/dnd>use-memo-one": {
       "packages": {
         "react": true
       }
@@ -6826,6 +6911,16 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/mobile-wallet-protocol-dapp-client>uuid": {
       "globals": {
         "crypto": true
       }

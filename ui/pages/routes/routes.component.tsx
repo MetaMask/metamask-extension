@@ -14,10 +14,7 @@ import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import {
-  ImportNftsModal,
-  ImportTokensModal,
-} from '../../components/multichain';
+import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -73,6 +70,8 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
+  ACTIVITY_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -93,7 +92,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  hideImportTokensModal,
   hideDeprecatedNetworkModal,
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
@@ -102,6 +100,7 @@ import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -123,6 +122,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -139,7 +139,6 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
-import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -215,7 +214,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -236,6 +234,8 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
+const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -263,26 +263,10 @@ const SettingsV2LegacyRedirect = () => {
 };
 
 export const TokenManagementFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <TokenManagementPage />;
 };
 
 export const CustomTokenImportFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <CustomTokenImportPage />;
 };
 
@@ -570,6 +554,14 @@ export const routeConfig = [
               },
             ],
           },
+          {
+            path: ACTIVITY_ROUTE,
+            element: <ActivityPage />,
+          },
+          {
+            path: PERPS_HOME_PAGE_ROUTE,
+            element: <PerpsPage />,
+          },
         ],
       },
     ],
@@ -584,6 +576,7 @@ export default function Routes() {
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
+  const showLoadingOverlay = useSpinDelay(isLoading);
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
@@ -607,9 +600,6 @@ export default function Routes() {
     getShowExtensionInFullSizeView,
   );
 
-  const isImportTokensModalOpen = useAppSelector(
-    (state) => state.appState.importTokensModalOpen,
-  );
   const isBasicConfigurationModalOpen = useAppSelector(
     (state) => state.appState.showBasicFunctionalityModal,
   );
@@ -722,7 +712,7 @@ export default function Routes() {
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
-    isLoading &&
+    showLoadingOverlay &&
     completedOnboarding &&
     !pendingConfirmations.some(
       (confirmation) =>
@@ -765,9 +755,6 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
-      {isImportTokensModalOpen ? (
-        <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
-      ) : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}

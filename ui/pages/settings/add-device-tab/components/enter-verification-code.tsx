@@ -11,28 +11,24 @@ import {
   BoxJustifyContent,
   TextButton,
 } from '@metamask/design-system-react';
+import log from 'loglevel';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AddDeviceSettingsStep } from '../constant';
+import { MWP_SESSION_REQUEST_EXPIRY_SECONDS } from '../../../../../shared/constants/qr-sync';
 
 const CODE_LENGTH = 6;
 const NON_DIGITS_REGEX = /\D/gu;
-const SINGLE_DIGIT_REGEX = /^\d$/u;
-const TEMP_VERIFICATION_CODE = '123456';
+const SINGLE_DIGIT_REGEX = /^[0-9]$/u;
 // TODO: source this from the controller
-const VERIFICATION_CODE_EXPIRY_SECONDS = 15;
 
 const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 
-type EnterVerificationCodeProps = {
-  onContinue: (type: AddDeviceSettingsStep) => void;
-};
-
-const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
+const EnterVerificationCode = () => {
   const t = useI18nContext();
   const [isError, setIsError] = useState(false);
   const [code, setCode] = useState<string[]>(createEmptyCode);
   const [secondsLeft, setSecondsLeft] = useState(
-    VERIFICATION_CODE_EXPIRY_SECONDS,
+    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
   const isExpired = secondsLeft <= 0;
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -49,9 +45,12 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
     return () => clearInterval(intervalId);
   }, [isExpired]);
 
-  const handleRestart = useCallback(() => {
-    onContinue(AddDeviceSettingsStep.ScanQrCode);
-  }, [onContinue]);
+  const handleRestart = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:createSession',
+      [],
+    ]);
+  }, []);
 
   const focusInput = useCallback((index: number) => {
     const clampedIndex = Math.max(0, Math.min(index, CODE_LENGTH - 1));
@@ -62,24 +61,24 @@ const EnterVerificationCode = ({ onContinue }: EnterVerificationCodeProps) => {
 
   // Single place that persists a new code and reacts to completion, so the
   // change/paste/keydown handlers never duplicate validation or error resets.
-  const commitCode = useCallback(
-    (nextCode: string[]) => {
-      setCode(nextCode);
-      setIsError(false);
+  const commitCode = useCallback(async (nextCode: string[]) => {
+    setCode(nextCode);
+    setIsError(false);
 
-      const joined = nextCode.join('');
-      if (joined.length < CODE_LENGTH) {
-        return;
-      }
+    const joined = nextCode.join('');
+    if (joined.length < CODE_LENGTH) {
+      return;
+    }
 
-      if (joined === TEMP_VERIFICATION_CODE) {
-        onContinue(AddDeviceSettingsStep.ValidatingDevice);
-      } else {
-        setIsError(true);
-      }
-    },
-    [onContinue],
-  );
+    try {
+      await submitRequestToBackground<void>('messengerCall', [
+        'QrSyncController:submitOtp',
+        [joined],
+      ]);
+    } catch {
+      setIsError(true);
+    }
+  }, []);
 
   // Writes one or more digits starting at `startIndex` (typing or pasting),
   // then moves focus to the box following the last digit written.

@@ -487,12 +487,10 @@ function maybeDetectPhishing(theController) {
       // Helper function to track phishing page metrics
       const trackPhishingMetrics = () => {
         if (!isFirefox) {
-          theController.metaMetricsController.trackEvent(
-            {
-              // should we differentiate between background redirection and content script redirection?
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+              .addCategory(MetaMetricsEventCategory.Phishing)
+              .addProperties({
                 url: blockedUrl,
                 referrer: {
                   url: blockedUrl,
@@ -501,11 +499,10 @@ function maybeDetectPhishing(theController) {
                 requestDomain: blockedRequestResponse.result
                   ? hostname
                   : undefined,
-              },
-            },
-            {
-              excludeMetaMetricsId: true,
-            },
+              })
+              .build({
+                excludeMetaMetricsId: true,
+              }),
           );
         }
       };
@@ -919,9 +916,7 @@ async function initialize(backup) {
     .on('navigate', async ({ url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
-        await controller.metaMetricsController.trackEvent(
-          createEvent({ signature: parsed.signature, url }),
-        );
+        trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1301,23 +1296,21 @@ function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
 
   const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
 
-  controller.metaMetricsController.trackEvent(
-    {
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.DappViewed)
+      .addCategory(MetaMetricsEventCategory.InpageProvider)
+      .addProperties({
         is_first_visit: false,
         number_of_accounts: numberOfTotalAccounts,
         number_of_accounts_connected: numberOfConnectedAccounts,
         ...iframeProps,
-      },
-    },
-    {
-      excludeMetaMetricsId: true,
-    },
+      })
+      .build({
+        referrer: {
+          url: origin,
+        },
+        excludeMetaMetricsId: true,
+      }),
   );
 }
 
@@ -1750,15 +1743,12 @@ export function setupController(
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
       const handleMessageTooLarge = function ({ chunkSize }) {
-        /**
-         * @type {MetamaskController}
-         */
-        const theController = controller;
-        theController.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PortStreamChunked,
-          category: MetaMetricsEventCategory.PortStream,
-          properties: { chunkSize },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
+            .addCategory(MetaMetricsEventCategory.PortStream)
+            .addProperties({ chunkSize })
+            .build(),
+        );
       };
       remotePort.onDisconnect.addListener(() =>
         portStream.off('message-too-large', handleMessageTooLarge),
@@ -2215,7 +2205,12 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     optedIn === true &&
     analyticsId
   ) {
-    controller.metaMetricsController.trackEvent(appInstalledEvent);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AppInstalled)
+        .addCategory(MetaMetricsEventCategory.App)
+        .addProperties(eventProperties)
+        .build(),
+    );
   } else {
     // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.

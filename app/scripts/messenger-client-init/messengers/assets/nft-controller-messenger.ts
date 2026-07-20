@@ -4,7 +4,6 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { NftControllerMessenger } from '@metamask/assets-controllers';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -46,9 +45,6 @@ export function getNftControllerMessenger(
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
-
 export type NftControllerInitMessenger = ReturnType<
   typeof getNftControllerInitMessenger
 >;
@@ -61,20 +57,16 @@ export type NftControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getNftControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<never, never>,
 ) {
   const controllerInitMessenger = new Messenger<
     'NftControllerInit',
-    AllowedInitializationActions,
+    never,
     never,
     typeof messenger
   >({
     namespace: 'NftControllerInit',
     parent: messenger,
-  });
-  messenger.delegate({
-    messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
   });
   return controllerInitMessenger;
 }

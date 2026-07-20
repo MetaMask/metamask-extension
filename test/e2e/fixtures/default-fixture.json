@@ -178,7 +178,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 215,
+      "currentMigrationVersion": 216,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -198,12 +198,12 @@
       "lastViewedUserSurvey": null,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
-      "perpsTabBadgeSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -994,6 +994,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1073,7 +1074,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1088,7 +1091,6 @@
         "tokenNetworkFilter": {
           "0x539": true
         },
-        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
@@ -1141,6 +1143,18 @@
         ]
       }
     },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
       "localOverrides": {},
@@ -1184,7 +1198,13 @@
           "subscriptionId": null
         }
       },
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": {
+        "account": "eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "lastFreshOptInStatusCheck": 1783610142869,
+        "lastPerpsDiscountRateFetched": null,
+        "perpsFeeDiscount": null,
+        "subscriptionId": null
+      },
       "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
@@ -1294,6 +1314,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 215
+    "version": 216
   }
 }

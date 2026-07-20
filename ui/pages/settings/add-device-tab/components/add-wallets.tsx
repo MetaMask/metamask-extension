@@ -10,14 +10,15 @@ import {
   Button,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { AddDeviceSettingsStep } from '../constant';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
+import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
+import type { AddDeviceSyncRequest } from '../types';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
-  onAddWallets: (type: AddDeviceSettingsStep) => void;
+  onAddWallets: (syncRequest: AddDeviceSyncRequest) => Promise<void>;
 };
 
 const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
@@ -44,9 +45,23 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     ),
   );
 
-  const onContinue = useCallback(() => {
-    onAddWallets(AddDeviceSettingsStep.SyncingWallets);
-  }, [onAddWallets]);
+  const handleSyncWallets = useCallback(async () => {
+    const selectedEntropyIds = [
+      ...new Set(
+        selectedAccountGroups.map((accountGroupId) => {
+          const walletId = extractWalletIdFromGroupId(accountGroupId);
+          const [, entropyId] = walletId.split(':');
+          return entropyId;
+        }),
+      ),
+    ];
+
+    await onAddWallets({
+      entropyIds: selectedEntropyIds,
+      syncedAccountCount: selectedAccountGroups.length,
+      syncedWalletCount: selectedEntropyIds.length,
+    });
+  }, [onAddWallets, selectedAccountGroups]);
 
   return (
     <Box
@@ -80,7 +95,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
       <Box className="w-full mt-auto" paddingHorizontal={4}>
         <Button
           className="w-full"
-          onClick={onContinue}
+          onClick={handleSyncWallets}
           isDisabled={selectedAccountGroups.length === 0}
         >
           {t('continue')}

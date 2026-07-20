@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import type { NamespacedName } from '@metamask/messenger';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   Text,
@@ -15,6 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import Spinner from '../../../../components/ui/spinner';
 import PulseLoader from '../../../../components/ui/pulse-loader';
+import { subscribeToMessengerEvent } from '../../../../store/background-connection';
 
 const DEFAULT_DELAY_MS = 2000;
 
@@ -23,6 +26,7 @@ type LoadingStepProps = {
   message: string;
   onComplete?: () => void;
   delayMs?: number;
+  waitForMessengerEvent?: NamespacedName;
 };
 
 const LoadingStep = ({
@@ -30,15 +34,39 @@ const LoadingStep = ({
   message,
   onComplete,
   delayMs = DEFAULT_DELAY_MS,
+  waitForMessengerEvent,
 }: LoadingStepProps) => {
   useEffect(() => {
     if (!onComplete) {
       return undefined;
     }
 
-    const timer = setTimeout(onComplete, delayMs);
-    return () => clearTimeout(timer);
-  }, [onComplete, delayMs]);
+    if (!waitForMessengerEvent) {
+      const timer = setTimeout(onComplete, delayMs);
+      return () => clearTimeout(timer);
+    }
+
+    let isMounted = true;
+    let unsubscribe: (() => Promise<void>) | undefined;
+
+    const subscribe = async () => {
+      unsubscribe = await subscribeToMessengerEvent<Json>(
+        waitForMessengerEvent,
+        () => {
+          if (isMounted) {
+            onComplete();
+          }
+        },
+      ).catch(() => undefined);
+    };
+
+    subscribe();
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.().catch(() => undefined);
+    };
+  }, [delayMs, onComplete, waitForMessengerEvent]);
 
   return (
     <Box
