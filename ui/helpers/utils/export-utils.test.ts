@@ -1,7 +1,7 @@
 import { exportAsFile, ExportableContentType } from './export-utils';
 
 describe('exportAsFile', () => {
-  let windowSpy;
+  let windowSpy: jest.SpiedGetter<Window>;
 
   beforeEach(() => {
     windowSpy = jest.spyOn(window, 'window', 'get');
@@ -9,6 +9,7 @@ describe('exportAsFile', () => {
 
   afterEach(() => {
     windowSpy.mockRestore();
+    Reflect.deleteProperty(window, 'showSaveFilePicker');
   });
 
   describe('when showSaveFilePicker is supported', () => {
@@ -16,10 +17,8 @@ describe('exportAsFile', () => {
       const showSaveFilePicker = mockShowSaveFilePicker();
       const filename = 'test.json';
       const data = '{file: "content"}';
-      windowSpy.mockImplementation(() => ({
-        showSaveFilePicker,
-        Blob: global.Blob,
-      }));
+      Reflect.set(window, 'showSaveFilePicker', showSaveFilePicker);
+      windowSpy.mockImplementation(() => window);
 
       await exportAsFile(filename, data, ExportableContentType.JSON);
 
@@ -39,10 +38,8 @@ describe('exportAsFile', () => {
       const filename = 'test.txt';
       const data = 'file content';
 
-      windowSpy.mockImplementation(() => ({
-        showSaveFilePicker,
-        Blob: global.Blob,
-      }));
+      Reflect.set(window, 'showSaveFilePicker', showSaveFilePicker);
+      windowSpy.mockImplementation(() => window);
 
       await exportAsFile(filename, data, ExportableContentType.TXT);
 
