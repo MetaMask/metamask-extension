@@ -241,6 +241,7 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
             maxLength={1}
             autoFocus={index === 0}
             isDisabled={isExpired || hasMaxedOutAttempts}
+            data-testid={`qr-sync-otp-input-${index}`}
             className="w-12 h-[54px] rounded-lg border border-muted bg-default text-center text-l-medium"
           />
         ))}
@@ -259,7 +260,10 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
           {errorMessage}
         </Text>
         {errorMessage && (
-          <TextButton onClick={onRestart}>
+          <TextButton
+            data-testid="qr-sync-start-with-new-qr-code"
+            onClick={onRestart}
+          >
             {t('start_with_new_qr_code')}
           </TextButton>
         )}
