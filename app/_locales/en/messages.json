@@ -8255,6 +8255,9 @@
   "rampsOrderDetailsOrderId": {
     "message": "Order ID"
   },
+  "rampsOrderDetailsPendingMessage": {
+    "message": "Your order may take some time to confirm."
+  },
   "rampsOrderDetailsStatus": {
     "message": "Status"
   },

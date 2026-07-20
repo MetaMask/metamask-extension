@@ -85,3 +85,30 @@ describe('OrderContent (completed)', () => {
     expect(container).toMatchSnapshot();
   });
 });
+
+describe('OrderContent (pending)', () => {
+  const pendingOrder = {
+    ...completedOrder,
+    status: RampsOrderStatus.Pending,
+    cryptoAmount: '',
+  } as unknown as RampsOrder;
+
+  it('shows the pending message', () => {
+    renderContent(pendingOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-pending-message'),
+    ).toHaveTextContent('Your order may take some time to confirm.');
+  });
+
+  it('shows an amount skeleton while the crypto amount is unresolved', () => {
+    renderContent(pendingOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-amount-skeleton'),
+    ).toBeInTheDocument();
+  });
+
+  it('matches the pending snapshot', () => {
+    const { container } = renderContent(pendingOrder);
+    expect(container).toMatchSnapshot();
+  });
+});

@@ -105,14 +105,29 @@ export function OrderContent({ order }: { order: RampsOrder }) {
         alignItems={BoxAlignItems.Center}
         className="py-6"
       >
-        <Text
-          variant={TextVariant.DisplayMd}
-          data-testid="ramps-order-details-token-amount"
-        >
-          {isPending && !order.cryptoAmount
-            ? '...'
-            : `${order.cryptoAmount} ${order.cryptoCurrency?.symbol ?? ''}`}
-        </Text>
+        {isPending && !order.cryptoAmount ? (
+          <Box
+            className="h-[24px] w-[120px] rounded bg-background-muted"
+            data-testid="ramps-order-details-amount-skeleton"
+          />
+        ) : (
+          <Text
+            variant={TextVariant.DisplayMd}
+            data-testid="ramps-order-details-token-amount"
+          >
+            {`${order.cryptoAmount} ${order.cryptoCurrency?.symbol ?? ''}`}
+          </Text>
+        )}
+        {isPending ? (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="ramps-order-details-pending-message"
+            className="mt-2 text-center"
+          >
+            {t('rampsOrderDetailsPendingMessage')}
+          </Text>
+        ) : null}
       </Box>
 
       <OrderRow label={t('rampsOrderDetailsStatus')}>
