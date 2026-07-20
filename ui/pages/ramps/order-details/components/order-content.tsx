@@ -1,5 +1,10 @@
 import React from 'react';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
+  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -12,10 +17,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { formatDate } from '../../../../helpers/utils/util';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { getRampsNetworkDetailsForCaipChainId } from '../../token-selection/utils/mapRampsTokensToSendAssets';
 
 const PENDING_STATUSES = new Set<RampsOrderStatus>([
   RampsOrderStatus.Pending,
@@ -104,6 +111,14 @@ export function OrderContent({ order }: { order: RampsOrder }) {
   const fiatSymbol = order.fiatCurrency?.symbol ?? 'USD';
   const fiatDecimals = order.fiatCurrency?.decimals ?? 2;
 
+  const caipChainId = (order.network?.chainId ??
+    order.cryptoCurrency?.chainId ??
+    '') as CaipChainId;
+  const { networkName, networkImage } = getRampsNetworkDetailsForCaipChainId(
+    caipChainId,
+    order.network?.name,
+  );
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -113,8 +128,25 @@ export function OrderContent({ order }: { order: RampsOrder }) {
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
+        gap={3}
         className="py-6"
       >
+        <BadgeWrapper
+          badge={
+            <AvatarNetwork
+              src={networkImage}
+              name={networkName}
+              size={AvatarNetworkSize.Sm}
+            />
+          }
+        >
+          <AvatarToken
+            src={order.cryptoCurrency?.iconUrl}
+            name={order.cryptoCurrency?.symbol}
+            size={AvatarTokenSize.Xl}
+            imageProps={{ 'data-testid': 'ramps-order-details-token-icon' }}
+          />
+        </BadgeWrapper>
         {isPending && !order.cryptoAmount ? (
           <Box
             className="h-[24px] w-[120px] rounded bg-background-muted"

@@ -7,8 +7,40 @@ exports[`OrderContent (completed) matches the completed snapshot 1`] = `
     data-testid="ramps-order-content"
   >
     <div
-      class="flex flex-col items-center py-6"
+      class="flex flex-col gap-3 items-center py-6"
     >
+      <div
+        class="relative inline-flex self-start"
+      >
+        <div
+          class="inline-flex"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              data-testid="ramps-order-details-token-icon"
+              src="https://x/eth.png"
+            />
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+          >
+            <img
+              alt="Ethereum"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+      </div>
       <h1
         class="text-default text-s-display-md leading-s-display-md tracking-s-display-md md:text-l-display-md md:leading-l-display-md md:tracking-l-display-md font-bold md:font-medium font-default"
         data-testid="ramps-order-details-token-amount"
@@ -134,8 +166,40 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
     data-testid="ramps-order-content"
   >
     <div
-      class="flex flex-col items-center py-6"
+      class="flex flex-col gap-3 items-center py-6"
     >
+      <div
+        class="relative inline-flex self-start"
+      >
+        <div
+          class="inline-flex"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              data-testid="ramps-order-details-token-icon"
+              src="https://x/eth.png"
+            />
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
+          >
+            <img
+              alt="Ethereum"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+      </div>
       <div
         class="h-[24px] w-[120px] rounded bg-background-muted"
         data-testid="ramps-order-details-amount-skeleton"

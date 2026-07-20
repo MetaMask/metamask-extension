@@ -51,6 +51,13 @@ describe('OrderContent (completed)', () => {
     ).toHaveTextContent('0.5 ETH');
   });
 
+  it('renders the token logo with the crypto icon', () => {
+    renderContent(completedOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-token-icon'),
+    ).toHaveAttribute('src', 'https://x/eth.png');
+  });
+
   it('renders the fees and total formatted as currency', () => {
     renderContent(completedOrder);
     expect(screen.getByTestId('ramps-order-details-fees')).toHaveTextContent(
