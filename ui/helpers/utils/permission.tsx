@@ -27,26 +27,29 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
+import type { I18nFunction } from '../../contexts/i18n';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { getURLHost } from './util';
-
-type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
 
 type PermissionValue = {
   caveats: { type?: string; value?: unknown }[];
   [key: string]: unknown;
 };
 
+type Bip32Path = Parameters<typeof getSnapDerivationPathName>[0];
+type Bip32Curve = Parameters<typeof getSnapDerivationPathName>[1];
+type Translation = ReturnType<I18nFunction>;
+
 type PermissionLabelObject = {
-  label: string;
-  description?: string;
+  label: Translation;
+  description?: Translation;
   leftIcon?: string | null;
   rightIcon?: string | JSX.Element | null;
   weight: number;
   id?: string;
-  message?: string;
+  message?: Translation;
   warningMessageSubject?: string;
   connection?: string;
   connectionName?: string;
@@ -56,7 +59,7 @@ type PermissionLabelObject = {
 };
 
 type PermissionDescriptionParams = {
-  t: TranslateFunction;
+  t: I18nFunction;
   isRequestApprovalPermittedChains?: boolean;
   permissionName?: string;
   permissionValue: PermissionValue;
@@ -140,7 +143,10 @@ const PERMISSION_DESCRIPTIONS = deepFreeze<
     subjectName,
   }) =>
     (
-      permissionValue.caveats[0].value as { path: string[]; curve: string }[]
+      permissionValue.caveats[0].value as {
+        path: Bip32Path;
+        curve: Bip32Curve;
+      }[]
     ).map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.SecuritySearch,
@@ -213,7 +219,10 @@ const PERMISSION_DESCRIPTIONS = deepFreeze<
     subjectName,
   }) =>
     (
-      permissionValue.caveats[0].value as { path: string[]; curve: string }[]
+      permissionValue.caveats[0].value as {
+        path: Bip32Path;
+        curve: Bip32Curve;
+      }[]
     ).map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.Key,
@@ -737,10 +746,13 @@ export const getPermissionDescription = ({
   permissionValue,
   subjectName,
   getSubjectName,
-}) => {
+}: PermissionDescriptionParams): PermissionLabelObject[] => {
   let value = PERMISSION_DESCRIPTIONS[UNKNOWN_PERMISSION];
 
-  if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
+  if (
+    permissionName &&
+    Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)
+  ) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
 
@@ -790,9 +802,15 @@ export function getWeightedPermissions({
   permissions,
   getSubjectName,
   subjectName,
-}) {
+}: {
+  t: I18nFunction;
+  isRequestApprovalPermittedChains?: boolean;
+  permissions: Record<string, PermissionValue>;
+  getSubjectName?: (origin: string) => string;
+  subjectName?: string;
+}): PermissionLabelObject[] {
   return Object.entries(permissions)
-    .reduce(
+    .reduce<PermissionLabelObject[]>(
       (target, [permissionName, permissionValue]) =>
         target.concat(
           getPermissionDescription({

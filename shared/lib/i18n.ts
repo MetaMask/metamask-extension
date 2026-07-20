@@ -22,7 +22,7 @@ export type I18NMessageDict = {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type I18NSubstitution = string | (() => any) | object;
+export type I18NSubstitution = string | (() => any) | object | null;
 
 // A parameterized type (or generic type) of maps that use the same structure (translationKey) key
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
