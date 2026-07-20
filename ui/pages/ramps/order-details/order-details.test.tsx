@@ -64,7 +64,7 @@ describe('RampsOrderDetailsScreen', () => {
     );
 
     expect(
-      screen.getByTestId('ramps-order-details-not-found'),
+      screen.getByTestId('ramps-order-details-error'),
     ).toBeInTheDocument();
   });
 
@@ -93,5 +93,53 @@ describe('RampsOrderDetailsScreen', () => {
 
     expect(screen.getByTestId('ramps-order-content')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('calls refreshOrder when retry is clicked for an existing order', async () => {
+    const refreshOrder = jest.fn().mockResolvedValue(completedOrder);
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue({
+        ...completedOrder,
+        status: RampsOrderStatus.Pending,
+      }),
+      refreshOrder,
+    });
+
+    renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-order-details-refresh'));
+
+    expect(refreshOrder).toHaveBeenCalledWith(
+      'transak',
+      'provider-order-1234567890',
+      '0xabc',
+    );
+  });
+
+  it('shows the error state when refreshOrder throws', async () => {
+    const refreshOrder = jest.fn().mockRejectedValue(new Error('boom'));
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue({
+        ...completedOrder,
+        status: RampsOrderStatus.Pending,
+      }),
+      refreshOrder,
+    });
+
+    renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-order-details-refresh'));
+
+    expect(
+      await screen.findByTestId('ramps-order-details-error'),
+    ).toBeInTheDocument();
   });
 });

@@ -8246,6 +8246,9 @@
   "rampsOrderDetailsDone": {
     "message": "Done"
   },
+  "rampsOrderDetailsError": {
+    "message": "We couldn't load your order details."
+  },
   "rampsOrderDetailsFees": {
     "message": "Fees"
   },
@@ -8257,6 +8260,9 @@
   },
   "rampsOrderDetailsPendingMessage": {
     "message": "Your order may take some time to confirm."
+  },
+  "rampsOrderDetailsRetry": {
+    "message": "Try again"
   },
   "rampsOrderDetailsStatus": {
     "message": "Status"

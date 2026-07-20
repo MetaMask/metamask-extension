@@ -157,6 +157,17 @@ exports[`RampsOrderDetailsScreen renders order content and the completed snapsho
       class="flex flex-col border-t border-border-muted px-4 py-3"
     >
       <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        data-testid="ramps-order-details-refresh"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Try again
+        </span>
+      </button>
+      <button
         class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
         data-testid="ramps-order-details-done"
         role="button"
