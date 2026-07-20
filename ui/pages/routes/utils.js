@@ -1,5 +1,6 @@
 import { matchPath } from 'react-router-dom';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getIsPureBlackPreviewEnabled } from '../../../shared/lib/environment';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -43,6 +44,15 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
+/**
+ * Resolves the user's theme preference to a concrete light/dark value for
+ * `data-theme` on `<html>`.
+ *
+ * TODO: Prefer stylesheet-level OS theming once design tokens support it
+ * (https://github.com/MetaMask/metamask-design-system/pull/814) instead of
+ * resolving `prefers-color-scheme` in JS.
+ * @param theme
+ */
 export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
@@ -53,11 +63,24 @@ export function getThemeFromRawTheme(theme) {
   return theme;
 }
 
-export function setTheme(theme) {
-  document.documentElement.setAttribute(
-    'data-theme',
-    getThemeFromRawTheme(theme),
-  );
+// NOTE: setDocumentPureBlack and the isPureBlackEnabled param on setTheme are
+// temporary. Once pure-black and dark theme tokens are consolidated, remove
+// both functions and the data-pure-black attribute wiring. Tracked in TMCU-1083.
+export function setDocumentPureBlack(isPureBlackActive) {
+  if (isPureBlackActive) {
+    document.documentElement.setAttribute('data-pure-black', 'true');
+  } else {
+    document.documentElement.removeAttribute('data-pure-black');
+  }
+}
+
+export function setTheme(theme, isPureBlackEnabled = false) {
+  const resolvedTheme = getThemeFromRawTheme(theme);
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
+  const pureBlackActive =
+    resolvedTheme === ThemeType.dark &&
+    (isPureBlackEnabled || getIsPureBlackPreviewEnabled());
+  setDocumentPureBlack(pureBlackActive);
 }
 
 function onConfirmPage(props) {

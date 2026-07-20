@@ -372,6 +372,9 @@ env:
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
   - QR_SYNC_ENABLED: false
+  # Local development preview for pure-black (OLED) dark mode.
+  # Set to true in .metamaskrc to enable without the extensionUxPureBlack remote flag.
+  - MM_PURE_BLACK_PREVIEW: false
 
   ###
   # Meta variables

@@ -108,3 +108,7 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
+
+; Set to `true` to enable pure-black dark mode locally without needing
+; the `extensionUxPureBlack` remote feature flag. Has no effect in production builds.
+MM_PURE_BLACK_PREVIEW=false
