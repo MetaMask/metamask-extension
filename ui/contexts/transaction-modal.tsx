@@ -13,8 +13,9 @@ export type TransactionModalContextType = {
   openModalCount: number;
 };
 
-export const TransactionModalContext =
-  createContext<TransactionModalContextType>({} as TransactionModalContextType);
+export const TransactionModalContext = createContext<
+  TransactionModalContextType | undefined
+>(undefined);
 
 export const TransactionModalContextProvider = ({
   children,
@@ -24,15 +25,9 @@ export const TransactionModalContextProvider = ({
   const [openModals, setOpenModals] = useState<string[]>([]);
 
   const closeModal = (modalNames: string[]) => {
-    if ((openModals as unknown as number) < 0) {
-      return;
-    }
-    const modals = [...openModals];
-    modalNames.forEach((modal) => {
-      const index = openModals.indexOf(modal);
-      modals.splice(index, 1);
-    });
-    setOpenModals(modals);
+    setOpenModals((modals) =>
+      modals.filter((modal) => !modalNames.includes(modal)),
+    );
   };
 
   const closeAllModals = () => {
@@ -64,5 +59,13 @@ export const TransactionModalContextProvider = ({
 };
 
 export function useTransactionModalContext(): TransactionModalContextType {
-  return useContext(TransactionModalContext);
+  const context = useContext(TransactionModalContext);
+
+  if (!context) {
+    throw new Error(
+      'useTransactionModalContext must be used within a TransactionModalContextProvider',
+    );
+  }
+
+  return context;
 }
