@@ -11,7 +11,6 @@ export default defineConfig({
     '/.yarn/',
     '/app/html/partials/partial-head.html',
     '/app/scripts/**/*-method-action-types.ts',
-    '/app/scripts/lib/ppom/ppom.js',
     '/app/vendor/',
     '/builds/',
     '/CHANGELOG*.md',

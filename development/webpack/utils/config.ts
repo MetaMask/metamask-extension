@@ -173,15 +173,6 @@ export function getVariables(
     }
   });
 
-  // special location for the PPOM_URI, as we don't want to copy the wasm file
-  // to the build directory like the gulp build does
-  variables.set(
-    'PPOM_URI',
-    `new URL('@blockaid/ppom_release/ppom_bg.wasm', import.meta.url)`,
-  );
-  // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
-  safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
-
   return {
     variables,
     safeVariables,
