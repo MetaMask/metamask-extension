@@ -246,7 +246,9 @@ describe('rebuildRegistryContent', () => {
     const rebuilt = rebuildRegistryContent(MINIMAL_REGISTRY_CONTENT, registry);
 
     expect(rebuilt).toContain('[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {');
-    expect(rebuilt).toContain('name: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,');
+    expect(rebuilt).toContain(
+      'name: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,',
+    );
     expect(rebuilt).not.toContain("name: 'enabledAdvancedPermissions',");
     expect(rebuilt).not.toContain('enabledAdvancedPermissions: {');
   });
