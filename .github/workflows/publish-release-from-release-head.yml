@@ -5,7 +5,15 @@ name: Publish Release from Release HEAD
 # Requires release-branch approval and CI pass on release SHA.
 
 on:
+  # Keep release-branch approval on workflow_dispatch until this trigger is removed
+  # (orchestrator workflow_call-only is the long-term entrypoint).
   workflow_dispatch:
+  workflow_call:
+
+# Serialize publish runs per release branch (direct dispatch or orchestrator workflow_call).
+concurrency:
+  group: publish-release-from-release-head-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read # publish-release uses EXTENSION_PUBLISH_TOKEN for write operations
