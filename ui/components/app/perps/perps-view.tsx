@@ -31,6 +31,7 @@ import { usePerpsEligibility } from '../../../hooks/perps';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
@@ -68,13 +69,10 @@ type BatchCloseResult = {
   failureCount?: number;
 };
 
-type PerpsViewProps = {
-  source?: (typeof PERPS_EVENT_VALUE.SOURCE)[keyof typeof PERPS_EVENT_VALUE.SOURCE];
-};
-
-export const PerpsView = ({ source }: PerpsViewProps) => {
+export const PerpsView = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
@@ -322,7 +320,7 @@ export const PerpsView = ({ source }: PerpsViewProps) => {
       [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
       [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
       [PERPS_EVENT_PROPERTY.SOURCE]:
-        source ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+        bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
   });
