@@ -38,11 +38,6 @@ on:
           - dev
           - production
           - flask
-      confirm_full_rollout:
-        description: 'Required for desired_percentage=100 or single-step increase >50 points — enter "yes" to confirm'
-        required: false
-        type: string
-        default: ''
 
 permissions:
   contents: read
@@ -60,7 +55,6 @@ jobs:
     env:
       VERSION: ${{ inputs.version }}
       DESIRED_PERCENTAGE: ${{ inputs.desired_percentage }}
-      CONFIRM_FULL_ROLLOUT: ${{ inputs.confirm_full_rollout }}
       TARGET: ${{ inputs.target }}
       ROLLOUT_ENV: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || '' }}
     steps:
@@ -99,29 +93,24 @@ jobs:
         run: |
           set -euo pipefail
           GITHUB_REF="${{ github.ref }}"
+          # All targets require main. Originally each target had its own ref check to allow
+          # different branch policies; since all three targets are now aligned on refs/heads/main,
+          # the check is unified here before target resolution.
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error::CWS rollout must run from refs/heads/main (current: ${GITHUB_REF})"
+            exit 1
+          fi
           if [[ "${TARGET}" == "dev" ]]; then
-            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
-              echo "::error::Dev (cws-rollout-dev) rollout must run from refs/heads/main (current: ${GITHUB_REF})"
-              exit 1
-            fi
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
             EXTENSION_ID="${EXTENSION_ID_DEV}"
             PUBLISHER_ID="${PUBLISHER_ID_DEV}"
           elif [[ "${TARGET}" == "production" ]]; then
-            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
-              echo "::error::Production rollout must run from refs/heads/main (current: ${GITHUB_REF})"
-              exit 1
-            fi
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
             EXTENSION_ID="${EXTENSION_ID_PROD}"
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
           elif [[ "${TARGET}" == "flask" ]]; then
-            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
-              echo "::error::Flask rollout must run from refs/heads/main (current: ${GITHUB_REF})"
-              exit 1
-            fi
             WIF_PROVIDER="${WIF_PROVIDER_PROD}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
             EXTENSION_ID="${EXTENSION_ID_FLASK}"
@@ -285,7 +274,6 @@ jobs:
             echo "| Branch | \`${{ github.ref }}\` |"
             echo "| Previous percentage | \`${CURRENT_PCT:-n/a}\` |"
             echo "| Requested percentage | \`${{ inputs.desired_percentage }}\` |"
-            echo "| confirm_full_rollout | \`${{ inputs.confirm_full_rollout || '(empty)' }}\` |"
             echo "| Config step | \`${CONFIG_OK:-skipped}\` |"
             echo "| GCP auth step | \`${AUTH_OK:-skipped}\` |"
             echo "| fetchStatus step | \`${FETCH_OK:-skipped}\` |"

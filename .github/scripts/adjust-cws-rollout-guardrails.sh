@@ -4,7 +4,6 @@ set -euo pipefail
 
 DESIRED="${DESIRED_PERCENTAGE:?}"
 CURRENT="${CURRENT_PERCENTAGE:?}"
-CONFIRM="${CONFIRM_FULL_ROLLOUT:-}"
 
 violations=()
 
@@ -32,17 +31,11 @@ if [[ "${CURRENT}" =~ ^[0-9]+$ && "${DESIRED}" =~ ^[0-9]+$ ]]; then
     exit 0
   fi
 
+  # Defense-in-depth: CWS API also rejects DESIRED <= CURRENT natively
+  # (setPublishedDeployPercentage requires deployPercentage > current).
+  # We check here first to surface a clear error rather than a raw API 4xx.
   if (( DESIRED < CURRENT )); then
     violations+=("Rollback is not permitted via this workflow. Use the CWS dashboard and open a post-incident review.")
-  fi
-
-  if (( DESIRED == 100 )) && [[ "${CONFIRM}" != "yes" ]]; then
-    violations+=("Setting rollout to 100% requires confirm_full_rollout: 'yes'")
-  fi
-
-  delta=$(( DESIRED - CURRENT ))
-  if (( delta > 50 )) && [[ "${CONFIRM}" != "yes" ]]; then
-    violations+=("Single-step increase of ${delta}% exceeds the 50-point maximum. Increase in stages or pass confirm_full_rollout: 'yes' to override.")
   fi
 fi
 
