@@ -181,9 +181,6 @@
   "decimal": {
     "message": "اعشاریه های دقت"
   },
-  "decimalsMustZerotoTen": {
-    "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -511,9 +508,6 @@
   },
   "sign": {
     "message": "علامت"
-  },
-  "signatureRequest": {
-    "message": "درخواست امضاء"
   },
   "signed": {
     "message": "وارد شد"

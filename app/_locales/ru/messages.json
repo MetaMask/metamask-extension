@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Параметры счета"
   },
-  "accountPermissionToast": {
-    "message": "Разрешения счета обновлены"
-  },
   "accountSelectionRequired": {
     "message": "Вам необходимо выбрать счет!"
   },
@@ -196,6 +193,52 @@
   },
   "activity_approveSpendingCap_success_title": {
     "message": "Лимит расходов одобрен"
+  },
+  "activity_assetActivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Не удалось активировать линию доверия"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Активация линии доверия $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "Линия доверия активирована $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Не удалось деактивировать линию доверия"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Деактивация линии доверия $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "Линия доверия деактивирована $1",
+    "description": "$1 is the token symbol"
   },
   "activity_bridge_failed_description": {
     "message": "Сбой моста"
@@ -330,7 +373,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Обменян $1",
+    "message": "Сконвертировано в $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -1049,9 +1092,6 @@
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
   },
-  "addDevice": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1081,7 +1121,7 @@
     "message": "Добавьте друзей и адреса, которым доверяете"
   },
   "addFromChainlist": {
-    "message": "Добавить из списка блокчейнов"
+    "message": "Добавить из ChainList"
   },
   "addFunds": {
     "message": "Внести средства"
@@ -1178,6 +1218,9 @@
   },
   "add_device_syncing_title": {
     "message": "Выполняется импорт счетов"
+  },
+  "add_device_try_again": {
+    "message": "Повторить попытку"
   },
   "add_device_validating_desc": {
     "message": "Установление безопасного зашифрованного соединения с вашим телефоном."
@@ -1581,8 +1624,20 @@
   "asset": {
     "message": "Актив"
   },
+  "assetActivate": {
+    "message": "Активировать",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Активируйте $1 в сети $2, чтобы начать.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Мы не смогли получить никаких исторических данных"
+  },
+  "assetInactive": {
+    "message": "Неактивно",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "Параметры актива"
@@ -1956,10 +2011,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Сведения о мосте",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "ДАО"
   },
@@ -1968,9 +2019,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Выберите сумму"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Смотреть на $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Эта транзакция существует в двух сетях. Одна ссылка показывает источник, а другая — пункт назначения после подтверждения транзакции."
@@ -2084,6 +2132,18 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Предупреждение о влиянии на цену"
+  },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "Шаг $1 из $2: Отсканируйте этот QR-код вашим кошельком",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "Последний шаг: отсканируйте QR-код, отображаемый на вашем кошельке",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "Шаг $1 из $2: Отсканируйте QR-код, показанный на вашем кошельке",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "Котировки недоступны. Попробуйте меньшую сумму."
@@ -2243,42 +2303,11 @@
   "bridgeSendLoading": {
     "message": "Отправка из исходного блокчейна"
   },
-  "bridgeStatusComplete": {
-    "message": "Завершено",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Не удалось",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "В процессе",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 получено в $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Получение $1 в $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Обменяно $1 на $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Обменивается $1 на $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Подозрительный"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Подозрительный токен"
-  },
-  "bridgeTo": {
-    "message": "Мост к"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 — вредоносный токен."
@@ -2294,56 +2323,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Нет токенов, соответствующих «$1»"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Транзакция $1 из 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Передано через мост"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Создание моста"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Обратитесь в"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Поддержка MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Прошло больше 3 часов?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Одноразовый код"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Статус"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Обмен выполнен"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Обменивается"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Отметка времени"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 в $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 на",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Итого платы за газ"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Вы получили"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Вы отправили"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Использовать разрешенный максимум"
@@ -2361,12 +2340,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Требуется минимальный резервный баланс в размере $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Передано через мост"
-  },
-  "bridgedToChain": {
-    "message": "Передано через мост в $1"
   },
   "bridging": {
     "message": "Создание моста"
@@ -2434,6 +2407,14 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Этот символ токена не соответствует введенному имени сети или идентификатору блокчейна. Многие популярные токены обозначаются похожими символами, которые мошенники могут использовать, чтобы обманом заставить вас отправить им взамен более ценный токен. Проверьте все, прежде чем продолжить."
+  },
+  "chainlistLearnHowToStaySafe": {
+    "message": "Узнайте, как оставаться в безопасности.",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "Данные сети предоставляются ChainList. Всегда проверяйте их перед добавлением. $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistNetworkDetails": {
     "message": "Символ: $1 · ID: $2",
@@ -2902,6 +2883,9 @@
   "contractInteraction": {
     "message": "Взаимодействие по контракту"
   },
+  "convertAgain": {
+    "message": "Конвертировать снова"
+  },
   "convertTokenToNFTDescription": {
     "message": "Мы обнаружили, что этот актив является NFT. MetaMask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
   },
@@ -3123,9 +3107,6 @@
   "decimal": {
     "message": "Число десятичных знаков токена"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Число десятичных знаков должно быть не менее 0, но не более 36."
-  },
   "decrypt": {
     "message": "Расшифровать"
   },
@@ -3157,6 +3138,12 @@
   },
   "deepLinkQrPredictTitle": {
     "message": "Открыть Рынок прогнозов на мобильном"
+  },
+  "deepLinkQrTrendingDescription": {
+    "message": "«Обзор» доступен в мобильном приложении MetaMask. Отсканируйте этот код своим мобильным устройством, чтобы воспользоваться им."
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "Откройте «Обзор» на мобильном устройстве"
   },
   "deepLink_Caution": {
     "message": "Действуйте с осторожностью"
@@ -3254,6 +3241,9 @@
   },
   "deepLink_theTransactionShieldPage": {
     "message": "страница защиты транзакций"
+  },
+  "deepLink_theTrendingPage": {
+    "message": "страница «Обзор»"
   },
   "default": {
     "message": "По умолчанию"
@@ -3373,10 +3363,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Адрес получения"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "Направление Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Подробности"
@@ -4188,6 +4174,62 @@
   "hardware": {
     "message": "Аппаратный"
   },
+  "hardwareAllSetTitle": {
+    "message": "Все готово",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "Почти готово! Подтвердите на вашем устройстве еще раз",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "Одобрить $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "Одобрено $1 $2",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "Переподключите устройство и повторите попытку",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "Переподключите устройство, чтобы продолжить",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "Неудачно",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "Отправить транзакцию повторно",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "Отправить $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "Отправка $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "Отправлено $1 $2",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "Лицо, производящие расходы: $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "Адресат: $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "Вы отклонили эту транзакцию на своем устройстве",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "Аппаратный кошелек подключен"
   },
@@ -4195,7 +4237,7 @@
     "message": "Продолжить"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Переподключиться",
+    "message": "Переподключить и повторить попытку",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
@@ -4778,6 +4820,12 @@
   "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
     "message": "Установите и откройте приложение Ethereum"
   },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Подключите свой Ledger к компьютеру"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "Попробуйте подключиться еще раз"
+  },
   "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
     "message": "Разблокируйте свое устройство Ledger"
   },
@@ -4789,6 +4837,9 @@
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger не отвечает"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Убедитесь, что ваше устройство Ledger настроено с использованием секретной фразы для восстановления или закрытого ключа для выбранного счета"
   },
   "ledgerConnectionStatusGenericErrorTitle": {
     "message": "Что-то пошло не так"
@@ -5348,10 +5399,6 @@
     "message": "Детали доступного для получения бонуса",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Конвертировать $1 в mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Детали бонуса",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5734,14 +5781,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Автоопределение NFT включено"
   },
-  "nftBought": {
-    "message": "Куплено $1"
-  },
   "nftEmptyDescription": {
     "message": "Существует целый мир NFT. Начните собирать свою коллекцию уже сегодня."
-  },
-  "nftMinted": {
-    "message": "Сминчено $1"
   },
   "nftOptions": {
     "message": "Опционы NFT"
@@ -6920,9 +6961,6 @@
   "perpsDateYesterday": {
     "message": "Вчера"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Оплаченные перпы"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Сбой моста"
   },
@@ -6987,6 +7025,18 @@
   },
   "perpsFees": {
     "message": "Комиссии"
+  },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Комиссия Hyperliquid",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "Комиссия MetaMask",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "Комиссия поставщика",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
   },
   "perpsFilterAll": {
     "message": "Все"
@@ -7082,6 +7132,10 @@
   "perpsLiquidationPrice": {
     "message": "Цена ликвидации"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "Если цена достигнет этой точки, ваша позиция будет ликвидирована, и вы потеряете маржу. Чем больше кредитное плечо, тем выше вероятность этого.",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "Длинные"
   },
@@ -7090,6 +7144,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "Удаление маржи приближает цену ликвидации. Убедитесь, что у вас есть достаточный буфер."
+  },
+  "perpsMarginTooltip": {
+    "message": "Маржа — это деньги, которые вы вносите для открытия сделки. Она служит обеспечением и определяет максимальную сумму, которую вы можете потерять в этой сделке.",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "Рынок"
@@ -7561,10 +7619,6 @@
   "perpsWithdraw": {
     "message": "Вывести средства"
   },
-  "perpsWithdrawActivityTitle": {
-    "message": "Вывод из перпов",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Предполагаемое время"
   },
@@ -7954,9 +8008,6 @@
     "message": "Истекает через $1 с",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Что-то пошло не так при сканировании QR-кода. Сгенерируйте новый, чтобы попробовать еще раз."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Этот QR-код предназначен для другой транзакции. Отмените и повторите попытку, предварительно отсканировав QR-код, показанный в MetaMask, с помощью своего аппаратного кошелька.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8005,6 +8056,14 @@
     "message": "Неверный QR-код",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "Отсканируйте финальный QR-код",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "Отсканировать следующий QR-код",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "В очереди"
   },
@@ -8013,6 +8072,9 @@
   },
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Нет доступных токенов"
   },
   "rank": {
     "message": "Рейтинг"
@@ -8226,9 +8288,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Операция выполнена."
   },
-  "retryTransaction": {
-    "message": "Повторить транзакцию"
-  },
   "reusedTokenNameWarning": {
     "message": "В токене здесь используется символ другого токена, который вы отслеживаете. Это может запутать или ввести в заблуждение."
   },
@@ -8282,10 +8341,6 @@
   },
   "revokePermission": {
     "message": "Отозвать разрешение"
-  },
-  "revokePermissionTitle": {
-    "message": "Удалить разрешение для $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Вы отзываете у кого-то разрешение тратить токены с вашего счета."
@@ -8443,8 +8498,99 @@
   "scamQuestionnaireContinue": {
     "message": "Продолжить"
   },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "Проверка безопасности"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "Нет, я знаю этого человека в реальной жизни"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "Это включает в себя приложения для знакомств, социальные сети и групповые чаты — даже если вы общались по видео."
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "Вам кто-то, кого вы знаете только по интернету, сказал отправить это?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "Да, человек, с которым я познакомился(-ась) в интернете, сказал мне отправить это"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "Оплата продавцу за то, что я получаю"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "Покупка товаров или услуг"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "Штрафы, налоги или официальные сборы, запрашиваемые в криптовалюте"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "Оплата полиции или государственному учреждению"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "Перевод денег партнеру, члену семьи или другу, оказавшемуся в беде"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "Помощь тому, кто мне небезразличен"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "Покупка криптовалюты, токенов или финансовой возможности"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "Инвестиции"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "Вступительные взносы, оплата оборудования или задач"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "Предложение о работе или расходы, связанные с ней"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "Перевод самому себе или на холодное хранение"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "Перемещение средств между моими собственными кошельками"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "Выберите вариант, который лучше всего описывает этот платеж."
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "Для чего этот платеж?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "Нет, я делаю это полностью самостоятельно"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "Это может происходить во время телефонного звонка, видеочата или демонстрации вашего экрана."
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "Кто-нибудь руководит вашими действиями при совершении этой транзакции?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "Да, кто-то прямо сейчас пошагово руководит моими действиями"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "Выберите ответ"
+  },
   "scamQuestionnaireWarningContactSupport": {
     "message": "Связаться с поддержкой"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "Игнорировать риски и все равно продолжить"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "Продолжить в любом случае через $1 с",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "После отправки ваши средства невозможно будет вернуть."
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "Транзакции с криптовалютой необратимы."
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "Основываясь на ваших ответах и истории этого получателя, данная транзакция может оказаться мошеннической."
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "Остановить этот платеж"
   },
   "scamQuestionnaireWarningTitle": {
     "message": "Возможно, вас прямо сейчас пытаются обмануть"
@@ -8643,6 +8789,10 @@
   "sendBugReport": {
     "message": "Отправьте нам отчет об ошибке."
   },
+  "sendBundleHwGasPayment": {
+    "message": "Оплата комиссии сети с помощью $1",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
+  },
   "sendSelectReceiveAsset": {
     "message": "Выберите актив для получения"
   },
@@ -8662,14 +8812,6 @@
   "sent": {
     "message": "Отправлено"
   },
-  "sentSpecifiedTokens": {
-    "message": "Отправлено $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Отправлено $1 как $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
@@ -8678,10 +8820,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Запрос на вывод средств"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Одобрить $1 без ограничений по расходам",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Настроить",
@@ -9385,9 +9523,6 @@
   "sign": {
     "message": "Подписать"
   },
-  "signatureRequest": {
-    "message": "Запрос подписи"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "NFT отобразится в Вашем кошельке, когда ставка будет принята."
   },
@@ -9787,6 +9922,18 @@
   "speedUpTransactionTitle": {
     "message": "Ускорить транзакцию"
   },
+  "spendableBalance": {
+    "message": "Доступно для трат"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Зарезервировано (заблокировано)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Значение"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Общий баланс"
+  },
   "spender": {
     "message": "Расходующее лицо"
   },
@@ -10019,6 +10166,18 @@
   "statusNotConnected": {
     "message": "Не подключено"
   },
+  "stellarClassicTrustlineAddError": {
+    "message": "Что-то пошло не так при добавлении этой линии доверия. Попробуйте еще раз.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Что-то пошло не так при удалении этой линии доверия. Попробуйте еще раз.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "На этом кошельке все еще остается $1 $2. Вы должны отправить или обменять эти средства полностью, прежде чем деактивировать этот актив в Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
+  },
   "stillConnectingTo": {
     "message": "Все еще подключаюсь к $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10173,10 +10332,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "Децентрализованная биржа"
-  },
-  "swapDetailsTitle": {
-    "message": "Сведения о свопе",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Прямой контракт"
@@ -10382,10 +10537,6 @@
   "swapTokenNotAvailable": {
     "message": "Своп токена в этом регионе недоступен"
   },
-  "swapTokenToToken": {
-    "message": "Выполнить своп $1 на $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Обменять токены"
   },
@@ -10449,6 +10600,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
+  },
+  "syncAccounts": {
+    "message": "Синхронизировать с мобильным устройством"
   },
   "syncing": {
     "message": "Синхронизируется..."
@@ -10647,16 +10801,15 @@
   "transactionHistoryTotalGasFee": {
     "message": "Итого платы за газ"
   },
+  "transactionIdCopied": {
+    "message": "ID транзакции скопирован"
+  },
   "transactionIdLabel": {
     "message": "ID транзакции",
     "description": "Label for the source transaction ID field."
   },
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
-  },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Эта транзакция была защищена. Мы отменили ее, чтобы предотвратить непредвиденную потерю средств.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "Настройки транзакции"
@@ -10666,10 +10819,6 @@
   },
   "transactionSubmitted": {
     "message": "Транзакция отправлена"
-  },
-  "transactionTotalGasFee": {
-    "message": "Итого платы за газ",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Транзакции"
@@ -10995,9 +11144,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Просмотр сведений"
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"

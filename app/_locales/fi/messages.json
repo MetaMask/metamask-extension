@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Tarkkuusdesimaalit"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
   "delete": {
     "message": "Poista"
   },
@@ -508,9 +505,6 @@
   },
   "sign": {
     "message": "Allekirjoita"
-  },
-  "signatureRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "signed": {
     "message": "Allekirjoitettu"

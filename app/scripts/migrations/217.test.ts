@@ -1,68 +1,75 @@
-import migrate, { version } from './217';
+import { cloneDeep } from 'lodash';
+import { migrate, version } from './217';
 
-const buildState = (
-  preferencesController?: Record<string, unknown>,
-): { meta: { version: number }; data: Record<string, unknown> } => ({
-  meta: { version: version - 1 },
-  data: preferencesController
-    ? { PreferencesController: preferencesController }
-    : {},
-});
+const VERSION = version;
+const OLD_VERSION = VERSION - 1;
 
-describe(`migration #${version}`, () => {
-  it('bumps the state version', async () => {
-    const state = { meta: { version: version - 1 }, data: {} };
-    await migrate(state, new Set());
-    expect(state.meta.version).toBe(version);
-  });
-
-  it('skips silently when PreferencesController state is missing', async () => {
-    const state = { meta: { version: version - 1 }, data: {} };
-    const changed = new Set<string>();
-    await expect(migrate(state, changed)).resolves.toBeUndefined();
-    expect(state.meta.version).toBe(version);
-    expect(changed.size).toBe(0);
-  });
-
-  it('clears a stored advancedGasFee and leaves other preferences untouched', async () => {
-    const state = buildState({
-      advancedGasFee: {
-        '0x1': { maxBaseFee: '0.05', priorityFee: '0' },
+describe(`migration #${VERSION}`, () => {
+  it('removes enableMV3TimestampSave from PreferencesController', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        PreferencesController: {
+          enableMV3TimestampSave: false,
+          currentLocale: 'en',
+        },
       },
-      useTokenDetection: true,
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: {
+        PreferencesController: {
+          currentLocale: 'en',
+        },
+      },
     });
-    const changed = new Set<string>();
-
-    await migrate(state, changed);
-
-    const preferences = state.data.PreferencesController as Record<
-      string,
-      unknown
-    >;
-    expect(preferences.advancedGasFee).toStrictEqual({});
-    expect(preferences.useTokenDetection).toBe(true);
-    expect(changed.has('PreferencesController')).toBe(true);
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController']),
+    );
   });
 
-  it('is a no-op when advancedGasFee is already empty', async () => {
-    const state = buildState({ advancedGasFee: {} });
-    const before = JSON.parse(JSON.stringify(state.data));
-    const changed = new Set<string>();
+  it('does not mark PreferencesController changed when enableMV3TimestampSave is absent', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        PreferencesController: {
+          currentLocale: 'en',
+        },
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
 
-    await migrate(state, changed);
+    await migrate(versionedData, changedControllers);
 
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: oldStorage.data,
+    });
+    expect(changedControllers).toStrictEqual(new Set([]));
   });
 
-  it('is a no-op when advancedGasFee is absent', async () => {
-    const state = buildState({ useTokenDetection: true });
-    const before = JSON.parse(JSON.stringify(state.data));
-    const changed = new Set<string>();
+  it('does nothing when PreferencesController is missing', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        AppStateController: {},
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
 
-    await migrate(state, changed);
+    await migrate(versionedData, changedControllers);
 
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: oldStorage.data,
+    });
+    expect(changedControllers).toStrictEqual(new Set([]));
   });
 });

@@ -332,6 +332,27 @@ describe('CustomTokenImportPage', () => {
     );
   });
 
+  it('rejects fractional token decimals', async () => {
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+
+    const decimalsInput = await screen.findByTestId(
+      'custom-token-import-decimal-input',
+    );
+
+    fireEvent.change(decimalsInput, { target: { value: '0.0001' } });
+
+    expect(
+      screen.getByText(messages.tokenDecimalsMustBeWholeNumber.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('custom-token-import-submit-button'),
+    ).toBeDisabled();
+  });
+
   it('opens the custom import network selector when the network picker is clicked', () => {
     renderPage();
 
@@ -378,12 +399,12 @@ describe('CustomTokenImportPage', () => {
           name: MetaMetricsEventName.ImportCustomTokenInteracted,
           properties: {
             category: MetaMetricsEventCategory.Wallet,
-          },
-          sensitiveProperties: {
             [METRICS_PROPERTIES.addedToken]: 1,
-            [METRICS_PROPERTIES.assetType]: AssetType.token,
             [METRICS_PROPERTIES.chainId]: '0x1',
             [METRICS_PROPERTIES.clickedSecurityLink]: false,
+          },
+          sensitiveProperties: {
+            [METRICS_PROPERTIES.assetType]: AssetType.token,
             [METRICS_PROPERTIES.tokenContractAddress]:
               '0x1111111111111111111111111111111111111111',
             [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
