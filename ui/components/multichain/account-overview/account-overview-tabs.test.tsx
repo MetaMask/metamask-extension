@@ -44,15 +44,11 @@ jest.mock('../../app/assets/asset-list', () => ({
   default: () => null,
 }));
 
-jest.mock('../activity-v2/activity-list', () => ({
-  ActivityList: () => null,
-}));
-
 jest.mock('../../../pages/activity/activity-list', () => ({
   ActivityList: () => null,
 }));
 
-jest.mock('../activity-v2/useTransactionsQuery', () => ({
+jest.mock('../../../pages/activity/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 

@@ -19,11 +19,24 @@ import { BridgeExplorerButtons } from '../../components/bridge-explorer-buttons'
 import { SwapAgainButton } from '../../components/swap-again-button';
 import { useHistoryTokens, useBridgeHistoryItem } from './hooks';
 import { BridgeNetworkRow } from './bridge-network-row';
+import { getBridgeDisplayStatus } from './utils';
 
 export function BridgeDetails({
   item,
 }: {
-  item: Extract<ActivityListItem, { type: 'bridge' }>;
+  item: Extract<
+    ActivityListItem,
+    {
+      type:
+        | 'swap'
+        | 'bridge'
+        | 'convert'
+        | 'lendingDeposit'
+        | 'lendingWithdrawal'
+        | 'wrap'
+        | 'unwrap';
+    }
+  >;
 }) {
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
@@ -58,6 +71,10 @@ export function BridgeDetails({
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const fromAddress = item.data.from || bridgeHistoryItem?.account || undefined;
+
+  // The API item is marked confirmed once the source tx lands, so prefer the
+  // end-to-end bridge status from local history while the destination is pending.
+  const status = getBridgeDisplayStatus(item.status, bridgeHistoryItem);
 
   const destinationAccountGroups = useSelector((state) =>
     fromAddress && destinationChainId && showFromTo
@@ -112,7 +129,7 @@ export function BridgeDetails({
         <Section>
           <Row
             label={t('status')}
-            value={<TransactionStatus status={item.status} />}
+            value={<TransactionStatus status={status} />}
           />
           <Row label={t('date')} value={formatDateTime(item.timestamp)} />
           {showFromToAccountRows ? (

@@ -167,29 +167,9 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
     done < <(compgen -G "${artifact}")
 done
 
-# Collect and validate deprecated browserify fallback artifacts.
-# Rename them so release consumers can clearly distinguish them from
-# the webpack assets while still having them available.
-browserify_artifacts=()
-for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
-                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    if ! compgen -G "${artifact}" > /dev/null; then
-        echo "::error::Required browserify artifact not found: ${artifact}"
-        exit 1
-    fi
-    while IFS= read -r file; do
-        renamed="${file%.zip}-browserify-deprecated.zip"
-        mv "${file}" "${renamed}"
-        browserify_artifacts+=("${renamed}")
-    done < <(compgen -G "${artifact}")
-done
-
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
     "${webpack_artifacts[@]}" \
-    "${browserify_artifacts[@]}" \
     SHA256SUMS \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \

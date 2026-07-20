@@ -47,10 +47,8 @@ import {
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
 } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
-import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
-import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
+import { ActivityList } from '../../../pages/activity/activity-list';
+import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
@@ -116,9 +114,6 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
   const prefetchTransactions = usePrefetchTransactions();
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
@@ -328,11 +323,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              {isActivityListRedesignEnabled ? (
-                <ActivityListV3 entryPoint={tabEntryPoint} />
-              ) : (
-                <ActivityListV2 />
-              )}
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}
