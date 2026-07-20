@@ -55,13 +55,8 @@ module.exports = {
       '../ui/__mocks__/useAnalytics.ts',
     );
 
-    const hwSwapHooksMock = path.resolve(
-      __dirname,
-      '..',
-      'ui',
-      '__mocks__',
-      'hardware-wallet-swap',
-      'hooks',
+    const hwSwapHooksMock = require.resolve(
+      '../ui/__mocks__/hardware-wallet-swap/hooks.ts',
     );
     config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSwapQuoteData$'
@@ -80,6 +75,9 @@ module.exports = {
     ] = hwSwapHooksMock;
     config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSwapNavigation$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapActions$'
     ] = hwSwapHooksMock;
     config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSignTracker$'

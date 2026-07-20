@@ -69,10 +69,9 @@ export default function HardwareWalletSignatures() {
 
   return (
     <Box
-      className="hardware-wallet-signatures"
+      className="hardware-wallet-signatures flex-1 w-full min-h-full"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
-      style={{ flex: 1, width: '100%', minHeight: '100%' }}
       data-testid="hardware-wallet-signatures"
     >
       <Header
@@ -90,17 +89,15 @@ export default function HardwareWalletSignatures() {
         }
       />
       <Box
-        className="hardware-wallet-signatures__content"
+        className="hardware-wallet-signatures__content h-full"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
         paddingHorizontal={4}
         alignItems={BoxAlignItems.Start}
-        style={{ height: '100%' }}
       >
         <Box
-          className="hardware-wallet-signatures__device"
+          className="hardware-wallet-signatures__device self-center"
           marginBottom={6}
-          style={{ alignSelf: 'center' }}
         >
           <GenericHardwareWalletAnimation status={signatureStatus} />
         </Box>

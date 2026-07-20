@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -8,17 +7,13 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import log from 'loglevel';
+import { useLocation } from 'react-router-dom';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { useAppSelector } from '../../../../store/store';
 
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useBridgeNavigation } from '../../../../hooks/bridge/useBridgeNavigation';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 import { useHwSwapQuoteData } from '../../../../hooks/hardware-wallets/useHwSwapQuoteData';
 import { useHwSwapSubmission } from '../../../../hooks/hardware-wallets/useHwSwapSubmission';
@@ -26,20 +21,14 @@ import { useHwSwapConnectionMonitoring } from '../../../../hooks/hardware-wallet
 import { useHwSwapConfirmationMonitoring } from '../../../../hooks/hardware-wallets/useHwSwapConfirmationMonitoring';
 import { useHwSwapQrState } from '../../../../hooks/hardware-wallets/useHwSwapQrState';
 import { useHwSwapNavigation } from '../../../../hooks/hardware-wallets/useHwSwapNavigation';
+import { useHwSwapActions } from '../../../../hooks/hardware-wallets/useHwSwapActions';
 import {
-  ConnectionStatus,
   isUserRejectedHardwareWalletError,
   useHardwareWalletActions,
-  useHardwareWalletState,
 } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-  updateAndApproveTx,
-} from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 import {
   type ApprovalsMetaMaskState,
@@ -48,14 +37,9 @@ import {
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
-  SignatureStepStatus,
-  getStepDescriptions,
-  getStepLabels,
-  getQrHardwareSigningPageTitle,
-  getTitle,
   getTransactionField,
-  cleanupPendingApproval,
-  getAllStepStatuses,
+  getHardwareWalletSignatureViewModel,
+  isAwaitingSignature,
 } from '../hardware-wallet-signatures.utils';
 import {
   HardwareWalletSignatureEvent,
@@ -64,8 +48,9 @@ import {
   hardwareWalletSignaturesReducer,
 } from '../hardware-wallet-signatures-state-machine';
 import type { UseHardwareWalletSignaturesReturn } from './useHardwareWalletSignatures.types';
+import { useSendBundleSubmission } from './useSendBundleSubmission';
 
-const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
+const SIGNATURE_STUCK_TIMEOUT_MS = 15_000;
 
 type SendBundleHardwareWalletState = {
   txMeta: TransactionMeta;
@@ -98,39 +83,14 @@ type HardwareWalletSignaturesLocationState = {
 };
 
 /**
- * Checks whether the current state machine status represents a step where the
- * user is expected to sign on their hardware device.
- *
- * @param status - The current signature state machine status.
- * @returns True when the status is AwaitingFirstSignature or AwaitingFinalSignature.
- */
-function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
-  return (
-    status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-    status === HardwareWalletSignatureStatus.AwaitingFinalSignature
-  );
-}
-
-/**
  * Terminal signature state machine statuses — the flow has finished (either
  * successfully or due to an error) and no further signing is expected.
  */
-const TERMINAL_STATUSES: readonly HardwareWalletSignatureStatus[] = [
+const TERMINAL_STATUSES = new Set<HardwareWalletSignatureStatus>([
   HardwareWalletSignatureStatus.Submitted,
   HardwareWalletSignatureStatus.Failed,
   HardwareWalletSignatureStatus.Rejected,
   HardwareWalletSignatureStatus.Disconnected,
-];
-
-/**
- * Hardware wallet connection statuses that permit a retry. The device must be
- * connected (or in a recoverable error/awaiting state) before resubmitting.
- */
-const RETRYABLE_CONNECTION_STATUSES = new Set<ConnectionStatus>([
-  ConnectionStatus.Connected,
-  ConnectionStatus.Ready,
-  ConnectionStatus.AwaitingConfirmation,
-  ConnectionStatus.ErrorState,
 ]);
 
 /**
@@ -147,7 +107,6 @@ const RETRYABLE_CONNECTION_STATUSES = new Set<ConnectionStatus>([
 export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn {
   const t = useI18nContext();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const navigate = useNavigate();
   const location = useLocation();
   const sendBundleState = (
     location.state as HardwareWalletSignaturesLocationState
@@ -165,25 +124,19 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const [currentApprovalRequestId, setCurrentApprovalRequestId] = useState(
     sendBundleState?.approvalRequestId,
   );
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
   const isStxEnabled = useSelector(getIsStxEnabled);
   // Wallet-safety: capture the pending approval (if any) for the id we expect
   // to sign. `null` here means the approval is no longer pending — the submit
   // guard refuses to call `updateAndApproveTx` in that case to prevent
   // signing a stale txMeta.
-  const expectedSendBundleApproval = useSelector((state) =>
+  const expectedSendBundleApproval = useAppSelector((state) =>
     currentApprovalRequestId
-      ? internalSelectPendingApproval(
-          state as ApprovalsMetaMaskState,
-          currentApprovalRequestId,
-        )
+      ? internalSelectPendingApproval(state, currentApprovalRequestId)
       : undefined,
   );
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const { navigateToBridgePage } = useBridgeNavigation();
 
-  const { lockedQuote, fromToken, toToken, hardwareWalletType } =
-    useHwSwapQuoteData();
+  const { lockedQuote, fromToken, toToken } = useHwSwapQuoteData();
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
@@ -195,6 +148,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       return undefined;
     }
 
+    // FIXME: The `BatchTransaction` type has no `id` field being declared. For now
+    // we fallback to runtime detection to filter them, but it would be nice to
+    // fix the original type at some point.
     const nestedTransactionIds =
       sendBundleTxMeta.batchTransactions
         ?.map((batchTransaction) =>
@@ -216,114 +172,77 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     [sendBundleTxMeta?.batchTransactions],
   );
 
-  log.debug(
-    '[HW-Batch] HardwareWalletSignatures render',
-    JSON.stringify({
-      hasLockedQuote: Boolean(lockedQuote),
-      requestId: lockedQuote?.quote?.requestId ?? null,
-      needsTwoConfirmations,
-      hardwareWalletUsed,
-      hardwareWalletType: hardwareWalletType ?? null,
-    }),
-  );
-
   const [signatureState, dispatchSignatureEvent] = useReducer(
     hardwareWalletSignaturesReducer,
     needsTwoConfirmations,
     getInitialHardwareWalletSignaturesState,
   );
 
-  const hasTrackedPageView = useRef(false);
   const retryGenerationRef = useRef(0);
   // Guards HW reject/fail dispatches so errors from the OLD submission during
   // cancelCurrentBatch() don't race with the retry and prematurely transition
-  // the state machine.
+  // the state machine. Cleared before the new resubmit so that attempt's
+  // reject/fail still update state. Owned here (not in useHwSwapActions) so
+  // submitBridgeTransaction — defined earlier in the hook order — can read it.
+  //
+  // Generation checks in the catch handlers cover the remaining race: a late
+  // reject that settles after cancel finishes and after this flag is cleared,
+  // while the new attempt is still starting. `retryGenerationRef` is bumped
+  // before resubmit, so those stale catches see a mismatched generation.
   const isRetryingRef = useRef(false);
-  // Tracks whether the user has retried at least once. Once true, the
-  // "Resend transaction" button becomes eligible after SIGNATURE_STUCK_TIMEOUT_MS.
-  const hasRetriedRef = useRef(false);
-  const [isRetrying, setIsRetrying] = useState(false);
   const [firstSignatureDone, setFirstSignatureDone] = useState(false);
   // Set to true when the device has been in an awaiting-signature state for
   // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
   // the state leaves awaiting-signature or a retry starts.
   const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
-  const { connectionState } = useHardwareWalletState();
 
-  const submitSendBundleTransaction = useCallback(async () => {
-    if (!sendBundleTxMeta) {
-      return;
-    }
-
-    // WALLET SAFETY: refuse to submit unless the pending approval captured at
-    // navigation time is still pending. Prevents signing a stale txMeta after
-    // back/forward navigation, multi-tab races, or other stale-nav-state
-    // scenarios. Ported from mobile's `useHardwareWalletSubmit.submitSendFlow`
-    // (lines 124-141).
-    if (!expectedSendBundleApproval) {
-      log.warn(
-        '[HW-SendBundle] refusing to submit — approval no longer pending',
-        {
-          expectedApprovalId: currentApprovalRequestId,
-        },
+  /**
+   * True when a catch must not update the signature state machine: either
+   * cancel-during-retry is in flight (`isRetryingRef`), or retry advanced
+   * `retryGenerationRef` after this submission started (stale generation).
+   */
+  const isStaleAttempt = useCallback(
+    (submissionGeneration: number): boolean => {
+      return (
+        isRetryingRef.current ||
+        submissionGeneration !== retryGenerationRef.current
       );
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-      return;
-    }
+    },
+    [],
+  );
 
-    try {
-      await dispatch(updateAndApproveTx(sendBundleTxMeta, true, ''));
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionSubmitted,
-      });
-    } catch (error) {
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      log.warn('[HW-Batch] sendBundle transaction submission failed', error);
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-    }
-  }, [
-    currentApprovalRequestId,
-    dispatch,
-    dispatchSignatureEvent,
-    expectedSendBundleApproval,
-    sendBundleTxMeta,
-  ]);
+  const { submitSendBundleTransaction, retrySendBundleSubmission } =
+    useSendBundleSubmission({
+      sendBundleTxMeta,
+      setSendBundleTxMeta,
+      currentApprovalRequestId,
+      setCurrentApprovalRequestId,
+      expectedSendBundleApproval,
+      retryGenerationRef,
+      dispatchSignatureEvent,
+      isStaleAttempt,
+      dispatch,
+    });
 
   const { submitBridgeTransaction: submitBridgeTransactionBase } =
-    useSubmitBridgeTransaction({
-      submitOnHardwareWalletSigningPage: true,
-    });
+    useSubmitBridgeTransaction();
 
   /**
    * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
    * signature state machine. `useSubmitBridgeTransaction` throws on those
-   * outcomes; we translate them here (unless a retry is in flight, so errors
-   * from the old batch during `cancelCurrentBatch` cannot race the new attempt).
+   * outcomes; we translate them here unless the attempt is stale (cancel-
+   * during-retry in flight, or retry advanced `retryGenerationRef` after this
+   * submission started).
    */
   const submitBridgeTransaction = useCallback(
-    async (
-      quoteResponse: QuoteResponse & QuoteMetadata,
-      options?: { rpcTimeoutMs?: number },
-    ) => {
+    async (quoteResponse: QuoteResponse & QuoteMetadata) => {
+      const submissionGeneration = retryGenerationRef.current;
+
       try {
-        await submitBridgeTransactionBase(quoteResponse, options);
+        await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
-        if (!isRetryingRef.current) {
+        if (!isStaleAttempt(submissionGeneration)) {
           if (isUserRejectedHardwareWalletError(error)) {
-            log.debug(
-              '[HW-Batch] submitBridgeTransaction rejected, current state:',
-              signatureState.status,
-            );
             dispatchSignatureEvent({
               type: HardwareWalletSignatureEvent.TransactionRejected,
             });
@@ -336,111 +255,13 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         throw error;
       }
     },
-    [
-      dispatchSignatureEvent,
-      signatureState.status,
-      submitBridgeTransactionBase,
-    ],
+    [dispatchSignatureEvent, isStaleAttempt, submitBridgeTransactionBase],
   );
 
-  /**
-   * Recreates the sendBundle transaction batch after a rejection or failure.
-   *
-   * A tx in a terminal state (signed / rejected / failed) cannot be
-   * re-approved — `updateAndApproveTx` would silently no-op. Instead this
-   * function rejects the old pending approval, creates a FRESH transaction
-   * via `addTransaction` with the original `txParams`, copies
-   * `batchTransactions` (the gas-payment tx params) and aggregate gas fields
-   * onto the new txMeta (same logic as `handleSmartTransaction`), updates the
-   * reactive `sendBundleTxMeta` / `currentApprovalRequestId` state so the
-   * tracker and safety check track the new tx, then calls
-   * `updateAndApproveTx` to trigger device signing.
-   *
-   * The tracker's `expectedTxIdSet` automatically picks up the new tx ID on
-   * the next render (state update flushes before the `await` resolves), so
-   * events from the new batch are correctly matched.
-   */
-  const retrySendBundleSubmission = useCallback(async () => {
-    if (!sendBundleTxMeta) {
-      return;
-    }
-
-    const { chainId } = sendBundleTxMeta;
-    if (!chainId) {
-      log.warn('[HW-SendBundle] retry: no chainId on txMeta');
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-      return;
-    }
-
-    // 1. Reject the old approval (cleanup) — may already be resolved.
-    if (currentApprovalRequestId) {
-      await cleanupPendingApproval(dispatch, currentApprovalRequestId);
-    }
-
-    // 2. Find the network client for this chain.
-    const networkClientId = await findNetworkClientIdByChainId(chainId);
-
-    // 3. Create a NEW transaction with the original send params.
-    const newTxMeta = await addTransaction(sendBundleTxMeta.txParams, {
-      type: sendBundleTxMeta.type,
-      networkClientId,
-      requireApproval: true,
-    });
-
-    // 4. Copy batchTransactions + aggregate gas (same as handleSmartTransaction).
-    const newTxMetaWithBatch: TransactionMeta = {
-      ...newTxMeta,
-      batchTransactions: sendBundleTxMeta.batchTransactions,
-      txParams: {
-        ...newTxMeta.txParams,
-        gas: sendBundleTxMeta.txParams.gas,
-        maxFeePerGas: sendBundleTxMeta.txParams.maxFeePerGas,
-        maxPriorityFeePerGas: sendBundleTxMeta.txParams.maxPriorityFeePerGas,
-      },
-    };
-
-    // 5. Update reactive state — tracker + safety check use the new tx on
-    // the next render (flushed before the `await` below resolves).
-    setSendBundleTxMeta(newTxMetaWithBatch);
-    setCurrentApprovalRequestId(String(newTxMeta.id));
-
-    // 6. Approve → triggers device signing. Same success/error dispatch
-    // pattern as `submitSendBundleTransaction`: the `TransactionSubmitted`
-    // dispatch is the safety net that transitions the state machine to
-    // `Submitted` (which marks all steps complete and triggers navigation
-    // to the activity list). Without it, the state gets stuck at
-    // `AwaitingFinalSignature` if the tracker misses the gas-tx event.
-    try {
-      await dispatch(updateAndApproveTx(newTxMetaWithBatch, true, ''));
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionSubmitted,
-      });
-    } catch (error) {
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      log.warn('[HW-SendBundle] retry submission failed', error);
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
-    }
-  }, [
-    currentApprovalRequestId,
-    dispatch,
-    dispatchSignatureEvent,
-    sendBundleTxMeta,
-  ]);
-
-  const getTxField = (field: 'from' | 'to'): string | undefined =>
+  const getPrimaryTxField = (field: 'from' | 'to'): string | undefined =>
     sendBundleTxMeta?.txParams[field] ??
     getTransactionField(lockedQuote?.trade, field);
-  const fromAddress = getTxField('from');
+  const fromAddress = getPrimaryTxField('from');
 
   const { retrySubmission, hasStartedSubmission } = useHwSwapSubmission({
     lockedQuote,
@@ -491,7 +312,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     });
 
   const { confirmationTxData } = useHwSwapConfirmationMonitoring({
-    hardwareWalletUsed,
+    hardwareWalletUsed: isHardwareWalletAccount,
     signatureState,
     dispatchSignatureEvent,
     retryGenerationCounterRef: retryGenerationRef,
@@ -516,7 +337,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,
-    hardwareWalletUsed,
+    isHardwareWalletAccount,
     dispatchSignatureEvent,
     {
       enabled: true,
@@ -528,6 +349,25 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     retryGenerationRef,
   );
 
+  const { handleRetry, handleCancel, isRetrying, hasRetriedRef } =
+    useHwSwapActions({
+      signatureState,
+      dispatchSignatureEvent,
+      cancelCurrentBatch,
+      resetConnectionError,
+      retryGenerationRef,
+      needsTwoConfirmations,
+      isStxEnabled,
+      isSendBundleFlow,
+      hasStartedSendBundleSubmission,
+      retrySendBundleSubmission,
+      retrySubmission,
+      handleQrSignatureCancel,
+      currentApprovalRequestId,
+      returnRoute: sendBundleState?.returnRoute,
+      isRetryingRef,
+    });
+
   // WORKAROUND: Set the Trezor signing-in-progress flag to suppress
   // spurious WebUSB disconnect teardowns during signing. See
   // isSigningInProgressRef in HardwareWalletStateManager for details.
@@ -535,7 +375,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
 
   useEffect(() => {
     const isAwaiting = isAwaitingSignature(signatureState.status);
-    const isTerminal = TERMINAL_STATUSES.includes(signatureState.status);
+    const isTerminal = TERMINAL_STATUSES.has(signatureState.status);
 
     if (hasStartedHardwareWalletSubmission.current && isAwaiting) {
       setSigningInProgress(true);
@@ -587,110 +427,42 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     }
   }, [isRetrying]);
 
-  useEffect(() => {
-    if (hasTrackedPageView.current || !lockedQuote) {
-      return;
-    }
-
-    hasTrackedPageView.current = true;
-    trackEvent({
-      event: 'Awaiting Signature(s) on a HW wallet',
-      category: MetaMetricsEventCategory.Swaps,
-      /* eslint-disable @typescript-eslint/naming-convention */
-      properties: {
-        needs_two_confirmations: needsTwoConfirmations,
-        token_from: fromToken?.symbol ?? '',
-        token_to: toToken?.symbol ?? '',
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType ?? '',
-      },
-      sensitiveProperties: {
-        token_from_amount: lockedQuote?.quote?.srcTokenAmount ?? '',
-        token_to_amount: lockedQuote?.quote?.destTokenAmount ?? '',
-      },
-      /* eslint-enable @typescript-eslint/naming-convention */
-    });
-  }, [
-    fromToken?.symbol,
-    hardwareWalletType,
-    hardwareWalletUsed,
-    lockedQuote,
-    needsTwoConfirmations,
-    toToken?.symbol,
-    trackEvent,
-  ]);
-
-  const toAddress = getTxField('to');
-  const spenderAddress = getTransactionField(lockedQuote?.approval, 'to');
-  const { first: firstStepStatus, final: finalStepStatus } =
-    getAllStepStatuses(signatureState);
-  const { firstStepLabel, finalStepLabel } = getStepLabels({
-    isSendBundleFlow,
-    needsTwoConfirmations,
-    status: signatureState.status,
+  const {
     firstStepStatus,
     finalStepStatus,
+    firstStepLabel,
+    finalStepLabel,
+    firstStepDescription,
+    finalStepDescription,
+    isRetryable,
+    showStuckRetryButton,
+    showFooter,
+    showInlineQrCode,
+    showQrSigningPage,
+    qrSigningPageTitle,
+    isFinalSignature,
+    title,
+    hasSigningRequest,
+  } = getHardwareWalletSignatureViewModel({
+    signatureState,
+    isSendBundleFlow,
+    needsTwoConfirmations,
+    toAddress: getPrimaryTxField('to'),
+    spenderAddress: getTransactionField(lockedQuote?.approval, 'to'),
     fromAmount,
     fromTokenSymbol: fromToken?.symbol,
     sendAmount: sendBundleState?.sendAmount,
     sendSymbol: sendBundleState?.sendSymbol,
     gasSymbol: sendBundleState?.gasSymbol,
+    hasSigningRequest: Boolean(lockedQuote || sendBundleTxMeta),
+    hasSignatureTimedOut,
+    isRetrying,
+    hasRetried: hasRetriedRef.current,
+    showInlineQrSigning,
+    isReadingQrSignature,
+    activeQrStep,
     t,
   });
-  const { firstStepDescription, finalStepDescription } = getStepDescriptions({
-    isSendBundleFlow,
-    needsTwoConfirmations,
-    firstStepStatus,
-    spenderAddress,
-    toAddress,
-    t,
-  });
-  const isRetryable =
-    signatureState.status === HardwareWalletSignatureStatus.Rejected ||
-    signatureState.status === HardwareWalletSignatureStatus.Failed ||
-    signatureState.status === HardwareWalletSignatureStatus.Disconnected;
-  // "Resend transaction" button: only visible after the user has retried at
-  // least once (hasRetriedRef), the signature has been stuck for longer than
-  // SIGNATURE_STUCK_TIMEOUT_MS, and we are still awaiting a signature.
-  const showStuckRetryButton =
-    hasSignatureTimedOut &&
-    isAwaitingSignature(signatureState.status) &&
-    !isRetrying &&
-    hasRetriedRef.current;
-  const showFooter =
-    signatureState.status !== HardwareWalletSignatureStatus.Submitted;
-  const showInlineQrCode = showInlineQrSigning && !isReadingQrSignature;
-  const showQrSigningPage =
-    showInlineQrSigning && activeQrStep && isReadingQrSignature;
-  const qrSigningPageTitle =
-    activeQrStep &&
-    getQrHardwareSigningPageTitle({
-      activeQrStep,
-      needsTwoConfirmations,
-      t,
-    });
-  const isFinalSignature =
-    activeQrStep === HardwareWalletSignatureStatus.AwaitingFinalSignature;
-  // During the inline QR display phase (the QR code is shown for the user to
-  // scan with their wallet), replace the generic heading with a step-numbered
-  // QR instruction such as "Step 1 of 4: Scan this QR code with your wallet".
-  const qrInlineTitle =
-    showInlineQrCode && activeQrStep
-      ? getQrHardwareSigningPageTitle({
-          activeQrStep,
-          isDisplayPhase: true,
-          needsTwoConfirmations,
-          t,
-        })
-      : undefined;
-  const title =
-    qrInlineTitle ??
-    getTitle({
-      status: signatureState.status,
-      needsTwoConfirmations,
-      t,
-    });
-  const hasSigningRequest = Boolean(lockedQuote || sendBundleTxMeta);
 
   const handleQrSigningPageBack = useCallback(() => {
     setIsReadingQrSignature(false);
@@ -699,136 +471,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const handleOpenQrSigningPage = useCallback(() => {
     setIsReadingQrSignature(true);
   }, [setIsReadingQrSignature]);
-
-  /**
-   * Retries the hardware wallet signing flow after a rejection, failure, or
-   * device disconnection. Cancels the current batch, resets the state machine,
-   * and re-submits the bridge transaction.
-   */
-  const handleRetry = useCallback(async () => {
-    if (isRetryingRef.current) {
-      return;
-    }
-
-    log.debug(
-      '[HW-Batch] handleRetry',
-      JSON.stringify({
-        state: signatureState.status,
-        connection: connectionState.status,
-        retryGeneration: retryGenerationRef.current,
-      }),
-    );
-
-    isRetryingRef.current = true;
-    hasRetriedRef.current = true;
-    setIsRetrying(true);
-
-    try {
-      retryGenerationRef.current += 1;
-
-      await cancelCurrentBatch();
-
-      const canRetry = RETRYABLE_CONNECTION_STATUSES.has(
-        connectionState.status,
-      );
-
-      if (!canRetry) {
-        log.debug('[HW-Batch] handleRetry: cannot retry, device not connected');
-        return;
-      }
-
-      retryGenerationRef.current += 1;
-      resetConnectionError();
-      if (isStxEnabled) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.Reset,
-          needsTwoConfirmations,
-        });
-      } else {
-        let savedStep: HardwareWalletSignatureStatus | undefined;
-        if ('rejectedSignature' in signatureState) {
-          savedStep = signatureState.rejectedSignature;
-        } else if ('failedSignature' in signatureState) {
-          savedStep = signatureState.failedSignature;
-        } else if ('disconnectedSignature' in signatureState) {
-          savedStep = signatureState.disconnectedSignature;
-        }
-
-        if (
-          savedStep === HardwareWalletSignatureStatus.AwaitingFinalSignature
-        ) {
-          dispatchSignatureEvent({
-            type: HardwareWalletSignatureEvent.Retry,
-          });
-        } else {
-          dispatchSignatureEvent({
-            type: HardwareWalletSignatureEvent.Reset,
-            needsTwoConfirmations,
-          });
-        }
-      }
-      log.debug(
-        '[HW-Batch] handleRetry: calling retrySubmission',
-        JSON.stringify({ state: signatureState.status }),
-      );
-      if (isSendBundleFlow) {
-        hasStartedSendBundleSubmission.current = true;
-        await retrySendBundleSubmission();
-      } else {
-        await retrySubmission();
-      }
-      log.debug('[HW-Batch] handleRetry: retrySubmission completed');
-    } finally {
-      isRetryingRef.current = false;
-      setIsRetrying(false);
-    }
-  }, [
-    cancelCurrentBatch,
-    connectionState.status,
-    dispatchSignatureEvent,
-    isSendBundleFlow,
-    isStxEnabled,
-    needsTwoConfirmations,
-    resetConnectionError,
-    retryGenerationRef,
-    retrySendBundleSubmission,
-    retrySubmission,
-    signatureState,
-  ]);
-
-  /**
-   * Cancels the hardware wallet signing flow. Aborts the current batch, stops
-   * any active QR scan, and navigates away.
-   *
-   * For the sendBundle (send) flow, the pending approval is also rejected so
-   * the confirmation does not linger, then the user returns to the start of
-   * the send flow. For the bridge/swap flow, navigates back to the bridge page.
-   */
-  const handleCancel = useCallback(async () => {
-    await cancelCurrentBatch();
-    handleQrSignatureCancel();
-    if (isSendBundleFlow) {
-      // Reject the pending approval so the confirmation is cleaned up and
-      // does not linger after navigating back to the send flow.
-      if (currentApprovalRequestId) {
-        await cleanupPendingApproval(dispatch, currentApprovalRequestId);
-      }
-      navigate(sendBundleState?.returnRoute ?? DEFAULT_ROUTE, {
-        replace: true,
-      });
-      return;
-    }
-    navigateToBridgePage();
-  }, [
-    cancelCurrentBatch,
-    currentApprovalRequestId,
-    dispatch,
-    handleQrSignatureCancel,
-    isSendBundleFlow,
-    navigate,
-    navigateToBridgePage,
-    sendBundleState?.returnRoute,
-  ]);
 
   const stepList: SignatureStepListProps = {
     hasSigningRequest,
@@ -862,9 +504,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     stepList,
     showFooter,
     footer,
-    showQrSigningPage: Boolean(showQrSigningPage),
+    showQrSigningPage,
     qrSignRequest: qrSignRequest ?? null,
-    qrSigningPageTitle: qrSigningPageTitle ?? null,
+    qrSigningPageTitle,
     isFinalSignature,
     handleQrSigningPageBack,
     handleCancel,

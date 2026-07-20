@@ -19,6 +19,7 @@ import {
   hwSwapStoryState,
   type HwSwapStoryArgs,
 } from '../../../__mocks__/hardware-wallet-swap/story-state';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 const LEDGER_ACCOUNT_GROUP =
   'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82';
@@ -100,7 +101,7 @@ const meta: Meta<Args> = {
   args: {
     status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
     needsTwoConfirmations: true,
-    hardwareWalletType: 'trezor',
+    hardwareWalletType: HardwareKeyringType.trezor,
     showInlineQrSigning: false,
     isReadingQrSignature: false,
   },
@@ -124,7 +125,11 @@ const meta: Meta<Args> = {
     },
     hardwareWalletType: {
       control: 'select',
-      options: ['trezor', 'ledger', 'keystore'],
+      options: [
+        HardwareKeyringType.trezor,
+        HardwareKeyringType.ledger,
+        HardwareKeyringType.qr,
+      ],
       description: 'Hardware wallet device type shown by the animation',
     },
     showInlineQrSigning: {

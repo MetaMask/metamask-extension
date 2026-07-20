@@ -14,7 +14,6 @@ import {
   I18nProvider,
   en,
 } from '../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { ConnectionStatus } from '../../../../contexts/hardware-wallets';
 import {
   addTransaction,
@@ -33,6 +32,7 @@ import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridge
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
 import { cleanupPendingApproval } from '../hardware-wallet-signatures.utils';
+import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import { useHardwareWalletSignatures } from './useHardwareWalletSignatures';
 
 jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction');
@@ -46,7 +46,7 @@ jest.mock('../../../../hooks/hardware-wallets/useHwSignTracker');
 jest.mock('../../../../hooks/bridge/useBridgeNavigation');
 jest.mock('../hardware-wallet-signatures.utils', () => ({
   ...jest.requireActual('../hardware-wallet-signatures.utils'),
-  cleanupPendingApproval: jest.fn().mockResolvedValue(undefined),
+  cleanupPendingApproval: jest.fn(),
 }));
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -127,7 +127,6 @@ const mockCancelCurrentBatch = jest.fn().mockResolvedValue(undefined);
 const mockResetConnectionError = jest.fn();
 const mockRetrySubmission = jest.fn().mockResolvedValue(undefined);
 const mockNavigateToBridgePage = jest.fn();
-const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 function createSendBundleTxMeta(
   overrides: Partial<TransactionMeta> = {},
@@ -238,32 +237,25 @@ function renderUseHardwareWalletSignatures({
           element: children as React.ReactElement,
         },
       ],
-      { initialEntries },
+      {
+        initialEntries,
+        future: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          v7_relativeSplatPath: true,
+        },
+      },
     );
 
     return (
       <MetaMaskTestReduxProvider store={store}>
         <I18nProvider currentLocale="en" current={en} en={en}>
-          <MetaMetricsContext.Provider
-            value={
-              {
-                trackEvent: mockTrackEvent,
-                bufferedTrace: jest.fn(),
-                bufferedEndTrace: jest.fn(),
-                onboardingParentContext: { current: null },
-              } as never
-            }
-          >
-            <RouterProvider
-              router={router}
-              future={{
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                v7_startTransition: true,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                v7_relativeSplatPath: true,
-              }}
-            />
-          </MetaMetricsContext.Provider>
+          <RouterProvider
+            router={router}
+            future={{
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              v7_startTransition: true,
+            }}
+          />
         </I18nProvider>
       </MetaMaskTestReduxProvider>
     );
@@ -289,9 +281,7 @@ async function renderUseHardwareWalletSignaturesAndFlush(
   const rendered = renderUseHardwareWalletSignatures(options);
   await act(async () => {
     // Flush effect scheduling + the updateAndApproveTx promise chain.
-    await Promise.resolve();
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushPromises();
   });
   return rendered;
 }
@@ -303,10 +293,9 @@ describe('useHardwareWalletSignatures', () => {
     mockResetConnectionError.mockReset();
     mockRetrySubmission.mockReset().mockResolvedValue(undefined);
     mockNavigateToBridgePage.mockReset();
-    mockTrackEvent.mockReset().mockResolvedValue(undefined);
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
-    mockCleanupPendingApproval.mockReset().mockResolvedValue(undefined);
+    mockCleanupPendingApproval.mockReset();
     mockUpdateAndApproveTx
       .mockReset()
       .mockReturnValue((() => Promise.resolve(undefined)) as never);
@@ -344,14 +333,15 @@ describe('useHardwareWalletSignatures', () => {
       resetConnectionError: mockResetConnectionError,
     });
     mockUseHwSwapConfirmationMonitoring.mockReturnValue({
-      confirmationTxData: null,
+      confirmationTxData: undefined,
     });
     mockUseHwSwapQrState.mockReturnValue({
       isReadingQrSignature: false,
       setIsReadingQrSignature: jest.fn(),
-      qrSignRequest: null,
+      isQrHardwareWallet: false,
+      qrSignRequest: undefined,
       showInlineQrSigning: false,
-      activeQrStep: null,
+      activeQrStep: undefined,
       handleQrScanSuccess: jest.fn(),
       handleQrSignatureCancel: jest.fn(),
     });
@@ -688,6 +678,115 @@ describe('useHardwareWalletSignatures', () => {
       });
     });
 
+    it('ignores a late sendBundle reject from the cancelled batch during retry', async () => {
+      let rejectFirstApprove: ((error: unknown) => void) | undefined;
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce(
+          (() =>
+            new Promise((_resolve, reject) => {
+              rejectFirstApprove = reject;
+            })) as never,
+        )
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
+      mockCancelCurrentBatch.mockImplementation(async () => {
+        rejectFirstApprove?.({
+          code: 4001,
+          message: 'User rejected the request.',
+        });
+        // Let the aborted submit's catch run while isRetryingRef is still set.
+        await Promise.resolve();
+      });
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(1);
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      await act(async () => {
+        await result.current.footer.handleRetry();
+      });
+
+      expect(result.current.signatureStatus).not.toBe(
+        HardwareWalletSignatureStatus.Rejected,
+      );
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
+    it('ignores a late sendBundle reject that arrives after cancel while retry is starting', async () => {
+      let rejectFirstApprove: ((error: unknown) => void) | undefined;
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce(
+          (() =>
+            new Promise((_resolve, reject) => {
+              rejectFirstApprove = reject;
+            })) as never,
+        )
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
+      // Cancel finishes cleanly; the aborted approve rejects only once the
+      // retry has cleared isRetryingRef and begun recreating the tx — the
+      // generation mismatch must still suppress Rejected/Failed.
+      mockCancelCurrentBatch.mockResolvedValue(undefined);
+      mockAddTransaction.mockImplementation(async () => {
+        rejectFirstApprove?.({
+          code: 4001,
+          message: 'User rejected the request.',
+        });
+        await Promise.resolve();
+        return {
+          id: 'new-tx-id',
+          chainId: '0x1',
+          type: TransactionType.simpleSend,
+          status: 'unapproved',
+          time: Date.now(),
+          txParams: {
+            from: FROM_ADDRESS,
+            to: TO_ADDRESS,
+            value: '0x1',
+          },
+        } as never;
+      });
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(1);
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      await act(async () => {
+        await result.current.footer.handleRetry();
+      });
+
+      expect(result.current.signatureStatus).not.toBe(
+        HardwareWalletSignatureStatus.Rejected,
+      );
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
     it('resets the state machine when smart transactions are enabled', async () => {
       jest.spyOn(bridgeSelectors, 'getIsStxEnabled').mockReturnValue(true);
       mockUpdateAndApproveTx
@@ -778,11 +877,6 @@ describe('useHardwareWalletSignatures', () => {
 
       expect(mockNavigateToBridgePage).toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: 'Awaiting Signature(s) on a HW wallet',
-        }),
-      );
     });
   });
 });
