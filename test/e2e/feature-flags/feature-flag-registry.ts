@@ -2071,6 +2071,40 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  platformPersistenceSuspendWritesOnShutdown: {
+    name: 'platformPersistenceSuspendWritesOnShutdown',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Starts fully off. Raise the enabled threshold in LaunchDarkly to ramp.
+    productionDefault: [
+      {
+        thresholdName: 'enabled — 0% rollout',
+        thresholdVersion: 2,
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: {
+          enabled: true,
+          minimumVersion: '13.41.0',
+        },
+      },
+      {
+        thresholdName: 'disabled — remaining 100%',
+        thresholdVersion: 2,
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: {
+          enabled: false,
+          minimumVersion: '0.0.0',
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
   walletFrameworkRpcFailoverEnabled: {
     name: 'walletFrameworkRpcFailoverEnabled',
     type: FeatureFlagType.Remote,

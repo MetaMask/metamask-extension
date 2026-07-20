@@ -48,6 +48,7 @@ import {
 } from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
 import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
@@ -738,6 +739,21 @@ if (
 } else {
   installOnConnectListener();
 }
+
+// Proactively suspend persistence writes when the browser signals it is
+// shutting down, so we never start a `storage.local` write we can't finish
+// (which can corrupt the on-disk LevelDB database). These signals are
+// best-effort — `runtime.onSuspend` is not guaranteed to fire for MV3 service
+// workers — so they complement the reactive detection inside PersistenceManager
+// and the IndexedDB force-close signal. No-op unless the feature flag enables
+// shutdown suspension. `onSuspendCanceled` resumes writes if the shutdown was a
+// false alarm (e.g. an idle eviction that got cancelled).
+lazyListener.addListener('runtime', 'onSuspend', () => {
+  persistenceManager.suspendWrites('onSuspend');
+});
+lazyListener.addListener('runtime', 'onSuspendCanceled', () => {
+  persistenceManager.resumeWrites();
+});
 
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -1541,6 +1557,26 @@ export function setupController(
   persistenceManager.setOnSetFailed((errorType) => {
     controller.appStateController.setStorageWriteErrorType(errorType);
   });
+
+  // Gate shutdown write-suspension behind a remote feature flag so it can be
+  // ramped and measured before being enabled by default. Apply now and on every
+  // remote-feature-flag update, since flags may arrive after startup. Defaults
+  // to off when the flag is absent or invalid. Supports threshold + version-gated
+  // shapes via getBooleanFeatureFlag (see platformPersistenceSuspendWritesOnShutdown).
+  const applyShutdownSuspensionFlag = () => {
+    const { remoteFeatureFlags } = controller.remoteFeatureFlagController.state;
+    persistenceManager.setShutdownSuspensionEnabled(
+      getBooleanFeatureFlag(
+        remoteFeatureFlags?.platformPersistenceSuspendWritesOnShutdown,
+        false,
+      ),
+    );
+  };
+  applyShutdownSuspensionFlag();
+  controller.controllerMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    applyShutdownSuspensionFlag,
+  );
 
   /**
    * @type {Array<string>} List of controller store keys that have changed since initialization.

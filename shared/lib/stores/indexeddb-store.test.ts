@@ -127,4 +127,28 @@ describe('IndexedDBStore', () => {
       await expect(db.remove(['key'])).rejects.toThrow('Database is not open');
     });
   });
+
+  describe('onForcedClose', () => {
+    it('is invoked when the connection receives a versionchange (e.g. shutdown/upgrade)', async () => {
+      await db.open(dbName, dbVersion);
+      const onForcedClose = jest.fn();
+      db.onForcedClose = onForcedClose;
+
+      // Opening a newer version from another connection fires `versionchange`
+      // on our open connection, which is the signal we treat as a forced close.
+      await new Promise<void>((resolve, reject) => {
+        const req = indexedDB.open(dbName, dbVersion + 1);
+        req.onsuccess = () => {
+          req.result.close();
+          resolve();
+        };
+        req.onerror = () => reject(req.error);
+        // Our handler does not close the connection, so the upgrade is blocked
+        // until we close it here; the `versionchange` event has already fired.
+        req.onblocked = () => db.close();
+      });
+
+      expect(onForcedClose).toHaveBeenCalled();
+    });
+  });
 });

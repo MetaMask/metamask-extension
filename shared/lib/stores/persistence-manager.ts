@@ -197,6 +197,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #dataPersistenceFailing: boolean = false;
 
   /**
+   * writesSuspended is set to true once we detect (reactively via a shutdown
+   * write error, or proactively via lifecycle/IndexedDB signals) that the
+   * browser is shutting down. While true, `set`/`persist` short-circuit without
+   * touching storage, so we never start a `storage.local` write the browser
+   * could interrupt mid-flight (a cause of on-disk LevelDB corruption). It is
+   * cleared by `resumeWrites()` (e.g. `runtime.onSuspendCanceled`) and by
+   * `reset()`; a fresh service-worker start also clears it (new instance).
+   */
+  #writesSuspended: boolean = false;
+
+  /**
+   * When false (the default), all shutdown write-suspension behavior is disabled
+   * and writes behave exactly as before. The background script flips this on via
+   * `setShutdownSuspensionEnabled` based on a feature flag, so the behavior can
+   * be ramped and measured before being enabled by default.
+   */
+  #shutdownSuspensionEnabled: boolean = false;
+
+  /**
+   * Deduplicates the "writes suspended due to browser shutdown" telemetry so it
+   * is reported at most once per suspension (mirrors `#dataPersistenceFailing`).
+   */
+  #shutdownReported: boolean = false;
+
+  /**
    * mostRecentRetrievedState is a property that holds the most recent state
    * successfully retrieved from memory. Due to the nature of async read
    * operations it is beneficial to have a near real-time snapshot of the state
@@ -263,6 +288,87 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
+   * Enables or disables shutdown write-suspension. Disabled by default so the
+   * behavior can be gated behind a feature flag and ramped safely. When
+   * disabled, `set`/`persist` behave exactly as before (a shutdown write error
+   * is reported like any other failure).
+   *
+   * @param enabled - Whether shutdown write-suspension is active.
+   */
+  setShutdownSuspensionEnabled(enabled: boolean) {
+    this.#shutdownSuspensionEnabled = enabled;
+  }
+
+  /**
+   * Whether writes are currently suspended because a browser shutdown was
+   * detected.
+   */
+  get writesSuspended(): boolean {
+    return this.#writesSuspended;
+  }
+
+  /**
+   * Suspends all writes to the local store because the browser appears to be
+   * shutting down. Any write queued in the state lock but not yet started is
+   * aborted, and subsequent `set`/`persist` calls short-circuit until
+   * `resumeWrites()` is called (or the service worker restarts). No-op unless
+   * shutdown suspension is enabled.
+   *
+   * This deliberately does NOT flush a final write (unlike `OperationSafener`'s
+   * `evacuate`): a write started during shutdown is exactly what we want to
+   * avoid, since it can be interrupted mid-flight and corrupt the database.
+   *
+   * @param trigger - What detected the shutdown, for telemetry only. Defaults
+   * to `'unknown'` when the caller does not specify one.
+   */
+  suspendWrites(
+    trigger: 'reactive' | 'onSuspend' | 'idb-close' | 'unknown' = 'unknown',
+  ) {
+    if (!this.#shutdownSuspensionEnabled) {
+      return;
+    }
+    this.#writesSuspended = true;
+    // Drop any write that is queued in the state lock but hasn't started yet.
+    this.#currentLockAbortController?.abort();
+
+    if (!this.#shutdownReported) {
+      this.#shutdownReported = true;
+      // Low-volume, deduplicated telemetry so we can measure how often
+      // shutdown-suspension triggers without the noise/severity of an exception.
+      captureMessage('MetaMask - writes suspended: browser shutting down', {
+        level: 'info',
+        tags: {
+          'persistence.event': 'writes-suspended-shutdown',
+          'persistence.shutdownTrigger': trigger,
+        },
+        fingerprint: ['persistence-event', 'writes-suspended-shutdown'],
+      });
+    }
+  }
+
+  /**
+   * Resumes writes previously suspended by {@link suspendWrites}. Called when a
+   * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`).
+   */
+  resumeWrites() {
+    this.#writesSuspended = false;
+    this.#shutdownReported = false;
+  }
+
+  /**
+   * Determines whether a write error indicates the browser is shutting down
+   * (e.g. Chromium's "The browser is shutting down." rejection). Such errors are
+   * expected during shutdown and should suspend writes silently rather than be
+   * reported as failures.
+   *
+   * @param errorMessage - The error message from the failed operation
+   * @returns True if the error indicates a browser shutdown.
+   */
+  #isShutdownError(errorMessage: string): boolean {
+    return errorMessage.includes('shutting down');
+  }
+
+  /**
    * Determines the storage write error type from an error message.
    *
    * @param errorMessage - The error message from the failed operation
@@ -316,6 +422,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     try {
       const db = new IndexedDBStore();
       await db.open('metamask-backup', 1);
+      // If the browser force-closes the backup DB (e.g. during shutdown),
+      // proactively suspend writes so we don't start a write we can't finish.
+      db.onForcedClose = () => this.suspendWrites('idb-close');
       this.#backupDb = db;
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
@@ -414,6 +523,22 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
+   * Checks if a browser-shutdown write error should be simulated. When enabled,
+   * write operations throw a "The browser is shutting down." style error so the
+   * reactive shutdown-suspension path can be exercised in tests/e2e.
+   *
+   * @throws Error if simulating a browser shutdown for testing
+   */
+  #maybeSimulateShutdownError(): void {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateBrowserShutdown
+    ) {
+      throw new Error('The browser is shutting down.');
+    }
+  }
+
+  /**
    * Sets state in the local store, with optional test simulation.
    * In test mode with simulateStorageSetFailure flag, all set operations
    * will fail immediately.
@@ -425,6 +550,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     data: Required<MetaMaskStorageStructure>,
   ): Promise<void> {
     this.#maybeSimulateSetFailure();
+    this.#maybeSimulateShutdownError();
     await this.#localStore.set(data);
   }
 
@@ -438,6 +564,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
     this.#maybeSimulateSetFailure();
+    this.#maybeSimulateShutdownError();
     await this.#localStore.setKeyValues(pairs);
   }
 
@@ -455,6 +582,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
       );
+    }
+
+    if (this.#shutdownSuspensionEnabled && this.#writesSuspended) {
+      // The browser is shutting down; do not start a write we may not finish.
+      return [false, undefined];
     }
 
     await this.open();
@@ -528,6 +660,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          const normalizedError = this.#normalizePersistError(err);
+
+          // If the write failed because the browser is shutting down, suspend
+          // further writes and stay silent: this is expected, not a failure the
+          // user should see. Reporting it would raise a false "couldn't save
+          // your data" toast and add Sentry noise.
+          if (
+            this.#shutdownSuspensionEnabled &&
+            !backupFailed &&
+            this.#isShutdownError(normalizedError.message)
+          ) {
+            this.suspendWrites('reactive');
+            return [false, undefined];
+          }
+
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -541,7 +688,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               fingerprint: ['persistence-error', tag],
             });
           }
-          const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
           return [false, normalizedError];
@@ -549,7 +695,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           this.#isExtensionInitialized = true;
         }
       },
-    );
+    ).catch((err) => {
+      // The lock request was aborted before it was granted: either a newer
+      // write superseded this one, or writes were suspended because the browser
+      // is shutting down. Neither is a real persistence failure, so resolve to
+      // `[false, undefined]` (the same contract used for suspended writes)
+      // rather than letting the abort rejection surface as an error.
+      if (abortController.signal.aborted) {
+        return [false, undefined];
+      }
+      throw err;
+    });
   }
 
   /**
@@ -574,6 +730,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
       );
+    }
+
+    if (this.#shutdownSuspensionEnabled && this.#writesSuspended) {
+      // The browser is shutting down; do not start a write we may not finish.
+      // The pending pairs are left untouched so they can be written by a later
+      // session if the shutdown is cancelled.
+      return [false, undefined];
     }
 
     await this.open();
@@ -659,6 +822,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          const normalizedError = this.#normalizePersistError(err);
+
+          // If the write failed because the browser is shutting down, suspend
+          // further writes and stay silent: this is expected, not a failure the
+          // user should see. Reporting it would raise a false "couldn't save
+          // your data" toast and add Sentry noise.
+          if (
+            this.#shutdownSuspensionEnabled &&
+            !backupFailed &&
+            this.#isShutdownError(normalizedError.message)
+          ) {
+            this.suspendWrites('reactive');
+            return [false, undefined];
+          }
+
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -674,7 +852,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               fingerprint: ['persistence-error', tag],
             });
           }
-          const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
           return [false, normalizedError];
@@ -682,7 +859,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           this.#isExtensionInitialized = true;
         }
       },
-    );
+    ).catch((err) => {
+      // The lock request was aborted before it was granted: either a newer
+      // write superseded this one, or writes were suspended because the browser
+      // is shutting down. Neither is a real persistence failure, so resolve to
+      // `[false, undefined]` (the same contract used for suspended writes)
+      // rather than letting the abort rejection surface as an error.
+      if (abortController.signal.aborted) {
+        return [false, undefined];
+      }
+      throw err;
+    });
   }
 
   /**
@@ -833,6 +1020,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
         this.#dataPersistenceFailing = false;
+        // Clear per-session shutdown-suspension state (the enablement flag is
+        // config set by the background and is intentionally left intact).
+        this.#writesSuspended = false;
+        this.#shutdownReported = false;
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();

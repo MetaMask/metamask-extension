@@ -24,7 +24,9 @@ setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
 const lazyListener = new ExtensionLazyListener(chrome, {
-  runtime: ['onInstalled', 'onConnect'],
+  // `onSuspend`/`onSuspendCanceled` are buffered so the background can suspend
+  // persistence writes if the browser signals a shutdown during cold start.
+  runtime: ['onInstalled', 'onConnect', 'onSuspend', 'onSuspendCanceled'],
 });
 
 /**
