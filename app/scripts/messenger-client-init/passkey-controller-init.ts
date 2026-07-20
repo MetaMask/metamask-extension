@@ -3,6 +3,7 @@ import {
   PasskeyControllerMessenger,
 } from '@metamask/passkey-controller';
 import { MessengerClientInitFunction } from './types';
+import { PasskeyControllerInitMessenger } from './messengers/passkey-controller-messenger';
 
 const PASSKEY_RP_NAME = 'MetaMask';
 const PASSKEY_USER_NAME = 'MetaMask Wallet';
@@ -13,14 +14,16 @@ const PASSKEY_USER_DISPLAY_NAME = 'MetaMask Wallet';
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.initMessenger - The messenger used during initialization.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.extension - The browser extension API object.
  * @returns The initialized controller.
  */
 export const PasskeyControllerInit: MessengerClientInitFunction<
   PasskeyController,
-  PasskeyControllerMessenger
-> = ({ controllerMessenger, persistedState, extension }) => {
+  PasskeyControllerMessenger,
+  PasskeyControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState, extension }) => {
   const extensionUrl = extension.runtime?.getURL?.('');
   const extensionOrigin = extensionUrl ? extensionUrl.replace(/\/$/u, '') : '';
 
@@ -33,6 +36,8 @@ export const PasskeyControllerInit: MessengerClientInitFunction<
     expectedOrigin: extensionOrigin,
     userName: PASSKEY_USER_NAME,
     userDisplayName: PASSKEY_USER_DISPLAY_NAME,
+    getIsOnboardingCompleted: () =>
+      initMessenger.call('OnboardingController:getState').completedOnboarding,
   });
 
   return {

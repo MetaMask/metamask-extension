@@ -138,7 +138,10 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+import {
+  getPasskeyControllerMessenger,
+  getPasskeyControllerInitMessenger,
+} from './passkey-controller-messenger';
 import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
 import { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
 import {
@@ -262,7 +265,10 @@ export {
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
+export {
+  getPasskeyControllerMessenger,
+  getPasskeyControllerInitMessenger,
+} from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
 export { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
@@ -540,7 +546,7 @@ export const MESSENGER_FACTORIES = {
   },
   PasskeyController: {
     getMessenger: getPasskeyControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getPasskeyControllerInitMessenger,
   },
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
