@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
 import { NotificationDetailButton } from '../../../../components/multichain';
@@ -32,7 +31,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
           /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: props.notification.id,
           notification_type: props.notification.type,
-          notification_subtype: getNotificationSubtype(props.notification),
+          notification_subtype: props.notification.notification_subtype,
           clicked_item: isExternal ? 'external_link' : 'internal_link',
           /* eslint-enable @typescript-eslint/naming-convention */
         },

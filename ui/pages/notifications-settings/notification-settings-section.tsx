@@ -174,7 +174,13 @@ const WalletActivitySectionContent = ({
     setUpdatingAllAccounts(true);
     try {
       const newState = !hasEnabledAccount;
-      await switchAccountNotifications(accountAddresses, newState);
+      try {
+        await switchAccountNotifications(accountAddresses, newState);
+      } catch {
+        // Failed enable/disable already surfaced via accountToggleError; avoid
+        // leaving a rejected promise from the onClick handler.
+        return;
+      }
       await refetchAccountSettings();
       await refetchNotificationPreferences();
       trackWalletActivityAggregateToggle(newState);

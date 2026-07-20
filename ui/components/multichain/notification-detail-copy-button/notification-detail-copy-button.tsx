@@ -1,10 +1,7 @@
 import React, { useContext } from 'react';
 import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import {
-  getNotificationSubtype,
-  isOnChainNotification,
-} from '@metamask/notification-services-controller/notification-services';
+import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -88,7 +85,7 @@ export const NotificationDetailCopyButton: FC<
           /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: notification.id,
           notification_type: notification.type,
-          notification_subtype: getNotificationSubtype(notification),
+          notification_subtype: notification.notification_subtype,
           ...otherNotificationProperties(),
           clicked_item: 'tx_id',
           /* eslint-enable @typescript-eslint/naming-convention */

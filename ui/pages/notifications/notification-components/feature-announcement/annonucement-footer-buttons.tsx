@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getNotificationSubtype } from '@metamask/notification-services-controller/notification-services';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -53,7 +52,7 @@ const useAnalyticEventCallback = (props: {
           /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: notification.id,
           notification_type: notification.type,
-          notification_subtype: getNotificationSubtype(notification),
+          notification_subtype: notification.notification_subtype,
           clicked_item: clickType,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
