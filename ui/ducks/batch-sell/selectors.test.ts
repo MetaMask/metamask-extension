@@ -362,7 +362,8 @@ describe('batch-sell selectors', () => {
       mockGetBridgeAssetsByAssetId.mockReturnValue({
         [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1'),
         [CAIP_BASE]: {
-          assetId: 'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          assetId:
+            'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
           chainId: CAIP_BASE,
           symbol: 'USDC',
           name: 'USD Coin',
@@ -990,7 +991,8 @@ describe('batch-sell selectors', () => {
         // Base's large balance is entirely its own destination stablecoin,
         // so it must not count towards Base's ranking.
         [CAIP_BASE]: {
-          assetId: 'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          assetId:
+            'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
           chainId: CAIP_BASE,
           symbol: 'USDC',
           name: 'USD Coin',
@@ -998,7 +1000,7 @@ describe('batch-sell selectors', () => {
           balance: '100',
           tokenFiatAmount: 100,
         },
-        [`${CAIP_BASE  }-eligible`]: eligibleHolding(CAIP_BASE, '2', 10),
+        [`${CAIP_BASE}-eligible`]: eligibleHolding(CAIP_BASE, '2', 10),
         [CAIP_MAINNET]: eligibleHolding(CAIP_MAINNET, '1', 50),
       } as never);
 

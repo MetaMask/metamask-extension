@@ -66,7 +66,10 @@ const isEligibleBatchSellAsset = (
   if (stablecoinSet.has(asset.assetId.toLowerCase())) {
     return false;
   }
-  if (isStockRWAToken(asset) || asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)) {
+  if (
+    isStockRWAToken(asset) ||
+    asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)
+  ) {
     return false;
   }
   return true;
