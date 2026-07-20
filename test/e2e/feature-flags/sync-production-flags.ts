@@ -461,6 +461,24 @@ function getRegistryKeyLine(name: string): string {
   return COMPUTED_REGISTRY_KEYS[name] ?? name;
 }
 
+/**
+ * Returns the `name:` field source for a registry entry.
+ * Computed-key flags keep the imported constant identifier; others use a quoted string.
+ *
+ * @param name - Flag name used as the registry map key
+ * @param entry - Registry entry metadata
+ */
+function getRegistryNameField(
+  name: string,
+  entry: FeatureFlagRegistryEntry,
+): string {
+  const computedKeySyntax = COMPUTED_REGISTRY_KEYS[name];
+  if (computedKeySyntax) {
+    return `name: ${computedKeySyntax.slice(1, -1)},`;
+  }
+  return `name: '${entry.name.replace(/'/gu, "\\'")}',`;
+}
+
 function buildRegistryEntryBlockFromEntry(
   name: string,
   entry: FeatureFlagRegistryEntry,
@@ -474,7 +492,7 @@ function buildRegistryEntryBlockFromEntry(
   return [
     `  ${keyLine}: {`,
     `    inProd: ${entry.inProd},`,
-    `    name: '${entry.name.replace(/'/gu, "\\'")}',`,
+    `    ${getRegistryNameField(name, entry)}`,
     `    productionDefault: ${serialized},`,
     `    status: FeatureFlagStatus.${statusName},`,
     `    type: FeatureFlagType.${typeName},`,
