@@ -713,6 +713,23 @@ describe('PerpsView', () => {
       );
     });
 
+    it('fires Perp Screen Viewed with bottom_nav_bar source when opened from bottom nav', () => {
+      renderWithProvider(
+        <PerpsView source={PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR} />,
+        mockStore,
+      );
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SOURCE]:
+              PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR,
+          }),
+        }),
+      );
+    });
+
     it('does not fire Perp Screen Viewed while loading', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: mocks.mockPositions,

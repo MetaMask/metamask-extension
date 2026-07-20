@@ -19,6 +19,7 @@ import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import ErrorBoundary from '../error-boundary/error-boundary';
 import { AccessRestrictedProvider } from '../compliance';
+import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 import { PerpsToastProvider } from './perps-toast';
@@ -34,7 +35,11 @@ import { PerpsToastProvider } from './perps-toast';
  * mounted, we also call perpsDisconnect to tear down the background
  * WebSocket so it doesn't linger until the next page reload.
  */
-export function PerpsTab() {
+type PerpsTabProps = {
+  source?: (typeof PERPS_EVENT_VALUE.SOURCE)[keyof typeof PERPS_EVENT_VALUE.SOURCE];
+};
+
+export function PerpsTab({ source }: Readonly<PerpsTabProps>) {
   const useExternalServices = useSelector(getUseExternalServices);
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -81,7 +86,7 @@ export function PerpsTab() {
       <PerpsToastProvider>
         <ErrorBoundary key="perps">
           <PerpsViewStreamBoundary>
-            <PerpsView />
+            <PerpsView source={source} />
           </PerpsViewStreamBoundary>
         </ErrorBoundary>
       </PerpsToastProvider>

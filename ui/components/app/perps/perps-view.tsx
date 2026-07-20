@@ -68,7 +68,11 @@ type BatchCloseResult = {
   failureCount?: number;
 };
 
-export const PerpsView = () => {
+type PerpsViewProps = {
+  source?: (typeof PERPS_EVENT_VALUE.SOURCE)[keyof typeof PERPS_EVENT_VALUE.SOURCE];
+};
+
+export const PerpsView = ({ source }: PerpsViewProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
@@ -317,7 +321,8 @@ export const PerpsView = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
       [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
       [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
-      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        source ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
   });

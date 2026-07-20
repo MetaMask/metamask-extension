@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, FontWeight, TextVariant } from '@metamask/design-system-react';
+import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { PerpsTab } from '../../components/app/perps/perps-tab';
@@ -18,7 +19,7 @@ export const PerpsHomePage = () => {
       >
         {t('perps')}
       </Text>
-      <PerpsTab />
+      <PerpsTab source={PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR} />
     </Page>
   );
 };

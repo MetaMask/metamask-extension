@@ -133,6 +133,7 @@ export const PERPS_EVENT_VALUE = {
     ASSET_DETAILS: 'perps_asset_details_screen',
     DEEPLINK: 'deeplink',
     TRADING: 'trading',
+    BOTTOM_NAV_BAR: 'bottom_nav_bar',
   },
   BUTTON_LOCATION: {
     ASSET_DETAILS: 'asset_details',
