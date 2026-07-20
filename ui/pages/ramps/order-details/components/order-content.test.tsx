@@ -120,7 +120,7 @@ describe('OrderContent (completed)', () => {
     renderContent({
       ...completedOrder,
       cryptoCurrency: { ...completedOrder.cryptoCurrency, symbol: undefined },
-    } as RampsOrder);
+    } as unknown as RampsOrder);
     expect(
       screen.getByTestId('ramps-order-details-token-amount'),
     ).toHaveTextContent('0.5');
@@ -130,7 +130,7 @@ describe('OrderContent (completed)', () => {
     renderContent({
       ...completedOrder,
       provider: { ...completedOrder.provider, name: undefined },
-    } as RampsOrder);
+    } as unknown as RampsOrder);
     expect(
       screen.getByTestId('ramps-order-details-view-on-provider'),
     ).toBeInTheDocument();
