@@ -1,14 +1,14 @@
 export const MAX_CLOSE_LIMIT_PRICE_DEVIATION = 0.95;
 
+type PriceValue = number | string | null | undefined;
+
 /**
  * Parses a price and rejects zero, negative, and non-finite values.
  *
  * @param value - A raw numeric or formatted string price.
  * @returns The parsed positive price, or `null` when invalid.
  */
-export function parsePositivePrice(
-  value: number | string | null | undefined,
-): number | null {
+export function parsePositivePrice(value: PriceValue): number | null {
   const parsed =
     typeof value === 'string'
       ? Number.parseFloat(value.replaceAll(/[$,]/gu, ''))
@@ -56,8 +56,8 @@ export function getCloseLimitReferencePrice({
  * @returns Whether the price is invalid or outside the allowed band.
  */
 export function isCloseLimitPriceOutsideDeviation(
-  limitPrice: number | string | null | undefined,
-  referencePrice: number | string | null | undefined,
+  limitPrice: PriceValue,
+  referencePrice: PriceValue,
   maxDeviation = MAX_CLOSE_LIMIT_PRICE_DEVIATION,
 ): boolean {
   const parsedLimitPrice = parsePositivePrice(limitPrice);
