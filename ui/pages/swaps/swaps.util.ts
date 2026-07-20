@@ -765,20 +765,6 @@ export const getSwapsLivenessForNetwork = (
   };
 };
 
-/**
- * @param value
- * @returns number
- */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const countDecimals = (value: any): number => {
-  if (!value || Math.floor(value) === value) {
-    return 0;
-  }
-  return value.toString().split('.')[1]?.length || 0;
-};
-
 export const showRemainingTimeInMinAndSec = (
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

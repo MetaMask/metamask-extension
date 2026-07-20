@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opsi akun"
   },
-  "accountPermissionToast": {
-    "message": "Izin akun diperbarui"
-  },
   "accountSelectionRequired": {
     "message": "Anda harus memilih satu akun!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Desimal token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal minimal 0, dan tidak lebih dari 36."
   },
   "decrypt": {
     "message": "Dekripsikan"

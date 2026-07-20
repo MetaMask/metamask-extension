@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Account options"
   },
-  "accountPermissionToast": {
-    "message": "Account permissions updated"
-  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -3182,9 +3179,6 @@
   },
   "decimal": {
     "message": "Token decimal"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
   },
   "decrypt": {
     "message": "Decrypt"
@@ -8248,6 +8242,9 @@
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
+  "rampsQuoteUnavailable": {
+    "message": "Quote unavailable."
+  },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
   },
@@ -10876,6 +10873,9 @@
   },
   "tokenDecimal": {
     "message": "Token decimal"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Enter a whole number between 0 and 36."
   },
   "tokenDetails": {
     "message": "Token details"
