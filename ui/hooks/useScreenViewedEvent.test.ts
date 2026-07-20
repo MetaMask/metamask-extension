@@ -63,16 +63,13 @@ describe('useScreenViewedEvent', () => {
   });
 
   it('fires at most once per mount even if dependencies change', () => {
-    let entryPoint: ScreenViewedEntryPoint | undefined;
-
     const { rerender } = renderHook(
-      () =>
+      ({ entryPoint }: { entryPoint?: ScreenViewedEntryPoint }) =>
         useScreenViewedEvent(MetaMetricsEventName.DeFiScreenViewed, entryPoint),
-      { wrapper: makeWrapper() },
+      { wrapper: makeWrapper(), initialProps: { entryPoint: undefined } },
     );
 
-    entryPoint = ScreenViewedEntryPoint.BottomNavClick;
-    rerender();
+    rerender({ entryPoint: ScreenViewedEntryPoint.BottomNavClick });
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
   });
