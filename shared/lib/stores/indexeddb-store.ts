@@ -46,10 +46,24 @@ export class IndexedDBStore {
       };
       request.onsuccess = () => {
         const db = request.result;
-        // The browser can force-close IndexedDB connections during shutdown;
-        // surface that as a best-effort shutdown signal.
-        db.onclose = () => this.onForcedClose?.();
-        db.onversionchange = () => this.onForcedClose?.();
+        // The browser can force-close IndexedDB connections during shutdown, or
+        // ask us to close for a version change. Clear `#db` so a later `open()`
+        // can reconnect instead of early-returning against a closed handle.
+        const handleForcedClose = () => {
+          if (this.#db === null) {
+            return;
+          }
+          this.#db = null;
+          this.onForcedClose?.();
+        };
+        db.onclose = () => handleForcedClose();
+        db.onversionchange = () => {
+          // Closing unblocks other connections. Some environments fire
+          // `onclose` afterward; others (e.g. fake-indexeddb) may not, so we
+          // also handle the forced-close bookkeeping here (deduped above).
+          handleForcedClose();
+          db.close();
+        };
         this.#db = db;
         resolve();
       };
