@@ -88,7 +88,9 @@ export function getAccountNameErrorMessage(
   return { isValidAccountName, errorMessage };
 }
 
-export function getAvatarNetworkColor(name?: string): BackgroundColor | undefined {
+export function getAvatarNetworkColor(
+  name?: string,
+): BackgroundColor | undefined {
   switch (name) {
     case GOERLI_DISPLAY_NAME:
       return BackgroundColor.goerli;

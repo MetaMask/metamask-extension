@@ -8,7 +8,7 @@ import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metam
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 type BlockaidSecurityAlertResponse = {
-  'result_type'?: BlockaidResultType | null;
+  result_type?: BlockaidResultType | null;
   reason?: string | null;
   description?: string;
   source?: string;
@@ -145,22 +145,22 @@ export const getSwapAndSendMetricsProps = (
   } = transactionMeta;
 
   const params = {
-    'chain_id': chainId,
-    'token_amount_source':
+    chain_id: chainId,
+    token_amount_source:
       sourceTokenAmount && sourceTokenDecimals
         ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
         : undefined,
-    'token_amount_dest_estimate':
+    token_amount_dest_estimate:
       destinationTokenAmount && destinationTokenDecimals
         ? calcTokenAmount(
             destinationTokenAmount,
             destinationTokenDecimals,
           ).toString()
         : undefined,
-    'token_symbol_source': sourceTokenSymbol,
-    'token_symbol_destination': destinationTokenSymbol,
-    'token_address_source': sourceTokenAddress,
-    'token_address_destination': destinationTokenAddress,
+    token_symbol_source: sourceTokenSymbol,
+    token_symbol_destination: destinationTokenSymbol,
+    token_address_source: sourceTokenAddress,
+    token_address_destination: destinationTokenAddress,
   };
 
   return params;

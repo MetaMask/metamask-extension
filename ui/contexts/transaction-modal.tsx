@@ -14,9 +14,7 @@ export type TransactionModalContextType = {
 };
 
 export const TransactionModalContext =
-  createContext<TransactionModalContextType>(
-    {} as TransactionModalContextType,
-  );
+  createContext<TransactionModalContextType>({} as TransactionModalContextType);
 
 export const TransactionModalContextProvider = ({
   children,

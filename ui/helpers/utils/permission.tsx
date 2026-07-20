@@ -270,27 +270,28 @@ const PERMISSION_DESCRIPTIONS = deepFreeze<
   }) =>
     (permissionValue.caveats[0].value as { coinType: number }[]).map(
       ({ coinType }, i) => ({
-      label: t('permission_manageBip44Keys', [
-        <Text
-          color={TextColor.inherit}
-          variant={TextVariant.inherit}
-          fontWeight={FontWeight.Medium}
-          key={`coin-type-${coinType}`}
-        >
-          {getSlip44ProtocolName(coinType) ??
-            `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`}
-        </Text>,
-      ]),
-      description: t('permission_manageBip44AndBip32KeysDescription', [
-        getSnapNameComponent(subjectName),
-      ]),
-      leftIcon: IconName.Key,
-      weight: PermissionWeight.snap_getBip44Entropy,
-      id: `key-access-bip44-${coinType}-${i}`,
-      warningMessageSubject:
-        getSlip44ProtocolName(coinType) ??
-        `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`,
-    })),
+        label: t('permission_manageBip44Keys', [
+          <Text
+            color={TextColor.inherit}
+            variant={TextVariant.inherit}
+            fontWeight={FontWeight.Medium}
+            key={`coin-type-${coinType}`}
+          >
+            {getSlip44ProtocolName(coinType) ??
+              `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`}
+          </Text>,
+        ]),
+        description: t('permission_manageBip44AndBip32KeysDescription', [
+          getSnapNameComponent(subjectName),
+        ]),
+        leftIcon: IconName.Key,
+        weight: PermissionWeight.snap_getBip44Entropy,
+        id: `key-access-bip44-${coinType}-${i}`,
+        warningMessageSubject:
+          getSlip44ProtocolName(coinType) ??
+          `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`,
+      }),
+    ),
   [RestrictedMethods.snap_getEntropy]: ({ t, subjectName }) => ({
     label: t('permission_getEntropy', [getSnapNameComponent(subjectName)]),
     description: t('permission_getEntropyDescription', [

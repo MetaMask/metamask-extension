@@ -79,19 +79,19 @@ async function saveFileUsingFilePicker(
   const blob = new window.Blob([data], blobOptions);
   const fileExtension = ExtensionForContentType[contentType];
 
-  const handle = await (window as unknown as FilePickerWindow).showSaveFilePicker(
-    {
-      suggestedName: filename,
-      types: [
-        {
-          description: filename,
-          accept: {
-            [contentType]: [fileExtension],
-          },
+  const handle = await (
+    window as unknown as FilePickerWindow
+  ).showSaveFilePicker({
+    suggestedName: filename,
+    types: [
+      {
+        description: filename,
+        accept: {
+          [contentType]: [fileExtension],
         },
-      ],
-    },
-  );
+      },
+    ],
+  });
 
   const writable = await handle.createWritable();
   await writable.write(blob);

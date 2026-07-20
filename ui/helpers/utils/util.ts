@@ -123,9 +123,7 @@ export function isDefaultMetaMaskChain(chainId?: string) {
   return false;
 }
 
-export function valuesFor<Value>(
-  obj?: Record<string, Value> | null,
-): Value[] {
+export function valuesFor<Value>(obj?: Record<string, Value> | null): Value[] {
   if (!obj) {
     return [];
   }
@@ -241,7 +239,10 @@ export function isResolvableName(name?: string | null) {
   return false;
 }
 
-export function isOriginContractAddress(to?: string, sendTokenAddress?: string) {
+export function isOriginContractAddress(
+  to?: string,
+  sendTokenAddress?: string,
+) {
   if (!to || !sendTokenAddress) {
     return false;
   }
