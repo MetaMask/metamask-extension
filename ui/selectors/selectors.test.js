@@ -25,10 +25,7 @@ import {
   FeatureFlagNames,
 } from '../../shared/lib/feature-flags';
 
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
@@ -1307,6 +1304,133 @@ describe('Selectors', () => {
       ).toStrictEqual({ reason: 'updated' });
 
       expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+  });
+
+  describe('parameterized asset selector memoization', () => {
+    const selectedAccountId = 'selected-account';
+    const selectedAccountAddress = '0x123';
+    const chainIdOne = CHAIN_IDS.MAINNET;
+    const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
+    const tokenAddressOne = '0xaaa';
+    const tokenAddressTwo = '0xbbb';
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          selectedAccount: selectedAccountId,
+          accounts: {
+            [selectedAccountId]: {
+              address: selectedAccountAddress,
+            },
+          },
+        },
+        allNfts: {
+          [selectedAccountAddress]: {
+            [chainIdOne]: [{ address: '0xnft-1' }],
+            [chainIdTwo]: [{ address: '0xnft-2' }],
+          },
+        },
+        tokenScanCache: {
+          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Malicious',
+          },
+          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            result_type: 'Warning',
+          },
+          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Benign',
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      selectors.selectNftsByChainId.clearCache();
+      selectors.selectNftsByChainId.resetRecomputations();
+      selectors.getTokenScanResultsForAddresses.clearCache();
+      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+    });
+
+    it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
+        { address: '0xnft-2' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+    });
+
+    it('caches token scan lookups across equivalent address arrays', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
+
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Benign',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
     });
   });
 
@@ -4096,7 +4220,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -4112,7 +4236,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
