@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
@@ -53,6 +46,16 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
+
+/** Survives StrictMode remounts within the same extension session. */
+const activatedNewNetworkConfigurationIds = new Set<string>();
+let lastPendingNetworkConfigurationId = '';
+
+/** @internal */
+export function resetActivatedNewNetworkConfigurationIdsForTesting(): void {
+  activatedNewNetworkConfigurationIds.clear();
+  lastPendingNetworkConfigurationId = '';
+}
 
 /**
  * Self-contained container for all home-page banner notifications.
@@ -157,17 +160,27 @@ export const HomeNotificationsContainer = memo(function () {
   }, [dispatch]);
 
   // When a new network is added, activate it and clear the pending flag.
-  const prevNetworkConfigIdRef = useRef(newNetworkAddedConfigurationId);
   useEffect(() => {
-    const prev = prevNetworkConfigIdRef.current;
-    prevNetworkConfigIdRef.current = newNetworkAddedConfigurationId;
-    if (
-      newNetworkAddedConfigurationId &&
-      prev !== newNetworkAddedConfigurationId
-    ) {
-      dispatch(setActiveNetwork(newNetworkAddedConfigurationId));
-      clearNewNetworkAdded();
+    if (!newNetworkAddedConfigurationId) {
+      if (lastPendingNetworkConfigurationId) {
+        activatedNewNetworkConfigurationIds.delete(
+          lastPendingNetworkConfigurationId,
+        );
+        lastPendingNetworkConfigurationId = '';
+      }
+      return;
     }
+
+    const configurationId = newNetworkAddedConfigurationId;
+    lastPendingNetworkConfigurationId = configurationId;
+    clearNewNetworkAdded();
+
+    if (activatedNewNetworkConfigurationIds.has(configurationId)) {
+      return;
+    }
+
+    activatedNewNetworkConfigurationIds.add(configurationId);
+    dispatch(setActiveNetwork(configurationId));
   }, [newNetworkAddedConfigurationId, dispatch, clearNewNetworkAdded]);
 
   const outdatedBrowserDescription = useMemo(

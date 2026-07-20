@@ -21,7 +21,7 @@ const SyncAccountsTab = () => {
 
   const handleBack = async () => {
     await submitRequestToBackground('messengerCall', [
-      'QrSyncController:resetState',
+      'QrSyncController:cancelSync',
       [],
     ]).catch(() => undefined);
     navigate(SETTINGS_ROUTE, { replace: true });

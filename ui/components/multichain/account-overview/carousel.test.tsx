@@ -9,7 +9,6 @@ import {
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { CarouselWithEmptyState } from '../carousel';
 import { Carousel } from './carousel';
 
@@ -37,12 +36,19 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockSlides: CarouselSlide[] = [
   {
@@ -66,12 +72,7 @@ const getCarouselProps = () => {
   return calls[calls.length - 1][0];
 };
 
-const renderCarousel = () =>
-  render(
-    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-      <Carousel />
-    </MetaMetricsContext.Provider>,
-  );
+const renderCarousel = () => render(<Carousel />);
 
 describe('AccountOverview Carousel', () => {
   beforeEach(() => {
@@ -95,15 +96,16 @@ describe('AccountOverview Carousel', () => {
     getCarouselProps().onSlideClose?.('slide-1', false);
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.BannerDismissed,
-      category: MetaMetricsEventCategory.Banner,
+      name: MetaMetricsEventName.BannerDismissed,
       properties: {
+        category: MetaMetricsEventCategory.Banner,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-1',
       },
+      sensitiveProperties: {},
     });
     expect(mockTrackEvent).not.toHaveBeenCalledWith(
-      expect.objectContaining({ event: MetaMetricsEventName.BannerCloseAll }),
+      expect.objectContaining({ name: MetaMetricsEventName.BannerCloseAll }),
     );
   });
 
@@ -113,16 +115,20 @@ describe('AccountOverview Carousel', () => {
     getCarouselProps().onSlideClose?.('slide-2', true);
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.BannerDismissed,
-      category: MetaMetricsEventCategory.Banner,
+      name: MetaMetricsEventName.BannerDismissed,
       properties: {
+        category: MetaMetricsEventCategory.Banner,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-2',
       },
+      sensitiveProperties: {},
     });
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.BannerCloseAll,
-      category: MetaMetricsEventCategory.Banner,
+      name: MetaMetricsEventName.BannerCloseAll,
+      properties: {
+        category: MetaMetricsEventCategory.Banner,
+      },
+      sensitiveProperties: {},
     });
   });
 
@@ -132,12 +138,13 @@ describe('AccountOverview Carousel', () => {
     getCarouselProps().onActiveSlideChange?.(mockSlides[0]);
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.BannerDisplay,
-      category: MetaMetricsEventCategory.Banner,
+      name: MetaMetricsEventName.BannerDisplay,
       properties: {
+        category: MetaMetricsEventCategory.Banner,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-1',
       },
+      sensitiveProperties: {},
     });
   });
 });

@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Skaičiai po kablelio"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
-  },
   "delete": {
     "message": "Ištrinti"
   },
@@ -511,9 +508,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"

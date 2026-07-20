@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
-import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
+import { mapApiTransaction } from '@metamask/client-utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -55,7 +55,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
 
     const apiActivityItem =
       evmTransaction && selectedAddress
-        ? mapApiEvmTransactions({
+        ? mapApiTransaction({
             subjectAddress: selectedAddress,
             transaction: evmTransaction,
           })
