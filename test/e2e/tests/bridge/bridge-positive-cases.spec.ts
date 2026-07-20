@@ -9,7 +9,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import BottomNavBar from '../../page-objects/pages/bottom-nav-bar';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
@@ -375,12 +374,11 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver, mockedEndpoint }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
         const networkManager = new NetworkManager(driver);
-
-        const bottomNav = new BottomNavBar(driver);
-        await bottomNav.waitForBottomNavBar();
-        await bottomNav.clickSwaps();
-
         const bridgePage = new BridgeQuotePage(driver);
+
+        await bridgePage.waitForBottomNavBar();
+        await bridgePage.clickBottomNavSwapsTab();
+
         await bridgePage.checkPageIsLoaded();
         await bridgePage.enterBridgeQuote({
           amount: '25',
@@ -417,12 +415,11 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
-        const bottomNav = new BottomNavBar(driver);
-        await bottomNav.waitForBottomNavBar();
         const bridgePage = new BridgeQuotePage(driver);
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await bottomNav.clickSwaps();
+        await bridgePage.waitForBottomNavBar();
+        await bridgePage.clickBottomNavSwapsTab();
         await bridgePage.checkPageIsLoaded();
         await bridgePage.searchForAssetAndSelect('DAI');
         console.log('Selected source asset DAI');
@@ -451,7 +448,7 @@ describe('Bridge tests', function (this: Suite) {
         // Navigate home via bottom nav (back button is hidden in treatment)
         await bridgePage.goBackViaBottomNavHome();
         // Navigate back to bridge via bottom nav swaps tab
-        await bottomNav.clickSwaps();
+        await bridgePage.clickBottomNavSwapsTab();
         await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
       },
     );
