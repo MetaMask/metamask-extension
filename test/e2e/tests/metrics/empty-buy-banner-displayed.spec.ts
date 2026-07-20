@@ -12,9 +12,6 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
 
 /**
  * Mocks the segment API for the Empty Buy Banner Displayed event.
- * Do not use the constants from the metrics constants files, because if these
- * change we want a strong indicator to our data team that the shape of data
- * will change.
  *
  * @param mockServer - The mock server instance.
  * @returns The mocked endpoints
@@ -66,8 +63,17 @@ describe('Empty Buy Banner Displayed event', function () {
         const expectedEnvironmentType = (await isSidePanelEnabled())
           ? 'sidepanel'
           : 'fullscreen';
+        const {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          profile_id: _profileId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          canonical_profile_id: _canonicalProfileId,
+          ...eventProperties
+        } = events[0].properties;
 
-        assert.deepStrictEqual(events[0].properties, {
+        assert.deepStrictEqual(eventProperties, {
           category: 'Navigation',
           locale: 'en',
           referrer: 'metamask',
