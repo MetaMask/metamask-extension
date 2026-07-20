@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 
 - Deleted token cache (#44522)
-- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot (#43872)" (#43872)
+- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot" (#43872)
 - Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6500 (#44110)
 - perf(6916): refactor core UX selectors to remove deep-equality subscriptions (#44235)
 - Null Fixes: https://github.com/MetaMask/MetaMask-planning/issues/6411 (#44109)
