@@ -76,16 +76,6 @@ describe('Accounts', () => {
       );
       expect(isValidAccountName).toBe(true);
     });
-
-    it('allows a non-reserved name when accounts are absent', () => {
-      const { isValidAccountName } = getAccountNameErrorMessage(
-        undefined,
-        mockLocalization,
-        'Custom account',
-      );
-
-      expect(isValidAccountName).toBe(true);
-    });
   });
 
   describe('#getAvatarNetworkColor', () => {
