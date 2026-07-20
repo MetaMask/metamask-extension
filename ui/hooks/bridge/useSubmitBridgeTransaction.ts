@@ -6,7 +6,7 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { useNavigate } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -32,27 +32,26 @@ import {
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+} from '../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-type UseSubmitBridgeTransactionOptions = {
-  /**
-   * When true, submit immediately instead of navigating to the hardware-wallet
-   * signing page. Used by the signing page itself. Callers should catch
-   * rejections/failures from `submitBridgeTransaction` — this hook throws on
-   * hardware-wallet reject/fail instead of invoking callbacks.
-   */
-  submitOnHardwareWalletSigningPage?: boolean;
-};
-
-export default function useSubmitBridgeTransaction({
-  submitOnHardwareWalletSigningPage = false,
-}: UseSubmitBridgeTransactionOptions = {}) {
+export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isHardwareWalletSigningPage = Boolean(
+    matchPath(
+      `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+      pathname,
+    ),
+  );
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
@@ -124,7 +123,7 @@ export default function useSubmitBridgeTransaction({
       throw error;
     }
 
-    if (hardwareWalletUsed && !submitOnHardwareWalletSigningPage) {
+    if (hardwareWalletUsed && !isHardwareWalletSigningPage) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
       return;
@@ -178,7 +177,7 @@ export default function useSubmitBridgeTransaction({
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        if (!submitOnHardwareWalletSigningPage) {
+        if (!isHardwareWalletSigningPage) {
           navigateToBridgePage();
         }
         throw e;
@@ -197,7 +196,7 @@ export default function useSubmitBridgeTransaction({
 
     // Stay on the hardware-wallet signing page after submit; progress is
     // tracked by the signing-page state machine / sign tracker.
-    if (submitOnHardwareWalletSigningPage) {
+    if (isHardwareWalletSigningPage) {
       return;
     }
 

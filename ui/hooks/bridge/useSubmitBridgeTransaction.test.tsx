@@ -176,9 +176,13 @@ const makeMockStore = (
   );
 };
 
-const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
+const makeWrapper = (
+  store: ReturnType<typeof makeMockStore>,
+  initialEntries?: string[],
+) => {
   const MemoryRouter = createMemoryRouterWrapper({
     store,
+    initialEntries,
   });
 
   return ({ children }: { children: React.ReactNode }) => (
@@ -356,15 +360,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       });
       isHardwareWalletSpy.mockImplementation(() => true);
-      const { result } = renderHook(
-        () =>
-          useSubmitBridgeTransaction({
-            submitOnHardwareWalletSigningPage: true,
-          }),
-        {
-          wrapper: makeWrapper(store),
-        },
-      );
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store, [
+          `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/`,
+        ]),
+      });
 
       await act(async () => {
         await result.current.submitBridgeTransaction(
@@ -397,12 +397,11 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       }) as never);
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result, unmount } = renderHook(
-        () =>
-          useSubmitBridgeTransaction({
-            submitOnHardwareWalletSigningPage: true,
-          }),
+        () => useSubmitBridgeTransaction(),
         {
-          wrapper: makeWrapper(store),
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
         },
       );
 
