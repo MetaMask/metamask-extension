@@ -227,7 +227,6 @@ describe('useBridgeNavigation', () => {
         {
           state: {
             bridgeState: locationBridgeState,
-            sendBundle: null,
             token: locationToken,
           },
           replace: false,
@@ -304,7 +303,6 @@ describe('useBridgeNavigation', () => {
         {
           state: {
             bridgeState: null,
-            sendBundle: null,
             token: null,
             stayOnHomePage: false,
           },
@@ -327,7 +325,6 @@ describe('useBridgeNavigation', () => {
           state: {
             token: locationToken,
             bridgeState: locationBridgeState,
-            sendBundle: null,
           },
         },
       );
@@ -347,7 +344,6 @@ describe('useBridgeNavigation', () => {
         {
           state: {
             bridgeState: null,
-            sendBundle: null,
             token: null,
             stayOnHomePage: true,
           },
@@ -374,7 +370,6 @@ describe('useBridgeNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
           bridgeState: null,
-          sendBundle: null,
           token: null,
           stayOnHomePage: true,
         },
@@ -404,7 +399,6 @@ describe('useBridgeNavigation', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(TRANSACTION_SHIELD_ROUTE, {
         state: {
           bridgeState: null,
-          sendBundle: null,
           token: null,
           stayOnHomePage: false,
         },

@@ -101,10 +101,14 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   };
 };
 
+const clearSendBundleIfPresent = (
+  state: BridgeNavigationOptions['state'],
+) => (Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {});
+
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
- * `baseState` while resetting `bridgeState`, `token`, and `sendBundle` to null
- * and setting `stayOnHomePage` to the given value.
+ * `baseState` while resetting `bridgeState`, `token`, and any existing
+ * `sendBundle` to null and setting `stayOnHomePage` to the given value.
  *
  * @param baseState - The base navigation state to spread (extra props pass through).
  * @param stayOnHomePage - Whether the user should be kept on the home page.
@@ -117,7 +121,7 @@ const clearedBridgeState = (
   ...baseState,
   bridgeState: null,
   token: null,
-  sendBundle: null,
+  ...clearSendBundleIfPresent(baseState),
   stayOnHomePage,
 });
 
@@ -217,7 +221,7 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
-            sendBundle: null,
+            ...clearSendBundleIfPresent(state),
           },
           replace: !isEntrypoint,
         },
@@ -273,10 +277,7 @@ export const useBridgeNavigation = () => {
    */
   const navigateToHwSigningPage = useCallback(
     (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
-      const hasSendBundleState = Object.prototype.hasOwnProperty.call(
-        nextState,
-        'sendBundle',
-      );
+      const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
         // For the sendBundle (send) flow, the signing page replaces the
         // /confirm-transaction entry so that cancelling returns the user
@@ -285,8 +286,8 @@ export const useBridgeNavigation = () => {
         ...(hasSendBundleState ? { replace: true } : {}),
         state: {
           ...state,
+          ...clearSendBundleIfPresent(state),
           ...nextState,
-          sendBundle: hasSendBundleState ? nextState.sendBundle : null,
         },
       });
     },

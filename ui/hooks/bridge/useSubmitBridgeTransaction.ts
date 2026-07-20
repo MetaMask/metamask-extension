@@ -73,6 +73,63 @@ export default function useSubmitBridgeTransaction() {
   const { connectionState } = useHardwareWalletState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const submitQuote = async (
+    quoteResponse: QuoteResponse & QuoteMetadata,
+    options?: { rpcTimeoutMs?: number },
+  ) => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      const location = await getBridgeLocation();
+      const intentData = quoteResponse.quote.intent;
+
+      if (intentData) {
+        await dispatch(
+          submitBridgeIntent({
+            quoteResponse,
+            accountAddress: fromAccount.address,
+            location,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+          }),
+        );
+        return;
+      }
+
+      const rpcPromise = dispatch(
+        submitBridgeTx(
+          fromAccount.address,
+          quoteResponse,
+          smartTransactionsEnabled,
+          getQuotesReceivedProperties(
+            quoteResponse,
+            warnings,
+            true,
+            recommendedQuote,
+            fromTokenBalanceInUsd,
+            getHasSufficientGasForQuote(quoteResponse),
+          ),
+          location,
+          toToken?.securityData?.type ?? null,
+        ),
+      );
+
+      if (options?.rpcTimeoutMs) {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Bridge transaction RPC timed out'));
+          }, options.rpcTimeoutMs);
+        });
+        await Promise.race([rpcPromise, timeoutPromise]);
+      } else {
+        await rpcPromise;
+      }
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
+  };
+
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
@@ -129,50 +186,8 @@ export default function useSubmitBridgeTransaction() {
       return;
     }
 
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
     try {
-      const location = await getBridgeLocation();
-
-      if (intentData) {
-        await dispatch(
-          submitBridgeIntent({
-            quoteResponse,
-            accountAddress: fromAccount.address,
-            location,
-            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
-          }),
-        );
-      } else {
-        const rpcPromise = dispatch(
-          submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            smartTransactionsEnabled,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-              getHasSufficientGasForQuote(quoteResponse),
-            ),
-            location,
-            toToken?.securityData?.type ?? null,
-          ),
-        );
-
-        if (options?.rpcTimeoutMs) {
-          const timeoutPromise = new Promise<never>((_, reject) => {
-            timeoutId = setTimeout(() => {
-              reject(new Error('Bridge transaction RPC timed out'));
-            }, options.rpcTimeoutMs);
-          });
-          await Promise.race([rpcPromise, timeoutPromise]);
-        } else {
-          await rpcPromise;
-        }
-      }
+      await submitQuote(quoteResponse, options);
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -188,9 +203,6 @@ export default function useSubmitBridgeTransaction() {
         throw e;
       }
     } finally {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
       setIsSubmitting(false);
     }
 
