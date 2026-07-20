@@ -50,7 +50,6 @@ export default function EditableLabel({
       value,
       defaultValue,
     );
-
     return (
       <Box className={classnames('flex editable-label', className)} gap={3}>
         <FormTextField
@@ -70,11 +69,11 @@ export default function EditableLabel({
           isError={!isValidAccountName}
           helpText={errorMessage}
           autoFocus
-          placeholder={t('accountName')}
+          placeholder={t('accountName')?.toString() ?? ''}
         />
         <ButtonIcon
           iconName={IconName.Check}
-          ariaLabel={t('save')}
+          ariaLabel={t('save')?.toString() ?? ''}
           onClick={() => handleSubmit(isValidAccountName)}
           data-testid="save-account-label-input"
         />
@@ -92,7 +91,7 @@ export default function EditableLabel({
       </Text>
       <ButtonIcon
         iconName={IconName.Edit}
-        ariaLabel={t('edit')}
+        ariaLabel={t('edit')?.toString() ?? ''}
         data-testid="editable-label-button"
         onClick={() => setIsEditing(true)}
         color={IconColor.iconDefault}
