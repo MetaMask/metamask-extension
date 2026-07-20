@@ -9,6 +9,21 @@ const TRON_WALLET_API_URL =
   /(?:https:\/\/api\.trongrid\.io\/wallet|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet)/u;
 const DEFAULT_TRX_BALANCE_IN_SUN = 45811016;
 
+/**
+ * Builds an exact Tron endpoint matcher from a shared TronGrid/Infura base URL.
+ *
+ * The final matcher is anchored to prevent shorter mocks, such as the /transactions
+ * endpoint, from also matching longer endpoints like /transactions/trc20.
+ * Query strings are still accepted because some API clients append request
+ * parameters to otherwise identical endpoint paths.
+ *
+ * @param baseUrl - Base URL matcher for the TronGrid or Infura Tron API.
+ * @param endpoint - Endpoint path to append to the base URL matcher.
+ * @returns A regular expression that matches only the provided endpoint.
+ */
+const buildTronEndpointRegExp = (baseUrl: RegExp, endpoint: string) =>
+  new RegExp(`${baseUrl.source}${endpoint}(?:\\?.*)?$`, 'u');
+
 type AccountRequestOptions = {
   balance?: number;
 };
@@ -324,7 +339,7 @@ export const mockTriggerSmartContract = (mockServer: Mockttp) =>
 export const mockTriggerConstantContract = (mockServer: Mockttp) =>
   mockServer
     .forPost(
-      new RegExp(`${TRON_WALLET_API_URL.source}/triggerconstantcontract`, 'u'),
+      buildTronEndpointRegExp(TRON_WALLET_API_URL, '/triggerconstantcontract'),
     )
     .always()
     .thenJson(200, {
@@ -363,7 +378,7 @@ export const mockTriggerConstantContract = (mockServer: Mockttp) =>
 
 export const mockGetChainParameters = (mockServer: Mockttp) =>
   mockServer
-    .forGet(new RegExp(`${TRON_WALLET_API_URL.source}/getchainparameters`, 'u'))
+    .forGet(buildTronEndpointRegExp(TRON_WALLET_API_URL, '/getchainparameters'))
     .always()
     .thenJson(200, {
       chainParameter: [
@@ -375,7 +390,7 @@ export const mockGetChainParameters = (mockServer: Mockttp) =>
 export const mockGetNextMaintenanceTime = (mockServer: Mockttp) =>
   mockServer
     .forPost(
-      new RegExp(`${TRON_WALLET_API_URL.source}/getnextmaintenancetime`, 'u'),
+      buildTronEndpointRegExp(TRON_WALLET_API_URL, '/getnextmaintenancetime'),
     )
     .always()
     .thenJson(200, {
@@ -384,7 +399,7 @@ export const mockGetNextMaintenanceTime = (mockServer: Mockttp) =>
 
 export const mockGetContract = (mockServer: Mockttp) =>
   mockServer
-    .forPost(new RegExp(`${TRON_WALLET_API_URL.source}/getcontract`, 'u'))
+    .forPost(buildTronEndpointRegExp(TRON_WALLET_API_URL, '/getcontract'))
     .always()
     .thenJson(200, {});
 
@@ -394,9 +409,9 @@ export const mockAccountRequest = (
 ) =>
   mockServer
     .forGet(
-      new RegExp(
-        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3`,
-        'u',
+      buildTronEndpointRegExp(
+        TRON_API_URL,
+        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
       ),
     )
     .always()
@@ -416,9 +431,9 @@ export const mockAccountRequest = (
 export const mockTransactionsRequest = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      new RegExp(
-        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions`,
-        'u',
+      buildTronEndpointRegExp(
+        TRON_API_URL,
+        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions',
       ),
     )
     .always()
@@ -427,9 +442,9 @@ export const mockTransactionsRequest = (mockServer: Mockttp) =>
 export const mockTransactionsTRC20Request = (mockServer: Mockttp) =>
   mockServer
     .forGet(
-      new RegExp(
-        `${TRON_API_URL.source}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20`,
-        'u',
+      buildTronEndpointRegExp(
+        TRON_API_URL,
+        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20',
       ),
     )
     .always()
@@ -441,7 +456,7 @@ export const mockAccountResourcesRequest = (
 ) =>
   mockServer
     .forPost(
-      new RegExp(`${TRON_WALLET_API_URL.source}/getaccountresource`, 'u'),
+      buildTronEndpointRegExp(TRON_WALLET_API_URL, '/getaccountresource'),
     )
     .always()
     .thenJson(200, {
