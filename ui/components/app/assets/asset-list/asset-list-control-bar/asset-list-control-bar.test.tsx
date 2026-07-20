@@ -107,7 +107,9 @@ const selectLedgerAccount = (state: ReturnType<typeof createMockState>) => {
 const addSolanaAccountToSelectedGroup = (
   state: ReturnType<typeof createMockState>,
 ) => {
-  state.metamask.internalAccounts.accounts[SOLANA_ACCOUNT_ID] = {
+  (state.metamask.internalAccounts.accounts as Record<string, unknown>)[
+    SOLANA_ACCOUNT_ID
+  ] = {
     address: '7Ec4p8d1VzC9QYQ35gzfSNJbdf2D2qTyhQEt9Dz6F5CQ',
     id: SOLANA_ACCOUNT_ID,
     metadata: {
@@ -446,7 +448,7 @@ describe('NFTs options', () => {
   it('disables Non-EVM network rows in the home network filter for EVM-only account groups', async () => {
     const state = createMockState();
     selectLedgerAccount(state);
-    state.metamask.useExternalServices = true;
+    Object.assign(state.metamask, { useExternalServices: true });
     const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
@@ -458,12 +460,19 @@ describe('NFTs options', () => {
         await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`)
       ).querySelector('.multichain-network-list-item--disabled'),
     ).toBeInTheDocument();
+    expect(
+      (
+        await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`)
+      ).querySelector(
+        `[data-title="${messages.networkNotSupportedByThisAccount.message}"]`,
+      ),
+    ).toBeInTheDocument();
   });
 
   it('shows Non-EVM network rows in the home network filter when the selected account group supports them', async () => {
     const state = createMockState();
     addSolanaAccountToSelectedGroup(state);
-    state.metamask.useExternalServices = true;
+    Object.assign(state.metamask, { useExternalServices: true });
     const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
