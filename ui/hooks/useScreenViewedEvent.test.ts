@@ -34,7 +34,9 @@ function createStore() {
 
 function makeWrapper() {
   const store = createStore();
-  return function wrapper({ children }: { children: React.ReactNode }) {
+  return function wrapper({
+    children,
+  }: React.PropsWithChildren<Record<string, unknown>>) {
     return React.createElement(Provider, { store, children });
   };
 }
