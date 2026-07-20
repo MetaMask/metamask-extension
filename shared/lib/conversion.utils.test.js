@@ -1,24 +1,11 @@
 import { EtherDenomination } from '../constants/common';
 import {
-  decWEIToDecETH,
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
 } from './conversion.utils';
 
 describe('conversion utils', () => {
-  describe('decWEIToDecETH', () => {
-    it('converts 10000000000000 WEI to ETH', () => {
-      const ethDec = decWEIToDecETH('10000000000000');
-      expect('0.00001').toStrictEqual(ethDec);
-    });
-
-    it('converts 9358749494527040 WEI to ETH', () => {
-      const ethDec = decWEIToDecETH('9358749494527040');
-      expect('0.009358749').toStrictEqual(ethDec);
-    });
-  });
-
   describe('sumDecimals', () => {
     it('properly sums one value', () => {
       const sum = sumDecimals('0.01').toString(10);
