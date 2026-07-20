@@ -38,8 +38,6 @@ import type {
   MetaMetricsEventFragment,
   MetaMetricsUserTraits,
   MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-  MetaMetricsPagePayload,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../shared/constants/metametrics';
@@ -92,6 +90,46 @@ const defaultCaptureException = (err: unknown) => {
 const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
+
+function trackLegacyMetaMetricsPayload(payload: MetaMetricsEventPayload): void {
+  if (!payload.event) {
+    throw new Error(
+      `Must specify event. Event was: ${
+        payload.event
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      }. Payload keys were: ${Object.keys(payload)}. ${
+        typeof payload.properties === 'object'
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Payload property keys were: ${Object.keys(payload.properties)}`
+          : ''
+      }`,
+    );
+  }
+
+  analytics.trackEvent(
+    analytics
+      .createEventBuilder(payload.event)
+      .addProperties({
+        ...(payload.properties ?? {}),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
+        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
+        ...(payload.value === undefined ? {} : { value: payload.value }),
+        ...(payload.currency === undefined
+          ? {}
+          : { currency: payload.currency }),
+      })
+      .addSensitiveProperties(payload.sensitiveProperties)
+      .build({
+        environmentType: payload.environmentType,
+        page: payload.page,
+        referrer: payload.referrer,
+      }),
+  );
+}
 
 /**
  * Represents a buffered trace that is stored before user consent.
@@ -302,14 +340,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'finalizeEventFragment',
   'getEventFragmentById',
   'handleMetaMaskStateUpdate',
-  'identify',
   'processAbandonedFragment',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
   'setParticipateInMetaMetrics',
-  'trackEvent',
   'trackEventsAfterMetricsOptIn',
-  'trackPage',
   'trackTracesAfterMetricsOptIn',
   'updateEventFragment',
   'updateExtensionUninstallUrl',
@@ -553,7 +588,7 @@ export class MetaMetricsController extends BaseController<
     });
 
     if (fragment.initialEvent) {
-      this.trackEvent({
+      trackLegacyMetaMetricsPayload({
         event: fragment.initialEvent,
         category: fragment.category,
         properties: fragment.properties,
@@ -690,7 +725,7 @@ export class MetaMetricsController extends BaseController<
 
     const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
 
-    this.trackEvent({
+    trackLegacyMetaMetricsPayload({
       event: eventName ?? '',
       category: fragment.category,
       properties: fragment.properties,
@@ -809,97 +844,11 @@ export class MetaMetricsController extends BaseController<
     });
   }
 
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param payload - details of the event
-   * @param options - options for handling/routing the event
-   */
-  trackEvent(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    // validation is not caught and handled
-    this.#validateTrackEventPayload(payload);
-    analytics.trackEvent(
-      analytics
-        .createEventBuilder(payload.event)
-        .addProperties({
-          ...payload.properties,
-          ...(payload.category === undefined
-            ? {}
-            : { category: payload.category }),
-          ...(payload.revenue === undefined
-            ? {}
-            : { revenue: payload.revenue }),
-          ...(payload.value === undefined ? {} : { value: payload.value }),
-          ...(payload.currency === undefined
-            ? {}
-            : { currency: payload.currency }),
-        })
-        .addSensitiveProperties(payload.sensitiveProperties)
-        .build({
-          environmentType: payload.environmentType,
-          page: payload.page,
-          referrer: payload.referrer,
-          excludeMetaMetricsId: options?.excludeMetaMetricsId,
-          matomoEvent: options?.matomoEvent,
-        }),
-    );
-  }
-
-  /**
-   * Identifies the user with valid user traits if they are participating in
-   * the MetaMetrics analytics program.
-   *
-   * @param userTraits
-   */
-  identify(userTraits: Partial<MetaMetricsUserTraits>): void {
-    analytics.identify(userTraits);
-  }
-
-  /**
-   * Track a page view through AnalyticsController.
-   *
-   * @param payload - details of the page viewed.
-   */
-  trackPage(payload: MetaMetricsPagePayload): void {
-    this.#validateTrackPagePayload(payload);
-    analytics.trackPage(payload);
-  }
-
-  #validateTrackEventPayload(payload: MetaMetricsEventPayload): void {
-    // event is a required field for all payloads
-    if (!payload.event) {
-      throw new Error(
-        `Must specify event. Event was: ${
-          payload.event
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        }. Payload keys were: ${Object.keys(payload)}. ${
-          typeof payload.properties === 'object'
-            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Payload property keys were: ${Object.keys(payload.properties)}`
-            : ''
-        }`,
-      );
-    }
-  }
-
-  #validateTrackPagePayload(payload: MetaMetricsPagePayload): void {
-    if (!payload || typeof payload !== 'object') {
-      throw new Error(
-        `MetaMetricsController#trackPage: payload parameter must be an object. Received type: ${typeof payload}`,
-      );
-    }
-  }
-
   handleMetaMaskStateUpdate(newState: MetaMaskState): void {
     analytics.updateProfileSessionData(newState.srpSessionData);
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
-      this.identify(userTraits);
+      analytics.identify(userTraits);
     }
   }
 
@@ -907,7 +856,7 @@ export class MetaMetricsController extends BaseController<
   trackEventsAfterMetricsOptIn(): void {
     const { eventsBeforeMetricsOptIn } = this.state;
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      this.trackEvent(eventBeforeMetricsOptIn);
+      trackLegacyMetaMetricsPayload(eventBeforeMetricsOptIn);
     });
   }
 
