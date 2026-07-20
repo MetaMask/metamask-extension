@@ -612,100 +612,102 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    return await navigator.locks.request(
-      STATE_LOCK,
-      { mode: 'exclusive', signal: abortController.signal },
-      async () => {
-        this.#currentLockAbortController = undefined;
-        // Track which operation failed to use the correct Sentry tag
-        let backupFailed = false;
-        try {
-          // atomically set all the keys (includes test simulation check)
-          await this.#setInLocalStore({
-            data: state,
-            meta,
-          });
+    return await navigator.locks
+      .request(
+        STATE_LOCK,
+        { mode: 'exclusive', signal: abortController.signal },
+        async () => {
+          this.#currentLockAbortController = undefined;
+          // Track which operation failed to use the correct Sentry tag
+          let backupFailed = false;
+          try {
+            // atomically set all the keys (includes test simulation check)
+            await this.#setInLocalStore({
+              data: state,
+              meta,
+            });
 
-          const backup = makeBackup(state, meta);
-          // if we have a vault we can back it up
-          if (hasVault(backup)) {
-            const stringifiedBackup = JSON.stringify(backup);
-            // and the backup has changed
-            if (this.#backup !== stringifiedBackup) {
-              // save it to the backup DB - wrapped in try-catch to differentiate
-              // backup failures from storage.local failures in Sentry
-              try {
-                await this.#backupDb?.set(backup);
-                this.#backup = stringifiedBackup;
-              } catch (backupErr) {
-                backupFailed = true;
-                throw backupErr;
+            const backup = makeBackup(state, meta);
+            // if we have a vault we can back it up
+            if (hasVault(backup)) {
+              const stringifiedBackup = JSON.stringify(backup);
+              // and the backup has changed
+              if (this.#backup !== stringifiedBackup) {
+                // save it to the backup DB - wrapped in try-catch to differentiate
+                // backup failures from storage.local failures in Sentry
+                try {
+                  await this.#backupDb?.set(backup);
+                  this.#backup = stringifiedBackup;
+                } catch (backupErr) {
+                  backupFailed = true;
+                  throw backupErr;
+                }
               }
             }
+
+            if (this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = false;
+              // Track recovery to understand how often failures are temporary.
+              // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+              captureMessage(
+                'Data persistence recovered after temporary failure',
+                {
+                  level: 'info',
+                  tags: { 'persistence.event': 'set-recovered' },
+                  fingerprint: ['persistence-event', 'set-recovered'],
+                },
+              );
+            }
+
+            return [true, undefined];
+          } catch (err) {
+            const normalizedError = this.#normalizePersistError(err);
+
+            // If the write failed because the browser is shutting down, suspend
+            // further writes and stay silent: this is expected, not a failure the
+            // user should see. Reporting it would raise a false "couldn't save
+            // your data" toast and add Sentry noise.
+            if (
+              this.#shutdownSuspensionEnabled &&
+              !backupFailed &&
+              this.#isShutdownError(normalizedError.message)
+            ) {
+              this.suspendWrites('reactive');
+              return [false, undefined];
+            }
+
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
+            return [false, normalizedError];
+          } finally {
+            this.#isExtensionInitialized = true;
           }
-
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'set-recovered' },
-                fingerprint: ['persistence-event', 'set-recovered'],
-              },
-            );
-          }
-
-          return [true, undefined];
-        } catch (err) {
-          const normalizedError = this.#normalizePersistError(err);
-
-          // If the write failed because the browser is shutting down, suspend
-          // further writes and stay silent: this is expected, not a failure the
-          // user should see. Reporting it would raise a false "couldn't save
-          // your data" toast and add Sentry noise.
-          if (
-            this.#shutdownSuspensionEnabled &&
-            !backupFailed &&
-            this.#isShutdownError(normalizedError.message)
-          ) {
-            this.suspendWrites('reactive');
-            return [false, undefined];
-          }
-
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
-          return [false, normalizedError];
-        } finally {
-          this.#isExtensionInitialized = true;
+        },
+      )
+      .catch((err) => {
+        // The lock request was aborted before it was granted: either a newer
+        // write superseded this one, or writes were suspended because the browser
+        // is shutting down. Neither is a real persistence failure, so resolve to
+        // `[false, undefined]` (the same contract used for suspended writes)
+        // rather than letting the abort rejection surface as an error.
+        if (abortController.signal.aborted) {
+          return [false, undefined];
         }
-      },
-    ).catch((err) => {
-      // The lock request was aborted before it was granted: either a newer
-      // write superseded this one, or writes were suspended because the browser
-      // is shutting down. Neither is a real persistence failure, so resolve to
-      // `[false, undefined]` (the same contract used for suspended writes)
-      // rather than letting the abort rejection surface as an error.
-      if (abortController.signal.aborted) {
-        return [false, undefined];
-      }
-      throw err;
-    });
+        throw err;
+      });
   }
 
   /**
@@ -761,115 +763,117 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    return await navigator.locks.request(
-      STATE_LOCK,
-      { mode: 'exclusive', signal: abortController.signal },
-      async () => {
-        this.#currentLockAbortController = undefined;
-        // Track which operation failed to use the correct Sentry tag
-        let backupFailed = false;
-        try {
-          const clone = structuredClone(this.#pendingPairs);
-          // reset the pendingPairs
-          this.#pendingPairs.clear();
+    return await navigator.locks
+      .request(
+        STATE_LOCK,
+        { mode: 'exclusive', signal: abortController.signal },
+        async () => {
+          this.#currentLockAbortController = undefined;
+          // Track which operation failed to use the correct Sentry tag
+          let backupFailed = false;
           try {
-            // save the pairs (includes test simulation check)
-            await this.#setKeyValuesInLocalStore(clone);
-          } catch (err) {
-            // merge the clone with the pending pairs again
+            const clone = structuredClone(this.#pendingPairs);
+            // reset the pendingPairs
+            this.#pendingPairs.clear();
+            try {
+              // save the pairs (includes test simulation check)
+              await this.#setKeyValuesInLocalStore(clone);
+            } catch (err) {
+              // merge the clone with the pending pairs again
+              for (const [key, value] of clone.entries()) {
+                // we can't just overwrite because other `update` calls might have
+                // happened since we created the clone. We don't want to overwrite
+                // any new changes.
+                if (!this.#pendingPairs.has(key)) {
+                  this.#pendingPairs.set(key, value);
+                }
+              }
+              throw err;
+            }
+
+            const partialState = Object.create(null);
             for (const [key, value] of clone.entries()) {
-              // we can't just overwrite because other `update` calls might have
-              // happened since we created the clone. We don't want to overwrite
-              // any new changes.
-              if (!this.#pendingPairs.has(key)) {
-                this.#pendingPairs.set(key, value);
+              if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
+                partialState[key] = value;
               }
             }
-            throw err;
-          }
-
-          const partialState = Object.create(null);
-          for (const [key, value] of clone.entries()) {
-            if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
-              partialState[key] = value;
+            if (hasVault(partialState)) {
+              const backup = makeBackup(partialState, meta);
+              // save it to the backup DB - wrapped in try-catch to differentiate
+              // backup failures from storage.local failures in Sentry
+              try {
+                await this.#backupDb?.set(backup);
+              } catch (backupErr) {
+                backupFailed = true;
+                throw backupErr;
+              }
             }
-          }
-          if (hasVault(partialState)) {
-            const backup = makeBackup(partialState, meta);
-            // save it to the backup DB - wrapped in try-catch to differentiate
-            // backup failures from storage.local failures in Sentry
-            try {
-              await this.#backupDb?.set(backup);
-            } catch (backupErr) {
-              backupFailed = true;
-              throw backupErr;
+
+            if (this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = false;
+              // Track recovery to understand how often failures are temporary.
+              // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+              captureMessage(
+                'Data persistence recovered after temporary failure',
+                {
+                  level: 'info',
+                  tags: { 'persistence.event': 'persist-recovered' },
+                  fingerprint: ['persistence-event', 'persist-recovered'],
+                },
+              );
             }
+
+            return [true, undefined];
+          } catch (err) {
+            const normalizedError = this.#normalizePersistError(err);
+
+            // If the write failed because the browser is shutting down, suspend
+            // further writes and stay silent: this is expected, not a failure the
+            // user should see. Reporting it would raise a false "couldn't save
+            // your data" toast and add Sentry noise.
+            if (
+              this.#shutdownSuspensionEnabled &&
+              !backupFailed &&
+              this.#isShutdownError(normalizedError.message)
+            ) {
+              this.suspendWrites('reactive');
+              return [false, undefined];
+            }
+
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed
+                ? 'persist-backup-failed'
+                : 'persist-failed';
+
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
+            return [false, normalizedError];
+          } finally {
+            this.#isExtensionInitialized = true;
           }
-
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'persist-recovered' },
-                fingerprint: ['persistence-event', 'persist-recovered'],
-              },
-            );
-          }
-
-          return [true, undefined];
-        } catch (err) {
-          const normalizedError = this.#normalizePersistError(err);
-
-          // If the write failed because the browser is shutting down, suspend
-          // further writes and stay silent: this is expected, not a failure the
-          // user should see. Reporting it would raise a false "couldn't save
-          // your data" toast and add Sentry noise.
-          if (
-            this.#shutdownSuspensionEnabled &&
-            !backupFailed &&
-            this.#isShutdownError(normalizedError.message)
-          ) {
-            this.suspendWrites('reactive');
-            return [false, undefined];
-          }
-
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
-
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
-          }
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
-          return [false, normalizedError];
-        } finally {
-          this.#isExtensionInitialized = true;
+        },
+      )
+      .catch((err) => {
+        // The lock request was aborted before it was granted: either a newer
+        // write superseded this one, or writes were suspended because the browser
+        // is shutting down. Neither is a real persistence failure, so resolve to
+        // `[false, undefined]` (the same contract used for suspended writes)
+        // rather than letting the abort rejection surface as an error.
+        if (abortController.signal.aborted) {
+          return [false, undefined];
         }
-      },
-    ).catch((err) => {
-      // The lock request was aborted before it was granted: either a newer
-      // write superseded this one, or writes were suspended because the browser
-      // is shutting down. Neither is a real persistence failure, so resolve to
-      // `[false, undefined]` (the same contract used for suspended writes)
-      // rather than letting the abort rejection surface as an error.
-      if (abortController.signal.aborted) {
-        return [false, undefined];
-      }
-      throw err;
-    });
+        throw err;
+      });
   }
 
   /**

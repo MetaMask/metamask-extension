@@ -714,7 +714,9 @@ describe('PersistenceManager', () => {
         .mockImplementation((_name, options: { signal: AbortSignal }) => {
           return new Promise((_resolve, reject) => {
             options.signal.addEventListener('abort', () => {
-              reject(new DOMException('The request was aborted.', 'AbortError'));
+              reject(
+                new DOMException('The request was aborted.', 'AbortError'),
+              );
             });
           });
         }) as typeof navigator.locks.request;
