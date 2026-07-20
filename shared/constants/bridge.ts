@@ -109,6 +109,8 @@ export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
 // (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
 export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
 
+export const BRIDGE_DEBUG_ENABLED = process.env.BRIDGE_DEBUG === 'true';
+
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
   string

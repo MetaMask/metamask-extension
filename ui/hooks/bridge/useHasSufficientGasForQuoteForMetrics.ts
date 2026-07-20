@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   isNativeAddress,
   selectMinimumBalanceForRentExemptionInSOL,
-  type QuoteMetadata,
-  type QuoteResponseV1,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -26,34 +25,40 @@ import {
  * @param options
  * @param options.quote - The quote to evaluate (e.g. the active or submitted quote)
  * @param options.nativeBalance - The from-account native balance
- * @param options.fromToken - The selected source token
  * @param options.minimumBalanceToKeep - Native amount to reserve on the source chain
  * @returns `true`/`false` when computable, or `null` when a required input is missing
  */
 export const computeHasSufficientGasForQuoteForMetrics = ({
   quote,
   nativeBalance,
-  fromToken,
   minimumBalanceToKeep,
 }: {
-  quote: (QuoteResponseV1 & QuoteMetadata) | null;
+  quote: QuoteResponse | null;
   nativeBalance: ReturnType<typeof getFromNativeBalance>;
-  fromToken: ReturnType<typeof getFromToken>;
   minimumBalanceToKeep: string;
-}): boolean | null =>
+}): boolean | null => {
+  const fromToken = quote?.quote?.src?.asset;
   // For the MAX native case we return null because it does not make sense to check this (gas is substrated from the sent amount)
-  !nativeBalance ||
-  !quote ||
-  !fromToken ||
-  (isNativeAddress(fromToken.assetId) &&
-    new BigNumber(nativeBalance).sub(quote.sentAmount?.amount ?? 0).lte(0))
-    ? null
-    : !isNativeBalanceInsufficientForQuote(
-        quote,
-        nativeBalance,
-        fromToken,
-        minimumBalanceToKeep,
-      );
+  if (!nativeBalance || !quote || !fromToken) {
+    return null;
+  }
+
+  if (
+    isNativeAddress(fromToken.assetId) &&
+    new BigNumber(nativeBalance)
+      .sub(quote.quote.src.normalizedAmount ?? '0')
+      .lte(0)
+  ) {
+    return null;
+  }
+
+  return !isNativeBalanceInsufficientForQuote(
+    quote,
+    nativeBalance,
+    fromToken.assetId,
+    minimumBalanceToKeep,
+  );
+};
 
 /**
  * Builds a callback that computes the `hasSufficientGasForQuote` analytics value
@@ -76,8 +81,8 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
   );
 
   return useCallback(
-    (quote: (QuoteResponseV1 & QuoteMetadata) | null): boolean | null => {
-      const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
+    (quote: QuoteResponse | null): boolean | null => {
+      const srcChainId = quoteRequest?.srcChainId ?? quote?.chainId;
       const minimumBalanceToKeep = resolveMinimumBalanceToKeep(
         srcChainId,
         minimumBalanceForRentExemptionInSOL,
@@ -85,7 +90,6 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
       return computeHasSufficientGasForQuoteForMetrics({
         quote,
         nativeBalance,
-        fromToken,
         minimumBalanceToKeep,
       });
     },

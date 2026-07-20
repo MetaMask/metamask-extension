@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { fireEvent } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -15,6 +14,7 @@ import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
 import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
+import type { QuoteResponse } from '@metamask/bridge-controller';
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -164,13 +164,13 @@ describe('<DappSwapComparisonBanner />', () => {
   it('call function to update quote swap when user clicks on Metamask Swap button', () => {
     const mockSetQuotedSwapDisplayedInInfo = jest.fn();
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponseV1,
+      selectedQuote: quote as unknown as QuoteResponse,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponseV1,
+      selectedQuote: quote as unknown as QuoteResponse,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
@@ -206,13 +206,13 @@ describe('<DappSwapComparisonBanner />', () => {
   it('call function to update quote swap clicks on Market rate button', () => {
     const mockSetQuotedSwapDisplayedInInfo = jest.fn();
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponseV1,
+      selectedQuote: quote,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponseV1,
+      selectedQuote: quote,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,

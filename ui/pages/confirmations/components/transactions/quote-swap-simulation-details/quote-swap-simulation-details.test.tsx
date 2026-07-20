@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponseV1 } from '@metamask/bridge-controller';
+import { type QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';

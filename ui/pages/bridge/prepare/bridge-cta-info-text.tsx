@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
+import { BRIDGE_MM_FEE_RATE, sumAmounts } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { Text } from '../../../components/component-library';
 import {
@@ -28,8 +28,17 @@ export const BridgeCTAInfoText = () => {
   );
 
   const hasMMFee = new BigNumber(
-    activeQuote?.quote.feeData.metabridge.amount ?? '0',
+    activeQuote
+      ? (sumAmounts(activeQuote.quote.feeData.metabridge)?.amount ?? '0')
+      : '0',
   ).gt(0);
+
+  const hasApproval =
+    activeQuote &&
+    (activeQuote.namespace === KnownCaipNamespace.Eip155 ||
+      activeQuote.namespace === KnownCaipNamespace.Tron)
+      ? activeQuote.approval
+      : undefined;
 
   if (!activeQuote) {
     return null;
