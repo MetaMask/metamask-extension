@@ -277,6 +277,16 @@ env:
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
   - SENTRY_DSN_PERFORMANCE: null
+  # JSON map of Sentry transaction name -> sample rate (0..1), merged over the
+  # built-in defaults in app/scripts/lib/sentry-traces-sampler.ts to throttle
+  # high-volume custom transactions per release. Null/absent = defaults only.
+  - SENTRY_SAMPLE_RATE_OVERRIDES: null
+  # Comma-separated list of bare release versions (e.g. "13.32.0,13.33.0") whose
+  # spans are dropped wholesale by the SDK tracesSampler, merged over the
+  # built-in DEFAULT_DROPPED_RELEASES in app/scripts/lib/sentry-traces-sampler.ts.
+  # Only affects a build whose OWN version is listed — it cannot reach
+  # already-installed builds of a dropped release. Null/absent = defaults only.
+  - SENTRY_DROP_RELEASES: null
   # also INFURA_PROJECT_ID below
 
   ###

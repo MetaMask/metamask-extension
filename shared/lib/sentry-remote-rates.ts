@@ -51,6 +51,17 @@ export function getRemoteWrapperSampleRate(): number | undefined {
 }
 
 /**
+ * The remote `tracesSampleRate` override, when a valid one was read at init.
+ * Consumed by the `tracesSampler` as both the default rate and a hard ceiling
+ * across all transactions (the release-level emergency throttle).
+ *
+ * @returns The override, or undefined so callers fall back to the build-time rate.
+ */
+export function getRemoteTracesSampleRate(): number | undefined {
+  return remoteRates.tracesSampleRate;
+}
+
+/**
  * Test-only reset of the cached rates.
  */
 export function resetSentryRemoteRates(): void {
