@@ -103,14 +103,51 @@ describe('OrderContent (completed)', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('shows an error color for failed/cancelled/expired statuses', () => {
+  it('renders a humanized status label for completed orders', () => {
+    renderContent(completedOrder);
+    expect(screen.getByTestId('ramps-order-details-status')).toHaveTextContent(
+      'Complete',
+    );
+  });
+
+  it('renders a humanized "Failed" label for failed orders', () => {
     renderContent({
       ...completedOrder,
       status: RampsOrderStatus.Failed,
     } as RampsOrder);
+    expect(screen.getByTestId('ramps-order-details-status')).toHaveTextContent(
+      'Failed',
+    );
+  });
+
+  it('renders the status description inline for a terminal order', () => {
+    renderContent({
+      ...completedOrder,
+      statusDescription: 'Your funds have been delivered.',
+    } as unknown as RampsOrder);
     expect(
-      screen.getByTestId('ramps-order-details-status'),
-    ).toHaveTextContent(RampsOrderStatus.Failed);
+      screen.getByTestId('ramps-order-details-status-description'),
+    ).toHaveTextContent('Your funds have been delivered.');
+  });
+
+  it('renders bank transfer details when paymentDetails are present', () => {
+    renderContent({
+      ...completedOrder,
+      paymentDetails: [
+        {
+          fiatCurrency: 'USD',
+          paymentMethod: 'bank_transfer',
+          fields: [
+            { id: 'iban', name: 'IBAN', value: 'DE00 0000 0000' },
+            { id: 'bic', name: 'BIC', value: 'ABCDEF' },
+          ],
+        },
+      ],
+    } as unknown as RampsOrder);
+    const section = screen.getByTestId('ramps-order-details-bank-details');
+    expect(section).toHaveTextContent('IBAN');
+    expect(section).toHaveTextContent('DE00 0000 0000');
+    expect(section).toHaveTextContent('BIC');
   });
 
   it('renders the order id unshortened when it is 8 characters or fewer', () => {
@@ -174,6 +211,17 @@ describe('OrderContent (pending)', () => {
     expect(
       screen.getByTestId('ramps-order-details-amount-skeleton'),
     ).toBeInTheDocument();
+  });
+
+  it('shows fee and total skeletons while amounts are unresolved', () => {
+    renderContent(pendingOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-fees-skeleton'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('ramps-order-details-total-skeleton'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('ramps-order-details-fees')).toBeNull();
   });
 
   it('renders the amount and hides the skeleton when the crypto amount is resolved', () => {

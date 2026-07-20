@@ -8240,6 +8240,9 @@
     "message": "on $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Bank transfer details"
+  },
   "rampsOrderDetailsDateAndTime": {
     "message": "Date and time"
   },
@@ -8275,6 +8278,18 @@
   },
   "rampsOrderDetailsViewOnProvider": {
     "message": "View on $1"
+  },
+  "rampsOrderStatusCancelled": {
+    "message": "Cancelled"
+  },
+  "rampsOrderStatusComplete": {
+    "message": "Complete"
+  },
+  "rampsOrderStatusFailed": {
+    "message": "Failed"
+  },
+  "rampsOrderStatusProcessing": {
+    "message": "Processing"
   },
   "rampsOtherOptions": {
     "message": "Other options"

@@ -63,7 +63,7 @@ exports[`OrderContent (completed) matches the completed snapshot 1`] = `
           class="text-success-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           data-testid="ramps-order-details-status"
         >
-          COMPLETED
+          Complete
         </p>
         <a
           data-testid="ramps-order-details-view-on-provider"
@@ -226,7 +226,7 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
           class="text-warning-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           data-testid="ramps-order-details-status"
         >
-          PENDING
+          Processing
         </p>
         <a
           data-testid="ramps-order-details-view-on-provider"
@@ -296,12 +296,10 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
       >
         Fees
       </p>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        data-testid="ramps-order-details-fees"
-      >
-        $12.50
-      </p>
+      <div
+        class="h-[18px] w-[80px] rounded bg-background-muted"
+        data-testid="ramps-order-details-fees-skeleton"
+      />
     </div>
     <div
       class="flex flex-row items-center justify-between py-3"
@@ -311,12 +309,10 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
       >
         Total
       </p>
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        data-testid="ramps-order-details-total"
-      >
-        $1,000.00
-      </p>
+      <div
+        class="h-[18px] w-[80px] rounded bg-background-muted"
+        data-testid="ramps-order-details-total-skeleton"
+      />
     </div>
   </div>
 </div>

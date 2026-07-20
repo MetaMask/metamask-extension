@@ -20,6 +20,7 @@ import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
 import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { formatDate } from '../../../../helpers/utils/util';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { getRampsNetworkDetailsForCaipChainId } from '../../token-selection/utils/mapRampsTokensToSendAssets';
@@ -63,6 +64,25 @@ function getStatusColor(status: RampsOrderStatus): TextColor {
 }
 
 /**
+ * Resolve the i18n key for a humanized status label (mobile parity — groups
+ * the raw enum into complete / processing / failed / cancelled).
+ * @param status - The order's current status.
+ * @returns The i18n message key for the status label.
+ */
+function getStatusLabelKey(status: RampsOrderStatus): string {
+  if (status === RampsOrderStatus.Completed) {
+    return 'rampsOrderStatusComplete';
+  }
+  if (status === RampsOrderStatus.Cancelled) {
+    return 'rampsOrderStatusCancelled';
+  }
+  if (FAILED_STATUSES.has(status)) {
+    return 'rampsOrderStatusFailed';
+  }
+  return 'rampsOrderStatusProcessing';
+}
+
+/**
  * Shorten a long order id for display, keeping the trailing characters.
  * @param id - The full order id.
  * @returns The shortened id, or the original id if it is already short.
@@ -70,6 +90,22 @@ function getStatusColor(status: RampsOrderStatus): TextColor {
 function shortenOrderId(id: string): string {
   return id.length > 8 ? `...${id.slice(-6)}` : id;
 }
+
+type ValueSkeletonProps = { testId: string };
+
+/**
+ * A grey placeholder bar shown in place of an amount value while a pending
+ * order's amounts are still resolving.
+ * @param options0 - The component's props.
+ * @param options0.testId - The test id for the skeleton element.
+ * @returns The rendered skeleton bar.
+ */
+const ValueSkeleton = ({ testId }: ValueSkeletonProps) => (
+  <Box
+    className="h-[18px] w-[80px] rounded bg-background-muted"
+    data-testid={testId}
+  />
+);
 
 type OrderRowProps = { label: string; children: React.ReactNode };
 
@@ -106,10 +142,16 @@ const OrderRow = ({ label, children }: OrderRowProps) => {
 export function OrderContent({ order }: { order: RampsOrder }) {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const { formatTokenAmount } = useFormatters();
 
   const isPending = isPendingStatus(order.status);
+  const isTerminal = !isPending;
+  // Amounts are still resolving on a pending order that has no crypto amount
+  // yet (mobile parity: skeleton the amount rows until they arrive).
+  const showAmountSkeletons = isPending && !order.cryptoAmount;
   const fiatSymbol = order.fiatCurrency?.symbol ?? 'USD';
   const fiatDecimals = order.fiatCurrency?.decimals ?? 2;
+  const bankDetails = order.paymentDetails ?? [];
 
   const caipChainId = (order.network?.chainId ??
     order.cryptoCurrency?.chainId ??
@@ -147,7 +189,7 @@ export function OrderContent({ order }: { order: RampsOrder }) {
             imageProps={{ 'data-testid': 'ramps-order-details-token-icon' }}
           />
         </BadgeWrapper>
-        {isPending && !order.cryptoAmount ? (
+        {showAmountSkeletons ? (
           <Box
             className="h-[24px] w-[120px] rounded bg-background-muted"
             data-testid="ramps-order-details-amount-skeleton"
@@ -157,7 +199,10 @@ export function OrderContent({ order }: { order: RampsOrder }) {
             variant={TextVariant.DisplayMd}
             data-testid="ramps-order-details-token-amount"
           >
-            {`${order.cryptoAmount} ${order.cryptoCurrency?.symbol ?? ''}`}
+            {formatTokenAmount(
+              Number(order.cryptoAmount),
+              order.cryptoCurrency?.symbol ?? '',
+            )}
           </Text>
         )}
         {isPending ? (
@@ -182,8 +227,20 @@ export function OrderContent({ order }: { order: RampsOrder }) {
             color={getStatusColor(order.status)}
             data-testid="ramps-order-details-status"
           >
-            {order.status}
+            {t(getStatusLabelKey(order.status))}
           </Text>
+          {order.statusDescription && isTerminal ? (
+            // ponytail: inline description instead of mobile's modal — conveys
+            // the same info without a modal or a deprecated Tooltip import.
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              data-testid="ramps-order-details-status-description"
+              className="text-right"
+            >
+              {order.statusDescription}
+            </Text>
+          ) : null}
           {order.providerOrderLink ? (
             <a
               href={order.providerOrderLink}
@@ -229,26 +286,53 @@ export function OrderContent({ order }: { order: RampsOrder }) {
       </OrderRow>
 
       <OrderRow label={t('rampsOrderDetailsFees')}>
-        <Text
-          variant={TextVariant.BodyMd}
-          data-testid="ramps-order-details-fees"
-        >
-          {formatCurrency(
-            String(order.totalFeesFiat),
-            fiatSymbol,
-            fiatDecimals,
-          )}
-        </Text>
+        {showAmountSkeletons ? (
+          <ValueSkeleton testId="ramps-order-details-fees-skeleton" />
+        ) : (
+          <Text
+            variant={TextVariant.BodyMd}
+            data-testid="ramps-order-details-fees"
+          >
+            {formatCurrency(
+              String(order.totalFeesFiat),
+              fiatSymbol,
+              fiatDecimals,
+            )}
+          </Text>
+        )}
       </OrderRow>
 
       <OrderRow label={t('rampsOrderDetailsTotal')}>
-        <Text
-          variant={TextVariant.BodyMd}
-          data-testid="ramps-order-details-total"
-        >
-          {formatCurrency(String(order.fiatAmount), fiatSymbol, fiatDecimals)}
-        </Text>
+        {showAmountSkeletons ? (
+          <ValueSkeleton testId="ramps-order-details-total-skeleton" />
+        ) : (
+          <Text
+            variant={TextVariant.BodyMd}
+            data-testid="ramps-order-details-total"
+          >
+            {formatCurrency(String(order.fiatAmount), fiatSymbol, fiatDecimals)}
+          </Text>
+        )}
       </OrderRow>
+
+      {bankDetails.length > 0 ? (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="mt-4 border-t border-muted pt-4"
+          data-testid="ramps-order-details-bank-details"
+        >
+          <Text variant={TextVariant.BodyMd} className="pb-1 font-medium">
+            {t('rampsOrderDetailsBankDetails')}
+          </Text>
+          {bankDetails.flatMap((detail) =>
+            detail.fields.map((field) => (
+              <OrderRow key={field.id} label={field.name}>
+                <Text variant={TextVariant.BodyMd}>{field.value}</Text>
+              </OrderRow>
+            )),
+          )}
+        </Box>
+      ) : null}
     </Box>
   );
 }
