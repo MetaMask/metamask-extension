@@ -104,13 +104,6 @@ export const AccountOverviewTabs = ({
       : undefined,
   );
 
-  // Persist the tab entry point when the location state changes.
-  useEffect(() => {
-    if (location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick) {
-      setTabEntryPoint(ScreenViewedEntryPoint.BottomNavClick);
-    }
-  }, [location.key, location.state?.entryPoint]);
-
   const t = useI18nContext();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
