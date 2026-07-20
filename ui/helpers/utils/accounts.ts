@@ -3,6 +3,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   IconName,
   InvisibleCharacter,
@@ -195,7 +196,8 @@ export function getAccountLabels(
         });
       }
 
-      const isPreinstalled = isSnapPreinstalled(account.metadata.snap.id);
+      const snapId = account.metadata.snap.id;
+      const isPreinstalled = isSnapId(snapId) && isSnapPreinstalled(snapId);
 
       if (isPreinstalled) {
         break;
