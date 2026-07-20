@@ -484,9 +484,6 @@
   "sign": {
     "message": "Podepsat"
   },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
-  },
   "signed": {
     "message": "Podepsáno"
   },

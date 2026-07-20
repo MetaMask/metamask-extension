@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
+import { RAMPS_PAYMENT_METHOD_ROUTE } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
@@ -35,8 +36,10 @@ export type RampsBuildQuoteReadyViewModel = {
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
   providerStatusLabel: string;
+  isQuoteLoading: boolean;
   canContinue: boolean;
   handleBack: () => void;
+  handlePaymentMethodPress: () => void;
   handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
   handleContinue: () => void;
 };
@@ -157,6 +160,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     navigate(-1);
   }, [navigate]);
 
+  const handlePaymentMethodPress = useCallback(() => {
+    navigate(RAMPS_PAYMENT_METHOD_ROUTE);
+  }, [navigate]);
+
   const canContinue = resolveCanContinue({
     hasAmount,
     hasSettledQuoteAmount,
@@ -193,6 +200,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const providerLabel = selectedProvider?.name
     ? t('rampsBuyingViaProvider', [selectedProvider.name])
     : '';
+  const isQuoteLoading = selectedQuoteLoading && hasSettledQuoteAmount;
 
   return {
     kind: 'ready',
@@ -211,12 +219,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
     displayedQuoteError,
-    providerStatusLabel:
-      selectedQuoteLoading && hasSettledQuoteAmount
-        ? t('loading')
-        : providerLabel,
+    // Keep the known provider visible while quotes refresh; loading is shown
+    // on the Continue button instead of replacing this label.
+    providerStatusLabel: providerLabel,
+    isQuoteLoading,
     canContinue,
     handleBack,
+    handlePaymentMethodPress,
     handleAmountChange,
     handleContinue,
   };

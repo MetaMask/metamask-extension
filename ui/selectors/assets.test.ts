@@ -34,6 +34,7 @@ import {
   type BalanceCalculationState,
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectAccountGroupBalanceIsLoadedForEmptyState,
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
@@ -1294,6 +1295,66 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.balances = {};
 
     const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false for loaded state when no mainnet balance records are set', () => {
+    const state = createMockStateWithEVMNetworks();
+
+    state.metamask.accountsByChainId = {};
+    state.metamask.balances = {};
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return true for loaded state when an EVM mainnet zero balance record exists', () => {
+    const state = createMockStateWithEVMNetworks();
+
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          balance: '0x0',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return true for loaded state when a non-EVM mainnet zero balance record exists', () => {
+    const state = createMockStateWithNonEVMNetworks();
+
+    state.metamask.balances = {
+      account2: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          amount: '0',
+          unit: 'SOL',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false for loaded state when only testnet balance records exist', () => {
+    const state = createMockStateWithEVMNetworks(true);
+
+    state.metamask.accountsByChainId = {
+      '0xaa36a7': {
+        '0x0': {
+          balance: '0x8ac7230489e80000',
+        },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
 
     expect(result).toBe(false);
   });

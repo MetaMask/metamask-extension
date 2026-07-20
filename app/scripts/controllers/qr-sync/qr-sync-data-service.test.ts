@@ -215,6 +215,7 @@ function setupDataService(
 
   return {
     dataService,
+    dataServiceMessenger,
     exportSeedPhrase,
     exportPrivateKey,
   };
@@ -757,6 +758,33 @@ describe('QrSyncDataService', () => {
       await expect(
         dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
       ).rejects.toThrow(`Account group "${fixture.groupId}" cannot be synced.`);
+    });
+
+    it('calls captureException when building wallet export entries fails', async () => {
+      const fixture = createEntropyFixture(TEST_ENTROPY_ID, 0);
+      const exportError = new Error('Invalid password');
+      const captureException = jest.fn();
+
+      const { dataService, dataServiceMessenger } = setupDataService({
+        groupsById: new Map([[fixture.groupId, fixture.group]]),
+        walletsById: new Map([[fixture.walletId, fixture.wallet]]),
+        exportSeedPhrase: jest.fn().mockRejectedValue(exportError),
+      });
+      // @ts-expect-error - captureException mock
+      dataServiceMessenger.captureException = captureException;
+
+      await expect(
+        dataService.buildWalletExportEntries(TEST_PASSWORD, [fixture.groupId]),
+      ).rejects.toThrow('Invalid password');
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+      const sentryError = captureException.mock.calls[0][0] as Error & {
+        cause: unknown;
+      };
+      expect(sentryError.message).toBe(
+        'Failed to build QR sync wallet export entries',
+      );
+      expect(sentryError.cause).toBe(exportError);
     });
 
     it('calls exportSeedPhrase once per unique entropy id', async () => {

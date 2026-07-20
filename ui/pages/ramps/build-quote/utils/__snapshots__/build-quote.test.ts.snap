@@ -29,12 +29,12 @@ exports[`build-quote utils parseFiatAmount matches snapshot for supported amount
 
 exports[`build-quote utils resolveBuildQuoteViewKind matches snapshot for loading, redirect, and ready cases 1`] = `
 {
+  "intentLoadingWhenLoadFinishedWithMismatch": "loading",
+  "intentLoadingWhenLoadFinishedWithoutToken": "loading",
   "intentLoadingWithMismatch": "loading",
   "intentLoadingWithoutToken": "loading",
   "intentReadyWhenMatched": "ready",
   "intentReadyWhenMatchedWhileTokensLoading": "ready",
-  "intentRedirectWhenLoadFinishedWithMismatch": "redirect",
-  "intentRedirectWhenLoadFinishedWithoutToken": "redirect",
   "noIntentLoadingWithoutToken": "loading",
   "noIntentReadyWithToken": "ready",
   "noIntentRedirectWithoutToken": "redirect",

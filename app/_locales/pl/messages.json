@@ -506,9 +506,6 @@
   "sign": {
     "message": "Podpisz"
   },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
-  },
   "signed": {
     "message": "Podpisane"
   },
