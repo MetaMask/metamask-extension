@@ -22,6 +22,7 @@ type GasParams = {
 };
 
 type GasFeeEstimateLevel = string | { suggestedMaxFeePerGas?: string };
+type EditGasMode = `${EditGasModes}`;
 
 const TEN_PERCENT_NUMERIC = new Numeric(1.1, 10);
 
@@ -65,11 +66,11 @@ export function addTenPercentAndRound(
 }
 
 export function isMetamaskSuggestedGasEstimate(estimate: string): boolean {
-  return [
-    GasRecommendations.high,
-    GasRecommendations.medium,
-    GasRecommendations.low,
-  ].includes(estimate as GasRecommendations);
+  return (
+    estimate === GasRecommendations.high ||
+    estimate === GasRecommendations.medium ||
+    estimate === GasRecommendations.low
+  );
 }
 
 /**
@@ -118,7 +119,9 @@ export function formatGasFeeOrFeeRange(
  * @param editGasMode - One of 'speed-up', 'cancel', 'modify-in-place', or 'swaps'
  * @returns boolean
  */
-export function editGasModeIsSpeedUpOrCancel(editGasMode?: string): boolean {
+export function editGasModeIsSpeedUpOrCancel(
+  editGasMode?: EditGasMode,
+): boolean {
   return (
     editGasMode === EditGasModes.cancel || editGasMode === EditGasModes.speedUp
   );
