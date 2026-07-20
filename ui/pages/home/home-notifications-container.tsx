@@ -1,6 +1,12 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import {
+  Text,
+  TextVariant,
+  TextColor,
+  BannerAlert,
+  BannerAlertSeverity,
+} from '@metamask/design-system-react';
 import {
   activeTabHasPermissions,
   getOriginOfCurrentTab,
@@ -38,10 +44,6 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { MetaMaskReduxState } from '../../store/store';
 
