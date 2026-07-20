@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { MetaMetricsEventFragment } from '../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 import { selectMatchingFragment } from '../selectors';
 import {
@@ -9,16 +10,26 @@ import {
 } from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 
+type EventFragmentReturn = {
+  trackSuccess: () => void;
+  trackFailure: () => void;
+  updateEventFragment: (payload: Partial<MetaMetricsEventFragment>) => void;
+  fragment: MetaMetricsEventFragment | undefined;
+};
+
 /**
  * Retrieves a fragment from memory or initializes new fragment if one does not
  * exist. Returns three methods that are tied to the fragment, as well as the
  * fragment id.
  *
- * @param {string} existingId
- * @param {object} fragmentOptions
- * @returns
+ * @param existingId - An existing fragment id to look up
+ * @param fragmentOptions - Options for the fragment
+ * @returns EventFragmentReturn
  */
-export function useEventFragment(existingId, fragmentOptions = {}) {
+export function useEventFragment(
+  existingId?: string,
+  fragmentOptions: Partial<MetaMetricsEventFragment> = {},
+): EventFragmentReturn {
   // To prevent overcalling the createEventFragment background method a ref
   // is used to store a boolean value of whether we have already called the
   // method.
@@ -28,7 +39,9 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
   // background state to update and find the newly created fragment, we have a
   // state element that is updated with the fragmentId returned from the
   // call into the background process.
-  const [createdFragmentId, setCreatedFragmentId] = useState(undefined);
+  const [createdFragmentId, setCreatedFragmentId] = useState<
+    string | undefined
+  >(undefined);
 
   // Select a matching fragment from state if one exists that matches the
   // criteria. If an existingId is passed in it is preferred, if not and the
@@ -53,8 +66,8 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
       createEventFragment({
         ...fragmentOptions,
         environmentType: getEnvironmentType(),
-      }).then((createdFragment) => {
-        setCreatedFragmentId(createdFragment.id);
+      } as MetaMetricsEventFragment).then((createdFragment) => {
+        setCreatedFragmentId((createdFragment as unknown as { id: string }).id);
       });
     }
   }, [fragment, fragmentOptions]);
@@ -67,7 +80,7 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
    * necessary values.
    */
   const trackSuccess = useCallback(() => {
-    finalizeEventFragment(fragment.id, { context });
+    finalizeEventFragment(fragment?.id ?? '', { context });
   }, [fragment, context]);
 
   /**
@@ -75,7 +88,7 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
    * thin wrapper around the background method that sets the necessary values.
    */
   const trackFailure = useCallback(() => {
-    finalizeEventFragment(fragment.id, { abandoned: true, context });
+    finalizeEventFragment(fragment?.id ?? '', { abandoned: true, context });
   }, [fragment, context]);
 
   /**
@@ -85,8 +98,8 @@ export function useEventFragment(existingId, fragmentOptions = {}) {
    * updateEventFragmentProperties to avoid naming conflicts.
    */
   const updateEventFragmentProperties = useCallback(
-    (payload) => {
-      updateEventFragment(fragment.id, payload);
+    (payload: Partial<MetaMetricsEventFragment>) => {
+      updateEventFragment(fragment?.id ?? '', payload);
     },
     [fragment],
   );

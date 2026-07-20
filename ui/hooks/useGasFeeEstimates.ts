@@ -16,16 +16,16 @@ import {
 } from '../../shared/lib/selectors/networks';
 import usePolling from './usePolling';
 
-/**
- * @typedef {object} GasEstimates
- * @property {import(
- *   '@metamask/gas-fee-controller'
- * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
- * @property {object} gasEstimateType - The type of estimate provided
- * @property {boolean} isGasEstimatesLoading - indicates whether the gas
- *  estimates are currently loading.
- * @property {boolean} isNetworkBusy - indicates whether the network is busy.
- */
+type GasEstimates = {
+  /** The estimate object */
+  gasFeeEstimates: unknown;
+  /** The type of estimate provided */
+  gasEstimateType: unknown;
+  /** Indicates whether the gas estimates are currently loading */
+  isGasEstimatesLoading: boolean;
+  /** Indicates whether the network is busy */
+  isNetworkBusy: boolean;
+};
 
 /**
  * Gets the current gasFeeEstimates from state and begins polling for new
@@ -35,9 +35,12 @@ import usePolling from './usePolling';
  *
  * @param _networkClientId - The optional network client ID to get gas fee estimates for. Defaults to the currently selected network.
  * @param enabled - Whether to enable gas fee estimation polling. Defaults to true.
- * @returns {GasEstimates} GasEstimates object
+ * @returns GasEstimates object
  */
-export function useGasFeeEstimates(_networkClientId, enabled = true) {
+export function useGasFeeEstimates(
+  _networkClientId?: string,
+  enabled = true,
+): GasEstimates {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const networkClientId = _networkClientId ?? selectedNetworkClientId;
 
@@ -63,7 +66,7 @@ export function useGasFeeEstimates(_networkClientId, enabled = true) {
   );
 
   usePolling({
-    startPolling: (input) =>
+    startPolling: (input: { networkClientId: string }) =>
       gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
     input: { networkClientId },

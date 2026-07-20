@@ -2,23 +2,24 @@ import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
 import { getTargetSubjectMetadata } from '../selectors';
 
-/**
- * @typedef {object} OriginMetadata
- * @property {string} hostname - The hostname of the origin (host + port)
- * @property {string} origin - The original origin string itself
- * @property {string} [iconUrl] - The origin's site icon URL, if available
- * @property {string} [name] - The registered name of the origin if available
- */
+export type OriginMetadata = {
+  hostname: string;
+  origin: string;
+  iconUrl?: string | null;
+  name?: string;
+  host?: string;
+  subjectType?: SubjectType;
+  [key: string]: unknown;
+};
 
 /**
  * Gets origin metadata from redux and formats it appropriately.
  *
- * @param {string} origin - The fully formed url of the site interacting with
+ * @param origin - The fully formed url of the site interacting with
  * MetaMask
- * @returns {OriginMetadata | null} The origin metadata available for the
- * current origin
+ * @returns The origin metadata available for the current origin
  */
-export function useOriginMetadata(origin) {
+export function useOriginMetadata(origin?: string): OriginMetadata | null {
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, origin),
   );
@@ -27,7 +28,7 @@ export function useOriginMetadata(origin) {
     return null;
   }
 
-  let minimumOriginMetadata = null;
+  let minimumOriginMetadata: OriginMetadata | null = null;
   try {
     const url = new URL(origin);
     minimumOriginMetadata = {
@@ -46,7 +47,7 @@ export function useOriginMetadata(origin) {
       ...targetSubjectMetadata,
     };
   } else if (targetSubjectMetadata) {
-    return targetSubjectMetadata;
+    return targetSubjectMetadata as OriginMetadata;
   }
 
   return minimumOriginMetadata;
