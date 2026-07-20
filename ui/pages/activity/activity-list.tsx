@@ -133,12 +133,15 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       return;
     }
 
+    const activityType = selectedItem.type;
+    setSelectedItem(null);
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          activity_type: selectedItem.type,
+          activity_type: activityType,
         })
         .build(),
     );
