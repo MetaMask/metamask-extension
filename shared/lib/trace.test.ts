@@ -9,6 +9,7 @@ import {
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
+  startNewTrace: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
@@ -21,6 +22,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
+  startNewTrace,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -47,6 +49,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  const startNewTraceMock = jest.mocked(startNewTrace);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -59,12 +62,18 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      startNewTrace: startNewTraceMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
     };
 
     startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
+
+    // Pass-through: run the wrapped callback so root traces still create spans.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
       fn({} as Sentry.Span, () => {
@@ -441,6 +450,25 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    it('starts a new trace (fresh propagation context) when root is true', () => {
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      // startNewTrace resets the propagation-context trace id, so the op roots
+      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      expect(startNewTraceMock).toHaveBeenCalledTimes(1);
+      expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not start a new trace when root is not set', () => {
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startNewTraceMock).not.toHaveBeenCalled();
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
     });
 
     it('uses null parentSpan when no active span and no parentContext', () => {
