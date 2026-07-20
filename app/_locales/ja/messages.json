@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "アカウントのオプション"
   },
-  "accountPermissionToast": {
-    "message": "アカウントのアクセス許可が更新されました"
-  },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
