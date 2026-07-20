@@ -3110,9 +3110,6 @@
   "decimal": {
     "message": "Decimal do token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
-  },
   "decrypt": {
     "message": "Descriptografar"
   },
