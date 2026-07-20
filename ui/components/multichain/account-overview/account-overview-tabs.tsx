@@ -323,7 +323,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              <ActivityList />
+              <ActivityList entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}
