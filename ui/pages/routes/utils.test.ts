@@ -32,6 +32,7 @@ describe('setTheme', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute('data-theme');
     document.documentElement.removeAttribute('data-pure-black');
+    delete process.env.MM_PURE_BLACK_PREVIEW;
   });
 
   it('sets data-theme on the document root from the resolved theme', () => {
@@ -44,7 +45,7 @@ describe('setTheme', () => {
     );
   });
 
-  it('does not set data-pure-black when theme is dark but flag is off', () => {
+  it('does not set data-pure-black when theme is dark and MM_PURE_BLACK_PREVIEW is off', () => {
     setTheme(ThemeType.dark);
     expect(document.documentElement.getAttribute('data-theme')).toBe(
       ThemeType.dark,
@@ -54,8 +55,9 @@ describe('setTheme', () => {
     );
   });
 
-  it('sets data-pure-black on html when theme is dark and flag is on', () => {
-    setTheme(ThemeType.dark, true);
+  it('sets data-pure-black when theme is dark and MM_PURE_BLACK_PREVIEW is on', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'true';
+    setTheme(ThemeType.dark);
     expect(document.documentElement.getAttribute('data-theme')).toBe(
       ThemeType.dark,
     );
@@ -64,9 +66,10 @@ describe('setTheme', () => {
     );
   });
 
-  it('removes data-pure-black on html when theme is light even with flag on', () => {
+  it('does not set data-pure-black when theme is light even with MM_PURE_BLACK_PREVIEW on', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'true';
     document.documentElement.setAttribute('data-pure-black', 'true');
-    setTheme(ThemeType.light, true);
+    setTheme(ThemeType.light);
     expect(document.documentElement.getAttribute('data-theme')).toBe(
       ThemeType.light,
     );

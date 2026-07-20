@@ -74,12 +74,11 @@ export function setDocumentPureBlack(isPureBlackActive) {
   }
 }
 
-export function setTheme(theme, isPureBlackEnabled = false) {
+export function setTheme(theme) {
   const resolvedTheme = getThemeFromRawTheme(theme);
   document.documentElement.setAttribute('data-theme', resolvedTheme);
   const pureBlackActive =
-    resolvedTheme === ThemeType.dark &&
-    (isPureBlackEnabled || getIsPureBlackPreviewEnabled());
+    resolvedTheme === ThemeType.dark && getIsPureBlackPreviewEnabled();
   setDocumentPureBlack(pureBlackActive);
 }
 
