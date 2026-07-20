@@ -404,6 +404,7 @@ export const CustomTokenImportPage = () => {
       setDecimals(value);
       if (
         Number.isNaN(next) ||
+        !Number.isInteger(next) ||
         next < MIN_DECIMAL_VALUE ||
         next > MAX_DECIMAL_VALUE
       ) {
@@ -486,7 +487,12 @@ export const CustomTokenImportPage = () => {
   );
 
   const handleSubmit = useCallback(async () => {
-    if (Number.isNaN(parsedDecimals) || !isValid || isSubmitting) {
+    if (
+      Number.isNaN(parsedDecimals) ||
+      !Number.isInteger(parsedDecimals) ||
+      !isValid ||
+      isSubmitting
+    ) {
       return;
     }
     setIsSubmitting(true);
