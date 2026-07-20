@@ -1,22 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`rampsQuotesKeys includes forceRefresh, ttl, and redirectUrl in the detail key 1`] = `
-[
-  "ramps",
-  "quotes",
-  "eip155:1/slip44:60",
-  100,
-  "0xabc",
-  "",
-  "",
-  "credit_debit_card",
-  "transak",
-  "https://metamask.io/callback",
-  true,
-  15000,
-]
-`;
-
 exports[`rampsQuotesKeys includes region, fiat, forceRefresh, ttl, and redirectUrl in the detail key 1`] = `
 [
   "ramps",
