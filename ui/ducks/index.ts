@@ -18,7 +18,7 @@ import { perpsTutorialReducer } from './perps';
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
   [AlertTypes.unconnectedAccount]: unconnectedAccount,
-  activeTab: (s) => (s === undefined ? null : s),
+  activeTab: (state: { origin: string } | null = null) => state,
   metamask: metamaskReducer,
   appState: appStateReducer,
   DNS: domainReducer,

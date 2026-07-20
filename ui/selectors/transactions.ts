@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -66,6 +67,8 @@ export const getUnapprovedTransactions =
 // Parameterized selector creator with LRU cache for multiple chainId arguments.
 // This prevents cache thrashing when switching between different chains.
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+
+type TransactionLike = ReturnType<typeof getTransactions>[number];
 
 /**
  * Returns transactions filtered by the given chainId.
@@ -149,13 +152,14 @@ export const incomingTxListSelector = createShallowEqualInputAndResultSelector(
     ),
 );
 
-export const unapprovedPersonalMsgsSelector = (state) =>
+export const unapprovedPersonalMsgsSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedPersonalMsgs;
-export const unapprovedDecryptMsgsSelector = (state) =>
+export const unapprovedDecryptMsgsSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedDecryptMsgs;
-export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-export const unapprovedTypedMessagesSelector = (state) =>
+export const unapprovedEncryptionPublicKeyMsgsSelector = (
+  state: MetaMaskReduxState,
+) => state.metamask.unapprovedEncryptionPublicKeyMsgs;
+export const unapprovedTypedMessagesSelector = (state: MetaMaskReduxState) =>
   state.metamask.unapprovedTypedMessages;
 
 /**
@@ -265,9 +269,13 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedTypedMessagesSelector,
   getCurrentChainId,
   (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     unapprovedPersonalMsgs = {},
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     unapprovedDecryptMsgs = {},
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     unapprovedEncryptionPublicKeyMsgs = {},
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     unapprovedTypedMessages = {},
     chainId,
   ) =>
@@ -322,10 +330,10 @@ export const transactionsSelectorAllChains = createSelector(
  * @private
  * @description Inserts (mutates) a nonce into an array of ordered nonces, sorted in ascending
  * order.
- * @param {string[]} nonces - Array of nonce strings in hex
- * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
+ * @param nonces - Array of nonce strings in hex
+ * @param nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
  */
-const insertOrderedNonce = (nonces, nonceToInsert) => {
+const insertOrderedNonce = (nonces: string[], nonceToInsert: string) => {
   let insertIndex = nonces.length;
 
   for (let i = 0; i < nonces.length; i++) {
@@ -348,10 +356,13 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * @private
  * @description Inserts (mutates) a transaction object into an array of ordered transactions, sorted
  * in ascending order by time.
- * @param {object[]} transactions - Array of transaction objects.
- * @param {object} transaction - Transaction object to be inserted into the array of transactions.
+ * @param transactions - Array of transaction objects.
+ * @param transaction - Transaction object to be inserted into the array of transactions.
  */
-const insertTransactionByTime = (transactions, transaction) => {
+const insertTransactionByTime = (
+  transactions: TransactionLike[],
+  transaction: TransactionLike,
+) => {
   const { time } = transaction;
 
   let insertIndex = transactions.length;
@@ -386,11 +397,16 @@ const insertTransactionByTime = (transactions, transaction) => {
  * @private
  * @description Inserts (mutates) a transactionGroup object into an array of ordered
  * transactionGroups, sorted in ascending order by nonce.
- * @param {transactionGroup[]} transactionGroups - Array of transactionGroup objects.
- * @param {transactionGroup} transactionGroup - transactionGroup object to be inserted into the
+ * @param transactionGroups - Array of transactionGroup objects.
+ * @param transactionGroup - transactionGroup object to be inserted into the
  * array of transactionGroups.
  */
-const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
+const insertTransactionGroupByTime = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transactionGroups: any[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transactionGroup: any,
+) => {
   const { primaryTransaction: { time: groupToInsertTime } = {} } =
     transactionGroup;
 
@@ -414,9 +430,9 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
  * @private
  * @description Inserts (mutates) transactionGroups that are not to be ordered by nonce into an array
  * of nonce-ordered transactionGroups by time.
- * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
+ * @param orderedTransactionGroups - Array of transactionGroups ordered by
  * nonce.
- * @param {transactionGroup[]} nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
+ * @param nonNonceTransactionGroups - Array of transactionGroups not intended to be ordered by nonce,
  * but intended to be ordered by timestamp
  */
 const mergeNonNonceTransactionGroups = (
@@ -428,11 +444,14 @@ const mergeNonNonceTransactionGroups = (
   });
 };
 
-export const groupAndSortTransactionsByNonce = (transactions) => {
+export const groupAndSortTransactionsByNonce = (
+  transactions: TransactionLike[],
+) => {
   const unapprovedTransactionGroups = [];
   const incomingTransactionGroups = [];
   const orderedNonces = [];
-  const nonceToTransactionsMap = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const nonceToTransactionsMap: Record<string, any> = {};
 
   const INVALID_INITIAL_TRANSACTION_TYPES = [
     TransactionType.cancel,
@@ -731,7 +750,7 @@ const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export function hasTransactionPendingApprovals(state) {
+export function hasTransactionPendingApprovals(state: MetaMaskReduxState) {
   const unapprovedTxRequests = getApprovalRequestsByType(
     state,
     ApprovalType.Transaction,
@@ -742,7 +761,10 @@ export function hasTransactionPendingApprovals(state) {
   );
 }
 
-export function selectTransactionMetadata(state, transactionId) {
+export function selectTransactionMetadata(
+  state: MetaMaskReduxState,
+  transactionId: string | number,
+) {
   return state.metamask.transactions.find(
     (transaction) => transaction.id === transactionId,
   );
@@ -756,15 +778,15 @@ export const selectTransactionSender = createSelector(
 /**
  * Creates a map of unapproved transactions indexed by transaction ID.
  *
- * @param {object[]} transactions - Array of transaction objects
- * @returns {Record<string, object>} Object with transaction IDs as keys
+ * @param transactions - Array of transaction objects
+ * @returns Object with transaction IDs as keys
  */
-function createUnapprovedTransactionsMap(transactions) {
+function createUnapprovedTransactionsMap(transactions: TransactionLike[]) {
   if (!transactions?.length) {
     return EMPTY_OBJECT;
   }
 
-  const result = {};
+  const result: Record<string, TransactionLike> = {};
   for (const transaction of transactions) {
     if (transaction.status === TransactionStatus.unapproved) {
       result[transaction.id] = transaction;
@@ -775,7 +797,7 @@ function createUnapprovedTransactionsMap(transactions) {
 }
 
 // Safe wrapper that prevents crashes when provider config is unavailable
-function getProviderConfigSafe(state) {
+function getProviderConfigSafe(state: MetaMaskReduxState) {
   try {
     return getProviderConfig(state);
   } catch {
@@ -783,7 +805,7 @@ function getProviderConfigSafe(state) {
   }
 }
 
-function getCurrentChainIdSafe(state) {
+function getCurrentChainIdSafe(state: MetaMaskReduxState) {
   const providerConfig = getProviderConfigSafe(state);
   return providerConfig?.chainId;
 }

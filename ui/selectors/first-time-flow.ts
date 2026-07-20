@@ -1,5 +1,6 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/lib/environment';
+import type { MetaMaskReduxState } from '../store/store';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -13,10 +14,10 @@ import {
 /**
  * Returns true if the user is on a social login flow
  *
- * @param {object} state - MetaMask state tree
- * @returns {boolean} True if the user is on a social login flow
+ * @param state - MetaMask state tree
+ * @returns True if the user is on a social login flow
  */
-export const getIsSocialLoginFlow = (state) => {
+export const getIsSocialLoginFlow = (state: MetaMaskReduxState): boolean => {
   if (!getIsSeedlessOnboardingFeatureEnabled()) {
     return false;
   }
@@ -32,10 +33,12 @@ export const getIsSocialLoginFlow = (state) => {
  * When the user unlocks the wallet but onboarding has not fully completed we
  * must direct the user to the appropriate step in the onboarding process.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
-export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
+export function getFirstTimeFlowTypeRouteAfterUnlock(
+  state: MetaMaskReduxState,
+): string {
   const { firstTimeFlowType } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
@@ -59,10 +62,12 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  * restore option because the restore option is atypical from the other two
  * options and removes an entire screen from the onboarding flow.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
-export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
+export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(
+  state: MetaMaskReduxState,
+): string {
   const { firstTimeFlowType } = state.metamask;
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_COMPLETION_ROUTE;
@@ -78,6 +83,8 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   return DEFAULT_ROUTE;
 }
 
-export const getFirstTimeFlowType = (state) => {
+export const getFirstTimeFlowType = (
+  state: MetaMaskReduxState,
+): MetaMaskReduxState['metamask']['firstTimeFlowType'] => {
   return state.metamask.firstTimeFlowType;
 };

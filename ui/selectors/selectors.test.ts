@@ -86,7 +86,8 @@ const mockAccountsState = (accounts) => {
   const accountsMap = accounts.reduce((map, account) => {
     map[account.id] = account;
     return map;
-  }, {});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }, {} as Record<string, any>);
 
   return {
     metamask: {
@@ -1336,12 +1337,15 @@ describe('Selectors', () => {
         },
         tokenScanCache: {
           [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Malicious',
           },
           [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Warning',
           },
           [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             result_type: 'Benign',
           },
         },
@@ -1387,9 +1391,11 @@ describe('Selectors', () => {
         ),
       ).toStrictEqual({
         [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Malicious',
         },
         [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Warning',
         },
       });
@@ -1401,9 +1407,11 @@ describe('Selectors', () => {
         ),
       ).toStrictEqual({
         [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Malicious',
         },
         [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Warning',
         },
       });
@@ -1414,6 +1422,7 @@ describe('Selectors', () => {
         ]),
       ).toStrictEqual({
         [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Benign',
         },
       });
@@ -1424,9 +1433,11 @@ describe('Selectors', () => {
         ]),
       ).toStrictEqual({
         [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Malicious',
         },
         [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'Warning',
         },
       });
@@ -1797,6 +1808,7 @@ describe('Selectors', () => {
         },
         permissionHistory: {
           'https://test.dapp': {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               accounts: {
                 '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
@@ -2165,7 +2177,8 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
 });
 describe('#getConnectedSitesList', () => {
   it('returns an empty object if there are no connected addresses', () => {
-    const connectedSubjectsForAllAddresses = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const connectedSubjectsForAllAddresses: Record<string, any[]> = {};
     const internalAccounts = [];
     const connectedAddresses = [];
 
@@ -4587,6 +4600,7 @@ describe('getPermissionsForActiveTab', () => {
       subjects: {
         'https://example.com': {
           permissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               date: 1234567890,
             },
@@ -4594,9 +4608,11 @@ describe('getPermissionsForActiveTab', () => {
         },
         'https://testdapp.com': {
           permissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_accounts: {
               date: 1234567890,
             },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_requestAccounts: {
               date: 1234567890,
             },
@@ -4957,7 +4973,9 @@ describe('getDeferredDeepLinkParameters', () => {
     };
 
     expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       utm_source: 'newsletter',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       utm_medium: 'email',
     });
   });
@@ -5079,12 +5097,14 @@ describe('snap selectors', () => {
         'npm:foo': {
           permissions: {
             [SnapEndowments.SettingsPage]: {},
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_notify: {},
             'endowment:name-lookup': { caveat: true },
           },
         },
         'npm:bar': {
           permissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_notify: {},
             'endowment:name-lookup': { caveat: true },
           },

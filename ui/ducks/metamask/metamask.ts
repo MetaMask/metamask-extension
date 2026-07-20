@@ -1,4 +1,5 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import type { AnyAction } from 'redux';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
@@ -29,7 +30,52 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { getIsUnlocked } from './base-selectors';
 
-const initialState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = Record<string, any>;
+
+export type MetamaskState = {
+  isInitialized: boolean;
+  isUnlocked: boolean;
+  internalAccounts: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    accounts: Record<string, any>;
+    selectedAccount: string;
+  };
+  transactions: Json[];
+  networkConfigurations: Json;
+  addressBook: Json[] | Json;
+  featureFlags: Json;
+  currentLocale: string;
+  preferences: Json;
+  firstTimeFlowType: string | null;
+  completedOnboarding: boolean;
+  hasSeenOnboardingCompletionPage: boolean;
+  knownMethodData: Json;
+  use4ByteResolution: boolean;
+  analyticsId: string | null;
+  optedIn: boolean;
+  completedMetaMetricsOnboarding: boolean;
+  dataCollectionForMarketing: boolean | null;
+  currencyRates: Record<string, { conversionRate: number | null }>;
+  throttledOrigins: Json;
+  isSeedlessOnboardingUserAuthenticated: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+type RootState = {
+  metamask: MetamaskState;
+  confirmTransaction?: {
+    txData?: Json;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Dispatch = (...args: any[]) => any;
+
+const initialState: MetamaskState = {
   isInitialized: false,
   isUnlocked: false,
   internalAccounts: { accounts: {}, selectedAccount: '' },
@@ -70,11 +116,15 @@ const initialState = {
  * Temporary types for this slice so that inferrence of MetaMask state tree can
  * occur
  *
- * @param {typeof initialState} state - State
- * @param {any} action
- * @returns {typeof initialState}
+ * @param state - State
+ * @param action
+ * @returns
  */
-export default function reduceMetamask(state = initialState, action) {
+export default function reduceMetamask(
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  state: Partial<MetamaskState> = initialState,
+  action: AnyAction,
+): MetamaskState {
   // I don't think we should be spreading initialState into this. Once the
   // state tree has begun by way of the first reduce call the initialState is
   // set. The only time it should be used again is if we reset the state with a
@@ -83,7 +133,7 @@ export default function reduceMetamask(state = initialState, action) {
   // for this slice*. I attempted to remove this and it caused nearly 40 test
   // failures. We are going to refactor this slice anyways, possibly removing
   // it so we will fix this issue when that time comes.
-  const metamaskState = { ...initialState, ...state };
+  const metamaskState: MetamaskState = { ...initialState, ...state };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
@@ -99,9 +149,14 @@ export default function reduceMetamask(state = initialState, action) {
       const name = action.value.label;
       const accountToUpdate = Object.values(
         metamaskState.internalAccounts.accounts,
-      ).find((internalAccount) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ).find((internalAccount: any) => {
         return internalAccount.address.toLowerCase() === account.toLowerCase();
       });
+
+      if (!accountToUpdate) {
+        return metamaskState;
+      }
 
       const internalAccounts = {
         ...metamaskState.internalAccounts,
@@ -215,8 +270,10 @@ export default function reduceMetamask(state = initialState, action) {
   }
 }
 
-const toHexWei = (value, expectHexWei) => {
-  return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
+const toHexWei = (value: string | number, expectHexWei?: boolean) => {
+  return addHexPrefix(
+    expectHexWei ? String(value) : decGWEIToHexWEI(String(value)),
+  );
 };
 
 // Action Creators
@@ -227,8 +284,15 @@ export function updateGasFees({
   maxFeePerGas,
   transaction,
   expectHexWei = false,
+}: {
+  gasPrice?: string;
+  gasLimit: string | number;
+  maxPriorityFeePerGas?: string;
+  maxFeePerGas?: string;
+  transaction: Json;
+  expectHexWei?: boolean;
 }) {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     const txParamsCopy = { ...transaction.txParams, gas: gasLimit };
     if (gasPrice) {
       dispatch(
@@ -246,45 +310,46 @@ export function updateGasFees({
       txParams: txParamsCopy,
     };
 
-    const customGasLimit = isHexString(addHexPrefix(gasLimit))
-      ? addHexPrefix(gasLimit)
+    const gasLimitAsString = String(gasLimit);
+    const customGasLimit = isHexString(addHexPrefix(gasLimitAsString))
+      ? addHexPrefix(gasLimitAsString)
       : addHexPrefix(gasLimit.toString(16));
     dispatch(setCustomGasLimit(customGasLimit));
-    await dispatch(updateTransactionGasFees(updatedTx.id, updatedTx));
+    await dispatch(updateTransactionGasFees(updatedTx.id as string, updatedTx));
   };
 }
 
 // Selectors
 
-export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
+export const getAlertEnabledness = (state: RootState) => state.metamask.alertEnabledness;
 
-export const getUnconnectedAccountAlertEnabledness = (state) =>
+export const getUnconnectedAccountAlertEnabledness = (state: RootState) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
-export const getWeb3ShimUsageAlertEnabledness = (state) =>
+export const getWeb3ShimUsageAlertEnabledness = (state: RootState) =>
   getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
-export const getUnconnectedAccountAlertShown = (state) =>
+export const getUnconnectedAccountAlertShown = (state: RootState) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getTokens = (state) => {
+export const getTokens = (state: RootState) => {
   const allTokens = getTokensControllerAllTokens(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
-export const getTokensByChainId = (state, chainId) => {
+export const getTokensByChainId = (state: RootState, chainId: string) => {
   const allTokens = getTokensControllerAllTokens(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   return allTokens?.[chainId]?.[selectedAddress] || [];
 };
 
-export function getNftsDropdownState(state) {
+export function getNftsDropdownState(state: RootState) {
   return state.metamask.nftsDropdownState;
 }
 
-export const getNfts = (state) => {
+export const getNfts = (state: RootState) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -295,7 +360,7 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
-export const getAllNfts = (state) => {
+export const getAllNfts = (state: RootState) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -304,7 +369,7 @@ export const getAllNfts = (state) => {
   return allNfts?.[selectedAddress] ?? EMPTY_ARRAY;
 };
 
-export const getNFTsByChainId = (state, chainId) => {
+export const getNFTsByChainId = (state: RootState, chainId: string) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -313,7 +378,7 @@ export const getNFTsByChainId = (state, chainId) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
-export const getNftContracts = (state) => {
+export const getNftContracts = (state: RootState) => {
   const {
     metamask: { allNftContracts },
   } = state;
@@ -322,48 +387,48 @@ export const getNftContracts = (state) => {
   return allNftContracts?.[selectedAddress]?.[chainId] ?? EMPTY_ARRAY;
 };
 
-export function getNativeCurrency(state) {
+export function getNativeCurrency(state: RootState) {
   return getProviderConfig(state).ticker;
 }
 
-export function getConversionRateByTicker(state, ticker) {
+export function getConversionRateByTicker(state: RootState, ticker: string) {
   return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
 
 export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
-export function getSendHexDataFeatureFlagState(state) {
+export function getSendHexDataFeatureFlagState(state: RootState) {
   return state.metamask.featureFlags.sendHexData;
 }
 
-export function getSendToAccounts(state) {
+export function getSendToAccounts(state: RootState) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state);
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
 }
 
-function getGasFeeControllerEstimateType(state) {
+function getGasFeeControllerEstimateType(state: RootState) {
   return state.metamask.gasEstimateType;
 }
 
-function getGasFeeControllerEstimateTypeByChainId(state, chainId) {
+function getGasFeeControllerEstimateTypeByChainId(state: RootState, chainId: string) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
 }
 
-function getGasFeeControllerEstimates(state) {
+function getGasFeeControllerEstimates(state: RootState) {
   return state.metamask.gasFeeEstimates;
 }
 
-function getGasFeeControllerEstimatesByChainId(state, chainId) {
+function getGasFeeControllerEstimatesByChainId(state: RootState, chainId: string) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
-function getTransactionGasFeeEstimates(state) {
+function getTransactionGasFeeEstimates(state: RootState) {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
-function getTransactionGasFeeEstimatesByChainId(state, chainId) {
+function getTransactionGasFeeEstimatesByChainId(state: RootState, chainId: string) {
   const transactionMetadata = state.confirmTransaction?.txData;
   const transactionChainId = transactionMetadata?.chainId;
 
@@ -376,18 +441,21 @@ function getTransactionGasFeeEstimatesByChainId(state, chainId) {
 
 const getTransactionGasFeeEstimateType = createSelector(
   getTransactionGasFeeEstimates,
-  (transactionGasFeeEstimates) => transactionGasFeeEstimates?.type,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (transactionGasFeeEstimates: any) => transactionGasFeeEstimates?.type,
 );
 
 const getTransactionGasFeeEstimateTypeByChainId = createSelector(
   getTransactionGasFeeEstimatesByChainId,
-  (transactionGasFeeEstimates) => transactionGasFeeEstimates?.type,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (transactionGasFeeEstimates: any) => transactionGasFeeEstimates?.type,
 );
 
 export const getGasEstimateType = createSelector(
   getGasFeeControllerEstimateType,
   getTransactionGasFeeEstimateType,
-  (gasFeeControllerEstimateType, transactionGasFeeEstimateType) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (gasFeeControllerEstimateType: any, transactionGasFeeEstimateType: any) => {
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
@@ -395,7 +463,8 @@ export const getGasEstimateType = createSelector(
 export const getGasEstimateTypeByChainId = createSelector(
   getGasFeeControllerEstimateTypeByChainId,
   getTransactionGasFeeEstimateTypeByChainId,
-  (gasFeeControllerEstimateType, transactionGasFeeEstimateType) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (gasFeeControllerEstimateType: any, transactionGasFeeEstimateType: any) => {
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
@@ -411,7 +480,8 @@ export { getTokenBalancesControllerTokenBalances as getTokenBalances };
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
   getTransactionGasFeeEstimatesByChainId,
-  (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (gasFeeControllerEstimates: any, transactionGasFeeEstimates: any) => {
     if (transactionGasFeeEstimates) {
       return mergeGasFeeEstimates({
         gasFeeControllerEstimates,
@@ -426,7 +496,8 @@ export const getGasFeeEstimatesByChainId = createSelector(
 export const getGasFeeEstimates = createSelector(
   getGasFeeControllerEstimates,
   getTransactionGasFeeEstimates,
-  (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (gasFeeControllerEstimates: any, transactionGasFeeEstimates: any) => {
     if (transactionGasFeeEstimates) {
       return mergeGasFeeEstimates({
         gasFeeControllerEstimates,
@@ -438,16 +509,16 @@ export const getGasFeeEstimates = createSelector(
   },
 );
 
-export function getEstimatedGasFeeTimeBounds(state) {
+export function getEstimatedGasFeeTimeBounds(state: RootState) {
   return state.metamask.estimatedGasFeeTimeBounds;
 }
 
-export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
+export function getEstimatedGasFeeTimeBoundsByChainId(state: RootState, chainId: string) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]
     ?.estimatedGasFeeTimeBounds;
 }
 
-export function getIsGasEstimatesLoading(state) {
+export function getIsGasEstimatesLoading(state: RootState) {
   const networkAndAccountSupports1559 =
     checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
@@ -468,8 +539,8 @@ export function getIsGasEstimatesLoading(state) {
 }
 
 export function getIsGasEstimatesLoadingByChainId(
-  state,
-  { chainId, networkClientId },
+  state: RootState,
+  { chainId, networkClientId }: { chainId: string; networkClientId?: string },
 ) {
   const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
     state,
@@ -492,34 +563,34 @@ export function getIsGasEstimatesLoadingByChainId(
   return isGasEstimatesLoading;
 }
 
-export function getIsNetworkBusyByChainId(state, chainId) {
+export function getIsNetworkBusyByChainId(state: RootState, chainId: string) {
   const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
-export function getCompletedOnboarding(state) {
+export function getCompletedOnboarding(state: RootState) {
   return state.metamask.completedOnboarding;
 }
 
-export function getHasSeenOnboardingCompletionPage(state) {
+export function getHasSeenOnboardingCompletionPage(state: RootState) {
   return state.metamask.hasSeenOnboardingCompletionPage;
 }
 
-export function getIsInitialized(state) {
+export function getIsInitialized(state: RootState) {
   return state.metamask.isInitialized;
 }
 
 /**
  * This function checks if the wallet is currently being reset.
  *
- * @param {object} state
- * @returns {boolean}
+ * @param state
+ * @returns
  */
-export function getIsWalletResetInProgress(state) {
+export function getIsWalletResetInProgress(state: RootState) {
   return state.metamask.isWalletResetInProgress;
 }
 
-export function getSeedPhraseBackedUp(state) {
+export function getSeedPhraseBackedUp(state: RootState) {
   return state.metamask.seedPhraseBackedUp;
 }
 
@@ -528,10 +599,10 @@ export function getSeedPhraseBackedUp(state) {
  *
  * Returns true if the first (primary) seed phrase is backed up when the user creates a new wallet.
  *
- * @param {object} state - the redux state object
- * @returns {boolean} true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
+ * @param state - the redux state object
+ * @returns true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
  */
-export function getIsPrimarySeedPhraseBackedUp(state) {
+export function getIsPrimarySeedPhraseBackedUp(state: RootState) {
   // when user imports/restores a seed phrase, we can assume that user has already backed up the seed phrase.
   if (state.metamask.firstTimeFlowType !== FirstTimeFlowType.create) {
     return true;
@@ -543,10 +614,10 @@ export function getIsPrimarySeedPhraseBackedUp(state) {
 /**
  * Retrieves the outdated status of the seedless password.
  *
- * @param {object} state - The Redux state object.
- * @returns {boolean} True if the seedless password is considered outdated, false otherwise.
+ * @param state - The Redux state object.
+ * @returns True if the seedless password is considered outdated, false otherwise.
  */
-export function getIsSeedlessPasswordOutdated(state) {
+export function getIsSeedlessPasswordOutdated(state: RootState) {
   return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
 }
 
@@ -554,10 +625,10 @@ export function getIsSeedlessPasswordOutdated(state) {
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *
- * @param {object} state - the redux state object
- * @returns {boolean} true if the user has a Ledger account and false otherwise
+ * @param state - the redux state object
+ * @returns true if the user has a Ledger account and false otherwise
  */
-export function doesUserHaveALedgerAccount(state) {
+export function doesUserHaveALedgerAccount(state: RootState) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
@@ -568,20 +639,20 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.
  *
- * @param {object} state - the redux state object
- * @returns {boolean} true if the user opened the extension with the sidepanel, false otherwise
+ * @param state - the redux state object
+ * @returns true if the user opened the extension with the sidepanel, false otherwise
  */
-export function getOpenedWithSidepanel(state) {
+export function getOpenedWithSidepanel(state: RootState) {
   return state.metamask.openedWithSidepanel;
 }
 
 /**
  * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
  *
- * @param {object} state - Redux root state
- * @returns {boolean}
+ * @param state - Redux root state
+ * @returns
  */
-export function getPasskeyAutoUnlockSuppressed(state) {
+export function getPasskeyAutoUnlockSuppressed(state: RootState) {
   return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
 }
 
@@ -589,10 +660,10 @@ export function getPasskeyAutoUnlockSuppressed(state) {
  * True when a locked user should unlock before resuming the onboarding
  * completion page (return visit without tapping Done).
  *
- * @param {object} state - MetaMask state tree
- * @returns {boolean} Whether the user must unlock before onboarding completion
+ * @param state - MetaMask state tree
+ * @returns Whether the user must unlock before onboarding completion
  */
-export function getShouldUnlockBeforeOnboardingCompletion(state) {
+export function getShouldUnlockBeforeOnboardingCompletion(state: RootState) {
   const { hasSeenOnboardingCompletionPage, completedOnboarding } =
     state.metamask;
 
