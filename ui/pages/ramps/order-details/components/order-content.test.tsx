@@ -84,6 +84,57 @@ describe('OrderContent (completed)', () => {
     const { container } = renderContent(completedOrder);
     expect(container).toMatchSnapshot();
   });
+
+  it('shows an error color for failed/cancelled/expired statuses', () => {
+    renderContent({
+      ...completedOrder,
+      status: RampsOrderStatus.Failed,
+    } as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-status'),
+    ).toHaveTextContent(RampsOrderStatus.Failed);
+  });
+
+  it('renders the order id unshortened when it is 8 characters or fewer', () => {
+    renderContent({
+      ...completedOrder,
+      providerOrderId: 'abcd1234',
+    } as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-order-id'),
+    ).toHaveTextContent('abcd1234');
+  });
+
+  it('falls back to USD/2 decimals when fiatCurrency is missing', () => {
+    const { fiatCurrency, ...rest } = completedOrder;
+    renderContent(rest as RampsOrder);
+    expect(screen.getByTestId('ramps-order-details-fees')).toHaveTextContent(
+      '$12.50',
+    );
+    expect(screen.getByTestId('ramps-order-details-total')).toHaveTextContent(
+      '$1,000.00',
+    );
+  });
+
+  it('renders an empty symbol when cryptoCurrency.symbol is missing', () => {
+    renderContent({
+      ...completedOrder,
+      cryptoCurrency: { ...completedOrder.cryptoCurrency, symbol: undefined },
+    } as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-token-amount'),
+    ).toHaveTextContent('0.5');
+  });
+
+  it('falls back to a generic label when provider name is missing', () => {
+    renderContent({
+      ...completedOrder,
+      provider: { ...completedOrder.provider, name: undefined },
+    } as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-view-on-provider'),
+    ).toBeInTheDocument();
+  });
 });
 
 describe('OrderContent (pending)', () => {
@@ -105,6 +156,19 @@ describe('OrderContent (pending)', () => {
     expect(
       screen.getByTestId('ramps-order-details-amount-skeleton'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the amount and hides the skeleton when the crypto amount is resolved', () => {
+    renderContent({
+      ...completedOrder,
+      status: RampsOrderStatus.Pending,
+    } as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-token-amount'),
+    ).toHaveTextContent('0.5 ETH');
+    expect(
+      screen.queryByTestId('ramps-order-details-amount-skeleton'),
+    ).not.toBeInTheDocument();
   });
 
   it('matches the pending snapshot', () => {

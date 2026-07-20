@@ -2,12 +2,13 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { RampsOrderDetailsScreen } from './order-details';
+import IndexDefaultExport from '.';
 
 const completedOrder = {
   providerOrderId: 'provider-order-1234567890',
@@ -46,6 +47,12 @@ const { useRampsOrders } = jest.requireMock(
 );
 
 const createStore = () => configureStore({ metamask: {} });
+
+describe('order-details index', () => {
+  it('re-exports RampsOrderDetailsScreen as the default export', () => {
+    expect(IndexDefaultExport).toBe(RampsOrderDetailsScreen);
+  });
+});
 
 describe('RampsOrderDetailsScreen', () => {
   beforeEach(() => {
@@ -136,10 +143,42 @@ describe('RampsOrderDetailsScreen', () => {
       '/ramps/order-details/order-1',
     );
 
-    fireEvent.click(screen.getByTestId('ramps-order-details-refresh'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-order-details-refresh'));
+    });
 
     expect(
       await screen.findByTestId('ramps-order-details-error'),
     ).toBeInTheDocument();
+  });
+
+  it('retries via the error-state retry button when refreshOrder throws', async () => {
+    const refreshOrder = jest.fn().mockRejectedValue(new Error('boom'));
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue({
+        ...completedOrder,
+        status: RampsOrderStatus.Pending,
+      }),
+      refreshOrder,
+    });
+
+    renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-order-details-refresh'));
+    });
+
+    const retryButton = await screen.findByTestId('ramps-order-details-retry');
+    expect(retryButton).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(retryButton);
+    });
+
+    expect(refreshOrder).toHaveBeenCalledTimes(2);
   });
 });
