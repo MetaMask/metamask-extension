@@ -1242,6 +1242,11 @@
         "@metamask/name-controller>@metamask/controller-utils": true
       }
     },
+    "@metamask/network-connection-banner-controller": {
+      "packages": {
+        "reselect": true
+      }
+    },
     "@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
