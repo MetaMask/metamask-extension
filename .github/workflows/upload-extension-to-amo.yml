@@ -211,36 +211,31 @@ jobs:
             echo "| Branch | \`${{ github.ref }}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      # Defense-in-depth: reject unauthorized actors before any AWS credential exchange.
-      # Allowed: Runway bot (actor_id=73448015) OR a member of @MetaMask/release-team.
-      # The authoritative IAM gate is the amo-submission-production/flask trust policy.
-      # INFRA-3769: release-team members may manually dispatch production from main.
+      # Defense-in-depth: production and flask dispatch must be Runway (automated path) or a human
+      # (manual path — INFRA-3769). Non-Runway bots are rejected before any AWS credential exchange.
+      # Human authorization is delegated to the amo-production/amo-flask GitHub Environment
+      # required-reviewers gate (configured by Platform to @MetaMask/release-team), which must be
+      # approved before this job runs. GITHUB_TOKEN does not carry read:org scope so team membership
+      # cannot be verified at the workflow layer. IAM trust is the authoritative technical control.
       - name: Verify authorized sender (production and flask)
         if: inputs.target == 'production' || inputs.target == 'flask'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR: ${{ github.actor }}
           SENDER_ID: ${{ github.event.sender.id }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
           RUNWAY_ACTOR_ID: '73448015'
-          RUNWAY_ACTOR_LOGIN: 'runway-github[bot]'
         run: |
           set -euo pipefail
-          echo "Sender: ${SENDER_LOGIN} (id=${SENDER_ID})"
-          if [[ "${SENDER_ID}" == "${RUNWAY_ACTOR_ID}" ]]; then
-            echo "Runway sender verified (id=${SENDER_ID})."
+          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN} (id=${SENDER_ID})"
+          if [[ "${SENDER_TYPE}" == "Bot" ]]; then
+            if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
+              echo "::error::Non-Runway bot dispatch is not permitted for production/flask (sender_id=${SENDER_ID}). Automated uploads must use Runway (id=${RUNWAY_ACTOR_ID}); human dispatches require amo-production/amo-flask environment approval from @MetaMask/release-team."
+              exit 1
+            fi
+            echo "Runway bot verified (id=${SENDER_ID})."
             exit 0
           fi
-          # Human actor — check @MetaMask/release-team membership via GitHub API.
-          HTTP_STATUS=$(gh api \
-            "orgs/MetaMask/teams/release-team/memberships/${ACTOR}" \
-            --silent -o /dev/null -w "%{http_code}" 2>/dev/null || echo "000")
-          if [[ "${HTTP_STATUS}" == "200" ]]; then
-            echo "Release-team member verified: ${ACTOR}"
-            exit 0
-          fi
-          echo "::error::Unauthorized actor '${ACTOR}' (sender_id=${SENDER_ID}). Production and Flask uploads must be dispatched by Runway (id=${RUNWAY_ACTOR_ID}) or a member of @MetaMask/release-team. IAM trust would also reject this OIDC request."
-          exit 1
+          echo "Human dispatch confirmed. Environment reviewer approval is recorded by GitHub before this job runs."
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
