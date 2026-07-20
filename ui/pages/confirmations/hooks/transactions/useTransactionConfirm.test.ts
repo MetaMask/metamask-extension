@@ -91,10 +91,13 @@ jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
 }));
 
 const mockUseSendBundleAmountSymbol = jest.fn();
-jest.mock('../../../../hooks/hardware-wallets/useSendBundleAmountSymbol', () => ({
-  useSendBundleAmountSymbol: (...args: unknown[]) =>
-    mockUseSendBundleAmountSymbol(...args),
-}));
+jest.mock(
+  '../../../../hooks/hardware-wallets/useSendBundleAmountSymbol',
+  () => ({
+    useSendBundleAmountSymbol: (...args: unknown[]) =>
+      mockUseSendBundleAmountSymbol(...args),
+  }),
+);
 
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;

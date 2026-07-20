@@ -58,15 +58,15 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-      relaySupportsChain &&
-      // contract deployments can't be delegated
-      transactionMeta?.txParams?.to !== undefined,
+    relaySupportsChain &&
+    // contract deployments can't be delegated
+    transactionMeta?.txParams?.to !== undefined,
   );
 
   // sendBundle is open to all account types; is7702Supported already gates HW wallets
   const isSupported = Boolean(
     !isDowngradeTransaction &&
-      (isSmartTransactionAndBundleSupported || is7702Supported),
+    (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   // sendBundle pending state applies to all account types; 7702 pending stays HW-gated
