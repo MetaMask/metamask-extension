@@ -4,13 +4,13 @@ export function camelCaseToCapitalize(str = ''): string {
 
 export function getCurrencySymbol(currencyCode: string): string {
   const supportedCurrencyCodes: Record<string, string> = {
-    EUR: '€',
-    HKD: '$',
-    JPY: '¥',
-    PHP: '₱',
-    RUB: '₽',
-    SGD: '$',
-    USD: '$',
+    EUR: '\u20AC',
+    HKD: '\u0024',
+    JPY: '\u00A5',
+    PHP: '\u20B1',
+    RUB: '\u20BD',
+    SGD: '\u0024',
+    USD: '\u0024',
   };
   if (supportedCurrencyCodes[currencyCode.toUpperCase()]) {
     return supportedCurrencyCodes[currencyCode.toUpperCase()];
