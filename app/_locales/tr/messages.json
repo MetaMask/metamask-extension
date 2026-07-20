@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "Token Ondalığı"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Ondalıklar en az 0, en fazla 36 olmalıdır."
-  },
   "decrypt": {
     "message": "Şifre çöz"
   },

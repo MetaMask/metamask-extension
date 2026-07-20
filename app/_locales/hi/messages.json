@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "टोकन डेसीमल"
   },
-  "decimalsMustZerotoTen": {
-    "message": "डेसीमल कम से कम 0 होना चाहिए और 36 से अधिक न हो।"
-  },
   "decrypt": {
     "message": "डिक्रिप्ट करें"
   },

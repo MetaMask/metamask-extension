@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "Nombre de décimales du jeton"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
-  },
   "decrypt": {
     "message": "Décrypter"
   },

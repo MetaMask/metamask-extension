@@ -397,18 +397,17 @@ export const CustomTokenImportPage = () => {
     (value: string) => {
       if (value === '') {
         setDecimals('');
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
         return;
       }
       const next = Number(value);
       setDecimals(value);
       if (
-        Number.isNaN(next) ||
         !Number.isInteger(next) ||
         next < MIN_DECIMAL_VALUE ||
         next > MAX_DECIMAL_VALUE
       ) {
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
       } else {
         setDecimalsError(null);
       }

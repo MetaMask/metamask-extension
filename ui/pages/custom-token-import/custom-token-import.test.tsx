@@ -346,7 +346,7 @@ describe('CustomTokenImportPage', () => {
     fireEvent.change(decimalsInput, { target: { value: '0.0001' } });
 
     expect(
-      screen.getByText(messages.decimalsMustZerotoTen.message),
+      screen.getByText(messages.tokenDecimalsMustBeWholeNumber.message),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('custom-token-import-submit-button'),

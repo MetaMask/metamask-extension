@@ -3204,9 +3204,6 @@
   "decimal": {
     "message": "Desimal token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal minimal 0, dan tidak lebih dari 36."
-  },
   "decrypt": {
     "message": "Dekripsikan"
   },
