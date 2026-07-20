@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -16,11 +16,15 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
+import {
+  MetaMetricsSwapsEventSource,
+  ScreenViewedEntryPoint,
+} from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
-import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
+import useBridging from '../../../hooks/bridge/useBridging';
+import { resetBridgeController } from '../../../ducks/bridge/actions';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -66,37 +70,59 @@ const NavTab = ({
 
 export function BottomNavBar() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
+  const { openBridgeExperience } = useBridging();
 
   const { isHome, isPerps, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
 
-  const handleHomeClick = useCallback(
-    () =>
-      navigate(
-        lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        { state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick } },
-      ),
-    [navigate, lastActiveTab],
-  );
+  // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
+  // controller (clears quotes + cache) and pass stayOnHomePage:true so that
+  // ConfirmationRouter doesn't redirect back during the async reset window.
+  const resetBridgeIfNeeded = useCallback(() => {
+    if (isSwaps) {
+      dispatch(resetBridgeController());
+    }
+  }, [dispatch, isSwaps]);
 
-  const handlePerpsClick = useCallback(
-    () => navigate(PERPS_HOME_PAGE_ROUTE),
-    [navigate],
-  );
+  const handleHomeClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    navigate(
+      lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
+      {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      },
+    );
+  }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
 
-  const handleSwapsClick = useCallback(() => navigate(SWAP_PATH), [navigate]);
+  const handlePerpsClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } });
+  }, [navigate, resetBridgeIfNeeded]);
 
-  const handleActivityClick = useCallback(
-    () =>
-      navigate(ACTIVITY_ROUTE, {
-        state: { entryPoint: ScreenViewedEntryPoint.BottomNavClick },
-      }),
-    [navigate],
-  );
+  const handleSwapsClick = useCallback(() => {
+    if (isSwaps) {
+      return;
+    }
+    openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar);
+  }, [openBridgeExperience, isSwaps]);
+
+  const handleActivityClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    navigate(ACTIVITY_ROUTE, {
+      state: {
+        entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+        stayOnHomePage: true,
+      },
+    });
+  }, [navigate, resetBridgeIfNeeded]);
 
   return (
     <nav

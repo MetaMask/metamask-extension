@@ -300,8 +300,9 @@
     "@metamask/accounts-controller": "^39.0.3",
     "@metamask/multichain-account-service": "^11.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
-    "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
-    "@metamask/messenger": "^2.0.0"
+    "@metamask/messenger": "^2.0.0",
+    "@metamask/assets-controller@npm:^10.2.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch",
+    "@metamask/assets-controller@npm:^11.0.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -337,7 +338,7 @@
     "@metamask/analytics-controller": "^1.1.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^10.2.0",
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch",
     "@metamask/assets-controllers": "^109.4.0",
     "@metamask/authenticated-user-storage": "^3.0.0",
     "@metamask/base-controller": "^9.0.1",
