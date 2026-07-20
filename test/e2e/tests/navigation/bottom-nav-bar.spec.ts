@@ -18,9 +18,8 @@ import { mockGetPopularTokens } from '../bridge/bridge-test-utils';
 /**
  * Fixture config for the bottom nav bar AB test treatment.
  *
- * Sets `experimentEligibility` in AppStateController to `true` so the user
- * is considered eligible for the experiment, and sets the feature flag controller
- * with `'treatment'` so the AB test shows the treatment variant.
+ * Sets the feature flag controller with `'treatment'` so the AB test shows
+ * the treatment variant.
  *
  * @param title - The test title for debugging.
  * @returns Partial withFixtures config to spread into withFixtures().
@@ -28,11 +27,6 @@ import { mockGetPopularTokens } from '../bridge/bridge-test-utils';
 function getBottomNavTreatmentFixtures(title?: string) {
   return {
     fixtures: new FixtureBuilderV2()
-      .withAppStateController({
-        experimentEligibility: {
-          [BOTTOM_NAV_AB_TEST_KEY]: true,
-        },
-      })
       .withRemoteFeatureFlagController({
         remoteFeatureFlags: {
           ...getProductionRemoteFlagDefaults(),

@@ -864,9 +864,6 @@
         "properties": {}
       }
     ],
-    "experimentEligibility": {
-      "*": "boolean"
-    },
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "string",

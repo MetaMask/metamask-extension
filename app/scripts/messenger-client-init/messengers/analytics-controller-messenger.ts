@@ -18,7 +18,6 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import type { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import type { RootMessenger } from '../../lib/messenger';
 
 type InitActions =
@@ -31,8 +30,7 @@ type InitActions =
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
-  | AnalyticsControllerTrackViewAction
-  | AppStateControllerGetStateAction;
+  | AnalyticsControllerTrackViewAction;
 
 type InitEvents = never;
 
@@ -98,7 +96,6 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',
       'AnalyticsController:trackView',
-      'AppStateController:getState',
     ],
     events: [],
   });

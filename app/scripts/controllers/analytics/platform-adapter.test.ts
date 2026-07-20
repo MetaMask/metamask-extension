@@ -33,7 +33,6 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => false,
   hasBasicFunctionalityEnabled: () => true,
   getRemoteFeatureFlags: () => ({}),
-  getExperimentEligibility: () => ({}),
   appVersion: '1.0.0',
   userAgent: '',
 };
@@ -526,38 +525,6 @@ describe('createPlatformAdapter', () => {
             active_ab_tests: [
               createActiveABTestAssignment(flagKey, 'treatment'),
             ],
-          }),
-        }),
-        undefined,
-      );
-    });
-
-    it('does not inject active_ab_tests when the user is ineligible for the experiment', () => {
-      const flagKey = 'testTEST9999AbtestAdapter';
-      AB_TEST_ANALYTICS_MAPPINGS.push({
-        flagKey,
-        validVariants: ['control', 'treatment'],
-        eventNames: ['Mapped Event'],
-      });
-
-      const { adapter, segment } = buildAdapter(
-        createMockEnrichmentContext({
-          getRemoteFeatureFlags: () => ({
-            [flagKey]: 'treatment',
-          }),
-          getExperimentEligibility: () => ({
-            [flagKey]: false,
-          }),
-        }),
-      );
-
-      adapter.track('Mapped Event', { foo: 'bar' });
-
-      expect(segment.track).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.not.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            active_ab_tests: expect.anything(),
           }),
         }),
         undefined,

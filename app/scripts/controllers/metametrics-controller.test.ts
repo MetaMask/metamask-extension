@@ -75,7 +75,6 @@ import {
   enrichEventProperties,
   enrichWithABTestAnalytics,
 } from './analytics/platform-adapter';
-import type { AppStateControllerGetStateAction } from './app-state-controller';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -3094,11 +3093,7 @@ describe('MetaMetricsController', function () {
   });
 });
 
-type RootMessenger = Messenger<
-  MockAnyNamespace,
-  AllowedActions | AppStateControllerGetStateAction,
-  AllowedEvents
->;
+type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
 
 type MetaMetricsControllerTestState = Partial<MetaMetricsControllerState>;
 
@@ -3127,7 +3122,6 @@ type WithControllerOptions = {
     isEvmSelected: boolean;
     selectedMultichainNetworkChainId: string;
   };
-  experimentEligibility?: Record<string, boolean>;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -3177,7 +3171,6 @@ async function withController<ReturnValue>(
         isEvmSelected: true,
         selectedMultichainNetworkChainId: 'eip155:1',
       },
-      experimentEligibility = {},
     } = rest;
 
     const mmcState = merge(
@@ -3242,13 +3235,6 @@ async function withController<ReturnValue>(
     messenger.registerActionHandler(
       'SeedlessOnboardingController:getState',
       jest.fn().mockReturnValue(seedlessOnboardingState),
-    );
-
-    messenger.registerActionHandler(
-      'AppStateController:getState',
-      jest.fn().mockReturnValue({
-        experimentEligibility,
-      }),
     );
 
     const mockAnalyticsControllerState: AnalyticsControllerState = {

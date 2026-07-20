@@ -135,7 +135,6 @@ describe('trackSegmentEventWhileOptedOut', () => {
       hasMarketingConsent: () => false,
       hasBasicFunctionalityEnabled: () => true,
       getRemoteFeatureFlags: () => ({}),
-      getExperimentEligibility: () => ({}),
       appVersion: '1.0.0',
       userAgent: '',
     });
@@ -203,7 +202,6 @@ describe('trackSegmentEventWhileOptedOut', () => {
       hasMarketingConsent: () => false,
       hasBasicFunctionalityEnabled: () => false,
       getRemoteFeatureFlags: () => ({}),
-      getExperimentEligibility: () => ({}),
       appVersion: '1.0.0',
       userAgent: '',
     });

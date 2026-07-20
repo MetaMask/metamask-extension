@@ -17,7 +17,6 @@ import {
 } from '../../../../shared/constants/transaction';
 import { UTM_PARAMETERS } from '../../../../shared/types/metametrics';
 import {
-  AB_TEST_ANALYTICS_MAPPINGS,
   enrichWithABTests,
   getRemoteFeatureFlagsWithManifestOverrides,
   hasABTestAnalyticsMappingForEvent,
@@ -45,7 +44,6 @@ export type PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => boolean;
   hasBasicFunctionalityEnabled: () => boolean;
   getRemoteFeatureFlags: () => Record<string, unknown>;
-  getExperimentEligibility: () => Record<string, boolean>;
   appVersion: string;
   userAgent: string;
 };
@@ -117,9 +115,6 @@ export function createEnrichmentContext(
         messenger.call('RemoteFeatureFlagController:getState')
           ?.remoteFeatureFlags as Record<string, unknown> | undefined,
       ),
-    getExperimentEligibility: () =>
-      messenger.call('AppStateController:getState')?.experimentEligibility ??
-      {},
     appVersion,
     userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
   };
@@ -217,16 +212,10 @@ export function enrichWithABTestAnalytics(
   }
 
   try {
-    const experimentEligibility = ctx.getExperimentEligibility();
-    // Filter out analytics mappings for experiments the user is not eligible for
-    const eligibleMappings = AB_TEST_ANALYTICS_MAPPINGS.filter(
-      (mapping) => experimentEligibility[mapping.flagKey] !== false,
-    );
     return (
       enrichWithABTests(
         { name: eventName, properties: enrichedProperties },
         ctx.getRemoteFeatureFlags(),
-        eligibleMappings,
       ).properties ?? enrichedProperties
     );
   } catch {
