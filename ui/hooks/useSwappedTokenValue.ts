@@ -87,7 +87,7 @@ export function useSwappedTokenValue(
 
   const isNegative =
     typeof swapTokenValue === 'string'
-      ? Math.sign(Number(swapTokenValue)) === -1
+      ? Number(swapTokenValue) < 0
       : false;
 
   const _swapTokenFiatAmount = useTokenFiatAmount(
