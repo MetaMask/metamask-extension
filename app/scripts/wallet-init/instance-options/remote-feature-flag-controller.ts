@@ -13,7 +13,7 @@ import {
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
 import type { WalletInitMessenger } from '../types';
 
-const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
+const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 60 * 1000; // 1 minute (TESTING ONLY - revert to 15 * 60 * 1000)
 
 type MetaMaskBuildType = 'flask' | 'main' | 'beta' | 'experimental';
 

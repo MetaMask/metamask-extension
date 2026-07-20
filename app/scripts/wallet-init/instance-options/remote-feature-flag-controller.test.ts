@@ -52,12 +52,13 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     expect(options.getMetaMetricsId?.()).toBe('metrics-id');
   });
 
-  it('uses the configured client version and 15-minute fetch interval', () => {
+  it('uses the configured client version and fetch interval', () => {
     const options = buildOptions({});
 
     expect(getBaseSemVerVersion).toHaveBeenCalled();
     expect(options.clientVersion).toBe('1.2.3');
-    expect(options.fetchInterval).toBe(15 * 60 * 1000);
+    // TESTING ONLY - revert to 15 * 60 * 1000
+    expect(options.fetchInterval).toBe(60 * 1000);
   });
 
   it('reads prevClientVersion from persisted AppMetadataController state', () => {
