@@ -102,14 +102,21 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
         // eslint-disable-next-line no-console
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
 
-        // The startNewTrace fix: distinct background RPC ops get distinct trace
-        // ids (not all collapsed onto the SW pageload trace). Assert only when
-        // at least two ops were observed, so the run stays informative on a
-        // light session while still failing a regression when ops do fire.
+        // The startNewTrace fix: EVERY background RPC op roots its own trace.
+        // Assert full pairwise distinctness (not merely >1 distinct — ids
+        // X, X, Y must fail) and that none shares the SW pageload's trace id.
+        // Assert only when at least two ops were observed, so the run stays
+        // informative on a light session while still failing a regression.
         if (bgRpc.length >= 2) {
-          assert(
-            distinct.length > 1,
-            `expected distinct trace ids per background RPC op, got ${distinct.length} distinct across ${bgRpc.length} ops`,
+          assert.equal(
+            distinct.length,
+            bgRpc.length,
+            `expected one distinct trace id per background RPC op, got ${distinct.length} distinct across ${bgRpc.length} ops: ${JSON.stringify(bgRpc)}`,
+          );
+          assert.equal(
+            sharingSw,
+            0,
+            `expected no background RPC op on the /service-worker.js pageload trace, got ${sharingSw}`,
           );
         }
       },
