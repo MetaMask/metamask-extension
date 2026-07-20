@@ -49,6 +49,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_PROVIDER_SELECTION_ROUTE,
+  RAMPS_ORDER_DETAILS_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -213,6 +214,9 @@ const RampsPaymentMethod = mmLazy(
 );
 const RampsProviderSelection = mmLazy(
   () => import('../ramps/provider-selection/index.ts'),
+);
+const RampsOrderDetails = mmLazy(
+  () => import('../ramps/order-details/index.ts'),
 );
 const PermissionsPage = mmLazy(
   () =>
@@ -556,6 +560,10 @@ export const routeConfig = [
           {
             path: RAMPS_PROVIDER_SELECTION_ROUTE,
             element: <RampsProviderSelection />,
+          },
+          {
+            path: RAMPS_ORDER_DETAILS_ROUTE,
+            element: <RampsOrderDetails />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,

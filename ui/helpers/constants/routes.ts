@@ -186,6 +186,7 @@ export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
+export const RAMPS_ORDER_DETAILS_ROUTE = '/ramps/order-details/:orderId';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';

@@ -8240,6 +8240,15 @@
     "message": "on $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsDone": {
+    "message": "Done"
+  },
+  "rampsOrderDetailsNotFound": {
+    "message": "Order not found"
+  },
+  "rampsOrderDetailsTitle": {
+    "message": "Order details"
+  },
   "rampsOtherOptions": {
     "message": "Other options"
   },
