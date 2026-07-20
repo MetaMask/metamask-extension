@@ -137,6 +137,26 @@ describe('applySentryRemoteRates', () => {
     jest.useRealTimers();
   });
 
+  it('still applies when the hook registers on the last poll interval', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    // Absent through nearly the whole poll window (50 × 100ms).
+    const applied = applySentryRemoteRates(client);
+    await jest.advanceTimersByTimeAsync(49 * 100);
+    // Registers right at the end — must still be picked up (not missed by the
+    // check-then-wait off-by-one).
+    mockPersistedState({ tracesSampleRate: 0.04 });
+    await jest.advanceTimersByTimeAsync(100);
+
+    await expect(applied).resolves.toStrictEqual({
+      tracesSampleRate: 0.04,
+      wrapperSampleRate: undefined,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.04);
+    jest.useRealTimers();
+  });
+
   it('falls back when reading persisted state throws', async () => {
     globalThis.stateHooks = {
       getPersistedState: async () => {

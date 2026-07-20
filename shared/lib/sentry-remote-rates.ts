@@ -86,7 +86,10 @@ async function waitForPersistedStateHook(
     }
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
-  return undefined;
+  // The hook may have registered during the final wait; check once more before
+  // giving up so a registration on the last interval isn't missed.
+  const hook = globalThis.stateHooks?.getPersistedState;
+  return typeof hook === 'function' ? (hook as PersistedStateHook) : undefined;
 }
 
 /**
