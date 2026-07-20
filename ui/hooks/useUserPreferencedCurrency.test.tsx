@@ -6,9 +6,23 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
+import {
+  useUserPreferencedCurrency,
+  type UseUserPreferencedCurrencyOptions,
+} from './useUserPreferencedCurrency';
 
-const renderUseUserPreferencedCurrency = (state, value, restProps) => {
+type TestState = {
+  showNativeTokenAsMainBalance: boolean;
+  nativeCurrency: string;
+  showFiat: boolean;
+  currentCurrency: string;
+};
+
+const renderUseUserPreferencedCurrency = (
+  state: TestState,
+  value: 'PRIMARY' | 'SECONDARY' | undefined,
+  restProps: UseUserPreferencedCurrencyOptions,
+) => {
   const defaultState = {
     ...mockState,
     metamask: {
@@ -27,7 +41,7 @@ const renderUseUserPreferencedCurrency = (state, value, restProps) => {
     },
   };
 
-  const wrapper = ({ children }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <Provider store={configureStore(defaultState)}>{children}</Provider>
   );
 
