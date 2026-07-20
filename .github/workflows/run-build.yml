@@ -64,6 +64,7 @@ jobs:
       QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
       QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
@@ -82,17 +83,15 @@ jobs:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
-      # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node
-      # can only run javascript, so we need a transpilation step before building.
+      # Webpack uses TypeScript, but lavamoat node can only run JavaScript, so we need a transpilation step before building.
       - name: Run tsc
-        if: ${{ contains(inputs.build-name, 'webpack') }}
         run: yarn webpack:tsc
 
       - name: Run build
         run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
 
       - name: Validate source maps
-        run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
+        run: yarn validate-source-maps
 
       - name: Run mozilla-lint
         if: ${{ contains(inputs.build-name, 'mv2') }}

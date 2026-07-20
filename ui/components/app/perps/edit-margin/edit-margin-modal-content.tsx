@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  SensitiveText,
   TextVariant,
   TextColor,
   FontWeight,
@@ -22,6 +24,7 @@ import {
   PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -45,7 +48,7 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import {
   formatPerpsLiquidationPrice,
   isPerpsLiquidationPriceValid,
@@ -107,6 +110,7 @@ export const EditMarginModalContent = ({
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
+  const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [marginAmount, setMarginAmount] = useState<string>('');
@@ -146,13 +150,14 @@ export const EditMarginModalContent = ({
     const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
     if (!hasValidAnchorLiquidationPrice) {
       return (
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
+          isHidden={privacyMode}
           data-testid="perps-edit-margin-liquidation-price-value"
         >
           {PERPS_LIQUIDATION_PRICE_FALLBACK}
-        </Text>
+        </SensitiveText>
       );
     }
     if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
@@ -163,30 +168,36 @@ export const EditMarginModalContent = ({
           gap={1}
           className="max-w-[65%] flex-wrap justify-end"
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            isHidden={privacyMode}
+          >
             {formatPerpsFiat(displayAnchorLiquidationPrice, {
               ranges: PRICE_RANGES_UNIVERSAL,
             })}
-          </Text>
+          </SensitiveText>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             →
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodySm}
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Medium}
+            isHidden={privacyMode}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
             {formatPerpsLiquidationPrice(estimatedLiquidationPrice)}
-          </Text>
+          </SensitiveText>
         </Box>
       );
     }
     return (
-      <Text
+      <SensitiveText
         variant={TextVariant.BodySm}
         color={TextColor.TextDefault}
         fontWeight={FontWeight.Medium}
+        isHidden={privacyMode}
         data-testid="perps-edit-margin-liquidation-price-value"
       >
         {formatPerpsLiquidationPrice(
@@ -194,7 +205,7 @@ export const EditMarginModalContent = ({
             ? estimatedLiquidationPrice
             : anchorLiquidationPrice,
         )}
-      </Text>
+      </SensitiveText>
     );
   }, [
     anchorLiquidationPrice,
@@ -202,6 +213,7 @@ export const EditMarginModalContent = ({
     hasValidAnchorLiquidationPrice,
     hasValidEstimatedLiquidationPrice,
     showLiquidationComparison,
+    privacyMode,
   ]);
 
   const marginPercent = useMemo(() => {
@@ -312,7 +324,7 @@ export const EditMarginModalContent = ({
           [{ skipCache: true }],
         );
         streamManager.pushPositionsWithOverrides(freshPositions);
-        const displaySymbol = getDisplayName(position.symbol);
+        const displaySymbol = getDisplaySymbol(position.symbol);
 
         replacePerpsToastByKey({
           key:
@@ -418,16 +430,17 @@ export const EditMarginModalContent = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {availableLabel}
         </Text>
-        <Text
+        <SensitiveText
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
+          isHidden={privacyMode}
           data-testid="perps-edit-margin-available-value"
         >
           {`${formatPerpsFiat(maxAmount, {
             ranges: PRICE_RANGES_MINIMAL_VIEW,
           })} USDC`}
-        </Text>
+        </SensitiveText>
       </Box>
 
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>

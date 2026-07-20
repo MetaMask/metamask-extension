@@ -142,6 +142,11 @@ const BITCOIN_DISCOVERY_BLOCKS = [
 const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
   '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
 
+// The canonical Bitcoin mainnet genesis block hash (height 0). The snap fetches
+// `/block-height/0` and verifies it against this known value during discovery.
+const BITCOIN_MAINNET_GENESIS_HASH =
+  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+
 const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
   1: 1,
   2: 1,
@@ -190,6 +195,30 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
       statusCode: 200,
       body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
     }));
+
+  // The Bitcoin snap fetches `/block-height/0` and verifies the genesis hash
+  // before deriving accounts — a network-identity check not covered by the
+  // discovery mocks above (#43817) nor by the Solana-scoped completion work
+  // (#43961/#43958), so this handler stays. Unmocked, the request falls to the
+  // empty-200 catch-all, whose malformed body retry-storms discovery and
+  // delays the non-EVM account icons past the default wait. Height 0 must
+  // return the real genesis hash: the snap's chain check rejects a tip hash
+  // there and crashes account creation.
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const height = request.url.match(/block-height\/(?<h>\d+)/u)?.groups?.h;
+      return {
+        statusCode: 200,
+        body:
+          height === '0'
+            ? BITCOIN_MAINNET_GENESIS_HASH
+            : BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+      };
+    });
 
   await server
     .forGet(
@@ -506,18 +535,23 @@ async function setupMocking(
       };
     });
 
-  // SENTRY_DSN_PERFORMANCE
+  // `SENTRY_DSN_PERFORMANCE`
+  // Intercept with a canned 200 rather than passing through: tracing emits
+  // hundreds of performance envelopes per test, and the real-network
+  // round-trips starve startup, flake the non-EVM account render, and consume
+  // the `metamask-performance` quota from CI.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenPassThrough({
-      beforeRequest: (req) => {
-        console.log(
-          'Request going to Sentry metamask-performance ============',
-          req.url,
-          false,
-        );
-        return {};
-      },
+    .thenCallback((req) => {
+      console.log(
+        'Request going to Sentry metamask-performance ============',
+        req.url,
+        false,
+      );
+      return {
+        statusCode: 200,
+        json: {},
+      };
     });
 
   await server
@@ -1322,7 +1356,7 @@ async function setupMocking(
   // .always() ensures every fetch returns [] (not just the first one).
   // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
-    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
@@ -1716,9 +1750,10 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation (production and dev environments)
+  // On Ramp: Geolocation (production, staging, and dev environments)
   for (const host of [
     'on-ramp.api.cx.metamask.io',
+    'on-ramp.uat-api.cx.metamask.io',
     'on-ramp.dev-api.cx.metamask.io',
   ]) {
     await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
@@ -1730,6 +1765,22 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      });
   }
 
   // Snaps: Execution environment html
