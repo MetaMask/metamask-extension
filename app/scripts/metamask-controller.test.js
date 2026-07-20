@@ -2412,8 +2412,9 @@ describe('MetaMaskController', () => {
 
         beforeEach(() => {
           remoteFeatureFlags = {};
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const manifestFlags = require('../../shared/lib/manifestFlags');
+          const manifestFlags = jest.requireMock(
+            '../../shared/lib/manifestFlags',
+          );
           getManifestFlagsMock = jest.mocked(manifestFlags.getManifestFlags);
           getManifestFlagsMock.mockReturnValue({});
           jest
@@ -2496,6 +2497,19 @@ describe('MetaMaskController', () => {
           remoteFeatureFlags.ledgerDmk = true;
           const mode = metamaskController.getLedgerMode();
           expect(mode).toBe('dmk');
+        });
+
+        it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', () => {
+          jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return {};
+              }
+              return {};
+            });
+
+          expect(metamaskController.getLedgerMode()).toBe('legacy');
         });
       });
 

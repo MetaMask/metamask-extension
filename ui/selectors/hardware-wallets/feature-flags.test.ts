@@ -4,7 +4,7 @@ import { getIsDmkEnabled } from './feature-flags';
 
 jest.mock('semver');
 jest.mock('../../../package.json', () => ({
-  version: '13.36.0',
+  version: '13.42.0',
 }));
 
 type DmkFlag = {
@@ -59,13 +59,13 @@ describe('Hardware Wallet Feature Flags', () => {
 
         const state = getMockState({
           enabled: true,
-          featureVersion: '13.36.0',
-          minimumVersion: '13.36.0',
+          featureVersion: '13.42.0',
+          minimumVersion: '13.42.0',
         });
 
         expect(getIsDmkEnabled(state)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledTimes(1);
-        expect(semverGteMock).toHaveBeenCalledWith('13.36.0', '13.36.0');
+        expect(semverGteMock).toHaveBeenCalledWith('13.42.0', '13.42.0');
       });
 
       it('returns false when enabled is true but version check fails', () => {
@@ -78,7 +78,7 @@ describe('Hardware Wallet Feature Flags', () => {
         });
 
         expect(getIsDmkEnabled(state)).toBe(false);
-        expect(semverGteMock).toHaveBeenCalledWith('13.36.0', '100.0.0');
+        expect(semverGteMock).toHaveBeenCalledWith('13.42.0', '100.0.0');
       });
 
       it('returns false when enabled is false regardless of minimumVersion', () => {

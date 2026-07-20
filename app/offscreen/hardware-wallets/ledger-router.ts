@@ -42,6 +42,9 @@ let modeSwitchListenerRegistered = false;
  */
 let initInProgress: Promise<void> | null = null;
 
+/** Serializes handler switches so the latest requested mode wins in order. */
+let switchInProgress: Promise<void> = Promise.resolve();
+
 /**
  * Idempotently registers the central message listener that dispatches every
  * `ledger-offscreen` action to `activeHandler`.
@@ -188,6 +191,20 @@ function listenForModeSwitches(): void {
 }
 
 /**
+ * Notifies the background that the mode-switch listener is ready.
+ *
+ * This explicit handshake lets the background resend the current mode if its
+ * initial message was sent after createOffscreen() timed out but before this
+ * router had finished booting.
+ */
+function notifyModeSwitchListenerReady(): void {
+  chrome.runtime.sendMessage({
+    target: OffscreenCommunicationTarget.extensionMain,
+    event: OffscreenCommunicationEvents.ledgerModeReady,
+  });
+}
+
+/**
  * Initialises the Ledger offscreen handler for the first time.
  *
  * Registers a central `chrome.runtime.onMessage` listener (idempotently) and
@@ -239,9 +256,15 @@ export default async function initLedger(
  *
  * @param mode - The handler implementation to switch to. See `createHandler`.
  */
-export async function switchLedgerHandler(
+export function switchLedgerHandler(
   mode: LedgerHandlerMode,
 ): Promise<void> {
+  const switchPromise = switchInProgress.then(() => performSwitch(mode));
+  switchInProgress = switchPromise.catch(() => undefined);
+  return switchPromise;
+}
+
+async function performSwitch(mode: LedgerHandlerMode): Promise<void> {
   if (initInProgress !== null) {
     await initInProgress;
   }
@@ -296,4 +319,6 @@ export async function bootstrapLedger(): Promise<void> {
     // DevTools console instead of failing silently.
     console.error('[ledger-router] bootstrapLedger failed:', error);
   }
+
+  notifyModeSwitchListenerReady();
 }

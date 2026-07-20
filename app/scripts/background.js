@@ -67,14 +67,13 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import Migrator from './lib/migrator';
 import migrations from './migrations';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -865,55 +864,7 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  // Push Ledger handler mode to the offscreen document after it has booted.
-  // The offscreen boots as Legacy by default; without waiting for
-  // `offscreenPromise`, the initial `switchLedgerMode` can be sent before
-  // `listenForModeSwitches` is registered and is lost. If the cached
-  // `ledgerDmk` value never changes after that, no further push arrives and
-  // the router stays on Legacy forever.
-  if (isManifestV3) {
-    const pushLedgerMode = (reason) => {
-      try {
-        const mode = controller.getLedgerMode();
-        log.info(
-          `[ledger-router] pushing switchLedgerMode (${reason})`,
-          mode,
-        );
-        browser.runtime.sendMessage({
-          target: OffscreenCommunicationTarget.extension,
-          event: OffscreenCommunicationEvents.switchLedgerMode,
-          mode,
-        });
-      } catch (error) {
-        log.error(
-          `[ledger-router] failed to push switchLedgerMode (${reason})`,
-          error,
-        );
-      }
-    };
-
-    Promise.resolve(offscreenPromise)
-      .then(() => pushLedgerMode('initial-after-offscreen-ready'))
-      .catch((error) => {
-        log.error(
-          '[ledger-router] offscreen not ready; skipping initial switchLedgerMode',
-          error,
-        );
-      });
-
-    // When the `ledgerDmk` flag toggles, hot-swap the active Ledger handler.
-    controller.controllerMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      () => {
-        pushLedgerMode('flag-change');
-      },
-      (state) =>
-        getBooleanFeatureFlag(
-          state.remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
-          false,
-        ),
-    );
-  }
+  setupLedgerModeOffscreenBridge(controller, offscreenPromise);
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
@@ -1811,30 +1762,7 @@ export function setupController(
       }
 
       // lazily update the remote feature flags every time the UI is opened.
-      // Re-sync Ledger mode afterwards so a cache refresh that enables
-      // `ledgerDmk` (or a race-missed initial push) still reaches offscreen.
-      updateRemoteFeatureFlags(controller).then(() => {
-        if (!isManifestV3) {
-          return;
-        }
-        try {
-          const mode = controller.getLedgerMode();
-          log.info(
-            '[ledger-router] pushing switchLedgerMode (flags-refreshed)',
-            mode,
-          );
-          browser.runtime.sendMessage({
-            target: OffscreenCommunicationTarget.extension,
-            event: OffscreenCommunicationEvents.switchLedgerMode,
-            mode,
-          });
-        } catch (error) {
-          log.error(
-            '[ledger-router] failed to push switchLedgerMode after flags refresh',
-            error,
-          );
-        }
-      });
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         clearFailedTxBadge();

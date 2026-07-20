@@ -2,6 +2,8 @@ import {
   createLedgerError,
   isKnownLedgerError,
   LedgerDMKBridge,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignTypedDataParams,
 } from '@metamask/eth-ledger-bridge-keyring';
 
 import {
@@ -267,7 +269,13 @@ export class LedgerDmkBridgeHandler {
   private async constructBridge(): Promise<LedgerDMKBridge> {
     console.log('[LedgerDMK] constructBridge: creating LedgerDMKBridge');
     const bridge = new LedgerDMKBridge({
-      transportFactory: webHidTransportFactory,
+      // The transport package resolves DMK 1.7.1 while the bridge resolves its
+      // nested DMK 1.5.1. Their runtime contract is compatible, but protected
+      // members make the duplicate declaration types nominally incompatible.
+      transportFactory:
+        webHidTransportFactory as unknown as NonNullable<
+          ConstructorParameters<typeof LedgerDMKBridge>[0]['transportFactory']
+        >,
     });
 
     console.log('[LedgerDMK] constructBridge: finding permitted device');
@@ -293,7 +301,7 @@ export class LedgerDmkBridgeHandler {
               DeviceSessionStateType.ReadyWithoutSecureChannel ||
               s.sessionStateType ===
                 DeviceSessionStateType.ReadyWithSecureChannel) &&
-            s.currentApp,
+            Boolean(s.currentApp),
         ),
         timeoutOperator(SESSION_READY_TIMEOUT_MS),
         catchError((reason: unknown) =>
@@ -542,9 +550,8 @@ export class LedgerDmkBridgeHandler {
         ) {
           throw new Error('Missing hdPath or message parameter');
         }
-        const typedMessage = params.message as {
-          primaryType?: unknown;
-        };
+        const typedMessage =
+          params.message as LedgerSignTypedDataParams['message'];
         console.log('[LedgerDMK] signTypedData start', {
           hdPath: params.hdPath,
           primaryType: typedMessage.primaryType,
@@ -552,7 +559,7 @@ export class LedgerDmkBridgeHandler {
         try {
           const result = await bridge.deviceSignTypedData({
             hdPath: params.hdPath,
-            message: params.message,
+            message: typedMessage,
           });
           console.log('[LedgerDMK] signTypedData success', {
             hdPath: params.hdPath,
@@ -567,6 +574,25 @@ export class LedgerDmkBridgeHandler {
           });
           throw error;
         }
+      }
+
+      case LedgerAction.signDelegationAuthorization: {
+        if (
+          !params?.hdPath ||
+          typeof params.hdPath !== 'string' ||
+          typeof params.chainId !== 'number' ||
+          typeof params.contractAddress !== 'string' ||
+          typeof params.nonce !== 'number'
+        ) {
+          throw new Error('Missing delegation authorization parameter');
+        }
+        const delegationParams: LedgerSignDelegationAuthorizationParams = {
+          hdPath: params.hdPath,
+          chainId: params.chainId,
+          contractAddress: params.contractAddress,
+          nonce: params.nonce,
+        };
+        return bridge.deviceSignDelegationAuthorization(delegationParams);
       }
 
       default:

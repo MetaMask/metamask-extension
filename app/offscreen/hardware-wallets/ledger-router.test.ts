@@ -351,6 +351,30 @@ describe('LedgerRouter', () => {
       expect(mockLegacyDestroy).toHaveBeenCalledTimes(1);
     });
 
+    it('serializes overlapping switches so the latest requested mode wins', async () => {
+      await initLedger(LedgerHandlerMode.Legacy);
+      jest.clearAllMocks();
+
+      let resolveDmkInit: (() => void) | undefined;
+      mockDmkInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDmkInit = resolve;
+          }),
+      );
+
+      const switchToDmk = switchLedgerHandler(LedgerHandlerMode.DMK);
+      await Promise.resolve();
+      const switchBackToLegacy = switchLedgerHandler(LedgerHandlerMode.Legacy);
+
+      resolveDmkInit?.();
+      await Promise.all([switchToDmk, switchBackToLegacy]);
+
+      expect(mockedDmkCtor).toHaveBeenCalledTimes(1);
+      expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
+      expect(mockDmkDestroy).toHaveBeenCalledTimes(1);
+    });
+
     it('routes incoming messages to the new handler after a switch (same listener)', async () => {
       await initLedger(LedgerHandlerMode.Legacy);
       mockLegacyHandleAction.mockResolvedValue('old');
@@ -407,6 +431,15 @@ describe('LedgerRouter', () => {
       expect(mockedLegacyCtor).toHaveBeenCalledTimes(1);
       expect(mockLegacyInit).toHaveBeenCalledWith();
       expect(mockedDmkCtor).not.toHaveBeenCalled();
+    });
+
+    it('notifies the background after the mode listener is ready', async () => {
+      await bootstrapLedger();
+
+      expect(mockSendMessage).toHaveBeenCalledWith({
+        target: OffscreenCommunicationTarget.extensionMain,
+        event: OffscreenCommunicationEvents.ledgerModeReady,
+      });
     });
 
     it('registers a listener that switches modes on switchLedgerMode events', async () => {

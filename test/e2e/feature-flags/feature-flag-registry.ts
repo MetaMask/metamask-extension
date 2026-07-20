@@ -2886,18 +2886,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  ledgerDmk: {
-    name: 'ledgerDmk',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   stxMigrationBatchStatus: {
     name: 'stxMigrationBatchStatus',
     type: FeatureFlagType.Remote,

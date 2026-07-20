@@ -23,6 +23,7 @@ const mockBridgeGetPublicKey = jest.fn();
 const mockBridgeDeviceSignTransaction = jest.fn();
 const mockBridgeDeviceSignMessage = jest.fn();
 const mockBridgeDeviceSignTypedData = jest.fn();
+const mockBridgeDeviceSignDelegationAuthorization = jest.fn();
 const mockBridgeConnect = jest.fn();
 const mockBridgeDmkGetDeviceSessionState = jest.fn();
 const mockBridgeDmkListenToAvailableDevices = jest.fn();
@@ -40,6 +41,8 @@ const createMockBridge = () => ({
   deviceSignTransaction: mockBridgeDeviceSignTransaction,
   deviceSignMessage: mockBridgeDeviceSignMessage,
   deviceSignTypedData: mockBridgeDeviceSignTypedData,
+  deviceSignDelegationAuthorization:
+    mockBridgeDeviceSignDelegationAuthorization,
   connect: mockBridgeConnect,
   onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
   dmk: {
@@ -293,6 +296,42 @@ describe('LedgerDMKBridgeHandler', () => {
         ).rejects.toThrow('Missing hdPath or message parameter');
       });
     });
+
+    describe('signDelegationAuthorization', () => {
+      it('routes to bridge.deviceSignDelegationAuthorization()', async () => {
+        const params = {
+          hdPath: "m/44'/60'/0'/0/0",
+          chainId: 1,
+          contractAddress: '0x1234',
+          nonce: 2,
+        };
+        mockBridgeDeviceSignDelegationAuthorization.mockResolvedValue({
+          v: '0x1c',
+          r: '0xabc',
+          s: '0xdef',
+        });
+
+        const result = await handler.handleAction(
+          LedgerAction.signDelegationAuthorization,
+          params,
+        );
+
+        expect(
+          mockBridgeDeviceSignDelegationAuthorization,
+        ).toHaveBeenCalledWith(params);
+        expect(result).toEqual({ v: '0x1c', r: '0xabc', s: '0xdef' });
+      });
+
+      it('throws when a required parameter is missing', async () => {
+        await expect(
+          handler.handleAction(LedgerAction.signDelegationAuthorization, {
+            hdPath: "m/44'/60'/0'/0/0",
+            chainId: 1,
+            contractAddress: '0x1234',
+          }),
+        ).rejects.toThrow('Missing delegation authorization parameter');
+      });
+    });
   });
 
   describe('bridge lifecycle (state machine)', () => {
@@ -366,6 +405,9 @@ describe('LedgerDMKBridgeHandler', () => {
 
     it('retries bridge construction after a failure', async () => {
       const handler = new LedgerDmkBridgeHandler();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       // First construction fails
       mockBridgeConnect.mockRejectedValueOnce(new Error('Connection failed'));
@@ -385,6 +427,11 @@ describe('LedgerDMKBridgeHandler', () => {
 
       await handler.handleAction(LedgerAction.updateTransport);
       expect(LedgerDMKBridge).toHaveBeenCalledTimes(2);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[LedgerDMK] ensureBridge: connect failed',
+        expect.any(Error),
+      );
+      consoleErrorSpy.mockRestore();
     });
 
     it('destroy() is safe to call multiple times', async () => {
