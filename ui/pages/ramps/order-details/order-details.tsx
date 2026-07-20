@@ -13,6 +13,7 @@ import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import OrderContent from './components/order-content';
 
 /**
  * Ramps order details screen. Renders a "not found" state when the order
@@ -60,7 +61,6 @@ export function RampsOrderDetailsScreen() {
     );
   }
 
-  // Resolved-order rendering is added in Task 2.
   return (
     <RampsSelectionPage
       title={t('rampsOrderDetailsTitle')}
@@ -68,6 +68,7 @@ export function RampsOrderDetailsScreen() {
       testId="ramps-order-details-screen"
       backButtonTestId="ramps-order-details-back"
     >
+      <OrderContent order={order} />
       <Box
         className="border-t border-border-muted px-4 py-3"
         flexDirection={BoxFlexDirection.Column}

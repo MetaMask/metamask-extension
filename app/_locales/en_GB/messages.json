@@ -8240,14 +8240,32 @@
     "message": "on $1",
     "description": "$1 is the network name"
   },
+  "rampsOrderDetailsDateAndTime": {
+    "message": "Date and time"
+  },
   "rampsOrderDetailsDone": {
     "message": "Done"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Fees"
   },
   "rampsOrderDetailsNotFound": {
     "message": "Order not found"
   },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
+  "rampsOrderDetailsStatus": {
+    "message": "Status"
+  },
   "rampsOrderDetailsTitle": {
     "message": "Order details"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "View on $1"
   },
   "rampsOtherOptions": {
     "message": "Other options"

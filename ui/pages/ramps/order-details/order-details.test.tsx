@@ -3,10 +3,31 @@
  */
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { RampsOrderDetailsScreen } from './order-details';
+
+const completedOrder = {
+  providerOrderId: 'provider-order-1234567890',
+  providerOrderLink: 'https://provider.example/order/1',
+  status: RampsOrderStatus.Completed,
+  createdAt: 1_700_000_000_000,
+  cryptoAmount: '0.5',
+  fiatAmount: 1000,
+  totalFeesFiat: 12.5,
+  cryptoCurrency: {
+    symbol: 'ETH',
+    iconUrl: 'https://x/eth.png',
+    decimals: 18,
+    chainId: 'eip155:1',
+  },
+  fiatCurrency: { symbol: 'USD', decimals: 2 },
+  network: { name: 'Ethereum', chainId: 'eip155:1' },
+  provider: { id: 'transak', name: 'Transak' },
+  walletAddress: '0xabc',
+} as unknown as RampsOrder;
 
 const mockNavigate = jest.fn();
 
@@ -56,5 +77,21 @@ describe('RampsOrderDetailsScreen', () => {
 
     fireEvent.click(screen.getByTestId('ramps-order-details-done'));
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('renders order content and the completed snapshot when an order exists', () => {
+    useRampsOrders.mockReturnValue({
+      getOrderById: jest.fn().mockReturnValue(completedOrder),
+      refreshOrder: jest.fn(),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsOrderDetailsScreen />,
+      createStore(),
+      '/ramps/order-details/order-1',
+    );
+
+    expect(screen.getByTestId('ramps-order-content')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 });

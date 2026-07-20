@@ -1,0 +1,173 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsOrderDetailsScreen renders order content and the completed snapshot when an order exists 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-order-details-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-order-details-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Order details
+      </p>
+    </div>
+    <div
+      class="flex flex-col flex-1 overflow-y-auto px-4"
+      data-testid="ramps-order-content"
+    >
+      <div
+        class="flex flex-col items-center py-6"
+      >
+        <h1
+          class="text-default text-s-display-md leading-s-display-md tracking-s-display-md md:text-l-display-md md:leading-l-display-md md:tracking-l-display-md font-bold md:font-medium font-default"
+          data-testid="ramps-order-details-token-amount"
+        >
+          0.5 ETH
+        </h1>
+      </div>
+      <div
+        class="flex flex-row items-center justify-between py-3"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Status
+        </p>
+        <div
+          class="flex flex-col items-end"
+        >
+          <p
+            class="text-success-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="ramps-order-details-status"
+          >
+            COMPLETED
+          </p>
+          <a
+            data-testid="ramps-order-details-view-on-provider"
+            href="https://provider.example/order/1"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <p
+              class="text-primary-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+            >
+              View on Transak
+            </p>
+          </a>
+        </div>
+      </div>
+      <div
+        class="flex flex-row items-center justify-between py-3"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Order ID
+        </p>
+        <button
+          class="flex items-center gap-1"
+          data-testid="ramps-order-details-order-id"
+          type="button"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          >
+            ...567890
+          </p>
+          <svg
+            class="inline-block w-4 h-4 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="flex flex-row items-center justify-between py-3"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Date and time
+        </p>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          data-testid="ramps-order-details-date"
+        >
+          11/14/2023 at 22:13
+        </p>
+      </div>
+      <div
+        class="flex flex-row items-center justify-between py-3"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Fees
+        </p>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          data-testid="ramps-order-details-fees"
+        >
+          $12.50
+        </p>
+      </div>
+      <div
+        class="flex flex-row items-center justify-between py-3"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Total
+        </p>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          data-testid="ramps-order-details-total"
+        >
+          $1,000.00
+        </p>
+      </div>
+    </div>
+    <div
+      class="flex flex-col border-t border-border-muted px-4 py-3"
+    >
+      <button
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        data-testid="ramps-order-details-done"
+        role="button"
+      >
+        <span
+          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+        >
+          Done
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
