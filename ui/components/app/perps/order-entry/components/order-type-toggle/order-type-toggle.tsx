@@ -3,16 +3,13 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  ButtonBase,
+  TextColor,
+  TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
 
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { Tag } from '../../../../../component-library';
 import type { OrderType } from '../../../types';
 
 export type OrderTypeToggleProps = {
@@ -33,36 +30,32 @@ export const OrderTypeToggle = ({
 }: OrderTypeToggleProps) => {
   const t = useI18nContext();
 
-  const renderTag = (type: OrderType, label: string) => {
+  const renderOrderTypeButton = (type: OrderType, label: string) => {
     const isSelected = orderType === type;
 
     return (
-      <Tag
-        as="button"
+      <ButtonBase
         type="button"
-        label={label}
         onClick={() => {
           if (!isSelected) {
             onOrderTypeChange(type);
           }
         }}
-        backgroundColor={
-          isSelected
-            ? BackgroundColor.backgroundMuted
-            : BackgroundColor.backgroundDefault
-        }
-        borderWidth={0}
-        borderRadius={BorderRadius.pill}
+        aria-pressed={isSelected}
         className={twMerge(
-          'cursor-pointer transition-colors',
-          !isSelected && 'hover:opacity-80',
+          'h-auto min-w-0 rounded-full border-0 px-4 py-1 transition-colors',
+          isSelected
+            ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+            : 'bg-default hover:bg-hover active:bg-pressed',
         )}
-        labelProps={{
-          color: isSelected ? TextColor.textDefault : TextColor.textAlternative,
+        textProps={{
+          variant: TextVariant.BodySm,
+          color: isSelected ? TextColor.TextDefault : TextColor.TextAlternative,
         }}
-        padding={4}
         data-testid={`order-type-${type}`}
-      />
+      >
+        {label}
+      </ButtonBase>
     );
   };
 
@@ -74,8 +67,8 @@ export const OrderTypeToggle = ({
       className="w-full"
       data-testid="order-type-toggle"
     >
-      {renderTag('market', t('perpsMarket'))}
-      {renderTag('limit', t('perpsLimit'))}
+      {renderOrderTypeButton('market', t('perpsMarket'))}
+      {renderOrderTypeButton('limit', t('perpsLimit'))}
     </Box>
   );
 };

@@ -7022,7 +7022,7 @@
     "message": "Close amount"
   },
   "perpsCloseLimitPriceOutsideOracleBand": {
-    "message": "Limit price is outside the allowed range for the current oracle price."
+    "message": "Price can't be more than 95% away from the market price"
   },
   "perpsCloseLimitPriceRequired": {
     "message": "Enter a valid limit price to continue."

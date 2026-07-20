@@ -13,15 +13,12 @@ import {
   IconName,
   IconSize,
   IconColor,
+  TextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo } from 'react';
 
-import {
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../../../component-library';
 import type { OrderDirection } from '../../order-entry.types';
 import {
   isLimitPriceUnfavorable,
@@ -148,10 +145,7 @@ export const LimitPriceInput = ({
         }
         onBlur={handlePriceBlur}
         placeholder="0.00"
-        borderRadius={BorderRadius.MD}
-        borderWidth={0}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className="w-full"
+        className="w-full rounded-lg border-0 bg-muted"
         data-testid="limit-price-input"
         autoFocus={autoFocus}
         inputProps={{ inputMode: 'decimal' }}
