@@ -1,4 +1,4 @@
-type TranslateFunction = (key: string, substitutions?: unknown[]) => string;
+import type { I18nFunction } from '../../contexts/i18n';
 
 export const GAS_FORM_ERRORS = {
   GAS_LIMIT_OUT_OF_BOUNDS: 'editGasLimitOutOfBounds',
@@ -13,12 +13,12 @@ export const GAS_FORM_ERRORS = {
 
 export function getGasFormErrorText(
   type: string,
-  t: TranslateFunction,
+  t: I18nFunction,
   { minimumGasLimit }: { minimumGasLimit?: string | number } = {},
-): string {
+): ReturnType<I18nFunction> {
   switch (type) {
     case GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS:
-      return t('editGasLimitOutOfBounds', [minimumGasLimit]);
+      return t('editGasLimitOutOfBounds', [String(minimumGasLimit ?? '')]);
     case GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW:
       return t('editGasMaxPriorityFeeLow');
     case GAS_FORM_ERRORS.MAX_FEE_TOO_LOW:
