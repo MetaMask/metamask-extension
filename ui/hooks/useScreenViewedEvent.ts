@@ -5,8 +5,8 @@ import {
   MetaMetricsEventName,
   ScreenViewedEntryPoint,
 } from '../../shared/constants/metametrics';
-import { useAnalytics } from './useAnalytics';
 import { selectEnabledNetworksAsCaipChainIds } from '../selectors/multichain/networks';
+import { useAnalytics } from './useAnalytics';
 
 /**
  * Fires a screen-viewed metric once on mount with the current network filter
