@@ -56,6 +56,7 @@ export function RampsPaymentMethodScreen() {
     setSelectedPaymentMethod,
   } = useRampsController();
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
+  const regionCode = userRegion?.regionCode ?? '';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
@@ -84,6 +85,8 @@ export function RampsPaymentMethodScreen() {
             amount,
             walletAddress,
             assetId,
+            ...(regionCode ? { region: regionCode } : {}),
+            ...(fiatCurrency ? { fiat: fiatCurrency } : {}),
             redirectUrl: getRampCallbackBaseUrl(),
             providers: selectedProvider ? [selectedProvider.id] : undefined,
             paymentMethods: paymentMethodIds,
@@ -93,6 +96,8 @@ export function RampsPaymentMethodScreen() {
       amount,
       walletAddress,
       assetId,
+      regionCode,
+      fiatCurrency,
       selectedProvider,
       paymentMethodIds,
       paymentMethodsLoading,
@@ -195,7 +200,7 @@ export function RampsPaymentMethodScreen() {
                 key={paymentMethod.id}
                 paymentMethod={paymentMethod}
                 isSelected={selectedPaymentMethod?.id === paymentMethod.id}
-                isDisabled={isSelecting || hasQuoteError}
+                isDisabled={isSelecting}
                 limitText={formatPaymentMethodLimits(
                   getProviderBuyLimit(
                     selectedProvider,
@@ -236,7 +241,7 @@ export function RampsPaymentMethodScreen() {
       {selectedProvider ? (
         <RampsChangeProviderFooter
           providerName={selectedProvider.name}
-          isDisabled={Boolean(paymentMethodsError)}
+          isDisabled={isSelecting}
           onChangeProvider={handleChangeProvider}
         />
       ) : null}

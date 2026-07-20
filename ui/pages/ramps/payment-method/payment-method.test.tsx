@@ -106,6 +106,7 @@ const defaultControllerState = {
   selectedProvider,
   selectedToken,
   userRegion: {
+    regionCode: 'us',
     country: { currency: 'USD' },
   },
   setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
@@ -271,6 +272,9 @@ describe('RampsPaymentMethodScreen', () => {
     expect(
       screen.queryByTestId('ramps-payment-method-error'),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('ramps-change-provider-button'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -287,6 +291,8 @@ describe('RampsPaymentMethodScreen', () => {
       expect.objectContaining({
         amount: 100,
         walletAddress: '0xabc123',
+        region: 'us',
+        fiat: 'USD',
         paymentMethods: [debitCard.id, bankTransfer.id],
         providers: [selectedProvider.id],
       }),
@@ -319,7 +325,7 @@ describe('RampsPaymentMethodScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('disables payment methods without a success quote', async () => {
+  it('keeps payment methods selectable when they have no success quote', async () => {
     mockLocationState = { amount: 100 };
     mockUseRampsQuotes.mockReturnValue({
       data: {
@@ -345,13 +351,14 @@ describe('RampsPaymentMethodScreen', () => {
     const bankRow = screen.getByTestId(
       'ramps-payment-method-item-bank-transfer',
     );
-    expect(bankRow).toBeDisabled();
+    expect(bankRow).not.toBeDisabled();
 
     await act(async () => {
       fireEvent.click(bankRow);
     });
 
-    expect(mockSetSelectedPaymentMethod).not.toHaveBeenCalled();
+    expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('selects a payment method and navigates back', async () => {

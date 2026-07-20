@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { screen } from '@testing-library/react';
 import type { Provider, Quote } from '@metamask/ramps-controller';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -32,12 +31,6 @@ const createStore = () =>
 const provider = {
   id: '/providers/transak',
   name: 'Transak',
-  logos: {
-    light: '/assets/providers/transak_light.png',
-    dark: '/assets/providers/transak_dark.png',
-    height: 24,
-    width: 90,
-  },
 } as unknown as Provider;
 
 const mockQuote: Quote = {
@@ -69,22 +62,6 @@ describe('RampsProviderListItem', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders the provider wordmark with content CDN prefix', () => {
-    renderWithProvider(
-      <RampsProviderListItem provider={provider} onClick={jest.fn()} />,
-      createStore(),
-    );
-
-    const logo = screen.getByTestId(
-      'ramps-provider-item-logo-/providers/transak',
-    );
-    expect(logo).toHaveAttribute(
-      'src',
-      'https://on-ramp-content.uat-api.cx.metamask.io/assets/providers/transak_light.png',
-    );
-    expect(logo).toHaveAttribute('alt', 'Transak');
-  });
-
   it('matches snapshot when unavailable', () => {
     const { container } = renderWithProvider(
       <RampsProviderListItem
@@ -106,23 +83,6 @@ describe('RampsProviderListItem', () => {
         provider={provider}
         showQuote
         quoteLoading
-        onClick={jest.fn()}
-      />,
-      createStore(),
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('matches snapshot when logos are missing', () => {
-    const providerWithoutLogos = {
-      id: '/providers/transak',
-      name: 'Transak',
-    } as unknown as Provider;
-
-    const { container } = renderWithProvider(
-      <RampsProviderListItem
-        provider={providerWithoutLogos}
         onClick={jest.fn()}
       />,
       createStore(),

@@ -59,12 +59,11 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="Transak"
-                data-testid="ramps-provider-item-logo-/providers/transak"
-                src="https://example.com/transak-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                Transak
+              </p>
             </div>
             <div
               class="flex flex-row gap-2 items-center shrink-0"
@@ -119,12 +118,11 @@ exports[`RampsProviderSelectionScreen keeps the provider list visible while quot
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="MoonPay"
-                data-testid="ramps-provider-item-logo-/providers/moonpay"
-                src="https://example.com/moonpay-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                MoonPay
+              </p>
             </div>
             <div
               class="flex flex-row gap-2 items-center shrink-0"
@@ -574,12 +572,11 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="Transak"
-                data-testid="ramps-provider-item-logo-/providers/transak"
-                src="https://example.com/transak-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                Transak
+              </p>
             </div>
             <div
               class="flex flex-row gap-2 items-center shrink-0"
@@ -624,12 +621,9 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
           </p>
         </div>
         <button
-          aria-disabled="true"
-          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-provider-item-/providers/moonpay"
-          disabled=""
           role="button"
-          tabindex="-1"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -637,12 +631,11 @@ exports[`RampsProviderSelectionScreen matches snapshot with provider quotes 1`] 
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="MoonPay"
-                data-testid="ramps-provider-item-logo-/providers/moonpay"
-                src="https://example.com/moonpay-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                MoonPay
+              </p>
               <p
                 class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
                 data-testid="ramps-provider-item-subtitle-/providers/moonpay"
@@ -710,12 +703,11 @@ exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="Transak"
-                data-testid="ramps-provider-item-logo-/providers/transak"
-                src="https://example.com/transak-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                Transak
+              </p>
             </div>
             <div
               class="flex flex-row gap-2 items-center shrink-0"
@@ -745,12 +737,11 @@ exports[`RampsProviderSelectionScreen matches snapshot with providers 1`] = `
             <div
               class="flex flex-col gap-1 items-start min-w-0 flex-1"
             >
-              <img
-                alt="MoonPay"
-                data-testid="ramps-provider-item-logo-/providers/moonpay"
-                src="https://example.com/moonpay-light.png"
-                style="width: 90px; height: 24px;"
-              />
+              <p
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+              >
+                MoonPay
+              </p>
             </div>
           </div>
         </button>

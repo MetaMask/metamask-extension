@@ -75,24 +75,12 @@ const transak = {
   id: '/providers/transak',
   name: 'Transak',
   supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
-  logos: {
-    light: 'https://example.com/transak-light.png',
-    dark: 'https://example.com/transak-dark.png',
-    height: 24,
-    width: 90,
-  },
 } as unknown as Provider;
 
 const moonpay = {
   id: '/providers/moonpay',
   name: 'MoonPay',
   supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
-  logos: {
-    light: 'https://example.com/moonpay-light.png',
-    dark: 'https://example.com/moonpay-dark.png',
-    height: 24,
-    width: 90,
-  },
 } as unknown as Provider;
 
 const selectedToken = {

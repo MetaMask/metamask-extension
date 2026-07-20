@@ -15,10 +15,7 @@ import {
   FontWeight,
   TextVariant,
 } from '@metamask/design-system-react';
-import { ThemeType } from '../../../../../shared/constants/preferences';
-import { resolveRampsContentUrl } from '../../../../hooks/ramps/utils/resolveRampsContentUrl';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { useTheme } from '../../../../hooks/useTheme';
 import RampsQuoteDisplay from '../../payment-method/components/ramps-quote-display';
 
 export type RampsProviderListItemProps = {
@@ -35,38 +32,8 @@ export type RampsProviderListItemProps = {
 };
 
 /**
- * Provider wordmark — mirrors portfolio `ProviderLogo`.
- *
- * @param options0
- * @param options0.provider
- */
-export function RampsProviderLogo({ provider }: { provider: Provider }) {
-  const theme = useTheme();
-  const { logos } = provider;
-  const pathOrUrl =
-    theme === ThemeType.dark
-      ? (logos?.dark ?? logos?.light)
-      : (logos?.light ?? logos?.dark);
-  const url = resolveRampsContentUrl(pathOrUrl);
-
-  if (!url || !logos) {
-    return null;
-  }
-
-  return (
-    <img
-      src={url}
-      alt={provider.name}
-      style={{ width: logos.width, height: logos.height }}
-      data-testid={`ramps-provider-item-logo-${provider.id}`}
-    />
-  );
-}
-
-/**
- * Provider row matching portfolio RecommendedQuote layout:
- * wordmark on the left (name only as fallback when logos are missing),
- * quote amounts on the right.
+ * Provider row matching mobile ProviderSelection: name (+ optional subtitle)
+ * on the left, quote amounts on the right.
  *
  * @param options0
  * @param options0.provider
@@ -93,7 +60,6 @@ export default function RampsProviderListItem({
   onClick,
 }: RampsProviderListItemProps) {
   const { formatToken, formatCurrency } = useFormatters();
-  const hasLogo = Boolean(provider.logos?.light || provider.logos?.dark);
 
   const cryptoAmount =
     quote?.quote?.amountOut !== undefined &&
@@ -130,17 +96,13 @@ export default function RampsProviderListItem({
           alignItems={BoxAlignItems.Start}
           gap={1}
         >
-          {hasLogo ? (
-            <RampsProviderLogo provider={provider} />
-          ) : (
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              className="truncate text-left"
-            >
-              {provider.name}
-            </Text>
-          )}
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            className="truncate text-left"
+          >
+            {provider.name}
+          </Text>
           {subtitle ? (
             <Text
               variant={TextVariant.BodySm}

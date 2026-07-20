@@ -145,7 +145,7 @@ function buildProviderListRows({
       key: provider.id,
       provider,
       isSelected: selectedProviderId === provider.id,
-      isDisabled: isSelecting || isUnavailable,
+      isDisabled: isSelecting,
       subtitle,
       showQuote: showQuotes,
       quote: matchedQuote,
