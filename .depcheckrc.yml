@@ -117,6 +117,8 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  # import aliases (not real packages)
+  - '~'
 
 # files depcheck should not parse
 ignorePatterns:

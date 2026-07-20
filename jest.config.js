@@ -21,6 +21,8 @@ module.exports = {
     // override with their own jest.mock() call.
     '^@metamask/perps-controller$':
       '<rootDir>/test/mocks/metamask-perps-controller.js',
+    '^~/ui/(.*)$': '<rootDir>/ui/$1',
+    '^~/shared/(.*)$': '<rootDir>/shared/$1',
   },
   // This mirrors Jest's default module extensions with `mts` added. Importing
   // `jest-config` defaults would avoid this list, but lint rejects that package
