@@ -5,6 +5,7 @@ import {
   formatAddressToAssetId,
   QuoteResponse,
 } from '@metamask/bridge-controller';
+import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
@@ -16,7 +17,6 @@ import * as useSubmitBridgeTransactionModule from '../../../../hooks/bridge/useS
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
-import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();

@@ -822,7 +822,10 @@ export const getFormattedPriceImpactFiat = createSelector(
     getCurrentCurrency,
   ],
   (activeQuote, currentCurrency) =>
-    formatPriceImpactFiat(activeQuote, currentCurrency),
+    formatPriceImpactFiat(
+      activeQuote?.priceImpact?.valueInCurrency,
+      currentCurrency,
+    ),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,
@@ -974,14 +977,22 @@ export const isNativeBalanceInsufficientForQuote = (
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
-): boolean =>
-  isNativeAddress(fromToken.assetId)
-    ? new BigNumber(nativeBalance)
+): boolean => {
+  if (!quote.totalNetworkFee?.amount) {
+    return false;
+  }
+  if (isNativeAddress(fromToken.assetId)) {
+    if (quote.sentAmount?.amount) {
+      return new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
         .sub(minimumBalanceToKeep)
-        .lte(0)
-    : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+        .lte(0);
+    }
+    return false;
+  }
+  return new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+};
 
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent

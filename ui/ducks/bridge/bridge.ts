@@ -178,7 +178,7 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
-      state.fromTokenInputValue = sentAmount.amount;
+      state.fromTokenInputValue = sentAmount?.amount ?? quote.srcTokenAmount;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;

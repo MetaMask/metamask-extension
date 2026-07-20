@@ -5773,9 +5773,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^77.5.0":
+"@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
   version: 77.5.0
-  resolution: "@metamask/bridge-controller@npm:77.5.0"
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=3761a2&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5802,13 +5802,13 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/0a388bcc626eea68b78fd8a75d9b63db3c41a67b8c3f5f14dea106a48621e0d570eefa54527bde222f02dcca59e018b21aaff23f3000b9b8a31e6c29e961eaaa
+  checksum: 10/f8bd72c9836bef297d74e8c8ea9527ef00811e8aee83a4e28547afc4d7be8f26faf2aa114141308b49fe58ebd0c80bc1c4ca7351ea67e0403ff9d3748b5c2577
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^74.3.0":
+"@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
   version: 74.3.0
-  resolution: "@metamask/bridge-status-controller@npm:74.3.0"
+  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=d7acaf&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5826,7 +5826,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/d189a8598f70d39ea384e184dceb9ff1c6859fe6aab1570f7379b76d601da88fab6f4899f9d8f11c2a68f960964dfb8c9b6f1a6e498df6f20113022fdec3d9ca
+  checksum: 10/830bc39c547de3885ad807b9a2c5258223a40744f1530bc23c7f414d3ad7980c0f2a8bb27d3cf7b3717d863c7d0a3583353f75595a44e8be2b5e4ee4cc05909f
   languageName: node
   linkType: hard
 
@@ -32774,8 +32774,8 @@ __metadata:
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.2"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
-    "@metamask/bridge-controller": "npm:^77.5.0"
-    "@metamask/bridge-status-controller": "npm:^74.3.0"
+    "@metamask/bridge-controller": "file:../core/packages/bridge-controller"
+    "@metamask/bridge-status-controller": "file:../core/packages/bridge-status-controller"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"

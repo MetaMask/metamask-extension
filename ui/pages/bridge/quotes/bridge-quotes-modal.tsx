@@ -82,13 +82,13 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              usd_quoted_gas: Number(quote.gasFee?.total?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              usd_quoted_return: Number(quote.toTokenAmount?.usd ?? 0),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -191,11 +191,12 @@ export const BridgeQuotesModal = ({
                       fontWeight={FontWeight.Medium}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {formatTokenAmount(
-                        locale,
-                        toTokenAmount.amount,
-                        destAsset.symbol,
-                      )}
+                      {toTokenAmount?.amount &&
+                        formatTokenAmount(
+                          locale,
+                          toTokenAmount?.amount,
+                          destAsset.symbol,
+                        )}
                     </Text>
                   </Row>
 
@@ -212,14 +213,14 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          cost.valueInCurrency === null
+                          !cost?.valueInCurrency && totalNetworkFee?.amount
                             ? formatTokenAmount(
                                 locale,
-                                totalNetworkFee.amount,
+                                totalNetworkFee?.amount,
                                 nativeCurrency,
                               )
                             : formatCurrencyAmount(
-                                cost.valueInCurrency,
+                                cost?.valueInCurrency,
                                 currency,
                                 2,
                               ),
@@ -248,11 +249,13 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {formatCurrencyAmount(
-                        toTokenAmount.valueInCurrency,
-                        currency,
-                        2,
-                      ) ?? ''}
+                      {toTokenAmount?.valueInCurrency
+                        ? formatCurrencyAmount(
+                            toTokenAmount.valueInCurrency,
+                            currency,
+                            2,
+                          )
+                        : ''}
                     </Text>
                   </Row>
                 </Column>
