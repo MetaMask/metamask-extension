@@ -3294,19 +3294,21 @@
     },
     "@sentry/browser>@sentry-internal/browser-utils": {
       "globals": {
-        "PerformanceEventTiming.prototype": true,
+        "FormData": true,
+        "PerformanceEventTiming": true,
         "PerformanceObserver": true,
+        "Request": true,
+        "URL": true,
+        "URLSearchParams": true,
         "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "addEventListener": true,
         "clearTimeout": true,
         "performance": true,
-        "removeEventListener": true,
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/core": true
       }
     },
     "@sentry/browser>@sentry-internal/feedback": {
@@ -3319,13 +3321,14 @@
         "document.createElement": true,
         "document.createElementNS": true,
         "document.createTextNode": true,
+        "getComputedStyle": true,
         "isSecureContext": true,
+        "matchMedia": true,
         "requestAnimationFrame": true,
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/core": true
       }
     },
     "@sentry/browser>@sentry-internal/replay-canvas": {
@@ -3338,13 +3341,14 @@
         "WeakRef": true,
         "Worker": true,
         "cancelAnimationFrame": true,
+        "console.debug": true,
         "console.error": true,
         "createImageBitmap": true,
-        "document": true
+        "document": true,
+        "performance.now": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/core": true
       }
     },
     "@sentry/browser>@sentry-internal/replay": {
@@ -3367,10 +3371,12 @@
         "Node.DOCUMENT_FRAGMENT_NODE": true,
         "Node.prototype.contains": true,
         "PointerEvent": true,
+        "Request": true,
         "TextEncoder": true,
         "URL": true,
         "URLSearchParams": true,
         "Worker": true,
+        "Zone.__symbol__": true,
         "__RRWEB_EXCLUDE_IFRAME__": true,
         "__RRWEB_EXCLUDE_SHADOW_DOM__": true,
         "__SENTRY_DEBUG__": true,
@@ -3392,57 +3398,37 @@
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/core": true
       }
     },
     "@sentry/browser": {
       "globals": {
+        "Headers": true,
         "PerformanceObserver.supportedEntryTypes": true,
         "Request": true,
         "URL": true,
+        "WebAssembly": true,
         "XMLHttpRequest.prototype": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
         "addEventListener": true,
+        "clearTimeout": true,
         "console.error": true,
+        "fetch": true,
+        "importScripts": true,
         "indexedDB.open": true,
         "performance.timeOrigin": true,
         "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@sentry/browser>@sentry/core' reexports from '@sentry/utils' and webpack collapsed that to a direct import."
-        ]
       },
       "packages": {
         "@sentry/browser>@sentry-internal/browser-utils": true,
         "@sentry/browser>@sentry-internal/feedback": true,
         "@sentry/browser>@sentry-internal/replay-canvas": true,
         "@sentry/browser>@sentry-internal/replay": true,
-        "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/core": true
       }
     },
-    "@sentry/browser>@sentry/core": {
-      "globals": {
-        "Headers": true,
-        "Request": true,
-        "URL": true,
-        "__SENTRY_DEBUG__": true,
-        "__SENTRY_TRACING__": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "console.warn": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/utils": true
-      }
-    },
-    "@sentry/utils": {
+    "@sentry/core": {
       "globals": {
         "CustomEvent": true,
         "DOMError": true,
@@ -3457,10 +3443,14 @@
         "Response": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
         "__SENTRY_BROWSER_BUNDLE__": true,
         "__SENTRY_DEBUG__": true,
+        "__SENTRY_TRACING__": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.warn": true,
         "document": true,
         "module": true,
         "process": true,

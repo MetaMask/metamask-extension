@@ -54,7 +54,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
