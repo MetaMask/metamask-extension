@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { Provider } from '@metamask/ramps-controller';
+import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   Box,
   BoxAlignItems,
@@ -38,11 +38,123 @@ import {
   buildProviderListItems,
   findProviderQuote,
   getProviderTag,
+  type ProviderListItem,
 } from './utils/build-provider-list-items';
 
 type ProviderSelectionLocationState = {
   amount?: number;
 };
+
+type ProviderListRow =
+  | { type: 'separator'; key: string }
+  | {
+      type: 'provider';
+      key: string;
+      provider: Provider;
+      isSelected: boolean;
+      isDisabled: boolean;
+      subtitle: string | null;
+      showQuote: boolean;
+      quote: ReturnType<typeof findProviderQuote>;
+      quoteLoading: boolean;
+      currency: string;
+      tokenSymbol: string;
+    };
+
+/**
+ * Builds render-ready rows from sorted list items (tags, quotes, unavailable).
+ *
+ * @param args
+ * @param args.sortedListItems
+ * @param args.quotes
+ * @param args.quotesLoading
+ * @param args.showQuotes
+ * @param args.selectedProviderId
+ * @param args.selectedPaymentMethodId
+ * @param args.ordersProviders
+ * @param args.isSelecting
+ * @param args.amount
+ * @param args.fiatCurrency
+ * @param args.tokenSymbol
+ * @param args.formatCurrency
+ * @param args.t
+ */
+function buildProviderListRows({
+  sortedListItems,
+  quotes,
+  quotesLoading,
+  showQuotes,
+  selectedProviderId,
+  selectedPaymentMethodId,
+  ordersProviders,
+  isSelecting,
+  amount,
+  fiatCurrency,
+  tokenSymbol,
+  formatCurrency,
+  t,
+}: {
+  sortedListItems: ProviderListItem[];
+  quotes: QuotesResponse | null;
+  quotesLoading: boolean;
+  showQuotes: boolean;
+  selectedProviderId: string | undefined;
+  selectedPaymentMethodId: string | undefined;
+  ordersProviders: string[];
+  isSelecting: boolean;
+  amount: number;
+  fiatCurrency: string;
+  tokenSymbol: string;
+  formatCurrency: ReturnType<typeof useFormatters>['formatCurrency'];
+  t: ReturnType<typeof useI18nContext>;
+}): ProviderListRow[] {
+  return sortedListItems.map((item, index) => {
+    if (item.type === 'separator') {
+      return { type: 'separator', key: `separator-${index}` };
+    }
+
+    const { provider } = item;
+    const matchedQuote = findProviderQuote(
+      quotes,
+      provider.id,
+      selectedPaymentMethodId,
+    );
+    const providerError =
+      showQuotes && !quotesLoading
+        ? quotes?.error?.find((entry) => entry.provider === provider.id)?.error
+        : undefined;
+    const isUnavailable = Boolean(providerError && !matchedQuote);
+    const tag =
+      !isUnavailable && showQuotes && !quotesLoading
+        ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
+        : null;
+    const subtitle = isUnavailable
+      ? (getProviderLimitMessage({
+          provider,
+          fiatCurrency,
+          paymentMethodId: selectedPaymentMethodId,
+          amount,
+          currency: fiatCurrency,
+          formatCurrency,
+          t,
+        }) ?? t('rampsQuoteUnavailable'))
+      : tag;
+
+    return {
+      type: 'provider',
+      key: provider.id,
+      provider,
+      isSelected: selectedProviderId === provider.id,
+      isDisabled: isSelecting || isUnavailable,
+      subtitle,
+      showQuote: showQuotes,
+      quote: matchedQuote,
+      quoteLoading: quotesLoading,
+      currency: fiatCurrency,
+      tokenSymbol,
+    };
+  });
+}
 
 /**
  * Ramps buy-flow provider selection screen.
@@ -163,6 +275,40 @@ export function RampsProviderSelectionScreen() {
     ],
   );
 
+  const listRows = useMemo(
+    () =>
+      buildProviderListRows({
+        sortedListItems,
+        quotes,
+        quotesLoading,
+        showQuotes,
+        selectedProviderId: selectedProvider?.id,
+        selectedPaymentMethodId: selectedPaymentMethod?.id,
+        ordersProviders,
+        isSelecting,
+        amount,
+        fiatCurrency,
+        tokenSymbol,
+        formatCurrency,
+        t,
+      }),
+    [
+      sortedListItems,
+      quotes,
+      quotesLoading,
+      showQuotes,
+      selectedProvider?.id,
+      selectedPaymentMethod?.id,
+      ordersProviders,
+      isSelecting,
+      amount,
+      fiatCurrency,
+      tokenSymbol,
+      formatCurrency,
+      t,
+    ],
+  );
+
   const handleBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
@@ -259,58 +405,27 @@ export function RampsProviderSelectionScreen() {
       ) : null}
       <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          {sortedListItems.map((item, index) => {
-            if (item.type === 'separator') {
-              return <RampsProviderSeparator key={`separator-${index}`} />;
-            }
-
-            const { provider } = item;
-            const matchedQuote = findProviderQuote(
-              quotes,
-              provider.id,
-              selectedPaymentMethod?.id,
-            );
-            const providerError =
-              showQuotes && !quotesLoading
-                ? quotes?.error?.find((entry) => entry.provider === provider.id)
-                    ?.error
-                : undefined;
-            const isUnavailable = Boolean(providerError && !matchedQuote);
-            const tag =
-              !isUnavailable && showQuotes && !quotesLoading
-                ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
-                : null;
-            const subtitle = isUnavailable
-              ? (getProviderLimitMessage({
-                  provider,
-                  fiatCurrency,
-                  paymentMethodId: selectedPaymentMethod?.id,
-                  amount,
-                  currency: fiatCurrency,
-                  formatCurrency,
-                  t,
-                  backendError: providerError,
-                }) ?? t('rampsQuoteUnavailable'))
-              : tag;
-
-            return (
+          {listRows.map((row) =>
+            row.type === 'separator' ? (
+              <RampsProviderSeparator key={row.key} />
+            ) : (
               <RampsProviderListItem
-                key={provider.id}
-                provider={provider}
-                isSelected={selectedProvider?.id === provider.id}
-                isDisabled={isSelecting || isUnavailable}
-                subtitle={subtitle}
-                showQuote={showQuotes}
-                quote={matchedQuote}
-                quoteLoading={quotesLoading}
-                currency={fiatCurrency}
-                tokenSymbol={tokenSymbol}
+                key={row.key}
+                provider={row.provider}
+                isSelected={row.isSelected}
+                isDisabled={row.isDisabled}
+                subtitle={row.subtitle}
+                showQuote={row.showQuote}
+                quote={row.quote}
+                quoteLoading={row.quoteLoading}
+                currency={row.currency}
+                tokenSymbol={row.tokenSymbol}
                 onClick={() => {
-                  handleProviderSelect(provider).catch(() => undefined);
+                  handleProviderSelect(row.provider).catch(() => undefined);
                 }}
               />
-            );
-          })}
+            ),
+          )}
         </Box>
       </ScrollContainer>
     </RampsSelectionPage>

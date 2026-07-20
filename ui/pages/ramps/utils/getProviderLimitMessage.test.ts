@@ -24,62 +24,48 @@ const provider = {
   },
 } as unknown as Provider;
 
+const baseArgs = {
+  provider,
+  fiatCurrency: 'USD',
+  paymentMethodId: 'debit-credit-card',
+  currency: 'USD',
+  formatCurrency,
+  t,
+};
+
 describe('getProviderLimitMessage', () => {
   it('returns min purchase message when amount is below limit', () => {
-    expect(
-      getProviderLimitMessage({
-        provider,
-        fiatCurrency: 'USD',
-        paymentMethodId: 'debit-credit-card',
-        amount: 10,
-        currency: 'USD',
-        formatCurrency,
-        t,
-      }),
-    ).toBe('rampsMinPurchaseLimit:USD 50');
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 10 })).toBe(
+      'rampsMinPurchaseLimit:USD 50',
+    );
   });
 
   it('returns max purchase message when amount is above limit', () => {
-    expect(
-      getProviderLimitMessage({
-        provider,
-        fiatCurrency: 'USD',
-        paymentMethodId: 'debit-credit-card',
-        amount: 5000,
-        currency: 'USD',
-        formatCurrency,
-        t,
-      }),
-    ).toBe('rampsMaxPurchaseLimit:USD 2000');
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 5000 })).toBe(
+      'rampsMaxPurchaseLimit:USD 2000',
+    );
   });
 
-  it('falls back to backend limit errors', () => {
+  it('returns null when amount is within limits', () => {
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 100 })).toBeNull();
+  });
+
+  it('returns null when amount equals inclusive bounds', () => {
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 50 })).toBeNull();
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 2000 })).toBeNull();
+  });
+
+  it('returns null when provider has no structured limits', () => {
     expect(
       getProviderLimitMessage({
+        ...baseArgs,
         provider: { id: '/providers/x', name: 'X' } as unknown as Provider,
-        fiatCurrency: 'USD',
-        paymentMethodId: 'debit-credit-card',
         amount: 100,
-        currency: 'USD',
-        formatCurrency,
-        t,
-        backendError: 'Minimum purchase is 12 EUR',
-      }),
-    ).toBe('Minimum purchase is 12 EUR');
-  });
-
-  it('returns null for non-limit situations', () => {
-    expect(
-      getProviderLimitMessage({
-        provider,
-        fiatCurrency: 'USD',
-        paymentMethodId: 'debit-credit-card',
-        amount: 100,
-        currency: 'USD',
-        formatCurrency,
-        t,
-        backendError: 'Internal error',
       }),
     ).toBeNull();
+  });
+
+  it('returns null when amount is not positive', () => {
+    expect(getProviderLimitMessage({ ...baseArgs, amount: 0 })).toBeNull();
   });
 });

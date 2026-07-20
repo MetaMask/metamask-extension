@@ -137,91 +137,46 @@ export function RampsPaymentMethodScreen() {
 
   const title = t('rampsSelectPaymentMethod');
   const backButtonTestId = 'ramps-payment-method-back';
-  const changeProviderFooter = selectedProvider ? (
-    <RampsChangeProviderFooter
-      providerName={selectedProvider.name}
-      isDisabled={Boolean(paymentMethodsError)}
-      onChangeProvider={handleChangeProvider}
-    />
-  ) : null;
+
+  let testId = 'ramps-payment-method-screen';
+  let body: React.ReactNode;
 
   // Prerequisites missing — query stays disabled until the user leaves.
   if (paymentMethodsStatus === 'idle') {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoPaymentMethodsAvailable')}
-        />
-        {changeProviderFooter}
-      </RampsSelectionPage>
+    testId = 'ramps-payment-method-empty';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsNoPaymentMethodsAvailable')}
+      />
     );
-  }
-
-  if (paymentMethodsLoading) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-loading"
-        backButtonTestId={backButtonTestId}
+  } else if (paymentMethodsLoading) {
+    testId = 'ramps-payment-method-loading';
+    body = (
+      <Box
+        className="flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
       >
-        <Box
-          className="flex-1"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-        >
-          <Spinner className="h-8 w-8" />
-        </Box>
-        {changeProviderFooter}
-      </RampsSelectionPage>
+        <Spinner className="h-8 w-8" />
+      </Box>
     );
-  }
-
-  if (showError) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-error"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsErrorLoadingPaymentMethods')}
-        />
-        {changeProviderFooter}
-      </RampsSelectionPage>
+  } else if (showError) {
+    testId = 'ramps-payment-method-error';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsErrorLoadingPaymentMethods')}
+      />
     );
-  }
-
-  if (paymentMethods.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoPaymentMethodsAvailable')}
-        />
-        {changeProviderFooter}
-      </RampsSelectionPage>
+  } else if (paymentMethods.length === 0) {
+    testId = 'ramps-payment-method-empty';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsNoPaymentMethodsAvailable')}
+      />
     );
-  }
-
-  return (
-    <RampsSelectionPage
-      title={title}
-      onBack={handleBack}
-      testId="ramps-payment-method-screen"
-      backButtonTestId={backButtonTestId}
-    >
+  } else {
+    body = (
       <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           {paymentMethods.map((paymentMethod) => {
@@ -267,7 +222,24 @@ export function RampsPaymentMethodScreen() {
           })}
         </Box>
       </ScrollContainer>
-      {changeProviderFooter}
+    );
+  }
+
+  return (
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId={testId}
+      backButtonTestId={backButtonTestId}
+    >
+      {body}
+      {selectedProvider ? (
+        <RampsChangeProviderFooter
+          providerName={selectedProvider.name}
+          isDisabled={Boolean(paymentMethodsError)}
+          onChangeProvider={handleChangeProvider}
+        />
+      ) : null}
     </RampsSelectionPage>
   );
 }

@@ -1,7 +1,6 @@
 import type { Provider } from '@metamask/ramps-controller';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderBuyLimit } from '../payment-method/utils/format-payment-method-limits';
-import { isProviderLimitError } from './isProviderLimitError';
 
 type TranslateFn = ReturnType<typeof useI18nContext>;
 type FormatCurrency = (amount: number, currency: string) => string;
@@ -14,18 +13,16 @@ type GetProviderLimitMessageArgs = {
   currency: string;
   formatCurrency: FormatCurrency;
   t: TranslateFn;
-  /**
-   * Raw per-provider error string from the quotes response. Used as a fallback
-   * when structured limits aren't published for the provider.
-   */
-  backendError?: string | null;
 };
 
 /**
  * Resolves the user-facing limit message for a provider that can't quote.
  *
- * Prefers structured provider limits, then falls back to backend limit strings.
- * Returns null when it isn't a limit situation.
+ * Uses structured provider limits (`limits.fiat[ccy][paymentMethod]`) — the
+ * same values the backend enforces — so the message is localized via i18n.
+ * Returns null when the amount is within limits or limits aren't published,
+ * so the caller can show a generic "Quote unavailable" rather than parsing
+ * brittle backend error strings.
  *
  * @param args - Limit message resolution inputs.
  * @param args.provider
@@ -35,8 +32,7 @@ type GetProviderLimitMessageArgs = {
  * @param args.currency
  * @param args.formatCurrency
  * @param args.t
- * @param args.backendError
- * @returns The localized or backend limit message, or null.
+ * @returns The localized limit message, or null.
  */
 export function getProviderLimitMessage({
   provider,
@@ -46,32 +42,27 @@ export function getProviderLimitMessage({
   currency,
   formatCurrency,
   t,
-  backendError,
 }: GetProviderLimitMessageArgs): string | null {
-  if (amount > 0) {
-    const buyLimit = getProviderBuyLimit(
-      provider,
-      fiatCurrency,
-      paymentMethodId,
-    );
-
-    if (buyLimit) {
-      if (Number.isFinite(buyLimit.minAmount) && amount < buyLimit.minAmount) {
-        return t('rampsMinPurchaseLimit', [
-          formatCurrency(buyLimit.minAmount, currency),
-        ]);
-      }
-
-      if (Number.isFinite(buyLimit.maxAmount) && amount > buyLimit.maxAmount) {
-        return t('rampsMaxPurchaseLimit', [
-          formatCurrency(buyLimit.maxAmount, currency),
-        ]);
-      }
-    }
+  if (amount <= 0) {
+    return null;
   }
 
-  if (isProviderLimitError(backendError)) {
-    return backendError;
+  const buyLimit = getProviderBuyLimit(provider, fiatCurrency, paymentMethodId);
+
+  if (!buyLimit) {
+    return null;
+  }
+
+  if (Number.isFinite(buyLimit.minAmount) && amount < buyLimit.minAmount) {
+    return t('rampsMinPurchaseLimit', [
+      formatCurrency(buyLimit.minAmount, currency),
+    ]);
+  }
+
+  if (Number.isFinite(buyLimit.maxAmount) && amount > buyLimit.maxAmount) {
+    return t('rampsMaxPurchaseLimit', [
+      formatCurrency(buyLimit.maxAmount, currency),
+    ]);
   }
 
   return null;
