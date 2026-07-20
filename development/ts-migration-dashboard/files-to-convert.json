@@ -978,7 +978,6 @@
   "ui/hooks/useEventFragment.test.js",
   "ui/hooks/useGasFeeEstimates.js",
   "ui/hooks/useGasFeeEstimates.test.js",
-  "ui/hooks/useI18nContext.js",
   "ui/hooks/useIsOriginalTokenSymbol.js",
   "ui/hooks/useIsOriginalTokenSymbol.test.js",
   "ui/hooks/useNftsCollections.js",
