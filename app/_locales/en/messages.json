@@ -8245,6 +8245,9 @@
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
+  "rampsQuoteUnavailable": {
+    "message": "Quote unavailable."
+  },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
   },
