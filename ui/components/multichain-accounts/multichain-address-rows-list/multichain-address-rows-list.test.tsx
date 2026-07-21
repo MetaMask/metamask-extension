@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -646,7 +646,9 @@ describe('MultichainAddressRowsList', () => {
       // The useCopyToClipboard hook should have been called with the checksummed address
       // Note: We can verify this indirectly by checking that the component renders without errors
       // and the copy success state is shown
-      expect(addressElements[0]).toHaveTextContent(/copied|0x5a/iu);
+      await waitFor(() => {
+        expect(addressElements[0]).toHaveTextContent(/copied|0x5a/iu);
+      });
     });
 
     it('searches using formatted addresses', () => {
