@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 describe('Transactions utils', () => {
   describe('getStatusKey', () => {
@@ -15,7 +16,7 @@ describe('Transactions utils', () => {
             txReceipt: {
               status: '0x0',
             },
-          },
+          } as TransactionMeta,
           expected: TransactionStatus.failed,
         },
         {
@@ -24,13 +25,13 @@ describe('Transactions utils', () => {
             txReceipt: {
               status: '0x1',
             },
-          },
+          } as TransactionMeta,
           expected: TransactionStatus.confirmed,
         },
         {
           transaction: {
             status: TransactionGroupStatus.pending,
-          },
+          } as unknown as TransactionMeta,
           expected: TransactionGroupStatus.pending,
         },
       ];
