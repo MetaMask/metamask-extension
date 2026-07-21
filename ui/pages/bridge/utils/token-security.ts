@@ -67,7 +67,7 @@ export async function fetchCachedTokenAssets(
     includeTokenSecurityData: true,
   });
   const inFlightRequest = inFlightRequests.get(cacheKey);
-  if (inFlightRequest) {
+  if (inFlightRequest !== undefined) {
     return await inFlightRequest;
   }
 
