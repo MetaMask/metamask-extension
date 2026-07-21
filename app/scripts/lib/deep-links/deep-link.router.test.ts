@@ -43,17 +43,12 @@ const canBypassDeepLinkInterstitialMock =
   canBypassDeepLinkInterstitialAsync as jest.MockedFunction<
     typeof canBypassDeepLinkInterstitialAsync
   >;
-jest.mock('../../../../shared/lib/deep-links/is-known-safe-asset', () => {
-  const { isDeepLinkRouteAllowedToBypassInterstitial } = jest.requireActual(
-    '../../../../shared/lib/deep-links/routes/interstitial-bypass',
-  );
-  return {
-    canBypassDeepLinkInterstitial: jest.fn(
-      async (route?: { pathname: string }) =>
-        isDeepLinkRouteAllowedToBypassInterstitial(route),
-    ),
-  };
-});
+jest.mock(
+  '../../../../shared/lib/deep-links/routes/interstitial-bypass-async',
+  () => ({
+    canBypassDeepLinkInterstitialAsync: jest.fn(async () => false),
+  }),
+);
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
 jest.mock('../../../../shared/lib/mv3.utils', () => ({
