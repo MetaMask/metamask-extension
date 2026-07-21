@@ -59,7 +59,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
         messenger,
       }),
       networkController: getNetworkControllerInstanceOptions(infuraProjectId),
-      passkeyController: getPasskeyControllerInstanceOptions(platform),
+      passkeyController: getPasskeyControllerInstanceOptions({
+        messenger,
+        platform,
+      }),
       seedlessOnboardingController:
         getSeedlessOnboardingControllerInstanceOptions({
           initMessenger: seedlessOnboardingControllerInitMessenger,

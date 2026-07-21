@@ -3,6 +3,8 @@ import type { WalletOptions } from '@metamask/wallet';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
 import type { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding-controller-messenger';
+import { Encryptor } from '@metamask/keyring-controller';
+import { EncryptionKey } from '@metamask/browser-passworder';
 
 type SeedlessOnboardingControllerInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['seedlessOnboardingController']
@@ -27,7 +29,7 @@ export function getSeedlessOnboardingControllerInstanceOptions({
   return {
     network: loadWeb3AuthNetwork(),
     passwordOutdatedCacheTTL: 15_000,
-    encryptor: encryptorFactory(600_000),
+    encryptor: encryptorFactory(600_000) as Encryptor<EncryptionKey>,
     refreshJWTToken: (...args) =>
       initMessenger.call('OAuthService:getNewRefreshToken', ...args),
     revokeRefreshToken: (...args) =>

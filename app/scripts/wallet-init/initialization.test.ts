@@ -154,7 +154,10 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
-    expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith(platform);
+    expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
+      messenger,
+      platform,
+    });
     expect(getSeedlessOnboardingControllerInitMessenger).toHaveBeenCalledWith(
       messenger,
     );
