@@ -4,21 +4,28 @@ import {
 } from '@metamask/passkey-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getPasskeyControllerMessenger } from './messengers';
+import {
+  getPasskeyControllerMessenger,
+  getPasskeyControllerInitMessenger,
+} from './messengers';
 import { PasskeyControllerInit } from './passkey-controller-init';
+import { PasskeyControllerInitMessenger } from './messengers/passkey-controller-messenger';
 import { MessengerClientInitRequest } from './types';
 
 jest.mock('@metamask/passkey-controller');
 
 function getInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<PasskeyControllerMessenger>
+  MessengerClientInitRequest<
+    PasskeyControllerMessenger,
+    PasskeyControllerInitMessenger
+  >
 > {
   const baseMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getPasskeyControllerMessenger(baseMessenger),
-    initMessenger: undefined,
+    initMessenger: getPasskeyControllerInitMessenger(baseMessenger),
   };
 
   return requestMock;
@@ -43,6 +50,7 @@ describe('PasskeyControllerInit', () => {
       expectedOrigin: 'chrome-extension://mock-id',
       userName: 'MetaMask Wallet',
       userDisplayName: 'MetaMask Wallet',
+      getIsOnboardingCompleted: expect.any(Function),
     });
   });
 

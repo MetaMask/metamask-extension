@@ -17,7 +17,6 @@ import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
-import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
@@ -721,35 +720,7 @@ describe('MetaMaskController', function () {
     });
 
     describe('#protectVaultKeyWithPasskey', function () {
-      it('requires password when onboarding is complete', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: true,
-          });
-
-        await expect(
-          metamaskController.protectVaultKeyWithPasskey(
-            registrationResponse,
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Password required to register passkey');
-      });
-
-      it('verifies password and protects vault key after onboarding', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: true,
-          });
-        const verifyPasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
+      it('delegates to the passkey controller with reshaped params', async function () {
         const protectVaultKeySpy = jest
           .spyOn(
             metamaskController.passkeyController,
@@ -763,28 +734,14 @@ describe('MetaMaskController', function () {
           'password',
         );
 
-        expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
           authenticationResponse,
-          vaultKey: 'vault-key',
+          password: 'password',
         });
       });
 
-      it('skips password verification before onboarding completion', async function () {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({
-            ...metamaskController.onboardingController.state,
-            completedOnboarding: false,
-          });
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
+      it('forwards an undefined password before onboarding completion', async function () {
         const protectVaultKeySpy = jest
           .spyOn(
             metamaskController.passkeyController,
@@ -797,11 +754,10 @@ describe('MetaMaskController', function () {
           authenticationResponse,
         );
 
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
           authenticationResponse,
-          vaultKey: 'vault-key',
+          password: undefined,
         });
       });
     });
@@ -844,165 +800,45 @@ describe('MetaMaskController', function () {
     });
 
     describe('#removePasskeyWithPasskeyVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.removePasskeyWithPasskeyVerification(
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('throws when passkey authentication verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
+      it('delegates to the passkey controller', async function () {
+        const removeSpy = jest
           .spyOn(
             metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
+            'removePasskeyWithPasskeyVerification',
           )
-          .mockResolvedValue(false);
-
-        await expect(
-          metamaskController.removePasskeyWithPasskeyVerification(
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey authentication verification failed');
-      });
-
-      it('removes passkey after successful verification', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const verifyPasskeyAuthenticationSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         await metamaskController.removePasskeyWithPasskeyVerification(
           authenticationResponse,
         );
 
-        expect(verifyPasskeyAuthenticationSpy).toHaveBeenCalledWith(
-          authenticationResponse,
-        );
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
+        expect(removeSpy).toHaveBeenCalledWith(authenticationResponse);
       });
     });
 
     describe('#removePasskeyWithPasswordVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-
-        await expect(
-          metamaskController.removePasskeyWithPasswordVerification('password'),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
-      });
-
-      it('verifies password then removes passkey', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const verifyPasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue(true);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
+      it('delegates to the passkey controller', async function () {
+        const removeSpy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'removePasskeyWithPasswordVerification',
+          )
+          .mockResolvedValue();
 
         await metamaskController.removePasskeyWithPasswordVerification(
           'password',
         );
 
-        expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
+        expect(removeSpy).toHaveBeenCalledWith('password');
       });
     });
 
     describe('#changePasswordWithPasskeyVerification', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
-      });
-
-      it('throws when passkey authentication verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
+      it('delegates to the passkey controller with reshaped params', async function () {
+        const changeSpy = jest
           .spyOn(
             metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(false);
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow('Passkey authentication verification failed');
-      });
-
-      it('changes password and renews vault key protection', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValueOnce('old-vault-key')
-          .mockResolvedValueOnce('new-vault-key');
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        const renewVaultKeyProtectionSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'renewVaultKeyProtection',
+            'changePasswordWithPasskeyVerification',
           )
           .mockResolvedValue();
 
@@ -1011,129 +847,20 @@ describe('MetaMaskController', function () {
           authenticationResponse,
         );
 
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(renewVaultKeyProtectionSpy).toHaveBeenCalledWith({
+        expect(changeSpy).toHaveBeenCalledWith({
+          newPassword: 'new-password',
           authenticationResponse,
-          oldVaultKey: 'old-vault-key',
-          newVaultKey: 'new-vault-key',
+          options: undefined,
         });
-        expect(releaseLock).toHaveBeenCalledTimes(1);
       });
 
-      it('removes passkey and rethrows when renew protection fails', async function () {
-        const releaseLock = jest.fn();
-        const renewError = new Error('renew failed');
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
+      it('forwards the renewVaultKeyProtection option', async function () {
+        const changeSpy = jest
           .spyOn(
             metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
+            'changePasswordWithPasskeyVerification',
           )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValueOnce('old-vault-key')
-          .mockResolvedValueOnce('new-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
           .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'renewVaultKeyProtection',
-          )
-          .mockRejectedValue(renewError);
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toMatchObject({
-          name: 'PasskeyControllerError',
-          message:
-            'Passkey vault key protection renewal failed after password change',
-          code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
-          cause: renewError,
-        });
-
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-
-      it('releases lock and rethrows when keyring password change fails', async function () {
-        const releaseLock = jest.fn();
-        const changePasswordError = new Error('change password failed');
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('old-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockRejectedValue(changePasswordError);
-        const renewVaultKeyProtectionSpy = jest.spyOn(
-          metamaskController.passkeyController,
-          'renewVaultKeyProtection',
-        );
-
-        await expect(
-          metamaskController.changePasswordWithPasskeyVerification(
-            'new-password',
-            authenticationResponse,
-          ),
-        ).rejects.toThrow(changePasswordError);
-
-        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
-      });
-
-      it('changes password and removes passkey when vault key protection renewal is skipped', async function () {
-        const releaseLock = jest.fn();
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'verifyPasskeyAuthentication',
-          )
-          .mockResolvedValue(true);
-        jest
-          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-          .mockResolvedValue(releaseLock);
-        const changePasswordSpy = jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        const verifyPasswordSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifyPassword',
-        );
-        const renewVaultKeyProtectionSpy = jest.spyOn(
-          metamaskController.passkeyController,
-          'renewVaultKeyProtection',
-        );
-        const removePasskeySpy = jest
-          .spyOn(metamaskController.passkeyController, 'removePasskey')
-          .mockReturnValue();
 
         await metamaskController.changePasswordWithPasskeyVerification(
           'new-password',
@@ -1141,11 +868,11 @@ describe('MetaMaskController', function () {
           { renewVaultKeyProtection: false },
         );
 
-        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
-        expect(verifyPasswordSpy).not.toHaveBeenCalled();
-        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
-        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalledTimes(1);
+        expect(changeSpy).toHaveBeenCalledWith({
+          newPassword: 'new-password',
+          authenticationResponse,
+          options: { renewVaultKeyProtection: false },
+        });
       });
     });
 
@@ -1258,28 +985,35 @@ describe('MetaMaskController', function () {
     });
 
     describe('#exportAccountsWithPasskey', function () {
-      it('throws when passkey is not registered', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(false);
+      it('delegates to the passkey controller and returns its result', async function () {
+        const addresses = ['0xAddressOne', '0xAddressTwo'];
+        const exportSpy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'exportAccountsWithPasskey',
+          )
+          .mockResolvedValue([
+            'priv-key-0xAddressOne',
+            'priv-key-0xAddressTwo',
+          ]);
 
-        await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
-        ).rejects.toMatchObject({
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        });
+        const result = await metamaskController.exportAccountsWithPasskey(
+          authenticationResponse,
+          addresses,
+        );
+
+        expect(exportSpy).toHaveBeenCalledWith(authenticationResponse, addresses);
+        expect(result).toStrictEqual([
+          'priv-key-0xAddressOne',
+          'priv-key-0xAddressTwo',
+        ]);
       });
 
-      it('propagates the error when passkey verification fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
+      it('propagates errors from the passkey controller', async function () {
         jest
           .spyOn(
             metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
+            'exportAccountsWithPasskey',
           )
           .mockRejectedValue(new Error('invalid assertion'));
 
@@ -1288,68 +1022,6 @@ describe('MetaMaskController', function () {
             '0xAddressOne',
           ]),
         ).rejects.toThrow('invalid assertion');
-      });
-
-      it('propagates the error when account export fails', async function () {
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('passkey-vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'exportAccount')
-          .mockRejectedValue(new Error('Incorrect encryption key'));
-
-        await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
-        ).rejects.toThrow('Incorrect encryption key');
-      });
-
-      it('returns private keys for each address after verification', async function () {
-        const addresses = ['0xAddressOne', '0xAddressTwo'];
-        jest
-          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
-          .mockReturnValue(true);
-        const retrieveVaultKeyWithPasskeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'retrieveVaultKeyWithPasskey',
-          )
-          .mockResolvedValue('vault-key');
-        const exportAccountSpy = jest
-          .spyOn(metamaskController.keyringController, 'exportAccount')
-          .mockImplementation((_options, address) =>
-            Promise.resolve(`priv-key-${address}`),
-          );
-
-        const result = await metamaskController.exportAccountsWithPasskey(
-          authenticationResponse,
-          addresses,
-        );
-
-        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledWith(
-          authenticationResponse,
-        );
-        expect(retrieveVaultKeyWithPasskeySpy).toHaveBeenCalledTimes(1);
-        expect(exportAccountSpy).toHaveBeenCalledTimes(2);
-        expect(exportAccountSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          '0xAddressOne',
-        );
-        expect(exportAccountSpy).toHaveBeenCalledWith(
-          { encryptionKey: 'vault-key' },
-          '0xAddressTwo',
-        );
-        expect(result).toStrictEqual([
-          'priv-key-0xAddressOne',
-          'priv-key-0xAddressTwo',
-        ]);
       });
     });
 
