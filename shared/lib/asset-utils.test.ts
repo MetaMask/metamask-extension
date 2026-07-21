@@ -641,5 +641,21 @@ describe('asset-utils', () => {
         isTronStakedAsset(`${tronMainnet}/slip44:195` as CaipAssetType),
       ).toBe(false);
     });
+
+    it('returns false for undefined input', () => {
+      expect(isTronStakedAsset(undefined)).toBe(false);
+    });
+
+    it('returns false for non-CAIP string input', () => {
+      expect(isTronStakedAsset('not-a-caip-id')).toBe(false);
+    });
+
+    it('returns false for non-Tron chain', () => {
+      expect(
+        isTronStakedAsset(
+          `${MultichainNetworks.ETHEREUM}/slip44:60` as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
   });
 });
