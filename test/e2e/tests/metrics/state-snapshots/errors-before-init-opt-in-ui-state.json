@@ -157,10 +157,7 @@
     },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
-      "cryptocurrencies": [
-        "btc",
-        "sol"
-      ],
+      "cryptocurrencies": ["btc", "sol"],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
