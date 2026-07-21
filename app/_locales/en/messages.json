@@ -3212,6 +3212,12 @@
   "deepLinkQrPredictTitle": {
     "message": "Open Prediction Markets on mobile"
   },
+  "deepLinkQrTopTradersDescription": {
+    "message": "Follow Trading is available on MetaMask mobile. Scan this code with your mobile device to use it."
+  },
+  "deepLinkQrTopTradersTitle": {
+    "message": "Open Follow Trading on mobile"
+  },
   "deepLinkQrTrendingDescription": {
     "message": "Explore is available on MetaMask mobile. Scan this code with your mobile device to use it."
   },
@@ -3311,6 +3317,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theTopTradersPage": {
+    "message": "the Top Traders page"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"

@@ -74,6 +74,19 @@ export const useHomeDeepLinkEffects = () => {
     [dispatch],
   );
 
+  const openTopTradersQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrTopTradersDescription',
+          titleKey: 'deepLinkQrTopTradersTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const openTrendingQrCodeModal = useCallback(
     (deeplinkUrl: string) => {
       dispatch(
@@ -109,6 +122,11 @@ export const useHomeDeepLinkEffects = () => {
           isDeepLinkUrlForPath(param, '/predict'),
         action: openPredictQrCodeModal,
       },
+      [HomeQueryParams.TopTradersDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/top-traders'),
+        action: openTopTradersQrCodeModal,
+      },
       [HomeQueryParams.TrendingDeeplinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/trending'),
@@ -119,6 +137,7 @@ export const useHomeDeepLinkEffects = () => {
       openBatchSellQrCodeModal,
       openNetworkSelectorModal,
       openPredictQrCodeModal,
+      openTopTradersQrCodeModal,
       openTrendingQrCodeModal,
     ],
   );

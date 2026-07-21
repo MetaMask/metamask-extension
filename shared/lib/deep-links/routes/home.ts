@@ -8,6 +8,7 @@ export enum HomeQueryParams {
   BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',
   OpenNetworkSelector = 'openNetworkSelector',
   PredictDeeplinkUrl = 'predictDeeplinkUrl',
+  TopTradersDeeplinkUrl = 'topTradersDeeplinkUrl',
   TrendingDeeplinkUrl = 'trendingDeeplinkUrl',
 }
 
@@ -15,6 +16,7 @@ export function createHomeQrCodeDestination(
   queryParam:
     | HomeQueryParams.BatchSellDeeplinkUrl
     | HomeQueryParams.PredictDeeplinkUrl
+    | HomeQueryParams.TopTradersDeeplinkUrl
     | HomeQueryParams.TrendingDeeplinkUrl,
   deeplinkUrl: string,
 ): Destination {
