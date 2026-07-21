@@ -3590,7 +3590,6 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
-      'MetaMetricsController:trackEvent',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',
       'MetaMetricsController:createEventFragment',

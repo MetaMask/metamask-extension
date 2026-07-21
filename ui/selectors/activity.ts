@@ -172,9 +172,15 @@ export const selectLocalTransactionsByHash = createSelector(
         // Also index by id so signing/queued transactions (no hash yet) can be
         // looked up — the activity adapter sets hash = primaryTransaction.id
         // as a fallback when no real tx hash exists.
-        const id = transaction.id?.toLowerCase();
-        if (id && !transactionsByHash.has(id)) {
-          transactionsByHash.set(id, transactionGroup);
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          const id = String(transaction.id).toLowerCase();
+          if (!transactionsByHash.has(id)) {
+            transactionsByHash.set(id, transactionGroup);
+          }
         }
       }
     }
@@ -554,9 +560,12 @@ export const selectLocalActivityItemsByIdentifier = createSelector(
         }
 
         // Also index by id so both pending transactions and toast listeners can resolve the item
-        const id = transaction.id?.toLowerCase();
-        if (id) {
-          itemsByIdentifier.set(id, item);
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          itemsByIdentifier.set(String(transaction.id).toLowerCase(), item);
         }
       }
     });
