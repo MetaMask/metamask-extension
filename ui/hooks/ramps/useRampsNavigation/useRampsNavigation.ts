@@ -25,6 +25,8 @@ import {
   selectTokens,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
+import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import { runPortfolioBuyOrdersMigration } from '../utils/portfolioBuyOrdersMigration';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -102,18 +104,10 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
- * unsupported, providers/tokens fetched-but-empty) and then routes into the
- * native buy flow: an intent with a supported `assetId` pre-selects the token
- * and opens the build-quote page; without one it opens the token-selection
- * page; an unsupported `assetId` raises the unsupported modal. The gate is
- * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
- * Portfolio redirect).
- *
- * Geolocation is resolved on demand via the background `GeolocationController`
- * (mobile parity — it does not fetch at startup, so reading synced state alone
- * would fail closed). Any loading/indeterminate state fails open; only a
- * settled, definitively-blocking state raises a modal.
+ * When native ramps are enabled and the wallet has previously connected to
+ * Portfolio, runs a one-shot silent Portfolio migrate (upload Buy orders →
+ * sync into Extension) before opening the in-wallet buy flow. Never-connected
+ * wallets skip Portfolio entirely.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
@@ -131,6 +125,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -177,6 +172,16 @@ export default function useRampsNavigation() {
         return false;
       }
 
+      // 4b. One-shot Portfolio Buy-history migrate for wallets that may have
+      // localStorage orders on app.metamask.io. Never-connected → skip.
+      if (everConnectedToPortfolio) {
+        try {
+          await runPortfolioBuyOrdersMigration();
+        } catch (error) {
+          console.error('Portfolio Buy-order migration failed', error);
+        }
+      }
+
       // 5. Route into the native buy flow.
       const assetId = intent?.assetId;
       if (!assetId) {
@@ -206,6 +211,7 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      everConnectedToPortfolio,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,

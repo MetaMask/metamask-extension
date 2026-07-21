@@ -9,6 +9,14 @@ export type CompletedOrderInfo = {
   completedAt: number;
 };
 
+/**
+ * Portfolio / User Storage often store `/providers/moonpay-staging` while the
+ * Extension catalog uses bare ids like `moonpay-staging`.
+ */
+export function normalizeRampsProviderId(providerId: string): string {
+  return providerId.replace(/^\/providers\//i, '').toLowerCase();
+}
+
 export function completedOrdersFromRampsOrders(
   orders: RampsOrder[],
 ): CompletedOrderInfo[] {
@@ -42,8 +50,10 @@ export function determinePreferredProvider(
   const mostRecentProviderId = sortedOrders[0]?.providerId;
 
   if (mostRecentProviderId) {
+    const normalizedRecent = normalizeRampsProviderId(mostRecentProviderId);
     const previousProvider = providers.find(
-      (provider) => provider.id === mostRecentProviderId,
+      (provider) =>
+        normalizeRampsProviderId(provider.id) === normalizedRecent,
     );
     if (previousProvider) {
       return { provider: previousProvider, autoSelected: false };
@@ -51,7 +61,7 @@ export function determinePreferredProvider(
   }
 
   const transakProvider = providers.find((provider) =>
-    provider.id?.toLowerCase().includes('transak'),
+    normalizeRampsProviderId(provider.id).includes('transak'),
   );
   if (transakProvider) {
     return { provider: transakProvider, autoSelected: true };
