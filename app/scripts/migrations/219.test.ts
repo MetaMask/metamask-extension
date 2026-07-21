@@ -88,7 +88,51 @@ describe(`migration #${VERSION}`, () => {
     expect(ac.consentDecisionMade).toBe(false);
   });
 
-  it('transforms buffered events into AnalyticsController.preConsentEventQueue', async () => {
+  it('transforms a normal buffered event into a single preConsentEventQueue entry', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: false,
+          eventsBeforeMetricsOptIn: [
+            {
+              event: 'App Installed',
+              category: 'App',
+              properties: { source: 'onboarding' },
+            },
+          ],
+        },
+        AnalyticsController: { analyticsId: '0xabc123', optedIn: false },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    await migrate(versionedData, new Set<string>());
+
+    const mmc = versionedData.data.MetaMetricsController as Record<
+      string,
+      unknown
+    >;
+    const ac = versionedData.data.AnalyticsController as {
+      preConsentEventQueue: Record<string, unknown>;
+    };
+
+    expect(mmc.eventsBeforeMetricsOptIn).toBeUndefined();
+    const entries = Object.values(ac.preConsentEventQueue);
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toStrictEqual({
+      type: 'track',
+      eventName: 'App Installed',
+      messageId: expect.any(String),
+      timestamp: '2026-05-28T00:00:00.000Z',
+      properties: {
+        source: 'onboarding',
+        category: 'App',
+      },
+    });
+  });
+
+  it('splits a buffered event with sensitiveProperties into regular and anonymous entries', async () => {
     const oldStorage: VersionedData = {
       meta: { version: OLD_VERSION },
       data: {
@@ -120,18 +164,33 @@ describe(`migration #${VERSION}`, () => {
 
     expect(mmc.eventsBeforeMetricsOptIn).toBeUndefined();
     const entries = Object.values(ac.preConsentEventQueue);
-    expect(entries).toHaveLength(1);
-    expect(entries[0]).toStrictEqual({
-      type: 'track',
-      eventName: 'App Installed',
-      messageId: expect.any(String),
-      timestamp: '2026-05-28T00:00:00.000Z',
-      properties: {
-        source: 'onboarding',
-        secret: 'value',
-        category: 'App',
-      },
-    });
+    expect(entries).toHaveLength(2);
+    expect(entries).toStrictEqual(
+      expect.arrayContaining([
+        {
+          type: 'track',
+          eventName: 'App Installed',
+          messageId: expect.any(String),
+          timestamp: '2026-05-28T00:00:00.000Z',
+          properties: {
+            source: 'onboarding',
+            category: 'App',
+          },
+        },
+        {
+          type: 'track',
+          eventName: 'App Installed',
+          messageId: expect.any(String),
+          timestamp: '2026-05-28T00:00:00.000Z',
+          properties: {
+            source: 'onboarding',
+            secret: 'value',
+            category: 'App',
+            anonymous: true,
+          },
+        },
+      ]),
+    );
   });
 
   it('does not create a preConsentEventQueue when there are no buffered events', async () => {

@@ -13,8 +13,11 @@ export const version = 219;
  * The `eventsBeforeMetricsOptIn` entries are raw, un-enriched event payloads
  * (the previous UI buffered them before MetaMetricsController enrichment), so
  * this one-time backfill produces `track` queue entries without the locale /
- * chain_id / environment_type enrichment that live events receive. Only users
- * who are still undecided at upgrade time have a non-empty queue.
+ * chain_id / environment_type enrichment that live events receive. When a
+ * buffered event has `sensitiveProperties`, the migration mirrors live
+ * AnalyticsController behavior by enqueueing a regular entry plus an
+ * anonymous entry marked with `anonymous: true`. Only users who are still
+ * undecided at upgrade time have a non-empty queue.
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - A set used to record controllers that were modified.
@@ -64,8 +67,20 @@ export const migrate = (async (versionedData, changedControllers) => {
 }) satisfies Migrate;
 
 /**
+ * Marker used by AnalyticsController / the platform adapter to send an event
+ * under the shared anonymous ID. Matches live `trackEvent` behavior when
+ * `sensitiveProperties` are present.
+ */
+const ANONYMOUS_EVENT_PROPERTY = 'anonymous';
+
+/**
  * Converts a list of raw buffered MetaMetrics event payloads into an
  * AnalyticsController pre-consent queue keyed by message id.
+ *
+ * Mirrors AnalyticsController's anonymous-events split:
+ * - Always enqueue a regular track entry with non-sensitive `properties`.
+ * - When `sensitiveProperties` are present, also enqueue a second track entry
+ * that merges those values and sets `anonymous: true`.
  *
  * @param eventsBeforeMetricsOptIn - The raw buffered events from MetaMetricsController.
  * @returns The pre-consent event queue.
@@ -83,20 +98,41 @@ function buildPreConsentEventQueue(
       continue;
     }
 
-    const messageId = uuidv4();
-    const properties = {
+    const baseProperties = {
       ...(isObject(event.properties) ? event.properties : {}),
-      ...(isObject(event.sensitiveProperties) ? event.sensitiveProperties : {}),
       ...(event.category === undefined ? {} : { category: event.category }),
     };
+    const sensitiveProperties = isObject(event.sensitiveProperties)
+      ? event.sensitiveProperties
+      : {};
+    const hasSensitiveProperties = Object.keys(sensitiveProperties).length > 0;
+    const timestamp = new Date().toISOString();
 
-    preConsentEventQueue[messageId] = {
+    // Regular (identified) event with non-sensitive properties only.
+    const regularMessageId = uuidv4();
+    preConsentEventQueue[regularMessageId] = {
       type: 'track',
       eventName: event.event,
-      messageId,
-      timestamp: new Date().toISOString(),
-      properties,
+      messageId: regularMessageId,
+      timestamp,
+      properties: baseProperties,
     };
+
+    // Anonymous event carrying sensitive properties, matching live trackEvent.
+    if (hasSensitiveProperties) {
+      const anonymousMessageId = uuidv4();
+      preConsentEventQueue[anonymousMessageId] = {
+        type: 'track',
+        eventName: event.event,
+        messageId: anonymousMessageId,
+        timestamp,
+        properties: {
+          ...baseProperties,
+          ...sensitiveProperties,
+          [ANONYMOUS_EVENT_PROPERTY]: true,
+        },
+      };
+    }
   }
 
   return preConsentEventQueue;
