@@ -5401,7 +5401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^7.5.3, @metamask/account-tree-controller@npm:^7.5.5":
+"@metamask/account-tree-controller@npm:^7.5.3, @metamask/account-tree-controller@npm:^7.5.4, @metamask/account-tree-controller@npm:^7.5.5":
   version: 7.5.5
   resolution: "@metamask/account-tree-controller@npm:7.5.5"
   dependencies:
