@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import {
-  MetaMetricsContext,
-  type UIMetricsEventPayload,
-} from '../../../../contexts/metametrics';
+import { type UIMetricsEventPayload } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   Answers,
   QuestionId,
@@ -16,18 +14,19 @@ import {
 } from './scam-questionnaire.constants';
 
 export function useScamQuestionnaireMetrics() {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   return useMemo(() => {
     const fire = (
       event: MetaMetricsEventName,
       properties: UIMetricsEventPayload['properties'] = {},
     ) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Confirmations,
-        event,
-        properties,
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Confirmations)
+          .addProperties(properties)
+          .build(),
+      );
     };
 
     return {
@@ -77,5 +76,5 @@ export function useScamQuestionnaireMetrics() {
           red_flag_questions: getRedFlagQuestions(answers),
         }),
     };
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 }

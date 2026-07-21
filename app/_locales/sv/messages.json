@@ -175,9 +175,6 @@
   "decimal": {
     "message": "Decimalprecision"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
-  },
   "delete": {
     "message": "Radera"
   },
@@ -499,9 +496,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signatureRequest": {
-    "message": "Signaturbegäran"
   },
   "signed": {
     "message": "Signerat"

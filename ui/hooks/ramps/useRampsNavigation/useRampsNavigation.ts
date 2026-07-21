@@ -88,12 +88,14 @@ function isAssetSupported(
   return Boolean(match) && match?.tokenSupported !== false;
 }
 
-// Pre-select the token; a failed pre-selection fails open (non-fatal).
-async function preselectToken(assetId: CaipAssetType): Promise<void> {
+// Pre-select the token before navigating to build-quote. Fail closed so a
+// failed selection does not leave build-quote waiting on an unmet intent.
+async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   try {
     await submitRequestToBackground('setRampsSelectedToken', [assetId]);
+    return true;
   } catch {
-    // Fail open — the build-quote page can re-resolve the token itself.
+    return false;
   }
 }
 
@@ -190,8 +192,12 @@ export default function useRampsNavigation() {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
-      await preselectToken(assetId);
-      navigate(RAMPS_BUILD_QUOTE_ROUTE);
+      const didPreselect = await preselectToken(assetId);
+      if (!didPreselect) {
+        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+        return false;
+      }
+      navigate(RAMPS_BUILD_QUOTE_ROUTE, { state: { assetId } });
       return true;
     },
     [

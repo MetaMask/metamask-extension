@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Dokładność liczb po przecinku"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
-  },
   "delete": {
     "message": "Usuń"
   },
@@ -505,9 +502,6 @@
   },
   "sign": {
     "message": "Podpisz"
-  },
-  "signatureRequest": {
-    "message": "Prośba o podpis"
   },
   "signed": {
     "message": "Podpisane"

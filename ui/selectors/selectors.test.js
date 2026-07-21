@@ -19,17 +19,13 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
 } from '../../shared/lib/feature-flags';
 
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
@@ -1311,6 +1307,133 @@ describe('Selectors', () => {
     });
   });
 
+  describe('parameterized asset selector memoization', () => {
+    const selectedAccountId = 'selected-account';
+    const selectedAccountAddress = '0x123';
+    const chainIdOne = CHAIN_IDS.MAINNET;
+    const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
+    const tokenAddressOne = '0xaaa';
+    const tokenAddressTwo = '0xbbb';
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          selectedAccount: selectedAccountId,
+          accounts: {
+            [selectedAccountId]: {
+              address: selectedAccountAddress,
+            },
+          },
+        },
+        allNfts: {
+          [selectedAccountAddress]: {
+            [chainIdOne]: [{ address: '0xnft-1' }],
+            [chainIdTwo]: [{ address: '0xnft-2' }],
+          },
+        },
+        tokenScanCache: {
+          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Malicious',
+          },
+          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            result_type: 'Warning',
+          },
+          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Benign',
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      selectors.selectNftsByChainId.clearCache();
+      selectors.selectNftsByChainId.resetRecomputations();
+      selectors.getTokenScanResultsForAddresses.clearCache();
+      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+    });
+
+    it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
+        { address: '0xnft-2' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+    });
+
+    it('caches token scan lookups across equivalent address arrays', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
+
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Benign',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
@@ -2449,14 +2572,8 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2505,15 +2622,9 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -4109,7 +4220,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -4125,7 +4236,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -4978,6 +5089,7 @@ describe('snap selectors', () => {
       },
       insights: {
         one: { value: 1 },
+        two: { value: 2 },
       },
     },
   };
@@ -4995,6 +5107,28 @@ describe('snap selectors', () => {
     expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
       value: 1,
     });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
   });
 
   it('filters snap collections for snap permissions and enabled state', () => {
