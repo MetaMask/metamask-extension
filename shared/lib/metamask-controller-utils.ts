@@ -61,7 +61,7 @@ export function createEnsureOnboardingCompleteCallback(
   };
 }
 
-type TokenDataParam = {
+export type TokenDataParam = {
   name?: string;
   args?: { increment?: unknown; _value?: unknown };
 };

@@ -448,7 +448,7 @@ export class Numeric {
    * @param invert - if true, inverts the rate
    * @returns New Numeric value with conversion rate applied.
    */
-  applyConversionRate(rate?: number | BigNumber, invert?: boolean) {
+  applyConversionRate(rate?: string | number | BigNumber, invert?: boolean) {
     if (typeof rate === 'undefined') {
       return this;
     }

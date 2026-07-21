@@ -6,7 +6,10 @@ import {
 } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
-import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
+import {
+  getTokenValueParam,
+  TokenDataParam,
+} from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
@@ -342,7 +345,8 @@ export async function getAssetDetails(
   // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
   // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
   let tokenId =
-    getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
+    getTokenIdParam(tokenData)?.toString() ??
+    getTokenValueParam(tokenData as TokenDataParam);
 
   const toAddress = getTokenAddressParam(tokenData);
 
@@ -382,13 +386,15 @@ export async function getAssetDetails(
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
     return { toAddress, tokenId };
   }
-  const tokenValue = getTokenValueParam(tokenData);
+  const tokenValue = getTokenValueParam(tokenData as TokenDataParam);
   const tokenDecimals = tokenDetails?.decimals;
   const tokenAmount =
     tokenData &&
     tokenValue &&
     tokenDecimals &&
-    calcTokenAmount(tokenValue, tokenDecimals).toString(10);
+    calcTokenAmount(tokenValue, tokenDecimals as unknown as number).toString(
+      10,
+    );
 
   const decimals = tokenDecimals && Number(tokenDecimals?.toString());
 
