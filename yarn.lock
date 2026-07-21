@@ -8383,6 +8383,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/transaction-controller@npm:^69.1.0":
+  version: 69.1.0
+  resolution: "@metamask/transaction-controller@npm:69.1.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^39.0.5"
+    "@metamask/approval-controller": "npm:^9.0.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^6.5.0"
+    "@metamask/gas-fee-controller": "npm:^26.2.4"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.11.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+  checksum: 10/e16c36460f70a92bce9c69d02b98c6690279abe66135b02ffdc5cdb438204463c3d44539828d55412a4cd75bc53af4d5b901ed4b0587bffe7f097129279f7ebf
+  languageName: node
+  linkType: hard
+
 "@metamask/transaction-pay-controller@npm:^24.0.3":
   version: 24.1.0
   resolution: "@metamask/transaction-pay-controller@npm:24.1.0"
@@ -32906,7 +32943,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
-    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/transaction-controller": "npm:^69.1.0"
     "@metamask/transaction-pay-controller": "npm:^24.0.3"
     "@metamask/tron-wallet-snap": "npm:^1.31.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
