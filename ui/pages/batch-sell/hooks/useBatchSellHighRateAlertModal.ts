@@ -64,7 +64,7 @@ export const useBatchSellHighRateAlertModal = () => {
         },
       });
     },
-    [],
+    [openModal, t, navigateToBridgePageAndPreselect],
   );
 
   return {
