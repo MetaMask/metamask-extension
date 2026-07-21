@@ -1,0 +1,21 @@
+app/scripts/lib/ppom/security-alerts-api.test.ts
+  s_dd19af7b0daee9::t_f90604e094a032 5
+app/scripts/lib/trust-signals/trust-signals-middleware.ts
+  s_dd19af7b0daee9::t_f90604e094a032 51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7f88a58b0cbf77b76a4d57b9883b1d48e5b5eade",
+  "prompts": {},
+  "sessions": {
+    "s_dd19af7b0daee9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_0795bc7f1ffe31fimQGcIfApBK",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
