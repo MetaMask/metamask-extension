@@ -45,7 +45,6 @@ const getMetaMaskStateWithUnapprovedIncreaseApprovalTransaction = () => {
     },
     pendingApprovalCount: 1,
     knownMethodData: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       '0xd73dd623': {
         name: 'increaseApproval',
         params: [
