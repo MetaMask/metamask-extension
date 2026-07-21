@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Mga Opsyon sa Account"
   },
-  "accountPermissionToast": {
-    "message": "In-update ang mga pahintulot ng account"
-  },
   "accountSelectionRequired": {
     "message": "Kailangan mong pumili ng account!"
   },

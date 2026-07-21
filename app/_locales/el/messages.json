@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Επιλογές λογαριασμού"
   },
-  "accountPermissionToast": {
-    "message": "Ενημέρωση αδειών λογαριασμού"
-  },
   "accountSelectionRequired": {
     "message": "Πρέπει να επιλέξετε έναν λογαριασμό!"
   },
