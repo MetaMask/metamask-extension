@@ -10,15 +10,36 @@ import {
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { BasicConfigurationModal } from './basic-configuration-modal';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions', () => ({
   setDataCollectionForMarketing: jest.fn(),
   setParticipateInMetaMetrics: jest.fn(),
+  toggleBasicFunctionality: jest.fn(),
   toggleExternalServices: jest.fn(),
 }));
 
 jest.mock('../../../ducks/app/app', () => ({
   hideBasicFunctionalityModal: jest.fn(),
   onboardingToggleBasicFunctionalityOff: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
 
 const mockDispatch = jest.fn();

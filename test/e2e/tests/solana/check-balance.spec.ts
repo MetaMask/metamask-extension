@@ -6,6 +6,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
@@ -54,13 +55,11 @@ describe('Check balance', function (this: Suite) {
     );
   });
   it('For a non 0 balance account - USD balance', async function () {
-    const fixture = new FixtureBuilderV2()
-      .withShowNativeTokenAsMainBalanceDisabled()
-      .build();
-
     await withFixtures(
       {
-        fixtures: fixture,
+        fixtures: buildSolanaPositiveBalanceFixture({
+          showNativeTokenAsMainBalanceDisabled: true,
+        }),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
@@ -81,7 +80,7 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - SOL balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },

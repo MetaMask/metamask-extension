@@ -18,6 +18,19 @@ import type { NotificationsSettingsSectionType } from '../../notifications-setti
 import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockSwitchAccountNotifications = jest.fn();
 
 jest.mock(

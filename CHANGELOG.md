@@ -7,6 +7,152 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.40.0]
+
+### Added
+
+- Added Robinhood Chain as a featured network (#44310)
+- Added trustline support in transaction history v3 (#44200)
+- Added transition to settings page (#44074)
+- Added a security check that warns users before confirming a send flagged as malicious (#43822)
+- Added a controller to sync extension wallets to MetaMask mobile via QR code pairing (#43711)
+- Added Stellar chain utilities (#44192)
+
+### Changed
+
+- Updated transaction id copied text on activity details (#44313)
+- Bumped `@metamask/notification-services-controller` to support the v4 notifications API (#44263)
+- Updated min-height for login-option (#44265)
+- Changed the native asset icon (RBTC) for Rootstock (#44115)
+- Warning banner for add from chainlist (#44309)
+- Certain deeplink paths open directly without an interstitial (#43639)
+- Disabled CTA swap button for Tron when no network fees retrieved (#44107)
+- Consolidated Privacy toggles in BFT for new users (#43935)
+- Disabled gas sponsorship for hw wallets (#44144)
+- Defer global spinners (#44120)
+- Bignumber incident 1752 (#44097)
+- Updated transaction id copied text on activity details (#44313)
+- Bumped `@metamask/notification-services-controller` to support the v4 notifications API (#44263)
+- Updated min-height for login-option (#44265)
+- Changed the native asset icon (RBTC) for Rootstock (#44115)
+
+### Removed
+
+- Removed old token import flow (#43712)
+
+### Fixed
+
+- Fixed an issue where users who closed the extension on the wallet-ready screen without tapping Done were shown the celebration screen again on reopen (#44232)
+- Fixed a bug where the Perps balance, P&L, and position details remained visible when the wallet balance privacy mode was enabled (#44262)
+- Fixed missing prices in Arc Swap asset picker (#44073)
+- Rejected tx showing transaction id link (#44188)
+- Fixed Buy being disabled on unsupported networks; Buy is now always available and network selection is handled in the buy flow (#44069)
+- Fixed long asset names wrapping to two lines in the perps market list; they now truncate with an ellipsis on a single line (#44214)
+- Fixed MM Pay initial page to show the "Pay with" row at the bottom from the start instead of a centered pill (#44190)
+- Fixed bridge asset picker search not updating after changing the network filter while a search query is active (#44194)
+
+## [13.39.2]
+
+### Fixed
+
+- Fixed a memory leak on Firefox where closed MetaMask windows were retained in memory, growing extension memory use with every popup open (#44352)
+
+## [13.39.1]
+
+### Added
+
+- Added Robinhood Chain as a featured network (#44346)
+
+## [13.39.0]
+
+### Added
+
+- Changed the Perps order entry size field to a single input with a swap toggle between USD and asset denominations. (#44035)
+- Add BannerDismissed event to analytics (#44033)
+- Added events for chainlist (#44113)
+- Redesigned the perps market detail header to show the full market name, leverage, a ticker-collateral subtitle, and a chevron shortcut to the market list (#44067)
+- Added discount badges (VIP/Promo/DAO) to the bridge fee message based on the quote discountType (#44042)
+- DeFi referral flow now runs after permitting an additional account for the site from the account-picker for GMX and AsterDEX (#44066)
+- Removed Hyperliquid referral code prompt when Hyperliquid users already have an existing code (#44040)
+- Chainlist search and form updates (#44092)
+- Enable Biometrics authentication for the backup SRP settings (#44064)
+- Added chainlist networks via chainlist flow (#44029)
+- Updated the Notifications Settings UI to better align section presentation with the design system. (#43461)
+- Perps asset lists now show the full asset name (e.g. "Bitcoin") instead of the ticker symbol (e.g. "BTC") (#43979)
+- Removed GMX referral code prompt when GMX users already have an existing code (#43993)
+- Snaps now periodically check for over-the-air updates and report improved update metrics (#43922)
+- Added first-time recipient alert on Send flow (#43094)
+- Added the ability for users to opt out of gas sponsorship on supported networks (#43257)
+- Added an "Sync with mobile" Settings tab (behind a feature flag) that allows users to sync wallets to a second device via QR code and verification code (#42067)
+- Added entry, current, and liquidation price context to the top of the Perps Auto Close (TP/SL) screen for active positions. (#43884)
+- Updated permission details to identify MetaMask facilitator redeemers more clearly (#43353)
+- Event-based transaction toasts (#43744)
+- Added `metamask_canonical_profile_id` to support links when users consent to share data (#43798)
+- Added Trophy icon to the component library (#43574)
+- Added proof of ownership to profile metrics (#43715)
+- Added Batch Sell feature allowing users to sell multiple tokens in a single transaction from the wallet overview (#43311)
+- Added KONET network and native token logos in the custom network UI (#43810)
+- Added max leverage pill display in perps market list cards (#43775)
+- Default-check `Marketing` Opt-in checkbox for social login users in US region. (#43584)
+- Changed delete code for networks (#43499)
+- Allowed users with an enrolled passkey to reveal their Secret Recovery Phrase and export private keys using passkey verification instead of their MetaMask password (#43169)
+- Added a redesigned DeFi referral consent UI for Hyperliquid behind an A/B test (#43683)
+
+### Fixed
+
+- Fixed the VIP tier badge not appearing on swap/perps/bridge fees on a fresh install until the wallet was reset. (#43906)
+- HW model being shown for non hardware accounts when ledger account is selected. (#44028)
+- Ux fixes (#43991)
+- Fixed the left alignment of the "Pay with" row so its label lines up with the other rows in the payment section (#43792)
+- Drops the zero-diagnostic-value `sentry-tracing-init` mark span from Sentry performance transactions. (#43960)
+- Add error boundary and async error handling to onboarding flow (#43791)
+- Fixed Cancel button being disabled by a "Not enough gas" check while Speed Up stayed enabled on pending transactions. (#43602)
+- Fixed a bug where the Manage Tokens network filter could show a single network name while listing tokens from all enabled networks (#43852)
+- Fixed the Confirm Add Token full-page view staying open with an empty list after approving the request in another MetaMask window (#43835)
+- Title update (#43826)
+- Fixed Perps deposit activity items showing a question-mark icon and capitalized the generic "Transaction" title in transaction details (#43687)
+- Force-hide MAX button for Arc USDC swap/bridge (#43751)
+- Fixed an issue where MetaMask would not fail over to another RPC URL when Infura is down (#43682)
+- Empty activity on asset pages after switching network filters when a non-EVM chain was previously selected (#43705)
+
+## [13.38.2]
+
+### Fixed
+
+- Fixed a failed swap when smart account upgrade is required (#44291)
+
+## [13.38.1]
+
+### Changed
+
+- Fixed a crash (BigNumber Error: number type has more than 15 significant digits) affecting send, batch sell, and approval screens when displaying values with high-precision decimals (#44216)
+- Bumped assets controller to v10.0.0 (#44055)
+
+## [13.38.0]
+
+### Added
+
+- Bumped `@metamask/seedless-onboarding-controller` to `v10.0.3`. (#43908)
+- Event-based transaction toasts (#43744)
+- Adds `metamask_canonical_profile_id` to support links when users consent to share data (#43798)
+- Added Trophy icon to the component library (#43574)
+- Add proof of ownership to profile metrics (#43715)
+- Added Batch Sell feature allowing users to sell multiple tokens in a single transaction from the wallet overview (#43311)
+- Added KONET network and native token logos in the custom network UI (#43810)
+- Added max leverage pill display in perps market list cards (#43775)
+- Default-check `Marketing` Opt-in checkbox for social login users in US region. (#43584)
+- Changed delete code for networks (#43499)
+- Allowed users with an enrolled passkey to reveal their Secret Recovery Phrase and export private keys using passkey
+  verification instead of their MetaMask password. (#43169)
+- Added a redesigned DeFi referral consent UI for Hyperliquid behind an A/B test (#43683)
+- Display a VIP tag when using a VIP referral code. (#43527)
+- chore: Add deprecation message to `getApi` (#43813)
+- chore: Migrate `setLocked` and `syncPasswordAndUnlockWallet` to `LegacyBackgroundApiService` (#43624)
+- perf(6598): audit core platform selectors (#43607)
+- chore: Set `core-platform` as codeowners of `LegacyBackgroundApiService` (#43625)
+- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
+- Enabled ERC-7715 requests over the Multichain API and MetaMask Connect (#43513)
+
 ## [13.37.0]
 
 ### Added
@@ -22,14 +168,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add QR error handling for invalid transaction signature (#43402)
 - Added configurable max slippage controls for perps market orders (#43357)
 
-### Changed
-
-- perf(6557): Memoize swaps default token selector and remove redundant deep/shallow equality in `useTokensToSearch` (#43609)
-
 ### Fixed
 
+- Fixed Cancel button being disabled by a "Not enough gas" check while Speed Up stayed enabled on pending transactions. (#43602)
+- Fixed a bug where the Manage Tokens network filter could show a single network name while listing tokens from all enabled
+  networks. (#43852)
+- Fixed the Confirm Add Token full-page view staying open with an empty list after approving the request in another MetaMask
+  window. Title update. (#43826)
+- Fixed Perps deposit activity items showing a question-mark icon and capitalized the generic "Transaction" title in
+  transaction details. (#43687)
+- Force-hide MAX button for Arc USDC swap/bridge (#43751)
+- Fixed an issue where MetaMask would not fail over to another RPC URL when Infura is down (#43682)
+- Empty activity on asset pages after switching network filters when a non-EVM chain was previously selected (#43705)
+- Null (#43555)
 - Correct state migration to be identical to real TokenBalancesController (#43626)
-- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and trades no longer leave the user on the order screen). (#43367)
+- Fixed Perps order screen back navigation after visiting Add Funds (single back tap now returns to the market detail screen, and
+  trades no longer leave the user on the order screen). (#43367)
 - Fixed product announcement notification links opening MetaMask deeplinks externally before routing. (#42805)
 - Fixed perps close-all-positions toasts not appearing on the home screen perps tab (#43613)
 - Consume batch sell assets data from token controller (#43460)
@@ -2585,7 +2739,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...HEAD
+[13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
+[13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
+[13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1
+[13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
+[13.38.2]: https://github.com/MetaMask/metamask-extension/compare/v13.38.1...v13.38.2
+[13.38.1]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...v13.38.1
+[13.38.0]: https://github.com/MetaMask/metamask-extension/compare/v13.37.0...v13.38.0
 [13.37.0]: https://github.com/MetaMask/metamask-extension/compare/v13.36.0...v13.37.0
 [13.36.0]: https://github.com/MetaMask/metamask-extension/compare/v13.35.1...v13.36.0
 [13.35.1]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...v13.35.1

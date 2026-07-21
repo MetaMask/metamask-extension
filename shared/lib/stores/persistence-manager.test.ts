@@ -391,6 +391,21 @@ describe('PersistenceManager', () => {
       });
     });
 
+    it('does not capture exception if reporting is disabled and store.get throws', async () => {
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(
+        manager.get({ validateVault: false, reportErrors: false }),
+      ).rejects.toThrow(error);
+
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith(
+        'Error retrieving the current state of the local store:',
+        error,
+      );
+    });
+
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });

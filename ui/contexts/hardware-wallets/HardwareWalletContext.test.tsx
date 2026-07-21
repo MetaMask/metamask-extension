@@ -152,7 +152,8 @@ describe('HardwareWalletContext', () => {
 
   describe('HardwareWalletProvider', () => {
     it('provides initial state for non-hardware wallet account', () => {
-      const store = mockStore(createMockState(KeyringTypes.hd));
+      const accountAddress = '0xabc';
+      const store = mockStore(createMockState(KeyringTypes.hd, accountAddress));
 
       const { result } = renderHook(() => useHardwareWallet(), {
         wrapper: createWrapper(store),
@@ -160,6 +161,7 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
       expect(result.current.walletType).toBe(null);
+      expect(result.current.accountAddress).toBe(accountAddress);
       expect(result.current.connectionState.status).toBe(
         ConnectionStatus.Disconnected,
       );
@@ -306,7 +308,10 @@ describe('HardwareWalletContext', () => {
 
   describe('useHardwareWalletConfig hook', () => {
     it('provides config context with correct values', () => {
-      const store = mockStore(createMockState(KeyringTypes.ledger));
+      const accountAddress = '0xabc';
+      const store = mockStore(
+        createMockState(KeyringTypes.ledger, accountAddress),
+      );
 
       const { result } = renderHook(() => useHardwareWalletConfig(), {
         wrapper: createWrapper(store),
@@ -314,6 +319,7 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.isHardwareWalletAccount).toBe(true);
       expect(result.current.walletType).toBe(HardwareWalletType.Ledger);
+      expect(result.current.accountAddress).toBe(accountAddress);
       expect(result.current.hardwareConnectionPermissionState).toBe(
         HardwareConnectionPermissionState.Unknown,
       );

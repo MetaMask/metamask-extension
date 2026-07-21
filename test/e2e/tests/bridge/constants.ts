@@ -50,11 +50,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
   },
 };
 
-export const LOCATOR = {
-  MM_IMPORT_TOKENS_MODAL: (suffix: string) =>
-    `[data-testid="import-tokens-modal-${suffix}"]`,
-};
-
 export const ETH_CONVERSION_RATE_USD = 1;
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
@@ -2742,9 +2737,6 @@ export const EXPECTED_INPUT_CHANGES = {
     {
       token_destination:
         'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-    },
-    {
-      slippage: 2,
     },
     {
       chain_source: 'eip155:1',
