@@ -10,12 +10,12 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
-  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
+import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
@@ -346,21 +346,22 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEvent({
-      event: MetaMetricsEventName.SocialLoginFailed,
-      category: MetaMetricsEventCategory.Onboarding,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_rehydration:
-          isRehydration === null ? 'unknown' : String(isRehydration),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        failure_type: failureType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_category: errorCategory,
-      },
-    });
+    this.#trackEvent(
+      createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: failureType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: errorCategory,
+        })
+        .build(),
+    );
   }
 
   /**

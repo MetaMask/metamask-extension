@@ -19,12 +19,6 @@ import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
-  trackEvent: jest.fn(),
-}));
-
 type Actions = MessengerActions<OAuthServiceMessenger>;
 
 type Events = MessengerEvents<OAuthServiceMessenger>;

@@ -7,9 +7,9 @@ import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sd
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import type {
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-} from '../../../../shared/constants/metametrics';
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import type {
   TraceRequest,
   EndTraceRequest,
@@ -162,11 +162,11 @@ export type OAuthServiceOptions = {
   bufferedEndTrace: (request: EndTraceRequest) => void;
 
   /**
-   * Track a MetaMetrics event
+   * Track an analytics event built with createEventBuilder.
    */
   trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
+    built: AnalyticsEvent,
+    options?: AnalyticsEventBuildOptions,
   ) => void;
 
   /**
