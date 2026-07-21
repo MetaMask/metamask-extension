@@ -270,6 +270,13 @@ THE SOFTWARE.
 ******************************
 
 agent-base
+6.0.2 <https://github.com/TooTallNate/node-agent-base>
+license: MIT
+authors: Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
+
+******************************
+
+agent-base
 7.1.3 <https://github.com/TooTallNate/proxy-agents>
 (The MIT License)
 
@@ -720,7 +727,7 @@ SOFTWARE.
 ******************************
 
 axios
-1.16.0 <https://github.com/axios/axios>
+1.18.1 <https://github.com/axios/axios>
 # Copyright (c) 2014-present Matt Zabriskie & Collaborators
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -16323,6 +16330,13 @@ of nodejs/io.js:
 
 ******************************
 
+https-proxy-agent
+5.0.1 <https://github.com/TooTallNate/node-https-proxy-agent>
+license: MIT
+authors: Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
+
+******************************
+
 humanize-duration
 3.32.1 <https://github.com/EvanHahn/HumanizeDuration.js>
 This is free and unencumbered software released into the public domain.
@@ -30593,7 +30607,7 @@ SOFTWARE.
 ******************************
 
 protobufjs
-7.6.4 <https://github.com/protobufjs/protobuf.js>
+7.6.5 <https://github.com/protobufjs/protobuf.js>
 This license applies to all parts of protobuf.js except those files
 either explicitly including or referencing a different license or
 located in a directory containing a different LICENSE file.
