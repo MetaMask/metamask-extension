@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Tùy chọn tài khoản"
   },
-  "accountPermissionToast": {
-    "message": "Đã cập nhật quyền đối với tài khoản"
-  },
   "accountSelectionRequired": {
     "message": "Bạn cần chọn một tài khoản!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Số thập phân của token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Số thập phân ít nhất phải bằng 0 và không được quá 36."
   },
   "decrypt": {
     "message": "Giải mã"
