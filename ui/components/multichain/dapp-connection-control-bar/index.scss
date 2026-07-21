@@ -56,7 +56,7 @@
     font-size: 0.9375rem;
     background-color: var(--color-background-muted);
     color: var(--color-text-default);
-    border: none;
+    border: 0.5px solid var(--color-border-muted);
 
     &:hover {
       background-color: var(--color-background-pressed) !important;
@@ -65,7 +65,7 @@
 
   &__network-button {
     cursor: pointer;
-    border: none;
+    border: 0.5px solid var(--color-border-muted);
     border-radius: 12px;
     background-color: var(--color-background-muted);
     height: 36px;
@@ -93,8 +93,9 @@
   }
 
   &__combined-actions {
-    border: none;
+    border: 0.5px solid var(--color-border-muted);
     border-radius: 12px;
+    overflow: hidden;
     background-color: var(--color-background-muted);
     height: 36px;
     flex-shrink: 0;
@@ -109,7 +110,6 @@
     width: 34px;
     justify-content: center;
     flex-shrink: 0;
-    border-radius: 12px;
 
     &:hover {
       background-color: var(--color-background-hover);
