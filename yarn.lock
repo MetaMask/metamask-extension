@@ -5703,7 +5703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:^0.1.0, @metamask/base-data-service@npm:^0.1.3":
+"@metamask/base-data-service@npm:^0.1.3":
   version: 0.1.3
   resolution: "@metamask/base-data-service@npm:0.1.3"
   dependencies:
@@ -7624,35 +7624,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/react-data-query@npm:0.2.0"
+"@metamask/react-data-query@npm:@metamask-previews/react-data-query@0.2.2-preview-dc3ab8b12":
+  version: 0.2.2-preview-dc3ab8b12
+  resolution: "@metamask-previews/react-data-query@npm:0.2.2-preview-dc3ab8b12"
   dependencies:
-    "@metamask/base-data-service": "npm:^0.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-    "@tanstack/react-query": "npm:^4.43.0"
+    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    "@tanstack/react-query": "npm:^5.62.16"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-native: "*"
-  checksum: 10/c54a9943bb68ad46ad9964864d4ee81604e61216ebed00026a1a4681a1e1091b6e413b9812d25e38d028493f3c75e91c8102b9d1c0232f409cd6f1dd4d22b211
-  languageName: node
-  linkType: hard
-
-"@metamask/react-data-query@patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch":
-  version: 0.2.0
-  resolution: "@metamask/react-data-query@patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch::version=0.2.0&hash=923ab2"
-  dependencies:
-    "@metamask/base-data-service": "npm:^0.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    "@tanstack/query-core": "npm:^4.43.0"
-    "@tanstack/react-query": "npm:^4.43.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-native: "*"
-  checksum: 10/5715f320164ebb6a4333dedc22dc0066905ec464b259a7dad9675ad8ef9907073d8c49f002daa994220764f2b67d9461a3529b2f6e3a837340e600458e75ca29
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 10/8665295539ca529ba560eac2870e71db826b186927b0fb305db7dd5d62a77f74b52a0e95979168254685413fc521e05daf2f0f6669bbd07831828f8601cbc5e1
   languageName: node
   linkType: hard
 
@@ -33080,7 +33069,7 @@ __metadata:
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^15.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
-    "@metamask/react-data-query": "patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch"
+    "@metamask/react-data-query": "npm:^0.2.2"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"

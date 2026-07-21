@@ -438,7 +438,7 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^15.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
-    "@metamask/react-data-query": "patch:@metamask/react-data-query@npm%3A0.2.0#~/.yarn/patches/@metamask-react-data-query-npm-0.2.0-1e42f0d304.patch",
+    "@metamask/react-data-query": "^0.2.2",
     "@metamask/remote-feature-flag-controller": "^4.2.2",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
@@ -557,6 +557,12 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2"
+  },
+  "previewBuilds": {
+    "@metamask/react-data-query": {
+      "type": "breaking",
+      "previewVersion": "0.2.2-preview-dc3ab8b12"
+    }
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
