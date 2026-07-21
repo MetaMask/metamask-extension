@@ -40,8 +40,6 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ; Set this to test changes to the phishing warning page.
 ;PHISHING_WARNING_PAGE_URL=
-BLOCKAID_FILE_CDN=
-BLOCKAID_PUBLIC_KEY=
 
 ; Change this to override built-in intercepting https proxy for e2e tests
 ; SELENIUM_HTTPS_PROXY='http://127.0.0.1:8000'
