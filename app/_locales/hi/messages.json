@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "अकाउंट विकल्प"
   },
-  "accountPermissionToast": {
-    "message": "अकाउंट अनुमतियां अपडेट की गईं"
-  },
   "accountSelectionRequired": {
     "message": "आपको एक अकाउंट चुनना होगा!"
   },

@@ -161,8 +161,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   }, [navigate]);
 
   const handlePaymentMethodPress = useCallback(() => {
-    navigate(RAMPS_PAYMENT_METHOD_ROUTE);
-  }, [navigate]);
+    navigate(RAMPS_PAYMENT_METHOD_ROUTE, {
+      state: { amount: debouncedAmount },
+    });
+  }, [debouncedAmount, navigate]);
 
   const canContinue = resolveCanContinue({
     hasAmount,

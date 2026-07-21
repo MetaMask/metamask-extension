@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -9,6 +9,7 @@ import { useScrollContainer } from '../../contexts/scroll-container';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
+import { useEventListener } from '../../hooks/useEventListener';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -89,14 +90,9 @@ export function ActivityList({
     onVisible: fetchNextVisiblePage,
   });
 
-  useEffect(() => {
-    const onPopState = () => {
-      setSelectedItem(null);
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
+  useEventListener('popstate', () => {
+    setSelectedItem(null);
+  });
 
   const handleClick = (item: ActivityListItem) => {
     if (!item.hash) {

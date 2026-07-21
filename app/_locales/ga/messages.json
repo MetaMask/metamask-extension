@@ -112,9 +112,6 @@
   "accountOptions": {
     "message": "Roghanna cuntais"
   },
-  "accountPermissionToast": {
-    "message": "Ceadanna cuntais nuashonraithe"
-  },
   "accountSelectionRequired": {
     "message": "Ní mór duit cuntas a roghnú!"
   },
