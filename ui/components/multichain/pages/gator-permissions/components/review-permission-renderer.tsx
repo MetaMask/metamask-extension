@@ -28,11 +28,11 @@ import {
   computeTotalExposureForPermission,
 } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
-import { buildPermissionI18nMap } from '../../../../../../shared/lib/gator-permissions/permission-i18n-map';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAdvancedPermissionTranslationsMap } from '../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import {
   convertTimestampToReadableDate,
@@ -141,8 +141,7 @@ const ReviewAddressDisplay = ({
 };
 
 const ReviewAccountRow = ({ address }: { address: string }) => {
-  const t = useI18nContext() as I18nFunction;
-  const i18nMap = buildPermissionI18nMap(t);
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
   return (
     <Box
@@ -573,7 +572,7 @@ export const ReviewPermissionRenderer = ({
   networkName,
 }: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
-  const i18nMap = buildPermissionI18nMap(t);
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
   const schemaEntry = getPermissionSchemaEntry(permissionType);
 

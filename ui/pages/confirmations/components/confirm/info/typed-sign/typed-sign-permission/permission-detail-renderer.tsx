@@ -35,6 +35,7 @@ import {
 } from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useAdvancedPermissionTranslationsMap } from '../../../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { NetworkRow } from '../../shared/network-row/network-row';
@@ -45,7 +46,6 @@ import {
   isPermissionDataWithTotalExposure,
 } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
-import { buildPermissionI18nMap } from '../../../../../../../../shared/lib/gator-permissions/permission-i18n-map';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
@@ -372,7 +372,7 @@ export const PermissionDetailRenderer = ({
   rules?: Rule[];
 }) => {
   const t = useI18nContext() as I18nFunction;
-  const i18nMap = buildPermissionI18nMap(t);
+  const i18nMap = useAdvancedPermissionTranslationsMap();
 
   const schemaEntry = getPermissionSchemaEntry(permission.type, true);
 
