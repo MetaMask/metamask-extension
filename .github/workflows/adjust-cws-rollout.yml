@@ -193,7 +193,13 @@ jobs:
           # setPublishedDeployPercentage only affects the live published revision.
           # Read baseline exclusively from publishedItemRevisionStatus so a mistyped
           # older version cannot supply a false current percentage.
-          published_channel=$(jq -c --arg ver "${VERSION}" '
+          # Flask CWS listing stores versions as "{version}-flask.0"; other targets use raw version.
+          if [[ "${TARGET}" == "flask" ]]; then
+            CRX_VERSION="${VERSION}-flask.0"
+          else
+            CRX_VERSION="${VERSION}"
+          fi
+          published_channel=$(jq -c --arg ver "${CRX_VERSION}" '
             (.publishedItemRevisionStatus.distributionChannels // [])
             | map(select(.crxVersion == $ver))
             | first // empty
@@ -202,13 +208,13 @@ jobs:
             live_version=$(jq -r '
               (.publishedItemRevisionStatus.distributionChannels // [])[0].crxVersion // "unknown"
             ' /tmp/cws-fetch-status.json)
-            echo "::error::Version ${VERSION} is not the live published revision on target ${TARGET} (published: ${live_version}). setPublishedDeployPercentage only affects the published revision — confirm the version input."
+            echo "::error::Version ${CRX_VERSION} is not the live published revision on target ${TARGET} (published: ${live_version}). setPublishedDeployPercentage only affects the published revision — confirm the version input."
             cat /tmp/cws-fetch-status.json
             exit 1
           fi
           current_pct=$(jq -r '.deployPercentage // empty' <<< "${published_channel}")
           if [[ -z "${current_pct}" || "${current_pct}" == "null" ]]; then
-            echo "::error::Published revision for version ${VERSION} has no deployPercentage on target ${TARGET}."
+            echo "::error::Published revision for version ${CRX_VERSION} has no deployPercentage on target ${TARGET}."
             cat /tmp/cws-fetch-status.json
             exit 1
           fi
