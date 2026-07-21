@@ -28,6 +28,7 @@ import {
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
 import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { runPortfolioBuyOrdersMigration } from '../utils/portfolioBuyOrdersMigration';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -110,12 +111,10 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * When `rampsEnabled` is on:
- * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
- * - Wallets that have connected to Portfolio open Portfolio (hedge while
- * order-history Profile Sync is still rolling out; returning buyers keep
- * Portfolio until migration lands).
- *
+ * When native ramps are enabled and the wallet has previously connected to
+ * Portfolio, runs a one-shot silent Portfolio migrate (upload Buy orders →
+ * sync into Extension) before opening the in-wallet buy flow. Never-connected
+ * wallets skip Portfolio entirely.
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
@@ -142,13 +141,6 @@ export default function useRampsNavigation() {
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
-        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-        return true;
-      }
-
-      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
-      // migration can flip them onto native Buy.
-      if (everConnectedToPortfolio) {
         openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
@@ -186,6 +178,16 @@ export default function useRampsNavigation() {
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
+      }
+
+      // 4b. One-shot Portfolio Buy-history migrate for wallets that may have
+      // localStorage orders on app.metamask.io. Never-connected → skip.
+      if (everConnectedToPortfolio) {
+        try {
+          await runPortfolioBuyOrdersMigration();
+        } catch (error) {
+          console.error('Portfolio Buy-order migration failed', error);
+        }
       }
 
       // 5. Route into the native buy flow.
@@ -237,9 +239,11 @@ export default function useRampsNavigation() {
   );
 
   // Expose whether Buy leaves the extension so callers can gate follow-up UI
-  // (e.g. the "tab opened" toast) without re-deriving the destination.
+  // (e.g. the "tab opened" toast) without re-deriving the destination. With
+  // Profile Sync migrate in place, Portfolio-connected wallets stay in-app
+  // when the flag is on — only the flag-off path opens a Portfolio tab.
   return {
     goToBuy,
-    opensBuyInPortfolioTab: !isEnabled || everConnectedToPortfolio,
+    opensBuyInPortfolioTab: !isEnabled,
   };
 }
