@@ -29,7 +29,7 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
 
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
-  trackEvent: (built: AnalyticsEvent) => void;
+  trackEvent: (built: AnalyticsEvent) => Promise<void>;
 };
 
 function toMetaMetricsEventPayload(
@@ -59,7 +59,7 @@ export function useAnalytics(): UseAnalyticsResult {
     !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
 
   const trackEvent = useCallback(
-    (built: AnalyticsEvent) => {
+    async (built: AnalyticsEvent): Promise<void> => {
       const options: UIAnalyticsTrackEventOptions = {
         ...built.options,
         environmentType: getEnvironmentType(),
@@ -70,9 +70,9 @@ export function useAnalytics(): UseAnalyticsResult {
         canTrackImmediately ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
-        trackAnalyticsEvent(built, options).catch(() => undefined);
+        await trackAnalyticsEvent(built, options).catch(() => undefined);
       } else if (canMaybeTrackLater) {
-        submitRequestToBackground('addEventBeforeMetricsOptIn', [
+        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
           toMetaMetricsEventPayload(built, options),
         ]).catch(() => undefined);
       }
