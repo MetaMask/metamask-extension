@@ -1549,42 +1549,18 @@ export const getBridgeNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => {
-      // Mirror the full happy-path bridge mock set so that every JSON endpoint
-      // exercised by the submit -> status -> activity flow is mocked. Any
-      // unmocked request falls back to an empty 200, which causes handleFetch's
-      // response.json() to throw an uncaught "Unexpected end of JSON input" and
-      // fails the test. The only intentional deviation is getTxStatus, which is
-      // replaced with the negative-case mock.
       const mocks = [
-        await mockPortfolioPage(mockServer),
-        await mockGetTxStatusInvalid(mockServer, options),
         await mockTopAssetsLinea(mockServer),
-        await mockTopAssetsArbitrum(mockServer),
-        await mockTokensEthereum(mockServer),
         await mockTokensLinea(mockServer),
-        await mockGetTokenArbitrum(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
-        await mockETHtoUSDC(mockServer, featureFlags.sse?.enabled),
-        await mockDAItoETH(mockServer, featureFlags.sse?.enabled),
-        await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
+        await mockGetTxStatusInvalid(mockServer, options),
+        await mockPriceSpotPrices(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
           STX_MAINNET_NETWORK_CONFIG,
         ),
-        await mockAccountsTransactions(mockServer),
-        await mockAccountsBalances(mockServer),
-        await mockPriceSpotPrices(mockServer),
-        await mockPriceSpotPricesV3(mockServer),
-        await mockSwapAggregatorLinea(mockServer),
-        await mockGasPricesArbitrum(mockServer),
-        await mockGasPricesMainnet(mockServer),
-        await mockSwapAggregatorMetadataLinea(mockServer),
-        await mockSwapTokensLinea(mockServer),
-        await mockSwapTokensArbitrum(mockServer),
-        await mockSwapAggregatorMetadataArbitrum(mockServer),
-        await mockHistoricalPrices(mockServer),
       ].concat(...(await mockSearchTokens(mockServer)));
 
       await mockSmartTransactionsForBridge(
@@ -1594,7 +1570,7 @@ export const getBridgeNegativeCasesFixtures = (
         batchStatusOverride,
       );
 
-      return mocks.filter(Boolean);
+      return mocks;
     },
     manifestFlags: {
       remoteFeatureFlags: {
