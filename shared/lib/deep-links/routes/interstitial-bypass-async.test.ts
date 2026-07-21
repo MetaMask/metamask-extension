@@ -3,13 +3,12 @@ import { searchTokens } from '../../token-search/token-search-api';
 import type * as InterstitialBypassAsyncModule from './interstitial-bypass-async';
 
 function loadInterstitialBypassAsyncModule() {
-  type InterstitialBypassAsyncModule = typeof InterstitialBypassAsyncModule;
-  let module: InterstitialBypassAsyncModule | undefined;
+  let module: typeof InterstitialBypassAsyncModule | undefined;
 
   jest.isolateModules(() => {
     module = jest.requireActual(
       './interstitial-bypass-async',
-    ) as InterstitialBypassAsyncModule;
+    ) as typeof InterstitialBypassAsyncModule;
   });
 
   if (!module) {
