@@ -1,145 +1,92 @@
-import {
-  isCaipAssetType,
-  parseCaipAssetType,
-  type CaipAssetType,
-} from '@metamask/utils';
-import getFetchWithTimeout from '../../fetch-with-timeout';
-import { AssetQueryParams } from '../routes/asset';
-import type { Route } from '../routes/route';
+import { QueryClient } from '@tanstack/react-query';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { searchTokens } from '../../token-search/token-search-api';
+import { AssetQueryParams } from './asset';
+import type { Route } from './route';
 
-const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
+const API_TIMEOUT_MS = 2_000;
+const API_STALE_TIME_MS = 60_000;
 
-/**
- * Bound how long deeplink navigation waits on the Tokens API before failing
- * closed to the interstitial.
- */
-const SAFE_ASSET_LOOKUP_TIMEOUT_MS = 5_000;
-
-/**
- * Same default occurrence floor used by TokenList / token browse flows.
- */
-export const MIN_SAFE_ASSET_OCCURRENCES = 3;
-
-const METAMASK_AGGREGATOR = 'metamask';
-const DYNAMIC_AGGREGATOR = 'dynamic';
-
-export type TokenApiAssetSafetyData = {
-  assetId: string;
-  aggregators?: string[];
-  occurrences?: number;
+let queryClient: QueryClient | undefined;
+const getQueryClient = () => {
+  queryClient ??= new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+  return queryClient;
 };
 
-/**
- * Whether Tokens API listing data indicates a known-safe / curated asset.
- *
- * Mere presence on `/v3/assets` is not enough — scam tokens are returned too.
- * We treat an asset as safe when:
- * - it is listed by the MetaMask aggregator, or
- * - it has enough cross-list occurrences and at least one non-`dynamic` aggregator
- *
- * @param asset - Tokens API asset payload with aggregators/occurrences.
- * @returns `true` when the listing signals a known-safe asset.
- */
-export function isTokenApiAssetListedAsSafe(
-  asset: TokenApiAssetSafetyData,
-): boolean {
-  const aggregators = asset.aggregators ?? [];
-  if (aggregators.includes(METAMASK_AGGREGATOR)) {
-    return true;
+const createTimeoutSignal = (
+  signal?: AbortSignal,
+  timeoutMs = API_TIMEOUT_MS,
+): AbortSignal => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  const abortFromParent = () => {
+    clearTimeout(timeoutId);
+    controller.abort();
+  };
+
+  if (signal?.aborted) {
+    abortFromParent();
+  } else if (signal) {
+    signal.addEventListener('abort', abortFromParent, { once: true });
   }
 
-  const occurrences = asset.occurrences ?? 0;
-  const hasNonDynamicAggregator = aggregators.some(
-    (aggregator) => aggregator !== DYNAMIC_AGGREGATOR,
-  );
+  return controller.signal;
+};
 
-  return occurrences >= MIN_SAFE_ASSET_OCCURRENCES && hasNonDynamicAggregator;
-}
+type IsKnownSafeDeepLinkAssetOptions = {
+  lookupTimeoutMs?: number;
+};
 
-/**
- * Normalize CAIP-19 asset ids the way Tokens API expects (lowercase EVM refs).
- *
- * @param assetId - CAIP-19 asset id.
- * @returns Normalized asset id string for the Tokens API query.
- */
-function normalizeAssetIdForTokenApi(assetId: CaipAssetType): string {
-  const { assetNamespace, assetReference, chainId } =
-    parseCaipAssetType(assetId);
-
-  if (/^0x[a-fA-F0-9]+$/u.test(assetReference)) {
-    return `${chainId}/${assetNamespace}:${assetReference.toLowerCase()}`;
-  }
-
-  return assetId;
-}
-
-/**
- * Resolves whether a CAIP-19 asset deep link target is known-safe via the
- * MetaMask Tokens API.
- *
- * Native (`slip44`) assets are trusted without a network call. All other
- * assets are checked against Tokens API listing signals. Failures / timeouts
- * fail closed (`false`) so the interstitial is shown.
- *
- * @param assetId - CAIP-19 asset id from the deep link.
- * @param abortSignal - Optional abort signal for the Tokens API request.
- * @returns `true` when the asset is considered known-safe.
- */
 export async function isKnownSafeDeepLinkAsset(
   assetId: string,
-  abortSignal?: AbortSignal,
+  options?: IsKnownSafeDeepLinkAssetOptions,
 ): Promise<boolean> {
   if (!isCaipAssetType(assetId)) {
     return false;
   }
 
-  const { assetNamespace } = parseCaipAssetType(assetId);
+  const { assetNamespace, assetReference, chainId } =
+    parseCaipAssetType(assetId);
   if (assetNamespace === 'slip44') {
     return true;
   }
 
   try {
-    const fetchWithTimeout = getFetchWithTimeout(SAFE_ASSET_LOOKUP_TIMEOUT_MS);
-    const normalizedAssetId = normalizeAssetIdForTokenApi(assetId);
-    const url = `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${encodeURIComponent(
-      normalizedAssetId,
-    )}&includeAggregators=true&includeOccurrences=true`;
-
-    const response = await fetchWithTimeout(url, {
-      method: 'GET',
-      headers: { 'X-Client-Id': 'extension' },
-      signal: abortSignal,
+    const response = await getQueryClient().fetchQuery({
+      queryKey: ['deepLinkTokenSearch', chainId, assetReference],
+      queryFn: ({ signal }) =>
+        searchTokens({
+          query: assetReference,
+          networks: [chainId],
+          includeTokenSecurityData: true,
+          first: 10,
+          signal: createTimeoutSignal(signal, options?.lookupTimeoutMs),
+        }),
+      staleTime: API_STALE_TIME_MS,
     });
 
-    if (!response.ok) {
-      return false;
-    }
-
-    const assets = (await response.json()) as TokenApiAssetSafetyData[];
-    const asset =
-      assets.find(
-        (entry) =>
-          entry.assetId.toLowerCase() === normalizedAssetId.toLowerCase(),
-      ) ?? assets[0];
+    const asset = response.data?.find(
+      (entry) => entry.assetId.toLowerCase() === assetId.toLowerCase(),
+    );
 
     if (!asset) {
       return false;
     }
 
-    return isTokenApiAssetListedAsSafe(asset);
+    const SPAM_SECURITY_RESULT_TYPE = 'Spam';
+    return asset.securityData?.resultType !== SPAM_SECURITY_RESULT_TYPE;
   } catch {
     return false;
   }
 }
 
-/**
- * Whether a parsed deep link may skip the phishing interstitial based on
- * route whitelist or a known-safe `/asset` target.
- *
- * @param route - Parsed deep-link route.
- * @param deepLinkUrl - Original deep-link URL (needed to read `assetId`).
- * @returns `true` when the interstitial can be skipped for route/asset reasons.
- */
 export async function canBypassDeepLinkInterstitialAsync(
   route?: Pick<Route, 'pathname'>,
   deepLinkUrl?: URL,
