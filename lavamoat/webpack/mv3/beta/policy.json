@@ -923,7 +923,7 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/phishing-controller": true,
+        "@metamask/assets-controller>@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
