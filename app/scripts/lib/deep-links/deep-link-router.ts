@@ -271,15 +271,14 @@ export class DeepLinkRouter extends EventEmitter<{
    * metamask.io, app.metamask.io) always skip the interstitial regardless of
    * signature status — the website is treated as a trusted origin. Deep links
    * matching Extension's mobile-aligned bypass route list also skip the
-   * interstitial regardless of signature status. `/asset` deep links skip only
-   * when the CAIP-19 target is known-safe via the MetaMask Tokens API.
-   * For links from other origins, the interstitial is skipped only when the
-   * link is signed and the user has opted in via their preferences.
+   * interstitial regardless of signature status. For links from other origins,
+   * the interstitial is skipped only when the link is signed and the user has
+   * opted in via their preferences.
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
    * @param route - The parsed deep-link route.
-   * @param deepLinkUrl - The original deep-link URL (used for `/asset` safety checks).
+   * @param deepLinkUrl - The original deep-link URL.
    */
   async canSkipInterstitial(
     signatureStatus: SignatureStatus,
