@@ -139,18 +139,109 @@ const errorMessages = {
     'waitUntilXWindowHandles timed out polling window handles',
 };
 
+const DEFAULT_BENCHMARK_CDP_URL_PATTERNS = [
+  'chrome-extension://*',
+  'chrome://*',
+  'devtools://*',
+  'data:*',
+  'blob:*',
+  'about:*',
+  'http://127.0.0.1:*',
+  'http://localhost:*',
+  'ws://127.0.0.1:*',
+  'ws://localhost:*',
+  'https://*.infura.io/*',
+  'https://rpc.gnosischain.com/*',
+  'https://mainnet.era.zksync.io/*',
+  'https://carrot.megaeth.com/*',
+  'https://testnet-rpc.monad.xyz/*',
+  'https://accounts.api.cx.metamask.io/*',
+  'https://bridge.api.cx.metamask.io/*',
+  'https://cdn.contentful.com/*',
+  'https://chainid.network/*',
+  'https://client-config.api.cx.metamask.io/*',
+  'https://gas.api.cx.metamask.io/*',
+  'https://metamask.github.io/*',
+  'https://min-api.cryptocompare.com/*',
+  'https://notification.api.cx.metamask.io/*',
+  'https://portfolio.metamask.io/*',
+  'https://price.api.cx.metamask.io/*',
+  'https://security-alerts.api.cx.metamask.io/*',
+  'https://static.cx.metamask.io/*',
+  'https://token.api.cx.metamask.io/*',
+  'https://trigger.api.cx.metamask.io/*',
+  'https://tx-sentinel*.api.cx.metamask.io/*',
+  'https://accounts.google.com/*',
+  'https://acl.execution.metamask.io/*',
+];
+
+/**
+ * Escapes special regular-expression characters in a literal string.
+ *
+ * @param {string} value - The literal string to escape.
+ * @returns {string} The escaped string safe for embedding in a regex.
+ */
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+/**
+ * Converts a wildcard URL pattern using `*` into a regular expression.
+ *
+ * @param {string} pattern - Wildcard pattern to convert.
+ * @returns {RegExp} A regular expression that matches the wildcard pattern.
+ */
+function wildcardPatternToRegExp(pattern) {
+  return new RegExp(`^${escapeRegExp(pattern).replaceAll('\\*', '.*')}$`, 'u');
+}
+
+/**
+ * Checks whether a URL matches any benchmark CDP allowlist pattern.
+ *
+ * @param {string} url - URL being evaluated.
+ * @param {string[]} [allowedUrlPatterns] - Wildcard URL patterns.
+ * @returns {boolean} True if the URL matches at least one allowed pattern.
+ */
+function isAllowedBenchmarkCdpRequest(
+  url,
+  allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+) {
+  return allowedUrlPatterns.some((pattern) =>
+    wildcardPatternToRegExp(pattern).test(url),
+  );
+}
+
+/**
+ * Formats the error message emitted when the benchmark guard blocks a request.
+ *
+ * @param {string} url - Blocked request URL.
+ * @param {string[]} allowedUrlPatterns - Wildcard URL allowlist.
+ * @returns {string} Multi-line error text for test failures and logs.
+ */
+function buildBlockedBenchmarkRequestError(url, allowedUrlPatterns) {
+  return [
+    `[benchmark-cdp] Blocked unexpected network request: ${url}`,
+    '[benchmark-cdp] Allowed URL patterns:',
+    ...allowedUrlPatterns.map((pattern) => `  - ${pattern}`),
+  ].join('\n');
+}
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
 class Driver {
+  #cdpConnectionPromise = null;
+
+  #benchmarkCdpGuardEnabled = false;
+
   /**
    * @param {object} args - Constructor arguments.
    * @param {!ThenableWebDriver} args.driver - A {@code WebDriver} instance
    * @param {string} args.browser - The type of browser this driver is controlling
    * @param {string} args.extensionUrl
-   * @param {number} args.timeout - Defaults to 10000 milliseconds (10 seconds)
+   * @param {number} [args.timeout] - Defaults to 10000 milliseconds (10 seconds)
    * @param {boolean} args.disableServerMochaToBackground - Determines whether the background mocha
    * server is used.
    */
@@ -201,6 +292,125 @@ class Driver {
       }
     }
     return this.driver.executeScript(script, args);
+  }
+
+  /**
+   * Lazily creates and caches a CDP connection for Chrome-specific helpers.
+   *
+   * @returns {Promise<object>} The active CDP connection.
+   */
+  async getCdpConnection() {
+    if (!this.#cdpConnectionPromise) {
+      this.#cdpConnectionPromise = this.driver.createCDPConnection('page');
+    }
+
+    return this.#cdpConnectionPromise;
+  }
+
+  /**
+   * Executes a Chrome DevTools Protocol command through Selenium.
+   *
+   * @param {string} command - CDP command name.
+   * @param {object} [params] - CDP command parameters.
+   * @param {object} [options] - Command execution options.
+   * @param {boolean} [options.returnValue] - Set true for commands that return a payload.
+   * @returns {Promise<unknown>} The command result, if any.
+   */
+  async executeCdpCommand(command, params = {}, { returnValue = false } = {}) {
+    if (returnValue && this.driver.sendAndGetDevToolsCommand) {
+      return this.driver.sendAndGetDevToolsCommand(command, params);
+    }
+
+    if (!returnValue && this.driver.sendDevToolsCommand) {
+      return this.driver.sendDevToolsCommand(command, params);
+    }
+
+    const cdpConnection = await this.getCdpConnection();
+    return cdpConnection.execute(command, params, null);
+  }
+
+  /**
+   * Enables a benchmark-only CDP guard that detects unexpected network requests.
+   *
+   * Uses `Network.requestWillBeSent` (non-blocking) rather than `Fetch.enable`
+   * to avoid pausing renderer requests, which causes renderer timeouts.
+   * Unexpected requests are recorded in `driver.errors` for post-run validation.
+   *
+   * @param {string[]} [allowedUrlPatterns] - Wildcard URL patterns to allow.
+   * @returns {Promise<void>}
+   */
+  async enableBenchmarkCdpNetworkGuard(
+    allowedUrlPatterns = DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+  ) {
+    if (
+      this.browser !== Browser.CHROME ||
+      this.#benchmarkCdpGuardEnabled ||
+      !this.driver?.createCDPConnection
+    ) {
+      return;
+    }
+
+    const normalizedAllowedUrlPatterns =
+      allowedUrlPatterns.length > 0
+        ? allowedUrlPatterns
+        : DEFAULT_BENCHMARK_CDP_URL_PATTERNS;
+
+    // Compile the allowlist patterns once here, not per-request inside the
+    // CDP message handler — ~25 patterns × every `Network.requestWillBeSent`
+    // event is enough RegExp churn to perturb benchmark numbers.
+    const normalizedAllowedUrlRegexes = normalizedAllowedUrlPatterns.map(
+      wildcardPatternToRegExp,
+    );
+
+    // createCDPConnection initializes _cdpWsConnection on the Selenium driver.
+    await this.getCdpConnection();
+    let cdpWsConnection;
+    // Selenium exposes the live CDP event stream on this internal field, but
+    // does not provide a higher-level subscription helper for Network events.
+    // Fail fast below if a future Selenium version removes or renames it.
+    try {
+      cdpWsConnection = this.driver._cdpWsConnection;
+    } catch {
+      cdpWsConnection = null;
+    }
+
+    if (!cdpWsConnection?.on) {
+      throw new Error(
+        'Benchmark CDP network guard could not access the browser CDP WebSocket connection.',
+      );
+    }
+
+    cdpWsConnection.on('message', (message) => {
+      let params;
+
+      try {
+        params = JSON.parse(message);
+      } catch {
+        return;
+      }
+
+      if (params.method !== 'Network.requestWillBeSent') {
+        return;
+      }
+
+      const url = params.params?.request?.url || '';
+
+      if (!normalizedAllowedUrlRegexes.some((regex) => regex.test(url))) {
+        const errorMessage = buildBlockedBenchmarkRequestError(
+          url,
+          normalizedAllowedUrlPatterns,
+        );
+        this.errors.push(errorMessage);
+        console.error(errorMessage);
+      }
+    });
+
+    await this.executeCdpCommand('Network.enable', {});
+    await this.executeCdpCommand('Network.setCacheDisabled', {
+      cacheDisabled: true,
+    });
+
+    this.#benchmarkCdpGuardEnabled = true;
   }
 
   /**
@@ -1825,7 +2035,7 @@ class Driver {
   }
 
   async checkBrowserForExceptions(ignoredConsoleErrors) {
-    const cdpConnection = await this.driver.createCDPConnection('page');
+    const cdpConnection = await this.getCdpConnection();
 
     this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
@@ -1858,7 +2068,7 @@ class Driver {
       'unable to proceed, wallet is locked',
     ]);
 
-    const cdpConnection = await this.driver.createCDPConnection('page');
+    const cdpConnection = await this.getCdpConnection();
 
     // Flush the event processing stack 50ms after the last event is added
     const debounceEventProcessingStack = lodash.debounce(
@@ -2029,4 +2239,11 @@ function sanitizeTestTitle(testTitle) {
   return sanitized;
 }
 
-module.exports = { Driver, PAGES, errorMessages };
+module.exports = {
+  Driver,
+  PAGES,
+  errorMessages,
+  DEFAULT_BENCHMARK_CDP_URL_PATTERNS,
+  isAllowedBenchmarkCdpRequest,
+  buildBlockedBenchmarkRequestError,
+};
