@@ -321,10 +321,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             security_alert_reason: 'approval_farming',
             security_alert_response: 'Malicious',
             ui_customizations: ['flagged_as_malicious'],
-            ppom_eth_chainId_count: 1,
-            ppom_eth_getBlockByNumber_count: 1,
-            ppom_debug_traceCall_count: 3,
-            ppom_eth_call_count: 1,
           },
           userId: MOCK_ANALYTICS_ID,
           type: 'track',
@@ -338,12 +334,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             security_alert_response:
               events[0].properties.security_alert_response,
             ui_customizations: events[0].properties.ui_customizations,
-            ppom_eth_chainId_count: events[0].properties.ppom_eth_chainId_count,
-            ppom_eth_getBlockByNumber_count:
-              events[0].properties.ppom_eth_getBlockByNumber_count,
-            ppom_debug_traceCall_count:
-              events[0].properties.ppom_debug_traceCall_count,
-            ppom_eth_call_count: events[0].properties.ppom_eth_call_count,
           },
           userId: events[0].userId,
           type: events[0].type,
@@ -355,10 +345,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             signature_type: 'eth_signTypedData_v4',
             security_alert_response: 'Malicious',
             security_alert_reason: 'permit_farming',
-            ppom_eth_chainId_count: 1,
-            ppom_eth_getBlockByNumber_count: 1,
-            ppom_eth_call_count: 1,
-            ppom_debug_traceCall_count: 1,
           },
           userId: MOCK_ANALYTICS_ID,
           type: 'track',
@@ -371,12 +357,6 @@ describe('Confirmation Security Alert - Blockaid', function () {
             security_alert_response:
               events[1].properties.security_alert_response,
             security_alert_reason: events[1].properties.security_alert_reason,
-            ppom_eth_chainId_count: events[1].properties.ppom_eth_chainId_count,
-            ppom_eth_getBlockByNumber_count:
-              events[1].properties.ppom_eth_getBlockByNumber_count,
-            ppom_eth_call_count: events[1].properties.ppom_eth_call_count,
-            ppom_debug_traceCall_count:
-              events[1].properties.ppom_debug_traceCall_count,
           },
           userId: events[1].userId,
           type: events[1].type,

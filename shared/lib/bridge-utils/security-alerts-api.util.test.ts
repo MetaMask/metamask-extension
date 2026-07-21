@@ -8,7 +8,6 @@ import {
   getTokenFeatureTitleDescriptionIds,
   fetchTxAlerts,
   convertChainIdToBlockAidChainName,
-  isSecurityAlertsAPIEnabled,
 } from './security-alerts-api.util';
 
 // Mock environment variables
@@ -22,7 +21,6 @@ describe('Security alerts utils', () => {
     jest.clearAllMocks();
     signal = new AbortController().signal;
     process.env = { ...originalEnv };
-    process.env.SECURITY_ALERTS_API_ENABLED = 'true';
     process.env.SECURITY_ALERTS_API_URL = BASE_URL;
     nock.cleanAll();
   });
@@ -72,32 +70,6 @@ describe('Security alerts utils', () => {
     const mockTrade =
       'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQALEC+B/mrGX4B49j9Pt3cLS/moZQX+WeeNTFbg8tHgHtaeI3upde+TaWP4z3riqaHdNZ98/ZUKdQiAK953SSApKYw0ycVL/4j0T5DoJd6lAe/rPLCUHCHYB6gn8UZyB66MfR6MT6uJlElMjx5cEodEWykX1gxDx5qpWRYvXWAAWY0yNaBm/qy58sC4y0qyEMejJKjQYQhW8amNWJqBmVTkVv0DBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkEedVb8jHAbu50xW7OaBUH/bGy3qP0jlECsc2iVrwTj8b6evO+2606PWXzaqvJdDGxu+TC0vbg5HymAgNFL11htD/6J/XX9kp0wJsfKVh53ksJqzbfyd1RSzIap7OM5ejnStls42Wf0xNRAChL93gEW4UQqPNOSYySLu5vwwX4aVJh0UqsxbwO7GNdqHBaH3CjnuNams8L+PIsxs5JAZ16KD0N0oI1T+8K47DiJ9N82JyiZvsX3fj3y3zO++Tr3FUGp9UXGMd0yShWY5hpHV62i164o5tLbVxzVVshAAAAAPPvWeGt7MppdBwkmIZQA+0op8AFkAFcDizwhodc7RDPG6lguUcBUafedbpvY415gYoZ6UmeWoc/FesM7J0/XNwJBQAFApeWAgAFAAkDriEBAAAAAAAGAgABDAIAAADadkgdAAAAAAcBAQERCBYHAAECCAkICggUEAsMERIBAhMVFgAHJOUXy5d6460qAQAAADoBZAAB2nZIHQAAAACtQU8EAAAAADIAAAcDAQAAAQkNAg4PCQD043liGeeMAAYCAAMMAgAAAAAAAAAAAAAABgIABAwCAAAATSxCAAAAAAAB6BwQxsr3h83KgxKA07LOpN5ZFYWarna+9W5g8zXGhz0EDRETDgMQEg8=';
     const mockAccountAddress = '4CT8Uuah9FCv37NfkKZaTmaJXsC9KWd7cE2btFgChmvV';
-
-    it('should return null when security alerts API is disabled', async () => {
-      process.env.SECURITY_ALERTS_API_ENABLED = 'false';
-
-      const result = await fetchTxAlerts({
-        signal,
-        chainId: mockChainId,
-        trade: mockTrade,
-        accountAddress: mockAccountAddress,
-      });
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when security alerts API URL is not set', async () => {
-      delete process.env.SECURITY_ALERTS_API_URL;
-
-      await expect(
-        fetchTxAlerts({
-          signal,
-          chainId: mockChainId,
-          trade: mockTrade,
-          accountAddress: mockAccountAddress,
-        }),
-      ).rejects.toThrow('Security alerts API URL is not set');
-    });
 
     it('should return null when chain is not supported', async () => {
       const unsupportedChainId = '0x1342134' as never;
@@ -294,23 +266,6 @@ describe('Security alerts utils', () => {
         MultichainNetworks.SOLANA_TESTNET,
       );
       expect(result).toBeNull();
-    });
-  });
-
-  describe('isSecurityAlertsAPIEnabled', () => {
-    it('should return true when SECURITY_ALERTS_API_ENABLED is set to true', () => {
-      process.env.SECURITY_ALERTS_API_ENABLED = 'true';
-      expect(isSecurityAlertsAPIEnabled()).toBe(true);
-    });
-
-    it('should return false when SECURITY_ALERTS_API_ENABLED is set to false', () => {
-      process.env.SECURITY_ALERTS_API_ENABLED = 'false';
-      expect(isSecurityAlertsAPIEnabled()).toBe(false);
-    });
-
-    it('should return false when SECURITY_ALERTS_API_ENABLED is not set', () => {
-      delete process.env.SECURITY_ALERTS_API_ENABLED;
-      expect(isSecurityAlertsAPIEnabled()).toBe(false);
     });
   });
 });

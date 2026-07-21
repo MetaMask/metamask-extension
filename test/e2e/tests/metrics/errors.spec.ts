@@ -103,8 +103,6 @@ const removedBackgroundFields = [
   'AppStateController.lastUpdatedFromVersion',
   'BridgeController.quoteRequest.walletAddress',
   'BridgeController.quoteRequest.slippage',
-  'PPOMController.chainStatus.0x539.lastVisited',
-  'PPOMController.versionInfo',
   // Populated asynchronously during sign-in (the shield cohort-eligibility
   // evaluation round-trips to the subscription backend), so captured as
   // `null` or a string depending on whether that settles before the error.

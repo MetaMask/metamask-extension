@@ -20,11 +20,6 @@ import { decimalToPrefixedHex } from '../conversion.utils';
 
 const DOMAIN = 'https://metamask.io';
 
-export function isSecurityAlertsAPIEnabled() {
-  const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
-  return isEnabled?.toString() === 'true';
-}
-
 function getUrl(endpoint: string) {
   const host = process.env.SECURITY_ALERTS_API_URL;
 
@@ -70,10 +65,6 @@ export async function fetchTokenAlert(
   chain: string,
   tokenAddress: string,
 ): Promise<TokenAlertWithLabelIds | null> {
-  if (!isSecurityAlertsAPIEnabled()) {
-    return null;
-  }
-
   const url = getUrl('token/scan');
   const body = getSecurityApiScanTokenRequestBody(chain, tokenAddress);
 
@@ -185,7 +176,7 @@ export async function fetchTxAlerts(
     accountAddress: string;
   } | null,
 ): Promise<TxAlert | null> {
-  if (!isSecurityAlertsAPIEnabled() || !params) {
+  if (!params) {
     return null;
   }
 

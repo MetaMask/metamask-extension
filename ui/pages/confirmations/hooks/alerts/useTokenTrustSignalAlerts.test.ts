@@ -16,10 +16,6 @@ jest.mock('../../../../hooks/useTokenTrustSignals', () => ({
   useTokenTrustSignalsForAddresses: jest.fn(),
 }));
 
-jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
-  isSecurityAlertsAPIEnabled: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
@@ -27,9 +23,6 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 const mockUseTokenTrustSignalsForAddresses = jest.requireMock(
   '../../../../hooks/useTokenTrustSignals',
 ).useTokenTrustSignalsForAddresses;
-const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
-  '../../../../../app/scripts/lib/ppom/security-alerts-api',
-).isSecurityAlertsAPIEnabled;
 
 const MALICIOUS_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000bad';
 const WARNING_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000001';
@@ -81,7 +74,6 @@ const createMockTransactionWithTokenBalanceChanges = (
 describe('useTokenTrustSignalAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   });
 
   it('returns an empty array when there are no token balance changes', () => {

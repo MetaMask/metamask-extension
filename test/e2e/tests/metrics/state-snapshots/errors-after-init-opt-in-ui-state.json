@@ -388,7 +388,6 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "socialBackupsMetadata": "object",
     "status": "string",
-    "storageMetadata": "object",
     "storageWriteErrorType": null,
     "subjectMetadata": "object",
     "subjects": "object",

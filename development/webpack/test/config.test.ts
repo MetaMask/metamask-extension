@@ -59,12 +59,6 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('IN_TEST'), args.test);
       assert.strictEqual(variables.get('METAMASK_BUILD_TYPE'), args.type);
       assert.strictEqual(variables.get('NODE_ENV'), args.mode);
-
-      // PPOM_URI is unique in that it is code, and has not been JSON.stringified, so we check it separately:
-      assert.strictEqual(
-        safeVariables.PPOM_URI,
-        `new URL('@blockaid/ppom_release/ppom_bg.wasm', import.meta.url)`,
-      );
     });
 
     it('should prefer .metamaskprodrc over .metamaskrc', () => {
