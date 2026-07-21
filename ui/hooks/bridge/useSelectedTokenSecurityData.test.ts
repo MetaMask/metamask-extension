@@ -150,10 +150,7 @@ describe('useSelectedTokenSecurityData', () => {
         BridgeAssetSecurityDataType.VERIFIED,
         [feature],
       ),
-      createTokenAsset(
-        OTHER_ASSET_ID,
-        BridgeAssetSecurityDataType.MALICIOUS,
-      ),
+      createTokenAsset(OTHER_ASSET_ID, BridgeAssetSecurityDataType.MALICIOUS),
     ]);
 
     const { result } = renderSecurityHook();
@@ -179,10 +176,7 @@ describe('useSelectedTokenSecurityData', () => {
         }),
       )
       .mockResolvedValueOnce([
-        createTokenAsset(
-          OTHER_ASSET_ID,
-          BridgeAssetSecurityDataType.VERIFIED,
-        ),
+        createTokenAsset(OTHER_ASSET_ID, BridgeAssetSecurityDataType.VERIFIED),
       ]);
 
     let fromToken = createBridgeToken(SOURCE_ASSET_ID);
@@ -208,10 +202,7 @@ describe('useSelectedTokenSecurityData', () => {
     });
     await act(async () => {
       resolveFirstRequest([
-        createTokenAsset(
-          SOURCE_ASSET_ID,
-          BridgeAssetSecurityDataType.VERIFIED,
-        ),
+        createTokenAsset(SOURCE_ASSET_ID, BridgeAssetSecurityDataType.VERIFIED),
       ]);
     });
 
@@ -226,11 +217,19 @@ describe('useSelectedTokenSecurityData', () => {
     expect(result.current).toEqual({});
   });
 
-  it.each([
-    ['empty responses', () => Promise.resolve([])],
-    ['failed responses', () => Promise.reject(new Error('Request failed'))],
-  ])('treats %s as unknown security data', async (_description, getResponse) => {
-    mockFetchCachedTokenAssets.mockReturnValue(getResponse());
+  it('treats empty responses as unknown security data', async () => {
+    mockFetchCachedTokenAssets.mockResolvedValue([]);
+
+    const { result } = renderSecurityHook();
+
+    await waitFor(() => {
+      expect(mockFetchCachedTokenAssets).toHaveBeenCalledTimes(1);
+      expect(result.current).toEqual({});
+    });
+  });
+
+  it('treats failed responses as unknown security data', async () => {
+    mockFetchCachedTokenAssets.mockRejectedValue(new Error('Request failed'));
 
     const { result } = renderSecurityHook();
 

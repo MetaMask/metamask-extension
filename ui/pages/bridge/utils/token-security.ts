@@ -38,9 +38,7 @@ function isTokenAsset(value: unknown): value is TokenAsset {
   );
 }
 
-function getUniqueSortedAssetIds(
-  assetIds: CaipAssetType[],
-): CaipAssetType[] {
+function getUniqueSortedAssetIds(assetIds: CaipAssetType[]): CaipAssetType[] {
   const uniqueAssetIds = new Map<CaipAssetType, CaipAssetType>();
   assetIds.forEach((assetId) => {
     const assetKey = getTokenSecurityAssetKey(assetId);
@@ -73,10 +71,7 @@ export async function fetchCachedTokenAssets(
 
   const request = (async () => {
     const cachedResponse = await retrieveCachedResponse(cacheKey);
-    if (
-      Array.isArray(cachedResponse) &&
-      cachedResponse.every(isTokenAsset)
-    ) {
+    if (Array.isArray(cachedResponse) && cachedResponse.every(isTokenAsset)) {
       return cachedResponse;
     }
 

@@ -39,12 +39,11 @@ export function toBridgeTokenSecurityData(
   }
 
   const features = Array.isArray(token.securityData?.features)
-    ? token.securityData.features
-        .flatMap(({ featureId, type, description }) =>
-          isBridgeAssetSecurityDataType(type)
-            ? [{ featureId, type, description }]
-            : [],
-        )
+    ? token.securityData.features.flatMap(({ featureId, type, description }) =>
+        isBridgeAssetSecurityDataType(type)
+          ? [{ featureId, type, description }]
+          : [],
+      )
     : [];
 
   return {
@@ -61,9 +60,8 @@ export function useSelectedTokenSecurityData(
   toToken: BridgeToken,
 ): SelectedTokenSecurityDataByAssetId {
   const useExternalServices = useSelector(getUseExternalServices);
-  const [securityDataByAssetId, setSecurityDataByAssetId] = useState<
-    SelectedTokenSecurityDataByAssetId
-  >(EMPTY_SECURITY_DATA);
+  const [securityDataByAssetId, setSecurityDataByAssetId] =
+    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
   const assetIds = useMemo(() => {
     const tokens = [fromToken, toToken];
@@ -99,16 +97,15 @@ export function useSelectedTokenSecurityData(
         const requestedAssetKeys = new Set(
           assetIds.map(getTokenSecurityAssetKey),
         );
-        const nextSecurityData = tokens.reduce<
-          SelectedTokenSecurityDataByAssetId
-        >((result, token) => {
-          const assetKey = getTokenSecurityAssetKey(token.assetId);
-          const securityData = toBridgeTokenSecurityData(token);
-          if (requestedAssetKeys.has(assetKey) && securityData) {
-            result[assetKey] = securityData;
-          }
-          return result;
-        }, {});
+        const nextSecurityData =
+          tokens.reduce<SelectedTokenSecurityDataByAssetId>((result, token) => {
+            const assetKey = getTokenSecurityAssetKey(token.assetId);
+            const securityData = toBridgeTokenSecurityData(token);
+            if (requestedAssetKeys.has(assetKey) && securityData) {
+              result[assetKey] = securityData;
+            }
+            return result;
+          }, {});
 
         setSecurityDataByAssetId(nextSecurityData);
       })

@@ -39,9 +39,7 @@ describe('fetchCachedTokenAssets', () => {
     jest.resetAllMocks();
     jest
       .mocked(getCacheKey)
-      .mockImplementation(
-        (url, body) => `${url}:${JSON.stringify(body)}`,
-      );
+      .mockImplementation((url, body) => `${url}:${JSON.stringify(body)}`);
     jest.mocked(retrieveCachedResponse).mockResolvedValue(null);
   });
 
@@ -107,11 +105,15 @@ describe('fetchCachedTokenAssets', () => {
     );
   });
 
-  it.each([
-    ['empty', () => Promise.resolve([])],
-    ['failed', () => Promise.reject(new Error('Request failed'))],
-  ])('does not cache an %s response', async (_description, getResponse) => {
-    mockFetchTokenAssets.mockReturnValue(getResponse());
+  it('does not cache an empty response', async () => {
+    mockFetchTokenAssets.mockResolvedValue([]);
+
+    await expect(fetchCachedTokenAssets([FIRST_ASSET_ID])).resolves.toEqual([]);
+    expect(updateCache).not.toHaveBeenCalled();
+  });
+
+  it('does not cache a failed response', async () => {
+    mockFetchTokenAssets.mockRejectedValue(new Error('Request failed'));
 
     await expect(fetchCachedTokenAssets([FIRST_ASSET_ID])).resolves.toEqual([]);
     expect(updateCache).not.toHaveBeenCalled();
