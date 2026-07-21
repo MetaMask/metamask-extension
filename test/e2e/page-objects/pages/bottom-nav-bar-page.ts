@@ -19,6 +19,11 @@ class BottomNavBar {
     this.driver = driver;
   }
 
+  async clickHome(): Promise<void> {
+    console.log('Click bottom nav home tab');
+    await this.driver.clickElement(this.homeTab);
+  }
+
   async clickSwaps(): Promise<void> {
     console.log('Click bottom nav swaps tab');
     await this.driver.clickElement(this.swapsTab);
@@ -27,11 +32,6 @@ class BottomNavBar {
   async waitForBottomNavBar(): Promise<void> {
     console.log('Wait for bottom nav bar to be visible');
     await this.driver.waitForSelector(this.navBar);
-  }
-
-  async clickHome(): Promise<void> {
-    console.log('Click bottom nav home tab');
-    await this.driver.clickElement(this.homeTab);
   }
 }
 
