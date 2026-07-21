@@ -5597,9 +5597,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@109.4.1-preview-29793f7b0":
-  version: 109.4.1-preview-29793f7b0
-  resolution: "@metamask-previews/assets-controllers@npm:109.4.1-preview-29793f7b0"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@109.4.1-preview-7144a6308":
+  version: 109.4.1-preview-7144a6308
+  resolution: "@metamask-previews/assets-controllers@npm:109.4.1-preview-7144a6308"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5633,7 +5633,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
     "@metamask/storage-service": "npm:^1.0.2"
-    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/transaction-controller": "npm:^69.1.0"
     "@metamask/utils": "npm:^11.11.0"
     "@tanstack/query-core": "npm:^5.62.16"
     "@types/bn.js": "npm:^5.1.5"
@@ -5650,7 +5650,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/d712245956e6785add1dcc24a227aaccbff48ab816580b2041ee22358c91b56b826f0d6bff376c94a01dcabd49bf72ef8decb38ebbcb0a9b86f77d483245bea3
+  checksum: 10/88c3932159f8fa25cfee6e39be8cbf1b51396364b3fad5649ed1d3497126a60396105ebf74b71117e2827a8e38985fb2a9e7e97e237473acfc7f3571757025f2
   languageName: node
   linkType: hard
 
@@ -6072,9 +6072,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-29793f7b0":
-  version: 6.5.0-preview-29793f7b0
-  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-29793f7b0"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-7144a6308":
+  version: 6.5.0-preview-7144a6308
+  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-7144a6308"
   dependencies:
     "@metamask/account-tree-controller": "npm:^7.5.5"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -6086,7 +6086,7 @@ __metadata:
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/b2312abfea65a61d76e4634fae4c43f86336e4924e764186fbc5e0dc4bef2407a83a0d350a276c55fadf62834e9c0bd9662a04151070841bd45945102e4be43a
+  checksum: 10/6d2bfa8080469b3fad6298026ed07a4a653a99e7fb346ee11ebfb6d25100dd6b41c715a5f620075e8977dfba0fb17393f6c99323aebcb82bf9a593c541bfc0a8
   languageName: node
   linkType: hard
 
@@ -8420,16 +8420,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^69.0.0":
-  version: 69.0.0
-  resolution: "@metamask/transaction-controller@npm:69.0.0"
+"@metamask/transaction-controller@npm:^69.0.0, @metamask/transaction-controller@npm:^69.1.0":
+  version: 69.1.0
+  resolution: "@metamask/transaction-controller@npm:69.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
     "@ethersproject/wallet": "npm:^5.7.0"
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/approval-controller": "npm:^9.0.2"
@@ -8454,7 +8453,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/e1a41998784e8a10a05126e6d4bbab1cf1d97e049bc7746cf9725a74f244f48ad473eecdba184f1ad3aaa1dee2ad7572ed1fd97c5eff61d09b818b0c911c71a4
+  checksum: 10/e16c36460f70a92bce9c69d02b98c6690279abe66135b02ffdc5cdb438204463c3d44539828d55412a4cd75bc53af4d5b901ed4b0587bffe7f097129279f7ebf
   languageName: node
   linkType: hard
 
@@ -32843,7 +32842,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.4.1-preview-29793f7b0"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.4.1-preview-7144a6308"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
@@ -32864,7 +32863,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.5.0-preview-29793f7b0"
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.5.0-preview-7144a6308"
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
