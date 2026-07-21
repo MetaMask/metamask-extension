@@ -72,23 +72,23 @@
 
 /* Forward: old exits left, new enters from right */
 :root[data-tab-transition-direction='forward']::view-transition-old(tab-content) {
-  animation: slide-out-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+  animation: tab-slide-out-left var(--tab-transition-duration) var(--tab-transition-easing) both;
 }
 
 :root[data-tab-transition-direction='forward']::view-transition-new(tab-content) {
-  animation: slide-in-from-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+  animation: tab-slide-in-from-right var(--tab-transition-duration) var(--tab-transition-easing) both;
 }
 
 /* Backward: old exits right, new enters from left */
 :root[data-tab-transition-direction='backward']::view-transition-old(tab-content) {
-  animation: slide-out-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+  animation: tab-slide-out-right var(--tab-transition-duration) var(--tab-transition-easing) both;
 }
 
 :root[data-tab-transition-direction='backward']::view-transition-new(tab-content) {
-  animation: slide-in-from-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+  animation: tab-slide-in-from-left var(--tab-transition-duration) var(--tab-transition-easing) both;
 }
 
-@keyframes slide-out-left {
+@keyframes tab-slide-out-left {
   from {
     opacity: 1;
     transform: translateX(0);
@@ -100,7 +100,7 @@
   }
 }
 
-@keyframes slide-in-from-right {
+@keyframes tab-slide-in-from-right {
   from {
     opacity: 0.5;
     transform: translateX(var(--tab-transition-distance));
@@ -112,7 +112,7 @@
   }
 }
 
-@keyframes slide-out-right {
+@keyframes tab-slide-out-right {
   from {
     opacity: 1;
     transform: translateX(0);
@@ -124,7 +124,7 @@
   }
 }
 
-@keyframes slide-in-from-left {
+@keyframes tab-slide-in-from-left {
   from {
     opacity: 0.5;
     transform: translateX(calc(-1 * var(--tab-transition-distance)));
