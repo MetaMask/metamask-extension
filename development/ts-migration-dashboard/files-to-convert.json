@@ -238,8 +238,6 @@
   "shared/lib/browser-runtime.utils.test.js",
   "shared/lib/contract-utils.test.js",
   "shared/lib/conversion.utils.test.js",
-  "shared/lib/deep-linking.js",
-  "shared/lib/deep-linking.test.js",
   "shared/lib/error-utils.js",
   "shared/lib/error-utils.test.js",
   "shared/lib/fetch-with-cache.test.js",
