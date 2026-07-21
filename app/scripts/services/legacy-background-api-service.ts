@@ -1478,8 +1478,8 @@ export class LegacyBackgroundApiService {
 
     const { updateTransaction } = await applyTransactionContainers({
       isApproved: false,
-      messenger: this
-        .#messenger as unknown as TransactionControllerInitMessenger,
+      messenger:
+        this.#messenger as unknown as TransactionControllerInitMessenger,
       transactionMeta,
       types: containerTypes,
     });
