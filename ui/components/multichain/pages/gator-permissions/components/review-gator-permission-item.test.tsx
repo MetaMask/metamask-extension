@@ -8,7 +8,7 @@ import {
   Erc20TokenPeriodicPermission,
   PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { Settings } from 'luxon';
 import {
   en as messages,
@@ -431,7 +431,7 @@ describe('Permission List Item', () => {
         );
       });
 
-      it('renders account name and copy button with visual feedback', async () => {
+      it('renders account name and copy button with visual feedback', () => {
         const { getByTestId, getByLabelText } = renderWithProvider(
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
@@ -450,10 +450,8 @@ describe('Permission List Item', () => {
         const copyButton = getByLabelText('copy-button');
         expect(copyButton).toBeInTheDocument();
 
-        await act(async () => {
-          fireEvent.click(copyButton);
-          await Promise.resolve();
-        });
+        // Click copy button to test functionality
+        fireEvent.click(copyButton);
 
         // After clicking, the account name should remain the same
         expect(accountText).toHaveTextContent(mockAccountName);

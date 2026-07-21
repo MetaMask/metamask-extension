@@ -13,12 +13,19 @@ import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import NftDetails from './nft-details';
 
 jest.mock('../../../../../helpers/utils/util', () => ({
   getAssetImageURL: jest.fn(),
   shortenAddress: jest.fn(),
 }));
+
+jest.mock('../../../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: jest.fn(),
+}));
+
+const mockCopyToClipboard = jest.fn();
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -52,7 +59,6 @@ describe('NFT Details', () => {
       mockState.metamask.internalAccounts.selectedAccount
     ].address;
   const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
-  const mockWriteText = jest.fn().mockResolvedValue(undefined);
 
   const props = {
     nft: nfts[5],
@@ -63,10 +69,7 @@ describe('NFT Details', () => {
     jest.clearAllMocks();
     mockToastSuccess.mockClear();
     mockToastError.mockClear();
-    Object.defineProperty(globalThis.navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText: mockWriteText },
-    });
+    useCopyToClipboard.mockReturnValue([false, mockCopyToClipboard, jest.fn()]);
   });
 
   it('should match minimal props and state snapshot', async () => {
@@ -155,7 +158,7 @@ describe('NFT Details', () => {
     fireEvent.click(copyAddressButton);
 
     await waitFor(() => {
-      expect(mockWriteText).toHaveBeenCalledWith(nfts[5].address);
+      expect(mockCopyToClipboard).toHaveBeenCalledWith(nfts[5].address);
     });
   });
 

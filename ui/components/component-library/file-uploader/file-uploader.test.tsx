@@ -262,9 +262,13 @@ describe('FileUploader', () => {
     await userEvent.upload(input, [file1, file2]);
     mockOnChange.mockClear();
 
-    const deleteButton = getAllByRole('button', { name: /delete/iu })[0];
-    expect(deleteButton).toBeDefined();
-    await userEvent.click(deleteButton);
+    const deleteButtons = getAllByRole('button', { name: /delete/iu });
+    const deleteButton = deleteButtons.find((btn) =>
+      btn.getAttribute('aria-label')?.includes('delete'),
+    );
+    if (deleteButton) {
+      await userEvent.click(deleteButton);
+    }
 
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { useTokenInsightsData } from '../../../hooks/useTokenInsightsData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -163,13 +163,10 @@ describe('TokenInsightsModal', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should track event when copying contract address', async () => {
+    it('should track event when copying contract address', () => {
       renderComponent();
       const copyButton = screen.getByTestId('address-copy-button-text');
-      await act(async () => {
-        fireEvent.click(copyButton);
-        await Promise.resolve();
-      });
+      fireEvent.click(copyButton);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({

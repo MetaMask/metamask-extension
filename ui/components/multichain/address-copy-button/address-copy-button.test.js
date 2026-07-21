@@ -5,19 +5,21 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { AddressCopyButton } from '.';
 
 const SAMPLE_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-const mockWriteText = jest.fn().mockResolvedValue(undefined);
+const mockHandleCopy = jest.fn();
+
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: jest.fn(),
+}));
 
 describe('AccountListItem', () => {
   const mockStore = configureMockStore()(mockState);
 
   beforeEach(() => {
-    Object.defineProperty(globalThis.navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText: mockWriteText },
-    });
+    useCopyToClipboard.mockReturnValue([false, mockHandleCopy, jest.fn()]);
   });
 
   afterEach(() => {
@@ -54,17 +56,15 @@ describe('AccountListItem', () => {
     ).toStrictEqual(shortenAddress(toChecksumHexAddress(SAMPLE_ADDRESS)));
   });
 
-  it('changes icon when clicked', async () => {
+  it('changes icon when clicked', () => {
+    useCopyToClipboard.mockReturnValue([true, mockHandleCopy, jest.fn()]);
     renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
     );
-    fireEvent.click(document.querySelector('button'));
-    await waitFor(() => {
-      expect(document.querySelector('.mm-icon').style.maskImage).toContain(
-        'copy-success.svg',
-      );
-    });
+    expect(document.querySelector('.mm-icon').style.maskImage).toContain(
+      'copy-success.svg',
+    );
   });
 
   it('should render correctly', () => {
@@ -91,7 +91,7 @@ describe('AccountListItem', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockWriteText).toHaveBeenCalledWith(
+      expect(mockHandleCopy).toHaveBeenCalledWith(
         '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       );
     });

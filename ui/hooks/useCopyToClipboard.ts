@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SECOND } from '../../shared/constants/time';
 import { useTimeout } from './useTimeout';
 
@@ -37,7 +37,10 @@ export function useCopyToClipboard({
     () => {
       if (copied === true) {
         if (shouldClearClipboard) {
-          globalThis.navigator.clipboard.writeText(' ').catch(() => undefined);
+          globalThis.navigator.clipboard.writeText(' ').then(
+            () => undefined,
+            () => undefined,
+          );
         }
 
         setCopied(false);
@@ -47,8 +50,8 @@ export function useCopyToClipboard({
     false,
   );
 
-  const handleCopy = (text: string) => {
-    try {
+  const handleCopy = useCallback(
+    (text: string) => {
       globalThis.navigator.clipboard
         .writeText(text)
         .then(() => {
@@ -56,14 +59,13 @@ export function useCopyToClipboard({
           startTimeout?.();
         })
         .catch(() => undefined);
-    } catch {
-      // ignore
-    }
-  };
+    },
+    [startTimeout],
+  );
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setCopied(false);
-  };
+  }, []);
 
   return [copied, handleCopy, resetState];
 }

@@ -180,23 +180,25 @@ if (typeof window.crypto.randomUUID !== 'function') {
 window.TextEncoder = TextEncoder;
 window.TextDecoder = TextDecoder;
 
-// Used to test `clearClipboard` function
+// Clipboard API is missing in JSDOM
 if (!window.navigator.clipboard) {
-  window.navigator.clipboard = {};
-}
-if (!window.navigator.clipboard.writeText) {
-  // Sync-resolving thenable so useCopyToClipboard setState runs inside the
-  // same act() as the click. A real Promise microtasks and causes act warnings.
-  window.navigator.clipboard.writeText = () => ({
-    then(onFulfilled, onRejected) {
-      try {
-        onFulfilled?.();
-        return Promise.resolve();
-      } catch (error) {
-        onRejected?.(error);
-        return Promise.reject(error);
-      }
+  Object.defineProperty(window.navigator, 'clipboard', {
+    value: {
+      writeText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.();
+          return Promise.resolve();
+        },
+      })),
+      readText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.('');
+          return Promise.resolve('');
+        },
+      })),
     },
+    writable: true,
+    configurable: true,
   });
 }
 
