@@ -329,17 +329,16 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         flexDirection={BoxFlexDirection.Row}
         // 64px is the header height
         className={classnames(`h-[calc(100%-64px)]`, {
-          'sm:border-t sm:border-border-muted': !usesCompactSettingsLayout,
+          'border-t border-border-muted': !usesCompactSettingsLayout,
         })}
       >
         <Box
           className={classnames(
-            'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
+            'w-full h-full max-w-[262px] bg-background-muted',
             {
-              flex: isOnSettingsRoot,
-              'hidden sm:flex': !isOnSettingsRoot && !usesCompactSettingsLayout,
+              flex: isOnSettingsRoot || !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-              'sm:max-w-full sm:bg-background-default':
+              'max-w-full bg-background-default':
                 isOnSettingsRoot && usesCompactSettingsLayout,
             },
           )}
@@ -379,14 +378,13 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         </Box>
         <Box
           className={classnames('flex-auto flex-col w-full min-w-0 pt-2', {
-            flex: !isOnSettingsRoot,
-            'hidden sm:flex': isOnSettingsRoot && !usesCompactSettingsLayout,
+            flex: !isOnSettingsRoot || !usesCompactSettingsLayout,
             hidden: isOnSettingsRoot && usesCompactSettingsLayout,
           })}
         >
           {showBreadcrumbs && (
             <Box
-              className="hidden sm:flex"
+              className="flex"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={2}
