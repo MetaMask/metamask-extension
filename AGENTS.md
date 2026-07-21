@@ -1724,3 +1724,50 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+The startup update script already provisions the environment: it installs the
+required Node versions via `nvm`, runs `corepack enable` + `yarn install`, and
+creates `.metamaskrc` from `.metamaskrc.dist` if missing. Standard build/test/lint
+commands are documented above (see "Common Commands"); the notes below are the
+non-obvious gotchas discovered running this repo in the Cursor Cloud VM.
+
+- **Node version / PATH gotcha (important).** This repo requires Node **24**
+  (`.nvmrc` v24.13, `engines.node >= 24.13.0`), but the VM's ambient `node` on
+  `PATH` (`/exec-daemon/node`) is v22 and **shadows nvm** — a plain `nvm use`
+  reports v24 yet `node -v` still prints v22, and `yarn install` then fails the
+  engines check. Always put nvm's Node 24 bin first, e.g.
+  `export PATH="$(ls -d $HOME/.nvm/versions/node/v24.*/bin | sort -V | tail -1):$PATH"`
+  before running any `yarn` command in this repo. (The snap repo needs Node 22,
+  which happens to match the ambient node.)
+- **Corepack prompt.** For manual `yarn` use, export
+  `COREPACK_ENABLE_DOWNLOAD_PROMPT=0` so Corepack downloads the pinned Yarn
+  without an interactive `[Y/n]` prompt.
+- **`.metamaskrc` / Infura.** `.metamaskrc` is required and ships with a
+  placeholder `INFURA_PROJECT_ID=00000000000`. Onboarding and wallet creation
+  work fine with the placeholder, but EVM RPC calls fail and the home screen
+  shows an "Unable to connect to Ethereum. Check network connectivity." banner —
+  this is expected. Set a real `INFURA_PROJECT_ID` in `.metamaskrc` for live EVM
+  data (add it as a secret if needed).
+- **Dev server port 8080 conflict.** `yarn start` (and `yarn start:test`) runs a
+  webpack-dev-server on **port 8080**, which is the same port the
+  `snap-tron-wallet` repo's snap dev server uses. Run only one of the two dev
+  servers at a time, or the second fails with `EADDRINUSE :::8080`.
+- **Test build for E2E / visual testing.** `yarn build:test` (LavaMoat) fails with
+  `ENOENT ... development/.webpack/launch.js` unless the webpack tooling is
+  compiled first (`yarn webpack:tsc`). For a quick non-LavaMoat test build, use
+  `yarn build:test:dev` (one-shot) or `yarn start:test` (watch) instead.
+- **Driving the extension in Chrome (`mm` CLI / visual testing).** The `mm` CLI
+  works headed against an X display; `DISPLAY=:1` is available in the VM. Before
+  first use: build a test build (`yarn build:test:dev`) and run
+  `yarn playwright install chromium`. Then `mm launch --state onboarding` for a
+  fresh-wallet flow (or `--state default` for a pre-onboarded wallet on Anvil).
+  Note: custom checkboxes such as the create-password terms box do not toggle via
+  the a11y checkbox ref — click them by testId (e.g. `mm click create-password-terms`).
+- **Tron is a preinstalled Snap.** The `@metamask/tron-wallet-snap` (see the
+  sibling `snap-tron-wallet` repo) is bundled into the build and appears as TRX in
+  the multichain asset list. Normal extension development does **not** require
+  running the snap repo's dev server; only run it when changing Snap code.
