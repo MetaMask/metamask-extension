@@ -3,10 +3,9 @@ import {
   parseCaipAssetType,
   type CaipAssetType,
 } from '@metamask/utils';
-import getFetchWithTimeout from '../fetch-with-timeout';
-import { AssetQueryParams } from './routes/asset';
-import type { Route } from './routes/route';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from './routes/interstitial-bypass';
+import getFetchWithTimeout from '../../fetch-with-timeout';
+import { AssetQueryParams } from '../routes/asset';
+import type { Route } from '../routes/route';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 
@@ -141,22 +140,18 @@ export async function isKnownSafeDeepLinkAsset(
  * @param deepLinkUrl - Original deep-link URL (needed to read `assetId`).
  * @returns `true` when the interstitial can be skipped for route/asset reasons.
  */
-export async function canBypassDeepLinkInterstitial(
+export async function canBypassDeepLinkInterstitialAsync(
   route?: Pick<Route, 'pathname'>,
   deepLinkUrl?: URL,
 ): Promise<boolean> {
-  if (isDeepLinkRouteAllowedToBypassInterstitial(route)) {
-    return true;
+  if (route?.pathname === '/asset' && deepLinkUrl) {
+    const assetId = deepLinkUrl.searchParams.get(AssetQueryParams.AssetId);
+    if (!assetId) {
+      return false;
+    }
+
+    return isKnownSafeDeepLinkAsset(assetId);
   }
 
-  if (route?.pathname !== '/asset' || !deepLinkUrl) {
-    return false;
-  }
-
-  const assetId = deepLinkUrl.searchParams.get(AssetQueryParams.AssetId);
-  if (!assetId) {
-    return false;
-  }
-
-  return isKnownSafeDeepLinkAsset(assetId);
+  return false;
 }

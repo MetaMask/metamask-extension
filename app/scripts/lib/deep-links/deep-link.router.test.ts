@@ -6,7 +6,7 @@ import {
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
-import { canBypassDeepLinkInterstitial } from '../../../../shared/lib/deep-links/is-known-safe-asset';
+import { canBypassDeepLinkInterstitialAsync } from '../../../../shared/lib/deep-links/routes/interstitial-bypass-async';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
 
@@ -40,13 +40,11 @@ jest.mock('../../../../shared/lib/deep-links/parse', () => ({
 }));
 
 const canBypassDeepLinkInterstitialMock =
-  canBypassDeepLinkInterstitial as jest.MockedFunction<
-    typeof canBypassDeepLinkInterstitial
+  canBypassDeepLinkInterstitialAsync as jest.MockedFunction<
+    typeof canBypassDeepLinkInterstitialAsync
   >;
 jest.mock('../../../../shared/lib/deep-links/is-known-safe-asset', () => {
-  const {
-    isDeepLinkRouteAllowedToBypassInterstitial,
-  } = jest.requireActual(
+  const { isDeepLinkRouteAllowedToBypassInterstitial } = jest.requireActual(
     '../../../../shared/lib/deep-links/routes/interstitial-bypass',
   );
   return {

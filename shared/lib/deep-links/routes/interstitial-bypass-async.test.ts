@@ -1,15 +1,13 @@
-import getFetchWithTimeout from '../fetch-with-timeout';
+import getFetchWithTimeout from '../../fetch-with-timeout';
 import {
-  canBypassDeepLinkInterstitial,
+  canBypassDeepLinkInterstitialAsync,
   isKnownSafeDeepLinkAsset,
   isTokenApiAssetListedAsSafe,
-} from './is-known-safe-asset';
+} from './interstitial-bypass-async';
 
 jest.mock('../fetch-with-timeout', () => jest.fn());
 
-const mockGetFetchWithTimeout = getFetchWithTimeout as jest.MockedFunction<
-  typeof getFetchWithTimeout
->;
+const mockGetFetchWithTimeout = jest.mocked(getFetchWithTimeout);
 
 describe('isTokenApiAssetListedAsSafe', () => {
   it('returns true when the MetaMask aggregator lists the asset', () => {
@@ -62,9 +60,9 @@ describe('isKnownSafeDeepLinkAsset', () => {
   });
 
   it('returns true for native slip44 assets without calling the Tokens API', async () => {
-    await expect(
-      isKnownSafeDeepLinkAsset('eip155:1/slip44:60'),
-    ).resolves.toBe(true);
+    await expect(isKnownSafeDeepLinkAsset('eip155:1/slip44:60')).resolves.toBe(
+      true,
+    );
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
@@ -140,7 +138,7 @@ describe('canBypassDeepLinkInterstitial', () => {
 
   it('bypasses for statically whitelisted routes', async () => {
     await expect(
-      canBypassDeepLinkInterstitial({ pathname: '/swap' }),
+      canBypassDeepLinkInterstitialAsync({ pathname: '/swap' }),
     ).resolves.toBe(true);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -158,7 +156,7 @@ describe('canBypassDeepLinkInterstitial', () => {
     });
 
     await expect(
-      canBypassDeepLinkInterstitial(
+      canBypassDeepLinkInterstitialAsync(
         { pathname: '/asset' },
         new URL(
           'https://link.metamask.io/asset?assetId=eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -179,7 +177,7 @@ describe('canBypassDeepLinkInterstitial', () => {
     });
 
     await expect(
-      canBypassDeepLinkInterstitial(
+      canBypassDeepLinkInterstitialAsync(
         { pathname: '/asset' },
         new URL(
           'https://link.metamask.io/asset?assetId=eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82',

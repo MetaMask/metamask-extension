@@ -18,7 +18,8 @@ import {
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import { canBypassDeepLinkInterstitial } from '../../../../shared/lib/deep-links/is-known-safe-asset';
+import { isDeepLinkRouteAllowedToBypassInterstitial } from '../../../../shared/lib/deep-links/routes/interstitial-bypass';
+import { canBypassDeepLinkInterstitialAsync } from '../../../../shared/lib/deep-links/routes/interstitial-bypass-async';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -286,7 +287,11 @@ export class DeepLinkRouter extends EventEmitter<{
     route?: ParsedDeepLink['route'],
     deepLinkUrl?: URL,
   ): Promise<boolean> {
-    if (await canBypassDeepLinkInterstitial(route, deepLinkUrl)) {
+    if (isDeepLinkRouteAllowedToBypassInterstitial(route)) {
+      return true;
+    }
+
+    if (await canBypassDeepLinkInterstitialAsync(route, deepLinkUrl)) {
       return true;
     }
 

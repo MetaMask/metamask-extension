@@ -4,28 +4,12 @@ import * as parseModule from './parse';
 import { VALID, MISSING, INVALID } from './verify';
 import { BridgeQueryParams } from './routes/swap';
 import { SWAP_ROUTE } from './routes/route';
-import { canBypassDeepLinkInterstitial } from './is-known-safe-asset';
 
 jest.mock('./parse');
-jest.mock('./is-known-safe-asset', () => {
-  const {
-    isDeepLinkRouteAllowedToBypassInterstitial,
-  } = jest.requireActual('./routes/interstitial-bypass');
-  return {
-    canBypassDeepLinkInterstitial: jest.fn(
-      async (route?: { pathname: string }) =>
-        isDeepLinkRouteAllowedToBypassInterstitial(route),
-    ),
-  };
-});
 
 const mockParse = parseModule.parse as jest.MockedFunction<
   typeof parseModule.parse
 >;
-const mockCanBypassDeepLinkInterstitial =
-  canBypassDeepLinkInterstitial as jest.MockedFunction<
-    typeof canBypassDeepLinkInterstitial
-  >;
 
 const mockBuyLink =
   'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
@@ -292,41 +276,12 @@ describe('Deep link utils', () => {
         });
       });
 
-      it('returns interstitial route for unsigned unknown/scam asset link', async () => {
-        const createdAt = 1000000;
-        jest.setSystemTime(createdAt + 60 * 1000);
-        const assetLink =
-          'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82';
-
-        mockCanBypassDeepLinkInterstitial.mockResolvedValueOnce(false);
-        mockParse.mockResolvedValue({
-          destination: {
-            path: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82',
-            query: new URLSearchParams(),
-          },
-          signature: MISSING,
-          route: { pathname: '/asset' } as never,
-        });
-
-        const result = await getDeferredDeepLinkRoute({
-          createdAt,
-          referringLink: assetLink,
-        });
-
-        expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Interstitial,
-          urlPathAndQuery:
-            '/asset?assetId=eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82',
-        });
-      });
-
-      it('returns navigate route for unsigned known-safe asset link', async () => {
+      it('returns navigate route for unsigned whitelisted asset link', async () => {
         const createdAt = 1000000;
         jest.setSystemTime(createdAt + 60 * 1000);
         const assetLink =
           'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f';
 
-        mockCanBypassDeepLinkInterstitial.mockResolvedValueOnce(true);
         mockParse.mockResolvedValue({
           destination: {
             path: '/asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
