@@ -131,28 +131,6 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('excludes eth call counts if providerRequestsCount is empty', () => {
-    const result = getBlockaidMetricsProps({
-      securityAlertResponse: {
-        ...securityAlertResponse,
-        providerRequestsCount: {},
-      },
-    });
-
-    expect(result).toStrictEqual(expectedMetricsPropsBase);
-  });
-
-  it('excludes eth call counts if providerRequestsCount is undefined', () => {
-    const result = getBlockaidMetricsProps({
-      securityAlertResponse: {
-        ...securityAlertResponse,
-        providerRequestsCount: undefined,
-      },
-    });
-
-    expect(result).toStrictEqual(expectedMetricsPropsBase);
-  });
-
   it('includes the API source when the security alert originates from the API', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {

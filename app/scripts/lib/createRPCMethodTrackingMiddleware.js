@@ -370,16 +370,6 @@ export default function createRPCMethodTrackingMiddleware({
           data = req?.params?.[1];
         }
 
-        if (req.securityAlertResponse?.providerRequestsCount) {
-          Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
-            (key) => {
-              const metricKey = `ppom_${key}_count`;
-              eventProperties[metricKey] =
-                req.securityAlertResponse.providerRequestsCount[key];
-            },
-          );
-        }
-
         eventProperties.security_alert_response =
           req.securityAlertResponse?.result_type ??
           BlockaidResultType.NotApplicable;
