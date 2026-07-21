@@ -39,15 +39,9 @@ jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
 
-const canBypassDeepLinkInterstitialMock =
-  canBypassDeepLinkInterstitialAsync as jest.MockedFunction<
-    typeof canBypassDeepLinkInterstitialAsync
-  >;
-jest.mock(
-  '../../../../shared/lib/deep-links/routes/interstitial-bypass-async',
-  () => ({
-    canBypassDeepLinkInterstitialAsync: jest.fn(async () => false),
-  }),
+jest.mock('../../../../shared/lib/deep-links/routes/interstitial-bypass-async');
+const canBypassDeepLinkInterstitialMock = jest.mocked(
+  canBypassDeepLinkInterstitialAsync,
 );
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
@@ -338,69 +332,94 @@ describe('DeepLinkRouter', () => {
     });
 
     describe('skipInterstitial routes', () => {
-      it('should show interstitial for unsigned unknown/scam asset links', async () => {
-        const tabId = 1;
-        const url =
-          'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82';
-        canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(false);
-        parseMock.mockResolvedValue({
-          signature: 'missing',
-          destination: {
-            path: 'asset/eip155:1/eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82',
-            query: new URLSearchParams(),
-          },
-          route: { pathname: '/asset' },
-        } as ParsedDeepLink);
-        await onBeforeRequest?.({
-          tabId,
-          url,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fasset%3FassetId%3Deip155%253A1%252Ferc20%253A0xb047c8032b99841713b8e3872f06cf32beb27b82',
-        });
-      });
+      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
+      const WARB_ASSET_ID =
+        'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
+      const DAI_ASSET_ID =
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
 
-      it('should redirect unsigned known-safe asset links directly without interstitial', async () => {
-        const tabId = 1;
-        const url =
-          'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f';
-        canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(true);
-        parseMock.mockResolvedValue({
-          signature: 'missing',
-          destination: {
-            path: 'asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
-            query: new URLSearchParams(),
-          },
-          route: { pathname: '/asset' },
-        } as ParsedDeepLink);
-        await onBeforeRequest?.({
-          tabId,
-          url,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
-        });
-      });
+      const buildAssetSkipInterstitialTestCase = (
+        assetId: string,
+        { bypassInterstitial }: { bypassInterstitial: boolean },
+      ) => {
+        const encodedAssetId = encodeURIComponent(assetId);
+        const chainId = assetId.split('/')[0];
 
-      it('should redirect unsigned swap links directly without interstitial', async () => {
-        const tabId = 1;
-        const url = 'https://link.metamask.io/swap?amount=50';
-        parseMock.mockResolvedValue({
-          signature: 'missing',
-          destination: {
-            path: 'cross-chain/swaps/prepare-swap-page',
-            query: new URLSearchParams([['amount', '50']]),
+        return {
+          url: `https://link.metamask.io/asset?assetId=${encodedAssetId}`,
+          parsed: {
+            signature: 'missing',
+            destination: {
+              path: `asset/${chainId}/${encodedAssetId}`,
+              query: new URLSearchParams(),
+            },
+            route: { pathname: '/asset' },
+          } as ParsedDeepLink,
+          expectedUrl: bypassInterstitial
+            ? `${EXTENSION_HOME}#asset/${chainId}/${encodedAssetId}`
+            : `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+        };
+      };
+
+      type SkipInterstitialRouteTestCase = {
+        description: string;
+        url: string;
+        parsed: ParsedDeepLink;
+        expectedUrl: string;
+        arrange?: () => void;
+      };
+
+      const skipInterstitialRouteCases: SkipInterstitialRouteTestCase[] = [
+        {
+          description:
+            'shows interstitial for unsigned unknown/scam asset links',
+          ...buildAssetSkipInterstitialTestCase(WARB_ASSET_ID, {
+            bypassInterstitial: false,
+          }),
+          arrange: () => {
+            canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(false);
           },
-          route: { pathname: '/swap' },
-        } as ParsedDeepLink);
-        await onBeforeRequest?.({
-          tabId,
-          url,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#cross-chain/swaps/prepare-swap-page?amount=50',
-        });
-      });
+        },
+        {
+          description:
+            'redirects unsigned known-safe asset links directly without interstitial',
+          ...buildAssetSkipInterstitialTestCase(DAI_ASSET_ID, {
+            bypassInterstitial: true,
+          }),
+          arrange: () => {
+            canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(true);
+          },
+        },
+        {
+          description:
+            'redirects unsigned swap links directly without interstitial',
+          url: 'https://link.metamask.io/swap?amount=50',
+          parsed: {
+            signature: 'missing',
+            destination: {
+              path: 'cross-chain/swaps/prepare-swap-page',
+              query: new URLSearchParams([['amount', '50']]),
+            },
+            route: { pathname: '/swap' },
+          } as ParsedDeepLink,
+          expectedUrl: `${EXTENSION_HOME}#cross-chain/swaps/prepare-swap-page?amount=50`,
+        },
+      ];
+
+      it.each(skipInterstitialRouteCases)(
+        '$description',
+        async (testCase: SkipInterstitialRouteTestCase) => {
+          testCase.arrange?.();
+          parseMock.mockResolvedValue(testCase.parsed);
+          await onBeforeRequest?.({
+            tabId: 1,
+            url: testCase.url,
+          } as browser.WebRequest.OnBeforeRequestDetailsType);
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: testCase.expectedUrl,
+          });
+        },
+      );
     });
 
     it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
