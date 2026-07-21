@@ -653,7 +653,7 @@ describe('asset-utils', () => {
     it('returns false for non-Tron chain', () => {
       expect(
         isTronStakedAsset(
-          `${MultichainNetworks.ETHEREUM}/slip44:60` as CaipAssetType,
+          `${MultichainNetworks.SOLANA}/slip44:501` as CaipAssetType,
         ),
       ).toBe(false);
     });
