@@ -495,7 +495,6 @@ module.exports = {
      */
     {
       files: [
-        '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state-controller.test.ts',
         'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
@@ -533,13 +532,6 @@ module.exports = {
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
-
-        // *.snap files weren't parsed by previous versions of this eslint
-        // config section, but something got fixed somewhere, and now this rule
-        // causes failures. We need to turn it off instead of fix them because
-        // we aren't even remotely close to being in alignment. If it bothers
-        // you open a PR to fix it yourself.
-        'jest/no-large-snapshots': 'off',
         'jest/no-restricted-matchers': 'off',
 
         /**

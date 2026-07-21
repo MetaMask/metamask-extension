@@ -17,6 +17,8 @@ type RampsQuotesQueryParams = Pick<
   | 'ttl'
   | 'paymentMethods'
   | 'providers'
+  | 'region'
+  | 'fiat'
 >;
 
 export const rampsQuotesKeys = {
@@ -27,6 +29,8 @@ export const rampsQuotesKeys = {
       params.assetId ?? '',
       params.amount,
       params.walletAddress,
+      params.region ?? '',
+      params.fiat ?? '',
       (params.paymentMethods ?? []).join(','),
       (params.providers ?? []).join(','),
       params.redirectUrl ?? '',
