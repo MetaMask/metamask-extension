@@ -46,6 +46,13 @@ const PULSECHAIN_RPC_URL = 'https://rpc.pulsechain.com';
 const PULSECHAIN_NETWORK_NAME = 'PulseChain';
 const PULSECHAIN_CURRENCY_SYMBOL = 'PLS';
 
+// TODO: Remove this widened wait once v10 Sentry init is cheaper on the service
+// worker (MetaMask-planning#7354). The initialized SDK's per-request breadcrumb
+// and flush work competes with the background `addNetwork` call, so on 2-core
+// CI the confirmation dialog outlives the default 3s wait; the network still
+// persists, just later.
+const SAVE_NETWORK_TIMEOUT = 15_000;
+
 const UFO_TOKEN_ADDRESS = '0x249e38ea4102d0cf8264d3701f1a0e39c4f2dc3b';
 const UFO_SYMBOL = 'UFO';
 
@@ -319,7 +326,7 @@ describe('Import custom token on a custom network', function () {
         await addRpcUrlModal.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
         await addRpcUrlModal.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
         await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork();
+        await addEditNetworkModal.saveEditedNetwork(SAVE_NETWORK_TIMEOUT);
 
         await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
           PULSECHAIN_NETWORK_NAME,

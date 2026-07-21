@@ -7,6 +7,7 @@ import { SignatureStepStatus } from './types';
 import {
   cleanupPendingApproval,
   getAllStepStatuses,
+  getHardwareWalletSignatureViewModel,
   getQrHardwareSigningPageTitle,
   getQrScanButtonLabelKey,
   getStepDescriptions,
@@ -18,6 +19,7 @@ import {
   getStepLabels,
   getFirstStepDescription,
   getFinalStepDescription,
+  isAwaitingSignature,
   isErrorStepStatus,
   isQrHardwareSignRequest,
   getTransactionField,
@@ -971,6 +973,184 @@ describe('hardware-wallet-signatures utils', () => {
         }),
       );
       expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
+    });
+  });
+
+  describe('isAwaitingSignature', () => {
+    it.each([
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+    ])('returns true for %s', (status) => {
+      expect(isAwaitingSignature(status)).toBe(true);
+    });
+
+    it.each([
+      HardwareWalletSignatureStatus.Submitted,
+      HardwareWalletSignatureStatus.Rejected,
+      HardwareWalletSignatureStatus.Failed,
+      HardwareWalletSignatureStatus.Disconnected,
+    ])('returns false for %s', (status) => {
+      expect(isAwaitingSignature(status)).toBe(false);
+    });
+  });
+
+  describe('getHardwareWalletSignatureViewModel', () => {
+    const baseParams = {
+      signatureState: {
+        status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      },
+      isSendBundleFlow: false,
+      needsTwoConfirmations: true,
+      toAddress: '0xtrade',
+      spenderAddress: '0xspender',
+      fromAmount: '1',
+      fromTokenSymbol: 'ETH',
+      hasSigningRequest: true,
+      hasSignatureTimedOut: false,
+      isRetrying: false,
+      hasRetried: false,
+      showInlineQrSigning: false,
+      isReadingQrSignature: false,
+      t,
+    };
+
+    it('derives step labels, descriptions, and default title while awaiting', () => {
+      const viewModel = getHardwareWalletSignatureViewModel(baseParams);
+
+      expect(viewModel.firstStepStatus).toBe(SignatureStepStatus.Active);
+      expect(viewModel.finalStepStatus).toBe(SignatureStepStatus.Pending);
+      expect(viewModel.title).toBe('swapConfirmWithHwWallet');
+      expect(viewModel.isRetryable).toBe(false);
+      expect(viewModel.showStuckRetryButton).toBe(false);
+      expect(viewModel.showFooter).toBe(true);
+      expect(viewModel.hasSigningRequest).toBe(true);
+      expect(viewModel.firstStepLabel).toBeTruthy();
+      expect(viewModel.finalStepLabel).toBeTruthy();
+    });
+
+    it('marks rejected/failed/disconnected statuses as retryable', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Rejected,
+            rejectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Failed,
+            failedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Disconnected,
+            disconnectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+    });
+
+    it('shows the stuck retry button only after timeout, retry, and awaiting', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+        }).showStuckRetryButton,
+      ).toBe(true);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: false,
+        }).showStuckRetryButton,
+      ).toBe(false);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+          isRetrying: true,
+        }).showStuckRetryButton,
+      ).toBe(false);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Rejected,
+            rejectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+        }).showStuckRetryButton,
+      ).toBe(false);
+    });
+
+    it('hides the footer after submission', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Submitted,
+          },
+        }).showFooter,
+      ).toBe(false);
+    });
+
+    it('uses the inline QR title while displaying a QR code', () => {
+      const viewModel = getHardwareWalletSignatureViewModel({
+        ...baseParams,
+        showInlineQrSigning: true,
+        isReadingQrSignature: false,
+        activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      });
+
+      expect(viewModel.showInlineQrCode).toBe(true);
+      expect(viewModel.showQrSigningPage).toBe(false);
+      expect(viewModel.isFinalSignature).toBe(false);
+      expect(viewModel.title).toBe(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          isDisplayPhase: true,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      );
+    });
+
+    it('shows the QR signing page while reading a signature', () => {
+      const viewModel = getHardwareWalletSignatureViewModel({
+        ...baseParams,
+        showInlineQrSigning: true,
+        isReadingQrSignature: true,
+        activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      });
+
+      expect(viewModel.showInlineQrCode).toBe(false);
+      expect(viewModel.showQrSigningPage).toBe(true);
+      expect(viewModel.isFinalSignature).toBe(true);
+      expect(viewModel.qrSigningPageTitle).toBe(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      );
     });
   });
 });

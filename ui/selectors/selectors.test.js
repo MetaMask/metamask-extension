@@ -20,10 +20,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
@@ -4218,7 +4215,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -4234,7 +4231,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {

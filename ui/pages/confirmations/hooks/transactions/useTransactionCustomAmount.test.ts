@@ -195,6 +195,38 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('0.5');
     });
 
+    it('normalizes a comma decimal separator to a dot', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('1,5');
+      });
+
+      expect(result.current.amountFiat).toBe('1.5');
+      expect(result.current.amountHuman).toBe('1.5');
+    });
+
+    it('adds leading zero for inputs starting with comma', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount(',5');
+      });
+
+      expect(result.current.amountFiat).toBe('0.5');
+    });
+
+    it('keeps the amount parseable when input ends with a comma', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('0,');
+      });
+
+      expect(result.current.amountFiat).toBe('0.');
+      expect(result.current.amountHuman).toBe('0');
+    });
+
     it('ignores input exceeding MAX_LENGTH', () => {
       const { result } = runHook();
 

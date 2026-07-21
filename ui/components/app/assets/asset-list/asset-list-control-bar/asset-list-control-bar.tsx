@@ -299,7 +299,11 @@ const AssetListControlBar = ({
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
-    navigate(TOKEN_MANAGEMENT_ROUTE);
+    navigate(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {

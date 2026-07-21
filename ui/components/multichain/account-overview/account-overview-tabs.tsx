@@ -46,16 +46,15 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useABTest } from '../../../hooks/useABTest';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_VARIANTS,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
 } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
-import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
-import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
+import { ActivityList } from '../../../pages/activity/activity-list';
+import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
@@ -102,13 +101,11 @@ export const AccountOverviewTabs = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
   const prefetchTransactions = usePrefetchTransactions();
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showBottomNav = useBottomNavBar();
 
   // Track exposure only when the Perps tab is shown, gated on availability (not
   // dismissal) so control and treatment record symmetrically once per session.
@@ -131,22 +128,24 @@ export const AccountOverviewTabs = ({
 
   // Whether the persisted/url active tab resolves to a tab that is actually
   // rendered. Membership only — render order is irrelevant here.
-  const renderedTabKeys: AccountOverviewTab[] = [
+  const renderedTabKeys: Set<AccountOverviewTab> = new Set([
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
-    ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
+    ...(isPerpsExperienceAvailable && !showBottomNav
+      ? [AccountOverviewTabKey.Perps]
+      : []),
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
-    ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
-  ];
+    ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
+  ]);
   // Perps is the effective active tab when it is explicitly selected, or when
   // the active tab isn't rendered and Tabs clamps to the first rendered tab.
   // Perps is that first tab whenever Tokens (the only tab that can precede it)
   // is hidden and the Perps experience is available.
+  const perpsIsRendered = renderedTabKeys.has(AccountOverviewTabKey.Perps);
   const perpsIsEffectiveActiveTab =
-    activeTabKey === AccountOverviewTabKey.Perps ||
-    (!renderedTabKeys.includes(activeTabKey) &&
-      !showTokens &&
-      isPerpsExperienceAvailable);
+    perpsIsRendered &&
+    (activeTabKey === AccountOverviewTabKey.Perps ||
+      (!renderedTabKeys.has(activeTabKey) && !showTokens));
 
   // Mark the badge seen whenever Perps is the effective active tab — covers
   // clicking in, landing directly on Perps (persisted default or ?tab=perps),
@@ -180,14 +179,10 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // For ActivityListV3, ActivityScreenOpened is deferred to the list
-      // component so it can include accurate is_empty / pending_transactions
-      // after all data sources have loaded. For ActivityListV2 there is no
-      // equivalent deferred tracking, so fire immediately on click.
+
       if (
         tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        (tabName !== AccountOverviewTabKey.Activity ||
-          !isActivityListRedesignEnabled)
+        tabName !== AccountOverviewTabKey.Activity
       ) {
         trackEvent(
           createEventBuilder(
@@ -212,7 +207,6 @@ export const AccountOverviewTabs = ({
     [
       activeTabKey,
       createEventBuilder,
-      isActivityListRedesignEnabled,
       networkFilterForMetrics,
       setActiveTabKey,
       dispatch,
@@ -266,7 +260,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {isPerpsExperienceAvailable && (
+        {isPerpsExperienceAvailable && !showBottomNav && (
           <Tab
             name={
               showPerpsTabBadge ? (
@@ -339,7 +333,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showActivity && (
+        {showActivity && !showBottomNav && (
           <Tab
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
@@ -347,11 +341,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              {isActivityListRedesignEnabled ? (
-                <ActivityListV3 />
-              ) : (
-                <ActivityListV2 />
-              )}
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}
