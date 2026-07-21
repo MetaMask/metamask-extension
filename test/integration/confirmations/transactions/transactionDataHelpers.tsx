@@ -218,7 +218,7 @@ export const getMaliciousUnapprovedTransaction = (
       description:
         'Interaction with a known malicious address: 0x5fbdb2315678afecb367f032d93f642f64180aa3',
       features: ['Interaction with a known malicious address'],
-      source: 'local',
+      source: 'api',
       securityAlertId: '22ff30c4-0fe6-4d8b-af39-92aae0bd3c2c',
     },
   };
