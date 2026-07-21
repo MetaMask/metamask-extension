@@ -15,24 +15,24 @@ import {
 } from '../../../shared/lib/defi-controller-v2/remote-feature-flag';
 
 /**
- * Feature flag structure for defi-controller-v2 feature.
+ * Feature flag structure for the defiControllerV2 remote flag.
  */
 const DefiControllerV2FeatureFlag = object({
   enabled: optional(boolean()),
 });
 
 /**
- * Feature flag type for defi-controller-v2 feature.
+ * Feature flag type for the defiControllerV2 remote flag.
  */
 export type DefiControllerV2FeatureFlagType = Infer<
   typeof DefiControllerV2FeatureFlag
 >;
 
 /**
- * Selector to get the defi-controller-v2 remote feature flag.
+ * Selector to get the defiControllerV2 remote feature flag.
  *
  * @param state - The MetaMask state object
- * @returns The feature flag for defi-controller-v2, or undefined if not set.
+ * @returns The feature flag for defiControllerV2, or undefined if not set.
  */
 export const getDefiControllerV2RemoteFeatureFlag = (
   state: RemoteFeatureFlagsState,
@@ -50,7 +50,7 @@ export const getDefiControllerV2RemoteFeatureFlag = (
 };
 
 /**
- * Selector to check if the defi-controller-v2 feature is enabled.
+ * Selector to check if the defiControllerV2 feature is enabled.
  *
  * @param state - The MetaMask state object
  * @returns True if the feature is enabled, false otherwise.

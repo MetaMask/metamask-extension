@@ -1,7 +1,11 @@
-export const DEFI_CONTROLLER_V2_FLAG = 'defi-controller-v2';
+/**
+ * Client-config / RemoteFeatureFlagController key (camelCase). LaunchDarkly
+ * may use a kebab-case key that is converted before it reaches the extension.
+ */
+export const DEFI_CONTROLLER_V2_FLAG = 'defiControllerV2';
 
 /**
- * Shape of the `defi-controller-v2` remote feature flag after it has been
+ * Shape of the `defiControllerV2` remote feature flag after it has been
  * resolved by `RemoteFeatureFlagController`. The controller processes the raw
  * version-scoped / threshold format and stores only the matching value
  * (e.g. `{ enabled: true }`).
@@ -53,10 +57,10 @@ export type DefiControllerV2FeatureFlag = {
 };
 
 /**
- * Shared helper to check whether the defi-controller-v2 feature is enabled.
+ * Shared helper to check whether the defiControllerV2 feature is enabled.
  * Keeps background and UI gating logic in sync.
  *
- * @param featureFlag - The defi-controller-v2 feature flag.
+ * @param featureFlag - The defiControllerV2 feature flag.
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const isDefiControllerV2Enabled = (

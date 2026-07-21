@@ -214,8 +214,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  'defi-controller-v2': {
-    name: 'defi-controller-v2',
+  defiControllerV2: {
+    name: 'defiControllerV2',
     type: FeatureFlagType.Remote,
     inProd: false,
     productionDefault: {

@@ -247,7 +247,7 @@ describe('DefiList', () => {
     });
   });
 
-  it('renders DefiListV2 when defi-controller-v2 is enabled', async () => {
+  it('renders DefiListV2 when defiControllerV2 is enabled', async () => {
     await act(async () => {
       render('with-positions', { defiControllerV2Enabled: true });
     });
