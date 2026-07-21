@@ -50,8 +50,6 @@ import {
   RAMPS_PAYMENT_METHOD_ROUTE,
   RAMPS_PROVIDER_SELECTION_ROUTE,
   RAMPS_ORDER_DETAILS_ROUTE,
-  // ponytail: DEV-ONLY harness route for TRAM-3718 testing. DO NOT MERGE.
-  RAMPS_DEV_ORDER_HARNESS_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -219,10 +217,6 @@ const RampsProviderSelection = mmLazy(
 );
 const RampsOrderDetails = mmLazy(
   () => import('../ramps/order-details/index.ts'),
-);
-// ponytail: DEV-ONLY harness for TRAM-3718 testing. DO NOT MERGE.
-const RampsDevOrderHarness = mmLazy(
-  () => import('../ramps/order-details/dev-order-harness.tsx'),
 );
 const PermissionsPage = mmLazy(
   () =>
@@ -570,11 +564,6 @@ export const routeConfig = [
           {
             path: RAMPS_ORDER_DETAILS_ROUTE,
             element: <RampsOrderDetails />,
-          },
-          {
-            // ponytail: DEV-ONLY harness for TRAM-3718 testing. DO NOT MERGE.
-            path: RAMPS_DEV_ORDER_HARNESS_ROUTE,
-            element: <RampsDevOrderHarness />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,

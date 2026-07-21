@@ -8264,6 +8264,9 @@
   "rampsOrderDetailsPendingMessage": {
     "message": "Your order may take some time to confirm."
   },
+  "rampsOrderDetailsRefresh": {
+    "message": "Refresh"
+  },
   "rampsOrderDetailsRetry": {
     "message": "Try again"
   },

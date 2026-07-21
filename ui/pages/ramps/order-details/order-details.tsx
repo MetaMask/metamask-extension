@@ -104,7 +104,7 @@ export function RampsOrderDetailsScreen() {
             data-testid="ramps-order-details-refresh"
             isFullWidth
           >
-            {t('rampsOrderDetailsRetry')}
+            {t('rampsOrderDetailsRefresh')}
           </Button>
         ) : null}
         <Button

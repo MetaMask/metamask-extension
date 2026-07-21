@@ -187,8 +187,6 @@ export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
 export const RAMPS_ORDER_DETAILS_ROUTE = '/ramps/order-details/:orderId';
-// ponytail: DEV-ONLY harness route for TRAM-3718 testing. DO NOT MERGE.
-export const RAMPS_DEV_ORDER_HARNESS_ROUTE = '/ramps/dev/order-details';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
