@@ -125,10 +125,11 @@ export function BottomNavBar() {
     resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(ACTIVITY_ROUTE, {
-      state: {
-        entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-        stayOnHomePage: true,
-      },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
     );
   }, [navigate, resetBridgeIfNeeded]);
 
