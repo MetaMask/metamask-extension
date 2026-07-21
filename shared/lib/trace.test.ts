@@ -490,6 +490,37 @@ describe('Trace', () => {
       );
     });
 
+    it('parses a `traceparent` string when the same-process map lookup misses', () => {
+      // A snap returns a SerializedTraceContext { _name, _id, traceparent } whose
+      // pending parent was already removed (e.g. after snap_endTrace), so the map
+      // lookup misses. The traceparent string must still root the child on the
+      // originating trace via continueTrace rather than orphaning it.
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
+
+      trace(
+        {
+          name: TraceName.Middleware,
+          parentContext: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _name: TraceName.Transaction,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _id: 'ended-parent',
+            traceparent: TRACEPARENT_MOCK,
+          },
+        },
+        () => true,
+      );
+
+      expect(continueTraceMock).toHaveBeenCalledTimes(1);
+      expect(continueTraceMock).toHaveBeenCalledWith(
+        {
+          sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-1`,
+          baggage: undefined,
+        },
+        expect.any(Function),
+      );
+    });
+
     it('falls back to map lookup when _name is also present', () => {
       const spanEndMock = jest.fn();
       const parentSpanMock = {

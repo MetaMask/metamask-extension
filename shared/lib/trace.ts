@@ -698,16 +698,34 @@ function startSpan<T>(
     forceTransaction,
   };
 
-  // Cross-process propagation via continueTrace when we have parsed trace
-  // context but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasTraceparentData(parentContext)) {
-    const sentryTrace = traceparentDataToSentryTrace(parentContext);
-    return sentryContinueTrace(sentryTrace, () =>
-      sentryWithIsolationScope((scope: Sentry.Scope) => {
-        initScope(scope, request);
-        return callback({ ...spanOptions, parentSpan: undefined });
-      }),
-    );
+  // Cross-process propagation via continueTrace when we couldn't resolve a local
+  // parent span. `parentContext` may already be parsed `TraceparentData`, or a
+  // `SerializedTraceContext` still carrying its W3C `traceparent` string — e.g. a
+  // snap whose pending parent was removed from the map after `snap_endTrace`, so
+  // the same-process lookup missed. Without parsing that string the child would
+  // orphan from the originating trace.
+  if (!parentSpan) {
+    let traceparentData;
+    if (hasTraceparentData(parentContext)) {
+      traceparentData = parentContext;
+    } else if (
+      isObject(parentContext) &&
+      hasProperty(parentContext, 'traceparent')
+    ) {
+      const parsed = parseTraceparent(parentContext.traceparent);
+      if (hasTraceparentData(parsed)) {
+        traceparentData = parsed;
+      }
+    }
+    if (traceparentData) {
+      const sentryTrace = traceparentDataToSentryTrace(traceparentData);
+      return sentryContinueTrace(sentryTrace, () =>
+        sentryWithIsolationScope((scope: Sentry.Scope) => {
+          initScope(scope, request);
+          return callback({ ...spanOptions, parentSpan: undefined });
+        }),
+      );
+    }
   }
 
   return sentryWithIsolationScope((scope: Sentry.Scope) => {
