@@ -154,8 +154,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/bridge-controller": "file:../core/packages/bridge-controller",
-    "@metamask/bridge-status-controller": "file:../core/packages/bridge-status-controller",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
@@ -346,8 +344,8 @@
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.2",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "file:../core/packages/bridge-controller",
-    "@metamask/bridge-status-controller": "file:../core/packages/bridge-status-controller",
+    "@metamask/bridge-controller": "^77.6.0-preview-8abc30aca",
+    "@metamask/bridge-status-controller": "^74.3.0-preview-8abc30aca",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
     "@metamask/claims-controller": "^0.4.2",
@@ -815,6 +813,16 @@
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-controller": {
+      "type": "breaking",
+      "previewVersion": "77.6.0-preview-8abc30aca"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "74.3.0-preview-8abc30aca"
+    }
   },
   "lavamoat": {
     "allowScripts": {
