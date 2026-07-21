@@ -76,7 +76,7 @@ import { useSettingsI18n } from './useSettingsI18n';
 
 const FIRST_TAB_PATH = SETTINGS_TABS[0]?.path;
 const FirstTabComponent = SETTINGS_TABS[0]?.component;
-const SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH = 490;
+const SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH = 575;
 
 const normalizeSettingsPath = (path: string) =>
   path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
