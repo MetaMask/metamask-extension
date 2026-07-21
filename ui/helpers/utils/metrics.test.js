@@ -26,13 +26,13 @@ const securityAlertResponse = {
   result_type: BlockaidResultType.Malicious,
   reason: BlockaidReason.setApprovalForAll,
   features: [],
-  source: SecurityAlertSource.Local,
+  source: SecurityAlertSource.API,
 };
 
 const expectedMetricsPropsBase = {
   security_alert_reason: BlockaidReason.setApprovalForAll,
   security_alert_response: BlockaidResultType.Malicious,
-  security_alert_source: SecurityAlertSource.Local,
+  security_alert_source: SecurityAlertSource.API,
   ui_customizations: [MetaMetricsEventUiCustomization.FlaggedAsMalicious],
 };
 
@@ -111,25 +111,7 @@ describe('getBlockaidMetricsProps', () => {
 
     expect(result).toStrictEqual({
       security_alert_response: BlockaidResultType.Benign,
-      security_alert_source: SecurityAlertSource.Local,
-    });
-  });
-
-  it('includes eth call counts when providerRequestsCount is provided', () => {
-    const result = getBlockaidMetricsProps({
-      securityAlertResponse: {
-        ...securityAlertResponse,
-        providerRequestsCount: {
-          eth_call: 5,
-          eth_getCode: 3,
-        },
-      },
-    });
-
-    expect(result).toStrictEqual({
-      ...expectedMetricsPropsBase,
-      ppom_eth_call_count: 5,
-      ppom_eth_getCode_count: 3,
+      security_alert_source: SecurityAlertSource.API,
     });
   });
 
@@ -145,7 +127,7 @@ describe('getBlockaidMetricsProps', () => {
       ui_customizations: [MetaMetricsEventUiCustomization.SecurityAlertError],
       security_alert_response: BlockaidResultType.Errored,
       security_alert_reason: 'error: error message',
-      security_alert_source: SecurityAlertSource.Local,
+      security_alert_source: SecurityAlertSource.API,
     });
   });
 

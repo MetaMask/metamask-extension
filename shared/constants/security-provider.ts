@@ -121,7 +121,4 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
 export enum SecurityAlertSource {
   /** Validation performed remotely using the Security Alerts API. */
   API = 'api',
-
-  /** Validation performed locally using the PPOM. */
-  Local = 'local',
 }
