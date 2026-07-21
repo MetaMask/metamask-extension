@@ -422,6 +422,10 @@ export function continueTraceContext<ResultType>(
  * Includes both name/id (for same-process map lookup) and a W3C `traceparent`
  * string (for cross-process distributed tracing).
  *
+ * Note: `main` removed the pre-traceparent form of this function as dead code
+ * (#44612); this branch keeps it because `metamask-controller.js` serializes
+ * the snap trace context through it.
+ *
  * @param span - The Sentry span to build the `traceparent` from.
  * @param request - Request metadata for same-process lookup fallback.
  * @param request.name - The trace name for same-process map lookup.

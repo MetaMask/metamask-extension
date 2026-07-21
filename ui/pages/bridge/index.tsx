@@ -2,6 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  FontWeight,
+  IconName,
+  Text,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
   PREPARE_SWAP_ROUTE,
@@ -9,11 +17,6 @@ import {
   AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
@@ -27,6 +30,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
@@ -86,11 +90,28 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
 
+  const showBottomBar = useBottomNavBar();
+
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
 
-  const swapHeader = (
+  const swapHeader = showBottomBar ? (
+    <div className="flex items-center justify-between p-4 gap-4">
+      <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+        {t('swap')}
+      </Text>
+      <ButtonIcon
+        iconName={IconName.Setting}
+        size={ButtonIconSize.Md}
+        ariaLabel={t('settings')}
+        data-testid="bridge__header-settings-button"
+        onClick={() => {
+          setIsSettingsModalOpen(true);
+        }}
+      />
+    </div>
+  ) : (
     <Header
       textProps={{ variant: TextVariant.headingSm }}
       startAccessory={
