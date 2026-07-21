@@ -136,9 +136,7 @@ const render = (
         },
       },
       allDeFiPositions: selectedDeFiPositions,
-      ...(options?.defiControllerV2Enabled
-        ? { allDeFiPositionsV2 }
-        : {}),
+      ...(options?.defiControllerV2Enabled ? { allDeFiPositionsV2 } : {}),
       currencyRates: {
         ETH: {
           conversionRate: 1597.32,

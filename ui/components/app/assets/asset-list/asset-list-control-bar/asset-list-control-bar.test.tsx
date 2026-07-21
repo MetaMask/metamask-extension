@@ -370,7 +370,10 @@ describe('NFTs options', () => {
     const store = configureMockStore([thunk])(state);
 
     const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showImportTokenButton={false} onRefresh={onRefresh} />,
+      <AssetListControlBar
+        showImportTokenButton={false}
+        onRefresh={onRefresh}
+      />,
       store,
     );
 

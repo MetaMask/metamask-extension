@@ -44,9 +44,9 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
       );
       const assetsDefiPositionsEnabled = Boolean(
         remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-          DEFAULT_FEATURE_FLAG_VALUES[
-            FeatureFlagNames.AssetsDefiPositionsEnabled
-          ],
+        DEFAULT_FEATURE_FLAG_VALUES[
+          FeatureFlagNames.AssetsDefiPositionsEnabled
+        ],
       );
       const defiControllerV2Enabled = isDefiControllerV2Enabled(
         remoteFeatureFlags?.[DEFI_CONTROLLER_V2_FLAG] as

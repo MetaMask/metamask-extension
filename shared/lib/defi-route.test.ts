@@ -13,9 +13,7 @@ describe('defi-route', () => {
     });
 
     it('encodes the protocol id', () => {
-      expect(buildDefiRoutePath('0x1', 'aave v3')).toBe(
-        '/defi/0x1/aave%20v3',
-      );
+      expect(buildDefiRoutePath('0x1', 'aave v3')).toBe('/defi/0x1/aave%20v3');
     });
   });
 
