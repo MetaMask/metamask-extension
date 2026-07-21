@@ -1,0 +1,201 @@
+# Slack notifications for the performance quality gate.
+#
+# Nightly: Regression report after scheduled CI builds
+# Phase 3: Weekly digest — runs every Monday at 9:00 UTC
+# Phase 4: Baseline-reset alert — triggered by push to main
+#
+# Skip-label alert shipped separately in #41521.
+# All notifications post to #extension-performance-alerts (dedicated channel).
+# Team-specific routing is deferred until benchmark ownership (#6841) lands.
+
+name: Benchmark Slack Notifications
+
+on:
+  schedule:
+    # Phase 3: Weekly digest — Monday 9:00 UTC
+    - cron: '0 9 * * 1'
+
+  # Nightly report is triggered by workflow_run completion of the main CI
+  # on the default branch (scheduled runs). This ensures benchmark artifacts
+  # are available before we try to download them.
+  workflow_run:
+    workflows: ['Main']
+    types: [completed]
+    branches: [main]
+
+  # Phase 4: Baseline-reset detection
+  push:
+    branches: [main]
+    paths:
+      - 'test/e2e/benchmarks/baseline-resets.json'
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+
+jobs:
+  # -------------------------------------------------------------------
+  # Nightly — Regression report after scheduled CI
+  # -------------------------------------------------------------------
+  nightly-regression-report:
+    # Only run when Main workflow completes on a schedule trigger
+    if: >-
+      ${{
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.event == 'schedule' &&
+        github.event.workflow_run.conclusion != 'cancelled'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download benchmark artifacts from nightly run
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          pattern: benchmark-*.json
+          path: benchmark-results/
+          merge-multiple: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Post nightly regression report to Slack
+        env:
+          SLACK_BENCHMARK_WEBHOOK_URL: ${{ secrets.SLACK_BENCHMARK_WEBHOOK_URL }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          if [ -d benchmark-results ] && [ "$(ls -A benchmark-results/*.json 2>/dev/null)" ]; then
+            yarn tsx development/metamaskbot-build-announce/nightly-regression-report.ts \
+              --results benchmark-results/
+          else
+            echo "No benchmark results found — skipping nightly report."
+          fi
+
+  # -------------------------------------------------------------------
+  # Phase 3 — Weekly digest
+  # -------------------------------------------------------------------
+  weekly-digest:
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Post weekly digest to Slack
+        env:
+          SLACK_BENCHMARK_WEBHOOK_URL: ${{ secrets.SLACK_BENCHMARK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+        run: yarn tsx development/metamaskbot-build-announce/weekly-digest.ts
+
+  # -------------------------------------------------------------------
+  # Phase 4 — Baseline-reset alert
+  # -------------------------------------------------------------------
+  baseline-reset-alert:
+    if: >-
+      ${{
+        github.event_name == 'push' &&
+        github.ref == 'refs/heads/main'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Detect baseline resets and alert
+        env:
+          SLACK_BENCHMARK_WEBHOOK_URL: ${{ secrets.SLACK_BENCHMARK_WEBHOOK_URL }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const webhookUrl = process.env.SLACK_BENCHMARK_WEBHOOK_URL;
+            if (!webhookUrl) {
+              core.warning('SLACK_BENCHMARK_WEBHOOK_URL not configured');
+              return;
+            }
+
+            // Get the diff to see which benchmarks were reset
+            const { execSync } = require('child_process');
+            let diff;
+            try {
+              diff = execSync(
+                'git diff HEAD~1 HEAD -- test/e2e/benchmarks/baseline-resets.json',
+                { encoding: 'utf-8' }
+              );
+            } catch {
+              core.info('No baseline-resets.json diff found');
+              return;
+            }
+
+            if (!diff) {
+              return;
+            }
+
+            // Parse added lines to find new resets
+            const addedLines = diff
+              .split('\n')
+              .filter(line => line.startsWith('+') && !line.startsWith('+++'))
+              .map(line => line.slice(1).trim())
+              .filter(Boolean);
+
+            const commit = context.sha.slice(0, 7);
+            const author = context.payload.head_commit?.author?.username ?? 'unknown';
+
+            // Try to find associated PR
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+            });
+            const prUrl = prs.data[0]?.html_url ?? '';
+
+            const payload = {
+              blocks: [
+                {
+                  type: 'header',
+                  text: {
+                    type: 'plain_text',
+                    text: '🔄 Baseline Reset',
+                    emoji: true,
+                  },
+                },
+                {
+                  type: 'section',
+                  text: {
+                    type: 'mrkdwn',
+                    text: [
+                      `*Commit:* \`${commit}\` by @${author}`,
+                      `*Changed lines:* ${addedLines.length}`,
+                      prUrl ? `<${prUrl}|View PR>` : '',
+                    ].filter(Boolean).join('\n'),
+                  },
+                },
+              ],
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+              core.error(`Slack webhook failed: ${response.status}`);
+            }
