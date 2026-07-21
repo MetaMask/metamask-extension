@@ -9,7 +9,7 @@ import {
 } from '@metamask/utils';
 import { getCacheKey, retrieveCachedResponse, updateCache } from './cache';
 
-const TOKEN_SECURITY_CACHE_KEY = 'fetchTokenAssets';
+const TOKEN_SECURITY_CACHE_KEY_PREFIX = 'fetchTokenAssets';
 const inFlightRequests = new Map<string, Promise<TokenAsset[]>>();
 
 export function getTokenSecurityAssetKey(
@@ -62,7 +62,7 @@ export async function fetchCachedTokenAssets(
     return [];
   }
 
-  const cacheKey = getCacheKey(TOKEN_SECURITY_CACHE_KEY, {
+  const cacheKey = getCacheKey(TOKEN_SECURITY_CACHE_KEY_PREFIX, {
     assetIds: uniqueAssetIds.map(getTokenSecurityAssetKey),
     includeTokenSecurityData: true,
   });
