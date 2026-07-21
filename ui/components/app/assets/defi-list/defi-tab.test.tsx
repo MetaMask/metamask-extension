@@ -8,10 +8,29 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { DEFI_CONTROLLER_V2_FLAG } from '../../../../../shared/lib/defi-controller-v2/remote-feature-flag';
-import * as defiActions from '../../../../hooks/defi/defiActions';
+import { fetchDeFiPositions } from '../../../../hooks/defi/defiActions';
 import DeFiTab from './defi-tab';
 
+// Named imports (DefiTab / useDeFiPositionsV2) are not reliably intercepted by
+// jest.spyOn on the namespace module.
+jest.mock('../../../../hooks/defi/defiActions', () => ({
+  fetchDeFiPositions: jest.fn().mockResolvedValue(undefined),
+}));
+
+// AssetListControlBar mounts with effects that call setTokenNetworkFilter →
+// setPreference → submitRequestToBackground. Without a background connection
+// that warns in unit tests.
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockFetchDeFiPositions = jest.mocked(fetchDeFiPositions);
+
 const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const selectedAccountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const stEthIconUrl =
+  'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png';
 
 const allDeFiPositions = {
   [selectedAddress]: {
@@ -21,8 +40,7 @@ const allDeFiPositions = {
         lido: {
           protocolDetails: {
             name: 'Lido',
-            iconUrl:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
+            iconUrl: stEthIconUrl,
           },
           aggregatedMarketValue: 20000,
           positionTypes: {
@@ -50,8 +68,7 @@ const allDeFiPositions = {
                         balance: 10,
                         price: 2000,
                         marketValue: 20000,
-                        iconUrl:
-                          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
+                        iconUrl: stEthIconUrl,
                       },
                     ],
                   },
@@ -63,6 +80,25 @@ const allDeFiPositions = {
       },
     },
   },
+};
+
+const allDeFiPositionsV2 = {
+  [selectedAccountId]: [
+    {
+      protocolId: 'lido',
+      productName: 'Lido',
+      protocolIconUrl: stEthIconUrl,
+      chainId: 'eip155:1',
+      marketValue: 20000,
+      iconGroup: [
+        {
+          symbol: 'stETH',
+          avatarValue: stEthIconUrl,
+        },
+      ],
+      sections: [],
+    },
+  ],
 };
 const loadingDefiPositions = {
   [selectedAddress]: undefined,
@@ -100,6 +136,9 @@ const render = (
         },
       },
       allDeFiPositions: selectedDeFiPositions,
+      ...(options?.defiControllerV2Enabled
+        ? { allDeFiPositionsV2 }
+        : {}),
       currencyRates: {
         ETH: {
           conversionRate: 1597.32,
@@ -118,13 +157,8 @@ const render = (
 
 describe('DefiList', () => {
   beforeEach(() => {
-    jest
-      .spyOn(defiActions, 'fetchDeFiPositions')
-      .mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
+    mockFetchDeFiPositions.mockClear();
+    mockFetchDeFiPositions.mockResolvedValue(undefined);
   });
 
   it('renders DeFiList component and shows control bar', async () => {
@@ -213,7 +247,7 @@ describe('DefiList', () => {
     });
   });
 
-  it('renders DefiListV2 when defi-controller-v-2 is enabled', async () => {
+  it('renders DefiListV2 when defi-controller-v2 is enabled', async () => {
     await act(async () => {
       render('with-positions', { defiControllerV2Enabled: true });
     });
@@ -226,8 +260,6 @@ describe('DefiList', () => {
   });
 
   it('shows a refresh-only menu that fetches DeFi positions', async () => {
-    const fetchDeFiPositionsSpy = jest.mocked(defiActions.fetchDeFiPositions);
-
     await act(async () => {
       render('with-positions');
     });
@@ -243,9 +275,9 @@ describe('DefiList', () => {
       screen.queryByTestId('manageTokens__button'),
     ).not.toBeInTheDocument();
 
-    fetchDeFiPositionsSpy.mockClear();
+    mockFetchDeFiPositions.mockClear();
     fireEvent.click(refreshListButton);
-    expect(fetchDeFiPositionsSpy).toHaveBeenCalledTimes(1);
-    expect(fetchDeFiPositionsSpy).toHaveBeenCalledWith({ forceRefresh: true });
+    expect(mockFetchDeFiPositions).toHaveBeenCalledTimes(1);
+    expect(mockFetchDeFiPositions).toHaveBeenCalledWith({ forceRefresh: true });
   });
 });

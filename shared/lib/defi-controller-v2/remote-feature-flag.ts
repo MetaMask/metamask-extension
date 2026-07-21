@@ -1,22 +1,64 @@
-export const DEFI_CONTROLLER_V2_FLAG = 'defi-controller-v-2';
+export const DEFI_CONTROLLER_V2_FLAG = 'defi-controller-v2';
 
 /**
- * Shape of the `defi-controller-v-2` remote feature flag after it has been
+ * Shape of the `defi-controller-v2` remote feature flag after it has been
  * resolved by `RemoteFeatureFlagController`. The controller processes the raw
- * version-scoped format (`{ versions: { "13.41.0": { enabled: true } } }`)
- * and stores only the matching version's value.
+ * version-scoped / threshold format and stores only the matching value
+ * (e.g. `{ enabled: true }`).
+ *
+ * Raw remote config template (version gating + threshold rollout). Version
+ * keys are minimum SemVer floors; the highest key `<=` the client version is
+ * selected, then threshold arrays are bucketed. With `thresholdVersion: 2`,
+ * the selected entry's `value` is stored directly (not wrapped as
+ * `{ name, value }`). `scope.value` is cumulative in `[0, 1]` (e.g. `0.1` =
+ * 10% of users).
+ *
+ * @example
+ * ```json
+ * {
+ *   "versions": {
+ *     "13.41.0": {
+ *       "enabled": false
+ *     },
+ *     "13.42.0": [
+ *       {
+ *         "scope": {
+ *           "type": "threshold",
+ *           "value": 0.1
+ *         },
+ *         "thresholdName": "feature is ON for 10% of users",
+ *         "thresholdVersion": 2,
+ *         "value": {
+ *           "enabled": true
+ *         }
+ *       },
+ *       {
+ *         "scope": {
+ *           "type": "threshold",
+ *           "value": 1
+ *         },
+ *         "thresholdName": "feature is OFF for remaining users",
+ *         "thresholdVersion": 2,
+ *         "value": {
+ *           "enabled": false
+ *         }
+ *       }
+ *     ]
+ *   }
+ * }
+ * ```
  */
 export type DefiControllerV2FeatureFlag = {
   enabled?: boolean;
 };
 
 /**
- * Shared helper to check whether the defi-controller-v-2 feature is enabled.
+ * Shared helper to check whether the defi-controller-v2 feature is enabled.
  * Keeps background and UI gating logic in sync.
  *
- * @param featureFlag - The defi-controller-v-2 feature flag.
+ * @param featureFlag - The defi-controller-v2 feature flag.
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const isDefiControllerV2Enabled = (
   featureFlag: DefiControllerV2FeatureFlag | undefined | null,
-): boolean => Boolean(featureFlag?.enabled) || true;
+): boolean => Boolean(featureFlag?.enabled);
