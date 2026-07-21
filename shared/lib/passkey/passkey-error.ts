@@ -2,13 +2,6 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
 import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 
-/**
- * Stable programmatic codes for passkey-related errors thrown by the extension.
- */
-export const ExtensionPasskeyErrorCode = {
-  VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
-} as const;
-
 export type TranslateFn = (key: string, substitutions?: string[]) => string;
 
 /**
@@ -104,8 +97,6 @@ function getCauseCode(data: unknown): unknown {
  *
  * **Controller:** `PasskeyController` throws `PasskeyControllerError` with a stable
  * string `code` (see `@metamask/passkey-controller`).
- *
- * **Extension:** the background may attach `ExtensionPasskeyErrorCode` on the same shape.
  *
  * **Extension UI:** MetaRPC + `serializeError` (`createMetaRPCHandler`) wraps failures;
  * the string `code` is on `data.cause`, not the numeric `JsonRpcError.code`.
