@@ -13,9 +13,22 @@ import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
-import { getTokenExchangeRate, toBridgeToken } from './utils';
+import { assetIdsMatch, getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, TokenPayload } from './types';
+
+const clearSlippageState = (state: BridgeState) => {
+  state.slippage = undefined;
+  state.isSlippageUserOverride = false;
+};
+
+const didAssetPairChange = (
+  previousFromAssetId: string | undefined,
+  previousToAssetId: string | undefined,
+  nextFromAssetId: string | undefined,
+  nextToAssetId: string | undefined,
+) =>
+  !assetIdsMatch(previousFromAssetId, nextFromAssetId) ||
+  !assetIdsMatch(previousToAssetId, nextToAssetId);
 
 export const initialState: BridgeState = {
   fromToken: null,
@@ -27,7 +40,8 @@ export const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: SlippageValue.BridgeDefault,
+  slippage: undefined,
+  isSlippageUserOverride: false,
   txAlert: null,
   txAlertStatus: RequestStatus.FETCHED,
   isSrcAssetPickerOpen: false,
@@ -104,6 +118,8 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     setFromToken: (state, { payload }: { payload: TokenPayload }) => {
+      const previousFromAssetId = state.fromToken?.assetId;
+      const previousToAssetId = state.toToken?.assetId;
       const currentFromToken = state.fromToken;
       const newFromToken = toBridgeToken(payload);
       state.isSrcAssetPickerOpen = false;
@@ -123,10 +139,32 @@ const bridgeSlice = createSlice({
       state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
+      if (
+        didAssetPairChange(
+          previousFromAssetId,
+          previousToAssetId,
+          state.fromToken?.assetId,
+          state.toToken?.assetId,
+        )
+      ) {
+        clearSlippageState(state);
+      }
     },
     setToToken: (state, { payload }: { payload: TokenPayload }) => {
+      const previousFromAssetId = state.fromToken?.assetId;
+      const previousToAssetId = state.toToken?.assetId;
       state.toToken = payload ? toBridgeToken(payload) : null;
       state.isDestAssetPickerOpen = false;
+      if (
+        didAssetPairChange(
+          previousFromAssetId,
+          previousToAssetId,
+          state.fromToken?.assetId,
+          state.toToken?.assetId,
+        )
+      ) {
+        clearSlippageState(state);
+      }
     },
     setFromTokenInputValue: (
       state,
@@ -145,6 +183,7 @@ const bridgeSlice = createSlice({
       state.selectedQuote = initialState.selectedQuote;
       state.wasTxDeclined = initialState.wasTxDeclined;
       state.slippage = initialState.slippage;
+      state.isSlippageUserOverride = initialState.isSlippageUserOverride;
       state.txAlert = initialState.txAlert;
       state.txAlertStatus = initialState.txAlertStatus;
       state.isSrcAssetPickerOpen = initialState.isSrcAssetPickerOpen;
@@ -165,6 +204,8 @@ const bridgeSlice = createSlice({
       state.selectedQuote = bridgeState.selectedQuote;
       state.wasTxDeclined = bridgeState.wasTxDeclined;
       state.slippage = bridgeState.slippage;
+      state.isSlippageUserOverride =
+        bridgeState.isSlippageUserOverride ?? false;
       state.txAlert = bridgeState.txAlert;
       state.txAlertStatus = bridgeState.txAlertStatus;
       state.isSrcAssetPickerOpen = bridgeState.isSrcAssetPickerOpen;
@@ -176,9 +217,20 @@ const bridgeSlice = createSlice({
         payload: { sentAmount, quote },
       }: { payload: QuoteResponse & QuoteMetadata },
     ) => {
+      const pairChanged = didAssetPairChange(
+        state.fromToken?.assetId,
+        state.toToken?.assetId,
+        quote.srcAsset.assetId,
+        quote.destAsset.assetId,
+      );
+
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
       state.fromTokenInputValue = sentAmount?.amount ?? quote.srcTokenAmount;
+      if (pairChanged || !state.isSlippageUserOverride) {
+        clearSlippageState(state);
+        state.slippage = quote.slippage ?? undefined;
+      }
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
@@ -191,6 +243,13 @@ const bridgeSlice = createSlice({
     },
     setSlippage: (state, action) => {
       state.slippage = action.payload;
+    },
+    setSlippageUserOverride: (
+      state,
+      { payload }: { payload: number | undefined },
+    ) => {
+      state.slippage = payload;
+      state.isSlippageUserOverride = true;
     },
     setIsSrcAssetPickerOpen: (state, action) => {
       state.isSrcAssetPickerOpen = action.payload;
