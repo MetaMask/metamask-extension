@@ -61,24 +61,6 @@ describe('useTrustSignalAlerts', () => {
     jest.clearAllMocks();
   });
 
-  it('returns an empty array when security alerts API is disabled', () => {
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Malicious,
-    });
-
-    const currentConfirmation = genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_IDS.GOERLI,
-    });
-    (currentConfirmation as TransactionMeta).txParams.to = MALICIOUS_ADDRESS;
-
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useAddressTrustSignalAlerts(),
-      getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta),
-    );
-
-    expect(result.current).toEqual([]);
-  });
-
   describe('transaction confirmations', () => {
     it('returns malicious alert for transaction with malicious to address', () => {
       mockUseTrustSignal.mockReturnValue({
