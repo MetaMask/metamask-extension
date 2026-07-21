@@ -5473,7 +5473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^1.1.1, @metamask/analytics-controller@npm:^1.2.0":
+"@metamask/analytics-controller@npm:^1.1.1, @metamask/analytics-controller@npm:^1.2.1":
   version: 1.2.1
   resolution: "@metamask/analytics-controller@npm:1.2.1"
   dependencies:
@@ -32762,7 +32762,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/address-book-controller": "npm:^7.1.2"
-    "@metamask/analytics-controller": "npm:^1.2.0"
+    "@metamask/analytics-controller": "npm:^1.2.1"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
