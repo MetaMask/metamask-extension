@@ -35,51 +35,51 @@ Other code can call these on the messenger (grouped for readability).
 
 ### Auth & OAuth tokens
 
-| Action | Purpose |
-| ------ | ------- |
-| `SeedlessOnboardingController:authenticate` | OAuth/social authenticate; registered vs new user |
-| `SeedlessOnboardingController:getIsUserAuthenticated` | Whether OAuth state indicates an authenticated user |
-| `SeedlessOnboardingController:getAccessToken` | Return access token, refreshing if needed |
-| `SeedlessOnboardingController:refreshAuthTokens` | Refresh node/auth/metadata tokens |
-| `SeedlessOnboardingController:rotateRefreshToken` | Rotate refresh/revoke token pair after JWT refresh |
-| `SeedlessOnboardingController:revokePendingRefreshTokens` | Revoke pending refresh tokens after auth |
-| `SeedlessOnboardingController:checkNodeAuthTokenExpired` | Whether node auth token is expired |
-| `SeedlessOnboardingController:checkMetadataAccessTokenExpired` | Whether metadata access token needs refresh |
-| `SeedlessOnboardingController:checkAccessTokenExpired` | Whether access token needs refresh |
-| `SeedlessOnboardingController:fetchMetadataAccessCreds` | Fetch metadata service access credentials |
-| `SeedlessOnboardingController:preloadToprfNodeDetails` | Fetch/cache TOPRF node endpoints, indexes, pubkeys |
+| Action                                                         | Purpose                                             |
+| -------------------------------------------------------------- | --------------------------------------------------- |
+| `SeedlessOnboardingController:authenticate`                    | OAuth/social authenticate; registered vs new user   |
+| `SeedlessOnboardingController:getIsUserAuthenticated`          | Whether OAuth state indicates an authenticated user |
+| `SeedlessOnboardingController:getAccessToken`                  | Return access token, refreshing if needed           |
+| `SeedlessOnboardingController:refreshAuthTokens`               | Refresh node/auth/metadata tokens                   |
+| `SeedlessOnboardingController:rotateRefreshToken`              | Rotate refresh/revoke token pair after JWT refresh  |
+| `SeedlessOnboardingController:revokePendingRefreshTokens`      | Revoke pending refresh tokens after auth            |
+| `SeedlessOnboardingController:checkNodeAuthTokenExpired`       | Whether node auth token is expired                  |
+| `SeedlessOnboardingController:checkMetadataAccessTokenExpired` | Whether metadata access token needs refresh         |
+| `SeedlessOnboardingController:checkAccessTokenExpired`         | Whether access token needs refresh                  |
+| `SeedlessOnboardingController:fetchMetadataAccessCreds`        | Fetch metadata service access credentials           |
+| `SeedlessOnboardingController:preloadToprfNodeDetails`         | Fetch/cache TOPRF node endpoints, indexes, pubkeys  |
 
 ### Backup & secret data
 
-| Action | Purpose |
-| ------ | ------- |
+| Action                                                           | Purpose                                              |
+| ---------------------------------------------------------------- | ---------------------------------------------------- |
 | `SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase` | Derive TOPRF key from password + back up initial SRP |
-| `SeedlessOnboardingController:addNewSecretData` | Encrypt and upload a new secret (SRP/PK) |
-| `SeedlessOnboardingController:fetchAllSecretData` | Download and decrypt all backed-up secrets |
-| `SeedlessOnboardingController:getSecretDataBackupState` | Read backup metadata for a secret from state |
-| `SeedlessOnboardingController:updateBackupMetadataState` | Update local backup metadata for one or more secrets |
+| `SeedlessOnboardingController:addNewSecretData`                  | Encrypt and upload a new secret (SRP/PK)             |
+| `SeedlessOnboardingController:fetchAllSecretData`                | Download and decrypt all backed-up secrets           |
+| `SeedlessOnboardingController:getSecretDataBackupState`          | Read backup metadata for a secret from state         |
+| `SeedlessOnboardingController:updateBackupMetadataState`         | Update local backup metadata for one or more secrets |
 
 ### Password & unlock
 
-| Action | Purpose |
-| ------ | ------- |
-| `SeedlessOnboardingController:submitPassword` | Verify password, derive key, unlock controller |
-| `SeedlessOnboardingController:submitGlobalPassword` | Unlock with latest global password (multi-device) |
-| `SeedlessOnboardingController:verifyVaultPassword` | Verify password by decrypting vault |
-| `SeedlessOnboardingController:changePassword` | Change seedless password + re-encrypt vault/metadata |
-| `SeedlessOnboardingController:checkIsPasswordOutdated` | Compare local password to global password on backend |
-| `SeedlessOnboardingController:syncLatestGlobalPassword` | Reset vault to latest global password |
-| `SeedlessOnboardingController:setLocked` | Lock controller and clear in-memory secrets |
-| `SeedlessOnboardingController:storeKeyringEncryptionKey` | Store keyring encryption key under seedless key |
-| `SeedlessOnboardingController:loadKeyringEncryptionKey` | Load/decrypt keyring encryption key from state |
+| Action                                                   | Purpose                                              |
+| -------------------------------------------------------- | ---------------------------------------------------- |
+| `SeedlessOnboardingController:submitPassword`            | Verify password, derive key, unlock controller       |
+| `SeedlessOnboardingController:submitGlobalPassword`      | Unlock with latest global password (multi-device)    |
+| `SeedlessOnboardingController:verifyVaultPassword`       | Verify password by decrypting vault                  |
+| `SeedlessOnboardingController:changePassword`            | Change seedless password + re-encrypt vault/metadata |
+| `SeedlessOnboardingController:checkIsPasswordOutdated`   | Compare local password to global password on backend |
+| `SeedlessOnboardingController:syncLatestGlobalPassword`  | Reset vault to latest global password                |
+| `SeedlessOnboardingController:setLocked`                 | Lock controller and clear in-memory secrets          |
+| `SeedlessOnboardingController:storeKeyringEncryptionKey` | Store keyring encryption key under seedless key      |
+| `SeedlessOnboardingController:loadKeyringEncryptionKey`  | Load/decrypt keyring encryption key from state       |
 
 ### State & lifecycle
 
-| Action | Purpose |
-| ------ | ------- |
-| `SeedlessOnboardingController:getState` | Read persisted controller state |
+| Action                                       | Purpose                                         |
+| -------------------------------------------- | ----------------------------------------------- |
+| `SeedlessOnboardingController:getState`      | Read persisted controller state                 |
 | `SeedlessOnboardingController:runMigrations` | Run idempotent seedless migrations after unlock |
-| `SeedlessOnboardingController:clearState` | Reset controller state |
+| `SeedlessOnboardingController:clearState`    | Reset controller state                          |
 
 It also publishes `SeedlessOnboardingController:stateChanged` (`[state, patches]`).
 
@@ -89,13 +89,13 @@ It also publishes `SeedlessOnboardingController:stateChanged` (`[state, patches]
 
 The controller messenger currently allows **no** external actions (`AllowedActions = never`). Its only outbound dependency is `OAuthService`, wired today via **constructor callbacks** delegated through an init-messenger — not through the controller messenger.
 
-| Need | Today (constructor callback via init-messenger) | Goal (controller-messenger action) |
-| ---- | ----------------------------------------------- | ---------------------------------- |
-| Get a new refresh token | `refreshJWTToken` → `OAuthService:getNewRefreshToken` | `OAuthService:getNewRefreshToken` |
-| Revoke a refresh token | `revokeRefreshToken` → `OAuthService:revokeRefreshToken` | `OAuthService:revokeRefreshToken` |
-| Renew a refresh token | `renewRefreshToken` → `OAuthService:renewRefreshToken` | `OAuthService:renewRefreshToken` |
+| Need                    | Today (constructor callback via init-messenger)          | Goal (controller-messenger action) |
+| ----------------------- | -------------------------------------------------------- | ---------------------------------- |
+| Get a new refresh token | `refreshJWTToken` → `OAuthService:getNewRefreshToken`    | `OAuthService:getNewRefreshToken`  |
+| Revoke a refresh token  | `revokeRefreshToken` → `OAuthService:revokeRefreshToken` | `OAuthService:revokeRefreshToken`  |
+| Renew a refresh token   | `renewRefreshToken` → `OAuthService:renewRefreshToken`   | `OAuthService:renewRefreshToken`   |
 
-> The init file itself notes this is temporary: *"Ideally the controller calls the service directly using the messenger system, but that requires some further refactoring in the controller."* The goal is to add these three actions to the controller messenger's **allowed actions** and drop the callbacks.
+> The init file itself notes this is temporary: _"Ideally the controller calls the service directly using the messenger system, but that requires some further refactoring in the controller."_ The goal is to add these three actions to the controller messenger's **allowed actions** and drop the callbacks.
 
 ---
 
@@ -103,17 +103,17 @@ The controller messenger currently allows **no** external actions (`AllowedActio
 
 `MetaMaskController` still calls the controller directly for these flows. Each row shows what it does **today** and the **messenger action** that should replace it.
 
-| Flow | Today (direct call in `MetaMaskController`) | Goal (messenger action) |
-| ---- | ------------------------------------------- | ----------------------- |
-| OAuth node preload | `this.seedlessOnboardingController.preloadToprfNodeDetails` | `SeedlessOnboardingController:preloadToprfNodeDetails` |
-| Social authenticate | `this.seedlessOnboardingController.authenticate` | `SeedlessOnboardingController:authenticate` |
-| Reset OAuth state | `this.seedlessOnboardingController.clearState` | `SeedlessOnboardingController:clearState` |
-| Back up primary SRP | `this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase` | `SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase` |
-| Fetch all backups | `this.seedlessOnboardingController.fetchAllSecretData` | `SeedlessOnboardingController:fetchAllSecretData` |
-| Read a backup's state | `this.seedlessOnboardingController.getSecretDataBackupState` | `SeedlessOnboardingController:getSecretDataBackupState` |
-| Add an SRP backup | `this.seedlessOnboardingController.addNewSecretData` / `updateBackupMetadataState` | `SeedlessOnboardingController:addNewSecretData` / `:updateBackupMetadataState` |
-| Check auth (UI) | `this.seedlessOnboardingController.getIsUserAuthenticated` | `SeedlessOnboardingController:getIsUserAuthenticated` |
-| Store keyring enc key | `this.seedlessOnboardingController.storeKeyringEncryptionKey` | `SeedlessOnboardingController:storeKeyringEncryptionKey` |
+| Flow                  | Today (direct call in `MetaMaskController`)                                        | Goal (messenger action)                                                        |
+| --------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| OAuth node preload    | `this.seedlessOnboardingController.preloadToprfNodeDetails`                        | `SeedlessOnboardingController:preloadToprfNodeDetails`                         |
+| Social authenticate   | `this.seedlessOnboardingController.authenticate`                                   | `SeedlessOnboardingController:authenticate`                                    |
+| Reset OAuth state     | `this.seedlessOnboardingController.clearState`                                     | `SeedlessOnboardingController:clearState`                                      |
+| Back up primary SRP   | `this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase`              | `SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase`               |
+| Fetch all backups     | `this.seedlessOnboardingController.fetchAllSecretData`                             | `SeedlessOnboardingController:fetchAllSecretData`                              |
+| Read a backup's state | `this.seedlessOnboardingController.getSecretDataBackupState`                       | `SeedlessOnboardingController:getSecretDataBackupState`                        |
+| Add an SRP backup     | `this.seedlessOnboardingController.addNewSecretData` / `updateBackupMetadataState` | `SeedlessOnboardingController:addNewSecretData` / `:updateBackupMetadataState` |
+| Check auth (UI)       | `this.seedlessOnboardingController.getIsUserAuthenticated`                         | `SeedlessOnboardingController:getIsUserAuthenticated`                          |
+| Store keyring enc key | `this.seedlessOnboardingController.storeKeyringEncryptionKey`                      | `SeedlessOnboardingController:storeKeyringEncryptionKey`                       |
 
 > **Gap:** `MetaMaskController` also calls `setMigrationVersion(...)`, which has **no messenger action in v10.0.3**. It needs a new action, or the behavior should be folded into `createToprfKeyAndBackupSeedPhrase`.
 >
@@ -153,15 +153,15 @@ MultichainAccountService.createMultichainAccountWallet
 
 The flows below live in `MetaMaskController` and each stitches several controllers together. This is the orchestration that must be redesigned (not just re-pointed at the messenger). `MAS` = `MultichainAccountService`, `KC` = `KeyringController`, `SOC` = `SeedlessOnboardingController`, `LBG` = `LegacyBackgroundApiService`.
 
-| Flow (method) | Controllers touched (in order) | Seedless steps |
-| ------------- | ------------------------------ | -------------- |
-| `createSeedPhraseBackup` | `SOC` → `LBG` (`syncKeyringEncryptionKey`) → `KC` | `createToprfKeyAndBackupSeedPhrase`, `setMigrationVersion` (no action), `storeKeyringEncryptionKey` |
-| `addNewSeedPhraseBackup` | `SOC` (`runMigrations`) → `SOC` | `runMigrations`, `addNewSecretData` / `updateBackupMetadataState` |
-| `importMnemonicToVault` | `MAS` (create) → `KC` (`withKeyringV2`) → `Onboarding` → `SOC` (backup) → `MAS` (rollback on error) → `AccountsController` → `AccountTreeController` → discover | `addNewSecretData` (via `addNewSeedPhraseBackup`) |
-| `createNewVaultAndRestore` | `Permission`/`Snap`/`AccountTree`/`AccountOrder`/`Tx`/`TokenDetection` (clear) → `MAS` (create vault) → `AppState` → `AccountsController` → `MAS.init` → `AccountTree.reinit` → `Preferences` → discover → `KC` (read keyring id) → `SOC` → `LBG` | `updateBackupMetadataState({ keyringId })`, `syncKeyringEncryptionKey` |
-| `restoreSocialBackupAndGetSeedPhrase` | `SOC` (`fetchAllSecretData`) → `createNewVaultAndRestore` → `restoreSeedPhrasesToVault` | `fetchAllSecretData` |
-| `restoreSeedPhrasesToVault` | `Onboarding` → `SOC` (`getSecretDataBackupState`) → `LBG` (`importAccountWithStrategy`) / `importMnemonicToVault` | `getSecretDataBackupState` |
-| `syncSeedPhrases` | `Onboarding` → `SOC` (`fetchAllSecretData`, `getSecretDataBackupState`) → `LBG` / `importMnemonicToVault` | `fetchAllSecretData`, `getSecretDataBackupState` |
+| Flow (method)                         | Controllers touched (in order)                                                                                                                                                                                                                    | Seedless steps                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `createSeedPhraseBackup`              | `SOC` → `LBG` (`syncKeyringEncryptionKey`) → `KC`                                                                                                                                                                                                 | `createToprfKeyAndBackupSeedPhrase`, `setMigrationVersion` (no action), `storeKeyringEncryptionKey` |
+| `addNewSeedPhraseBackup`              | `SOC` (`runMigrations`) → `SOC`                                                                                                                                                                                                                   | `runMigrations`, `addNewSecretData` / `updateBackupMetadataState`                                   |
+| `importMnemonicToVault`               | `MAS` (create) → `KC` (`withKeyringV2`) → `Onboarding` → `SOC` (backup) → `MAS` (rollback on error) → `AccountsController` → `AccountTreeController` → discover                                                                                   | `addNewSecretData` (via `addNewSeedPhraseBackup`)                                                   |
+| `createNewVaultAndRestore`            | `Permission`/`Snap`/`AccountTree`/`AccountOrder`/`Tx`/`TokenDetection` (clear) → `MAS` (create vault) → `AppState` → `AccountsController` → `MAS.init` → `AccountTree.reinit` → `Preferences` → discover → `KC` (read keyring id) → `SOC` → `LBG` | `updateBackupMetadataState({ keyringId })`, `syncKeyringEncryptionKey`                              |
+| `restoreSocialBackupAndGetSeedPhrase` | `SOC` (`fetchAllSecretData`) → `createNewVaultAndRestore` → `restoreSeedPhrasesToVault`                                                                                                                                                           | `fetchAllSecretData`                                                                                |
+| `restoreSeedPhrasesToVault`           | `Onboarding` → `SOC` (`getSecretDataBackupState`) → `LBG` (`importAccountWithStrategy`) / `importMnemonicToVault`                                                                                                                                 | `getSecretDataBackupState`                                                                          |
+| `syncSeedPhrases`                     | `Onboarding` → `SOC` (`fetchAllSecretData`, `getSecretDataBackupState`) → `LBG` / `importMnemonicToVault`                                                                                                                                         | `fetchAllSecretData`, `getSecretDataBackupState`                                                    |
 
 ---
 
@@ -177,9 +177,12 @@ new SeedlessOnboardingController({
   encryptor: encryptorFactory(600_000),
 
   // Temporary: OAuth wired via callbacks, not the controller messenger (see above).
-  refreshJWTToken: (...args) => initMessenger.call('OAuthService:getNewRefreshToken', ...args),
-  revokeRefreshToken: (...args) => initMessenger.call('OAuthService:revokeRefreshToken', ...args),
-  renewRefreshToken: (...args) => initMessenger.call('OAuthService:renewRefreshToken', ...args),
+  refreshJWTToken: (...args) =>
+    initMessenger.call('OAuthService:getNewRefreshToken', ...args),
+  revokeRefreshToken: (...args) =>
+    initMessenger.call('OAuthService:revokeRefreshToken', ...args),
+  renewRefreshToken: (...args) =>
+    initMessenger.call('OAuthService:renewRefreshToken', ...args),
 });
 ```
 
@@ -189,15 +192,15 @@ The init-messenger (`getSeedlessOnboardingControllerInitMessenger`) delegates th
 
 ## Key files
 
-| File | Role |
-| ---- | ---- |
-| `node_modules/@metamask/seedless-onboarding-controller/dist/SeedlessOnboardingController-method-action-types.d.mts` | Messenger action types |
-| `node_modules/@metamask/seedless-onboarding-controller/dist/SeedlessOnboardingController.d.mts` | Controller API + messenger types (`AllowedActions = never`) |
-| `app/scripts/messenger-client-init/seedless-onboarding/seedless-onboarding-controller-init.ts` | Extension init (OAuth callbacks) |
-| `app/scripts/messenger-client-init/messengers/seedless-onboarding/seedless-onboarding-controller-messenger.ts` | Controller messenger + init-messenger (OAuth delegate) |
-| `app/scripts/messenger-client-init/messengers/seedless-onboarding/oauth-service-messenger.ts` | OAuthService → seedless allowlist |
-| `app/scripts/services/legacy-background-api-service.ts` | Unlock / password flows via messenger; `syncKeyringEncryptionKey` (KC ↔ SOC bridge, ~1416) |
-| `app/scripts/metamask-controller.js` | Orchestration hub: `createSeedPhraseBackup` (~4302), `importMnemonicToVault` (~4952), `restoreSeedPhrasesToVault` (~5044), `restoreSocialBackupAndGetSeedPhrase` (~5105), `createNewVaultAndRestore` (~5151) |
-| `MultichainAccountService` (`createMultichainAccountWallet`) | Creates/restores the `KeyringController` vault used by seedless restore/import |
-| `app/scripts/lib/seedless-onboarding/run-migrations.ts` | `runSeedlessOnboardingMigrations` → `SeedlessOnboardingController:runMigrations` |
-| `ui/selectors/onboarding/onboarding.ts`, `ui/selectors/first-time-flow.js` | `authConnection`, `socialLoginEmail`, `isSeedlessOnboardingUserAuthenticated`, `getIsSocialLoginFlow` |
+| File                                                                                                                | Role                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `node_modules/@metamask/seedless-onboarding-controller/dist/SeedlessOnboardingController-method-action-types.d.mts` | Messenger action types                                                                                                                                                                                       |
+| `node_modules/@metamask/seedless-onboarding-controller/dist/SeedlessOnboardingController.d.mts`                     | Controller API + messenger types (`AllowedActions = never`)                                                                                                                                                  |
+| `app/scripts/messenger-client-init/seedless-onboarding/seedless-onboarding-controller-init.ts`                      | Extension init (OAuth callbacks)                                                                                                                                                                             |
+| `app/scripts/messenger-client-init/messengers/seedless-onboarding/seedless-onboarding-controller-messenger.ts`      | Controller messenger + init-messenger (OAuth delegate)                                                                                                                                                       |
+| `app/scripts/messenger-client-init/messengers/seedless-onboarding/oauth-service-messenger.ts`                       | OAuthService → seedless allowlist                                                                                                                                                                            |
+| `app/scripts/services/legacy-background-api-service.ts`                                                             | Unlock / password flows via messenger; `syncKeyringEncryptionKey` (KC ↔ SOC bridge, ~1416)                                                                                                                   |
+| `app/scripts/metamask-controller.js`                                                                                | Orchestration hub: `createSeedPhraseBackup` (~4302), `importMnemonicToVault` (~4952), `restoreSeedPhrasesToVault` (~5044), `restoreSocialBackupAndGetSeedPhrase` (~5105), `createNewVaultAndRestore` (~5151) |
+| `MultichainAccountService` (`createMultichainAccountWallet`)                                                        | Creates/restores the `KeyringController` vault used by seedless restore/import                                                                                                                               |
+| `app/scripts/lib/seedless-onboarding/run-migrations.ts`                                                             | `runSeedlessOnboardingMigrations` → `SeedlessOnboardingController:runMigrations`                                                                                                                             |
+| `ui/selectors/onboarding/onboarding.ts`, `ui/selectors/first-time-flow.js`                                          | `authConnection`, `socialLoginEmail`, `isSeedlessOnboardingUserAuthenticated`, `getIsSocialLoginFlow`                                                                                                        |

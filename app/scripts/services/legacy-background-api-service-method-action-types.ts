@@ -353,6 +353,23 @@ export type LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction = {
 };
 
 /**
+ * Unlocks the vault with a passkey, then runs the post-unlock account
+ * initialization sequence.
+ *
+ * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+ * verifies the authentication assertion and submits the decrypted vault key to
+ * the KeyringController), then performs the awaited post-unlock account init
+ * (accounts / multichain / account-tree) that the controller's keyring-only
+ * unlock does not run.
+ *
+ * @param authenticationResponse - Result of `navigator.credentials.get()`.
+ */
+export type LegacyBackgroundApiServiceUnlockWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:unlockWithPasskey`;
+  handler: LegacyBackgroundApiService['unlockWithPasskey'];
+};
+
+/**
  * Locks MetaMask
  *
  * @param options - The options for setting the locked state.
@@ -530,6 +547,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
+  | LegacyBackgroundApiServiceUnlockWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
