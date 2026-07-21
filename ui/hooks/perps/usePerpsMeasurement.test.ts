@@ -1,132 +1,125 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { createElement, type PropsWithChildren } from 'react';
+import { act, renderHook } from '@testing-library/react-hooks';
+import {
+  MetaMetricsContext,
+  type MetaMetricsContextValue,
+} from '../../contexts/metametrics';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { usePerpsMeasurement } from './usePerpsMeasurement';
 
+const bufferedTrace = jest.fn();
+const bufferedEndTrace = jest.fn();
+
+const context: MetaMetricsContextValue = {
+  trackEvent: jest.fn(),
+  bufferedTrace,
+  bufferedEndTrace,
+  onboardingParentContext: { current: null },
+};
+
+const wrapper = ({ children }: PropsWithChildren) =>
+  createElement(MetaMetricsContext.Provider, { value: context }, children);
+
+const useRenderPerpsMeasurement = (isReady: boolean) =>
+  usePerpsMeasurement({
+    traceName: TraceName.PerpsEntryToLiveMarketList,
+    isReady,
+  });
+
 describe('usePerpsMeasurement', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    delete (globalThis as Record<string, unknown>).sentry;
+    jest.spyOn(Date, 'now').mockReturnValue(1_000);
   });
 
-  it('does not call setMeasurement when isReady is false', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
-
-    renderHook(() => usePerpsMeasurement('PerpsTabLoaded', false));
-
-    expect(mockSetMeasurement).not.toHaveBeenCalled();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  it('calls setMeasurement with the correct name and unit when isReady becomes true', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
+  it('starts a background-owned Perps trace at mount time', () => {
+    renderHook(() => useRenderPerpsMeasurement(false), { wrapper });
 
+    expect(bufferedTrace).toHaveBeenCalledWith({
+      name: TraceName.PerpsEntryToLiveMarketList,
+      op: TraceOperation.PerpsOperation,
+      tags: { feature: 'perps' },
+      startTime: 1_000,
+    });
+    expect(bufferedEndTrace).not.toHaveBeenCalled();
+  });
+
+  it('ends the trace successfully once primary data is ready', () => {
+    let isReady = false;
     const { rerender } = renderHook(
-      ({ isReady }: { isReady: boolean }) =>
-        usePerpsMeasurement('PerpsTabLoaded', isReady),
-      { initialProps: { isReady: false } },
+      () => useRenderPerpsMeasurement(isReady),
+      { wrapper },
     );
 
-    expect(mockSetMeasurement).not.toHaveBeenCalled();
+    jest.spyOn(Date, 'now').mockReturnValue(1_250);
+    isReady = true;
+    rerender();
 
-    rerender({ isReady: true });
-
-    expect(mockSetMeasurement).toHaveBeenCalledTimes(1);
-    expect(mockSetMeasurement).toHaveBeenCalledWith(
-      'PerpsTabLoaded',
-      expect.any(Number),
-      'millisecond',
-    );
+    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
+    expect(bufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.PerpsEntryToLiveMarketList,
+      timestamp: 1_250,
+      data: { success: true },
+    });
   });
 
-  it('reports a non-negative duration', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
-
+  it('ends only once when readiness changes again', () => {
+    let isReady = false;
     const { rerender } = renderHook(
-      ({ isReady }: { isReady: boolean }) =>
-        usePerpsMeasurement('PerpsTabLoaded', isReady),
-      { initialProps: { isReady: false } },
+      () => useRenderPerpsMeasurement(isReady),
+      { wrapper },
     );
 
-    rerender({ isReady: true });
+    isReady = true;
+    rerender();
+    isReady = false;
+    rerender();
+    isReady = true;
+    rerender();
 
-    const duration = mockSetMeasurement.mock.calls[0][1] as number;
-    expect(duration).toBeGreaterThanOrEqual(0);
+    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
   });
 
-  it('only reports once even if isReady toggles back and forth', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
-
-    const { rerender } = renderHook(
-      ({ isReady }: { isReady: boolean }) =>
-        usePerpsMeasurement('PerpsTabLoaded', isReady),
-      { initialProps: { isReady: false } },
+  it('uses the market-detail trace identity when requested', () => {
+    renderHook(
+      () =>
+        usePerpsMeasurement({
+          traceName: TraceName.PerpsMarketDetailLive,
+          isReady: true,
+        }),
+      { wrapper },
     );
 
-    rerender({ isReady: true });
-    rerender({ isReady: false });
-    rerender({ isReady: true });
-
-    expect(mockSetMeasurement).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls setMeasurement immediately when mounted with isReady=true', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
-
-    renderHook(() => usePerpsMeasurement('PerpsMarketDetailLoaded', true));
-
-    expect(mockSetMeasurement).toHaveBeenCalledTimes(1);
-    expect(mockSetMeasurement).toHaveBeenCalledWith(
-      'PerpsMarketDetailLoaded',
-      expect.any(Number),
-      'millisecond',
+    expect(bufferedTrace).toHaveBeenCalledWith(
+      expect.objectContaining({ name: TraceName.PerpsMarketDetailLive }),
+    );
+    expect(bufferedEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.PerpsMarketDetailLive,
+        data: { success: true },
+      }),
+    );
+    expect(bufferedTrace.mock.invocationCallOrder[0]).toBeLessThan(
+      bufferedEndTrace.mock.invocationCallOrder[0],
     );
   });
 
-  it('does not throw when sentry is not initialized', () => {
-    const { rerender } = renderHook(
-      ({ isReady }: { isReady: boolean }) =>
-        usePerpsMeasurement('PerpsTabLoaded', isReady),
-      { initialProps: { isReady: false } },
-    );
+  it('ends an unfinished trace as an unmounted failure', () => {
+    const { unmount } = renderHook(() => useRenderPerpsMeasurement(false), {
+      wrapper,
+    });
 
-    expect(() => {
-      act(() => {
-        rerender({ isReady: true });
-      });
-    }).not.toThrow();
-  });
+    jest.spyOn(Date, 'now').mockReturnValue(1_500);
+    act(() => unmount());
 
-  it('uses the provided measurement name', () => {
-    const mockSetMeasurement = jest.fn();
-    (globalThis as Record<string, unknown>).sentry = {
-      setMeasurement: mockSetMeasurement,
-    };
-
-    const { rerender } = renderHook(
-      ({ isReady }: { isReady: boolean }) =>
-        usePerpsMeasurement('PerpsAssetScreenLoaded', isReady),
-      { initialProps: { isReady: false } },
-    );
-
-    rerender({ isReady: true });
-
-    expect(mockSetMeasurement).toHaveBeenCalledWith(
-      'PerpsAssetScreenLoaded',
-      expect.any(Number),
-      'millisecond',
-    );
+    expect(bufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.PerpsEntryToLiveMarketList,
+      timestamp: 1_500,
+      data: { success: false, reason: 'unmounted' },
+    });
   });
 });
