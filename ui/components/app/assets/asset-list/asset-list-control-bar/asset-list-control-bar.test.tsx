@@ -359,4 +359,41 @@ describe('NFTs options', () => {
       }),
     );
   });
+
+  it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {
+    const onRefresh = jest.fn();
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar showImportTokenButton={false} onRefresh={onRefresh} />,
+      store,
+    );
+
+    const actionButton = await findByTestId(
+      'asset-list-control-bar-action-button',
+    );
+    fireEvent.click(actionButton);
+
+    const refreshListButton = await findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+
+    fireEvent.click(refreshListButton);
+    expect(onRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not show the more-options menu when import token button is hidden and onRefresh is omitted', async () => {
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetListControlBar showImportTokenButton={false} />,
+      store,
+    );
+
+    expect(
+      queryByTestId('asset-list-control-bar-action-button'),
+    ).not.toBeInTheDocument();
+  });
 });

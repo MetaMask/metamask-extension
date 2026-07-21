@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, act, waitFor } from '@testing-library/react';
+import { screen, act, waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -8,6 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { DEFI_CONTROLLER_V2_FLAG } from '../../../../../shared/lib/defi-controller-v2/remote-feature-flag';
+import * as defiActions from '../../../../hooks/defi/defiActions';
 import DeFiTab from './defi-tab';
 
 const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -116,6 +117,16 @@ const render = (
 };
 
 describe('DefiList', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(defiActions, 'fetchDeFiPositions')
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('renders DeFiList component and shows control bar', async () => {
     await act(async () => {
       render('with-positions');
@@ -212,5 +223,29 @@ describe('DefiList', () => {
         '$20,000.00',
       );
     });
+  });
+
+  it('shows a refresh-only menu that fetches DeFi positions', async () => {
+    const fetchDeFiPositionsSpy = jest.mocked(defiActions.fetchDeFiPositions);
+
+    await act(async () => {
+      render('with-positions');
+    });
+
+    const actionButton = await screen.findByTestId(
+      'asset-list-control-bar-action-button',
+    );
+    fireEvent.click(actionButton);
+
+    const refreshListButton = await screen.findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(
+      screen.queryByTestId('manageTokens__button'),
+    ).not.toBeInTheDocument();
+
+    fetchDeFiPositionsSpy.mockClear();
+    fireEvent.click(refreshListButton);
+    expect(fetchDeFiPositionsSpy).toHaveBeenCalledTimes(1);
+    expect(fetchDeFiPositionsSpy).toHaveBeenCalledWith({ forceRefresh: true });
   });
 });
