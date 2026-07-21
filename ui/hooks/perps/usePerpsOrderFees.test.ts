@@ -261,12 +261,62 @@ describe('usePerpsOrderFees', () => {
     expect(result.current.feeRate).toBe(0.001);
 
     rerender({ symbol: 'ETH' });
-    // Previous result is cleared immediately on refetch
-    expect(result.current.feeRate).toBeUndefined();
+    // Keep the previous result visible while the replacement request loads.
+    expect(result.current.feeRate).toBe(0.001);
     expect(result.current.isLoading).toBe(true);
 
     await waitForNextUpdate();
     expect(result.current.feeRate).toBe(0.0008);
+  });
+
+  it('retains the previous rate while order type fees are refetched', async () => {
+    type FeeProps = {
+      orderType: 'market' | 'limit';
+      isMaker: boolean;
+    };
+    const marketResult = makeFeeResult({ feeRate: 0.00145 });
+    const limitResult = makeFeeResult({ feeRate: 0.00115 });
+    let feeCall = 0;
+    let resolveLimitRequest!: (result: FeeCalculationResult) => void;
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'perpsCalculateFees') {
+        feeCall += 1;
+        if (feeCall === 1) {
+          return Promise.resolve(marketResult);
+        }
+        return new Promise<FeeCalculationResult>((resolve) => {
+          resolveLimitRequest = resolve;
+        });
+      }
+      return Promise.resolve(null);
+    });
+
+    const { result, waitForNextUpdate, rerender } = renderHook(
+      ({ orderType, isMaker }: FeeProps) =>
+        usePerpsOrderFees({ symbol: 'BTC', orderType, isMaker }),
+      {
+        initialProps: {
+          orderType: 'market',
+          isMaker: false,
+        } as FeeProps,
+      },
+    );
+
+    await waitForNextUpdate();
+    expect(result.current.feeRate).toBe(0.00145);
+
+    rerender({ orderType: 'limit', isMaker: true });
+
+    expect(result.current.feeRate).toBe(0.00145);
+    expect(result.current.isLoading).toBe(true);
+
+    await act(async () => {
+      resolveLimitRequest(limitResult);
+      await Promise.resolve();
+    });
+
+    expect(result.current.feeRate).toBe(0.00115);
+    expect(result.current.isLoading).toBe(false);
   });
 
   it('clears error state on successful refetch', async () => {
