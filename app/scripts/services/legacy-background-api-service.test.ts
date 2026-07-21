@@ -30,13 +30,11 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
@@ -66,6 +64,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -556,11 +555,21 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger: RootMessenger,
       keyring: Record<string, unknown>,
     ): void {
+      // Read methods run their callback through `withKeyringV2Unsafe` (the
+      // lock-free device-read path) while still preparing the keyring under
+      // `withKeyringV2`; mutating methods (`forgetDevice`,
+      // `unlockHardwareWalletAccount`) use `withKeyringV2` only. Registering
+      // both with the same mock keyring covers every path.
+      const handler = jest
+        .fn()
+        .mockImplementation((_selector, callback) => callback({ keyring }));
       rootMessenger.registerActionHandler(
         'KeyringController:withKeyringV2',
-        jest
-          .fn()
-          .mockImplementation((_selector, callback) => callback({ keyring })),
+        handler,
+      );
+      rootMessenger.registerActionHandler(
+        'KeyringController:withKeyringV2Unsafe',
+        handler,
       );
     }
 
@@ -1538,41 +1547,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'ApprovalController:getState',
-          jest.fn().mockReturnValue({
-            pendingApprovals: {
-              foo: {
-                id: 'foo',
-                type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-                requestState: {
-                  txId: 'bar',
-                },
-              },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'TransactionController:getState',
-          jest.fn().mockReturnValue({
-            transactions: [
-              {
-                id: 'bar',
-                chainId: '0x1',
-                txParams: {
-                  from: selectedAddress,
-                },
-              },
-            ],
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'ApprovalController:rejectRequest',
-          jest.fn(),
-        );
-
-        rootMessenger.registerActionHandler(
           'TransactionController:wipeTransactions',
           jest.fn(),
         );
@@ -1597,12 +1571,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(selectedAddress);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'ApprovalController:rejectRequest',
-          'foo',
-          expect.any(Error),
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
@@ -4265,6 +4233,31 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('captureTestError', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('captures a TestError with the given message from a timeout handler', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.call(
+          'LegacyBackgroundApiService:captureTestError',
+          'boom',
+        );
+
+        jest.runAllTimers();
+
+        expect(captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'TestError', message: 'boom' }),
+        );
+      });
+    });
+  });
+
   describe('isRelaySupported', () => {
     const isRelaySupportedMock = jest.mocked(isRelaySupported);
 
@@ -4406,7 +4399,7 @@ function getMessenger(
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
-      'MetaMetricsController:trackEvent',
+      'KeyringController:withKeyringV2Unsafe',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',
       'MetaMetricsController:createEventFragment',
@@ -4461,6 +4454,7 @@ async function withService<ReturnValue>(
     getOpenMetamaskTabsIds: () => ({}),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
+    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

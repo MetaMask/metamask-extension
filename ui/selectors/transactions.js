@@ -158,7 +158,21 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-// Memoized to prevent new array creation on every render
+/**
+ * Smart transaction
+ *
+ * @typedef {object} SmartTransaction
+ * @property {string} [id] - Transaction id
+ * @property {string} [hash] - Transaction hash
+ * @property {import('@metamask/transaction-controller').TransactionType} [type] - Transaction type
+ * @property {boolean} [isSmartTransaction] - Whether this entry came from smart transactions state
+ */
+
+/**
+ * Memoized to prevent new array creation on every render.
+ *
+ * @type {(state: object) => SmartTransaction[]}
+ */
 export const smartTransactionsListSelector = createSelector(
   getSelectedInternalAccount,
   (state) => state.metamask.smartTransactionsState?.smartTransactions,

@@ -20,6 +20,7 @@ import {
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithControllerAction,
   KeyringControllerWithKeyringV2Action,
+  KeyringControllerWithKeyringV2UnsafeAction,
   KeyringControllerSetLockedAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSubmitEncryptionKeyAction,
@@ -162,20 +163,19 @@ import {
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { MINUTE } from '../../../shared/constants/time';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
 } from '../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
@@ -191,7 +191,6 @@ import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
   MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerTrackEventAction,
   MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
@@ -234,6 +233,15 @@ type HardwareKeyringV2 =
   | LatticeKeyringV2;
 
 /**
+ * Upper bound (ms) on lock-free hardware device reads (address paging,
+ * status/feature probes). Device reads may legitimately wait on user
+ * interaction (PIN or passphrase entry), so the bound is generous; it exists
+ * to fail abandoned requests with an actionable error instead of leaving the
+ * UI waiting forever. See {@link LegacyBackgroundApiService.#withKeyringForDevice}.
+ */
+const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
+
+/**
  * The methods that the {@link LegacyBackgroundApiService} exposes to the messenger.
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
@@ -241,6 +249,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
+  'captureTestError',
   'changePassword',
   'checkDelegationDisabled',
   'checkHardwareStatus',
@@ -331,9 +340,9 @@ type AllowedActions =
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithControllerAction
   | KeyringControllerWithKeyringV2Action
+  | KeyringControllerWithKeyringV2UnsafeAction
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerTrackEventAction
   | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -405,6 +414,7 @@ type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
   seedlessOperationMutex: Mutex;
+  createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   sendUpdate: () => void;
@@ -435,6 +445,8 @@ export class LegacyBackgroundApiService {
 
   readonly #seedlessOperationMutex: Mutex;
 
+  readonly #createVaultMutex: Mutex;
+
   readonly #offscreenPromise: Promise<void>;
 
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
@@ -448,6 +460,7 @@ export class LegacyBackgroundApiService {
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
+   * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -457,6 +470,7 @@ export class LegacyBackgroundApiService {
     getOpenMetamaskTabsIds,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -469,6 +483,7 @@ export class LegacyBackgroundApiService {
     // migrate the seedless onboarding functionality to this service.
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#createVaultMutex = createVaultMutex;
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -761,53 +776,6 @@ export class LegacyBackgroundApiService {
     ).address;
 
     const globalChainId = this.getGlobalChainId();
-
-    const { pendingApprovals } = this.#messenger.call(
-      'ApprovalController:getState',
-    );
-
-    const { transactions } = this.#messenger.call(
-      'TransactionController:getState',
-    );
-
-    const matchingSmartTransactionApprovals = Object.values(
-      pendingApprovals ?? {},
-    ).filter((approval) => {
-      if (
-        approval.type !==
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        return false;
-      }
-
-      const txId = approval.requestState?.txId;
-
-      if (typeof txId !== 'string') {
-        return false;
-      }
-
-      const transaction = transactions.find(({ id }) => id === txId);
-
-      return (
-        transaction &&
-        transaction?.chainId === globalChainId &&
-        isEqualCaseInsensitive(transaction.txParams?.from, selectedAddress)
-      );
-    });
-
-    for (const approval of matchingSmartTransactionApprovals) {
-      try {
-        this.#messenger.call(
-          'ApprovalController:rejectRequest',
-          approval.id,
-          new Error('Transaction activity reset'),
-        );
-      } catch (error) {
-        if (!(error instanceof ApprovalRequestNotFoundError)) {
-          throw error;
-        }
-      }
-    }
 
     this.#messenger.call('TransactionController:wipeTransactions', {
       address: selectedAddress,
@@ -1446,57 +1414,62 @@ export class LegacyBackgroundApiService {
    * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
   async setLocked({ skipSeedlessOperationLock = false } = {}): Promise<void> {
-    const isSocialLoginFlow = this.#messenger.call(
-      'OnboardingController:getIsSocialLoginFlow',
-    );
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.#seedlessOperationMutex.acquire();
-    }
-
+    const releaseVaultMutex = await this.#createVaultMutex.acquire();
     try {
-      if (isSocialLoginFlow) {
-        await this.#messenger.call('SeedlessOnboardingController:setLocked');
-      }
-      await this.#messenger.call('KeyringController:setLocked');
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.#messenger.call('SubscriptionController:stopAllPolling');
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.#messenger.call(
-        'AuthenticationController:getState',
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
       );
-      if (isSignedIn) {
-        this.#messenger.call('AuthenticationController:performSignOut');
+
+      let releaseLock;
+      if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+        releaseLock = await this.#seedlessOperationMutex.acquire();
       }
 
-      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-      if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-        clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      }
-      this.#messenger.call(
-        'AppStateController:setPasskeyAutoUnlockSuppressed',
-        true,
-      );
-      this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      try {
+        if (isSocialLoginFlow) {
+          await this.#messenger.call('SeedlessOnboardingController:setLocked');
+        }
+        await this.#messenger.call('KeyringController:setLocked');
+
+        // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+        this.#messenger.call('SubscriptionController:stopAllPolling');
+
+        // sign out from Authentication service and clear the Session Data if user is signed in
+        // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+        // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+        const { isSignedIn } = this.#messenger.call(
+          'AuthenticationController:getState',
+        );
+        if (isSignedIn) {
+          this.#messenger.call('AuthenticationController:performSignOut');
+        }
+
+        // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        }
         this.#messenger.call(
           'AppStateController:setPasskeyAutoUnlockSuppressed',
-          false,
+          true,
         );
-      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
+        this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+          this.#messenger.call(
+            'AppStateController:setPasskeyAutoUnlockSuppressed',
+            false,
+          );
+        }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+      } catch (error) {
+        log.error('Error setting locked state', error);
+        throw error;
+      } finally {
+        if (releaseLock) {
+          releaseLock();
+        }
       }
+    } finally {
+      releaseVaultMutex();
     }
   }
 
@@ -1814,7 +1787,7 @@ export class LegacyBackgroundApiService {
    */
   async attemptLedgerTransportCreation(): Promise<boolean> {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await (keyring as LedgerKeyringV2).attemptMakeApp(),
     );
   }
@@ -1828,7 +1801,7 @@ export class LegacyBackgroundApiService {
     ReturnType<LedgerKeyringV2['getAppNameAndVersion']>
   > {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) =>
         await (keyring as LedgerKeyringV2).getAppNameAndVersion(),
     );
@@ -1843,7 +1816,7 @@ export class LegacyBackgroundApiService {
     ReturnType<LedgerKeyringV2['bridge']['getAppConfiguration']>
   > {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) =>
         await (keyring as LedgerKeyringV2).bridge.getAppConfiguration(),
     );
@@ -1867,7 +1840,7 @@ export class LegacyBackgroundApiService {
     // may not exist yet, so allow creation here. Every other caller of
     // `#withKeyringForDevice` operates on an already-paired device.
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath, create: true },
+      { name: deviceName, hdPath, create: true, deviceRead: true },
       async (keyring) => {
         const ledgerKeyring = keyring as LedgerKeyringV2;
         let accounts: AccountPage = [];
@@ -1903,6 +1876,7 @@ export class LegacyBackgroundApiService {
         name: deviceName,
         hdPath,
         create: deviceName === HardwareDeviceNames.qr,
+        deviceRead: true,
       },
       async (keyring) => {
         // `isUnlocked` is exposed by the Ledger V2 wrapper and, at runtime, by
@@ -1920,7 +1894,7 @@ export class LegacyBackgroundApiService {
    */
   async getHdPathForLedgerKeyring(): Promise<string> {
     return this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => {
         return (keyring as LedgerKeyringV2).hdPath;
       },
@@ -1937,7 +1911,7 @@ export class LegacyBackgroundApiService {
     hdPath: string,
   ): Promise<ReturnType<LedgerKeyringV2['bridge']['getPublicKey']>> {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) =>
         await (keyring as LedgerKeyringV2).bridge.getPublicKey({ hdPath }),
     );
@@ -1950,7 +1924,7 @@ export class LegacyBackgroundApiService {
    */
   async getTrezorFeatures(): Promise<unknown> {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.trezor },
+      { name: HardwareDeviceNames.trezor, deviceRead: true },
       async (keyring) => {
         const { bridge } = keyring as TrezorKeyringV2;
         const bridgeWithFeatures = bridge as unknown as {
@@ -2178,11 +2152,24 @@ export class LegacyBackgroundApiService {
    * @param options.hdPath - An optional hd path to be set on the device
    * keyring.
    * @param options.create - Whether to create the keyring if it is missing.
+   * @param options.deviceRead - Set when the callback only reads from the
+   * device (address paging, feature/status probes). Device reads can stall
+   * indefinitely on a locked or unresponsive device, so they are executed on
+   * the lock-free `withKeyringV2Unsafe` path instead of holding the
+   * controller-wide operation mutex for the whole device interaction. To
+   * enforce this, the callback does not receive the full keyring: it receives
+   * a frozen read-only facade (see `restrictKeyringForDeviceRead`) on which
+   * mutating methods do not exist.
    * @param callback - The callback to execute with the keyring.
    * @returns The result of the callback.
    */
   async #withKeyringForDevice<CallbackResult>(
-    options: { name: string; hdPath?: string; create?: boolean },
+    options: {
+      name: string;
+      hdPath?: string;
+      create?: boolean;
+      deviceRead?: boolean;
+    },
     callback: (keyring: HardwareKeyringV2) => Promise<CallbackResult>,
   ): Promise<CallbackResult> {
     let keyringType = null;
@@ -2236,54 +2223,149 @@ export class LegacyBackgroundApiService {
       );
     }
 
-    return this.#messenger.call(
+    // The prelude mutates keyring/app state (`setHdPath` resets the paging
+    // state and can clear accounts, the Lattice `network` field feeds the
+    // GridPlus session) and is fast and bounded, so it always runs under the
+    // controller lock where `persistOrRollback` can pick up the changes.
+    const prepareKeyring = async (hardwareKeyring: HardwareKeyringV2) => {
+      // `setHdPath` is only declared on the Ledger V2 wrapper; the legacy QR
+      // keyring also implements it at runtime. Reach for it via a narrow
+      // structural cast and only call it when present.
+      const keyringWithHdPath = hardwareKeyring as unknown as {
+        setHdPath?: (hdPath: string) => void;
+      };
+      if (options.hdPath && keyringWithHdPath.setHdPath) {
+        keyringWithHdPath.setHdPath(options.hdPath);
+      }
+
+      if (options.name === HardwareDeviceNames.ledger) {
+        await this.#setLedgerTransportPreference(
+          hardwareKeyring as LedgerKeyringV2,
+        );
+      }
+
+      if (
+        options.name === HardwareDeviceNames.trezor ||
+        options.name === HardwareDeviceNames.oneKey
+      ) {
+        const model = (
+          hardwareKeyring as TrezorKeyringV2 | OneKeyKeyringV2
+        ).getModel();
+        this.#messenger.call(
+          'AppStateController:setTrezorModel',
+          model ?? null,
+        );
+      }
+
+      if (options.name === HardwareDeviceNames.lattice) {
+        // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
+        // runtime state, so we keep tracking it on every entry. The
+        // GridPlus SDK Client reads it on `_initSession` to target
+        // the right chain.
+        (hardwareKeyring as LatticeKeyringV2).network =
+          getProviderConfig({
+            metamask: this.#messenger.call('NetworkController:getState'),
+          }).type ?? null;
+      }
+    };
+
+    if (!options.deviceRead) {
+      return this.#messenger.call(
+        'KeyringController:withKeyringV2',
+        { type: v2KeyringType },
+        async ({ keyring }) => {
+          const hardwareKeyring = keyring as unknown as HardwareKeyringV2;
+          await prepareKeyring(hardwareKeyring);
+          return await callback(hardwareKeyring);
+        },
+      ) as Promise<CallbackResult>;
+    }
+
+    // Device-read path. The prelude still runs under the lock (short,
+    // mutating), but the device interaction itself runs on the lock-free
+    // path: a locked or unresponsive device makes calls like `getFirstPage`
+    // or `getPublicKey` hang indefinitely, and holding the operation mutex
+    // across that hang deadlocks every other locked keyring operation
+    // (account syncing, account creation, unlocking, ...) until the browser
+    // restarts.
+    //
+    // Trade-off: while the device read is in flight, a concurrent locked
+    // operation that fails (or a lock/unlock cycle) can rebuild the keyring
+    // instances, in which case this read fails or returns data from the
+    // replaced instance. That is intentional: the stale instance is no longer
+    // part of the controller, so its state can never be persisted, and the
+    // caller can simply retry — unlike the previous behavior, where the whole
+    // wallet wedged on the held mutex.
+    await this.#messenger.call(
       'KeyringController:withKeyringV2',
       { type: v2KeyringType },
-      async ({ keyring }) => {
-        const hardwareKeyring = keyring as unknown as HardwareKeyringV2;
-        // `setHdPath` is only declared on the Ledger V2 wrapper; the legacy QR
-        // keyring also implements it at runtime. Reach for it via a narrow
-        // structural cast and only call it when present.
-        const keyringWithHdPath = hardwareKeyring as unknown as {
-          setHdPath?: (hdPath: string) => void;
-        };
-        if (options.hdPath && keyringWithHdPath.setHdPath) {
-          keyringWithHdPath.setHdPath(options.hdPath);
-        }
+      async ({ keyring }) =>
+        prepareKeyring(keyring as unknown as HardwareKeyringV2),
+    );
 
-        if (options.name === HardwareDeviceNames.ledger) {
-          await this.#setLedgerTransportPreference(
-            hardwareKeyring as LedgerKeyringV2,
-          );
-        }
-
-        if (
-          options.name === HardwareDeviceNames.trezor ||
-          options.name === HardwareDeviceNames.oneKey
-        ) {
-          const model = (
-            hardwareKeyring as TrezorKeyringV2 | OneKeyKeyringV2
-          ).getModel();
-          this.#messenger.call(
-            'AppStateController:setTrezorModel',
-            model ?? null,
-          );
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
-          // runtime state, so we keep tracking it on every entry. The
-          // GridPlus SDK Client reads it on `_initSession` to target
-          // the right chain.
-          (hardwareKeyring as LatticeKeyringV2).network =
-            getProviderConfig({
-              metamask: this.#messenger.call('NetworkController:getState'),
-            }).type ?? null;
-        }
-
-        return await callback(hardwareKeyring);
-      },
+    // The timeout is a UX backstop: without the lock, an abandoned device
+    // read no longer blocks anything else, but the requesting UI would still
+    // wait forever. Note that timing out abandons the in-flight device call
+    // rather than cancelling it; a retry while the device call is still
+    // pending may be rejected by the transport SDK.
+    const deviceReadOperation = this.#messenger.call(
+      'KeyringController:withKeyringV2Unsafe',
+      { type: v2KeyringType },
+      // The facade structurally prevents `deviceRead` callbacks from reaching
+      // mutating keyring methods on the lock-free path.
+      async ({ keyring }) =>
+        await callback(
+          restrictKeyringForDeviceRead(
+            keyring as unknown as HardwareKeyringV2,
+          ) as unknown as HardwareKeyringV2,
+        ),
     ) as Promise<CallbackResult>;
+
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    let timedOut = false;
+    try {
+      return (await Promise.race([
+        deviceReadOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ])) as CallbackResult;
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // Only for observability: `Promise.race` already subscribes to the
+        // abandoned device read, so a late rejection can never surface as an
+        // unhandled rejection — but without this it would be dropped silently.
+        deviceReadOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware device read failed after timeout for device: ${options.name}`,
+            error,
+          ),
+        );
+      }
+    }
+  }
+
+  /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      captureException(error);
+    });
   }
 
   /**
