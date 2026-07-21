@@ -10,6 +10,11 @@ describe('isMetaMaskFacilitatorAddress', () => {
         ALL_METAMASK_FACILITATOR_ADDRESSES[0].toLowerCase(),
       ),
     ).toBe(true);
+    expect(
+      isMetaMaskFacilitatorAddress(
+        ALL_METAMASK_FACILITATOR_ADDRESSES[0].toUpperCase(),
+      ),
+    ).toBe(true);
   });
 
   it('returns false for unknown addresses', () => {
