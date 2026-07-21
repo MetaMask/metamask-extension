@@ -84,35 +84,22 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
-class SupersededWriteRetryError extends Error {
-  constructor() {
-    super('MetaMask - write retry superseded by newer write');
-    this.name = 'SupersededWriteRetryError';
-  }
-}
-
-function isSupersededWriteRetryError(
-  error: unknown,
-): error is SupersededWriteRetryError {
-  return error instanceof SupersededWriteRetryError;
-}
-
-function delay(ms: number, signal?: AbortSignal): Promise<void> {
-  return new Promise((resolve, reject) => {
+function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
+  return new Promise((resolve) => {
     if (signal?.aborted) {
-      reject(new SupersededWriteRetryError());
+      resolve(false);
       return;
     }
 
     const timeout = globalThis.setTimeout(() => {
       signal?.removeEventListener('abort', handleAbort);
-      resolve();
+      resolve(true);
     }, ms);
 
     function handleAbort() {
       globalThis.clearTimeout(timeout);
       signal?.removeEventListener('abort', handleAbort);
-      reject(new SupersededWriteRetryError());
+      resolve(false);
     }
 
     signal?.addEventListener('abort', handleAbort, { once: true });
@@ -376,16 +363,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #waitForWriteRetryDelay({
     supersedable,
-  }: WriteRetryOptions): Promise<void> {
+  }: WriteRetryOptions): Promise<boolean> {
     if (!supersedable) {
-      await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
-      return;
+      return await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
     }
 
     const abortController = new AbortController();
     this.#currentWriteRetryAbortController = abortController;
     try {
-      await delay(
+      return await delay(
         PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
         abortController.signal,
       );
@@ -396,25 +382,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
   }
 
-  async #retryWrite<Result>(
-    write: () => Promise<Result>,
+  async #retryWrite(
+    write: () => Promise<void>,
     retryRecoveredEvent: WriteRetryRecoveredPersistenceEvent,
     options: WriteRetryOptions,
-  ): Promise<Result> {
+  ): Promise<void> {
     try {
-      return await write();
+      await write();
     } catch (firstError) {
-      try {
-        await this.#waitForWriteRetryDelay(options);
-      } catch (retryDelayError) {
-        if (isSupersededWriteRetryError(retryDelayError)) {
-          throw firstError;
-        }
-        throw retryDelayError;
+      const shouldRetry = await this.#waitForWriteRetryDelay(options);
+      if (!shouldRetry) {
+        throw firstError;
       }
-      const result = await write();
+      await write();
       this.#emitWriteRetryRecovered(retryRecoveredEvent, firstError);
-      return result;
     }
   }
 

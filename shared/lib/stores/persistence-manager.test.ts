@@ -51,6 +51,11 @@ const mockedCaptureMessage = jest.mocked(captureMessage);
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
 
+  function prepareForWriteRetry(): void {
+    jest.useFakeTimers();
+    jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+  }
+
   beforeEach(() => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
@@ -113,8 +118,7 @@ describe('PersistenceManager', () => {
     });
 
     it('retries store.set once before reporting success', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -148,8 +152,7 @@ describe('PersistenceManager', () => {
     });
 
     it('reports the original store.set error when a newer set supersedes the retry', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -255,8 +258,7 @@ describe('PersistenceManager', () => {
     });
 
     it('logs error and captures exception if store.set throws after retry', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -282,8 +284,7 @@ describe('PersistenceManager', () => {
     });
 
     it('captures exception only once if store.set is called and throws multiple times', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -301,8 +302,7 @@ describe('PersistenceManager', () => {
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
@@ -325,8 +325,7 @@ describe('PersistenceManager', () => {
     });
 
     it('tracks recovery with captureMessage when store.set fails then succeeds', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
@@ -573,8 +572,7 @@ describe('PersistenceManager', () => {
     });
 
     it('retries store.setKeyValues once before reporting success', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -609,8 +607,7 @@ describe('PersistenceManager', () => {
     });
 
     it('reports the original store.setKeyValues error when a newer persist supersedes the retry', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'old' });
       manager.update('BazController', { baz: 'old' });
@@ -732,8 +729,7 @@ describe('PersistenceManager', () => {
     });
 
     it('logs error and captures exception if store.setKeyValues throws after retry', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -761,8 +757,7 @@ describe('PersistenceManager', () => {
     });
 
     it('retries pending updates when store.setKeyValues throws after retry', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -796,8 +791,7 @@ describe('PersistenceManager', () => {
     });
 
     it('captures exception only once if store.setKeyValues throws multiple times', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 10 });
       manager.update('FooController', { foo: 'bar' });
 
@@ -816,8 +810,7 @@ describe('PersistenceManager', () => {
     });
 
     it('captures exception twice if store.setKeyValues fails, then succeeds and then fails again', async () => {
-      jest.useFakeTimers();
-      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+      prepareForWriteRetry();
       manager.setMetadata({ version: 17 });
       manager.update('FooController', { foo: 'bar' });
 

@@ -1,4 +1,7 @@
-import type { PersistenceManager as PersistenceManagerType } from '../../../shared/lib/stores/persistence-manager';
+import type {
+  PersistenceManager as PersistenceManagerType,
+  WriteRetryRecoveredEvent,
+} from '../../../shared/lib/stores/persistence-manager';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -218,17 +221,9 @@ describe('setup-initial-state-hooks', () => {
       };
       globalThis.stateHooks.getSentryAppState = () => metricsState;
 
-      const [, writeRetryRecoveredHandler] = mockPersistenceOn.mock.calls.find(
+      const writeRetryRecoveredHandler = mockPersistenceOn.mock.calls.find(
         ([eventName]) => eventName === 'writeRetryRecovered',
-      ) as [
-        string,
-        (payload: {
-          event: string;
-          firstErrorMessage: string;
-          firstErrorName: string;
-          retryDelayMs: number;
-        }) => void,
-      ];
+      )?.[1] as (payload: WriteRetryRecoveredEvent) => void;
 
       writeRetryRecoveredHandler({
         event: 'persist-retry-recovered',
