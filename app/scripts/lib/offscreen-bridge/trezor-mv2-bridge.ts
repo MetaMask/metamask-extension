@@ -146,7 +146,9 @@ export class TrezorMv2Bridge implements TrezorBridge {
       (SuiteDesktopConnect as any)
         .getPublicKey(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) => mapError<{ publicKey: string; chainCode: string }>(r)),
+        .then((r: any) =>
+          mapError<{ publicKey: string; chainCode: string }>(r),
+        ),
     ) as unknown as TrezorResponse<{ publicKey: string; chainCode: string }>;
   }
 
