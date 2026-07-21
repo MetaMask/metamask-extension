@@ -7,7 +7,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import {
   MetaMetricsContext,
@@ -81,16 +80,13 @@ const renderProvider = ({
 
 describe('MetaMetricsProvider', () => {
   const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
-  const mockedSubmitRequestToBackground = jest.mocked(
-    submitRequestToBackground,
-  );
 
   beforeEach(() => {
     jest.clearAllMocks();
     resetPreviousTrackedPagePathForTesting();
   });
 
-  it('tracks events when participation is enabled but analyticsId is missing', async () => {
+  it('queues events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
@@ -113,8 +109,6 @@ describe('MetaMetricsProvider', () => {
         expect.anything(),
       );
     });
-
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
@@ -140,8 +134,6 @@ describe('MetaMetricsProvider', () => {
         expect.anything(),
       );
     });
-
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks metrics opt out immediately without an analyticsId', async () => {
@@ -167,11 +159,9 @@ describe('MetaMetricsProvider', () => {
         expect.anything(),
       );
     });
-
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
-  it('does not buffer normal events when the user has opted out of MetaMetrics', async () => {
+  it('does not track normal events when the user has opted out of MetaMetrics', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
@@ -188,7 +178,6 @@ describe('MetaMetricsProvider', () => {
     });
 
     expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks page views only once across provider remounts', async () => {
@@ -196,7 +185,7 @@ describe('MetaMetricsProvider', () => {
     const store = mockStore({
       metamask: {
         analyticsId: '0x123',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
     });

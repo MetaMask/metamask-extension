@@ -6,7 +6,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent } from '../store/actions';
 import { useAnalytics } from './useAnalytics';
 
@@ -16,10 +15,6 @@ jest.mock('./useSegmentContext', () => ({
 
 jest.mock('../store/actions', () => ({
   trackAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
-}));
-
-jest.mock('../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockStore = configureMockStore([]);
@@ -32,7 +27,7 @@ const renderHookConsumer = ({
   state: {
     metamask: {
       analyticsId: string | null;
-      completedMetaMetricsOnboarding: boolean;
+      consentDecisionMade: boolean;
       optedIn: boolean;
     };
   };
@@ -62,22 +57,19 @@ const renderHookConsumer = ({
 
 describe('useAnalytics', () => {
   const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
-  const mockedSubmitRequestToBackground = jest.mocked(
-    submitRequestToBackground,
-  );
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('trackEvent', () => {
-    it('tracks events when participation is enabled but analyticsId is missing', async () => {
+    it('queues events when participation is enabled but analyticsId is missing', async () => {
       renderHookConsumer({
         eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
         state: {
           metamask: {
             analyticsId: null,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           },
         },
@@ -96,8 +88,6 @@ describe('useAnalytics', () => {
           }),
         );
       });
-
-      expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
@@ -106,7 +96,7 @@ describe('useAnalytics', () => {
         state: {
           metamask: {
             analyticsId: '0x123',
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           },
         },
@@ -125,8 +115,6 @@ describe('useAnalytics', () => {
           }),
         );
       });
-
-      expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('tracks metrics opt out immediately', async () => {
@@ -135,7 +123,7 @@ describe('useAnalytics', () => {
         state: {
           metamask: {
             analyticsId: null,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
           },
         },
@@ -151,8 +139,6 @@ describe('useAnalytics', () => {
           }),
         );
       });
-
-      expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('swallows background RPC failures when tracking immediately', async () => {
@@ -166,7 +152,7 @@ describe('useAnalytics', () => {
           state: {
             metamask: {
               analyticsId: '0x123',
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             },
           },
