@@ -3,6 +3,8 @@ import {
   GetAppNameAndVersionResponse,
   isKnownLedgerError,
   LedgerBridge,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -146,7 +148,26 @@ export class LedgerOffscreenBridge implements Omit<
     });
   }
 
+  deviceSignDelegationAuthorization(
+    params: LedgerSignDelegationAuthorizationParams,
+  ): Promise<LedgerSignDelegationAuthorizationResponse> {
+    return this.#sendMessage({
+      action: LedgerAction.signDelegationAuthorization,
+      params,
+    });
+  }
+
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
+    message: IFrameMessage<TAction>,
+    { timeout }: { timeout?: number } = {},
+  ): Promise<ResponsePayload> {
+    return this.#attemptSendMessage<TAction, ResponsePayload>(
+      message,
+      { timeout },
+    );
+  }
+
+  #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
@@ -180,6 +201,19 @@ export class LedgerOffscreenBridge implements Omit<
             if (
               error?.name === 'HardwareWalletError' &&
               typeof error?.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
+              error &&
+              error.name === 'HardwareWalletError' &&
+              typeof error.code === 'number'
             ) {
               reject(
                 new HardwareWalletError(error.message, {
