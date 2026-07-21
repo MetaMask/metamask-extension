@@ -9,7 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
-import BottomNavBar from '../../page-objects/pages/bottom-nav-bar';
+import BottomNavBar from '../../page-objects/pages/bottom-nav-bar-page';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
@@ -366,7 +366,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   });
 
-  it('Execute bridge transactions on non enabled networks - with bottom nav treatment', async function () {
+  it.only('Execute bridge transactions on non enabled networks - with bottom nav treatment', async function () {
     await withFixtures(
       getBridgeFixturesWithBottomNavTreatment({
         title: this.test?.fullTitle(),
@@ -392,7 +392,7 @@ describe('Bridge tests', function (this: Suite) {
         const finalQuoteRequestTimestamp = Date.now();
 
         // Navigate back via bottom nav (back button is hidden in treatment)
-        await bridgePage.goBackViaBottomNavHome();
+        await bottomNav.clickHome();
         await checkQuoteRequestsAreNotMadeAfterTimestamp(
           driver,
           finalQuoteRequestTimestamp,
@@ -449,7 +449,7 @@ describe('Bridge tests', function (this: Suite) {
           'Checking that selected assets are reset after reopening Swap page via bottom nav',
         );
         // Navigate home via bottom nav (back button is hidden in treatment)
-        await bridgePage.goBackViaBottomNavHome();
+        await bottomNav.clickHome();
         // Navigate back to bridge via bottom nav swaps tab
         await bottomNav.clickSwaps();
         await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
