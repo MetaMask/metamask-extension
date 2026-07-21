@@ -31,7 +31,7 @@ export function TransactionDetailsModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex flex-col w-full max-w-[clamp(var(--width-sm),85vw,var(--width-max))] group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)] mx-auto"
+      className="fixed inset-0 z-[1050] flex flex-col w-full max-w-[clamp(var(--width-sm),85vw,var(--width-max))] group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)] mx-auto"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'scale(1)' : 'scale(0.97)',
