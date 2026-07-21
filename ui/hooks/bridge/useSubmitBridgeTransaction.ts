@@ -129,11 +129,13 @@ export default function useSubmitBridgeTransaction() {
         inFlightSubmitBridgeTxRef.current = tracked;
         // Clear the guard when the dispatch settles, and swallow late rejections
         // after a timeout so they do not become unhandled.
-        rpcPromise.catch(() => undefined).finally(() => {
-          if (inFlightSubmitBridgeTxRef.current === tracked) {
-            inFlightSubmitBridgeTxRef.current = null;
-          }
-        });
+        rpcPromise
+          .catch(() => undefined)
+          .finally(() => {
+            if (inFlightSubmitBridgeTxRef.current === tracked) {
+              inFlightSubmitBridgeTxRef.current = null;
+            }
+          });
       }
 
       if (options?.rpcTimeoutMs) {

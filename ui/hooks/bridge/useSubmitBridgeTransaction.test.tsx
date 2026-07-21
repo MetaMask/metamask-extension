@@ -437,7 +437,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       });
       // Never-resolving promise simulates a hung hardware-wallet RPC.
-      submitTxSpy.mockImplementation((() => new Promise(() => undefined)) as never);
+      submitTxSpy.mockImplementation(
+        (() => new Promise(() => undefined)) as never,
+      );
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result, unmount } = renderHook(
         () => useSubmitBridgeTransaction(),
