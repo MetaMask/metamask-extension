@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mergePositionsForAccounts } from '@metamask/assets-controllers';
-import type {
-  DeFiPositionDetailsSection,
-  DeFiProtocolPositionGroup,
-} from '@metamask/assets-controllers';
+import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
 import { getDeFiPositionsV2 } from '../../../../../selectors/defi-controller-v2/positions';
 import {
   getInternalAccountsFromGroupById,
@@ -20,43 +17,6 @@ type UseDeFiPositionsV2Result = {
   /** True when the background fetch failed. */
   isError: boolean;
 };
-
-/**
- * Merges details-page sections that share the same `productName`, appending
- * positions rather than keeping them as separate adjacent sections.
- *
- * @param existingSections - Sections already collected for this protocol group.
- * @param incomingSections - Sections from another account holding the same
- * protocol, to be merged in.
- * @returns The merged sections, one per distinct `productName`.
- */
-function mergeSections(
-  existingSections: DeFiPositionDetailsSection[],
-  incomingSections: DeFiPositionDetailsSection[],
-): DeFiPositionDetailsSection[] {
-  const byProductName = new Map<string, DeFiPositionDetailsSection>(
-    existingSections.map((section) => [
-      section.productName,
-      { ...section, positions: [...section.positions] },
-    ]),
-  );
-
-  for (const section of incomingSections) {
-    const existing = byProductName.get(section.productName);
-
-    if (!existing) {
-      byProductName.set(section.productName, {
-        ...section,
-        positions: [...section.positions],
-      });
-      continue;
-    }
-
-    existing.positions.push(...section.positions);
-  }
-
-  return [...byProductName.values()];
-}
 
 /**
  * Drives the DeFi tab (V2): dispatches a fetch to `DeFiPositionsControllerV2`

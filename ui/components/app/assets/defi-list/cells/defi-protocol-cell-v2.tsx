@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
 import {
   AvatarGroup,
   AvatarGroupSize,
@@ -15,8 +16,23 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
-import type { DeFiProtocolListItem } from '../types';
 import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
+
+/**
+ * Extension UI row for the DeFi tab list: core protocol-group fields plus
+ * presentation-only values this cell needs.
+ */
+export type DeFiProtocolListItem = Pick<
+  DeFiProtocolPositionGroup,
+  'chainId' | 'protocolId' | 'iconGroup'
+> & {
+  tokenImage: DeFiProtocolPositionGroup['protocolIconUrl'];
+  underlyingSymbols: DeFiProtocolPositionGroup['iconGroup'][number]['symbol'][];
+  /** Numeric fiat amount used for sorting. */
+  tokenFiatAmount: DeFiProtocolPositionGroup['marketValue'];
+  /** Formatted fiat amount shown in the list cell. */
+  marketValue: string;
+};
 
 type DeFiProtocolCellV2Props = {
   onClick: (chainId: string, protocolId: string) => void;

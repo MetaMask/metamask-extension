@@ -5,8 +5,9 @@ import thunk from 'redux-thunk';
 import { Route, Routes } from 'react-router-dom';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
-import type { DeFiProtocolListItem } from '../types';
-import DeFiProtocolCellV2 from './defi-protocol-cell-v2';
+import DeFiProtocolCellV2, {
+  type DeFiProtocolListItem,
+} from './defi-protocol-cell-v2';
 
 jest.mock('../../../../../../ui/hooks/useAnalytics', () => ({
   useAnalytics: () => ({

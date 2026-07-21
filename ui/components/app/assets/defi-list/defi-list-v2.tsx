@@ -18,8 +18,9 @@ import { ASSET_CELL_HEIGHT } from '../constants';
 import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
-import DeFiProtocolCellV2 from './cells/defi-protocol-cell-v2';
-import type { DeFiProtocolListItem } from './types';
+import DeFiProtocolCellV2, {
+  type DeFiProtocolListItem,
+} from './cells/defi-protocol-cell-v2';
 
 type DefiListV2Props = {
   onClick: (chainId: string, protocolId: string) => void;
