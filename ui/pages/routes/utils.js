@@ -76,7 +76,7 @@ export function setDocumentPureBlack(isPureBlackActive) {
 
 export function setTheme(theme) {
   const resolvedTheme = getThemeFromRawTheme(theme);
-  document.documentElement.setAttribute('data-theme', resolvedTheme);
+  document.documentElement.dataset.theme = resolvedTheme;
   const pureBlackActive =
     resolvedTheme === ThemeType.dark && getIsPureBlackPreviewEnabled();
   setDocumentPureBlack(pureBlackActive);
