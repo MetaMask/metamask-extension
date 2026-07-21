@@ -5370,13 +5370,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/7715-permission-types@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/7715-permission-types@npm:0.9.0"
+"@metamask/7715-permission-types@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/7715-permission-types@npm:1.0.0"
   dependencies:
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/utils": "npm:^11.4.0"
-  checksum: 10/c8131811b3b415ad57a65bb5656024a5803b4d062342148145bdd4079831b4c48be24cb256ccb3b9ae7dfa901090b98295064e69760a61489f43a726a10f0be9
+  checksum: 10/df565c43c05daa4ef35b2e57bfdf9062e3e928d8fa43194c27c7149f4e2fdb7bda05b2397267b2f9fed3e42a8c26e956483262b2e8d39e63c2045c069cb53e66
   languageName: node
   linkType: hard
 
@@ -32765,7 +32765,7 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
-    "@metamask/7715-permission-types": "npm:^0.9.0"
+    "@metamask/7715-permission-types": "npm:^1.0.0"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
     "@metamask/account-tree-controller": "npm:^7.5.3"

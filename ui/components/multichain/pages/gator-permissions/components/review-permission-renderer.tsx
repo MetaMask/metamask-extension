@@ -8,6 +8,7 @@ import type {
   ReviewFieldView,
   SchemaElement,
   SchemaSection,
+  TranslationKeys,
 } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import {
@@ -27,6 +28,7 @@ import {
   computeTotalExposureForPermission,
 } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { buildPermissionI18nMap } from '../../../../../../shared/lib/gator-permissions/permission-i18n-map';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 
@@ -140,6 +142,7 @@ const ReviewAddressDisplay = ({
 
 const ReviewAccountRow = ({ address }: { address: string }) => {
   const t = useI18nContext() as I18nFunction;
+  const i18nMap = buildPermissionI18nMap(t);
 
   return (
     <Box
@@ -154,7 +157,7 @@ const ReviewAccountRow = ({ address }: { address: string }) => {
         color={TextColor.TextAlternative}
         variant={TextVariant.BodyMd}
       >
-        {t('account')}
+        {i18nMap.account}
       </Text>
       <ReviewAddressDisplay
         address={address}
@@ -263,6 +266,7 @@ type RenderElementOptions = {
   element: SchemaElement;
   ctx: PermissionRenderContext;
   t: I18nFunction;
+  i18nMap: Record<TranslationKeys, string>;
   tokenSymbol: string;
   tokenDecimals: number | undefined;
   isLoading: boolean;
@@ -279,6 +283,7 @@ function renderElement({
   element,
   ctx,
   t,
+  i18nMap,
   tokenSymbol,
   tokenDecimals,
   isLoading: loading,
@@ -303,7 +308,7 @@ function renderElement({
         rowKey,
         element,
         ctx,
-        t,
+        i18nMap,
         tokenSymbol,
         tokenDecimals,
         loading,
@@ -313,7 +318,7 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={translateI18nValue(t, element.getValue(ctx))}
           testId={element.testId}
           tooltip={element.tooltip ? t(element.tooltip) : undefined}
@@ -324,7 +329,7 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={element.getValue(ctx)}
           testId={element.testId}
         />
@@ -334,7 +339,7 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={
             <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
               {element.getValue(ctx).map((value, valueIndex) => (
@@ -350,14 +355,14 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={convertTimestampToReadableDate(element.getValue(ctx) ?? 0)}
           testId={element.testId}
         />
       );
 
     case 'expiry':
-      return renderExpiryElement(rowKey, element, ctx, t);
+      return renderExpiryElement(rowKey, element, ctx, t, i18nMap);
 
     case 'justification': {
       const justificationValue = element.getValue(ctx);
@@ -368,7 +373,7 @@ function renderElement({
       return (
         <GatorPermissionDetailRow
           key={rowKey}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
           value={justificationText}
           testId={element.testId}
         />
@@ -397,7 +402,7 @@ function renderElement({
         <ReviewRuleAddressRow
           key={rowKey}
           addresses={addresses}
-          label={t(element.labelKey)}
+          label={i18nMap[element.labelKey]}
         />
       );
     }
@@ -419,7 +424,7 @@ function renderAmountElement(
   rowKey: string,
   element: AmountField,
   ctx: PermissionRenderContext,
-  t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
   tokenSymbol: string,
   tokenDecimals: number | undefined,
   loading: boolean,
@@ -435,7 +440,7 @@ function renderAmountElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(element.labelKey)}
+      label={i18nMap[element.labelKey]}
       value={displayValue}
       testId={element.testId}
       isLoading={loading}
@@ -448,6 +453,7 @@ function renderExpiryElement(
   element: ExpiryField,
   ctx: PermissionRenderContext,
   t: I18nFunction,
+  i18nMap: Record<TranslationKeys, string>,
 ): React.ReactNode {
   const expiry = element.getValue(ctx);
   const displayValue =
@@ -458,7 +464,7 @@ function renderExpiryElement(
   return (
     <GatorPermissionDetailRow
       key={rowKey}
-      label={t(element.labelKey)}
+      label={i18nMap[element.labelKey]}
       value={displayValue}
       testId={element.testId}
     />
@@ -473,6 +479,7 @@ type RenderSectionOptions = {
   section: SchemaSection;
   ctx: PermissionRenderContext;
   t: I18nFunction;
+  i18nMap: Record<TranslationKeys, string>;
   tokenSymbol: string;
   tokenDecimals: number | undefined;
   isLoading: boolean;
@@ -487,6 +494,7 @@ function renderSection({
   section,
   ctx,
   t,
+  i18nMap,
   tokenSymbol,
   tokenDecimals,
   isLoading,
@@ -501,6 +509,7 @@ function renderSection({
           element,
           ctx,
           t,
+          i18nMap,
           tokenSymbol,
           tokenDecimals,
           isLoading,
@@ -564,6 +573,7 @@ export const ReviewPermissionRenderer = ({
   networkName,
 }: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
+  const i18nMap = buildPermissionI18nMap(t);
 
   const schemaEntry = getPermissionSchemaEntry(permissionType);
 
@@ -608,6 +618,7 @@ export const ReviewPermissionRenderer = ({
           section,
           ctx,
           t,
+          i18nMap,
           tokenSymbol: tokenInfo.symbol,
           tokenDecimals: tokenInfo.decimals,
           isLoading: loading,
