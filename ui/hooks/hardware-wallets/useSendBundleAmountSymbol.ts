@@ -68,8 +68,8 @@ export function useSendBundleAmountSymbol(
 
   // Native send: mirror NativeSendHeading.
   if (transactionMeta.type === TransactionType.simpleSend) {
-    const displayValue = (transactionMeta.txParamsOriginal?.value ??
-      txParams.value) as string | undefined;
+    const displayValue =
+      transactionMeta.txParamsOriginal?.value ?? txParams.value;
     const nativeAssetTransferValue = displayValue
       ? calcTokenAmount(displayValue, 18)
       : undefined;
@@ -87,7 +87,7 @@ export function useSendBundleAmountSymbol(
   // the token's symbol/decimals from the token list (same sources the ERC20
   // SendHeading derives from).
   const { to, from } = txParams;
-  const tokenListToken = allTokens?.[chainId]?.[from as string]?.find(
+  const tokenListToken = allTokens?.[chainId]?.[from]?.find(
     (token) => token.address?.toLowerCase() === to?.toLowerCase(),
   );
 

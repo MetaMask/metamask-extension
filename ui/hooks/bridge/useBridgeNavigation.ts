@@ -203,13 +203,12 @@ export const useBridgeNavigation = () => {
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
-          /* eslint-disable @typescript-eslint/naming-convention */
           trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
             // @ts-expect-error once @metamask/bridge-controller is updated
-            environment_type: getEnvironmentType(),
+            environment_type: getEnvironmentType(), // eslint-disable-line @typescript-eslint/naming-convention
           }),
-          /* eslint-enable @typescript-eslint/naming-convention */
         );
       navigate(
         {

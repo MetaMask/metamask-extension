@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -72,6 +72,12 @@ export default function useSubmitBridgeTransaction() {
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Tracks an in-flight submitBridgeTx so Promise.race timeouts cannot leave a
+  // live dispatch that a hardware-wallet retry would duplicate.
+  const inFlightSubmitBridgeTxRef = useRef<{
+    requestId: string;
+    promise: Promise<unknown>;
+  } | null>(null);
 
   const submitQuote = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -95,23 +101,40 @@ export default function useSubmitBridgeTransaction() {
         return;
       }
 
-      const rpcPromise = dispatch(
-        submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-          getQuotesReceivedProperties(
+      const { requestId } = quoteResponse.quote;
+      let rpcPromise =
+        inFlightSubmitBridgeTxRef.current?.requestId === requestId
+          ? inFlightSubmitBridgeTxRef.current.promise
+          : null;
+
+      if (!rpcPromise) {
+        rpcPromise = dispatch(
+          submitBridgeTx(
+            fromAccount.address,
             quoteResponse,
-            warnings,
-            true,
-            recommendedQuote,
-            fromTokenBalanceInUsd,
-            getHasSufficientGasForQuote(quoteResponse),
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+              getHasSufficientGasForQuote(quoteResponse),
+            ),
+            location,
+            toToken?.securityData?.type ?? null,
           ),
-          location,
-          toToken?.securityData?.type ?? null,
-        ),
-      );
+        );
+        const tracked = { requestId, promise: rpcPromise };
+        inFlightSubmitBridgeTxRef.current = tracked;
+        // Clear the guard when the dispatch settles, and swallow late rejections
+        // after a timeout so they do not become unhandled.
+        rpcPromise.catch(() => undefined).finally(() => {
+          if (inFlightSubmitBridgeTxRef.current === tracked) {
+            inFlightSubmitBridgeTxRef.current = null;
+          }
+        });
+      }
 
       if (options?.rpcTimeoutMs) {
         const timeoutPromise = new Promise<never>((_, reject) => {
@@ -163,7 +186,7 @@ export default function useSubmitBridgeTransaction() {
           formatChainIdToCaip(quoteResponse.quote.destChainId),
         );
       }
-    } catch (e) {
+    } catch {
       setIsSubmitting(false);
       return;
     }

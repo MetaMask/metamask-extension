@@ -424,6 +424,61 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(result.current.isSubmitting).toBe(false);
     });
 
+    it('does not dispatch a second submitBridgeTx when retrying after rpcTimeoutMs', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      // Never-resolving promise simulates a hung hardware-wallet RPC.
+      submitTxSpy.mockImplementation((() => new Promise(() => undefined)) as never);
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () => useSubmitBridgeTransaction(),
+        {
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
+        },
+      );
+
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quote as any,
+            { rpcTimeoutMs: 20 },
+          ),
+        ).rejects.toThrow('Bridge transaction RPC timed out');
+      });
+
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            quote as any,
+            { rpcTimeoutMs: 20 },
+          ),
+        ).rejects.toThrow('Bridge transaction RPC timed out');
+      });
+
+      // Retry must reuse the in-flight dispatch instead of starting another.
+      expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      unmount();
+    });
+
     it('returns early if hardware device is not ready', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
