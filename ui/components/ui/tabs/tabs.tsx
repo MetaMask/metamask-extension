@@ -13,8 +13,7 @@ import {
   BoxJustifyContent,
   twMerge,
 } from '@metamask/design-system-react';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { isViewTransitionSupported } from '../transition';
 import { TabsProps, TabChild } from './tabs.types';
 
 function clamp(value: number, min: number, max: number) {
@@ -26,7 +25,7 @@ async function startTransition(
   update: () => void,
   panel: HTMLElement | null,
 ) {
-  if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
+  if (isViewTransitionSupported()) {
     document.documentElement.dataset.tabTransitionDirection = direction;
     // Name the panel only during the tab switch; a persistent name would also be
     // captured by unrelated (e.g. page) transitions, where it overflows.
