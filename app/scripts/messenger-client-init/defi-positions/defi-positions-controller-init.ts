@@ -5,6 +5,10 @@ import {
 import { MessengerClientInitFunction } from '../types';
 import { DeFiPositionsControllerInitMessenger } from '../messengers/defi-positions';
 import {
+  DEFAULT_FEATURE_FLAG_VALUES,
+  FeatureFlagNames,
+} from '../../../../shared/lib/feature-flags';
+import {
   DEFI_CONTROLLER_V2_FLAG,
   isDefiControllerV2Enabled,
   type DefiControllerV2FeatureFlag,
@@ -38,6 +42,12 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
       const { remoteFeatureFlags } = initMessenger.call(
         'RemoteFeatureFlagController:getState',
       );
+      const assetsDefiPositionsEnabled = Boolean(
+        remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+          DEFAULT_FEATURE_FLAG_VALUES[
+            FeatureFlagNames.AssetsDefiPositionsEnabled
+          ],
+      );
       const defiControllerV2Enabled = isDefiControllerV2Enabled(
         remoteFeatureFlags?.[DEFI_CONTROLLER_V2_FLAG] as
           | DefiControllerV2FeatureFlag
@@ -46,7 +56,10 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
 
       // Legacy controller runs only when V2 is disabled.
       return (
-        completedOnboarding && useExternalServices && !defiControllerV2Enabled
+        completedOnboarding &&
+        useExternalServices &&
+        assetsDefiPositionsEnabled &&
+        !defiControllerV2Enabled
       );
     },
     trackEvent: (

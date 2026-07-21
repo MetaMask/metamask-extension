@@ -20,6 +20,11 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import {
+  DEFAULT_FEATURE_FLAG_VALUES,
+  FeatureFlagNames,
+} from '../../shared/lib/feature-flags';
+
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
@@ -4675,6 +4680,47 @@ describe('getPermissionsForActiveTab', () => {
     );
 
     expect(result).toStrictEqual([]);
+  });
+});
+
+describe('getIsDefiPositionsEnabled', () => {
+  it('returns true when assetsDefiPositionsEnabled flag is true', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: true,
+        },
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(true);
+  });
+
+  it('returns false when assetsDefiPositionsEnabled flag is false', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: false,
+        },
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(false);
+  });
+
+  it('returns true (default) when assetsDefiPositionsEnabled flag is undefined', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {},
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(
+      DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
+    );
   });
 });
 

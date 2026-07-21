@@ -106,13 +106,39 @@ describe('AccountOverviewBtc', () => {
   });
 
   describe('when EVM networks are enabled', () => {
-    it('shows all tabs including DeFi', () => {
+    it('shows Tokens, NFTs, and Activity tabs when DeFi is disabled', () => {
       const { queryByTestId } = render(defaultProps, {
         enabledNetworkMap: {
           eip155: {
             [CHAIN_IDS.MAINNET]: true,
             [CHAIN_IDS.LINEA_MAINNET]: true,
           },
+        },
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: false,
+        },
+      });
+
+      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+      expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+      expect(
+        queryByTestId('account-overview__activity-tab'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('account-overview__defi-tab'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows all tabs including DeFi when DeFi positions are enabled', () => {
+      const { queryByTestId } = render(defaultProps, {
+        enabledNetworkMap: {
+          eip155: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          },
+        },
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: true,
         },
       });
 

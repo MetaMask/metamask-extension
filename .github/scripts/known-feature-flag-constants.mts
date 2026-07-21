@@ -2,13 +2,21 @@
  * Known Feature Flag Constants — maps constant names to resolved flag strings.
  * Used by check-feature-flag-registry.ts for bracket-access like `remoteFeatureFlags[CONSTANT]`.
  *
- * Constants are resolved from source files (importing them would pull in browser
- * APIs). Add new constants here when the CI job reports an "unresolved constant"
- * error.
+ * Enum values are imported directly. UI constants are resolved from source files
+ * (importing them would pull in browser APIs). Add new constants here when the
+ * CI job reports an "unresolved constant" error.
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
+import featureFlagsModule from '../../shared/lib/feature-flags';
+
+const { FeatureFlagNames } = featureFlagsModule;
+
+/** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
+const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
+  Object.entries(FeatureFlagNames).map(([k, v]) => [`FeatureFlagNames.${k}`, v]),
+);
 
 /**
  * Constants that must be resolved by reading their source file (because
@@ -83,7 +91,7 @@ function resolveConstantFromFile(
  * their resolved flag name strings.
  */
 export function buildKnownFlagConstants(): Record<string, string> {
-  const constants: Record<string, string> = {};
+  const constants: Record<string, string> = { ...DIRECT_IMPORTS };
 
   for (const { key, file, exportName } of FILE_SOURCES) {
     const resolved = resolveConstantFromFile(file, exportName);
