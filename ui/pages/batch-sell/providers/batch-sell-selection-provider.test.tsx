@@ -18,9 +18,11 @@ const TestConsumer = () => {
     selectedNetworkChainId,
     selectedAssetsId,
     assetsOrderByBalance,
+    hasUserInteracted,
     setSelectedNetworkChainId,
     setSelectedAssetsId,
     setAssetsOrderByBalance,
+    setHasUserInteracted,
   } = useBatchSellSelection();
 
   return (
@@ -28,6 +30,7 @@ const TestConsumer = () => {
       <span data-testid="chain-id">{selectedNetworkChainId ?? 'null'}</span>
       <span data-testid="assets">{selectedAssetsId.join(',')}</span>
       <span data-testid="order">{assetsOrderByBalance}</span>
+      <span data-testid="interacted">{String(hasUserInteracted)}</span>
       <button onClick={() => setSelectedNetworkChainId(CHAIN_ID)}>
         set chain
       </button>
@@ -44,6 +47,7 @@ const TestConsumer = () => {
       <button onClick={() => setAssetsOrderByBalance('desc')}>
         set order desc
       </button>
+      <button onClick={() => setHasUserInteracted(true)}>interact</button>
     </div>
   );
 };
@@ -73,6 +77,12 @@ describe('BatchSellSelectionProvider', () => {
       renderWithProvider();
 
       expect(screen.getByTestId('order')).toHaveTextContent('desc');
+    });
+
+    it('exposes hasUserInteracted as false', () => {
+      renderWithProvider();
+
+      expect(screen.getByTestId('interacted')).toHaveTextContent('false');
     });
 
     it('renders children', () => {
@@ -156,6 +166,18 @@ describe('BatchSellSelectionProvider', () => {
       });
 
       expect(screen.getByTestId('order')).toHaveTextContent('desc');
+    });
+  });
+
+  describe('setHasUserInteracted', () => {
+    it('marks hasUserInteracted as true', () => {
+      renderWithProvider();
+
+      act(() => {
+        fireEvent.click(screen.getByText('interact'));
+      });
+
+      expect(screen.getByTestId('interacted')).toHaveTextContent('true');
     });
   });
 
