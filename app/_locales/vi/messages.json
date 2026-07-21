@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Tùy chọn tài khoản"
   },
-  "accountPermissionToast": {
-    "message": "Đã cập nhật quyền đối với tài khoản"
-  },
   "accountSelectionRequired": {
     "message": "Bạn cần chọn một tài khoản!"
   },
