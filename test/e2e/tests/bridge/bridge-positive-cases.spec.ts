@@ -377,7 +377,7 @@ describe('Bridge tests', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
 
         const bottomNav = new BottomNavBar(driver);
-        await bottomNav.waitForBottomNavBar();
+        await bottomNav.checkPageIsLoaded();
         await bottomNav.clickSwaps();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -418,7 +418,7 @@ describe('Bridge tests', function (this: Suite) {
         await login(driver, { expectedBalance: '$225,730.11' });
 
         const bottomNav = new BottomNavBar(driver);
-        await bottomNav.waitForBottomNavBar();
+        await bottomNav.checkPageIsLoaded();
         const bridgePage = new BridgeQuotePage(driver);
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
