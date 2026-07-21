@@ -26,12 +26,6 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
-  private bottomNavBar = '[data-testid="bottom-nav-bar"]';
-
-  private bottomNavHomeTab = '[data-testid="bottom-nav-home"]';
-
-  private bottomNavSwapsTab = '[data-testid="bottom-nav-swaps"]';
-
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
 
@@ -330,16 +324,9 @@ class BridgeQuotePage {
    * treatment, where the back button is removed on the swap/bridge page.
    */
   goBackViaBottomNavHome = async () => {
-    await this.driver.waitForSelector(this.bottomNavHomeTab);
-    await this.driver.clickElement(this.bottomNavHomeTab);
-  };
-
-  clickBottomNavSwapsTab = async () => {
-    await this.driver.clickElement(this.bottomNavSwapsTab);
-  };
-
-  waitForBottomNavBar = async () => {
-    await this.driver.waitForSelector(this.bottomNavBar);
+    const homeTab = '[data-testid="bottom-nav-home"]';
+    await this.driver.waitForSelector(homeTab);
+    await this.driver.clickElement(homeTab);
   };
 
   async searchAssetAndVerifyCount(
