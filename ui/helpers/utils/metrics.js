@@ -55,7 +55,6 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
 
   const params = {};
   const {
-    providerRequestsCount,
     reason,
     result_type: resultType,
     description,
@@ -79,14 +78,6 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     resultType ?? BlockaidResultType.NotApplicable;
 
   params.security_alert_source = source;
-
-  // add counts of each RPC call
-  if (providerRequestsCount) {
-    Object.keys(providerRequestsCount).forEach((key) => {
-      const metricKey = `ppom_${key}_count`;
-      params[metricKey] = providerRequestsCount[key];
-    });
-  }
 
   return params;
 };

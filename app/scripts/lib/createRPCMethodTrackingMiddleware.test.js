@@ -376,49 +376,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track an event with correct blockaid parameters when providerRequestsCount is provided`, async () => {
-      const req = {
-        id: MOCK_ID,
-        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        origin: 'some.dapp',
-        securityAlertResponse: {
-          result_type: BlockaidResultType.Malicious,
-          reason: BlockaidReason.maliciousDomain,
-          providerRequestsCount: {
-            eth_call: 5,
-            eth_getCode: 3,
-          },
-          securityAlertId: 1,
-        },
-      };
-
-      const res = {
-        error: null,
-      };
-      const { next } = getNext();
-      const handler = createHandler();
-      await handler(req, res, next);
-      expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(getTrackedEventCall(0)).toMatchObject({
-        category: MetaMetricsEventCategory.InpageProvider,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          security_alert_response: BlockaidResultType.Malicious,
-          security_alert_reason: BlockaidReason.maliciousDomain,
-          address_alert_response: ResultType.Loading,
-          ppom_eth_call_count: 5,
-          ppom_eth_getCode_count: 3,
-          api_source: MetaMetricsRequestedThrough.EthereumProvider,
-          is_iframe: false,
-          is_cross_origin_iframe: false,
-          iframe_origin: null,
-          top_level_origin: null,
-        },
-        referrer: { url: 'some.dapp' },
-      });
-    });
-
     it(`should track a ${MetaMetricsEventName.SignatureApproved} if the user approves`, async () => {
       const req = {
         id: MOCK_ID,
