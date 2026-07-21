@@ -5,6 +5,7 @@ import {
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
 import { getAssetDetails, getTokenMetadata } from './token-util';
+import { TransactionDescription } from '@ethersproject/abi';
 
 jest.mock('../../../shared/lib/transaction.utils', () => ({
   parseStandardTokenTransactionData: jest.fn(),
@@ -14,6 +15,14 @@ jest.mock('../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
   getTokenStandardAndDetailsByChain: jest.fn(),
 }));
+
+const mockParseStandardTokenTransactionData = jest.mocked(
+  parseStandardTokenTransactionData,
+);
+const mockGetTokenStandardAndDetails = jest.mocked(getTokenStandardAndDetails);
+const mockGetTokenStandardAndDetailsByChain = jest.mocked(
+  getTokenStandardAndDetailsByChain,
+);
 
 describe('getAssetDetails', () => {
   beforeEach(() => {
@@ -32,11 +41,11 @@ describe('getAssetDetails', () => {
       chainId: '0x1',
     };
 
-    parseStandardTokenTransactionData.mockReturnValue({
+    mockParseStandardTokenTransactionData.mockReturnValue({
       args: { to: '0xtoAddRess' },
-    });
+    } as unknown as TransactionDescription);
 
-    getTokenStandardAndDetailsByChain.mockResolvedValue({
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
       name: 'myERC20Token',
       symbol: 'MTK',
       standard: ERC20,
@@ -71,11 +80,11 @@ describe('getAssetDetails', () => {
       transactionData: '0xTransactionData',
     };
 
-    parseStandardTokenTransactionData.mockReturnValue({
+    mockParseStandardTokenTransactionData.mockReturnValue({
       args: { to: '0xtoAddRess' },
-    });
+    } as unknown as TransactionDescription);
 
-    getTokenStandardAndDetails.mockResolvedValue({
+    mockGetTokenStandardAndDetails.mockResolvedValue({
       name: 'myERC20Token',
       symbol: 'MTK',
       standard: ERC20,
@@ -106,7 +115,7 @@ describe('getAssetDetails', () => {
     const currentUserAddress = '0xAccouNtAddress';
     const transactionData = '0xTransactionData';
 
-    parseStandardTokenTransactionData.mockReturnValue(undefined);
+    mockParseStandardTokenTransactionData.mockReturnValue(undefined);
 
     await expect(
       getAssetDetails(tokenAddress, currentUserAddress, transactionData, []),
@@ -130,10 +139,10 @@ describe('getAssetDetails', () => {
         },
       ],
     };
-    parseStandardTokenTransactionData.mockReturnValue({
+    mockParseStandardTokenTransactionData.mockReturnValue({
       args: { id: 1, to: '0xtoAddRess' },
-    });
-    getTokenStandardAndDetails.mockReturnValue({
+    } as unknown as TransactionDescription);
+    mockGetTokenStandardAndDetails.mockResolvedValue({
       name: 'myToken',
       symbol: 'MTK',
       standard: ERC721,
@@ -168,10 +177,10 @@ describe('getAssetDetails', () => {
         },
       ],
     };
-    parseStandardTokenTransactionData.mockReturnValue({
+    mockParseStandardTokenTransactionData.mockReturnValue({
       args: { id: 1, to: '0xtoAddRess' },
-    });
-    getTokenStandardAndDetails.mockReturnValue({
+    } as unknown as TransactionDescription);
+    mockGetTokenStandardAndDetails.mockResolvedValue({
       name: 'myToken',
       symbol: 'MTK',
       standard: ERC721,
