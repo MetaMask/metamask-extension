@@ -4309,12 +4309,14 @@ describe('Bridge selectors', () => {
     it('returns undefined when sentAmount.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            sentAmount: { ...quote.sentAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();
@@ -4323,13 +4325,19 @@ describe('Bridge selectors', () => {
     it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            toTokenAmount: { ...quote.toTokenAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.toTokenAmount
+          ?.valueInCurrency,
+      ).toBeUndefined();
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();
     });

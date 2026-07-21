@@ -226,7 +226,7 @@ const bridgeSlice = createSlice({
 
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
-      state.fromTokenInputValue = sentAmount?.amount ?? quote.srcTokenAmount;
+      state.fromTokenInputValue = sentAmount?.amount ?? null;
       if (pairChanged || !state.isSlippageUserOverride) {
         clearSlippageState(state);
         state.slippage = quote.slippage ?? undefined;

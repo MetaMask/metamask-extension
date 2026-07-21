@@ -5811,9 +5811,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@77.6.0-preview-8abc30aca":
-  version: 77.6.0-preview-8abc30aca
-  resolution: "@metamask-previews/bridge-controller@npm:77.6.0-preview-8abc30aca"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@77.6.0-preview-6383bcdfc":
+  version: 77.6.0-preview-6383bcdfc
+  resolution: "@metamask-previews/bridge-controller@npm:77.6.0-preview-6383bcdfc"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5840,7 +5840,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/8863db91c959ee3456cf639994ac9c24b34a378ca0202d47032b2b691d1d43611e613982ab45a893c01ac0ddcbb60259431e0baa714ae30c07bccfd24bd71256
+  checksum: 10/c7861109beaf7615971d8a0b675182a57717e7b29f8ed341b66d6601612cabda3b22d223167eb558493272240ae9f9d6312bed1ac1f4cd9ddd7706611d02f556
   languageName: node
   linkType: hard
 
@@ -5877,9 +5877,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@74.3.0-preview-8abc30aca":
-  version: 74.3.0-preview-8abc30aca
-  resolution: "@metamask-previews/bridge-status-controller@npm:74.3.0-preview-8abc30aca"
+"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@74.3.0-preview-6383bcdfc":
+  version: 74.3.0-preview-6383bcdfc
+  resolution: "@metamask-previews/bridge-status-controller@npm:74.3.0-preview-6383bcdfc"
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5897,7 +5897,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/7f12e78d15eb5e69f74bd55dcb2fd32ae7514707ed69d9e82cbda4675724720a3064776feecd0774a2ff8ab99ccfd90be77454de4e6d055de77295714edf66c3
+  checksum: 10/f457131b9167eb612334778b24cf34e6e65b71a175e7a175477ccdd6f49e6ace80ffbcae18e2340d8ddb8fcef6854aa756ec0aca8a85e9809c485249b7f31acb
   languageName: node
   linkType: hard
 
@@ -32845,8 +32845,8 @@ __metadata:
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.14.2"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
-    "@metamask/bridge-controller": "npm:^77.6.0-preview-8abc30aca"
-    "@metamask/bridge-status-controller": "npm:^74.3.0-preview-8abc30aca"
+    "@metamask/bridge-controller": "npm:^77.6.0-preview-6383bcdfc"
+    "@metamask/bridge-status-controller": "npm:^74.3.0-preview-6383bcdfc"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"

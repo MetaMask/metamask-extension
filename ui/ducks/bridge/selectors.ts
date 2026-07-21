@@ -821,14 +821,12 @@ export const getFormattedPriceImpactPercentage = createSelector(
 
 export const getFormattedPriceImpactFiat = createSelector(
   [
-    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
     getCurrentCurrency,
   ],
-  (activeQuote, currentCurrency) =>
-    formatPriceImpactFiat(
-      activeQuote?.priceImpact?.valueInCurrency,
-      currentCurrency,
-    ),
+  (priceImpact, currentCurrency) =>
+    formatPriceImpactFiat(priceImpact, currentCurrency),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,

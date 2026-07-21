@@ -46,8 +46,7 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
   !quote ||
   !fromToken ||
   (isNativeAddress(fromToken.assetId) &&
-    quote.sentAmount?.amount &&
-    new BigNumber(nativeBalance).sub(quote.sentAmount.amount).lte(0))
+    new BigNumber(nativeBalance).sub(quote.sentAmount?.amount ?? 0).lte(0))
     ? null
     : !isNativeBalanceInsufficientForQuote(
         quote,
