@@ -4332,6 +4332,9 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectionTimeout": {
+    "message": "The device is taking too long to respond or the connection timed out. Make sure your device is connected and unlocked, then try again."
+  },
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
