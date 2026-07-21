@@ -666,10 +666,11 @@ describe('buildMetricLines', () => {
   });
 
   it('reports the absolute ceiling, not the relative improvement, on an absolute-only fail', () => {
-    // #42867 onboardingImportWallet total.p75: fails the absolute ceiling
-    // (11291 > 11050ms) while the relative delta is a stale-baseline improvement
-    // (-72.1%). The line must attribute the failure to the ceiling, never paint
-    // the improvement as the reason.
+    // Observed on a live benchmark run (onboardingImportWallet total.p75):
+    // the metric fails the absolute ceiling (11291 > 11050ms) while the
+    // relative delta is a stale-baseline improvement (-72.1%). The line must
+    // attribute the failure to the ceiling, never paint the improvement as
+    // the reason.
     const lines = buildMetricLines(
       makeComparison({
         relativeMetrics: [

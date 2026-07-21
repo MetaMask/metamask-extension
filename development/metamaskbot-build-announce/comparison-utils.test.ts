@@ -600,8 +600,9 @@ describe('THRESHOLD_REGISTRY', () => {
         p95: { total: 11689 },
       }) as unknown as BenchmarkResults;
 
-    // #42867 onboardingImportWallet, chrome-webpack: p75 11291 vs limit 11050,
-    // breach 241ms < stdDev 303ms — a coin-flip on which samples landed.
+    // Observed on a live benchmark run (onboardingImportWallet,
+    // chrome-webpack): p75 11291 vs limit 11050, breach 241ms < stdDev 303ms
+    // — a coin-flip on which samples landed.
     it('downgrades a Fail to Warn when the breach is within one stdDev', () => {
       const result = applyNoiseTolerance(
         makeComparison(THRESHOLD_SEVERITY.Fail, 11291, 11050),
