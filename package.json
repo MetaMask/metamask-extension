@@ -304,6 +304,7 @@
     "tmp": "^0.2.7",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "esbuild": "0.28.1",
+    "valibot": "^1.4.2",
     "@metamask/snaps-controllers": "^21.0.0",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
