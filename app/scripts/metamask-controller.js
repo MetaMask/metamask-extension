@@ -38,11 +38,6 @@ import {
   createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import {
-  PasskeyControllerError,
-  PasskeyControllerErrorCode,
-  PasskeyControllerErrorMessage,
-} from '@metamask/passkey-controller';
-import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -2944,7 +2939,10 @@ export default class MetamaskController extends EventEmitter {
           this.passkeyController,
         ),
       protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
-      unlockWithPasskey: this.unlockWithPasskey.bind(this),
+      unlockWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockWithPasskey',
+      ),
       removePasskeyWithPasskeyVerification:
         this.removePasskeyWithPasskeyVerification.bind(this),
       removePasskeyWithPasswordVerification:
@@ -4391,27 +4389,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Unlocks the vault with a passkey.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
-   * @returns {Promise<void>}
-   */
-  async unlockWithPasskey(authenticationResponse) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
-      authenticationResponse,
-    );
-    await this.submitEncryptionKey(vaultKey);
-  }
-
-  /**
    * Removes the passkey from the vault using the passkey authentication response.
    *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
@@ -4430,7 +4407,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async removePasskeyWithPasswordVerification(password) {
-    await this.passkeyController.removePasskeyWithPasswordVerification(password);
+    await this.passkeyController.removePasskeyWithPasswordVerification(
+      password,
+    );
   }
 
   /**
@@ -4467,19 +4446,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
    */
   async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
-      );
-    }
-
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+    // Assertion verification + vault-key export live in `PasskeyController`,
+    // which returns the raw wordlist-index bytes from `KeyringController`. The
+    // extension re-encodes them as UTF-8 codepoints for the UI.
+    const mnemonic = await this.passkeyController.exportSeedPhraseWithPasskey(
       authenticationResponse,
-    );
-
-    const mnemonic = await this.keyringController.exportSeedPhrase(
-      { encryptionKey: vaultKey },
       keyringId,
     );
 
@@ -5176,20 +5147,6 @@ export default class MetamaskController extends EventEmitter {
       log.error(error);
       throw error;
     }
-  }
-
-  /**
-   * Submits the user's encryption key and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} encryptionKey - The user's encryption key
-   */
-  async submitEncryptionKey(encryptionKey) {
-    await this.controllerMessenger.call(
-      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-      { encryptionKey },
-    );
   }
 
   async _loginUser(password) {

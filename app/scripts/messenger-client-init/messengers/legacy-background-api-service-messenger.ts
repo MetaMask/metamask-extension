@@ -62,6 +62,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
       'PreferencesController:setPasswordForgotten',
+      'PasskeyController:unlockWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
