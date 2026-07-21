@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { EthAccountType, EthScope, TrxAccountType } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  EthScope,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -687,7 +691,10 @@ describe('AssetPage', () => {
         [MultichainNetworks.TRON]: tronStakedAssets,
       });
 
-      renderWithProvider(<AssetPage asset={native} optionsButton={null} />, store);
+      renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+      );
 
       expect(screen.queryByTestId('tron-staked-balance-row')).toBeNull();
     });
