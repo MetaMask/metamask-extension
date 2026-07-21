@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
-import Box from '../../../components/ui/box';
+import { Box } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
