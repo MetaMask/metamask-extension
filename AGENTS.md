@@ -1738,7 +1738,8 @@ This section captures non-obvious, durable caveats for running this repo inside 
 ### Running / building the extension
 
 - It is a browser extension, so `yarn start` does not open a UI — it webpack-builds + watches into `dist/chrome` (MV3). Initial build takes ~45s and then prints `compiled successfully` / `Watching for changes…`. Load `dist/chrome` as an unpacked extension in a Chromium browser to use it. Use `yarn start:mv2` for Firefox (`dist/firefox`).
-- `.metamaskrc` uses a **placeholder `INFURA_PROJECT_ID` (`00000000000`)**, which is enough to build and to onboard/create a wallet locally, but **all live RPC fails** (you'll see "Unable to connect to <network>"). For any on-chain flow (balances, sending, swaps), set a real `INFURA_PROJECT_ID` in `.metamaskrc` (add it as a secret named `INFURA_PROJECT_ID`), or point networks at a local `yarn anvil` chain (`:8545`).
+- `.metamaskrc` uses a **placeholder `INFURA_PROJECT_ID` (`00000000000`)**, which is enough to build and to onboard/create a wallet locally, but **all live RPC fails** (you'll see "Unable to connect to <network>"). For any on-chain flow (balances, sending, swaps), provide a real `INFURA_PROJECT_ID`, or point networks at a local `yarn anvil` chain (`:8545`).
+- Build config precedence is **`process.env` > `.metamaskprodrc` > `.metamaskrc` > `builds.yml`** (`development/webpack/utils/config.ts`; env vars win). So the Cursor Cloud secret named `INFURA_PROJECT_ID` is picked up automatically by the build in any **new** VM session (it overrides the placeholder in `.metamaskrc` with no file edit needed). Note secrets are injected only into new VMs, not one already running when the secret is added.
 
 ### Visual / interactive verification (`mm` CLI)
 
