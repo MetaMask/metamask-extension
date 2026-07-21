@@ -483,6 +483,5 @@
   "useTokenDetection": true,
   "useTransactionSimulations": true,
   "userOperations": {},
-  "versionFileETag": "",
   "web3ShimUsageOrigins": {}
 }
