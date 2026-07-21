@@ -65,7 +65,6 @@ export async function fetchTokenAlert(
   chain: string,
   tokenAddress: string,
 ): Promise<TokenAlertWithLabelIds | null> {
-
   const url = getUrl('token/scan');
   const body = getSecurityApiScanTokenRequestBody(chain, tokenAddress);
 

@@ -2,9 +2,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import {
-  validateWithSecurityAlertsAPI,
-} from './security-alerts-api';
+import { validateWithSecurityAlertsAPI } from './security-alerts-api';
 
 const CHAIN_ID_MOCK = '0x1';
 

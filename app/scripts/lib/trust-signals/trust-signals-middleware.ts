@@ -48,9 +48,7 @@ export function createTrustSignalsMiddleware(
     try {
       req.requestUrl = requestUrl;
 
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController)
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 
