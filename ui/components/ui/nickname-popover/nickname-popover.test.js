@@ -35,4 +35,17 @@ describe('NicknamePopover', () => {
       screen.getByText(messages.editANickname.message),
     ).toBeInTheDocument();
   });
+
+  it('renders the block explorer link as a button element', () => {
+    const { baseElement } = renderWithProvider(
+      <NicknamePopover address="0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966" />,
+      store,
+    );
+
+    const blockExplorerButton = baseElement.querySelector(
+      '.nickname-popover__etherscan-link',
+    );
+    expect(blockExplorerButton).toBeInTheDocument();
+    expect(blockExplorerButton.tagName).toBe('BUTTON');
+  });
 });
