@@ -6,6 +6,7 @@ import {
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
+import { canBypassDeepLinkInterstitial } from '../../../../shared/lib/deep-links/is-known-safe-asset';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
 
@@ -37,6 +38,24 @@ const parseMock = parse as jest.MockedFunction<typeof parse>;
 jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
+
+const canBypassDeepLinkInterstitialMock =
+  canBypassDeepLinkInterstitial as jest.MockedFunction<
+    typeof canBypassDeepLinkInterstitial
+  >;
+jest.mock('../../../../shared/lib/deep-links/is-known-safe-asset', () => {
+  const {
+    isDeepLinkRouteAllowedToBypassInterstitial,
+  } = jest.requireActual(
+    '../../../../shared/lib/deep-links/routes/interstitial-bypass',
+  );
+  return {
+    canBypassDeepLinkInterstitial: jest.fn(
+      async (route?: { pathname: string }) =>
+        isDeepLinkRouteAllowedToBypassInterstitial(route),
+    ),
+  };
+});
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
 jest.mock('../../../../shared/lib/mv3.utils', () => ({
@@ -326,10 +345,33 @@ describe('DeepLinkRouter', () => {
     });
 
     describe('skipInterstitial routes', () => {
-      it('should show interstitial for unsigned asset links', async () => {
+      it('should show interstitial for unsigned unknown/scam asset links', async () => {
+        const tabId = 1;
+        const url =
+          'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82';
+        canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(false);
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          destination: {
+            path: 'asset/eip155:1/eip155%3A1%2Ferc20%3A0xb047c8032b99841713b8e3872f06cf32beb27b82',
+            query: new URLSearchParams(),
+          },
+          route: { pathname: '/asset' },
+        } as ParsedDeepLink);
+        await onBeforeRequest?.({
+          tabId,
+          url,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+        expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+          url: 'chrome-extension://extension-id/home.html#link?u=%2Fasset%3FassetId%3Deip155%253A1%252Ferc20%253A0xb047c8032b99841713b8e3872f06cf32beb27b82',
+        });
+      });
+
+      it('should redirect unsigned known-safe asset links directly without interstitial', async () => {
         const tabId = 1;
         const url =
           'https://link.metamask.io/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f';
+        canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(true);
         parseMock.mockResolvedValue({
           signature: 'missing',
           destination: {
@@ -343,7 +385,7 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fasset%3FassetId%3Deip155%253A1%252Ferc20%253A0x6b175474e89094c44da98b954eedeac495271d0f',
+          url: 'chrome-extension://extension-id/home.html#asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
         });
       });
 

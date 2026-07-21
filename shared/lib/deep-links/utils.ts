@@ -7,7 +7,7 @@ import {
 import { parse } from './parse';
 import { VALID } from './verify';
 import { DEEP_LINK_ROUTE } from './routes/route';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from './routes/interstitial-bypass';
+import { canBypassDeepLinkInterstitial } from './is-known-safe-asset';
 
 /**
  * Builds the interstitial page route with the given URL path and query.
@@ -67,8 +67,10 @@ export async function getDeferredDeepLinkRoute(
     }
 
     const { destination, route, signature } = parsed;
-    const canBypassInterstitial =
-      isDeepLinkRouteAllowedToBypassInterstitial(route);
+    const canBypassInterstitial = await canBypassDeepLinkInterstitial(
+      route,
+      url,
+    );
 
     // If the destination has a redirectTo property, it's an external URL redirect.
     if ('redirectTo' in destination) {
@@ -86,7 +88,7 @@ export async function getDeferredDeepLinkRoute(
     }
 
     // For internal routes, check the signature unless the route is allowed to
-    // bypass the interstitial.
+    // bypass the interstitial (including known-safe `/asset` targets).
     if (signature !== VALID && !canBypassInterstitial) {
       return {
         type: DeferredDeepLinkRouteType.Interstitial,

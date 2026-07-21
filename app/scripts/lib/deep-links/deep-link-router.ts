@@ -18,7 +18,7 @@ import {
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from '../../../../shared/lib/deep-links/routes/interstitial-bypass';
+import { canBypassDeepLinkInterstitial } from '../../../../shared/lib/deep-links/is-known-safe-asset';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -184,10 +184,11 @@ export class DeepLinkRouter extends EventEmitter<{
         this.emit('navigate', { url, parsed });
 
         if (
-          this.canSkipInterstitial(
+          await this.canSkipInterstitial(
             parsed.signature,
             requestOrigin,
             parsed.route,
+            url,
           )
         ) {
           if ('redirectTo' in parsed.destination) {
@@ -269,20 +270,23 @@ export class DeepLinkRouter extends EventEmitter<{
    * metamask.io, app.metamask.io) always skip the interstitial regardless of
    * signature status — the website is treated as a trusted origin. Deep links
    * matching Extension's mobile-aligned bypass route list also skip the
-   * interstitial regardless of signature status. For links from other origins,
-   * the interstitial is skipped only when the link is signed and the user has
-   * opted in via their preferences.
+   * interstitial regardless of signature status. `/asset` deep links skip only
+   * when the CAIP-19 target is known-safe via the MetaMask Tokens API.
+   * For links from other origins, the interstitial is skipped only when the
+   * link is signed and the user has opted in via their preferences.
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
    * @param route - The parsed deep-link route.
+   * @param deepLinkUrl - The original deep-link URL (used for `/asset` safety checks).
    */
-  canSkipInterstitial(
+  async canSkipInterstitial(
     signatureStatus: SignatureStatus,
     requestOrigin?: string,
     route?: ParsedDeepLink['route'],
-  ): boolean {
-    if (isDeepLinkRouteAllowedToBypassInterstitial(route)) {
+    deepLinkUrl?: URL,
+  ): Promise<boolean> {
+    if (await canBypassDeepLinkInterstitial(route, deepLinkUrl)) {
       return true;
     }
 
