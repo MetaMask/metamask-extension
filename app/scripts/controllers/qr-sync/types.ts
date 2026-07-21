@@ -17,7 +17,6 @@ import {
 import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import type { QrSyncPhase } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
-import type { QrSyncController } from './qr-sync-controller';
 import type { KeyManager } from './key-manager';
 import {
   QR_SYNC_CONTROLLER_NAME,
@@ -27,6 +26,7 @@ import {
   QrSyncMessageVersion,
 } from './constants';
 import { QrSyncDataServiceMethodActions } from './qr-sync-data-service-method-action-types';
+import type { QrSyncController } from './qr-sync-controller';
 
 export type QrSyncConnectionStatusType =
   (typeof QrSyncConnectionStatus)[keyof typeof QrSyncConnectionStatus];

@@ -23,7 +23,7 @@ import {
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import {
   calculateAggregationParams,
   calculateGroupingOptions,
@@ -272,7 +272,7 @@ export const PerpsOrderBook = ({
     enabled: isOpen,
   });
 
-  const displaySymbol = getDisplayName(symbol);
+  const displaySymbol = getDisplaySymbol(symbol);
   const unitLabel = currency === 'usd' ? 'USD' : displaySymbol;
   const metricLabel =
     metric === 'total' ? t('perpsOrderBookTotal') : t('perpsOrderBookSize');

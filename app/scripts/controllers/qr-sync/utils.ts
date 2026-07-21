@@ -1,4 +1,8 @@
-import type { SessionRequest } from '@metamask/mobile-wallet-protocol-core';
+import {
+  ErrorCode as MwpCoreErrorCode,
+  SessionError as MwpCoreSessionError,
+  type SessionRequest,
+} from '@metamask/mobile-wallet-protocol-core';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
 import {
@@ -20,59 +24,6 @@ import type {
   QrSyncMessage,
   QrSyncOffer,
 } from './types';
-
-/**
- * The error code emitted by the MWP client when the QR code expires before the
- * wallet connects (i.e. no handshake offer was received in time).
- *
- * The MWP core enum is minified in the published bundle and cannot be imported
- * safely, so the string is defined locally.
- */
-export const MWP_REQUEST_EXPIRED_CODE = 'REQUEST_EXPIRED';
-
-/**
- * Determines whether an error originates from an expired QR handshake request.
- *
- * @param error - The error to inspect.
- * @returns `true` when the error's `code` or `name` is `REQUEST_EXPIRED`.
- */
-export function isQrExpiredError(error: unknown): boolean {
-  if (!error || typeof error !== 'object') {
-    return false;
-  }
-
-  const { code, name } = error as { code?: unknown; name?: unknown };
-  return code === MWP_REQUEST_EXPIRED_CODE || name === MWP_REQUEST_EXPIRED_CODE;
-}
-
-/**
- * Registry of detectors that map a raw error to a specific QR sync error code.
- *
- * Add future detectable error types here so `#setError` call sites do not need
- * to compute codes individually.
- */
-export const QR_SYNC_ERROR_DETECTORS: {
-  matches: (error: unknown) => boolean;
-  code: QrSyncErrorCodeType;
-}[] = [{ matches: isQrExpiredError, code: QrSyncErrorCodes.QR_EXPIRED }];
-
-/**
- * Resolves the QR sync error code for a raw error, falling back to a default
- * when no detector matches.
- *
- * @param error - The raw error to inspect.
- * @param defaultCode - The code to use when no detector matches.
- * @returns The resolved QR sync error code.
- */
-export function resolveQrSyncErrorCode(
-  error: unknown,
-  defaultCode: QrSyncErrorCodeType,
-): QrSyncErrorCodeType {
-  return (
-    QR_SYNC_ERROR_DETECTORS.find(({ matches }) => matches(error))?.code ??
-    defaultCode
-  );
-}
 
 export function createInitSyncSessionMessage(): QrSyncMessage {
   return {
@@ -190,6 +141,83 @@ export function getSyncCompletionFailureError(error: unknown): QrSyncError {
       message === QrSyncErrorMessages.SYNC_COMPLETION_TIMED_OUT
         ? QrSyncErrorCodes.SESSION_EXPIRED
         : QrSyncErrorCodes.SYNC_FAILED,
+    message,
+  };
+}
+
+/**
+ * Error codes that represent expected user, peer, or transport outcomes and
+ * should not be reported to Sentry.
+ */
+const QR_SYNC_SENTRY_SUPPRESSED_ERROR_CODES: ReadonlySet<QrSyncErrorCodeType> =
+  new Set([
+    QrSyncErrorCodes.CHANNEL_DISCONNECTED,
+    QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED,
+    QrSyncErrorCodes.OTP_EXPIRED,
+    QrSyncErrorCodes.OTP_INVALID,
+    QrSyncErrorCodes.QR_EXPIRED,
+    QrSyncErrorCodes.SESSION_EXPIRED,
+    QrSyncErrorCodes.SYNC_REJECTED,
+  ]);
+
+/**
+ * Returns whether a QR sync error code should be forwarded to Sentry.
+ *
+ * @param code - The resolved QR sync error code.
+ * @returns `true` when the error is unexpected and should be reported.
+ */
+export function shouldReportQrSyncErrorToSentry(
+  code: QrSyncErrorCodeType,
+): boolean {
+  return !QR_SYNC_SENTRY_SUPPRESSED_ERROR_CODES.has(code);
+}
+
+/**
+ * Maps an MWP `SessionError` to the QR sync error shape exposed to the UI.
+ *
+ * Non-MWP errors fall back to `UNKNOWN` so callers can surface a masked message
+ * without leaking raw transport details.
+ *
+ * @param error - The raw MWP error to inspect.
+ * @returns The QR sync error code and user-facing message.
+ */
+export function parseMwpError(error: unknown): QrSyncError {
+  let code: QrSyncErrorCodeType = QrSyncErrorCodes.UNKNOWN;
+  let message: string = QrSyncErrorMessages.UNKNOWN;
+
+  if (error instanceof MwpCoreSessionError) {
+    message = error.message;
+    switch (error.code) {
+      case MwpCoreErrorCode.OTP_MAX_ATTEMPTS_REACHED:
+        code = QrSyncErrorCodes.OTP_ATTEMPTS_EXCEEDED;
+        break;
+      case MwpCoreErrorCode.OTP_ENTRY_TIMEOUT:
+        code = QrSyncErrorCodes.OTP_EXPIRED;
+        break;
+      case MwpCoreErrorCode.OTP_INCORRECT:
+        code = QrSyncErrorCodes.OTP_INVALID;
+        break;
+      case MwpCoreErrorCode.REQUEST_EXPIRED:
+        code = QrSyncErrorCodes.QR_EXPIRED;
+        break;
+      case MwpCoreErrorCode.SESSION_EXPIRED:
+        code = QrSyncErrorCodes.SESSION_EXPIRED;
+        break;
+      case MwpCoreErrorCode.TRANSPORT_DISCONNECTED:
+        code = QrSyncErrorCodes.CHANNEL_DISCONNECTED;
+        break;
+      case MwpCoreErrorCode.SESSION_NOT_FOUND:
+        code = QrSyncErrorCodes.CHANNEL_DISCONNECTED;
+        break;
+      default:
+        code = QrSyncErrorCodes.UNKNOWN;
+        message = error.message;
+        break;
+    }
+  }
+
+  return {
+    code,
     message,
   };
 }

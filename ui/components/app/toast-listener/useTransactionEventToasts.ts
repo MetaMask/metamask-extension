@@ -10,7 +10,10 @@ import type {
   Transaction,
 } from '@metamask/keyring-api';
 import { useMessenger } from '../../../hooks/useMessenger';
-import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -40,14 +43,18 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
-  TransactionType.musdClaim,
   TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
-  TransactionType.perpsWithdraw,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
+
+// Ported from custom toasts that included pre-broadcast (approved/signed) stage
+const earlyPendingToastTypes = new Set([
+  TransactionType.musdConversion,
+  TransactionType.musdClaim,
+]);
 
 function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
   // Top-level only — nested swapApproval inside batch txs must still toast.
@@ -70,8 +77,12 @@ function isPendingToastStatus(
     return true;
   }
 
-  // Ported from MusdConversionToast which included pre-broadcast stage
-  if (transactionMeta.type === TransactionType.musdConversion) {
+  const isEarlyPending =
+    (transactionMeta.type &&
+      earlyPendingToastTypes.has(transactionMeta.type)) ||
+    isPerpsWithdrawTransaction(transactionMeta);
+
+  if (isEarlyPending) {
     return (
       status === TransactionStatus.approved ||
       status === TransactionStatus.signed

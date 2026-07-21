@@ -278,9 +278,6 @@
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/transaction-list-item/transaction-list-item.component.unified-swap-bridge.test.tsx": {
-      "error: Error: Insufficient number of substitutions": 1
-    },
     "ui/components/app/update-modal/update-modal.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 1
@@ -351,9 +348,6 @@
     },
     "ui/components/multichain/account-overview/account-overview-unknown.test.tsx": {
       "MetaMask: Background connection not initialized": 3
-    },
-    "ui/components/multichain/activity-list-item/activity-list-item.test.js": {
-      "React: DOM nesting violations": 1
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Input stability warnings": 3
@@ -550,9 +544,6 @@
     },
     "ui/hooks/useTokenSearch.test.ts": {
       "error: Error: boom": 1
-    },
-    "ui/hooks/useTransactionDisplayData.test.js": {
-      "MetaMask: XChain Swaps warnings": 4
     },
     "ui/pages/asset/components/asset-page.test.tsx": {
       "React: DOM nesting violations": 2,

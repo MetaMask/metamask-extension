@@ -92,7 +92,7 @@ describe('compare-benchmarks', () => {
       // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 99999 },
@@ -290,7 +290,7 @@ describe('compare-benchmarks', () => {
       // surface in WARN, not FAIL, and not change the overall PASS verdict.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults(
               'importWalletToSocialScreen',
