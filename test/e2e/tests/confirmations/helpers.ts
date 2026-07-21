@@ -55,7 +55,7 @@ export function withTransactionEnvelopeTypeFixtures(
       testSpecificMock: combinedMocks,
       manifestFlags: {
         remoteFeatureFlags: {
-          extensionUxTokenManagementFilter: false,
+          extensionUxTokenManagementFilter: true,
         },
       },
       title,

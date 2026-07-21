@@ -566,6 +566,17 @@ class TestDapp {
     });
   }
 
+  /**
+   * Verifies personal sign success on the test dapp after the confirmation dialog closes.
+   *
+   * @param publicKey - The public key to verify the signature with.
+   */
+  async verifyPersonalSignSuccess(publicKey: string): Promise<void> {
+    console.log('Verify personal sign success on test dapp:', publicKey);
+    await this.checkSuccessPersonalSign(publicKey);
+    await this.verifyPersonalSignSigUtilResult(publicKey);
+  }
+
   async checkSuccessSign721Permit(publicKey: string) {
     console.log('Verify successful signPermit signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

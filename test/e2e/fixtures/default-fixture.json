@@ -151,7 +151,9 @@
               "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
               "groupIndex": 0
             },
-            "scopes": ["eip155:0"],
+            "scopes": [
+              "eip155:0"
+            ],
             "type": "eip155:eoa"
           }
         },
@@ -170,11 +172,16 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false,
+      "consentDecisionMade": true
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 216,
+      "currentMigrationVersion": 219,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -197,8 +204,9 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -339,16 +347,35 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": ["0x1", "0xe708"],
+        "supportedNetworks": [
+          "0x1",
+          "0xe708"
+        ],
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -423,11 +450,6 @@
     },
     "LoggingController": {
       "logs": {}
-    },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false,
-      "consentDecisionMade": true
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
@@ -551,6 +573,18 @@
           "name": "Solana Devnet",
           "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
         },
+        "stellar:pubnet": {
+          "chainId": "stellar:pubnet",
+          "isEvm": false,
+          "name": "Stellar",
+          "nativeCurrency": "stellar:pubnet/slip44:148"
+        },
+        "stellar:testnet": {
+          "chainId": "stellar:testnet",
+          "isEvm": false,
+          "name": "Stellar Testnet",
+          "nativeCurrency": "stellar:testnet/slip44:148"
+        },
         "tron:2494104990": {
           "chainId": "tron:2494104990",
           "isEvm": false,
@@ -574,7 +608,10 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": ["btc", "sol"],
+      "cryptocurrencies": [
+        "btc",
+        "sol"
+      ],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -601,7 +638,9 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": ["https://etherscan.io"],
+          "blockExplorerUrls": [
+            "https://etherscan.io"
+          ],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -619,7 +658,9 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "blockExplorerUrls": [
+            "https://megaeth-testnet-v2.blockscout.com"
+          ],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -635,7 +676,9 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": ["https://basescan.org"],
+          "blockExplorerUrls": [
+            "https://basescan.org"
+          ],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -653,7 +696,9 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
+          "blockExplorerUrls": [
+            "https://testnet.monadexplorer.com"
+          ],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -669,7 +714,9 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": ["https://bscscan.com"],
+          "blockExplorerUrls": [
+            "https://bscscan.com"
+          ],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -700,7 +747,9 @@
           ]
         },
         "0x89": {
-          "blockExplorerUrls": ["https://polygonscan.com"],
+          "blockExplorerUrls": [
+            "https://polygonscan.com"
+          ],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -718,7 +767,9 @@
           ]
         },
         "0x8f": {
-          "blockExplorerUrls": ["https://monadscan.com"],
+          "blockExplorerUrls": [
+            "https://monadscan.com"
+          ],
           "chainId": "0x8f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -734,7 +785,9 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://optimistic.etherscan.io"
+          ],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -752,7 +805,9 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": ["https://arbiscan.io"],
+          "blockExplorerUrls": [
+            "https://arbiscan.io"
+          ],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -770,7 +825,9 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://sepolia.etherscan.io"
+          ],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -786,7 +843,9 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+          "blockExplorerUrls": [
+            "https://sepolia.lineascan.build"
+          ],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -802,7 +861,9 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": ["https://lineascan.build"],
+          "blockExplorerUrls": [
+            "https://lineascan.build"
+          ],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -893,6 +954,10 @@
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": false,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
+        "stellar": {
+          "stellar:pubnet": false,
+          "stellar:testnet": false
+        },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
@@ -951,19 +1016,18 @@
       "isNotificationServicesEnabled": true,
       "metamaskNotificationsList": [],
       "metamaskNotificationsReadList": [],
-      "subscriptionAccountsSeen": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"]
+      "subscriptionAccountsSeen": [
+        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      ]
     },
     "NotificationServicesPushController": {
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1027,7 +1091,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -1043,7 +1106,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1097,7 +1162,9 @@
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-            "scopes": ["eip155:0"]
+            "scopes": [
+              "eip155:0"
+            ]
           },
           {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
@@ -1109,6 +1176,18 @@
           }
         ]
       }
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
@@ -1153,7 +1232,13 @@
           "subscriptionId": null
         }
       },
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": {
+        "account": "eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "lastFreshOptInStatusCheck": 1783610142869,
+        "lastPerpsDiscountRateFetched": null,
+        "perpsFeeDiscount": null,
+        "subscriptionId": null
+      },
       "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
@@ -1263,6 +1348,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 216
+    "version": 219
   }
 }

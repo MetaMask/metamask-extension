@@ -15,6 +15,20 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import ConfirmAddSuggestedToken from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -68,12 +82,6 @@ jest.mock('../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
-
-jest.mock('../../hooks/useIsOriginalTokenSymbol', () => {
-  return {
-    useIsOriginalTokenSymbol: jest.fn(),
-  };
-});
 
 const renderComponent = (tokens = []) => {
   mockNavigate.mockClear();

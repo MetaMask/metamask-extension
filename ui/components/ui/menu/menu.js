@@ -59,13 +59,7 @@ Menu.propTypes = {
   className: PropTypes.string,
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
-  dataTestId: PropTypes.string,
-};
-
-Menu.defaultProps = {
-  anchorElement: undefined,
-  className: undefined,
-  popperOptions: undefined,
+  'data-testid': PropTypes.string,
 };
 
 export default Menu;

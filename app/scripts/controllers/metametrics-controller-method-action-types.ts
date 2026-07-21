@@ -104,38 +104,6 @@ export type MetaMetricsControllerSetMarketingCampaignCookieIdAction = {
   handler: MetaMetricsController['setMarketingCampaignCookieId'];
 };
 
-/**
- * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
- *
- * @param payload - details of the event
- * @param options - options for handling/routing the event
- */
-export type MetaMetricsControllerTrackEventAction = {
-  type: `MetaMetricsController:trackEvent`;
-  handler: MetaMetricsController['trackEvent'];
-};
-
-/**
- * Identifies the user with valid user traits if they are participating in
- * the MetaMetrics analytics program.
- *
- * @param userTraits
- */
-export type MetaMetricsControllerIdentifyAction = {
-  type: `MetaMetricsController:identify`;
-  handler: MetaMetricsController['identify'];
-};
-
-/**
- * Track a page view through AnalyticsController.
- *
- * @param payload - details of the page viewed.
- */
-export type MetaMetricsControllerTrackPageAction = {
-  type: `MetaMetricsController:trackPage`;
-  handler: MetaMetricsController['trackPage'];
-};
-
 export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
   type: `MetaMetricsController:handleMetaMaskStateUpdate`;
   handler: MetaMetricsController['handleMetaMaskStateUpdate'];
@@ -198,9 +166,6 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerSetParticipateInMetaMetricsAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerTrackEventAction
-  | MetaMetricsControllerIdentifyAction
-  | MetaMetricsControllerTrackPageAction
   | MetaMetricsControllerHandleMetaMaskStateUpdateAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction

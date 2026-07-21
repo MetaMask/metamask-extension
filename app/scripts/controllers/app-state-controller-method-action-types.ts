@@ -276,6 +276,17 @@ export type AppStateControllerSetHasShownMultichainAccountsIntroModalAction = {
 };
 
 /**
+ * Sets whether the user has seen (and therefore dismissed) the Perps tab
+ * "New" badge.
+ *
+ * @param value - Whether the Perps tab badge has been seen
+ */
+export type AppStateControllerSetPerpsTabBadgeSeenAction = {
+  type: `AppStateController:setPerpsTabBadgeSeen`;
+  handler: AppStateController['setPerpsTabBadgeSeen'];
+};
+
+/**
  * Sets whether the mUSD conversion education screen has been seen.
  *
  * @param value - Whether the education screen has been seen
@@ -595,6 +606,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerRemovePollingTokenAction
   | AppStateControllerClearPollingTokensAction
   | AppStateControllerSetHasShownMultichainAccountsIntroModalAction
+  | AppStateControllerSetPerpsTabBadgeSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction

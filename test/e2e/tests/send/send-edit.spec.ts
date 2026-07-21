@@ -76,6 +76,9 @@ describe('Send - Edit Transaction', function () {
 
         await sendPage.pressContinueButton();
 
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.07');
+
         // Open gas fee modal and set custom legacy gas values
         await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.setCustomLegacyGasFee({
@@ -136,6 +139,9 @@ describe('Send - Edit Transaction', function () {
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
+
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
 
         // Open gas fee modal and set custom EIP-1559 gas values
         await transactionConfirmation.openGasFeeModal();

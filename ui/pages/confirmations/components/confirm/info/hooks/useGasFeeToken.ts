@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 import {
   BatchTransactionParams,
@@ -18,7 +19,7 @@ import {
   getShouldShowFiat,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
 import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
@@ -79,20 +80,34 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
     chainId,
   );
 
-  const transferTransaction =
-    tokenAddress === NATIVE_TOKEN_ADDRESS
-      ? getNativeTransferTransaction(gasFeeToken)
-      : getTokenTransferTransaction(gasFeeToken);
+  const transferTransaction = useMemo(
+    () =>
+      tokenAddress === NATIVE_TOKEN_ADDRESS
+        ? getNativeTransferTransaction(gasFeeToken)
+        : getTokenTransferTransaction(gasFeeToken),
+    [tokenAddress, gasFeeToken],
+  );
 
-  return {
-    ...gasFeeToken,
-    amountFormatted,
-    amountFiat,
-    balanceFiat,
-    metaMaskFee,
-    metamaskFeeFiat,
-    transferTransaction,
-  };
+  return useMemo(
+    () => ({
+      ...gasFeeToken,
+      amountFormatted,
+      amountFiat,
+      balanceFiat,
+      metaMaskFee,
+      metamaskFeeFiat,
+      transferTransaction,
+    }),
+    [
+      gasFeeToken,
+      amountFormatted,
+      amountFiat,
+      balanceFiat,
+      metaMaskFee,
+      metamaskFeeFiat,
+      transferTransaction,
+    ],
+  );
 }
 
 export function useSelectedGasFeeToken() {
@@ -117,26 +132,39 @@ function useNativeGasFeeToken(): GasFeeToken {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId, chainId),
+  const selectBalance = useMemo(
+    () => (state: unknown) =>
+      selectTransactionAvailableBalance(state, transactionId, chainId),
+    [transactionId, chainId],
   );
+  const balance = useSelector(selectBalance);
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
-  return {
-    amount: estimatedFeeNativeHex,
-    balance,
-    decimals: 18,
-    gas: gas as Hex,
-    gasTransfer: '0x0',
-    maxFeePerGas: maxFeePerGas as Hex,
-    maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
-    rateWei: RATE_WEI_NATIVE,
-    recipient: NATIVE_TOKEN_ADDRESS,
-    symbol: nativeCurrencySymbol,
-    tokenAddress: NATIVE_TOKEN_ADDRESS,
-  };
+  return useMemo(
+    () => ({
+      amount: estimatedFeeNativeHex,
+      balance,
+      decimals: 18,
+      gas: gas as Hex,
+      gasTransfer: '0x0',
+      maxFeePerGas: maxFeePerGas as Hex,
+      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
+      rateWei: RATE_WEI_NATIVE,
+      recipient: NATIVE_TOKEN_ADDRESS,
+      symbol: nativeCurrencySymbol,
+      tokenAddress: NATIVE_TOKEN_ADDRESS,
+    }),
+    [
+      estimatedFeeNativeHex,
+      balance,
+      gas,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      nativeCurrencySymbol,
+    ],
+  );
 }
 
 function useFiatTokenValue(
@@ -180,7 +208,7 @@ function useFiatTokenValue(
     return fallbackFiatValue ?? '';
   }
 
-  const fiatAmount = nativeEth.times(conversionRate);
+  const fiatAmount = nativeEth.times(String(conversionRate));
 
   if (fiatAmount.lt(new BigNumber(0.01)) && fiatAmount.gt(new BigNumber(0))) {
     return `< ${fiatFormatter(0.01)}`;

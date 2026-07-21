@@ -2,12 +2,16 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useContext,
   useMemo,
   useCallback,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  ButtonIcon as DsButtonIcon,
+  ButtonIconSize as DsButtonIconSize,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -24,8 +28,6 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -48,11 +50,8 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../../../shared/constants/network';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -70,7 +69,6 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  showImportTokensModal,
   showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
@@ -85,10 +83,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
-import {
-  getIsNetworkManagementEnabled,
-  getIsTokenManagementFilterEnabled,
-} from '../../../../../selectors/multichain/feature-flags';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
@@ -107,7 +102,7 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
@@ -122,9 +117,6 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isTokenManagementFilterEnabled = useSelector(
-    getIsTokenManagementFilterEnabled,
-  );
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
@@ -158,6 +150,7 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
@@ -273,31 +266,24 @@ const AssetListControlBar = ({
     setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
   };
 
-  const handleTokenImportModal = () => {
-    dispatch(showImportTokensModal());
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
-      },
-    });
-    closePopover();
-  };
-
   const handleOpenTokenManagement = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'HOME',
+        })
+        .build(),
+    );
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
-    navigate(TOKEN_MANAGEMENT_ROUTE);
-  }, [navigate, trackEvent]);
+    navigate(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
     dispatch(showImportNftsModal({}));
@@ -334,17 +320,6 @@ const AssetListControlBar = ({
     });
   };
 
-  const singleNetworkIconUrl = useMemo(() => {
-    const chainIds = allEnabledNetworksForAllNamespaces;
-
-    if (totalEnabledNetworkCount !== 1) {
-      return undefined;
-    }
-
-    const singleEnabledChainId = chainIds[0];
-    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
-
   return (
     <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -354,27 +329,32 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
+          startIconName={IconName.Filter}
+          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
           backgroundColor={
             isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
               : BackgroundColor.backgroundDefault
           }
-          color={TextColor.textDefault}
+          color={
+            isSingleNetworkFilterSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
           marginRight={isFullScreen ? 2 : null}
           borderColor={BorderColor.borderMuted}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {singleNetworkIconUrl && (
-              <AvatarNetwork
-                name={currentMultichainNetwork.nickname}
-                src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Xs}
-                borderWidth={0}
-              />
-            )}
-            <Text variant={TextVariant.bodySmMedium} ellipsis>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={
+                isSingleNetworkFilterSelected
+                  ? TextColor.primaryDefault
+                  : TextColor.textDefault
+              }
+              ellipsis
+            >
               {networkButtonText}
             </Text>
           </Box>
@@ -384,6 +364,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
+          alignItems={AlignItems.center}
         >
           {showSortControl && (
             <Tooltip
@@ -392,21 +373,16 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <ButtonBase
+              <DsButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className="asset-list-control-bar__button"
+                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
+                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
+                } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
-                startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                backgroundColor={
-                  isTokenSortPopoverOpen
-                    ? BackgroundColor.backgroundPressed
-                    : BackgroundColor.backgroundDefault
-                }
-                color={TextColor.textDefault}
-                marginRight={isFullScreen ? 2 : null}
+                size={DsButtonIconSize.Sm}
+                iconName={DsIconName.ListArrow}
+                ariaLabel={t('sortBy')}
               />
             </Tooltip>
           )}
@@ -424,37 +400,18 @@ const AssetListControlBar = ({
               />
             ) : (
               <Tooltip
-                title={
-                  isTokenManagementFilterEnabled
-                    ? t('manageTokens')
-                    : t('importTokensCamelCase')
-                }
+                title={t('manageTokens')}
                 position="bottom"
                 distance={20}
               >
-                <ButtonBase
+                <DsButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button"
-                  onClick={
-                    isTokenManagementFilterEnabled
-                      ? handleOpenTokenManagement
-                      : handleTokenImportModal
-                  }
-                  size={ButtonBaseSize.Sm}
-                  startIconName={
-                    isTokenManagementFilterEnabled
-                      ? IconName.MoreVertical
-                      : IconName.Add
-                  }
-                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={
-                    isTokenSortPopoverOpen
-                      ? BackgroundColor.backgroundPressed
-                      : BackgroundColor.backgroundDefault
-                  }
-                  color={TextColor.textDefault}
-                  marginRight={isFullScreen ? 2 : null}
+                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
+                  onClick={handleOpenTokenManagement}
+                  size={DsButtonIconSize.Sm}
+                  iconName={DsIconName.MoreVertical}
+                  ariaLabel={t('manageTokens')}
                 />
               </Tooltip>
             ))}
@@ -500,28 +457,18 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        {isTokenManagementFilterEnabled ? (
-          <SelectableListItem
-            onClick={handleOpenTokenManagement}
-            testId="manageTokens"
-            className="min-h-12"
-          >
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Sm}
-              marginInlineEnd={2}
-            />
-            {t('manageTokens')}
-          </SelectableListItem>
-        ) : (
-          <SelectableListItem
-            onClick={handleTokenImportModal}
-            testId="importTokens"
-          >
-            <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
-            {t('importTokensCamelCase')}
-          </SelectableListItem>
-        )}
+        <SelectableListItem
+          onClick={handleOpenTokenManagement}
+          testId="manageTokens"
+          className="min-h-12"
+        >
+          <Icon
+            name={IconName.Setting}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('manageTokens')}
+        </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
             name={IconName.Refresh}

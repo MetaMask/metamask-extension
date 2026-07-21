@@ -27,8 +27,15 @@ import {
 } from '../../../components/component-library';
 
 import { EditGasModes } from '../../../../shared/constants/gas';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
+import {
+  getAppIsLoading,
+  getSelectedAccount,
+  getShouldShowFiat,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import { isBalanceSufficient } from '../send-utils/send.utils';
 import {
   GasFeeModalContextProvider,
   GasFeeModalWrapper,
@@ -36,7 +43,6 @@ import {
 } from '../context/gas-fee-modal';
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
-import { getAppIsLoading, getShouldShowFiat } from '../../../selectors';
 import {
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,
@@ -229,9 +235,11 @@ const DescriptionSection = ({ isCancel }: { isCancel: boolean }) => {
 const ConfirmButton = ({
   onClick,
   disabled,
+  hasInsufficientBalance,
 }: {
   onClick: () => void;
   disabled?: boolean;
+  hasInsufficientBalance?: boolean;
 }) => {
   const t = useI18nContext();
   return (
@@ -242,7 +250,7 @@ const ConfirmButton = ({
       disabled={disabled}
       data-testid="cancel-speedup-confirm-button"
     >
-      {t('confirm')}
+      {hasInsufficientBalance ? t('insufficientFundsSend') : t('confirm')}
     </Button>
   );
 };
@@ -286,6 +294,22 @@ const CancelSpeedupModal = ({
   const t = useI18nContext();
   const isCancel = mode === EditGasModes.cancel;
 
+  const selectedAccount = useSelector(getSelectedAccount);
+
+  const hasEnoughBalance = isInitialGasReady
+    ? isBalanceSufficient({
+        amount: '0x0',
+        gasTotal: getMaximumGasTotalInHexWei({
+          gasLimit:
+            effectiveTransaction.txParams?.gas ??
+            effectiveTransaction.txParams?.gasLimit,
+          gasPrice: effectiveTransaction.txParams?.gasPrice,
+          maxFeePerGas: effectiveTransaction.txParams?.maxFeePerGas,
+        }),
+        balance: selectedAccount?.balance,
+      })
+    : true;
+
   const handleSubmit = () => {
     const action = isCancel ? cancelTransaction : speedUpTransaction;
     submitTransaction(action, isCancel);
@@ -314,7 +338,11 @@ const CancelSpeedupModal = ({
           <DescriptionSection isCancel={isCancel} />
         </Box>
         <ModalFooter>
-          <ConfirmButton onClick={handleSubmit} disabled={!isInitialGasReady} />
+          <ConfirmButton
+            onClick={handleSubmit}
+            disabled={!isInitialGasReady || !hasEnoughBalance}
+            hasInsufficientBalance={isInitialGasReady && !hasEnoughBalance}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>

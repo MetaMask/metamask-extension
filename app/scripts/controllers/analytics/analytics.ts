@@ -4,9 +4,9 @@ import type {
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
-import type { NetworkClientId } from '@metamask/network-controller';
-import type { Hex, Json } from '@metamask/utils';
-import { omit, omitBy } from 'lodash';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import type { Json } from '@metamask/utils';
+import { omitBy } from 'lodash';
 import type {
   AnalyticsEvent,
   AnalyticsEventBuildOptions,
@@ -24,16 +24,10 @@ import {
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
-import { UTM_PARAMETERS } from '../../../../shared/types/metametrics';
-import {
-  enrichWithABTests,
-  getRemoteFeatureFlagsWithManifestOverrides,
-  hasABTestAnalyticsMappingForEvent,
-} from '../../../../shared/lib/ab-testing/ab-test-analytics';
+import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
-import type { AnalyticsMessenger } from './analytics-messenger';
 
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
@@ -50,17 +44,18 @@ type SegmentPagePayload = {
 };
 
 type ConfigureAnalyticsOptions = {
-  messenger: AnalyticsMessenger;
-  version: string;
-  environment: string;
+  messenger: AnalyticsControllerInitMessenger;
 };
 
-const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
+let messenger: AnalyticsControllerInitMessenger | undefined;
+let cachedProfileIdentity:
+  | {
+      profileId?: string;
+      canonicalProfileId?: string;
+    }
+  | undefined;
 
-let messenger: AnalyticsMessenger | undefined;
-let appVersion = '';
-
-function getMessenger(): AnalyticsMessenger {
+function getMessenger(): AnalyticsControllerInitMessenger {
   if (!messenger) {
     throw new Error('Analytics has not been configured');
   }
@@ -72,36 +67,47 @@ function getMessenger(): AnalyticsMessenger {
  *
  * @param options - Configuration options.
  * @param options.messenger - Messenger with analytics state and delivery access.
- * @param options.version - Extension version.
- * @param options.environment - Build environment.
  */
 export function configureAnalytics({
   messenger: configuredMessenger,
-  version,
-  environment,
 }: ConfigureAnalyticsOptions): void {
   messenger = configuredMessenger;
-  appVersion =
-    environment === 'production' ? version : `${version}-${environment}`;
 }
 
-function getCurrentChainId(networkClientId?: NetworkClientId): Hex {
-  const selectedNetworkClientId =
-    networkClientId ||
-    getMessenger().call('NetworkController:getState').selectedNetworkClientId;
-  const {
-    configuration: { chainId },
-  } = getMessenger().call(
-    'NetworkController:getNetworkClientById',
-    selectedNetworkClientId,
-  );
-  return chainId;
+/**
+ * Cache profile identity derived from SRP session data for event properties.
+ * Only profile IDs are retained, not access tokens or other session fields.
+ *
+ * @param srpSessionData - Current SRP session data from MetaMask state.
+ */
+export function updateProfileSessionData(
+  srpSessionData: AuthenticationController.AuthenticationControllerState['srpSessionData'],
+): void {
+  const profile = Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile;
+
+  if (!profile) {
+    cachedProfileIdentity = undefined;
+    return;
+  }
+
+  cachedProfileIdentity = {
+    profileId: profile.profileId,
+    canonicalProfileId: profile.canonicalProfileId,
+  };
 }
 
-function getLocale(): string {
-  return getMessenger()
-    .call('PreferencesController:getState')
-    .currentLocale.replace('_', '-');
+export function getProfileIdentityProperties(): Record<string, string> {
+  return omitBy(
+    {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      profile_id: cachedProfileIdentity?.profileId,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      canonical_profile_id: cachedProfileIdentity?.canonicalProfileId,
+    },
+    (value) => !value,
+  ) as Record<string, string>;
 }
 
 function isBasicFunctionalityEnabled(): boolean {
@@ -124,17 +130,6 @@ export function canSubmitAnalytics(eventName?: string): boolean {
     'AnalyticsController:getState',
   );
   return optedIn && analyticsId.length > 0;
-}
-
-function getRemoteFeatureFlags(): Record<string, unknown> {
-  return getRemoteFeatureFlagsWithManifestOverrides(
-    getMessenger().call('RemoteFeatureFlagController:getState')
-      ?.remoteFeatureFlags as Record<string, unknown> | undefined,
-  );
-}
-
-function getMetaMetricsState() {
-  return getMessenger().call('MetaMetricsController:getState');
 }
 
 function isValidTraitDate(value: unknown): value is Date {
@@ -197,83 +192,35 @@ export function validateIdentifyPayload(
   return validTraits as AnalyticsUserTraits;
 }
 
-function enrichWithABTestAnalytics(event: AnalyticsEvent): AnalyticsEvent {
-  let normalizedEvent = event;
-
-  if (event.properties.active_ab_tests !== undefined) {
-    try {
-      normalizedEvent = enrichWithABTests(event, null, []);
-    } catch {
-      normalizedEvent = event;
-    }
-  }
-
-  if (!hasABTestAnalyticsMappingForEvent(event.name)) {
-    return normalizedEvent;
-  }
-
-  try {
-    return enrichWithABTests(normalizedEvent, getRemoteFeatureFlags());
-  } catch {
-    return normalizedEvent;
-  }
-}
-
 function buildContext(
   referrer: MetaMetricsContext['referrer'],
   page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
 ): MetaMetricsContext {
-  return {
-    app: {
-      name: 'MetaMask Extension',
-      version: appVersion,
+  return omitBy(
+    {
+      page,
+      referrer,
     },
-    userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
-    page,
-    referrer,
-    marketingCampaignCookieId: getMetaMetricsState().marketingCampaignCookieId,
-  };
+    (propertyValue) => propertyValue === undefined,
+  ) as MetaMetricsContext;
 }
 
 function buildTrackEventPayload(
   rawEvent: AnalyticsEvent,
   options?: AnalyticsEventBuildOptions,
 ): SegmentTrackPayload {
-  const enrichedEvent = enrichWithABTestAnalytics(rawEvent);
-
-  const { name: event, properties, sensitiveProperties } = enrichedEvent;
+  const { name: event, properties, sensitiveProperties } = rawEvent;
   const {
     environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     page,
     referrer,
   } = options ?? {};
 
-  let chainId;
-  if (
-    properties &&
-    'chain_id_caip' in properties &&
-    typeof properties.chain_id_caip === 'string'
-  ) {
-    chainId = null;
-  } else if (
-    properties &&
-    'chain_id' in properties &&
-    typeof properties.chain_id === 'string'
-  ) {
-    chainId = properties.chain_id;
-  } else {
-    chainId = getCurrentChainId();
-  }
-
   return {
     event,
     properties: omitBy(
       {
         ...properties,
-        locale: getLocale(),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
@@ -290,25 +237,11 @@ function buildTrackPagePayload(
 ): SegmentPagePayload {
   const { name, params, environmentType, page, referrer } = payload;
 
-  const { isEvmSelected, selectedMultichainNetworkChainId } =
-    getMessenger().call('MultichainNetworkController:getState');
-
   return {
     name: name ?? '',
     properties: omitBy(
       {
         params,
-        locale: getLocale(),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: isEvmSelected ? getCurrentChainId() : null,
-        ...(isEvmSelected
-          ? {}
-          : {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id_caip: selectedMultichainNetworkChainId,
-            }),
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
@@ -360,31 +293,6 @@ function applyLegacyEventOptions(
   }
 }
 
-function removeUtmPropertiesWithoutMarketingConsent<
-  TProperties extends Record<string, Json>,
->(properties: TProperties): TProperties {
-  if (getMetaMetricsState().dataCollectionForMarketing) {
-    return properties;
-  }
-
-  return omit(properties, MARKETING_UTM_PARAMETERS) as TProperties;
-}
-
-function trackMetricsOptOutEvent(eventPayload: SegmentTrackPayload): void {
-  const { analyticsId } = getMessenger().call('AnalyticsController:getState');
-
-  if (analyticsId.length === 0 || getPlatform() === PLATFORM_FIREFOX) {
-    return;
-  }
-
-  trackSegmentEventWhileOptedOut({
-    analyticsId,
-    event: MetaMetricsEventName.MetricsOptOut,
-    properties: eventPayload.properties as Record<string, Json> | undefined,
-    context: eventPayload.context as AnalyticsContext | undefined,
-  });
-}
-
 export function trackEvent(
   built: AnalyticsEvent,
   options?: AnalyticsEventBuildOptions,
@@ -399,30 +307,36 @@ export function trackEvent(
     const eventPayload = buildTrackEventPayload(built, mergedOptions);
 
     if (built.name === MetaMetricsEventName.MetricsOptOut) {
-      trackMetricsOptOutEvent(eventPayload);
+      const { analyticsId } = getMessenger().call(
+        'AnalyticsController:getState',
+      );
+
+      if (analyticsId.length === 0 || getPlatform() === PLATFORM_FIREFOX) {
+        return;
+      }
+
+      trackSegmentEventWhileOptedOut({
+        analyticsId,
+        event: MetaMetricsEventName.MetricsOptOut,
+        properties: eventPayload.properties as Record<string, Json> | undefined,
+        context: eventPayload.context as AnalyticsContext | undefined,
+      });
       return;
     }
 
     applyAnonymousEventOptions(eventPayload, mergedOptions);
     applyLegacyEventOptions(eventPayload, mergedOptions);
 
-    const properties = removeUtmPropertiesWithoutMarketingConsent(
-      eventPayload.properties,
-    );
-    const sensitiveProperties = removeUtmPropertiesWithoutMarketingConsent(
-      eventPayload.sensitiveProperties ?? {},
-    );
-
     getMessenger().call(
       'AnalyticsController:trackEvent',
       {
         name: eventPayload.event,
-        properties,
-        sensitiveProperties,
+        properties: eventPayload.properties,
+        sensitiveProperties: eventPayload.sensitiveProperties ?? {},
         saveDataRecording: false, // Legacy property that is ignored by the analytics controller and will be removed from the type in the future.
         hasProperties:
-          Object.keys(properties).length > 0 ||
-          Object.keys(sensitiveProperties).length > 0,
+          Object.keys(eventPayload.properties).length > 0 ||
+          Object.keys(eventPayload.sensitiveProperties ?? {}).length > 0,
       } satisfies AnalyticsTrackingEvent,
       eventPayload.context as AnalyticsContext | undefined,
     );

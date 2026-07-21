@@ -7,8 +7,8 @@ import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sd
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import type {
-  MetaMetricsEventPayload,
   MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import type {
   TraceRequest,

@@ -9,83 +9,63 @@ import SettingsPage from './settings/settings-page';
 class AccountListPage {
   private readonly driver: Driver;
 
+  private readonly accountDetailsTab = {
+    text: 'Account details',
+    tag: 'button',
+  };
+
   private readonly accountListBalance =
     '[data-testid="first-currency-display"]';
+
+  private readonly accountListItem =
+    '.multichain-account-menu-popover__list--menu-item';
+
+  private readonly accountMenuButton =
+    '[data-testid="account-list-menu-details"]';
 
   private readonly accountPageBalance = '[data-testid="balance-display"]';
 
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
 
-  private readonly accountListItem =
-    '.multichain-account-menu-popover__list--menu-item';
-
-  private readonly multichainAccountListItem = '.multichain-account-cell';
-
-  private readonly walletHeader =
-    '[data-testid="multichain-account-tree-wallet-header"]';
-
-  private readonly accountMenuButton =
-    '[data-testid="account-list-menu-details"]';
-
-  private readonly accountDetailsTab = {
-    text: 'Account details',
-    tag: 'button',
-  };
-
-  private readonly multichainAccountOptionsMenuButton =
-    '[data-testid="multichain-account-cell-end-accessory"]';
-
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
-
-  private readonly chooseWalletTypeWatchEthereumAccountButton =
-    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
   private readonly addingAccountMessage = {
     text: 'Adding account...',
     tag: 'p',
   };
 
-  private readonly addSnapAccountButton =
-    '[data-testid="choose-wallet-type-snap-account"]';
-
-  private readonly walletDetailsButton = {
-    text: 'Details',
-    tag: 'button',
-  };
-
-  private readonly closeAccountModalButton =
-    'header button[aria-label="Close"]';
-
-  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
-
-  private readonly closeMultichainAccountsPageButton =
-    '.multichain-page-header button[aria-label="Back"]';
+  private readonly addMultichainAccountButton =
+    '[data-testid="add-multichain-account-button"]';
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
-  private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-wallet"]';
+  private readonly addMultichainWalletButtonEnabled =
+    '[data-testid="account-list-add-wallet-button"]:not([disabled])';
 
-  private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-account"]';
+  private readonly addSnapAccountButton =
+    '[data-testid="choose-wallet-type-snap-account"]';
 
-  private readonly multichainAccountMenuItem =
-    '.multichain-account-cell-menu-item';
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
 
-  private readonly multichainAccountNameInput =
-    '[data-testid="account-name-input"] input';
+  private readonly chooseWalletTypeWatchEthereumAccountButton =
+    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
-  private readonly multichainAccountNameInputConfirmButton =
-    '[data-testid="account-name-confirm-button"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
-  private readonly addMultichainAccountButton =
-    '[data-testid="add-multichain-account-button"]';
+  private readonly closeMultichainAccountsPageButton =
+    '.multichain-page-header button[aria-label="Back"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
+
+  private readonly exportSrpButton = {
+    text: 'Show Secret Recovery Phrase',
+    tag: 'button',
+  };
 
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
@@ -96,26 +76,39 @@ class AccountListPage {
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
 
-  private readonly unhideAccountButton =
-    '[data-testid="multichain-account-menu-item-showAccount"]';
-
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
-  private readonly importAccountPrivateKeyInput = '#private-key-box';
-
   private readonly importAccountDropdownOption = '.dropdown__select';
+
+  private readonly importAccountFromMultichainWalletModalButton =
+    '[data-testid="choose-wallet-type-import-account"]';
+
+  private readonly importAccountJsonFileInput =
+    'input[data-testid="file-input"]';
 
   private readonly importAccountJsonFileOption = {
     text: 'JSON File',
     tag: 'option',
   };
 
-  private readonly importAccountJsonFileInput =
-    'input[data-testid="file-input"]';
-
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
+
+  private readonly importAccountPrivateKeyInput = '#private-key-box';
+
+  private readonly importSrpConfirmButton = {
+    text: 'Continue',
+    tag: 'span',
+  };
+
+  private readonly importSrpInput =
+    '[data-testid="srp-input-import__srp-note"]';
+
+  private readonly importWalletFromMultichainWalletModalButton =
+    '[data-testid="choose-wallet-type-import-wallet"]';
+
+  private readonly multichainAccountListItem = '.multichain-account-cell';
 
   private readonly multichainAccountMenuAddresses = {
     tag: 'p',
@@ -132,6 +125,9 @@ class AccountListPage {
     text: 'Hide account',
   };
 
+  private readonly multichainAccountMenuItem =
+    '.multichain-account-cell-menu-item';
+
   private readonly multichainAccountMenuPin = {
     tag: 'p',
     text: 'Pin to top',
@@ -142,11 +138,27 @@ class AccountListPage {
     text: 'Rename',
   };
 
+  private readonly multichainAccountNameInput =
+    '[data-testid="account-name-input"] input';
+
+  private readonly multichainAccountNameInputConfirmButton =
+    '[data-testid="account-name-confirm-button"]';
+
+  private readonly multichainAccountOptionsMenuButton =
+    '[data-testid="multichain-account-cell-end-accessory"]';
+
+  // Indexed XPath so the correct account is targeted when multiple accounts
+  // share the same label (e.g. "Account 1" across multiple SRPs).
+  private readonly multichainAccountOptionsMenuButtonByLabel = (
+    accountLabel: string,
+    srpIndex: number,
+  ) =>
+    `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
+      `${accountLabel} options`,
+    )}])[${srpIndex + 1}]`;
+
   private readonly pinAccountButton =
     '[data-testid="multichain-account-menu-item-pinToTop"]';
-
-  private readonly unpinAccountButton =
-    '[data-testid="multichain-account-menu-item-unpin"]';
 
   private readonly pinnedHeader =
     '[data-testid="multichain-account-tree-pinned-header"]';
@@ -169,6 +181,30 @@ class AccountListPage {
     tag: 'button',
   };
 
+  private readonly syncingMessage = {
+    text: 'Syncing...',
+    tag: 'p',
+  };
+
+  private readonly unhideAccountButton =
+    '[data-testid="multichain-account-menu-item-showAccount"]';
+
+  private readonly unpinAccountButton =
+    '[data-testid="multichain-account-menu-item-unpin"]';
+
+  private readonly viewAccountOnExplorerButton = {
+    text: 'View on explorer',
+    tag: 'p',
+  };
+
+  private readonly walletDetailsButton = {
+    text: 'Details',
+    tag: 'button',
+  };
+
+  private readonly walletHeader =
+    '[data-testid="multichain-account-tree-wallet-header"]';
+
   private readonly watchAccountAddressInput =
     'input#address-input[type="text"]';
 
@@ -180,29 +216,6 @@ class AccountListPage {
   private readonly watchAccountModalTitle = {
     text: 'Watch any Ethereum account',
     tag: 'h4',
-  };
-
-  private readonly importSrpInput =
-    '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly importSrpConfirmButton = {
-    text: 'Continue',
-    tag: 'span',
-  };
-
-  private readonly exportSrpButton = {
-    text: 'Show Secret Recovery Phrase',
-    tag: 'button',
-  };
-
-  private readonly viewAccountOnExplorerButton = {
-    text: 'View on explorer',
-    tag: 'p',
-  };
-
-  private readonly syncingMessage = {
-    text: 'Syncing...',
-    tag: 'p',
   };
 
   constructor(driver: Driver) {
@@ -273,6 +286,7 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
+    await this.waitForAddWalletButtonStablyEnabled();
     await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
@@ -387,6 +401,7 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
+    await this.waitForAddWalletButtonStablyEnabled();
     await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
@@ -433,19 +448,21 @@ class AccountListPage {
     accountLabel: string;
     srpIndex?: number;
   }): Promise<void> {
+    const { accountLabel, srpIndex = 0 } = options;
     console.log(
-      `Open multichain account menu in account list for account ${options.accountLabel}`,
+      `Open multichain account menu in account list for account ${accountLabel}`,
     );
     // To ensure no pending Create Account action is in progress
     await this.driver.assertElementNotPresent(this.addingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
     });
 
-    const multichainAccountMenuIcons = await this.driver.findElements(
-      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
-    );
-
-    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
+    await this.driver.clickElement({
+      xpath: this.multichainAccountOptionsMenuButtonByLabel(
+        accountLabel,
+        srpIndex,
+      ),
+    });
   }
 
   /**
@@ -715,6 +732,25 @@ class AccountListPage {
   async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addMultichainWalletButton);
+  }
+
+  /**
+   * Waits until the "Add wallet" button is enabled and stays enabled,
+   * ensuring AccountTreeController sync has fully settled before clicking.
+   * The button is disabled while `isAccountTreeSyncingInProgress` is true;
+   * stableFor guards against sync flickering (briefly enabled then disabled again).
+   */
+  async waitForAddWalletButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for add wallet button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.addMultichainWalletButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
+    );
   }
 
   async clickWalletDetailsButton(): Promise<void> {

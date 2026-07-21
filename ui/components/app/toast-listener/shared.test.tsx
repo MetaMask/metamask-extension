@@ -11,21 +11,14 @@ import {
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
-const mockUseTransactionDisplay = jest.fn();
+const mockUseToastLabel = jest.fn();
 
-jest.mock('react-hot-toast', () => ({
+jest.mock('../../ui/toast/toast', () => ({
   toast: {
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
     error: (...args: unknown[]) => mockToastError(...args),
   },
-}));
-
-jest.mock('../../../helpers/utils/transaction-display', () => ({
-  useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
-}));
-
-jest.mock('../../ui/toast/toast', () => ({
   ToastContent: ({
     title,
     description,
@@ -40,10 +33,15 @@ jest.mock('../../ui/toast/toast', () => ({
   ),
 }));
 
+jest.mock('./useToastLabel', () => ({
+  useToastLabel: (status: string, transactionId?: string) =>
+    mockUseToastLabel(status, transactionId),
+}));
+
 describe('toast-listener/shared', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseTransactionDisplay.mockReturnValue({
+    mockUseToastLabel.mockReturnValue({
       title: messages.transactionSubmitted.message,
     });
   });
@@ -51,7 +49,7 @@ describe('toast-listener/shared', () => {
   it('renders the transaction title in ToastContent', () => {
     render(<ToastContent status="pending" />);
 
-    expect(mockUseTransactionDisplay).toHaveBeenCalledWith('pending');
+    expect(mockUseToastLabel).toHaveBeenCalledWith('pending', undefined);
     expect(
       screen.getByText(messages.transactionSubmitted.message),
     ).toBeInTheDocument();

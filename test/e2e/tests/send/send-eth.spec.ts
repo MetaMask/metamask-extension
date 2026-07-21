@@ -60,7 +60,7 @@ describe('Send ETH', function () {
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'ETH');
-          await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 
@@ -198,7 +198,7 @@ describe('Send ETH', function () {
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x1', 'ETH');
-          await sendPage.fillRecipient('test.eth');
+          await sendPage.fillRecipient({ recipientAddress: 'test.eth' });
 
           await driver.findElement({ text: '0xc0ffe...54979' });
         },

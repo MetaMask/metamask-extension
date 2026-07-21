@@ -70,18 +70,20 @@ describe('sentry-get-state', () => {
     });
 
     it('resolves participation from persisted state when snapshot has no state keys', async () => {
+      const getPersistedState = jest.fn().mockResolvedValue({
+        data: {
+          AnalyticsController: {
+            analyticsId: 'id-123',
+            optedIn: true,
+            consentDecisionMade: true,
+          },
+        },
+      });
+
       globalThis.stateHooks = {
         ...globalThis.stateHooks,
         getSentryState: () => emptySentrySnapshot(),
-        getPersistedState: async () => ({
-          data: {
-            AnalyticsController: {
-              analyticsId: 'id-123',
-              optedIn: true,
-              consentDecisionMade: true,
-            },
-          },
-        }),
+        getPersistedState,
         getBackupState: async () => ({}),
       };
 
@@ -89,6 +91,9 @@ describe('sentry-get-state', () => {
         consentDecisionMade: true,
         optedIn: true,
         analyticsId: 'id-123',
+      });
+      expect(getPersistedState).toHaveBeenCalledWith({
+        reportErrors: false,
       });
     });
 

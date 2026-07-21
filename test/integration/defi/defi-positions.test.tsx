@@ -378,8 +378,8 @@ describe('Defi positions list', () => {
       metricsEvents =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.filter(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            (call[1] as unknown as Record<string, unknown>[])[0]?.event ===
+            call[0] === 'trackAnalyticsEvent' &&
+            (call[1] as unknown as Record<string, unknown>[])[0]?.name ===
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
@@ -390,15 +390,23 @@ describe('Defi positions list', () => {
       string,
       unknown
     >;
+    const aaveOptions = metricsEvents?.[0]?.[1]?.[1] as unknown as Record<
+      string,
+      unknown
+    >;
     const stakingEvent = metricsEvents?.[1]?.[1]?.[0] as unknown as Record<
+      string,
+      unknown
+    >;
+    const stakingOptions = metricsEvents?.[1]?.[1]?.[1] as unknown as Record<
       string,
       unknown
     >;
 
     expect(aaveEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
+      name: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
+        category: MetaMetricsEventCategory.DeFi,
         location: 'Home',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -407,6 +415,8 @@ describe('Defi positions list', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'aave-v3',
       },
+    });
+    expect(aaveOptions).toMatchObject({
       environmentType: 'background',
       page: {
         path: '/',
@@ -416,9 +426,9 @@ describe('Defi positions list', () => {
     });
 
     expect(stakingEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
+      name: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
+        category: MetaMetricsEventCategory.DeFi,
         location: 'Home',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -427,6 +437,8 @@ describe('Defi positions list', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'metamask-staking',
       },
+    });
+    expect(stakingOptions).toMatchObject({
       environmentType: 'background',
       page: {
         path: '/',

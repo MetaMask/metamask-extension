@@ -9,28 +9,25 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  ButtonBase,
+  ButtonBaseSize,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
   IconSize,
+  Text,
+  TextColor,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
-import {
-  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../../../shared/constants/bridge';
-import {
-  PickerNetwork,
-  TextField,
-} from '../../../../../components/component-library';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
+import { TextField } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
-  BackgroundColor,
-  BlockSize,
   BorderColor,
   BorderRadius,
-  Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
@@ -169,88 +166,85 @@ export const BridgeAssetPickerContent = forwardRef<
 
     return (
       <>
-        <PickerNetwork
-          label={selectedNetworkName}
-          labelProps={{
-            variant: TextVariant.bodyMd,
-          }}
-          avatarNetworkProps={{
-            src: selectedChainId
-              ? BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[selectedChainId]
-              : undefined,
-            name: selectedNetworkName,
-            style: {
-              display: selectedChainId ? undefined : Display.None,
-              width: 16,
-              height: 16,
-              borderWidth: 0,
-            },
-            borderRadius: BorderRadius.SM,
-          }}
-          ref={networkPickerButtonRef}
-          onClick={() =>
-            isNetworkPickerOpen
-              ? setIsNetworkPickerOpen(false)
-              : setIsNetworkPickerOpen(true)
-          }
-          data-testid="multichain-asset-picker__network"
-          marginInline={4}
-          paddingLeft={4}
-          paddingRight={4}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.XL}
-          width={BlockSize.Max}
-          style={{ minHeight: 32 }}
-        />
-        <NetworkPicker
-          buttonElement={
-            isNetworkManagementEnabled
-              ? undefined
-              : networkPickerButtonRef.current
-          }
-          isOpen={isNetworkPickerOpen}
-          chains={chains}
-          selectedChainId={selectedChainId}
-          disabledChainId={disabledChainId}
-          onNetworkChange={(chainId) => {
-            setSelectedChainId(chainId);
-            setIsNetworkPickerOpen(false);
-          }}
-          onClose={() => setIsNetworkPickerOpen(false)}
-          testId="bridge-network-picker-popover"
-        />
-        <TextField
-          autoFocus
-          testId={'bridge-asset-picker-search-input'}
-          placeholder={t('enterTokenNameOrAddress')}
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-          }}
-          borderRadius={BorderRadius.XL}
-          borderWidth={1}
-          borderColor={BorderColor.borderMuted}
-          inputProps={{
-            disableStateStyles: true,
-            textVariant: TextVariant.bodyMd,
-            paddingRight: 2,
-            borderColor: BorderColor.borderMuted,
-          }}
-          style={{
-            minHeight: 48,
-            paddingRight: 8,
-            outline: 'none',
-            borderColor: BorderColor.borderMuted,
-          }}
-          marginInline={4}
-          startAccessory={
-            <Icon
-              color={IconColor.IconAlternative}
-              name={IconName.Search}
-              size={IconSize.Md}
-            />
-          }
-        />
+        <div className="flex flex-col gap-4">
+          <ButtonBase
+            ref={networkPickerButtonRef}
+            onClick={() =>
+              isNetworkPickerOpen
+                ? setIsNetworkPickerOpen(false)
+                : setIsNetworkPickerOpen(true)
+            }
+            data-testid="multichain-asset-picker__network"
+            size={ButtonBaseSize.Sm}
+            startIconName={IconName.Filter}
+            startIconProps={{ size: IconSize.Md }}
+            className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+              selectedChainId ? 'text-primary-default' : 'text-default'
+            }`}
+          >
+            <Text
+              variant={DsTextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={
+                selectedChainId
+                  ? TextColor.PrimaryDefault
+                  : TextColor.TextDefault
+              }
+              ellipsis
+            >
+              {selectedNetworkName}
+            </Text>
+          </ButtonBase>
+          <NetworkPicker
+            buttonElement={
+              isNetworkManagementEnabled
+                ? undefined
+                : networkPickerButtonRef.current
+            }
+            isOpen={isNetworkPickerOpen}
+            chains={chains}
+            selectedChainId={selectedChainId}
+            disabledChainId={disabledChainId}
+            onNetworkChange={(chainId) => {
+              setSelectedChainId(chainId);
+              setIsNetworkPickerOpen(false);
+            }}
+            onClose={() => setIsNetworkPickerOpen(false)}
+            testId="bridge-network-picker-popover"
+          />
+          <TextField
+            autoFocus
+            testId={'bridge-asset-picker-search-input'}
+            placeholder={t('enterTokenNameOrAddress')}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            borderRadius={BorderRadius.XL}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+            inputProps={{
+              disableStateStyles: true,
+              textVariant: TextVariant.bodyMd,
+              paddingRight: 2,
+              borderColor: BorderColor.borderMuted,
+            }}
+            style={{
+              minHeight: 48,
+              paddingRight: 8,
+              outline: 'none',
+              borderColor: BorderColor.borderMuted,
+            }}
+            marginInline={4}
+            startAccessory={
+              <Icon
+                color={IconColor.IconAlternative}
+                name={IconName.Search}
+                size={IconSize.Md}
+              />
+            }
+          />
+        </div>
 
         {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
           <BridgeAssetList

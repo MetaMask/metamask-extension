@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Sinun on valittava tili!"
   },
-  "addAcquiredTokens": {
-    "message": "Lisää MetaMaskia käyttämällä hankkimasi tietueet"
-  },
   "addAlias": {
     "message": "Lisää alias"
   },
@@ -180,9 +177,6 @@
   },
   "custom": {
     "message": "Lisäasetukset"
-  },
-  "customToken": {
-    "message": "Mukautettu tietue"
   },
   "decimal": {
     "message": "Tarkkuusdesimaalit"
@@ -348,9 +342,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "mustSelectOne": {
-    "message": "Valittava vähintään 1 poletti."
-  },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
     "description": "User is important an account and needs to add a file to continue"
@@ -382,9 +373,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Verkkokameraa ei löytynyt"
-  },
-  "notEnoughGas": {
-    "message": "Liian vähän gasia"
   },
   "ofTextNofM": {
     "message": "/"
@@ -520,9 +508,6 @@
   },
   "sign": {
     "message": "Allekirjoita"
-  },
-  "signatureRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "signed": {
     "message": "Allekirjoitettu"

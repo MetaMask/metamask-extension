@@ -31,11 +31,25 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false,
+      "consentDecisionMade": false,
+      "preConsentEventQueue": {
+        "00000000-0000-4000-8000-000000000000": {
+          "type": "track",
+          "eventName": "App Installed",
+          "messageId": "00000000-0000-4000-8000-000000000000",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "properties": {}
+        }
+      }
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 216,
+      "currentMigrationVersion": 219,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -65,6 +79,7 @@
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -89,16 +104,35 @@
     "AuthenticationController": {
       "isSignedIn": false
     },
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": ["0x1", "0xe708"],
+        "supportedNetworks": [
+          "0x1",
+          "0xe708"
+        ],
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -171,20 +205,6 @@
     "KeyringController": {},
     "LoggingController": {
       "logs": {}
-    },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false,
-      "consentDecisionMade": false,
-      "preConsentEventQueue": {
-        "00000000-0000-4000-8000-000000000000": {
-          "type": "track",
-          "eventName": "App Installed",
-          "messageId": "00000000-0000-4000-8000-000000000000",
-          "timestamp": "2026-01-01T00:00:00.000Z",
-          "properties": {}
-        }
-      }
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": null,
@@ -271,6 +291,18 @@
           "name": "Solana Devnet",
           "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
         },
+        "stellar:pubnet": {
+          "chainId": "stellar:pubnet",
+          "isEvm": false,
+          "name": "Stellar",
+          "nativeCurrency": "stellar:pubnet/slip44:148"
+        },
+        "stellar:testnet": {
+          "chainId": "stellar:testnet",
+          "isEvm": false,
+          "name": "Stellar Testnet",
+          "nativeCurrency": "stellar:testnet/slip44:148"
+        },
         "tron:2494104990": {
           "chainId": "tron:2494104990",
           "isEvm": false,
@@ -294,7 +326,10 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": ["btc", "sol"],
+      "cryptocurrencies": [
+        "btc",
+        "sol"
+      ],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -319,7 +354,9 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": ["https://etherscan.io"],
+          "blockExplorerUrls": [
+            "https://etherscan.io"
+          ],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -337,7 +374,9 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "blockExplorerUrls": [
+            "https://megaeth-testnet-v2.blockscout.com"
+          ],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -353,7 +392,9 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": ["https://basescan.org"],
+          "blockExplorerUrls": [
+            "https://basescan.org"
+          ],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -371,7 +412,9 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
+          "blockExplorerUrls": [
+            "https://testnet.monadexplorer.com"
+          ],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -387,7 +430,9 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": ["https://bscscan.com"],
+          "blockExplorerUrls": [
+            "https://bscscan.com"
+          ],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -403,7 +448,9 @@
           ]
         },
         "0x89": {
-          "blockExplorerUrls": ["https://polygonscan.com"],
+          "blockExplorerUrls": [
+            "https://polygonscan.com"
+          ],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -421,7 +468,9 @@
           ]
         },
         "0x8f": {
-          "blockExplorerUrls": ["https://monadscan.com"],
+          "blockExplorerUrls": [
+            "https://monadscan.com"
+          ],
           "chainId": "0x8f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -437,7 +486,9 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://optimistic.etherscan.io"
+          ],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -455,7 +506,9 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": ["https://arbiscan.io"],
+          "blockExplorerUrls": [
+            "https://arbiscan.io"
+          ],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -473,7 +526,9 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+          "blockExplorerUrls": [
+            "https://sepolia.etherscan.io"
+          ],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -489,7 +544,9 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+          "blockExplorerUrls": [
+            "https://sepolia.lineascan.build"
+          ],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -505,7 +562,9 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": ["https://lineascan.build"],
+          "blockExplorerUrls": [
+            "https://lineascan.build"
+          ],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -559,6 +618,10 @@
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
+        "stellar": {
+          "stellar:pubnet": false,
+          "stellar:testnet": false
+        },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
@@ -600,13 +663,10 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": false,
       "firstTimeFlowType": null,
+      "hasSeenOnboardingCompletionPage": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1408,35 +1468,67 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "0'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "1'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "49'", "0'"]
+                      "path": [
+                        "m",
+                        "49'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "49'", "1'"]
+                      "path": [
+                        "m",
+                        "49'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "84'", "0'"]
+                      "path": [
+                        "m",
+                        "84'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "84'", "1'"]
+                      "path": [
+                        "m",
+                        "84'",
+                        "1'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "86'", "0'"]
+                      "path": [
+                        "m",
+                        "86'",
+                        "0'"
+                      ]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "86'", "1'"]
+                      "path": [
+                        "m",
+                        "86'",
+                        "1'"
+                      ]
                     }
                   ]
                 }
@@ -1731,7 +1823,9 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                    "allowedOrigins": [
+                      "https://portfolio.metamask.io"
+                    ]
                   }
                 }
               ],
@@ -1825,7 +1919,11 @@
                   "value": [
                     {
                       "curve": "ed25519",
-                      "path": ["m", "44'", "501'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "501'"
+                      ]
                     }
                   ]
                 }
@@ -1865,7 +1963,9 @@
               "caveats": [
                 {
                   "type": "chainIds",
-                  "value": ["tron:728126428"]
+                  "value": [
+                    "tron:728126428"
+                  ]
                 }
               ],
               "date": 1764061389898,
@@ -1885,7 +1985,9 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                    "allowedOrigins": [
+                      "https://portfolio.metamask.io"
+                    ]
                   }
                 }
               ],
@@ -1930,7 +2032,11 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": ["m", "44'", "195'"]
+                      "path": [
+                        "m",
+                        "44'",
+                        "195'"
+                      ]
                     }
                   ]
                 }
@@ -2018,7 +2124,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -2034,7 +2139,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2082,6 +2189,17 @@
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
       "syncQueue": {}
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2276,6 +2394,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 216
+    "version": 219
   }
 }

@@ -4,6 +4,31 @@ import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import ExtensionPlatform from '../../platforms/extension';
+import {
+  createEventBuilder,
+  trackEvent,
+} from '../../controllers/analytics/analytics';
+import type {
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+} from '../../../../shared/constants/metametrics';
+
+function trackOAuthEvent(
+  payload: MetaMetricsEventPayload,
+  options?: MetaMetricsEventOptions,
+): void {
+  trackEvent(
+    createEventBuilder(payload.event)
+      .addProperties({
+        ...(payload.properties ?? {}),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
+      })
+      .addSensitiveProperties(payload.sensitiveProperties)
+      .build(options),
+  );
+}
 
 export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
@@ -28,7 +53,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       metaMetricsController,
     ),
 
-    trackEvent: metaMetricsController.trackEvent.bind(metaMetricsController),
+    trackEvent: trackOAuthEvent,
   });
 
   return {
