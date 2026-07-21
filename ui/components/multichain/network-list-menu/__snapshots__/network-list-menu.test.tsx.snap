@@ -86,7 +86,7 @@ exports[`NetworkListMenu renders properly 1`] = `
             >
               <div
                 class="mm-box characters"
-                data-rfd-droppable-context-id="0"
+                data-rfd-droppable-context-id=":r0:"
                 data-rfd-droppable-id="characters"
               >
                 <div
@@ -99,11 +99,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </p>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-0-hidden-text-0"
+                  aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="0"
+                  data-rfd-drag-handle-context-id=":r0:"
                   data-rfd-drag-handle-draggable-id="eip155:1"
-                  data-rfd-draggable-context-id="0"
+                  data-rfd-draggable-context-id=":r0:"
                   data-rfd-draggable-id="eip155:1"
                   draggable="false"
                   role="button"
@@ -168,11 +168,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-0-hidden-text-0"
+                  aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="0"
+                  data-rfd-drag-handle-context-id=":r0:"
                   data-rfd-drag-handle-draggable-id="eip155:59144"
-                  data-rfd-draggable-context-id="0"
+                  data-rfd-draggable-context-id=":r0:"
                   data-rfd-draggable-id="eip155:59144"
                   draggable="false"
                   role="button"
@@ -237,11 +237,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-0-hidden-text-0"
+                  aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="0"
+                  data-rfd-drag-handle-context-id=":r0:"
                   data-rfd-drag-handle-draggable-id="eip155:56"
-                  data-rfd-draggable-context-id="0"
+                  data-rfd-draggable-context-id=":r0:"
                   data-rfd-draggable-id="eip155:56"
                   draggable="false"
                   role="button"
@@ -306,11 +306,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-0-hidden-text-0"
+                  aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="0"
+                  data-rfd-drag-handle-context-id=":r0:"
                   data-rfd-drag-handle-draggable-id="eip155:143"
-                  data-rfd-draggable-context-id="0"
+                  data-rfd-draggable-context-id=":r0:"
                   data-rfd-draggable-id="eip155:143"
                   draggable="false"
                   role="button"
@@ -384,11 +384,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </p>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-0-hidden-text-0"
+                  aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="0"
+                  data-rfd-drag-handle-context-id=":r0:"
                   data-rfd-drag-handle-draggable-id="eip155:5"
-                  data-rfd-draggable-context-id="0"
+                  data-rfd-draggable-context-id=":r0:"
                   data-rfd-draggable-id="eip155:5"
                   draggable="false"
                   role="button"
@@ -905,6 +905,53 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x1237"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Robinhood Chain logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/robinhood.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Robinhood Chain
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
                     data-testid="popular-network-0x531"
                   >
                     <div
@@ -1073,11 +1120,11 @@ exports[`NetworkListMenu renders properly 1`] = `
   <div
     aria-atomic="true"
     aria-live="assertive"
-    id="rfd-announcement-0"
+    id="rfd-announcement-:r0:"
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div
-    id="rfd-hidden-text-0-hidden-text-0"
+    id="rfd-hidden-text-:r0:-hidden-text-:r1:"
     style="display: none;"
   >
     
@@ -1097,7 +1144,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
   <div
     aria-atomic="true"
     aria-live="assertive"
-    id="rfd-announcement-0"
+    id="rfd-announcement-:r0:"
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div />
@@ -1364,7 +1411,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
   <div
     aria-atomic="true"
     aria-live="assertive"
-    id="rfd-announcement-0"
+    id="rfd-announcement-:r0:"
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div />
@@ -1448,7 +1495,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
             >
               <div
                 class="mm-box characters"
-                data-rfd-droppable-context-id="1"
+                data-rfd-droppable-context-id=":r8:"
                 data-rfd-droppable-id="characters"
               >
                 <div
@@ -1461,11 +1508,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </p>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-1-hidden-text-7"
+                  aria-describedby="rfd-hidden-text-:r8:-hidden-text-:r9:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="1"
+                  data-rfd-drag-handle-context-id=":r8:"
                   data-rfd-drag-handle-draggable-id="eip155:1"
-                  data-rfd-draggable-context-id="1"
+                  data-rfd-draggable-context-id=":r8:"
                   data-rfd-draggable-id="eip155:1"
                   draggable="false"
                   role="button"
@@ -1530,11 +1577,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-1-hidden-text-7"
+                  aria-describedby="rfd-hidden-text-:r8:-hidden-text-:r9:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="1"
+                  data-rfd-drag-handle-context-id=":r8:"
                   data-rfd-drag-handle-draggable-id="eip155:59144"
-                  data-rfd-draggable-context-id="1"
+                  data-rfd-draggable-context-id=":r8:"
                   data-rfd-draggable-id="eip155:59144"
                   draggable="false"
                   role="button"
@@ -1599,11 +1646,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-1-hidden-text-7"
+                  aria-describedby="rfd-hidden-text-:r8:-hidden-text-:r9:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="1"
+                  data-rfd-drag-handle-context-id=":r8:"
                   data-rfd-drag-handle-draggable-id="eip155:56"
-                  data-rfd-draggable-context-id="1"
+                  data-rfd-draggable-context-id=":r8:"
                   data-rfd-draggable-id="eip155:56"
                   draggable="false"
                   role="button"
@@ -1668,11 +1715,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-1-hidden-text-7"
+                  aria-describedby="rfd-hidden-text-:r8:-hidden-text-:r9:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="1"
+                  data-rfd-drag-handle-context-id=":r8:"
                   data-rfd-drag-handle-draggable-id="eip155:143"
-                  data-rfd-draggable-context-id="1"
+                  data-rfd-draggable-context-id=":r8:"
                   data-rfd-draggable-id="eip155:143"
                   draggable="false"
                   role="button"
@@ -1746,11 +1793,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </p>
                 </div>
                 <div
-                  aria-describedby="rfd-hidden-text-1-hidden-text-7"
+                  aria-describedby="rfd-hidden-text-:r8:-hidden-text-:r9:"
                   class="mm-box"
-                  data-rfd-drag-handle-context-id="1"
+                  data-rfd-drag-handle-context-id=":r8:"
                   data-rfd-drag-handle-draggable-id="eip155:5"
-                  data-rfd-draggable-context-id="1"
+                  data-rfd-draggable-context-id=":r8:"
                   data-rfd-draggable-id="eip155:5"
                   draggable="false"
                   role="button"
@@ -2267,6 +2314,53 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x1237"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Robinhood Chain logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/robinhood.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Robinhood Chain
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
                     data-testid="popular-network-0x531"
                   >
                     <div
@@ -2435,11 +2529,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
   <div
     aria-atomic="true"
     aria-live="assertive"
-    id="rfd-announcement-1"
+    id="rfd-announcement-:r8:"
     style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div
-    id="rfd-hidden-text-1-hidden-text-7"
+    id="rfd-hidden-text-:r8:-hidden-text-:r9:"
     style="display: none;"
   >
     

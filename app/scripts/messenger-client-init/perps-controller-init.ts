@@ -5,7 +5,6 @@ import {
   type UserHistoryItem,
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
-import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
@@ -51,12 +50,8 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   PerpsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const storageNamespace = 'PerpsController';
-  const trackEvent = (payload: MetaMetricsEventPayload) => {
-    controllerMessenger.call('MetaMetricsController:trackEvent', payload);
-  };
   let isDisconnecting = false;
   const infrastructure = createPerpsInfrastructure({
-    trackEvent,
     getStorageItem: (key: string) =>
       controllerMessenger.call(
         `${STORAGE_SERVICE_NAME}:getItem`,
@@ -92,8 +87,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     persistedState.PreferencesController?.useExternalServices ?? false;
 
   const messengerClient = new PerpsController({
-    // TODO: Remove cast once @metamask/perps-controller adds
-    // MetaMetricsController:trackEvent to its allowed-actions union.
+    // TODO: Remove cast once @metamask/perps-controller updates its allowed-actions union.
     // The extension messenger is a superset of the package messenger type;
     // the cast is safe until the package type catches up.
     messenger: controllerMessenger as PackagePerpsControllerMessenger,

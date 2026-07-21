@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
@@ -22,7 +22,6 @@ import {
 } from '../../../../../components/component-library';
 import { AddressCopyButton } from '../../../../../components/multichain';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
   Display,
@@ -34,6 +33,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
@@ -45,7 +45,7 @@ import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
@@ -87,16 +87,15 @@ const HeaderInfo = () => {
       };
 
   function trackAccountModalOpened() {
-    const event = {
-      category: MetaMetricsEventCategory.Confirmations,
-      event: MetaMetricsEventName.AccountDetailsOpened,
-      properties: {
-        action: 'Confirm Screen',
-        ...eventProps,
-      },
-    };
-
-    trackEvent(event);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Confirmations)
+        .addProperties({
+          action: 'Confirm Screen',
+          ...eventProps,
+        })
+        .build(),
+    );
   }
 
   const isShowAdvancedDetailsToggle = isCorrectDeveloperTransactionType(

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Icon,
@@ -8,7 +8,6 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -19,8 +18,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getBuyableChains } from '../../../../ducks/ramps';
-import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
@@ -29,8 +27,6 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
-import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
 const AddFundsModal = ({
@@ -45,27 +41,21 @@ const AddFundsModal = ({
   payerAddress: Hex;
 }) => {
   const t = useI18nContext();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { trackEvent, createEventBuilder } = useAnalytics();
-
-  const buyableChains = useSelector(getBuyableChains);
 
   const { openBridgeExperience } = useBridging();
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const isBuyableChain = useMemo(() => {
-    if (!chainId) {
-      return false;
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy();
+    // The ramps gate can block the buy (e.g. service disruption, unsupported
+    // region) and show its own modal; don't report a buy click or close this
+    // modal in that case.
+    if (!opened) {
+      return;
     }
-    return buyableChains.some(
-      (network: AggregatorNetwork) =>
-        String(network.chainId) === hexToDecimal(chainId),
-    );
-  }, [buyableChains, chainId]);
-
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -82,14 +72,7 @@ const AddFundsModal = ({
         .build(),
     );
     onClose();
-  }, [
-    chainId,
-    onClose,
-    openBuyCryptoInPdapp,
-    token.symbol,
-    createEventBuilder,
-    trackEvent,
-  ]);
+  }, [chainId, onClose, goToBuy, token.symbol, createEventBuilder, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -169,7 +152,6 @@ const AddFundsModal = ({
             label: t('addFundsModalBuyCrypto'),
             iconName: IconName.Add,
             onClick: handleBuyAndSellOnClick,
-            disabled: !isBuyableChain,
           })}
           {buttonRow({
             id: 'add-funds-modal-receive-crypto-button',

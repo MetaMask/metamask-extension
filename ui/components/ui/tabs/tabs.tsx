@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -44,6 +51,8 @@ export const Tabs = <TKey extends string = string>({
   animated,
   ...props
 }: TabsProps<TKey>) => {
+  const tabListRef = useRef<HTMLDivElement>(null);
+
   // Helper function to get valid children, filtering out null/undefined/false values
   const getValidChildren = useMemo((): TabChild<TKey>[] => {
     return React.Children.toArray(children).filter(
@@ -77,23 +86,35 @@ export const Tabs = <TKey extends string = string>({
 
   useEffect(() => {
     const childIndex = findChildByKey(activeTab);
-    if (childIndex >= 0 && activeTabIndex !== childIndex) {
+    if (childIndex >= 0) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTab, findChildByKey, activeTabIndex]);
+  }, [activeTab, findChildByKey]);
 
   const clampedIndex =
     getValidChildren.length > 0
       ? clamp(activeTabIndex, 0, getValidChildren.length - 1)
       : 0;
 
+  useLayoutEffect(() => {
+    const childIndex = findChildByKey(activeTab);
+    const index = childIndex >= 0 ? childIndex : clampedIndex;
+    const tabs = tabListRef.current?.querySelectorAll('[role="tab"]');
+
+    tabs?.[index]?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'nearest',
+      block: 'nearest',
+    });
+  }, [activeTab, findChildByKey, clampedIndex]);
+
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== clampedIndex) {
       const direction = tabIndex > clampedIndex ? 'forward' : 'backward';
 
       const applyUpdate = () => {
-        setActiveTabIndex(tabIndex);
         onTabClick?.(tabKey);
+        setActiveTabIndex(tabIndex);
       };
 
       if (animated) {
@@ -135,6 +156,7 @@ export const Tabs = <TKey extends string = string>({
   return (
     <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
       <Box
+        ref={tabListRef}
         role="tablist"
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Start}

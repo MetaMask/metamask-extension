@@ -54,7 +54,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
@@ -182,6 +181,7 @@
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
@@ -199,7 +199,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "string",
@@ -253,6 +252,12 @@
       "watchEthereumAccountEnabled": "boolean"
     },
     "ProfileMetricsController": "object",
+    "RampsController": {
+      "countries": "object",
+      "orders": "object",
+      "providerAutoSelected": "boolean",
+      "userRegion": null
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "localOverrides": "object",
@@ -313,5 +318,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 216 }
+  "meta": { "storageKind": "split", "version": 218 }
 }

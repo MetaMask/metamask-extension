@@ -36,9 +36,11 @@ export const BatchSellSelectPage = () => {
     selectedNetworkChainId,
     selectedAssetsId,
     assetsOrderByBalance,
+    hasUserInteracted,
     setSelectedNetworkChainId,
     setSelectedAssetsId,
     setAssetsOrderByBalance,
+    setHasUserInteracted,
   } = useBatchSellSelection();
 
   const availableBatchSellNetworksList = useSelector(
@@ -55,12 +57,21 @@ export const BatchSellSelectPage = () => {
   }, []);
 
   useLayoutEffect(() => {
-    // Default to the first available network when none is selected yet.
-    if (!selectedNetworkChainId && availableNetworkChainIds[0]) {
-      setSelectedNetworkChainId(availableNetworkChainIds[0]);
+    // The available networks list is sorted by balance descending but resolves
+    // asynchronously, so its top entry can change across renders as fiat data
+    // streams in. Until the user makes an explicit selection, keep the default
+    // pinned to the highest-balance network (the first entry) rather than
+    // locking in whichever network happened to load first.
+    if (hasUserInteracted) {
+      return;
+    }
+    const topNetworkChainId = availableNetworkChainIds[0];
+    if (topNetworkChainId && topNetworkChainId !== selectedNetworkChainId) {
+      setSelectedNetworkChainId(topNetworkChainId);
     }
   }, [
     availableNetworkChainIds,
+    hasUserInteracted,
     selectedNetworkChainId,
     setSelectedNetworkChainId,
   ]);
@@ -85,18 +96,21 @@ export const BatchSellSelectPage = () => {
 
   const onNetworkSelect = useCallback(
     (chainId: CaipChainId) => {
+      setHasUserInteracted(true);
       setSelectedAssetsId([]);
       setSelectedNetworkChainId(chainId);
     },
-    [setSelectedAssetsId, setSelectedNetworkChainId],
+    [setHasUserInteracted, setSelectedAssetsId, setSelectedNetworkChainId],
   );
 
   const onSelectAsset = useCallback(
-    (asset: BatchSellAsset) =>
+    (asset: BatchSellAsset) => {
+      setHasUserInteracted(true);
       setSelectedAssetsId((assets) =>
         assets.includes(asset.assetId) ? assets : [...assets, asset.assetId],
-      ),
-    [setSelectedAssetsId],
+      );
+    },
+    [setHasUserInteracted, setSelectedAssetsId],
   );
 
   const onDeselectAsset = useCallback(

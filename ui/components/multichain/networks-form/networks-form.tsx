@@ -5,7 +5,7 @@ import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
-  IconName as DSIconName,
+  IconName,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -471,7 +471,7 @@ export const NetworksForm = ({
           <DSButton
             variant={DSButtonVariant.Secondary}
             size={DSButtonSize.Lg}
-            startIconName={DSIconName.Flash}
+            startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
             className="mb-4 rounded-xl"
@@ -583,7 +583,9 @@ export const NetworksForm = ({
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({

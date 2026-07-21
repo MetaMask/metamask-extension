@@ -1,3 +1,4 @@
+import NetworkManager from '../network-manager';
 import HomePage from './homepage';
 
 const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
@@ -342,6 +343,16 @@ class TokensTab extends HomePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );
+  }
+
+  async clickTokenOptionsButton(): Promise<void> {
+    console.log('Click the token options button');
+    await this.driver.clickElement(this.tokenOptionsButton);
+  }
+
+  async clickManageTokens(): Promise<void> {
+    console.log('Click Manage tokens in the token options menu');
+    await this.driver.clickElement(this.manageTokensButton);
   }
 
   async importCustomTokenByChain(
@@ -878,6 +889,27 @@ class TokensTab extends HomePage {
     await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
       timeout,
     });
+  }
+
+  async selectOnlyNetworkInFilter(
+    networkName: string,
+    tab: string = 'Popular',
+  ): Promise<void> {
+    console.log(
+      `Selecting only ${networkName} in the asset list network filter`,
+    );
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab(tab);
+    await networkManager.selectNetworkByNameWithWait(networkName);
+  }
+
+  async selectAllNetworksInFilter(tab: string = 'Popular'): Promise<void> {
+    console.log('Selecting all networks in the asset list network filter');
+    await this.openNetworksFilter();
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.selectTab(tab);
+    await networkManager.selectAllNetworks();
   }
 }
 

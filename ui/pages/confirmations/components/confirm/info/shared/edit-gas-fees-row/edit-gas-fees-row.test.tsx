@@ -41,12 +41,17 @@ function render({
   chainId = CHAIN_IDS.GOERLI,
   gasFeeTokens,
   selectedGasFeeToken,
+  addedProtectionFeeFiat,
+  showAddedProtectionFee,
   fiatFee = '$1',
   nativeFee = '0.001 ETH',
   estimationFailed = false,
   isGaslessSupported = false,
+  showFiatInTestnets = false,
   transactionType,
 }: {
+  addedProtectionFeeFiat?: string;
+  showAddedProtectionFee?: boolean;
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
@@ -54,6 +59,7 @@ function render({
   nativeFee?: string;
   estimationFailed?: boolean;
   isGaslessSupported?: boolean;
+  showFiatInTestnets?: boolean;
   transactionType?: TransactionType;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
@@ -74,12 +80,20 @@ function render({
     confirmation.type = transactionType;
   }
 
-  const state = getMockConfirmStateForTransaction(confirmation);
+  const state = getMockConfirmStateForTransaction(confirmation, {
+    metamask: {
+      preferences: {
+        showFiatInTestnets,
+      },
+    },
+  });
 
   const mockStore = configureMockStore()(state);
 
   return renderWithConfirmContextProvider(
     <EditGasFeesRow
+      addedProtectionFeeFiat={addedProtectionFeeFiat}
+      showAddedProtectionFee={showAddedProtectionFee}
       fiatFee={fiatFee}
       nativeFee={nativeFee}
       fiatFeeWith18SignificantDigits="0.001234"
@@ -89,8 +103,14 @@ function render({
 }
 
 describe('<EditGasFeesRow />', () => {
-  it('renders component', () => {
-    const { container } = render();
+  it('does not render added protection network fee when fiat is hidden on testnets', () => {
+    const { container, queryByTestId } = render({
+      chainId: CHAIN_IDS.SEPOLIA,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
+    });
+
+    expect(queryByTestId('added-protection-network-fee')).toBeNull();
     expect(container).toMatchSnapshot();
   });
 
@@ -100,23 +120,52 @@ describe('<EditGasFeesRow />', () => {
       amountFiat: '',
     };
 
-    const { getByTestId } = render({
+    const { getByTestId, getByText } = render({
       chainId: CHAIN_IDS.MAINNET,
       gasFeeTokens: [gasFeeTokenWithoutFiat],
       selectedGasFeeToken: gasFeeTokenWithoutFiat.tokenAddress,
+      addedProtectionFeeFiat: '$0.07',
+      showAddedProtectionFee: true,
     });
 
     expect(getByTestId('gas-fee-token-fee')).toBeInTheDocument();
     expect(getByTestId('native-currency')).toHaveTextContent('$1');
+    expect(
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$0.07',
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders edit gas fee button', () => {
-    const { getByTestId } = render({
+    const { getByTestId, getByText } = render({
       gasFeeTokens: undefined,
       selectedGasFeeToken: undefined,
+      fiatFee: '$12.34',
+      showAddedProtectionFee: true,
+      showFiatInTestnets: true,
     });
 
     expect(getByTestId('edit-gas-fee-icon')).toBeInTheDocument();
+    expect(
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$0.00',
+        ),
+      ),
+    ).toBeInTheDocument();
+    expect(() =>
+      getByText(
+        messages.addedProtectionIncludesNetworkFee.message.replace(
+          '$1',
+          '$12.34',
+        ),
+      ),
+    ).toThrow();
   });
 
   it('does not renders edit gas fee button for quote suggested swap', () => {
