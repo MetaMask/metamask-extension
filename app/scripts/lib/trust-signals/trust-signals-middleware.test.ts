@@ -13,7 +13,6 @@ import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
 jest.mock('../../../../shared/lib/transaction.utils');
-process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants
 const TEST_ADDRESSES = {

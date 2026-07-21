@@ -24,10 +24,6 @@ jest.mock('../../../../hooks/useTrustSignals', () => ({
   },
 }));
 
-jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
-  isSecurityAlertsAPIEnabled: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
@@ -35,9 +31,6 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 const mockUseTrustSignal = jest.requireMock(
   '../../../../hooks/useTrustSignals',
 ).useTrustSignal;
-const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
-  '../../../../../app/scripts/lib/ppom/security-alerts-api',
-).isSecurityAlertsAPIEnabled;
 
 const MALICIOUS_ADDRESS = '0x0000000000000000000000000000000000000bad';
 const WARNING_ADDRESS = '0x0000000000000000000000000000000000000001';
@@ -66,11 +59,9 @@ const expectedWarningAlert = {
 describe('useTrustSignalAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   });
 
   it('returns an empty array when security alerts API is disabled', () => {
-    mockIsSecurityAlertsAPIEnabled.mockReturnValue(false);
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Malicious,
     });
