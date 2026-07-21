@@ -102,18 +102,11 @@ export function getArtifactLinks(
  * Renders build links as HTML content rows (e.g. "builds: chrome, firefox").
  *
  * @param buildLinks - BuildLinks from getBuildLinks.
- * @param bundlers - The bundlers to include, in display order.
- * @param browserifyPrefix - The browserify row label.
  * @returns Array of HTML strings, one per bundler/build type combination.
  */
-function formatBuildLinks(
-  buildLinks: BuildLinks,
-  bundlers: (keyof BuildLinks)[] = ['webpack', 'browserify'],
-  browserifyPrefix = 'Deprecated Browserify fallback builds',
-): string[] {
-  return bundlers.flatMap((bundler) => {
-    const types = buildLinks[bundler];
-    const prefix = bundler === 'webpack' ? 'Webpack builds' : browserifyPrefix;
+function formatBuildLinks(buildLinks: BuildLinks): string[] {
+  return Object.entries(buildLinks).flatMap(([bundler, types]) => {
+    const prefix = `${bundler[0].toUpperCase()}${bundler.slice(1)} builds`;
     return (
       Object.entries(types)
         // Experimental builds are only created nightly, not on PRs
@@ -157,7 +150,7 @@ export function buildArtifactsBody({
   const contentRows: string[] = [];
 
   const buildLinks = getBuildLinks({ hostUrl, version });
-  contentRows.push(...formatBuildLinks(buildLinks, ['webpack']));
+  contentRows.push(...formatBuildLinks(buildLinks));
 
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeDebug')}`,
@@ -167,17 +160,6 @@ export function buildArtifactsBody({
     `typescript migration: ${artifacts.link('tsMigrationDashboard')}`,
     artifacts.link('allArtifacts'),
   );
-
-  const deprecatedBuildRows = formatBuildLinks(
-    buildLinks,
-    ['browserify'],
-    'Browserify builds',
-  );
-  const deprecatedBuildsContent = [
-    '<details><summary>Deprecated Browserify fallback builds</summary><ul>',
-    deprecatedBuildRows.map((row) => `<li>${row}</li>`).join('\n'),
-    '</ul></details>',
-  ].join('');
 
   const isReused = buildsFromSha !== shortSha;
   const reusedTag = isReused ? ` [reused from ${buildsFromSha}]` : '';
@@ -189,7 +171,7 @@ export function buildArtifactsBody({
 
   const hiddenContent = `<ul>${warningItem}\n${contentRows
     .map((row) => `<li>${row}</li>`)
-    .join('\n')}</ul>\n${deprecatedBuildsContent}`;
+    .join('\n')}</ul>`;
 
   return `<details><summary>Builds ready [${shortSha}]${reusedTag}</summary>${hiddenContent}</details>\n\n`;
 }

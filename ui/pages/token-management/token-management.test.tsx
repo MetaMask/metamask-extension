@@ -14,6 +14,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -26,6 +27,7 @@ const METRICS_PROPERTIES = {
   tokenDecimalPrecision: 'token_decimal_precision',
   tokenStandard: 'token_standard',
   tokenSymbol: 'token_symbol',
+  sourceConnectionMethod: 'source_connection_method',
   viewState: 'view_state',
 } as const;
 
@@ -129,10 +131,6 @@ const mockTokenSearch = {
   } as MockSearchState,
   spy: jest.fn(),
 };
-
-jest.mock('../../hooks/useDebouncedValue', () => ({
-  useDebouncedValue: <Value,>(value: Value) => value,
-}));
 
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: {
@@ -1168,6 +1166,18 @@ describe('TokenManagementPage', () => {
       name: 'USD Coin',
       symbol: 'USDC',
     });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenAdded,
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+          [METRICS_PROPERTIES.tokenContractAddress]: usdcAddress,
+          [METRICS_PROPERTIES.tokenSymbol]: 'USDC',
+        }),
+      }),
+      expect.anything(),
+    );
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {

@@ -142,8 +142,10 @@ import {
   getPasskeyControllerMessenger,
   getPasskeyControllerInitMessenger,
 } from './passkey-controller-messenger';
-import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-import { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+import {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -270,8 +272,10 @@ export {
   getPasskeyControllerInitMessenger,
 } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-export { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+export {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 export {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,

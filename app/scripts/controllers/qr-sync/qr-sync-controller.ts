@@ -10,10 +10,10 @@ import {
 import type { AccountGroupId } from '@metamask/account-api';
 
 import log from 'loglevel';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   QR_SYNC_PHASES,
   QR_SYNC_TIMEOUT_MS,
-  QrSyncErrorCode,
   type QrSyncPhase,
 } from '../../../../shared/constants/qr-sync';
 import { QrSyncErrorCodes } from '../../../../shared/constants/qr-sync';
@@ -34,12 +34,13 @@ import {
   canAcceptSyncOffer,
   isQrSyncOffer,
   normalizeQrSyncMessage,
-  resolveQrSyncErrorCode,
-  parseSessionError,
+  parseMwpError,
+  shouldReportQrSyncErrorToSentry,
 } from './utils';
 import type { KeyManager } from './key-manager';
 import {
   QrSyncConnectionStatusType,
+  QrSyncError,
   QrSyncMessage,
   type QrSyncControllerInitOptions,
   type QrSyncControllerMessenger,
@@ -134,13 +135,8 @@ export class QrSyncController extends BaseController<
         mode: 'untrusted',
       });
     } catch (error) {
-      const sessionError = parseSessionError(error);
-      await this.#setError({
-        error: sessionError,
-        code: sessionError.code,
-        message: sessionError.message,
-      });
-      log.error('QrSyncController: failed to create session', sessionError);
+      await this.#setError({ error });
+      log.error('QrSyncController: failed to create session', error);
     } finally {
       this.#finishSubmission();
     }
@@ -288,16 +284,13 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    const { code, message } = getSyncOfferFailureError(error);
+    const qrSyncError = getSyncOfferFailureError(error);
 
-    if (message === QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT) {
-      await this.#notifyPeerSyncOfferTimedOut(message);
+    if (qrSyncError.message === QrSyncErrorMessages.SYNC_OFFER_TIMED_OUT) {
+      await this.#notifyPeerSyncOfferTimedOut(qrSyncError.message);
     }
 
-    await this.#setError({
-      code,
-      message,
-    });
+    await this.#setError({ error, qrSyncError });
   }
 
   async #notifyPeerSyncOfferTimedOut(message: string): Promise<void> {
@@ -343,7 +336,10 @@ export class QrSyncController extends BaseController<
       return;
     }
 
-    this.#setError(getSyncCompletionFailureError(error));
+    this.#setError({
+      error,
+      qrSyncError: getSyncCompletionFailureError(error),
+    });
   }
 
   async cancelOtp(reason?: string): Promise<void> {
@@ -367,10 +363,22 @@ export class QrSyncController extends BaseController<
   }
 
   async cancelSync(): Promise<void> {
-    // only notify cancellation to the peer if the connection is established
-    if (
-      this.state.qrSyncConnectionStatus === QrSyncConnectionStatus.CONNECTED
-    ) {
+    const shouldNotifyPeer =
+      this.state.qrSyncConnectionStatus === QrSyncConnectionStatus.CONNECTED;
+    const mwpDappClient = this.#mwpDappClient;
+
+    // Detach inbound listeners before resetting state. While the MWP client stays
+    // connected until #cleanupSession disconnects it, relay events (disconnect,
+    // peer cancel, late sync messages) would otherwise mutate phase/qrSyncError
+    // after reset and violate the idle snapshot callers expect when cancelSync
+    // resolves. Once handlers are removed, a single resetState is sufficient.
+    if (mwpDappClient) {
+      this.#unregisterClientEventHandlers(mwpDappClient);
+    }
+
+    this.resetState();
+
+    if (shouldNotifyPeer && mwpDappClient) {
       await this.#notifyPeerCancel().catch((error) => {
         log.error(
           'QrSyncController: failed to notify peer of sync cancellation',
@@ -380,8 +388,6 @@ export class QrSyncController extends BaseController<
     }
 
     await this.#cleanupSession(true);
-
-    this.resetState();
   }
 
   resetState(): void {
@@ -432,8 +438,10 @@ export class QrSyncController extends BaseController<
       this.#handleOtpRequired(payload).catch((error) => {
         this.#setError({
           error,
-          code: QrSyncErrorCodes.OTP_INVALID,
-          message: 'Failed to handle OTP requirement',
+          qrSyncError: {
+            code: QrSyncErrorCodes.OTP_INVALID,
+            message: 'Failed to handle OTP requirement',
+          },
         });
       });
     };
@@ -448,19 +456,16 @@ export class QrSyncController extends BaseController<
 
     const disconnected = () => {
       this.#setError({
-        code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
-        message: 'The sync channel disconnected.',
+        qrSyncError: {
+          code: QrSyncErrorCodes.CHANNEL_DISCONNECTED,
+          message: 'The sync channel disconnected.',
+        },
       });
     };
 
     const clientError = (error: Error) => {
       log.error('QrSyncController: error', error);
-      const sessionError = parseSessionError(error);
-      this.#setError({
-        error: sessionError,
-        code: sessionError.code,
-        message: sessionError.message,
-      });
+      this.#setError({ error });
     };
 
     this.#clientEventHandlers = {
@@ -521,8 +526,10 @@ export class QrSyncController extends BaseController<
       }
 
       this.#setError({
-        code: QrSyncErrorCodes.OTP_EXPIRED,
-        message: QrSyncErrorMessages.OTP_EXPIRED,
+        qrSyncError: {
+          code: QrSyncErrorCodes.OTP_EXPIRED,
+          message: QrSyncErrorMessages.OTP_EXPIRED,
+        },
         cancelOtp: false, // we don't need to invoke the OTP cancel callback here because the OTP has already expired
       });
     }, QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT);
@@ -586,10 +593,26 @@ export class QrSyncController extends BaseController<
         const syncErrorMessage =
           (parsedMessage.data as { message?: string })?.message ??
           QrSyncErrorMessages.SYNC_SESSION_ENCOUNTERED_ERROR;
-        this.#rejectSyncCompletion(new Error(syncErrorMessage));
+        const syncError = new Error(syncErrorMessage);
+
+        if (
+          this.state.qrSyncPhase === QR_SYNC_PHASES.AWAITING_SYNC_COMPLETION
+        ) {
+          // Rejecting the `completion wait` routes failure through
+          // #failAwaitingSyncCompletion, which is the only path that should call
+          // #setError there.
+          // hence, skipping the #setError call here to avoid reporting the same
+          // SYNC_FAILED error to Sentry twice before the phase changes.
+          this.#rejectSyncCompletion(syncError);
+          return;
+        }
+
         this.#setError({
-          code: QrSyncErrorCodes.SYNC_FAILED,
-          message: syncErrorMessage,
+          error: syncError,
+          qrSyncError: {
+            code: QrSyncErrorCodes.SYNC_FAILED,
+            message: syncErrorMessage,
+          },
         });
         return;
       }
@@ -642,26 +665,40 @@ export class QrSyncController extends BaseController<
     });
   }
 
+  #reportToSentry(
+    sentryMessage: string,
+    error: unknown,
+    options?: { code?: QrSyncError['code'] },
+  ): void {
+    if (options?.code && !shouldReportQrSyncErrorToSentry(options.code)) {
+      return;
+    }
+
+    this.messenger.captureException?.(createSentryError(sentryMessage, error));
+  }
+
   async #setError({
     error,
-    code,
-    message,
+    qrSyncError,
     cancelOtp = true,
   }: {
     error?: unknown;
-    code: QrSyncErrorCode;
-    message?: string;
+    qrSyncError?: QrSyncError;
     cancelOtp?: boolean;
   }): Promise<void> {
-    const resolvedCode = resolveQrSyncErrorCode(error, code);
-    const resolvedMessage =
-      error instanceof Error && error.message ? error.message : (message ?? '');
+    const stateError = qrSyncError ?? parseMwpError(error);
+
+    this.#reportToSentry(
+      `QR sync session failed (${stateError.code})`,
+      error ?? new Error(stateError.message),
+      { code: stateError.code },
+    );
 
     await this.#cleanupSession(cancelOtp);
     this.update((state) => {
       state.qrSyncPhase = QR_SYNC_PHASES.FAILED;
       state.qrSyncConnectionStatus = QrSyncConnectionStatus.ERRORED;
-      state.qrSyncError = { code: resolvedCode, message: resolvedMessage };
+      state.qrSyncError = stateError;
       state.syncOffer = null;
       state.qrSyncQrPayload = null;
       state.qrSyncSelectedAccountGroupIds = [];
@@ -763,6 +800,7 @@ export class QrSyncController extends BaseController<
       }
     } catch (error) {
       log.error('QrSyncController: failed to cleanup session', error);
+      this.#reportToSentry('QR sync session cleanup failed', error);
     } finally {
       this.#otpSubmitCallback = null;
       this.#otpCancelCallback = null;
@@ -795,6 +833,11 @@ export class QrSyncController extends BaseController<
         'QrSyncController: failed to send message',
         message.type,
         error,
+      );
+      this.#reportToSentry(
+        `QR sync failed to send message (${message.type})`,
+        error,
+        { code: QrSyncErrorCodes.SYNC_FAILED },
       );
       throw new Error(QrSyncErrorMessages.SYNC_FAILED_TO_SEND_MESSAGE);
     }
