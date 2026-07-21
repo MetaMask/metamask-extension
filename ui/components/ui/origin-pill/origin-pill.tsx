@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderColor,
@@ -7,11 +8,9 @@ import {
   BorderStyle,
   Display,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSubjectMetadata } from '../../../selectors';
-import { AvatarFavicon, Box, Text } from '../../component-library';
+import { AvatarFavicon, Box } from '../../component-library';
 
 type OriginPillProps = {
   origin: string;
@@ -54,15 +53,14 @@ export default function OriginPill({
         data-testid={`${dataTestId}-avatar-favicon`}
       />
       <Text
-        variant={TextVariant.bodySm}
-        as="h6"
-        color={TextColor.textAlternative}
-        marginLeft={1}
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
         data-testid={`${dataTestId}-text`}
         style={textStyle}
-        className="origin-pill-text"
+        className="origin-pill-text ms-1"
+        asChild
       >
-        {origin}
+        <h6>{origin}</h6>
       </Text>
     </Box>
   );
