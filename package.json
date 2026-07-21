@@ -303,7 +303,7 @@
     "@metamask/assets-controller@npm:^9.1.0": "^10.1.0",
     "@metamask/messenger": "^2.0.0",
     "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.4.0-preview-2263d69",
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-7cef84e"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-dcb02ac"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

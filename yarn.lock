@@ -8085,10 +8085,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-7cef84e":
-  version: 0.0.1-preview-7cef84e
-  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-7cef84e"
-  checksum: 10/968d1dab119cea67c955508000f37a5a1cfb58a7a7cf748140a0d3ddfb8c0803e730d0701a1ebf8bff2b92ea28b709bf591487247a06dfce98fc4f06aa6a9396
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-dcb02ac":
+  version: 0.0.1-preview-dcb02ac
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-dcb02ac"
+  checksum: 10/9f7a28136cf552939c03a7c41251d648b0b3a65519bc928b5d74088fc07f05634a1c1956e5ea2fc616008baef2d9b447d55e7671778212a0aa568a9bbf654cff
   languageName: node
   linkType: hard
 
