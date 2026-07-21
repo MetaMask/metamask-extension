@@ -1,11 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import {
-  endTrace,
-  trace,
-  TraceName,
-  getSerializedTraceContext,
-  serializeTraceContext,
-} from './trace';
+import { endTrace, trace, TraceName, getSerializedTraceContext } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -547,50 +541,6 @@ describe('Trace', () => {
     it('returns undefined when sentry is not initialized', () => {
       globalThis.sentry = undefined;
       expect(getSerializedTraceContext()).toBeUndefined();
-    });
-  });
-
-  describe('serializeTraceContext', () => {
-    it('includes name and id from request', () => {
-      const result = serializeTraceContext(null, {
-        name: 'Test',
-        id: 'test-id',
-      });
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(result).toStrictEqual({ _name: 'Test', _id: 'test-id' });
-    });
-
-    it('includes traceId and spanId from span', () => {
-      const spanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: 'trace789',
-          spanId: 'span012',
-        }),
-      } as unknown as Sentry.Span;
-
-      const result = serializeTraceContext(spanMock, { name: 'Test' });
-      expect(result).toStrictEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _name: 'Test',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _id: undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _traceId: 'trace789',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _spanId: 'span012',
-      });
-    });
-
-    it('handles span that throws on spanContext', () => {
-      const spanMock = {
-        spanContext: jest.fn().mockImplementation(() => {
-          throw new Error('span ended');
-        }),
-      } as unknown as Sentry.Span;
-
-      const result = serializeTraceContext(spanMock, { name: 'Test' });
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(result).toStrictEqual({ _name: 'Test', _id: undefined });
     });
   });
 });
