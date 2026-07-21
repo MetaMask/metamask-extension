@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opções da conta"
   },
-  "accountPermissionToast": {
-    "message": "Permissões de conta atualizadas"
-  },
   "accountSelectionRequired": {
     "message": "Você precisa selecionar uma conta!"
   },

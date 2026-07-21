@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opsi akun"
   },
-  "accountPermissionToast": {
-    "message": "Izin akun diperbarui"
-  },
   "accountSelectionRequired": {
     "message": "Anda harus memilih satu akun!"
   },
