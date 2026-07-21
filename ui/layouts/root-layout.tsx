@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { BottomNavBar } from '../components/app/bottom-nav-bar/bottom-nav-bar';
 import { useBottomNavBar } from '../hooks/useBottomNavBar';
 
-const width = 'max-w-[clamp(var(--width-sm),85vw,var(--width-max))]';
+const width = 'max-w-[var(--width-max)]';
 const sidepanel = 'group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)]';
 
 export const RootLayout = () => {
