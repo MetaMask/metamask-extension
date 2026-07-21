@@ -29,6 +29,7 @@ export default function RampsBuildQuoteView({
   isQuoteLoading,
   canContinue,
   handleBack,
+  handlePaymentMethodPress,
   handleAmountChange,
   handleContinue,
 }: RampsBuildQuoteReadyViewModel) {
@@ -44,6 +45,7 @@ export default function RampsBuildQuoteView({
         title={pageTitle}
         subtitle={pageSubtitle}
         onBack={handleBack}
+        backButtonTestId="ramps-build-quote-back"
       />
 
       <Box
@@ -77,6 +79,7 @@ export default function RampsBuildQuoteView({
           <RampsPaymentMethodPill
             label={paymentMethodLabel}
             isLoading={showPaymentMethodSpinner}
+            onClick={handlePaymentMethodPress}
           />
         </Box>
 

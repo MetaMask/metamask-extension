@@ -75,9 +75,11 @@ jest.mock('../../providers/batch-sell-selection-provider', () => ({
     selectedNetworkChainId: CHAIN_ID,
     selectedAssetsId: mockHarness.initialAssetsId,
     assetsOrderByBalance: 'desc' as const,
+    hasUserInteracted: false,
     setSelectedNetworkChainId: jest.fn(),
     setSelectedAssetsId: jest.fn(),
     setAssetsOrderByBalance: jest.fn(),
+    setHasUserInteracted: jest.fn(),
   }),
 }));
 

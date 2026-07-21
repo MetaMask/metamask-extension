@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { createHash } from 'crypto';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../../btc/mocks/tokens-api';
+import { TronNode } from '../../../seeder/tron/node';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
@@ -35,6 +37,42 @@ const TRON_BLOCK_RESPONSE = {
     },
     witness_signature:
       'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
+  },
+};
+
+const DEFAULT_TRC10_ASSETS = {
+  GAS_FREE: {
+    decimals: 6,
+    name: 'GasFreeTransferSolution',
+    symbol: 'GasFree4uCOM',
+    tokenId: '1005074',
+  },
+};
+
+const DEFAULT_TRC20_ASSETS = {
+  HTX: {
+    address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+    decimals: 18,
+    name: 'HTX DAO',
+    symbol: 'HTX',
+  },
+  SEED: {
+    address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+    decimals: 6,
+    name: 'SEED',
+    symbol: 'SEED',
+  },
+  USDD: {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    decimals: 18,
+    name: 'USDD',
+    symbol: 'USDD',
+  },
+  USDT: {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    decimals: 6,
+    name: 'Tether',
+    symbol: 'USDT',
   },
 };
 
@@ -109,6 +147,30 @@ export const TRON_SWAP_TOKEN_REGISTRY = {
 >;
 
 export type TronSwapSymbol = keyof typeof TRON_SWAP_TOKEN_REGISTRY;
+
+export type TronQuoteFixture = {
+  src: TronSwapSymbol;
+  dest: TronSwapSymbol;
+  srcAmount: string; // base units (sun for TRX, raw for TRC20)
+  destAmount: string; // base units of dest
+  feeSun?: number; // metabridge TRX fee, default 8_750 (0.00875 TRX)
+};
+
+function buildTronAsset(symbol: TronSwapSymbol) {
+  const meta = TRON_SWAP_TOKEN_REGISTRY[symbol];
+  return {
+    address: meta.address,
+    chainId: 728126428,
+    assetId: meta.assetId,
+    symbol,
+    decimals: meta.decimals,
+    name: meta.name,
+    aggregators: symbol === 'TRX' ? [] : ['coinGecko'],
+    occurrences: symbol === 'TRX' ? 100 : 1,
+    iconUrl: meta.iconUrl,
+    metadata: {},
+  };
+}
 
 /**
  * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
@@ -400,9 +462,8 @@ export async function createStatefulTronAccountMock(
       return {
         statusCode: 200,
         json: {
-          code: 'TRANSACTION_EXPIRATION_ERROR',
+          result: true,
           txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
-          message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
         },
       };
     });
@@ -427,6 +488,7 @@ export async function mockTronGetAccountResource(
       address: TRON_ACCOUNT_ADDRESS,
       visible: true,
     })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -752,6 +814,7 @@ export async function mockExchangeRates(
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
     .withQuery({ baseCurrency: 'usd' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -788,6 +851,7 @@ export async function mockFiatExchangeRates(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates/fiat')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -809,103 +873,165 @@ export async function mockFiatExchangeRates(
 
 export async function mockTronSpotPrices(
   mockServer: Mockttp,
+  tronNode?: Pick<TronNode, 'trc10Tokens' | 'trc20Tokens'>,
 ): Promise<MockedEndpoint> {
+  const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
+  const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
+  const htxAssetId = `tron:728126428/trc20:${trc20Assets.HTX.address}`;
+  const seedAssetId = `tron:728126428/trc20:${trc20Assets.SEED.address}`;
+  const usddAssetId = `tron:728126428/trc20:${trc20Assets.USDD.address}`;
+  const usdtAssetId = `tron:728126428/trc20:${trc20Assets.USDT.address}`;
+  const gasFreeAssetId = `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`;
+  const pricesByAssetId = {
+    'tron:728126428/slip44:195': {
+      id: 'tron',
+      price: TRX_TO_USD_RATE,
+      marketCap: 27908032838,
+      allTimeHigh: 0.431288,
+      allTimeLow: 0.00180434,
+      totalVolume: 681456174,
+      high1d: 0.298231,
+      low1d: 0.294641,
+      circulatingSupply: 94699702752.04857,
+      dilutedMarketCap: 27908037090,
+      marketCapPercentChange1d: -0.97531,
+      priceChange1d: -0.003047860467726426,
+      pricePercentChange1h: -0.15075140224689543,
+      pricePercentChange1d: -1.0236731036599194,
+      pricePercentChange7d: 3.655119648562475,
+      pricePercentChange14d: 6.071878922562999,
+      pricePercentChange30d: 4.476394163995479,
+      pricePercentChange200d: 10.682232053374577,
+      pricePercentChange1y: 16.823798348731327,
+    },
+    'tron:3448148188/slip44:195': null,
+    'tron:2494104990/slip44:195': null,
+    [gasFreeAssetId]: {
+      id: 'gas-free-transfer-solution',
+      price: 0.000_000_001,
+      marketCap: 1_000_000,
+      allTimeHigh: 0.01,
+      allTimeLow: 0.0001,
+      totalVolume: 10_000,
+      high1d: 0.0011,
+      low1d: 0.00099,
+      circulatingSupply: 1_000_000_000,
+      dilutedMarketCap: 1_000_000,
+      marketCapPercentChange1d: 0,
+      priceChange1d: 0,
+      pricePercentChange1h: 0,
+      pricePercentChange1d: 0,
+      pricePercentChange7d: 0,
+      pricePercentChange14d: 0,
+      pricePercentChange30d: 0,
+      pricePercentChange200d: 0,
+      pricePercentChange1y: 0,
+    },
+    [seedAssetId]: {
+      id: 'seed',
+      price: 0.000_000_001,
+      marketCap: 100_000,
+      allTimeHigh: 0.001,
+      allTimeLow: 0.00001,
+      totalVolume: 1_000,
+      high1d: 0.000105,
+      low1d: 0.0000099,
+      circulatingSupply: 1_000_000_000,
+      dilutedMarketCap: 100_000,
+      marketCapPercentChange1d: 0,
+      priceChange1d: 0,
+      pricePercentChange1h: 0,
+      pricePercentChange1d: 0,
+      pricePercentChange7d: 0,
+      pricePercentChange14d: 0,
+      pricePercentChange30d: 0,
+      pricePercentChange200d: 0,
+      pricePercentChange1y: 0,
+    },
+    [htxAssetId]: {
+      id: 'htx-dao',
+      price: 0.00000168,
+      marketCap: 1564644183,
+      allTimeHigh: 0.00000375,
+      allTimeLow: 8.00816e-7,
+      totalVolume: 8401090,
+      high1d: 0.00000169,
+      low1d: 0.00000168,
+      circulatingSupply: 930149437822426.1,
+      dilutedMarketCap: 1564644183,
+      marketCapPercentChange1d: -0.24658,
+      priceChange1d: -5.256468957e-9,
+      pricePercentChange1h: -0.018039112904324334,
+      pricePercentChange1d: -0.31163572893346203,
+      pricePercentChange7d: 2.5024956056778302,
+      pricePercentChange14d: 2.5292823808168077,
+      pricePercentChange30d: 3.0195398109184906,
+      pricePercentChange200d: 0.6818433770786526,
+      pricePercentChange1y: -32.576284326979135,
+    },
+    [usdtAssetId]: {
+      id: 'tether',
+      price: 0.999176,
+      marketCap: 186948908128,
+      allTimeHigh: 1.32,
+      allTimeLow: 0.572521,
+      totalVolume: 82810499462,
+      high1d: 0.999233,
+      low1d: 0.99864,
+      circulatingSupply: 187095381424.3697,
+      dilutedMarketCap: 192411564831,
+      marketCapPercentChange1d: 0.00738,
+      priceChange1d: 0.0000249,
+      pricePercentChange1h: 0.020930266600212476,
+      pricePercentChange1d: 0.0024917010333802407,
+      pricePercentChange7d: 0.0353800081960735,
+      pricePercentChange14d: -0.02819624194849003,
+      pricePercentChange30d: -0.11081103419080159,
+      pricePercentChange200d: -0.09316658601991926,
+      pricePercentChange1y: -0.18071863167121408,
+    },
+    [usddAssetId]: {
+      id: 'usdd',
+      price: 0.999959,
+      marketCap: 850324158,
+      allTimeHigh: 1.052,
+      allTimeLow: 0.928067,
+      totalVolume: 4965944,
+      high1d: 1.001,
+      low1d: 0.997736,
+      circulatingSupply: 849721383,
+      dilutedMarketCap: 855111059,
+      marketCapPercentChange1d: -1.16704,
+      priceChange1d: 0.00091697,
+      pricePercentChange1h: 0.08168027068663826,
+      pricePercentChange1d: 0.09178502072533638,
+      pricePercentChange7d: 0.13273041638231686,
+      pricePercentChange14d: 0.03518940190469397,
+      pricePercentChange30d: -0.008525700123439886,
+      pricePercentChange200d: -0.00280303064037531,
+      pricePercentChange1y: 0.5583576483408966,
+    },
+  };
+
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'tron:728126428/slip44:195': {
-          id: 'tron',
-          price: TRX_TO_USD_RATE,
-          marketCap: 26501571090,
-          allTimeHigh: 0.431288,
-          allTimeLow: 0.00180434,
-          totalVolume: 584039469,
-          high1d: 0.281458,
-          low1d: 0.278801,
-          circulatingSupply: 94683395974.3822,
-          dilutedMarketCap: 26501570979,
-          marketCapPercentChange1d: -0.25,
-          priceChange1d: -0.000716844753300194,
-          pricePercentChange1h: 0.357582350741983,
-          pricePercentChange1d: -0.255462049152282,
-          pricePercentChange7d: 0.862835815143018,
-          pricePercentChange14d: 0.395394234400669,
-          pricePercentChange30d: -4.69037102835574,
-          pricePercentChange200d: 4.7347558395209,
-          pricePercentChange1y: -1.29971018156079,
-        },
-        'tron:3448148188/slip44:195': null,
-        'tron:2494104990/slip44:195': null,
-        'tron:728126428/trc10:1005074': null,
-        'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6': {
-          id: 'htx-dao',
-          price: 0.00000168,
-          marketCap: 1564644183,
-          allTimeHigh: 0.00000375,
-          allTimeLow: 8.00816e-7,
-          totalVolume: 8401090,
-          high1d: 0.00000169,
-          low1d: 0.00000168,
-          circulatingSupply: 930149437822426.1,
-          dilutedMarketCap: 1564644183,
-          marketCapPercentChange1d: -0.24658,
-          priceChange1d: -5.256468957e-9,
-          pricePercentChange1h: -0.018039112904324334,
-          pricePercentChange1d: -0.31163572893346203,
-          pricePercentChange7d: 2.5024956056778302,
-          pricePercentChange14d: 2.5292823808168077,
-          pricePercentChange30d: 3.0195398109184906,
-          pricePercentChange200d: 0.6818433770786526,
-          pricePercentChange1y: -32.576284326979135,
-        },
-        'tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh': null,
-        'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t': {
-          id: 'tether',
-          price: 0.999176,
-          marketCap: 186948908128,
-          allTimeHigh: 1.32,
-          allTimeLow: 0.572521,
-          totalVolume: 82810499462,
-          high1d: 0.999233,
-          low1d: 0.99864,
-          circulatingSupply: 187095381424.3697,
-          dilutedMarketCap: 192411564831,
-          marketCapPercentChange1d: 0.00738,
-          priceChange1d: 0.0000249,
-          pricePercentChange1h: 0.020930266600212476,
-          pricePercentChange1d: 0.0024917010333802407,
-          pricePercentChange7d: 0.0353800081960735,
-          pricePercentChange14d: -0.02819624194849003,
-          pricePercentChange30d: -0.11081103419080159,
-          pricePercentChange200d: -0.09316658601991926,
-          pricePercentChange1y: -0.18071863167121408,
-        },
-        'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz': {
-          id: 'usdd',
-          price: 0.999959,
-          marketCap: 850324158,
-          allTimeHigh: 1.052,
-          allTimeLow: 0.928067,
-          totalVolume: 4965944,
-          high1d: 1.001,
-          low1d: 0.997736,
-          circulatingSupply: 849721383,
-          dilutedMarketCap: 855111059,
-          marketCapPercentChange1d: -1.16704,
-          priceChange1d: 0.00091697,
-          pricePercentChange1h: 0.08168027068663826,
-          pricePercentChange1d: 0.09178502072533638,
-          pricePercentChange7d: 0.13273041638231686,
-          pricePercentChange14d: 0.03518940190469397,
-          pricePercentChange30d: -0.008525700123439886,
-          pricePercentChange200d: -0.00280303064037531,
-          pricePercentChange1y: 0.5583576483408966,
-        },
-      },
-    }));
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .get('assetIds')
+        ?.split(',');
+      const requestedPrices = Object.fromEntries(
+        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => [
+          assetId,
+          pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null,
+        ]),
+      );
+
+      return {
+        statusCode: 200,
+        json: requestedPrices,
+      };
+    });
 }
 
 export async function mockTrxNativeSpotPrices(
@@ -974,7 +1100,11 @@ export async function mockTrxNativeSpotPrices(
 
 export async function mockTronAssets(
   mockServer: Mockttp,
+  tronNode?: Pick<TronNode, 'trc10Tokens' | 'trc20Tokens'>,
 ): Promise<MockedEndpoint> {
+  const trc10Assets = { ...DEFAULT_TRC10_ASSETS, ...tronNode?.trc10Tokens };
+  const trc20Assets = { ...DEFAULT_TRC20_ASSETS, ...tronNode?.trc20Tokens };
+
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
@@ -982,34 +1112,34 @@ export async function mockTronAssets(
       statusCode: 200,
       json: [
         {
-          assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          decimals: 6,
-          name: 'Tether',
-          symbol: 'USDT',
+          assetId: `tron:728126428/trc20:${trc20Assets.USDT.address}`,
+          decimals: trc20Assets.USDT.decimals,
+          name: trc20Assets.USDT.name,
+          symbol: trc20Assets.USDT.symbol,
         },
         {
-          assetId: 'tron:728126428/trc10:1005074',
-          decimals: 6,
-          name: 'GasFreeTransferSolution',
-          symbol: 'GasFree4uCOM',
+          assetId: `tron:728126428/trc10:${trc10Assets.GAS_FREE.tokenId}`,
+          decimals: trc10Assets.GAS_FREE.decimals,
+          name: trc10Assets.GAS_FREE.name,
+          symbol: trc10Assets.GAS_FREE.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
-          decimals: 6,
-          name: 'SEED',
-          symbol: 'SEED',
+          assetId: `tron:728126428/trc20:${trc20Assets.SEED.address}`,
+          decimals: trc20Assets.SEED.decimals,
+          name: trc20Assets.SEED.name,
+          symbol: trc20Assets.SEED.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          decimals: 18,
-          name: 'USDD',
-          symbol: 'USDD',
+          assetId: `tron:728126428/trc20:${trc20Assets.USDD.address}`,
+          decimals: trc20Assets.USDD.decimals,
+          name: trc20Assets.USDD.name,
+          symbol: trc20Assets.USDD.symbol,
         },
         {
-          assetId: 'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
-          decimals: 18,
-          name: 'HTX DAO',
-          symbol: 'HTX',
+          assetId: `tron:728126428/trc20:${trc20Assets.HTX.address}`,
+          decimals: trc20Assets.HTX.decimals,
+          name: trc20Assets.HTX.name,
+          symbol: trc20Assets.HTX.symbol,
         },
       ],
     }));
@@ -1083,6 +1213,206 @@ function buildMockTronBlock() {
         'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
     },
   };
+}
+
+const TRON_SWAP_CONTRACT_DATA =
+  '14d08fca00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588c5216750cceaad16cf5a757e3f7b32835a5e1000000000000000000000000000000000678810ea08142469ddb483ccf2d999e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222e0000000000000000000000003c067dcd94cb563404b312f3114ecd307feaf53100000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd00000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000404cef95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000f742f4589459f0923fa579600815763d1646bec30000000000000000000000000000000000000000000000000000000069612c2c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487b63d30b5b2c87fb7ffa8bcfade38eaac1abe00000000000000000000000094f24e992ca04b49c6f2a2753076ef8938ed4daa000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706f6f6c747573647573647400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+
+function encodeProtobufVarint(value: number): Buffer {
+  let remaining = BigInt(value);
+  const bytes: number[] = [];
+
+  do {
+    let byte = Number(remaining % 128n);
+    remaining /= 128n;
+    if (remaining > 0n) {
+      byte += 128;
+    }
+    bytes.push(byte);
+  } while (remaining > 0n);
+
+  return Buffer.from(bytes);
+}
+
+function encodeProtobufVarintField(fieldNumber: number, value: number): Buffer {
+  return Buffer.concat([
+    encodeProtobufVarint(fieldNumber * 8),
+    encodeProtobufVarint(value),
+  ]);
+}
+
+function encodeProtobufBytesField(fieldNumber: number, value: Buffer): Buffer {
+  return Buffer.concat([
+    encodeProtobufVarint(fieldNumber * 8 + 2),
+    encodeProtobufVarint(value.length),
+    value,
+  ]);
+}
+
+function buildTronSwapRawDataHex(callValue: number): string {
+  const triggerSmartContract = Buffer.concat([
+    encodeProtobufBytesField(
+      1,
+      Buffer.from('41588c5216750cceaad16cf5a757e3f7b32835a5e1', 'hex'),
+    ),
+    encodeProtobufBytesField(
+      2,
+      Buffer.from('41f742f4589459f0923fa579600815763d1646bec3', 'hex'),
+    ),
+    encodeProtobufVarintField(3, callValue),
+    encodeProtobufBytesField(4, Buffer.from(TRON_SWAP_CONTRACT_DATA, 'hex')),
+  ]);
+  const parameter = Buffer.concat([
+    encodeProtobufBytesField(
+      1,
+      Buffer.from('type.googleapis.com/protocol.TriggerSmartContract'),
+    ),
+    encodeProtobufBytesField(2, triggerSmartContract),
+  ]);
+  const contract = Buffer.concat([
+    encodeProtobufVarintField(1, 31),
+    encodeProtobufBytesField(2, parameter),
+  ]);
+  const timestamp = MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR;
+
+  return Buffer.concat([
+    encodeProtobufBytesField(1, Buffer.from('f733', 'hex')),
+    encodeProtobufBytesField(4, Buffer.from('ff89d72ddc1ce1ea', 'hex')),
+    encodeProtobufVarintField(8, timestamp),
+    encodeProtobufBytesField(11, contract),
+    encodeProtobufVarintField(14, timestamp),
+    encodeProtobufVarintField(18, 300000),
+  ]).toString('hex');
+}
+
+function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
+  const callValue = Number(grossSrcAmount);
+  const rawDataHex = buildTronSwapRawDataHex(callValue);
+
+  return {
+    visible: false,
+    txID: createHash('sha256')
+      .update(Buffer.from(rawDataHex, 'hex'))
+      .digest('hex'),
+    raw_data: {
+      contract: [
+        {
+          parameter: {
+            value: {
+              data: TRON_SWAP_CONTRACT_DATA,
+              owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+              contract_address: '41f742f4589459f0923fa579600815763d1646bec3',
+              call_value: callValue,
+            },
+            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+          },
+          type: 'TriggerSmartContract',
+        },
+      ],
+      ref_block_bytes: 'f733',
+      ref_block_hash: 'ff89d72ddc1ce1ea',
+      expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+      fee_limit: 300000,
+      timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+    },
+    raw_data_hex: rawDataHex,
+    payload: {
+      owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
+      call_value: callValue,
+      contract_address: '41f742f4589459f0923fa579600815763d1646bec3',
+      fee_limit: 300000,
+      function_selector: '14d08fca',
+      parameter: TRON_SWAP_CONTRACT_DATA,
+      chainType: 0,
+      visible: false,
+    },
+    energyUsed: 300000,
+    energyPenalty: 0,
+  };
+}
+
+function buildTronQuoteResponse(fixture: TronQuoteFixture) {
+  const srcAsset = buildTronAsset(fixture.src);
+  const destAsset = buildTronAsset(fixture.dest);
+  const feeSun = fixture.feeSun ?? 8_750;
+  const minDestTokenAmount = String(
+    BigInt(fixture.destAmount) - BigInt(fixture.destAmount) / 50n, // 2% slippage floor
+  );
+  const grossSrcAmount = String(BigInt(fixture.srcAmount) + BigInt(feeSun));
+  const trxAsset = buildTronAsset('TRX');
+
+  return {
+    quote: {
+      bridgeId: 'rango',
+      requestId: '0678810e-a081-4246-9ddb-483ccf2d999e',
+      aggregator: 'rango',
+      srcChainId: 728126428,
+      srcTokenAmount: fixture.srcAmount,
+      srcAsset,
+      destChainId: 728126428,
+      destTokenAmount: fixture.destAmount,
+      destAsset,
+      minDestTokenAmount,
+      feeData: {
+        metabridge: {
+          amount: String(feeSun),
+          asset: trxAsset,
+          quoteBpsFee: 87.5,
+          baseBpsFee: 87.5,
+        },
+      },
+      bridges: ['sunswap (via Rango)'],
+      protocols: ['sunswap (via Rango)'],
+      steps: [
+        {
+          srcAsset,
+          destAsset,
+          action: 'bridge',
+          srcChainId: 728126428,
+          destChainId: 728126428,
+          protocol: {
+            name: 'Sun Swap',
+            displayName: 'sunswap',
+            icon: 'https://raw.githubusercontent.com/rango-exchange/assets/main/swappers/Sun Swap/icon.svg',
+          },
+          srcAmount: grossSrcAmount,
+          destAmount: fixture.destAmount,
+          minDestTokenAmount,
+        },
+      ],
+      priceData: {
+        totalFromAmountUsd: '0.295397',
+        totalToAmountUsd: '0.294578672196',
+        priceImpact: '-0.0060325201136438925',
+        totalFeeAmountUsd: '0.0025847237500000006',
+      },
+      slippage: 2,
+    },
+    trade:
+      fixture.src === 'TRX' && fixture.dest === 'USDT'
+        ? buildTronTrxToUsdtTrade(grossSrcAmount)
+        : {
+            chainId: 728126428,
+            from: TRON_ACCOUNT_ADDRESS,
+            value: fixture.src === 'TRX' ? grossSrcAmount : '0',
+            data: '0xdeadbeef',
+            to: 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax',
+            gasLimit: 200_000,
+          },
+    estimatedProcessingTimeInSeconds: 0,
+  };
+}
+
+export async function mockBridgeGetTronQuoteFor(
+  mockServer: Mockttp,
+  fixture: TronQuoteFixture,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [buildTronQuoteResponse(fixture)],
+    }));
 }
 
 const MOCK_TRON_TOKENS = [
@@ -1173,170 +1503,17 @@ export async function mockBridgeGetTronTokens(
   }));
 }
 
+// Backwards-compatible default for existing tests (1 TRX → ~0.295 USDT)
 export async function mockBridgeGetTronQuote(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
-          quote: {
-            bridgeId: 'rango',
-            requestId: '0678810e-a081-4246-9ddb-483ccf2d999e',
-            aggregator: 'rango',
-            srcChainId: 728126428,
-            srcTokenAmount: '991250',
-            srcAsset: {
-              address: '0x0000000000000000000000000000000000000000',
-              chainId: 728126428,
-              assetId: 'tron:728126428/slip44:195',
-              symbol: 'TRX',
-              decimals: 6,
-              name: 'Tron',
-              aggregators: [],
-              occurrences: 100,
-              iconUrl:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-              metadata: {},
-            },
-            destChainId: 728126428,
-            destTokenAmount: '294852',
-            destAsset: {
-              address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              chainId: 728126428,
-              assetId:
-                'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-              symbol: 'USDT',
-              decimals: 6,
-              name: 'Tether',
-              aggregators: ['coinGecko'],
-              occurrences: 1,
-              iconUrl:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
-              metadata: {},
-            },
-            minDestTokenAmount: '288954',
-            feeData: {
-              metabridge: {
-                amount: '8750',
-                asset: {
-                  address: '0x0000000000000000000000000000000000000000',
-                  chainId: 728126428,
-                  assetId: 'tron:728126428/slip44:195',
-                  symbol: 'TRX',
-                  decimals: 6,
-                  name: 'Tron',
-                  aggregators: [],
-                  occurrences: 100,
-                  iconUrl:
-                    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-                  metadata: {},
-                },
-                quoteBpsFee: 87.5,
-                baseBpsFee: 87.5,
-              },
-            },
-            bridges: ['sunswap (via Rango)'],
-            protocols: ['sunswap (via Rango)'],
-            steps: [
-              {
-                srcAsset: {
-                  address: '0x0000000000000000000000000000000000000000',
-                  chainId: 728126428,
-                  assetId: 'tron:728126428/slip44:195',
-                  symbol: 'TRX',
-                  decimals: 6,
-                  name: 'Tron',
-                  aggregators: [],
-                  occurrences: 100,
-                  iconUrl:
-                    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-                  metadata: {},
-                },
-                destAsset: {
-                  address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-                  chainId: 728126428,
-                  assetId:
-                    'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-                  symbol: 'USDT',
-                  decimals: 6,
-                  name: 'Tether',
-                  aggregators: ['coinGecko'],
-                  occurrences: 1,
-                  iconUrl:
-                    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
-                  metadata: {},
-                },
-                action: 'bridge',
-                srcChainId: 728126428,
-                destChainId: 728126428,
-                protocol: {
-                  name: 'Sun Swap',
-                  displayName: 'sunswap',
-                  icon: 'https://raw.githubusercontent.com/rango-exchange/assets/main/swappers/Sun Swap/icon.svg',
-                },
-                srcAmount: '1000000',
-                destAmount: '294852',
-                minDestTokenAmount: '288954',
-              },
-            ],
-            priceData: {
-              totalFromAmountUsd: '0.295397',
-              totalToAmountUsd: '0.294578672196',
-              priceImpact: '-0.0060325201136438925',
-              totalFeeAmountUsd: '0.0025847237500000006',
-            },
-            slippage: 2,
-          },
-          trade: {
-            visible: false,
-            txID: '51f819579ad7c0a02bf428c0128ba7430b670526a560e31649dfb818e4ad4740',
-            raw_data: {
-              contract: [
-                {
-                  parameter: {
-                    value: {
-                      data: '14d08fca00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588c5216750cceaad16cf5a757e3f7b32835a5e1000000000000000000000000000000000678810ea08142469ddb483ccf2d999e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222e0000000000000000000000003c067dcd94cb563404b312f3114ecd307feaf53100000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd00000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000404cef95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000f742f4589459f0923fa579600815763d1646bec30000000000000000000000000000000000000000000000000000000069612c2c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487b63d30b5b2c87fb7ffa8bcfade38eaac1abe00000000000000000000000094f24e992ca04b49c6f2a2753076ef8938ed4daa000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706f6f6c747573647573647400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-                      owner_address:
-                        '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
-                      contract_address:
-                        '41f742f4589459f0923fa579600815763d1646bec3',
-                      call_value: 1000000,
-                    },
-                    type_url:
-                      'type.googleapis.com/protocol.TriggerSmartContract',
-                  },
-                  type: 'TriggerSmartContract',
-                },
-              ],
-              ref_block_bytes: 'f733',
-              ref_block_hash: 'ff89d72ddc1ce1ea',
-              expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-              fee_limit: 300000,
-              timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
-            },
-            raw_data_hex:
-              '0A02F7332208FF89D72DDC1CE1EA4090AD9AD68D375AF40F081F12EF0F0A31747970652E676F6F676C65617069732E636F6D2F70726F746F636F6C2E54726967676572536D617274436F6E747261637412B90F0A1541588C5216750CCEAAD16CF5A757E3F7B32835A5E1121541F742F4589459F0923FA579600815763D1646BEC318C0843D22840F14D08FCA00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588C5216750CCEAAD16CF5A757E3F7B32835A5E1000000000000000000000000000000000678810EA08142469DDB483CCF2D999E0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C00000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222E0000000000000000000000003C067DCD94CB563404B312F3114ECD307FEAF53100000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003E9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084D6574614D61736B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD00000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000E00000000000000000000000000000000000000000000000000000000000000404CEF95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001A000000000000000000000000000000000000000000000000000000000000002E0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000F742F4589459F0923FA579600815763D1646BEC30000000000000000000000000000000000000000000000000000000069612C2C000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487B63D30B5B2C87FB7FFA8BCFADE38EAAC1ABE00000000000000000000000094F24E992CA04B49C6F2A2753076EF8938ED4DAA000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000E0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706F6F6C74757364757364740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000070B0D896D68D379001E0A712',
-            payload: {
-              owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
-              call_value: 1000000,
-              contract_address: '41f742f4589459f0923fa579600815763d1646bec3',
-              fee_limit: 300000,
-              function_selector: '14d08fca',
-              parameter:
-                '00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588c5216750cceaad16cf5a757e3f7b32835a5e1000000000000000000000000000000000678810ea08142469ddb483ccf2d999e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222e0000000000000000000000003c067dcd94cb563404b312f3114ecd307feaf53100000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd00000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000404cef95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000f742f4589459f0923fa579600815763d1646bec30000000000000000000000000000000000000000000000000000000069612c2c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487b63d30b5b2c87fb7ffa8bcfade38eaac1abe00000000000000000000000094f24e992ca04b49c6f2a2753076ef8938ed4daa000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706f6f6c747573647573647400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-              chainType: 0,
-              visible: false,
-            },
-            energyUsed: 300000,
-            energyPenalty: 0,
-          },
-          estimatedProcessingTimeInSeconds: 0,
-        },
-      ],
-    }));
+  return mockBridgeGetTronQuoteFor(mockServer, {
+    src: 'TRX',
+    dest: 'USDT',
+    srcAmount: '991250',
+    destAmount: '294852',
+    feeSun: 8_750,
+  });
 }
 
 export async function mockBridgeGetTronQuoteEmpty(

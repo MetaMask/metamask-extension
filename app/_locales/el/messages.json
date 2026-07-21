@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Επιλογές λογαριασμού"
   },
-  "accountPermissionToast": {
-    "message": "Ενημέρωση αδειών λογαριασμού"
-  },
   "accountSelectionRequired": {
     "message": "Πρέπει να επιλέξετε έναν λογαριασμό!"
   },
@@ -2014,10 +2011,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Θα πρέπει να επιβεβαιώσετε 2 συναλλαγές στο πορτοφόλι υλικού σας:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Λεπτομέρειες διασύνδεσης",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2019,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Πληκτρολογήστε το ποσό"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Προβολή σε $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Αυτή η συναλλαγή πραγματοποιείται σε δύο δίκτυα. Ένας σύνδεσμος εμφανίζει το δίκτυο προέλευσης και ο άλλος το δίκτυο προορισμού μετά την επιβεβαίωση."
@@ -2313,42 +2303,11 @@
   "bridgeSendLoading": {
     "message": "Αποστολή από το δίκτυο προέλευσης"
   },
-  "bridgeStatusComplete": {
-    "message": "Ολοκληρώθηκε",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Απέτυχε",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Σε εξέλιξη",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "Λάβατε $1 στο $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Λήψη $1 στο $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Ανταλλάξατε $1 για $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Ανταλλαγή $1 για $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Ύποπτο"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Ύποπτο token"
-  },
-  "bridgeTo": {
-    "message": "Διασύνδεση προς"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "Το $1 είναι κακόβουλο token."
@@ -2364,56 +2323,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Κανένα token δεν ταιριάζει με το “$1”"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Συναλλαγή $1 από 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Έγινε διασύνδεση"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Διασύνδεση"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Επικοινωνήστε με την"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Υποστήριξη του MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Έχουν περάσει πάνω από 3 ώρες;"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Κατάσταση"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Έγινε ανταλλαγή"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Ανταλλαγή"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Χρονοσφραγίδα"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 στις $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 στο",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Σύνολο τέλους συναλλαγής"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Λάβατε"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Στείλατε"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Χρήση μέγιστου επιτρεπόμενου"
@@ -2431,12 +2340,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Απαιτείται ελάχιστο υπόλοιπο ασφαλείας $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Έγινε διασύνδεση"
-  },
-  "bridgedToChain": {
-    "message": "Έγινε διασύνδεση με το $1"
   },
   "bridging": {
     "message": "Διασύνδεση"
@@ -3204,9 +3107,6 @@
   "decimal": {
     "message": "Δεκαδικά Ψηφία Ακριβείας"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Τα δεκαδικά ψηφία πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
-  },
   "decrypt": {
     "message": "Αποκρυπτογράφηση"
   },
@@ -3463,10 +3363,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Διεύθυνση λήψης"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "Αναγνωριστικό συναλλαγής προορισμού Tx",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Λεπτομέρειες"
@@ -5503,10 +5399,6 @@
     "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Μετατρέψτε $1 σε mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Πληροφορίες για το μπόνους",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5889,14 +5781,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Ενεργοποιήθηκε η αυτόματη ανίχνευση NFT"
   },
-  "nftBought": {
-    "message": "Αγοράσατε $1"
-  },
   "nftEmptyDescription": {
     "message": "Υπάρχει ένας ολόκληρος κόσμος NFT εκεί έξω. Ξεκινήστε τη συλλογή σας σήμερα."
-  },
-  "nftMinted": {
-    "message": "Δημιουργήσατε $1"
   },
   "nftOptions": {
     "message": "Επιλογές για NFT"
@@ -7075,9 +6961,6 @@
   "perpsDateYesterday": {
     "message": "Χθες"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Χρηματοδοτούμενα perpetual συμβόλαια"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Η μεταφορά απέτυχε"
   },
@@ -7735,10 +7618,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Ανάληψη από Perps",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Εκτιμώμενος χρόνος"
@@ -8463,10 +8342,6 @@
   "revokePermission": {
     "message": "Ανάκληση άδειας"
   },
-  "revokePermissionTitle": {
-    "message": "Κατάργηση $1 άδειας",
-    "description": "The token symbol that is being revoked"
-  },
   "revokeSimulationDetailsDesc": {
     "message": "Καταργείτε την άδεια πρόσβασης κάποιου ατόμου να χρησιμοποιεί tokens από τον λογαριασμό σας."
   },
@@ -8937,14 +8812,6 @@
   "sent": {
     "message": "Εστάλη"
   },
-  "sentSpecifiedTokens": {
-    "message": "Εστάλη $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Εστάλη $1 ως $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
   },
@@ -8953,10 +8820,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Αίτημα ανάληψης"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Έγκριση $1 χωρίς όριο δαπανών",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Διαμόρφωση",
@@ -9659,9 +9522,6 @@
   },
   "sign": {
     "message": "Υπογραφή"
-  },
-  "signatureRequest": {
-    "message": "Αίτημα υπογραφής"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Το NFT θα εμφανιστεί στο πορτοφόλι σας, όταν η προσφορά γίνει αποδεκτή."
@@ -10473,10 +10333,6 @@
   "swapDecentralizedExchange": {
     "message": "Αποκεντρωμένη ανταλλαγή"
   },
-  "swapDetailsTitle": {
-    "message": "Λεπτομέρειες ανταλλαγής",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Άμεσο συμβόλαιο"
   },
@@ -10680,10 +10536,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "Το token δεν είναι διαθέσιμο για ανταλλαγή σε αυτή την περιοχή"
-  },
-  "swapTokenToToken": {
-    "message": "Ανταλλαγή $1 έως $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "Ανταλλαγή tokens"
@@ -10959,10 +10811,6 @@
   "transactionIncludesTypes": {
     "message": "Αυτή η συναλλαγή περιλαμβάνει: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Αυτή η συναλλαγή ήταν προστατευμένη. Την ακυρώσαμε για να αποτρέψουμε απώλεια κεφαλαίων.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
@@ -10971,10 +10819,6 @@
   },
   "transactionSubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε"
-  },
-  "transactionTotalGasFee": {
-    "message": "Σύνολο τελών συναλλαγών",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Συναλλαγές"
@@ -11300,9 +11144,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Προβολή λεπτομερειών"
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"

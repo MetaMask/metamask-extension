@@ -102,9 +102,6 @@ jest.mock('../../../hooks/musd', () => {
     }),
   };
 });
-jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
-  ActivityList: () => <div data-testid="mock-activity-list" />,
-}));
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
 }));

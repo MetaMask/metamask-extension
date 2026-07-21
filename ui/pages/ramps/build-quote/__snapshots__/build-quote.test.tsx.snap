@@ -12,7 +12,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -61,36 +61,41 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
             value="25"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <div
         class="flex flex-col gap-3 items-center pb-4"
@@ -99,7 +104,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -118,6 +123,572 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
 </div>
 `;
 
+exports[`RampsBuildQuoteScreen matches snapshot redirecting when intent token never settles after load 1`] = `
+<div>
+  <div
+    class="loading-overlay"
+  >
+    <div
+      class="mb-3 loading-overlay__container"
+    >
+      <div
+        class="spinner loading-overlay__spinner"
+      >
+        <svg
+          class="lds-spinner"
+          height="100%"
+          preserveAspectRatio="xMidYMid"
+          style="background: none;"
+          viewBox="0 0 100 100"
+          width="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <g
+            transform="rotate(0 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.9166666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(30 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.8333333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(60 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.75s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(90 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.6666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(120 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5833333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(150 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(180 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.4166666666666667s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(210 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.3333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(240 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.25s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(270 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.16666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(300 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.08333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(330 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="0s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div
+      class="flex-row items-center justify-center flex"
+    />
+  </div>
+</div>
+`;
+
+exports[`RampsBuildQuoteScreen matches snapshot redirecting when settled token mismatches intent after load 1`] = `
+<div>
+  <div
+    class="loading-overlay"
+  >
+    <div
+      class="mb-3 loading-overlay__container"
+    >
+      <div
+        class="spinner loading-overlay__spinner"
+      >
+        <svg
+          class="lds-spinner"
+          height="100%"
+          preserveAspectRatio="xMidYMid"
+          style="background: none;"
+          viewBox="0 0 100 100"
+          width="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <g
+            transform="rotate(0 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.9166666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(30 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.8333333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(60 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.75s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(90 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.6666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(120 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5833333333333334s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(150 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.5s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(180 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.4166666666666667s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(210 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.3333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(240 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.25s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(270 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.16666666666666666s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(300 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="-0.08333333333333333s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+          <g
+            transform="rotate(330 50 50)"
+          >
+            <rect
+              fill="var(--color-icon-muted)"
+              height="30"
+              rx="0"
+              ry="0"
+              width="10"
+              x="45"
+              y="0"
+            >
+              <animate
+                attributeName="opacity"
+                begin="0s"
+                dur="1s"
+                repeatCount="indefinite"
+                values="1;0"
+              />
+            </rect>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div
+      class="flex-row items-center justify-center flex"
+    />
+  </div>
+</div>
+`;
+
 exports[`RampsBuildQuoteScreen matches snapshot when falling back without regional default amount 1`] = `
 <div>
   <div
@@ -130,7 +701,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -179,36 +750,41 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
             value="100"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <div
         class="flex flex-col gap-3 items-center pb-4"
@@ -217,7 +793,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -248,7 +824,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -297,36 +873,41 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
             value="100"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <p
         class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mb-4 text-center"
@@ -341,7 +922,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-disabled="true"
@@ -375,7 +956,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -424,36 +1005,41 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
             value="100"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <div
         class="flex flex-col gap-3 items-center pb-4"
@@ -462,7 +1048,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -493,7 +1079,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -542,36 +1128,41 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
             value="100"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <div
         class="flex flex-col gap-3 items-center pb-4"
@@ -580,7 +1171,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-busy="true"
@@ -916,572 +1507,6 @@ exports[`RampsBuildQuoteScreen matches snapshot while waiting for goToBuy preloa
 </div>
 `;
 
-exports[`RampsBuildQuoteScreen matches snapshot while waiting when intent token has not settled after load 1`] = `
-<div>
-  <div
-    class="loading-overlay"
-  >
-    <div
-      class="mb-3 loading-overlay__container"
-    >
-      <div
-        class="spinner loading-overlay__spinner"
-      >
-        <svg
-          class="lds-spinner"
-          height="100%"
-          preserveAspectRatio="xMidYMid"
-          style="background: none;"
-          viewBox="0 0 100 100"
-          width="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
-          <g
-            transform="rotate(0 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.9166666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(30 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.8333333333333334s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(60 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.75s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(90 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.6666666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(120 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.5833333333333334s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(150 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.5s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(180 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.4166666666666667s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(210 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.3333333333333333s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(240 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.25s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(270 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.16666666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(300 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.08333333333333333s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(330 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="0s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-        </svg>
-      </div>
-    </div>
-    <div
-      class="flex-row items-center justify-center flex"
-    />
-  </div>
-</div>
-`;
-
-exports[`RampsBuildQuoteScreen matches snapshot while waiting when settled token mismatches intent after load 1`] = `
-<div>
-  <div
-    class="loading-overlay"
-  >
-    <div
-      class="mb-3 loading-overlay__container"
-    >
-      <div
-        class="spinner loading-overlay__spinner"
-      >
-        <svg
-          class="lds-spinner"
-          height="100%"
-          preserveAspectRatio="xMidYMid"
-          style="background: none;"
-          viewBox="0 0 100 100"
-          width="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
-          <g
-            transform="rotate(0 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.9166666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(30 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.8333333333333334s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(60 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.75s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(90 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.6666666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(120 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.5833333333333334s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(150 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.5s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(180 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.4166666666666667s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(210 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.3333333333333333s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(240 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.25s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(270 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.16666666666666666s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(300 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="-0.08333333333333333s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-          <g
-            transform="rotate(330 50 50)"
-          >
-            <rect
-              fill="var(--color-icon-muted)"
-              height="30"
-              rx="0"
-              ry="0"
-              width="10"
-              x="45"
-              y="0"
-            >
-              <animate
-                attributeName="opacity"
-                begin="0s"
-                dur="1s"
-                repeatCount="indefinite"
-                values="1;0"
-              />
-            </rect>
-          </g>
-        </svg>
-      </div>
-    </div>
-    <div
-      class="flex-row items-center justify-center flex"
-    />
-  </div>
-</div>
-`;
-
 exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = `
 <div>
   <div
@@ -1494,7 +1519,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -1543,36 +1568,41 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
             value="100"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <p
         class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default mb-4 text-center"
@@ -1587,7 +1617,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-disabled="true"
@@ -1621,7 +1651,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
       <button
         aria-label="Back"
         class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-        data-testid="ramps-token-selection-back"
+        data-testid="ramps-build-quote-back"
         role="button"
       >
         <svg
@@ -1670,36 +1700,41 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
             value="50"
           />
         </div>
-        <div
-          class="flex-row inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2"
+        <button
+          class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="ramps-payment-method-pill"
+          role="button"
         >
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="flex-row inline-flex items-center gap-2"
           >
-            <path
-              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
-            />
-          </svg>
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Debit card
-          </p>
-          <svg
-            class="inline-block w-4 h-4 text-icon-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
-            />
-          </svg>
-        </div>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+              />
+            </svg>
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Debit card
+            </p>
+            <svg
+              class="inline-block w-4 h-4 text-icon-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
       <div
         class="flex flex-col gap-3 items-center pb-4"
@@ -1708,7 +1743,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"

@@ -1375,6 +1375,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
   TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
