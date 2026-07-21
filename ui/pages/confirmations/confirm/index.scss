@@ -20,9 +20,7 @@
     width: $width-screen-lg-min;
   }
 
-  &.multichain-page__inner-container {
-    border: 1px solid var(--color-border-muted);
-    border-radius: 2px;
-    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  }
+  border: 1px solid var(--color-border-muted);
+  border-radius: 2px;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 }
