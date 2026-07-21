@@ -294,7 +294,7 @@ export function getTokenFiatAmount(
     .times(new Numeric(conversionRate, 10))
     .toString();
 
-  let currentTokenInFiat = new Numeric(tokenAmount, 10);
+  let currentTokenInFiat: Numeric | string = new Numeric(tokenAmount, 10);
 
   if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
     currentTokenInFiat = currentTokenInFiat.applyConversionRate(
@@ -302,17 +302,17 @@ export function getTokenFiatAmount(
     );
   }
 
-  const roundedTokenInFiat = currentTokenInFiat.round(2).toString();
+  currentTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
   if (hideCurrencySymbol && formatted) {
-    result = formatCurrency(roundedTokenInFiat, currentCurrency);
+    result = formatCurrency(currentTokenInFiat, currentCurrency);
   } else if (formatted) {
     result = `${formatCurrency(
-      roundedTokenInFiat,
+      currentTokenInFiat,
       currentCurrency,
     )} ${currentCurrency.toUpperCase()}`;
   } else {
-    result = roundedTokenInFiat;
+    result = currentTokenInFiat;
   }
   return result;
 }
