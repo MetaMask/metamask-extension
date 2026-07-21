@@ -366,7 +366,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   });
 
-  it.only('Execute bridge transactions on non enabled networks - with bottom nav treatment', async function () {
+  it('Execute bridge transactions on non enabled networks - with bottom nav treatment', async function () {
     await withFixtures(
       getBridgeFixturesWithBottomNavTreatment({
         title: this.test?.fullTitle(),
