@@ -10,6 +10,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useEventListener } from '../../../hooks/useEventListener';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -262,18 +263,14 @@ export const GlobalMenuDrawer = ({
   }, [isOpen, isFullscreen]);
 
   // Escape key closes drawer (Dialog would unmount on close and block leave transition in popup)
-  useEffect(() => {
+  useEventListener('keydown', (e: KeyboardEvent) => {
     if (!isOpen) {
       return;
     }
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  });
 
   const titleId = 'global-menu-drawer-title';
   // Popup: no portal, fixed overlay. Fullscreen/sidepanel: portal into .app and overlay root layout.
