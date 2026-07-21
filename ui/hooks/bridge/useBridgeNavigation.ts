@@ -101,9 +101,8 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   };
 };
 
-const clearSendBundleIfPresent = (
-  state: BridgeNavigationOptions['state'],
-) => (Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {});
+const clearSendBundleIfPresent = (state: BridgeNavigationOptions['state']) =>
+  Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {};
 
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
