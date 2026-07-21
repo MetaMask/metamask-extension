@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import {
   GasFeeEstimateType,
   GasFeeEstimateLevel,
@@ -9,6 +9,8 @@ import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
 import { useGasFeeEstimateLevelOptions } from './useGasFeeEstimateLevelOptions';
+
+const mockPersistGasFeePreference = jest.fn();
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -28,6 +30,10 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
 
 jest.mock('./useTransactionGasLimit', () => ({
   useTransactionGasLimit: jest.fn(),
+}));
+
+jest.mock('./usePersistGasFeePreference', () => ({
+  usePersistGasFeePreference: () => mockPersistGasFeePreference,
 }));
 
 jest.mock('../../../../store/actions/update-transaction-gas-fees', () => ({
@@ -171,6 +177,69 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current[1].isSelected).toBe(true);
     // networkConfigurationsByChainId is empty in mockState; fallback ticker must not be the string "undefined"
     expect(result.current[0].value).toBe('0.001 ETH');
+  });
+
+  it('persists the selected gas fee estimate level', async () => {
+    const transactionMeta = {
+      id: '1',
+      chainId: '0x1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
+      txParams: {
+        from: '0xabc',
+      },
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.FeeMarket,
+        [GasFeeEstimateLevel.Low]: {
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x2',
+        },
+        [GasFeeEstimateLevel.High]: {
+          maxFeePerGas: '0x3',
+          maxPriorityFeePerGas: '0x3',
+        },
+      },
+    };
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: transactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        [GasFeeEstimateLevel.Low]: {
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          minWaitTimeEstimate: 10000,
+          maxWaitTimeEstimate: 20000,
+        },
+        [GasFeeEstimateLevel.High]: {
+          minWaitTimeEstimate: 5000,
+          maxWaitTimeEstimate: 10000,
+        },
+      },
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    await act(async () => {
+      await result.current[2].onSelect();
+    });
+
+    expect(mockPersistGasFeePreference).toHaveBeenCalledWith(transactionMeta, {
+      userFeeLevel: GasFeeEstimateLevel.High,
+    });
   });
 
   it('skips high option when it has the same fees as medium for FeeMarket type', () => {

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "ನೀವು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡುವ ಅಗತ್ಯವಿದೆ!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "addAlias": {
     "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "ಸುಧಾರಿತ"
   },
-  "customToken": {
-    "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
-  },
   "decimal": {
     "message": "ನಿಖರತೆಯ ದಶಮಾಂಶಗಳು"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
@@ -347,9 +338,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
-  },
-  "mustSelectOne": {
-    "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
   },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
@@ -520,9 +508,6 @@
   },
   "sign": {
     "message": "ಸಹಿ"
-  },
-  "signatureRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"

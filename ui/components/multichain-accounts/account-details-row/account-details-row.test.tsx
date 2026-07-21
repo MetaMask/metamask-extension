@@ -96,7 +96,7 @@ describe('AccountDetailsRow', () => {
           iconName={IconName.ArrowRight}
           color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel={messages.viewDetails.message}
+          ariaLabel="View details"
           data-testid="arrow-button"
         />
       );
@@ -110,9 +110,7 @@ describe('AccountDetailsRow', () => {
       );
 
       expect(screen.getByTestId('arrow-button')).toBeInTheDocument();
-      expect(
-        screen.getByLabelText(messages.viewDetails.message),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText('View details')).toBeInTheDocument();
     });
 
     it('should handle click events on endAccessory buttons', () => {

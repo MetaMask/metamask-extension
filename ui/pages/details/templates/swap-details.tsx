@@ -15,6 +15,7 @@ export function SwapDetails({
     {
       type:
         | 'swap'
+        | 'bridge'
         | 'convert'
         | 'lendingDeposit'
         | 'lendingWithdrawal'
@@ -42,7 +43,6 @@ export function SwapDetails({
       </div>
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
-
         <SwapAgainButton
           sourceToken={item.data.sourceToken}
           destinationToken={item.data.destinationToken}

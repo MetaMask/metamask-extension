@@ -1,71 +1,75 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Hex } from '@metamask/utils';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { Box } from '../../../../../../../components/component-library';
-import { Toast } from '../../../../../../../components/multichain';
+import { SECOND } from '../../../../../../../../shared/constants/time';
+import {
+  toast,
+  ToastContent,
+} from '../../../../../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useTransactionMetadataRequestOptional } from '../../../../../hooks/transactions/useTransactionMetadataRequest';
+import { TokenIcon } from '../../../../token-icon';
 import {
   useGasFeeToken,
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
-import { GasFeeTokenIcon } from '../gas-fee-token-icon';
 
-const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
+const TOAST_ID = 'gas-fee-token-toast';
+const TOAST_DURATION = 5 * SECOND;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenToast() {
   const t = useI18nContext();
-  const [showToast, setShowToast] = useState(false);
+  const chainId = useTransactionMetadataRequestOptional()?.chainId;
 
   const nativeGasFeeToken = useGasFeeToken({
     tokenAddress: NATIVE_TOKEN_ADDRESS,
   });
 
   const selectedGasFeeToken = useSelectedGasFeeToken() ?? nativeGasFeeToken;
+  const selectedTokenAddress =
+    selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS;
 
-  const [previousGasFeeToken, setPreviousGasFeeToken] =
-    useState<Hex>(NATIVE_TOKEN_ADDRESS);
+  const previousGasFeeTokenRef = useRef<Hex>(NATIVE_TOKEN_ADDRESS);
 
-  const hideToast = useCallback(() => {
-    setShowToast(false);
+  useEffect(() => {
+    return () => {
+      toast.dismiss(TOAST_ID);
+    };
   }, []);
 
-  if (selectedGasFeeToken?.tokenAddress !== previousGasFeeToken) {
-    setPreviousGasFeeToken(
-      selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS,
-    );
+  useEffect(() => {
+    if (!chainId || selectedTokenAddress === previousGasFeeTokenRef.current) {
+      return;
+    }
 
-    setShowToast(true);
+    previousGasFeeTokenRef.current = selectedTokenAddress;
 
-    setTimeout(() => {
-      hideToast();
-    }, TOAST_TIMEOUT_MILLISECONDS);
-  }
-
-  if (!showToast) {
-    return null;
-  }
-
-  return (
-    <Box className="toast_wrapper">
-      <Toast
-        onClose={hideToast}
-        text={t('confirmGasFeeTokenToast', [
-          <b key="symbol">{selectedGasFeeToken?.symbol}</b>,
+    toast.success(
+      <ToastContent
+        title={t('confirmGasFeeTokenToast', [
+          selectedGasFeeToken?.symbol ?? '',
         ])}
-        startAdornment={
-          <>
-            <GasFeeTokenIcon
-              tokenAddress={
-                selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS
-              }
-            />
-          </>
-        }
-      />
-    </Box>
-  );
+        dataTestId={TOAST_ID}
+      />,
+      {
+        id: TOAST_ID,
+        duration: TOAST_DURATION,
+        style: { visibility: 'visible' },
+        icon: (
+          <TokenIcon
+            chainId={chainId}
+            tokenAddress={selectedTokenAddress}
+            symbol={selectedGasFeeToken?.symbol}
+            size="sm"
+          />
+        ),
+      },
+    );
+  }, [chainId, selectedGasFeeToken?.symbol, selectedTokenAddress, t]);
+
+  return null;
 }

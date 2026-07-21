@@ -14,10 +14,7 @@ import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import {
-  ImportNftsModal,
-  ImportTokensModal,
-} from '../../components/multichain';
+import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -44,11 +41,14 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
+  RAMPS_PROVIDER_SELECTION_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -73,11 +73,15 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
+  ACTIVITY_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -93,7 +97,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  hideImportTokensModal,
   hideDeprecatedNetworkModal,
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
@@ -102,6 +105,7 @@ import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -118,11 +122,12 @@ import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -139,7 +144,6 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
-import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -156,6 +160,7 @@ const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
+const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -199,6 +204,16 @@ const NftFullImage = mmLazy(
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsTokenSelection = mmLazy(
+  () => import('../ramps/token-selection/index.ts'),
+);
+const RampsPaymentMethod = mmLazy(
+  () => import('../ramps/payment-method/index.ts'),
+);
+const RampsProviderSelection = mmLazy(
+  () => import('../ramps/provider-selection/index.ts'),
+);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -215,7 +230,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.ts'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -236,6 +250,8 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
+const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -263,26 +279,10 @@ const SettingsV2LegacyRedirect = () => {
 };
 
 export const TokenManagementFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <TokenManagementPage />;
 };
 
 export const CustomTokenImportFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
-
-  if (!isTokenManagementFilterEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   return <CustomTokenImportPage />;
 };
 
@@ -346,7 +346,11 @@ export const routeConfig = [
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
-        element: <TokenManagementFeatureRoute />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
@@ -360,6 +364,14 @@ export const routeConfig = [
           </GlobalMenuRouteTransition>
         ),
       },
+      ...(getIsQrSyncEnabled()
+        ? [
+            {
+              path: SYNC_ACCOUNTS_ROUTE,
+              element: <SyncAccounts />,
+            },
+          ]
+        : []),
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -522,16 +534,28 @@ export const routeConfig = [
             element: <BatchSell />,
           },
           {
-            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />,
-          },
-          {
             path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
             element: <CrossChainSwap />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
             element: <DeFiPage />,
+          },
+          {
+            path: RAMPS_BUILD_QUOTE_ROUTE,
+            element: <RampsBuildQuote />,
+          },
+          {
+            path: RAMPS_TOKEN_SELECTION_ROUTE,
+            element: <RampsTokenSelection />,
+          },
+          {
+            path: RAMPS_PAYMENT_METHOD_ROUTE,
+            element: <RampsPaymentMethod />,
+          },
+          {
+            path: RAMPS_PROVIDER_SELECTION_ROUTE,
+            element: <RampsProviderSelection />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
@@ -570,6 +594,14 @@ export const routeConfig = [
               },
             ],
           },
+          {
+            path: ACTIVITY_ROUTE,
+            element: <ActivityPage />,
+          },
+          {
+            path: PERPS_HOME_PAGE_ROUTE,
+            element: <PerpsPage />,
+          },
         ],
       },
     ],
@@ -584,6 +616,7 @@ export default function Routes() {
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
+  const showLoadingOverlay = useSpinDelay(isLoading);
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
@@ -607,9 +640,6 @@ export default function Routes() {
     getShowExtensionInFullSizeView,
   );
 
-  const isImportTokensModalOpen = useAppSelector(
-    (state) => state.appState.importTokensModalOpen,
-  );
   const isBasicConfigurationModalOpen = useAppSelector(
     (state) => state.appState.showBasicFunctionalityModal,
   );
@@ -638,6 +668,12 @@ export default function Routes() {
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
+
+  // Close the side panel when a wallet reset is in progress and the wallet
+  // becomes unlocked on another MetaMask surface. The side panel keeps its own
+  // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
+  // onboarding and trigger the onboarding lock trap.
+  useCloseSidePanelOnWalletReset();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
@@ -722,7 +758,7 @@ export default function Routes() {
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
-    isLoading &&
+    showLoadingOverlay &&
     completedOnboarding &&
     !pendingConfirmations.some(
       (confirmation) =>
@@ -765,9 +801,6 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
-      {isImportTokensModalOpen ? (
-        <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
-      ) : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}

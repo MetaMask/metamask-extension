@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Trebuie să selectați un cont!"
   },
-  "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
-  },
   "addAlias": {
     "message": "Adăugare alias"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Avansate"
   },
-  "customToken": {
-    "message": "Token personalizat"
-  },
   "decimal": {
     "message": "Zecimale de precizie"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
   "delete": {
     "message": "Șterge"
@@ -338,9 +329,6 @@
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
-  },
-  "mustSelectOne": {
-    "message": "Trebuie să selectați cel puțin 1 simbol."
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -511,9 +499,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"

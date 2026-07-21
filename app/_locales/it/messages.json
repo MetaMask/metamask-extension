@@ -67,9 +67,6 @@
   "addANickname": {
     "message": "Aggiungo un nickname"
   },
-  "addAcquiredTokens": {
-    "message": "Aggiungi i token che hai acquistato usando MetaMask"
-  },
   "addAlias": {
     "message": "Aggiungi alias"
   },
@@ -379,9 +376,6 @@
     "message": "Usa $1 per personalizzare il prezzo del gas. Questo può creare confusione se non hai familiarità. Interagisci a tuo rischio.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
-  "customToken": {
-    "message": "Token Personalizzato"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
   },
@@ -400,9 +394,6 @@
   },
   "decimal": {
     "message": "Precisione Decimali"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Il numero di decimali deve essere almeno 0, e non oltre 36."
   },
   "decrypt": {
     "message": "Decifra"
@@ -715,9 +706,6 @@
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Devi selezionare almeno un token."
-  },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -920,9 +908,6 @@
   "sign": {
     "message": "Firma"
   },
-  "signatureRequest": {
-    "message": "Firma Richiesta"
-  },
   "signed": {
     "message": "Firmata"
   },
@@ -1065,10 +1050,6 @@
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenToToken": {
-    "message": "Scambia da $1 a $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTransactionComplete": {
     "message": "Transazione completata"
