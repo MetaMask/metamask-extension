@@ -777,7 +777,6 @@ Feature flags allow you to enable/disable features during development. They're d
 Check `.metamaskrc.dist` for the current list of feature flags. Common ones:
 
 - `MULTICHAIN` - Multi-chain support
-- `BLOCKAID_PUBLIC_KEY` - Security features
 - Various experimental features
 
 ### Using Feature Flags
