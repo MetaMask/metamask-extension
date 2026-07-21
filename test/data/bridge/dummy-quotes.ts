@@ -481,108 +481,6 @@ export const ETH_11_USDC_TO_ARB_METADATA = {
     usd: '12',
   },
 };
-const ARB_11_USDC_TO_ETH_METADATA = {
-  sentAmount: {
-    amount: '1.0903750',
-    valueInCurrency: '1000',
-    usd: '1000',
-  },
-  gasFee: {
-    total: { amount: '12', valueInCurrency: '12', usd: '12' },
-  },
-  totalNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  totalMaxNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  toTokenAmount: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  adjustedReturn: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  swapRate: '12',
-  cost: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-};
-const ARB_11_USDC_TO_OP_METADATA = {
-  sentAmount: {
-    amount: '1.0903750',
-    valueInCurrency: '1000',
-    usd: '1000',
-  },
-  gasFee: {
-    total: { amount: '12', valueInCurrency: '12', usd: '12' },
-  },
-  totalNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  totalMaxNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  toTokenAmount: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  adjustedReturn: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  swapRate: '12',
-  cost: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-};
-const OP_11_USDC_TO_ARB_METADATA = {
-  sentAmount: {
-    amount: '1.1000000',
-    valueInCurrency: '1000',
-    usd: '1000',
-  },
-  gasFee: {
-    total: { amount: '12', valueInCurrency: '12', usd: '12' },
-  },
-  totalNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  totalMaxNetworkFee: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  toTokenAmount: {
-    amount: '12',
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  adjustedReturn: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-  swapRate: '12',
-  cost: {
-    valueInCurrency: '12',
-    usd: '12',
-  },
-};
 
 export const DummyQuotesWithApproval = {
   ETH_11_USDC_TO_ARB: [
@@ -1160,7 +1058,7 @@ export const DummyQuotesWithApproval = {
           address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
           chainId: 10,
           symbol: 'USDC',
-          assetId: `eip155:1/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85`,
+          assetId: `eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85`,
           decimals: 6,
           name: 'USD Coin',
           coinKey: 'USDC',
@@ -1223,7 +1121,7 @@ export const DummyQuotesWithApproval = {
                 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
               priceUSD: '1.0007004903432404',
               icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
-              assetId: `eip155:1/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85`,
+              assetId: `eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85`,
             },
             srcAmount: '10903750',
             destAmount: '10897534',
@@ -4245,7 +4143,7 @@ export const DummyQuotesWithApproval = {
               symbol: 'USDC.axl',
               address: '0xeb466342c4d449bc9f53a865d5cb90586f405215',
               chainId: 42161,
-              assetId: `eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831`,
+              assetId: `eip155:42161/erc20:0xeb466342c4d449bc9f53a865d5cb90586f405215`,
               chain: {
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                 // eslint-disable-next-line @typescript-eslint/naming-convention
