@@ -32902,7 +32902,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^2.10.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-7cef84e"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-dcb02ac"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
