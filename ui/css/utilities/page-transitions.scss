@@ -27,10 +27,6 @@
   overflow: hidden;
 }
 
-.app--sidepanel .global-menu-route-transition-wrapper--animating {
-  max-width: var(--width-max-sidepanel);
-}
-
 .global-menu-route-transition-wrapper__content {
   display: flex;
   flex-direction: column;

@@ -303,10 +303,8 @@ export const GlobalMenuDrawer = ({
   const drawerPanelBaseClass =
     'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
   let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
-  if (isFullscreen) {
+  if (isFullscreen || isSidepanel) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
-  } else if (isSidepanel) {
-    drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
   }
 
   const dialogContent = isDrawerMounted ? (
@@ -318,7 +316,7 @@ export const GlobalMenuDrawer = ({
       role="dialog"
       style={dialogPositionStyle}
     >
-      {!isSidepanel && (
+      {(isFullscreen || isSidepanel) && (
         <div
           className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
           style={{
@@ -347,11 +345,7 @@ export const GlobalMenuDrawer = ({
       >
         <div
           className="w-screen max-w-full pointer-events-auto h-full min-h-0"
-          style={
-            isSidepanel
-              ? { width: '100%', maxWidth: '100%' }
-              : { maxWidth: width }
-          }
+          style={{ maxWidth: width }}
         >
           <Box
             className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
