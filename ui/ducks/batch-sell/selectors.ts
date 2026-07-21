@@ -1,17 +1,10 @@
 import { createSelector } from 'reselect';
 import {
   Hex,
-  hexToBigInt,
-  KnownCaipNamespace,
   parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
 } from '@metamask/utils';
-import {
-  MultichainNetworkConfiguration,
-  toEvmCaipChainId,
-} from '@metamask/multichain-network-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
@@ -22,15 +15,11 @@ import {
 } from '@metamask/bridge-controller';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import {
-  getAssetsBySelectedAccountGroup,
-  getAssetsRates,
-} from '../../selectors/assets';
+import { getAssetsRates } from '../../selectors/assets';
 import {
   getAllMultichainNetworkConfigurations,
   getMarketData,
 } from '../../selectors';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   getAssetImageUrl,
   isEvmChainId,
@@ -56,104 +45,84 @@ import { isStockRWAToken } from '../../pages/bridge/hooks/useRWAToken';
 import { BatchSellAsset } from './types';
 
 /**
- * Returns all available multichain network configurations for the currently
- * selected account. EVM accounts support all EVM networks; non-EVM accounts
- * only support the networks listed in their declared CAIP-2 scopes.
+ * Determines whether a held asset can be offered as a batch-sell source
+ * token: it must have a positive balance, not itself be one of the chain's
+ * destination stablecoins, and not be an excluded RWA/tokenized asset.
+ *
+ * @param asset - The held asset to evaluate.
+ * @param stablecoinSet - Lowercased set of the chain's destination stablecoin asset ids.
  */
-const getNetworksForSelectedAccount = createSelector(
-  getAllMultichainNetworkConfigurations,
-  getSelectedInternalAccount,
-  (
-    allNetworks,
-    selectedAccount,
-  ): Record<CaipChainId, MultichainNetworkConfiguration> => {
-    if (!selectedAccount) {
-      return {};
-    }
-    if (isEvmAccountType(selectedAccount.type)) {
-      // EVM accounts support all EVM (eip155:*) networks
-      return Object.fromEntries(
-        Object.entries(allNetworks).filter(([chainId]) =>
-          chainId.startsWith(`${KnownCaipNamespace.Eip155}:`),
-        ),
-      ) as Record<CaipChainId, MultichainNetworkConfiguration>;
-    }
-    // Non-EVM accounts: filter to only their declared scopes
-    const accountScopes = new Set(selectedAccount.scopes ?? []);
-    return Object.fromEntries(
-      Object.entries(allNetworks).filter(([chainId]) =>
-        accountScopes.has(chainId as CaipChainId),
-      ),
-    ) as Record<CaipChainId, MultichainNetworkConfiguration>;
-  },
-);
+const isEligibleBatchSellAsset = (
+  asset: BridgeToken,
+  stablecoinSet: Set<string>,
+): boolean => {
+  if (
+    !asset.balance ||
+    Number.isNaN(Number(asset.balance)) ||
+    Number(asset.balance) <= 0
+  ) {
+    return false;
+  }
+  if (stablecoinSet.has(asset.assetId.toLowerCase())) {
+    return false;
+  }
+  if (
+    isStockRWAToken(asset) ||
+    asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)
+  ) {
+    return false;
+  }
+  return true;
+};
 
-const getChainsWithPositiveBalanceForSelectedAccount = createSelector(
-  getAssetsBySelectedAccountGroup,
-  (assetsByChain): Set<CaipChainId> => {
-    return new Set(
-      Object.entries(assetsByChain)
-        .filter(([, assets]) =>
-          assets.some((asset) => hexToBigInt(asset.rawBalance) > 0n),
-        )
-        .map(([chainId]) => {
-          // EVM assets use hex keys (e.g. "0x1"), convert to CAIP (e.g. "eip155:1")
-          if (isEvmChainId(chainId as Hex)) {
-            return toEvmCaipChainId(chainId as Hex);
-          }
-          return chainId as CaipChainId;
-        }),
-    );
-  },
-);
-
-const getNetworksWithPositiveBalanceForSelectedAccount = createSelector(
-  getNetworksForSelectedAccount,
-  getChainsWithPositiveBalanceForSelectedAccount,
-  (networksForAccount, chainsWithBalance) =>
-    Object.fromEntries(
-      Object.entries(networksForAccount).filter(([chainId]) =>
-        chainsWithBalance.has(chainId as CaipChainId),
-      ),
-    ) as Record<CaipChainId, MultichainNetworkConfiguration>,
-);
-
-const selectFiatBalanceByChain = createSelector(
-  getAssetsBySelectedAccountGroup,
-  (assetsByChain): Record<string, number> => {
-    const result: Record<string, number> = {};
-    for (const [hexChainId, assets] of Object.entries(assetsByChain)) {
-      const caipChainId = isEvmChainId(hexChainId as Hex)
-        ? toEvmCaipChainId(hexChainId as Hex)
-        : hexChainId;
-      result[caipChainId] = assets.reduce(
-        (sum, asset) => sum + (Number(asset.fiat?.balance) || 0),
-        0,
-      );
+/**
+ * Groups the assets that are actually eligible to be sold via batch-sell
+ * (see {@link isEligibleBatchSellAsset}) by chain. A chain is only included
+ * once it has at least one destination stablecoin configured; without one,
+ * none of its assets can be considered eligible.
+ */
+const selectEligibleBatchSellAssetsByChain = createSelector(
+  (state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, getSelectedAccountGroup(state)),
+  getBridgeFeatureFlags,
+  (assetsByAssetId, bridgeFeatureFlags): Record<CaipChainId, BridgeToken[]> => {
+    const result: Record<CaipChainId, BridgeToken[]> = {};
+    for (const asset of Object.values(assetsByAssetId ?? {})) {
+      const caipChainId = formatChainIdToCaip(asset.chainId);
+      const stablecoins =
+        bridgeFeatureFlags?.chains?.[caipChainId]?.batchSellDestStablecoins ??
+        [];
+      if (stablecoins.length === 0) {
+        continue;
+      }
+      const stablecoinSet = new Set(stablecoins.map((id) => id.toLowerCase()));
+      if (!isEligibleBatchSellAsset(asset, stablecoinSet)) {
+        continue;
+      }
+      (result[asset.chainId] ??= []).push(asset);
     }
     return result;
   },
 );
 
+const sumEligibleFiatBalance = (assets: BridgeToken[] | undefined): number =>
+  (assets ?? []).reduce((sum, asset) => sum + (asset.tokenFiatAmount ?? 0), 0);
+
 export const getAvailableBatchSellNetworks = createSelector(
-  getNetworksWithPositiveBalanceForSelectedAccount,
-  selectFiatBalanceByChain,
-  getBridgeFeatureFlags,
-  (networksWithBalance, fiatBalanceByChain, bridgeFeatureFlags) =>
-    Object.entries(networksWithBalance)
-      .filter(([chainId]) => {
-        if (!BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId)) {
-          return false;
-        }
-        const caipChainId = formatChainIdToCaip(chainId as CaipChainId);
-        const stablecoins =
-          bridgeFeatureFlags?.chains?.[caipChainId]?.batchSellDestStablecoins ??
-          [];
-        return stablecoins.length > 0;
-      })
-      .map(([chainId, network]) => ({
+  getAllMultichainNetworkConfigurations,
+  selectEligibleBatchSellAssetsByChain,
+  (allNetworks, eligibleAssetsByChain) =>
+    Object.keys(eligibleAssetsByChain)
+      .filter(
+        (chainId) =>
+          BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId) &&
+          // Only surface the network if it has at least one asset that would
+          // actually show up in the token picker for it.
+          (eligibleAssetsByChain[chainId as CaipChainId]?.length ?? 0) > 0,
+      )
+      .map((chainId) => ({
         chainId: chainId as CaipChainId,
-        name: network.name,
+        name: allNetworks[chainId as CaipChainId]?.name ?? '',
         imageUrl:
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
             convertCaipToHexChainId(chainId as CaipChainId)
@@ -161,8 +130,8 @@ export const getAvailableBatchSellNetworks = createSelector(
       }))
       .toSorted(
         (a, b) =>
-          (fiatBalanceByChain[b.chainId] ?? 0) -
-          (fiatBalanceByChain[a.chainId] ?? 0),
+          sumEligibleFiatBalance(eligibleAssetsByChain[b.chainId]) -
+          sumEligibleFiatBalance(eligibleAssetsByChain[a.chainId]),
       ),
 );
 
@@ -242,28 +211,11 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
     const stablecoinSet = new Set(stablecoins.map((id) => id.toLowerCase()));
 
     return Object.values(assetsByAssetId)
-      .filter((asset) => {
-        if (asset.chainId !== selectedChainId) {
-          return false;
-        }
-        if (
-          !asset.balance ||
-          Number.isNaN(Number(asset.balance)) ||
-          Number(asset.balance) <= 0
-        ) {
-          return false;
-        }
-        if (stablecoinSet.has(asset.assetId.toLowerCase())) {
-          return false;
-        }
-        if (
-          isStockRWAToken(asset) ||
-          asset.name?.includes(ONDO_TOKENIZED_TOKEN_NAME)
-        ) {
-          return false;
-        }
-        return true;
-      })
+      .filter(
+        (asset) =>
+          asset.chainId === selectedChainId &&
+          isEligibleBatchSellAsset(asset, stablecoinSet),
+      )
       .map((asset): BatchSellAsset => {
         const { tokenFiatPrice, percentageChange } =
           resolveTokenFiatPriceAndChange(asset, marketData, assetsRates);
