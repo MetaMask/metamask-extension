@@ -58,7 +58,7 @@ describe('fetchCachedTokenAssets', () => {
       [FIRST_ASSET_ID, SECOND_ASSET_ID],
       { includeTokenSecurityData: true },
     );
-    expect(getCacheKey).toHaveBeenCalledWith('token-security', {
+    expect(getCacheKey).toHaveBeenCalledWith('fetchTokenAssets', {
       assetIds: [FIRST_ASSET_ID, SECOND_ASSET_ID],
       includeTokenSecurityData: true,
     });
@@ -103,7 +103,7 @@ describe('fetchCachedTokenAssets', () => {
 
     expect(updateCache).toHaveBeenCalledWith(
       tokens,
-      expect.stringContaining('token-security:'),
+      expect.stringContaining('fetchTokenAssets:'),
     );
   });
 
