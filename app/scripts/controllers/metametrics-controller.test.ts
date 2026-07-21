@@ -299,9 +299,11 @@ describe('MetaMetricsController', function () {
         expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
-        expect(
-          controllerMessenger.call('AnalyticsController:getState').analyticsId,
-        ).toStrictEqual(TEST_ANALYTICS_ID);
+        const { analyticsId, consentDecisionMade } = controllerMessenger.call(
+          'AnalyticsController:getState',
+        );
+        expect(consentDecisionMade).toBe(true);
+        expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
         expect(controller.state.fragments).toStrictEqual({
           testid: SAMPLE_PERSISTED_EVENT,
