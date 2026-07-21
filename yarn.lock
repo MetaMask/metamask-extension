@@ -5523,9 +5523,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@11.0.0-preview-44376e0":
-  version: 11.0.0-preview-44376e0
-  resolution: "@metamask-previews/assets-controller@npm:11.0.0-preview-44376e0"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@11.0.0-preview-3f3e1111c":
+  version: 11.0.0-preview-3f3e1111c
+  resolution: "@metamask-previews/assets-controller@npm:11.0.0-preview-3f3e1111c"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5557,7 +5557,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/102e06865e14227c92c1811d0a3235eb1a7a6d954410856123ee94fe39e6f2eb85a75681db4fa0ca36e957af73c4c530cad5d447f71acacab4ea210480a2e052
+  checksum: 10/5a7bf251a387bd4324c2e2fd0c41c8d3dc8987bb1506d628de5b0e796d1f77898b7a9ce40603b62edc5681a6371b735bfeaf421f2e1e8229344134a96f72d996
   languageName: node
   linkType: hard
 
@@ -32748,7 +32748,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@11.0.0-preview-3f3e1111c"
     "@metamask/assets-controllers": "npm:^109.4.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
