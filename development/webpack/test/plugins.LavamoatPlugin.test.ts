@@ -17,8 +17,18 @@ const mockArgs = {
   generatePolicy: false,
 } as unknown as Args;
 
-const mockChunk = (name: string | undefined): Chunk =>
-  ({ name }) as unknown as Chunk;
+const mockChunk = ({
+  name,
+  chunkLoading,
+}: {
+  name?: string;
+  chunkLoading?: string;
+}): Chunk =>
+  ({
+    name,
+    getEntryOptions: () =>
+      chunkLoading === undefined ? undefined : { chunkLoading },
+  }) as unknown as Chunk;
 
 describe('LavamoatPlugin', () => {
   describe('lavamoatPlugin – runtimeConfigurationPerChunk_experimental', () => {
@@ -34,8 +44,13 @@ describe('LavamoatPlugin', () => {
       plugin.options.runtimeConfigurationPerChunk_experimental;
     const { inlineLockdown } = plugin.options;
 
-    it('configures the service worker as a protected execution root', () => {
-      const result = runtimeConfig(mockChunk('service-worker.ts')) as {
+    it('configures import-scripts entries as protected execution roots', () => {
+      const result = runtimeConfig(
+        mockChunk({
+          name: 'renamed-worker.ts',
+          chunkLoading: 'import-scripts',
+        }),
+      ) as {
         mode: string;
         embeddedOptions?: {
           scuttleGlobalThis?: {
@@ -54,7 +69,7 @@ describe('LavamoatPlugin', () => {
       );
       assert.ok(
         exceptions.includes('importScripts'),
-        'importScripts must remain available to the Webpack chunk loader',
+        'importScripts must be in the exceptions list so the worker can load background.js',
       );
       assert.ok(
         exceptions.includes('addEventListener'),
@@ -70,7 +85,9 @@ describe('LavamoatPlugin', () => {
     });
 
     it('scuttles the content script with its required globals available', () => {
-      const result = runtimeConfig(mockChunk('scripts/contentscript.js')) as {
+      const result = runtimeConfig(
+        mockChunk({ name: 'scripts/contentscript.js' }),
+      ) as {
         mode: string;
         embeddedOptions: {
           scuttleGlobalThis: {
@@ -88,7 +105,7 @@ describe('LavamoatPlugin', () => {
     });
 
     it('configures the shared runtime with Snow shims only when enabled', () => {
-      const result = runtimeConfig(mockChunk('runtime')) as {
+      const result = runtimeConfig(mockChunk({ name: 'runtime' })) as {
         mode: string;
         staticShims: string[];
       };
@@ -106,7 +123,7 @@ describe('LavamoatPlugin', () => {
       };
       const snowResult =
         snowPlugin.options.runtimeConfigurationPerChunk_experimental(
-          mockChunk('runtime'),
+          mockChunk({ name: 'runtime' }),
         ) as { staticShims: string[] };
 
       assert.strictEqual(
@@ -120,7 +137,7 @@ describe('LavamoatPlugin', () => {
 
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
       for (const name of ['scripts/inpage.js', 'bootstrap']) {
-        const result = runtimeConfig(mockChunk(name)) as { mode: string };
+        const result = runtimeConfig(mockChunk({ name })) as { mode: string };
         assert.strictEqual(
           result.mode,
           'null_unsafe',
@@ -130,7 +147,7 @@ describe('LavamoatPlugin', () => {
     });
 
     it('uses safe mode for unrecognised chunks', () => {
-      const result = runtimeConfig(mockChunk('some-other-chunk')) as {
+      const result = runtimeConfig(mockChunk({ name: 'some-other-chunk' })) as {
         mode: string;
       };
       assert.strictEqual(result.mode, 'safe');
