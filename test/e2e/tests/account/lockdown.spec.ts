@@ -31,11 +31,11 @@ function assertLockdown() {
   if (
     !(
       (
-        Object.isFrozen(window.Object) &&
-        Object.isFrozen(window.Object.prototype) &&
-        Object.isFrozen(window.Function) &&
-        Object.isFrozen(window.Function.prototype) &&
-        Function.prototype.constructor !== window.Function
+        Object.isFrozen(globalThis.Object) &&
+        Object.isFrozen(globalThis.Object.prototype) &&
+        Object.isFrozen(globalThis.Function) &&
+        Object.isFrozen(globalThis.Function.prototype) &&
+        Function.prototype.constructor !== globalThis.Function
       ) // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
@@ -81,11 +81,34 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
-          // TODO: add logic for testing the Service-Worker on MV3
-          await driver.navigate(PAGES.OFFSCREEN);
+          await driver.navigate(PAGES.HOME);
+          assert(
+            await driver.executeScriptInExtensionServiceWorker(testCode),
+            'Expected script execution to be complete. driver.executeScriptInExtensionServiceWorker might have failed silently.',
+          );
         } else {
           await driver.navigate(PAGES.BACKGROUND);
+          assert(
+            await driver.executeScript(testCode),
+            'Expected script execution to be complete. driver.executeScript might have failed silently.',
+          );
         }
+      },
+    );
+  });
+
+  it('the offscreen environment is locked down', async function () {
+    if (!isManifestV3) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate(PAGES.OFFSCREEN);
         assert(
           await driver.executeScript(testCode),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
