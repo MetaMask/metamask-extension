@@ -1,7 +1,7 @@
 *.scss
 .nyc_output/**/*
 node_modules/**/*
-/.yarn/**.*
+/.yarn/**/*
 # Exclude lottie json files
 /app/images/animations/**/*.json
 /app/vendor/**
