@@ -217,13 +217,24 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
         // that moment (an SW-session mega-trace full of background ops, or a
         // UI-startup trace) — and that host trace's own pageload transaction
         // may not be captured in the window. So assert against sharing with
-        // ANY other captured transaction, not just `/service-worker.js`.
+        // ANY other captured transaction, not just `/service-worker.js` —
+        // EXCEPT the sync cycle's own nested child ops (contact-sync save
+        // batch / update remote / delete remote, account save), which are
+        // EXPECTED to reuse the full-sync root's trace id: that is the
+        // correct per-cycle hierarchy, not ambient collapse.
+        const SYNC_CHILD_OPS = new Set([
+          'Contact Sync Save Batch',
+          'Contact Sync Update Remote',
+          'Contact Sync Delete Remote',
+          'Account Sync Save Individual',
+        ]);
         const otherIds = new Set(
           captured
             .filter(
               (t) =>
                 t.transaction !== ACCOUNT_SYNC_FULL &&
-                t.transaction !== CONTACT_SYNC_FULL,
+                t.transaction !== CONTACT_SYNC_FULL &&
+                !SYNC_CHILD_OPS.has(t.transaction),
             )
             .map((t) => t.traceId),
         );
