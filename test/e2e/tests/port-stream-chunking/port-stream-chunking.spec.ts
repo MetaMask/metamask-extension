@@ -14,7 +14,6 @@ import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-const LEGACY_CHUNKED_CHROME_VERSION = '147';
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -71,10 +70,6 @@ describe('Port Stream Chunking', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
-        driverOptions: { chromeBrowserVersion: LEGACY_CHUNKED_CHROME_VERSION },
-        manifestTransform: (manifest: Record<string, unknown>) => {
-          delete manifest.message_serialization;
-        },
       },
       async ({ driver, mockedEndpoint }) => {
         // We need an unusual amount of time because of the large background state

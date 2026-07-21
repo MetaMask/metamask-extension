@@ -31,7 +31,6 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
-    chromeBrowserVersion = process.env.SELENIUM_CHROME_VERSION || '151',
     isBenchmark = false,
   }) {
     const args = [
@@ -92,7 +91,8 @@ class ChromeDriver {
       },
     });
 
-    options.setBrowserVersion(chromeBrowserVersion);
+    // Temporarily lock to version 126
+    options.setBrowserVersion('126');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {

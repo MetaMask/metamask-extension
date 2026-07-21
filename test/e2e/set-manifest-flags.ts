@@ -19,12 +19,7 @@ type ManifestType = {
    * The public key assigned to the extension's manifest to get consistent id. (For OAuth2 WAF redirect)
    */
   key?: string;
-} & Record<string, unknown>;
-
-type SetManifestFlagsOptions = {
-  transformManifest?: (manifest: ManifestType) => void;
 };
-
 let manifest: ManifestType;
 
 function parseIntOrUndefined(value: string | undefined): number | undefined {
@@ -32,10 +27,7 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
 }
 
 // Alter the manifest with CI environment variables and custom flags
-export async function setManifestFlags(
-  flags: ManifestFlags = {},
-  { transformManifest }: SetManifestFlagsOptions = {},
-) {
+export async function setManifestFlags(flags: ManifestFlags = {}) {
   if (process.env.CI) {
     flags.ci = {
       enabled: true,
@@ -61,7 +53,6 @@ export async function setManifestFlags(
   readManifest();
 
   manifest._flags = flags;
-  transformManifest?.(manifest);
 
   if (process.env.MULTIPROVIDER && 'key' in manifest) {
     // Replace the key with a freshly generated one so dist/chrome gets a
@@ -88,5 +79,9 @@ export function getManifestVersion(): number {
 }
 
 function readManifest() {
-  manifest = JSON.parse(fs.readFileSync(`${folder}/manifest.json`).toString());
+  if (!manifest) {
+    manifest = JSON.parse(
+      fs.readFileSync(`${folder}/manifest.json`).toString(),
+    );
+  }
 }
