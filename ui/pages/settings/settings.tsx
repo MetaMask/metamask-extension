@@ -135,8 +135,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const environmentType = getEnvironmentType();
 
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isCompactSidepanel =
-    useIsSidepanelCompactSettingsLayout(isSidepanel);
+  const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
   const usesCompactSettingsLayout =
     environmentType === ENVIRONMENT_TYPE_POPUP || isCompactSidepanel;
   const isOnSettingsRoot = normalizedPathname === SETTINGS_ROUTE;
@@ -338,8 +337,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
             'w-full h-full sm:max-w-[262px] sm:bg-background-muted',
             {
               flex: isOnSettingsRoot,
-              'hidden sm:flex':
-                !isOnSettingsRoot && !usesCompactSettingsLayout,
+              'hidden sm:flex': !isOnSettingsRoot && !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
               'sm:max-w-full sm:bg-background-default':
                 isOnSettingsRoot && usesCompactSettingsLayout,
@@ -382,8 +380,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         <Box
           className={classnames('flex-auto flex-col w-full min-w-0 pt-2', {
             flex: !isOnSettingsRoot,
-            'hidden sm:flex':
-              isOnSettingsRoot && !usesCompactSettingsLayout,
+            'hidden sm:flex': isOnSettingsRoot && !usesCompactSettingsLayout,
             hidden: isOnSettingsRoot && usesCompactSettingsLayout,
           })}
         >
