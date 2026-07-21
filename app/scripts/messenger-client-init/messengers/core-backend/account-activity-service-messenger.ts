@@ -40,6 +40,7 @@ export function getAccountActivityServiceMessenger(
     events: [
       'AccountTreeController:selectedAccountGroupChange',
       'BackendWebSocketService:connectionStateChanged',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
   return serviceMessenger;
