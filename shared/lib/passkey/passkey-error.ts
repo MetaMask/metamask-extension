@@ -30,7 +30,7 @@ const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<string, string> = {
   [PasskeyControllerErrorCode.VaultKeyDecryptionFailed]:
     'passkeyErrorVaultKeyDecryptionFailed',
   [PasskeyControllerErrorCode.VaultKeyMismatch]: 'passkeyErrorVaultKeyMismatch',
-  [ExtensionPasskeyErrorCode.VaultKeyRenewalFailed]:
+  [PasskeyControllerErrorCode.VaultKeyRenewalFailed]:
     'passkeyErrorVaultKeyRenewalFailed',
 };
 

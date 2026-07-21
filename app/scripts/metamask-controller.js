@@ -130,7 +130,6 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
-import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -4386,21 +4385,12 @@ export default class MetamaskController extends EventEmitter {
     authenticationResponse,
     password,
   ) {
-    const { completedOnboarding } = this.onboardingController.state;
-    if (completedOnboarding) {
-      // password is required when onboarding is complete
-      if (!password) {
-        throw new Error('Password required to register passkey');
-      }
-      // verify password
-      await this.keyringController.verifyPassword(password);
-    }
-
-    const vaultKey = await this.keyringController.exportEncryptionKey();
+    // Orchestration (onboarding step-up gate, password verification, and
+    // exporting the vault key) lives in `PasskeyController`.
     await this.passkeyController.protectVaultKeyWithPasskey({
       registrationResponse,
       authenticationResponse,
-      vaultKey,
+      password,
     });
   }
 
@@ -4432,25 +4422,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async removePasskeyWithPasskeyVerification(authenticationResponse) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    const verified = await this.passkeyController.verifyPasskeyAuthentication(
+    await this.passkeyController.removePasskeyWithPasskeyVerification(
       authenticationResponse,
     );
-    if (!verified) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
-        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
-      );
-    }
-
-    this.passkeyController.removePasskey();
   }
 
   /**
@@ -4460,16 +4434,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async removePasskeyWithPasswordVerification(password) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    await this.keyringController.verifyPassword(password);
-    this.passkeyController.removePasskey();
+    await this.passkeyController.removePasskeyWithPasswordVerification(password);
   }
 
   /**
@@ -4487,72 +4452,14 @@ export default class MetamaskController extends EventEmitter {
     authenticationResponse,
     options,
   ) {
-    const { renewVaultKeyProtection = true } = options ?? {};
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-
-    // verify passkey authentication
-    const isVerified = await this.passkeyController.verifyPasskeyAuthentication(
+    // Orchestration (assertion verification, keyring password change, and the
+    // renew-or-remove vault-key handling) lives in `PasskeyController`, which
+    // serializes the flow with its own internal operation mutex.
+    await this.passkeyController.changePasswordWithPasskeyVerification({
+      newPassword,
       authenticationResponse,
-    );
-    if (!isVerified) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
-        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
-      );
-    }
-
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    try {
-      let vaultKeyBeforePasswordChange;
-      if (renewVaultKeyProtection) {
-        vaultKeyBeforePasswordChange =
-          await this.keyringController.exportEncryptionKey();
-      }
-
-      // change password
-      await this.keyringController.changePassword(newPassword);
-
-      if (renewVaultKeyProtection) {
-        try {
-          // renew vault key protection
-          const vaultKeyAfterPasswordChange =
-            await this.keyringController.exportEncryptionKey();
-          await this.passkeyController.renewVaultKeyProtection({
-            authenticationResponse,
-            oldVaultKey: vaultKeyBeforePasswordChange,
-            newVaultKey: vaultKeyAfterPasswordChange,
-          });
-        } catch (err) {
-          log.error(
-            'Passkey vault key protection renewal failed after password change',
-            err,
-          );
-          this.passkeyController.removePasskey();
-          throw new PasskeyControllerError(
-            'Passkey vault key protection renewal failed after password change',
-            {
-              code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
-              cause: err instanceof Error ? err : new Error(String(err)),
-            },
-          );
-        }
-      } else {
-        // Passkey already verified; keyring changePassword above applied newPassword.
-        this.passkeyController.removePasskey();
-      }
-    } catch (error) {
-      log.error('error while changing password with passkey', error);
-      throw error;
-    } finally {
-      releaseLock();
-    }
+      options,
+    });
   }
 
   /**
@@ -4593,26 +4500,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
    */
   async exportAccountsWithPasskey(authenticationResponse, addresses) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
-      );
-    }
-
-    // Retrieve the passkey-wrapped vault key once. This also cryptographically
-    // verifies the assertion, throwing on an invalid passkey.
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+    return this.passkeyController.exportAccountsWithPasskey(
       authenticationResponse,
-    );
-
-    return Promise.all(
-      addresses.map((address) =>
-        this.keyringController.exportAccount(
-          { encryptionKey: vaultKey },
-          address,
-        ),
-      ),
+      addresses,
     );
   }
 
