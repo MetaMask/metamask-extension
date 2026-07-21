@@ -1002,12 +1002,10 @@
     "message": "Nabigo ang pag-swap"
   },
   "activity_swap_pending_title": {
-    "message": "Nagsu-swap ng $1 para sa $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Nagsu-swap"
   },
   "activity_swap_success_title": {
-    "message": "Nai-swap ang $1 para sa $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Nai-swap"
   },
   "activity_unwrap_failed_description": {
     "message": "Nabigo ang pag-unwrap"

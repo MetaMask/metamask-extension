@@ -108,7 +108,7 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe('activity_swap_success_description');
   });
 
-  it('keeps full swap copy when destination is present', () => {
+  it('uses a clean swap title with the token pair as subtitle', () => {
     const activity = {
       type: 'swap',
       chainId: 'eip155:1',
@@ -137,7 +137,42 @@ describe('useActivityRowContent', () => {
     );
 
     expect(result.current.title.props.children).toBe(
-      'activity_swap_success_title|ETH,USDC',
+      'activity_swap_success_title',
     );
+    expect(result.current.subtitle).toBe('ETH → USDC');
+  });
+
+  it('prefers the destination token in the bridge title and shows the token pair subtitle', () => {
+    const activity = {
+      type: 'bridge',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        sourceToken: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+        },
+        destinationToken: {
+          direction: 'in',
+          symbol: 'USDT',
+          amount: '2',
+          decimals: 6,
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_bridge_success_title|USDT',
+    );
+    expect(result.current.subtitle).toBe('ETH → USDT');
   });
 });

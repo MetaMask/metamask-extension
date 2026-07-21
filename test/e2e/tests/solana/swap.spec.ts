@@ -711,9 +711,7 @@ describe('Swap on Solana', function () {
         await activityTab.checkCompletedBridgeTransactionActivity(1);
         await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
         if (!isUnifiedAssetsEnabled) {
-          await activityTab.checkTransactionActivityByText(
-            'Swapped SOL to USDC',
-          );
+          await activityTab.checkTransactionActivityByText('Swapped');
         }
       },
     );
@@ -794,11 +792,9 @@ describe('Swap on Solana', function () {
         await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
         if (isUnifiedAssetsEnabled) {
-          await activityTab.checkTransactionActivityByText('Swapped USDC to');
+          await activityTab.checkTransactionActivityByText('Swapped USDC');
         } else {
-          await activityTab.checkTransactionActivityByText(
-            'Swapped USDC to SOL',
-          );
+          await activityTab.checkTransactionActivityByText('Swapped');
         }
       },
     );
