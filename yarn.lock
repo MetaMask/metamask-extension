@@ -5608,9 +5608,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@109.4.1-preview-2a8139a3e":
-  version: 109.4.1-preview-2a8139a3e
-  resolution: "@metamask-previews/assets-controllers@npm:109.4.1-preview-2a8139a3e"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@109.4.1-preview-29793f7b0":
+  version: 109.4.1-preview-29793f7b0
+  resolution: "@metamask-previews/assets-controllers@npm:109.4.1-preview-29793f7b0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5633,9 +5633,9 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^13.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/network-enablement-controller": "npm:^5.5.0"
+    "@metamask/network-enablement-controller": "npm:^5.6.0"
     "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/phishing-controller": "npm:^17.2.1"
+    "@metamask/phishing-controller": "npm:^17.3.0"
     "@metamask/polling-controller": "npm:^16.0.8"
     "@metamask/preferences-controller": "npm:^23.1.0"
     "@metamask/profile-sync-controller": "npm:^28.3.0"
@@ -5661,7 +5661,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/af5d2a169803e7614ef05e19b50be8d9edde6a7cbdfc04152c9a7cacdef12661ffead3317170f43bf2dae6d6ba807692f9874d6b3f3d90a2e45cfb373be9eab3
+  checksum: 10/d712245956e6785add1dcc24a227aaccbff48ab816580b2041ee22358c91b56b826f0d6bff376c94a01dcabd49bf72ef8decb38ebbcb0a9b86f77d483245bea3
   languageName: node
   linkType: hard
 
@@ -6093,7 +6093,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.4.0, @metamask/core-backend@npm:^6.5.0":
+"@metamask/core-backend@npm:@metamask-previews/core-backend@6.5.0-preview-29793f7b0":
+  version: 6.5.0-preview-29793f7b0
+  resolution: "@metamask-previews/core-backend@npm:6.5.0-preview-29793f7b0"
+  dependencies:
+    "@metamask/account-tree-controller": "npm:^7.5.5"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    async-mutex: "npm:^0.5.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/b2312abfea65a61d76e4634fae4c43f86336e4924e764186fbc5e0dc4bef2407a83a0d350a276c55fadf62834e9c0bd9662a04151070841bd45945102e4be43a
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.5.0":
   version: 6.5.0
   resolution: "@metamask/core-backend@npm:6.5.0"
   dependencies:
@@ -7341,6 +7359,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/network-enablement-controller@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@metamask/network-enablement-controller@npm:5.6.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/multichain-network-controller": "npm:^3.2.1"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/slip44": "npm:^4.3.0"
+    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/c4fbedb43bc8331c24794c10a038809ec23b40a6042f589b3d72746a28846951c2e72c359ea6703b18840fc4fae6e5ffa7906979e58a1fb8f16f1fc735bd8514
+  languageName: node
+  linkType: hard
+
 "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch":
   version: 5.4.1
   resolution: "@metamask/network-enablement-controller@patch:@metamask/network-enablement-controller@npm%3A5.4.1#~/.yarn/patches/@metamask-network-enablement-controller-npm-5.4.1-020a82a308.patch::version=5.4.1&hash=5aaf57"
@@ -7516,6 +7552,24 @@ __metadata:
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
   checksum: 10/1227df06286cd0137ba0b69abec49f43b3b3cd32702f3da4ff14fd69ba39783e618dc90a94ce0f2e30bb9fcab9230383f795ea32a073ba5da5aecefdef8a8f53
+  languageName: node
+  linkType: hard
+
+"@metamask/phishing-controller@npm:^17.3.0":
+  version: 17.3.0
+  resolution: "@metamask/phishing-controller@npm:17.3.0"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.1.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@noble/hashes": "npm:^1.8.0"
+    "@types/punycode": "npm:^2.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
+    punycode: "npm:^2.1.1"
+  checksum: 10/5c9be5dfdd76c66197cf8eaa764da04d34e3f612aded6125c66d31a001430881ed00c59b5c04f30f05e9719a29332cfda0fbcf211b25b54c3ddaf0a812b8f70a
   languageName: node
   linkType: hard
 
@@ -33176,7 +33230,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^10.2.0"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.4.1-preview-2a8139a3e"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@109.4.1-preview-29793f7b0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
@@ -33198,7 +33252,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^6.4.0"
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@6.5.0-preview-29793f7b0"
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
