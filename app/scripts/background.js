@@ -1016,6 +1016,25 @@ async function loadPhishingWarningPage() {
 //
 
 /**
+ * Sets shutdown write-suspension from a `remoteFeatureFlags` map (persisted or
+ * live). Applying this early from persisted state during startup lets writes in
+ * the boot window benefit from suspension before `RemoteFeatureFlagController`
+ * is constructed.
+ *
+ * @param {Record<string, unknown> | undefined} remoteFeatureFlags - The
+ * `remoteFeatureFlags` map to read the flag from. Missing/invalid flags default
+ * to off.
+ */
+function setShutdownSuspensionFromFlags(remoteFeatureFlags) {
+  persistenceManager.setShutdownSuspensionEnabled(
+    getBooleanFeatureFlag(
+      remoteFeatureFlags?.platformPersistenceSuspendWritesOnShutdown,
+      false,
+    ),
+  );
+}
+
+/**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
@@ -1207,6 +1226,14 @@ export async function loadStateFromPersistence(backup) {
 
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
+
+  // Enable shutdown write-suspension from the persisted remote feature flag
+  // before the first startup writes below, so the boot window is protected too
+  // (the flag survives across sessions once fetched). setupController syncs
+  // this from live controller state and keeps it in sync afterwards.
+  setShutdownSuspensionFromFlags(
+    versionedData.data?.RemoteFeatureFlagController?.remoteFeatureFlags,
+  );
 
   log.debug(
     "[Split State]: Loaded data from persistence with storageKind '%s'",
@@ -1559,23 +1586,18 @@ export function setupController(
   });
 
   // Gate shutdown write-suspension behind a remote feature flag so it can be
-  // ramped and measured before being enabled by default. Apply now and on every
-  // remote-feature-flag update, since flags may arrive after startup. Defaults
-  // to off when the flag is absent or invalid. Supports threshold + version-gated
-  // shapes via getBooleanFeatureFlag (see platformPersistenceSuspendWritesOnShutdown).
-  const applyShutdownSuspensionFlag = () => {
-    const { remoteFeatureFlags } = controller.remoteFeatureFlagController.state;
-    persistenceManager.setShutdownSuspensionEnabled(
-      getBooleanFeatureFlag(
-        remoteFeatureFlags?.platformPersistenceSuspendWritesOnShutdown,
-        false,
-      ),
+  // ramped and measured before being enabled by default. Sync from live
+  // controller state and on every remote-feature-flag update, since flags may
+  // arrive after startup (the persisted value was already applied earlier in
+  // loadStateFromPersistence to cover the boot window).
+  const syncShutdownSuspensionFromController = () =>
+    setShutdownSuspensionFromFlags(
+      controller.remoteFeatureFlagController.state.remoteFeatureFlags,
     );
-  };
-  applyShutdownSuspensionFlag();
+  syncShutdownSuspensionFromController();
   controller.controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    applyShutdownSuspensionFlag,
+    syncShutdownSuspensionFromController,
   );
 
   /**
