@@ -791,11 +791,7 @@ describe('Swap on Solana', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
-        if (isUnifiedAssetsEnabled) {
-          await activityTab.checkTransactionActivityByText('Swapped USDC');
-        } else {
-          await activityTab.checkTransactionActivityByText('Swapped');
-        }
+        await activityTab.checkTransactionActivityByText('Swapped');
       },
     );
   });
