@@ -381,6 +381,20 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('returns no alerts if native balance for the transaction chain is unknown', () => {
+    // Balance entry exists only for another chain — the transaction's chain has no
+    // account tracker entry (e.g. native balance polling failed on a custom network),
+    // so the balance is unknown rather than zero. See #43352.
+    const alerts = runHook({
+      balance: 0,
+      chainId: '0x343b',
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   it('returns correct alert if selected chain is different from chain in confirmation', () => {
     const alerts = runHook({
       balance: 1,
