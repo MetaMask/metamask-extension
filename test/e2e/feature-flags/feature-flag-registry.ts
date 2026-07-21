@@ -2250,6 +2250,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
+  perpsClosePositionLimitOrderEnabled: {
+    name: 'perpsClosePositionLimitOrderEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   perpsEnabled: {
     name: 'perpsEnabled',
     type: FeatureFlagType.Remote,
