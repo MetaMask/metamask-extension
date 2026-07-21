@@ -2,6 +2,20 @@
   "name": "metamask-crx",
   "version": "13.41.0",
   "private": true,
+  "imports": {
+    "#ui/*": [
+      "./ui/*",
+      "./ui/*.ts",
+      "./ui/*.tsx",
+      "./ui/*/index.ts"
+    ],
+    "#shared/*": [
+      "./shared/*",
+      "./shared/*.ts",
+      "./shared/*.tsx",
+      "./shared/*/index.ts"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
