@@ -71,6 +71,7 @@ describe('Account syncing - Unsupported Account types', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -140,6 +141,7 @@ describe('Account syncing - Unsupported Account types', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify regular accounts are still visible (synced accounts)
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];

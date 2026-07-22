@@ -70,6 +70,7 @@ describe('Account syncing - Settings Toggle', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify the default account exists
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -115,6 +116,7 @@ describe('Account syncing - Settings Toggle', function () {
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Create third account with sync disabled - this should NOT sync to user storage
         await accountListPage.addMultichainAccount();
@@ -149,6 +151,7 @@ describe('Account syncing - Settings Toggle', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];

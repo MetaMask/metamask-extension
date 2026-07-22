@@ -19,7 +19,7 @@ import { mockIdentityServices } from '../identity/mocks';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
-describe('Add wallet', function () {
+describe('Add wallet TEST', function () {
   const arrange = async () => {
     const unencryptedAccounts = accountsToMockForAccountsSync;
     const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
@@ -102,14 +102,14 @@ describe('Add wallet', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
-        // The button label stays "Syncing…" until sync resolves; only then
-        // does the locator's "Add account" text match.
-        await accountListPage.checkPageIsLoaded(30000);
+        await accountListPage.waitUntilSyncingIsCompleted(30000);
         await accountListPage.startImportSecretPhrase(E2E_SRP);
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded(30000);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.waitUntilSyncingIsCompleted(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );

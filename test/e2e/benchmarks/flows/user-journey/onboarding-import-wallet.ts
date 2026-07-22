@@ -195,7 +195,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
             'openAccountMenuToAccountListLoaded',
             async () => {
               const accountListPage = new AccountListPage(driver);
-              await accountListPage.checkPageIsLoaded(120000);
+              await accountListPage.checkPageIsLoaded();
+              await accountListPage.waitUntilSyncingIsCompleted(120000);
             },
           ),
         );

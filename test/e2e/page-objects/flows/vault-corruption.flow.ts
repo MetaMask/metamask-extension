@@ -33,7 +33,10 @@ export async function getFirstAddress(
   await headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded(20000, { waitForSync });
+  await accountListPage.checkPageIsLoaded();
+  if (waitForSync) {
+    await accountListPage.waitUntilSyncingIsCompleted(20000);
+  }
   await accountListPage.openMultichainAccountMenu({
     accountLabel: 'Account 1',
   });
