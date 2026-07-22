@@ -2449,7 +2449,7 @@
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
-    "message": "流通量"
+    "message": "流通供应量"
   },
   "clear": {
     "message": "清除"
