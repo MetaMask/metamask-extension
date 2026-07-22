@@ -1,5 +1,15 @@
 .selectable-list-item-wrapper {
   position: relative;
+
+  &:first-child .selectable-list-item {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  &:last-child .selectable-list-item {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 }
 
 .selectable-list-item {
