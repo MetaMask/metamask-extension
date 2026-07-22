@@ -6,6 +6,7 @@ import {
   getAllTokens,
   getEnabledNetworksByNamespace,
   getShowFiatInTestnets,
+  getUseCurrencyRateCheck,
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
@@ -58,6 +59,7 @@ export const useTokenDisplayInfo = ({
 
   const isMainnet = !isTestnetSelected;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
   // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
@@ -68,6 +70,9 @@ export const useTokenDisplayInfo = ({
 
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnetSelected && showFiatInTestnets));
+  const shouldAttemptFiat =
+    useCurrencyRateCheck &&
+    (isMainnet || (isTestnetSelected && showFiatInTestnets));
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
@@ -78,6 +83,10 @@ export const useTokenDisplayInfo = ({
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
+  const isFiatLoading =
+    shouldAttemptFiat &&
+    (token.tokenFiatAmount === null || token.tokenFiatAmount === undefined) &&
+    token.balance !== undefined;
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
@@ -117,6 +126,7 @@ export const useTokenDisplayInfo = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
+      isFiatLoading,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
     };
@@ -132,6 +142,7 @@ export const useTokenDisplayInfo = ({
     title: token.title,
     tokenImage: token.image,
     secondary: showFiat ? nonEvmSecondary : null,
+    isFiatLoading,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

@@ -296,6 +296,28 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
+  it('shows a skeleton for native token percentage while fiat is loading', () => {
+    const nativeTokenWithoutFiatAmount = {
+      ...propToken,
+      isNative: true,
+      tokenFiatAmount: undefined,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell
+        {...({
+          ...props,
+          token: nativeTokenWithoutFiatAmount,
+        } as TokenCellProps)}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
+  });
+
   describe('musd.convert', () => {
     it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);

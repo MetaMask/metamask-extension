@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
+import { Skeleton } from '@metamask/design-system-react';
 import { getMarketData } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
@@ -25,6 +26,15 @@ export const TokenCellPercentChange = React.memo(
         ? getNativeTokenAddress(token.chainId as Hex)
         : token.address;
 
+    if (token.isFiatLoading) {
+      return (
+        <Skeleton
+          className="h-4 w-8"
+          data-testid="multichain-token-list-item-percentage-skeleton"
+        />
+      );
+    }
+
     let tokenPercentageChange;
 
     // Compare null and undefined
@@ -45,6 +55,7 @@ export const TokenCellPercentChange = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.address === nextProps.token.address &&
+    prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
     prevProps.price === nextProps.price &&
     prevProps.comparePrice === nextProps.comparePrice,
 );

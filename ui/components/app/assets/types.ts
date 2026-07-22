@@ -6,6 +6,7 @@ import type { Asset, TokenListToken } from '@metamask/assets-controllers';
 export type TokenDisplayValues = {
   secondary: number | null;
   string?: string;
+  isFiatLoading?: boolean;
 };
 
 export type TokenBalanceValues = {
