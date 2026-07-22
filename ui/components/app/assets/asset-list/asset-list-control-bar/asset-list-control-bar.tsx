@@ -436,6 +436,7 @@ const AssetListControlBar = ({
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
+          overflow: 'hidden',
           minWidth: isFullScreen ? '250px' : '',
         }}
       >
@@ -454,6 +455,7 @@ const AssetListControlBar = ({
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
+          overflow: 'hidden',
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
@@ -491,6 +493,7 @@ const AssetListControlBar = ({
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
+          overflow: 'hidden',
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
