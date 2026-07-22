@@ -682,8 +682,6 @@
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
     "@types/yazl": "^3.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.1.0",
-    "@typescript-eslint/parser": "^8.1.0",
     "@viem/anvil": "^0.0.10",
     "@welldone-software/why-did-you-render": "^8.0.3",
     "addons-linter": "^9.5.0",
