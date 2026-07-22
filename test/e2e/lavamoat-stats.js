@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint-disable n/hashbang */
 const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');

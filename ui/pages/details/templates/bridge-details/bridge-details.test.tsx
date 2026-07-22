@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { useBridgeHistoryItem, useHistoryTokens } from './hooks';
@@ -122,7 +123,9 @@ jest.mock('../../../../components/app/transaction/network-name', () => ({
 }));
 
 jest.mock('../../../../components/app/transaction/transaction-status', () => ({
-  TransactionStatus: () => <div data-testid="transaction-status" />,
+  TransactionStatus: ({ status }: { status: string }) => (
+    <div data-testid="transaction-status" data-status={status} />
+  ),
 }));
 
 jest.mock('../../../../components/app/transaction/account-name', () => ({
@@ -140,7 +143,19 @@ jest.mock('../../../../components/app/transaction/transaction-id', () => ({
 const mockUseBridgeHistoryItem = useBridgeHistoryItem as unknown as jest.Mock;
 const mockUseHistoryTokens = useHistoryTokens as unknown as jest.Mock;
 
-type BridgeItem = Extract<ActivityListItem, { type: 'bridge' }>;
+type BridgeItem = Extract<
+  ActivityListItem,
+  {
+    type:
+      | 'swap'
+      | 'bridge'
+      | 'convert'
+      | 'lendingDeposit'
+      | 'lendingWithdrawal'
+      | 'wrap'
+      | 'unwrap';
+  }
+>;
 
 const SOURCE_TX_HASH = '0xsourcehash';
 const DEST_TX_HASH = '0xdesthash';
@@ -167,10 +182,12 @@ const buildItem = (data: BridgeItem['data']): BridgeItem =>
     data,
   }) as BridgeItem;
 
-const buildHistoryItem = (): BridgeHistoryItem =>
+const buildHistoryItem = (
+  overallStatus: StatusTypes = StatusTypes.COMPLETE,
+): BridgeHistoryItem =>
   ({
     account: '0xfrom',
-    status: { destChain: { txHash: DEST_TX_HASH } },
+    status: { status: overallStatus, destChain: { txHash: DEST_TX_HASH } },
   }) as unknown as BridgeHistoryItem;
 
 describe('BridgeDetails', () => {
@@ -250,6 +267,40 @@ describe('BridgeDetails', () => {
     expect(getByTestId('bridge-explorer-buttons')).toHaveAttribute(
       'data-dest-chain-id',
       'eip155:10',
+    );
+  });
+
+  it('shows pending while the destination leg is in flight even though the source item is confirmed', () => {
+    mockUseBridgeHistoryItem.mockReturnValue(
+      buildHistoryItem(StatusTypes.PENDING),
+    );
+    mockUseHistoryTokens.mockReturnValue({
+      sourceToken: sourceTokenEth,
+      destinationToken: destinationTokenDai,
+    });
+
+    const { getByTestId } = render(
+      <BridgeDetails
+        item={buildItem({ from: '0xfrom', sourceToken: sourceTokenEth })}
+      />,
+    );
+
+    expect(getByTestId('transaction-status')).toHaveAttribute(
+      'data-status',
+      'pending',
+    );
+  });
+
+  it('shows the source status when bridge history is unavailable', () => {
+    const { getByTestId } = render(
+      <BridgeDetails
+        item={buildItem({ from: '0xfrom', sourceToken: sourceTokenEth })}
+      />,
+    );
+
+    expect(getByTestId('transaction-status')).toHaveAttribute(
+      'data-status',
+      'success',
     );
   });
 

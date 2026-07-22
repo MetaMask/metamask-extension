@@ -121,7 +121,7 @@
     "\\.github/workflows/.*\\.yml:\\d+:\\d+:", // actionlint: any workflow lint error (expression, shellcheck, syntax, etc.)
     "\\*\\*\\w+\\*\\*: \\d+ unused messages", // verify-locale-strings: locale files have unused message keys (e.g. "**de**: 43 unused messages")
     "BASELINE VIOLATIONS DETECTED", // lint-baseline.mts: new violations added to already-baselined files
-    "Can't walk dependency graph", // Browserify build: broken import/require chain
+    "Can't walk dependency graph", // ts-migration-dashboard build (Browserify/module-deps): unresolvable import/require chain
     "Cannot find module", // Node.js require/import of missing package or path
     "Code style issues found", // oxlint --check or ESLint formatting rule failure
     "compiled with \\d+ errors?", // Webpack build errors
@@ -135,7 +135,6 @@
     "Invalid code fence parameters", // build: malformed code fence in source (BEGIN:, END:)
     "Invalid package.json", // malformed package.json (parse error during yarn install)
     "LavaMoat - required.*package not in allowlist", // LavaMoat policy: dependency not in allowlist (node builtin or regular package)
-    "Lint errors encountered for transformed file", // Browserify build: ESLint errors in post-transform output
     "Module not found", // Webpack: import of nonexistent module
     "NEW FILES \\(not in baseline\\)", // lint-baseline.mts: new files with violations not yet baselined
     "No build-name entries found in main.yml", // filter-files-changed: main.yml missing expected build-name fields
@@ -143,7 +142,6 @@
     "Not a valid commit name", // git can't resolve a commit SHA (shallow clone, force-pushed, or pruned ref)
     "packageManager.*current global version", // Corepack not enabled: workflow uses wrong Yarn version (needs corepack enable)
     "ReferenceError:", // JS runtime error: undefined variable or function
-    "runInChildProcess for task .* encountered an error", // Browserify build: a build sub-task crashed
     "shellcheck reported issue", // actionlint/shellcheck: shell script issues in workflow YAML
     "snapshots? failed", // Jest snapshot assertion mismatch
     "SyntaxError:", // JS/TS parse error (bad syntax, duplicate declaration, unexpected token)

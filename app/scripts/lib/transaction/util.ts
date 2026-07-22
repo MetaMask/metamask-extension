@@ -479,13 +479,6 @@ async function validateSecurity(request: AddTransactionRequest) {
   }
 }
 
-export function stripSingleLeadingZero(hex: string): string {
-  if (!hex.startsWith('0x0') || hex.length <= 3) {
-    return hex;
-  }
-  return `0x${hex.slice(3)}`;
-}
-
 function normalizeAddress(address?: string): string | undefined {
   return address?.toLowerCase();
 }
