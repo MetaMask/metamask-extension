@@ -1089,7 +1089,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote;
+      } = recommendedQuote as QuoteResponse;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       const quoteMetadata = {
         adjustedReturn: {

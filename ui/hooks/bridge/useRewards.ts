@@ -6,6 +6,8 @@ import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   selectBridgeQuotes,
+  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { type CaipAccountId } from '@metamask/utils';
 import { debounce } from 'lodash';
@@ -84,7 +86,7 @@ type UseRewardsParams = {
 };
 
 type UseRewardsWithQuoteParams = {
-  quote: QuoteResponse['quote'] | null;
+  quote: QuoteResponse['quote'] | QuoteResponseV1['quote'] | null;
   fromAddress: string | null | undefined;
   fromAddressAccount?: InternalAccount | null;
   chainId: string | null | undefined;
@@ -132,9 +134,8 @@ export const useRewardsWithQuote = ({
     debounce(
       async (
         _estimationQuoteArg:
-          | NonNullable<
-              ReturnType<typeof selectBridgeQuotes>['activeQuote']
-            >['quote']
+          | QuoteResponse['quote']
+          | QuoteResponseV1['quote']
           | null,
         _caipAccountArg: CaipAccountId | null,
       ) => {
@@ -151,9 +152,8 @@ export const useRewardsWithQuote = ({
   const estimatePoints = useCallback(
     async (
       estimationQuoteArg:
-        | NonNullable<
-            ReturnType<typeof selectBridgeQuotes>['activeQuote']
-          >['quote']
+        | QuoteResponse['quote']
+        | QuoteResponseV1['quote']
         | null,
     ) => {
       // Skip if no active quote or missing required data, or if no season is active

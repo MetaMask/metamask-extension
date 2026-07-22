@@ -87,7 +87,10 @@ function renderDefault(
     receivedAsset = MOCK_RECEIVED_ASSET_NO_SECURITY,
   } = overrides;
   return renderHook(() =>
-    useBatchSellSubmitQuotes({ quoteResponses, receivedAsset }),
+    useBatchSellSubmitQuotes({
+      quoteResponses: quoteResponses as unknown as QuoteResponse[],
+      receivedAsset,
+    }),
   );
 }
 

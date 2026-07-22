@@ -3,6 +3,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
+  FeatureId,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
   sumAmounts,
@@ -281,6 +282,8 @@ export const MultichainBridgeQuoteCard = ({
                         gas_included_7702: Boolean(
                           activeQuote.quote?.gasIncluded7702,
                         ),
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                       },
                     ),
                   );
