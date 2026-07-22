@@ -23,9 +23,11 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
       "estimatedProcessingTimeInSeconds": 15,
       "gasFee": {
-        "amount": "12",
-        "usd": "12",
-        "valueInCurrency": "12",
+        "total": {
+          "amount": "12",
+          "usd": "12",
+          "valueInCurrency": "12",
+        },
       },
       "quote": {
         "bridgeId": "lifi",
@@ -129,11 +131,6 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         "usd": "12",
         "valueInCurrency": "12",
       },
-      "totalMaxNetworkFee": {
-        "amount": "12",
-        "usd": "12",
-        "valueInCurrency": "12",
-      },
       "totalNetworkFee": {
         "amount": "12",
         "usd": "12",
@@ -162,7 +159,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       "token_symbol_destination": "USDC",
       "token_symbol_source": "USDC",
       "usd_balance_source": 0,
-      "usd_quoted_gas": 0,
+      "usd_quoted_gas": 12,
       "usd_quoted_return": 12,
       "warnings": [],
     },

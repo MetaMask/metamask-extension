@@ -457,8 +457,6 @@ export const ETH_11_USDC_TO_ARB_METADATA = {
     usd: '1000',
   },
   gasFee: {
-    effective: { amount: '12', valueInCurrency: '12', usd: '12' },
-    max: { amount: '12', valueInCurrency: '12', usd: '12' },
     total: { amount: '12', valueInCurrency: '12', usd: '12' },
   },
   totalNetworkFee: {
