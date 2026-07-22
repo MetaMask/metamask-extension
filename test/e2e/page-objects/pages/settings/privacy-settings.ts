@@ -73,6 +73,16 @@ class PrivacySettings {
 
   private readonly selectSrpContainer = '[data-testid="select-srp-container"]';
 
+  private readonly selectSrpContainerItem = '.select-srp__container';
+
+  private readonly selectSrpContainerItemByIndex = (srpIndex: number) => ({
+    css: this.selectSrpContainerItem,
+    text: `Secret Recovery Phrase ${srpIndex.toString()}`,
+  });
+
+  private readonly srpShowAccountsButtonByIndex = (srpIndex: number) =>
+    `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`;
+
   private readonly privacyTabButton =
     '[data-testid="settings-tab-item-privacy"]';
 
@@ -341,12 +351,56 @@ class PrivacySettings {
   async openRevealSrpQuiz(srpIndex: number = 1): Promise<void> {
     await this.openSrpList();
     await this.driver.waitForSelector(this.selectSrpContainer);
-    await this.driver.clickElement({
-      css: '.select-srp__container',
-      text: `Secret Recovery Phrase ${srpIndex.toString()}`,
-    });
+    await this.driver.clickElement(
+      this.selectSrpContainerItemByIndex(srpIndex),
+    );
 
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
+  }
+
+  /**
+   * Check that an account belongs to a given SRP in the SRP list.
+   *
+   * @param options - Options for the verification.
+   * @param options.accountName - The name of the account expected under the SRP.
+   * @param options.srpIndex - The 1-based index of the Secret Recovery Phrase.
+   */
+  async checkAccountBelongsToSrp({
+    accountName,
+    srpIndex,
+  }: {
+    accountName: string;
+    srpIndex: number;
+  }): Promise<void> {
+    console.log(
+      `Check that account ${accountName} belongs to Secret Recovery Phrase ${srpIndex}`,
+    );
+    if (srpIndex < 1) {
+      throw new Error('SRP index must be > 0');
+    }
+
+    await this.driver.waitForSelector(
+      this.selectSrpContainerItemByIndex(srpIndex),
+    );
+    await this.driver.clickElement(this.srpShowAccountsButtonByIndex(srpIndex));
+
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const selectedSrp = await this.driver.findElement(
+            this.selectSrpContainerItemByIndex(srpIndex),
+          );
+          await this.driver.findNestedElement(selectedSrp, {
+            text: accountName,
+            tag: 'p',
+          });
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { interval: 500, timeout: this.driver.timeout },
+    );
   }
 
   /**
