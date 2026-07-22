@@ -67,7 +67,7 @@
   &__network-button {
     cursor: pointer;
     border: 0.5px solid var(--color-border-muted);
-    border-radius: 12px;
+    border-radius: 8px;
     background-color: var(--color-background-muted);
     height: 36px;
     flex-shrink: 0;
@@ -95,7 +95,7 @@
 
   &__combined-actions {
     border: 0.5px solid var(--color-border-muted);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     background-color: var(--color-background-muted);
     height: 36px;
