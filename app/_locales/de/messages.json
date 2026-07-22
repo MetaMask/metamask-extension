@@ -8789,9 +8789,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Neue Adresse"
   },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
   "sendBundleHwGasPayment": {
     "message": "Netzwerkgebühr mit $1 bezahlen",
     "description": "$1 is the symbol of the token being used to pay the network fee"

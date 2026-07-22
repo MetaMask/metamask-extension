@@ -8797,9 +8797,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Yeni adres"
   },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönderin."
-  },
   "sendBundleHwGasPayment": {
     "message": "Ağ ücreti $1 ile ödeniyor",
     "description": "$1 is the symbol of the token being used to pay the network fee"

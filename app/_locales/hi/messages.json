@@ -8789,9 +8789,6 @@
   "sendAlertNewAddressTitle": {
     "message": "नया एड्रेस"
   },
-  "sendBugReport": {
-    "message": "हमें एक बग रिपोर्ट भेजें।"
-  },
   "sendBundleHwGasPayment": {
     "message": "नेटवर्क फीस $1 से पे की जा रही है",
     "description": "$1 is the symbol of the token being used to pay the network fee"

@@ -8797,9 +8797,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Alamat baru"
   },
-  "sendBugReport": {
-    "message": "Kirimkan laporan masalah."
-  },
   "sendBundleHwGasPayment": {
     "message": "Membayar biaya jaringan dengan $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"

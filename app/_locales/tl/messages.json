@@ -8789,9 +8789,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Bagong address"
   },
-  "sendBugReport": {
-    "message": "Padalhan kami ng ulat ng bug."
-  },
   "sendBundleHwGasPayment": {
     "message": "Magbayad sa network gamit ang $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"

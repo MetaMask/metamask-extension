@@ -8793,9 +8793,6 @@
   "sendAlertNewAddressTitle": {
     "message": "新しいアドレス"
   },
-  "sendBugReport": {
-    "message": "バグの報告をお送りください."
-  },
   "sendBundleHwGasPayment": {
     "message": "ネットワーク手数料を$1で支払い中",
     "description": "$1 is the symbol of the token being used to pay the network fee"

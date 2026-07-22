@@ -9035,9 +9035,6 @@
   "sendAlertNewAddressTitle": {
     "message": "New address"
   },
-  "sendBugReport": {
-    "message": "Send us a bug report."
-  },
   "sendBundleHwGasPayment": {
     "message": "Paying network fee with $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"

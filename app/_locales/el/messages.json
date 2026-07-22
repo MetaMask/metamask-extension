@@ -8789,9 +8789,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Νέα διεύθυνση"
   },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφαλμάτων."
-  },
   "sendBundleHwGasPayment": {
     "message": "Πληρωμή τέλη δικτύου με $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"

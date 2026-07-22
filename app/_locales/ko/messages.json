@@ -8797,9 +8797,6 @@
   "sendAlertNewAddressTitle": {
     "message": "새 주소"
   },
-  "sendBugReport": {
-    "message": "버그 리포트 전송."
-  },
   "sendBundleHwGasPayment": {
     "message": "$1(으)로 네트워크 수수료 지불",
     "description": "$1 is the symbol of the token being used to pay the network fee"
