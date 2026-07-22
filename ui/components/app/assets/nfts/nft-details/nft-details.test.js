@@ -2,12 +2,10 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
 import { removeAndIgnoreNft } from '../../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
@@ -15,6 +13,7 @@ import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../../../helpers/utils/util';
+import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import NftDetails from './nft-details';
 
 jest.mock('../../../../../helpers/utils/util', () => ({
@@ -22,7 +21,11 @@ jest.mock('../../../../../helpers/utils/util', () => ({
   shortenAddress: jest.fn(),
 }));
 
-jest.mock('copy-to-clipboard');
+jest.mock('../../../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: jest.fn(),
+}));
+
+const mockCopyToClipboard = jest.fn();
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -66,6 +69,7 @@ describe('NFT Details', () => {
     jest.clearAllMocks();
     mockToastSuccess.mockClear();
     mockToastError.mockClear();
+    useCopyToClipboard.mockReturnValue([false, mockCopyToClipboard, jest.fn()]);
   });
 
   it('should match minimal props and state snapshot', async () => {
@@ -153,7 +157,9 @@ describe('NFT Details', () => {
     const copyAddressButton = queryByTestId('nft-address-copy');
     fireEvent.click(copyAddressButton);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
+    await waitFor(() => {
+      expect(mockCopyToClipboard).toHaveBeenCalledWith(nfts[5].address);
+    });
   });
 
   it('should navigate to send route with ERC721 data', async () => {

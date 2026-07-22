@@ -18,6 +18,10 @@ import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockAnalyticsTrackEvent = jest.fn();
+const mockUsePerpsBottomNavSource = jest.fn<
+  typeof PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR | undefined,
+  []
+>(() => undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -35,6 +39,10 @@ jest.mock('../../../hooks/useAnalytics', () => {
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+
+jest.mock('../../../hooks/perps/usePerpsBottomNavSource', () => ({
+  usePerpsBottomNavSource: () => mockUsePerpsBottomNavSource(),
+}));
 
 jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: jest.fn(() => ({
@@ -187,6 +195,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsBottomNavSource.mockReturnValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockComplianceGate.mockImplementation(async (action: () => unknown) =>
       action(),
@@ -708,6 +717,24 @@ describe('PerpsView', () => {
             [PERPS_EVENT_PROPERTY.OPEN_ORDER]: expect.any(Number),
             [PERPS_EVENT_PROPERTY.SOURCE]: 'homescreen_tab',
             [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
+
+    it('fires Perp Screen Viewed with bottom_nav_bar source when opened from bottom nav', () => {
+      mockUsePerpsBottomNavSource.mockReturnValue(
+        PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR,
+      );
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.SOURCE]:
+              PERPS_EVENT_VALUE.SOURCE.BOTTOM_NAV_BAR,
           }),
         }),
       );

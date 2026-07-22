@@ -5,7 +5,7 @@ import {
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as bridgeActions from '../../ducks/bridge/actions';
@@ -136,7 +136,7 @@ describe('useQuoteFetchEvents', () => {
           quotesRefreshCount: 1,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
