@@ -1,8 +1,7 @@
 import { BaseUrl } from '../../../constants/urls';
 import { Route } from './route';
 
-// TODO: Replace with the final Follow Trading landing page URL.
-const FOLLOW_TRADING_PATH = '/follow-trading';
+const FOLLOW_TRADING_PATH = '/news/top-traders';
 
 /**
  * Deeplink for the Follow Trading experience.
