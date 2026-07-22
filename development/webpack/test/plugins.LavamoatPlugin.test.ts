@@ -7,6 +7,8 @@ import {
   lavamoatUnsafeLayerRule,
   lavamoatBackgroundLayerRule,
   lavamoatUnsafeLayerPlugin,
+  nullUnsafeEntries,
+  unsafeLayerEntries,
 } from '../utils/plugins/LavamoatPlugin';
 
 const mockArgs = {
@@ -140,8 +142,13 @@ describe('LavamoatPlugin', () => {
       );
     });
 
-    it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
-      for (const name of ['scripts/inpage.js', 'bootstrap']) {
+    it('keeps null_unsafe mode for inpage.js, bootstrap, and cashtag content (no LavaMoat runtime needed)', () => {
+      for (const name of [
+        'scripts/inpage.js',
+        'bootstrap',
+        'scripts/cashtag/content.ts',
+        'scripts/cashtag/content.js',
+      ]) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,
@@ -149,6 +156,36 @@ describe('LavamoatPlugin', () => {
           `${name} should remain null_unsafe`,
         );
       }
+    });
+
+    it('puts every null_unsafe entry on the unsafe layer so modules are not wrapped with _LM_', () => {
+      for (const name of nullUnsafeEntries) {
+        assert.ok(
+          unsafeLayerEntries.has(name),
+          `${name} is null_unsafe but not unsafe-layered; runtime would miss _LM_`,
+        );
+      }
+      assert.ok(
+        unsafeLayerEntries.has('service-worker.ts'),
+        'service-worker must stay on the unsafe layer',
+      );
+    });
+
+    it('disables contentscript world scuttling so sibling content scripts can use globals', () => {
+      const result = runtimeConfig(mockChunk('scripts/contentscript.js')) as {
+        mode: string;
+        embeddedOptions?: {
+          scuttleGlobalThis?: {
+            enabled: boolean;
+          };
+        };
+      };
+      assert.strictEqual(result.mode, 'safe');
+      assert.strictEqual(
+        result.embeddedOptions?.scuttleGlobalThis?.enabled,
+        false,
+        'contentscript must not scuttle the shared content-script world',
+      );
     });
 
     it('uses safe mode for unrecognised chunks', () => {

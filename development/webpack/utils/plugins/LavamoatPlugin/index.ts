@@ -10,10 +10,15 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
-// Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
-const nullUnsafeEntries: Set<string> = new Set([
+// Entries that run fully outside LavaMoat: no compartment wrapping AND no
+// LavaMoat runtime (`_LM_`). Both must stay in sync — null_unsafe without the
+// unsafe layer wraps modules that then call a missing `__webpack_require__._LM_`.
+export const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
+  // POC: cashtag content script (React/DOM). Manifest key is `.ts`; asset is `.js`.
+  'scripts/cashtag/content.ts',
+  'scripts/cashtag/content.js',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [
@@ -146,10 +151,12 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
+            // POC: cashtag is a sibling content script in the same extension
+            // isolated world. Scuttling here removes globals (setTimeout,
+            // trustedTypes, …) before cashtag runs. Keep compartment wrapping
+            // for contentscript modules, but do not scuttle the shared world.
             scuttleGlobalThis: {
-              enabled: true,
-              // Globals used by the contentscript
-              exceptions: ['browser', 'chrome', 'btoa'],
+              enabled: false,
             },
           },
         };
@@ -199,10 +206,10 @@ export const lavamoatBackgroundLayerRule = {
   layer: 'background',
 } satisfies RuleSetRule;
 
-// Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
-const unsafeLayerEntries: Set<string> = new Set([
-  'scripts/inpage.js',
-  'bootstrap',
+// Exclude from Compartment wrapping. Every nullUnsafe entry must be here;
+// service-worker is unsafe-layered but still gets a safe-mode LM runtime.
+export const unsafeLayerEntries: Set<string> = new Set([
+  ...nullUnsafeEntries,
   'service-worker.ts',
 ]);
 

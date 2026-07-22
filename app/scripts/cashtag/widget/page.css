@@ -1,0 +1,32 @@
+/* Injected into the page for the widget */
+
+a[interestfor='mm-cashtag-popover'] {
+  interest-delay: 0.25s 0.6s;
+}
+
+:has(a[interestfor='mm-cashtag-popover']:interest-source)
+  a[interestfor='mm-cashtag-popover'] {
+  interest-delay-start: 0s;
+}
+
+#mm-cashtag-popover {
+  margin: unset;
+  inset: auto;
+  border: none;
+  padding: 0;
+  width: max-content;
+  height: max-content;
+  background: #131416;
+  border-radius: 12px;
+  overflow: hidden;
+  color-scheme: dark;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  position-anchor: --mm-cashtag-invoker;
+  position-area: bottom;
+  margin-block-start: 8px;
+  position-try:
+    flip-block,
+    flip-inline,
+    flip-block flip-inline;
+}

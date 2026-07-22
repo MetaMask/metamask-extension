@@ -67,6 +67,7 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
+import { registerBackgroundBridge } from './cashtag/background';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
@@ -869,6 +870,10 @@ async function initialize(backup) {
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  registerBackgroundBridge({
+    getController: () => controller,
+  });
 
   // Set up connectivity detection
   if (isManifestV3) {
