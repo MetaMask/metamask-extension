@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import classnames from 'clsx';
+import { usePureBlack } from '@metamask/design-system-react';
 
 import {
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   BlockSize,
   Display,
@@ -41,6 +43,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     }: ModalContentProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const isPureBlack = usePureBlack();
     const {
       onClose,
       isClosedOnEscapeKey,
@@ -112,7 +115,15 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
-            backgroundColor={BackgroundColor.backgroundDefault}
+            backgroundColor={
+              isPureBlack
+                ? BackgroundColor.backgroundAlternative
+                : BackgroundColor.backgroundDefault
+            }
+            borderColor={
+              isPureBlack ? BorderColor.borderMuted : undefined
+            }
+            borderWidth={isPureBlack ? 1 : undefined}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
             display={Display.Flex}
