@@ -1,6 +1,5 @@
 import { XlmScope } from '@metamask/keyring-api';
 import {
-  computeBaseReserve,
   computeSpendableBalance,
   isSupportBaseReserve,
   NATIVE_RESERVE_SLIP44_IDS,
@@ -19,44 +18,6 @@ describe('isSupportBaseReserve', () => {
     expect(isSupportBaseReserve(ETHER_NATIVE_ASSET_ID)).toBe(false);
     expect(isSupportBaseReserve('')).toBe(false);
     expect(isSupportBaseReserve('not-a-caip-asset-id')).toBe(false);
-  });
-});
-
-describe('computeBaseReserve', () => {
-  it('returns undefined for assets that do not support base reserve', () => {
-    expect(
-      computeBaseReserve({
-        assetId: ETHER_NATIVE_ASSET_ID,
-        assetMetadata: undefined,
-      }),
-    ).toBeUndefined();
-  });
-
-  it('extracts base reserve for supported native assets', () => {
-    expect(
-      computeBaseReserve({
-        assetId: STELLAR_NATIVE_ASSET_ID,
-        assetMetadata: { baseReserve: '0.5' },
-      }),
-    ).toStrictEqual('0.5');
-  });
-
-  it('defaults to "0" when account metadata is missing', () => {
-    expect(
-      computeBaseReserve({
-        assetId: STELLAR_NATIVE_ASSET_ID,
-        assetMetadata: undefined,
-      }),
-    ).toStrictEqual('0');
-  });
-
-  it('defaults to "0" when baseReserve is invalid', () => {
-    expect(
-      computeBaseReserve({
-        assetId: STELLAR_NATIVE_ASSET_ID,
-        assetMetadata: { baseReserve: 'not-a-number' },
-      }),
-    ).toStrictEqual('0');
   });
 });
 

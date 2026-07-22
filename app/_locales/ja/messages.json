@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "アカウントのオプション"
   },
-  "accountPermissionToast": {
-    "message": "アカウントのアクセス許可が更新されました"
-  },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "トークンの小数桁数"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "小数桁数は0以上、36以下の範囲で使用する必要があります。"
   },
   "decrypt": {
     "message": "復号化"

@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opções da conta"
   },
-  "accountPermissionToast": {
-    "message": "Permissões de conta atualizadas"
-  },
   "accountSelectionRequired": {
     "message": "Você precisa selecionar uma conta!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Decimal do token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
   },
   "decrypt": {
     "message": "Descriptografar"

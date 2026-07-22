@@ -270,6 +270,7 @@ export const createBridgeMockStore = ({
       topAssets: [],
     },
     bridge: {
+      isSlippageUserOverride: false,
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
