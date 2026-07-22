@@ -100,44 +100,6 @@
   animation: fade-in var(--page-transition-duration) var(--page-transition-ease-out) both;
 }
 
-/* Slide forward: old slides out to the left, new slides in from the right */
-:root[data-page-transition='slide-forward']::view-transition-old(root) {
-  animation: slide-out-left var(--page-transition-duration) var(--page-transition-ease-in) both;
-}
-
-:root[data-page-transition='slide-forward']::view-transition-new(root) {
-  animation: slide-in-right var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-/* Slide back: old slides out to the right, new slides in from the left */
-:root[data-page-transition='slide-back']::view-transition-old(root) {
-  animation: slide-out-right var(--page-transition-duration) var(--page-transition-ease-in) both;
-}
-
-:root[data-page-transition='slide-back']::view-transition-new(root) {
-  animation: slide-in-left var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-@keyframes slide-in-right {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slide-out-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-
-@keyframes slide-in-left {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slide-out-right {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
-}
-
 @keyframes fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
