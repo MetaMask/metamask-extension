@@ -8197,6 +8197,9 @@
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
   },
+  "rampsBuyWidgetError": {
+    "message": "Unable to start your purchase. Please try again."
+  },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
