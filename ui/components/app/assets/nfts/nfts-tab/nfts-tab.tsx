@@ -21,8 +21,6 @@ import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
 import { transitionForward } from '../../../../ui/transition';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftsTab() {
   const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
