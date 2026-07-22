@@ -21,10 +21,6 @@ module.exports = {
     // override with their own jest.mock() call.
     '^@metamask/perps-controller$':
       '<rootDir>/test/mocks/metamask-perps-controller.js',
-    // Stub the ESM-only Hyperliquid SDK (imported directly by the dedicated
-    // aggregated order-book connection) so suites resolve it without loading
-    // the real bundle. Tests can override with their own jest.mock().
-    '^@nktkas/hyperliquid$': '<rootDir>/test/mocks/nktkas-hyperliquid.js',
   },
   // This mirrors Jest's default module extensions with `mts` added. Importing
   // `jest-config` defaults would avoid this list, but lint rejects that package
