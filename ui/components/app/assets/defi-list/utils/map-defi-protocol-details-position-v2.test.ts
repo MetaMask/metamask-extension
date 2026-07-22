@@ -10,7 +10,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     balance: '0.00001',
     decimals: 18,
     marketValue: 0.00001,
-    positionType: 'supply',
+    positionType: 'deposit',
     poolAddress: '0xpool',
     groupId: 'group-musd-1',
     tokenImage: 'musd.png',
