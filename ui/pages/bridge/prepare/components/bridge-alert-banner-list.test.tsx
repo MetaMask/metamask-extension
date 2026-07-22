@@ -13,7 +13,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../../store/background-connection';
 import configureStore from '../../../../store/store';
@@ -222,12 +222,12 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            srcChainId: 1,
-            destChainId: 10,
+            srcChainId: 10,
+            destChainId: 137,
             walletAddress: '0x123',
             slippage: 0.5,
             srcTokenAmount: '1',
@@ -294,7 +294,7 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
