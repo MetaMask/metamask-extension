@@ -12,7 +12,13 @@ describe('getFeatureFlagTags', () => {
   describe('appState shapes', () => {
     it('reads flags from the UI post-init shape (state.metamask.remoteFeatureFlags)', () => {
       const appState = {
-        state: { metamask: { remoteFeatureFlags: { [FLAG]: true } } },
+        state: {
+          metamask: {
+            remoteFeatureFlags: {
+              platformPersistenceSuspendWritesOnShutdown: true,
+            },
+          },
+        },
       };
 
       expect(getFeatureFlagTags(appState, configs)).toStrictEqual({
@@ -24,7 +30,9 @@ describe('getFeatureFlagTags', () => {
       const appState = {
         state: {
           RemoteFeatureFlagController: {
-            remoteFeatureFlags: { [FLAG]: false },
+            remoteFeatureFlags: {
+              platformPersistenceSuspendWritesOnShutdown: false,
+            },
           },
         },
       };
@@ -40,7 +48,10 @@ describe('getFeatureFlagTags', () => {
           data: {
             RemoteFeatureFlagController: {
               remoteFeatureFlags: {
-                [FLAG]: { enabled: true, minimumVersion: '0.0.0' },
+                platformPersistenceSuspendWritesOnShutdown: {
+                  enabled: true,
+                  minimumVersion: '0.0.0',
+                },
               },
             },
           },
@@ -59,7 +70,10 @@ describe('getFeatureFlagTags', () => {
         state: {
           metamask: {
             remoteFeatureFlags: {
-              [FLAG]: { enabled: true, minimumVersion: '0.0.0' },
+              platformPersistenceSuspendWritesOnShutdown: {
+                enabled: true,
+                minimumVersion: '0.0.0',
+              },
             },
           },
         },
@@ -75,7 +89,10 @@ describe('getFeatureFlagTags', () => {
         state: {
           metamask: {
             remoteFeatureFlags: {
-              [FLAG]: { enabled: true, minimumVersion: '999.999.999' },
+              platformPersistenceSuspendWritesOnShutdown: {
+                enabled: true,
+                minimumVersion: '999.999.999',
+              },
             },
           },
         },
@@ -100,7 +117,11 @@ describe('getFeatureFlagTags', () => {
 
     it('returns "unset" when the flags map lacks the flag', () => {
       const appState = {
-        state: { metamask: { remoteFeatureFlags: { otherFlag: true } } },
+        state: {
+          metamask: {
+            remoteFeatureFlags: { rampsEnabled: true },
+          },
+        },
       };
 
       expect(getFeatureFlagTags(appState, configs)).toStrictEqual({
@@ -114,36 +135,44 @@ describe('getFeatureFlagTags', () => {
       const appState = {
         state: {
           metamask: {
-            remoteFeatureFlags: { someFlag: { name: 'groupA', value: 'x' } },
+            remoteFeatureFlags: {
+              enableMultichainAccounts: true,
+            },
           },
         },
       };
 
       const tags = getFeatureFlagTags(appState, [
         {
-          name: 'someFlag',
-          tag: 'ab.someFlag',
-          resolve: (value) => (value as { name: string }).name,
+          name: 'enableMultichainAccounts',
+          tag: 'ab.enableMultichainAccounts',
+          resolve: (value) => (value === true ? 'on' : 'off'),
         },
       ]);
 
-      expect(tags).toStrictEqual({ 'ab.someFlag': 'groupA' });
+      expect(tags).toStrictEqual({ 'ab.enableMultichainAccounts': 'on' });
     });
 
     it('tags multiple flags in one pass', () => {
       const appState = {
         state: {
           metamask: {
-            remoteFeatureFlags: { flagA: true, flagB: false },
+            remoteFeatureFlags: {
+              rampsEnabled: true,
+              rampsServiceDisruption: false,
+            },
           },
         },
       };
 
       expect(
-        getFeatureFlagTags(appState, [{ name: 'flagA' }, { name: 'flagB' }]),
+        getFeatureFlagTags(appState, [
+          { name: 'rampsEnabled' },
+          { name: 'rampsServiceDisruption' },
+        ]),
       ).toStrictEqual({
-        'featureFlag.flagA': 'true',
-        'featureFlag.flagB': 'false',
+        'featureFlag.rampsEnabled': 'true',
+        'featureFlag.rampsServiceDisruption': 'false',
       });
     });
   });

@@ -679,14 +679,15 @@ describe('PersistenceManager', () => {
       // Captures the IndexedDBStore instance created inside #openBackupDatabase
       // so we can invoke the wired `onForcedClose` handler directly.
       async function openAndCaptureBackupStore(): Promise<IndexedDBStore> {
+        const created: IndexedDBStore[] = [];
         const openSpy = jest
           .spyOn(IndexedDBStore.prototype, 'open')
-          .mockResolvedValue(undefined);
+          .mockImplementation(async function (this: IndexedDBStore) {
+            created.push(this);
+          });
         await manager.open();
-        // `mock.instances[0]` is the `this` of the first `open` call, i.e. the
-        // IndexedDBStore created inside #openBackupDatabase.
-        const backupStore = openSpy.mock.instances[0] as IndexedDBStore;
         openSpy.mockRestore();
+        const [backupStore] = created;
         if (!backupStore) {
           throw new Error('backup store was not created');
         }
