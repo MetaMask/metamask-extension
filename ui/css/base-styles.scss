@@ -37,6 +37,7 @@ html[data-theme] {
 html[data-theme='light'] {
   --bar-border-color: rgba(183, 187, 200, 0.2);
 }
+
 html[data-theme='dark'] {
   --bar-border-color: var(--color-border-muted);
 }
