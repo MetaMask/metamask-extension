@@ -65,7 +65,7 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     address: toTokenCellAddress(position),
     title: position.name,
     symbol: position.symbol,
-    tokenFiatAmount: position.marketValue,
+    tokenFiatAmount: position.marketValue ?? null,
     image: position.tokenImage,
     balance: normalizedBalance.toString(),
     secondary: null,
