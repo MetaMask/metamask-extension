@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
-  QuoteResponseV1,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -191,9 +190,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (
-          mockBridgeQuotesErc20Erc20 as unknown as QuoteResponseV1[]
-        ).map((quote) => ({
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
           ...quote,
           quote: {
             ...quote.quote,
@@ -519,7 +516,7 @@ describe('MultichainBridgeQuoteCard', () => {
                 priceImpact,
               },
             },
-          })) as unknown as QuoteResponseV1[],
+          })),
           quotesLastFetched: Date.now() - 5000,
           quotesLoadingStatus: RequestStatus.LOADING,
         },

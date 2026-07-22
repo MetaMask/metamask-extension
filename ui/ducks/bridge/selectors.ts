@@ -979,20 +979,16 @@ export const isNativeBalanceInsufficientForQuote = (
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
 ): boolean => {
-  if (!quote.totalNetworkFee?.amount) {
+  if (!quote.sentAmount?.amount || !quote.totalNetworkFee?.amount) {
     return false;
   }
-  if (isNativeAddress(fromToken.assetId)) {
-    if (quote.sentAmount?.amount) {
-      return new BigNumber(nativeBalance)
+  return isNativeAddress(fromToken.assetId)
+    ? new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
         .sub(minimumBalanceToKeep)
-        .lte(0);
-    }
-    return false;
-  }
-  return new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+        .lte(0)
+    : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
 };
 
 /**

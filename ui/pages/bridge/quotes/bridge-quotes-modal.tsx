@@ -191,12 +191,11 @@ export const BridgeQuotesModal = ({
                       fontWeight={FontWeight.Medium}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {toTokenAmount?.amount &&
-                        formatTokenAmount(
-                          locale,
-                          toTokenAmount?.amount,
-                          destAsset.symbol,
-                        )}
+                      {formatTokenAmount(
+                        locale,
+                        toTokenAmount?.amount ?? '0',
+                        destAsset.symbol,
+                      )}
                     </Text>
                   </Row>
 
