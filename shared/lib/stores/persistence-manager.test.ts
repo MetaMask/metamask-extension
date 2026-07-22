@@ -4,6 +4,7 @@ import 'navigator.locks';
 import log from 'loglevel';
 
 import { captureException, captureMessage } from '../sentry';
+import { getManifestFlags } from '../manifestFlags';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import {
   PersistenceManager,
@@ -40,6 +41,9 @@ jest.mock('../sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
+jest.mock('../manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
+}));
 jest.mock('../trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
@@ -47,9 +51,11 @@ jest.mock('../trace', () => ({
 }));
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
+const mockedGetManifestFlags = jest.mocked(getManifestFlags);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
+  const originalInTest = process.env.IN_TEST;
 
   function prepareForWriteRetry(): void {
     jest.useFakeTimers();
@@ -57,12 +63,22 @@ describe('PersistenceManager', () => {
   }
 
   beforeEach(() => {
+    process.env.IN_TEST = 'true';
     jest.clearAllMocks();
+    mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  afterAll(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
   });
 
   describe('open', () => {
@@ -149,6 +165,37 @@ describe('PersistenceManager', () => {
         retryDelayMs: WRITE_RETRY_DELAY_MS,
       });
       expect(log.error).not.toHaveBeenCalled();
+    });
+
+    it('recovers after a simulated one-time storage failure', async () => {
+      prepareForWriteRetry();
+      manager.setMetadata({ version: 10 });
+      mockedGetManifestFlags.mockReturnValue({
+        testing: { simulateStorageSetFailure: 'once' },
+      });
+      mockStoreSet.mockResolvedValue(undefined);
+      const writeRetryRecoveredListener = jest.fn();
+      manager.on('writeRetryRecovered', writeRetryRecoveredListener);
+
+      const setPromise = manager.set({ appState: { restored: true } });
+
+      await jest.advanceTimersByTimeAsync(0);
+      expect(mockStoreSet).not.toHaveBeenCalled();
+
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+
+      const [result, persistError] = await setPromise;
+
+      expect(mockStoreSet).toHaveBeenCalledTimes(1);
+      expect(result).toBe(true);
+      expect(persistError).toBeUndefined();
+      expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
+        event: 'set-retry-recovered',
+        firstErrorMessage:
+          'Simulated storage.local.set failure for testing',
+        firstErrorName: 'Error',
+        retryDelayMs: WRITE_RETRY_DELAY_MS,
+      });
     });
 
     it('reports the original store.set error when a newer set supersedes the retry', async () => {

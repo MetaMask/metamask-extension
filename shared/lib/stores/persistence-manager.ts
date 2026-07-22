@@ -478,6 +478,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #pendingPairs = new Map<string, unknown>();
 
+  #hasSimulatedStorageSetFailure = false;
+
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
@@ -503,23 +505,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Checks if storage set operations should be simulated as failing.
-   * When enabled, all set operations will fail immediately.
    *
    * @throws Error if simulating storage failure for testing
    */
   #maybeSimulateSetFailure(): void {
-    if (
-      process.env.IN_TEST &&
-      getManifestFlags().testing?.simulateStorageSetFailure
-    ) {
-      throw new Error('Simulated storage.local.set failure for testing');
+    if (!process.env.IN_TEST) {
+      return;
     }
+
+    const simulation =
+      getManifestFlags().testing?.simulateStorageSetFailure ?? false;
+    if (
+      !simulation ||
+      (simulation === 'once' && this.#hasSimulatedStorageSetFailure)
+    ) {
+      return;
+    }
+
+    this.#hasSimulatedStorageSetFailure = true;
+    throw new Error('Simulated storage.local.set failure for testing');
   }
 
   /**
    * Sets state in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param data - The data to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -533,8 +543,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Sets key-value pairs in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param pairs - The key-value pairs to set in the local store
    * @throws Error if simulating storage failure for testing
