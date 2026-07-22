@@ -92,7 +92,7 @@ export const TokenCellSecondaryDisplay = React.memo(
             isZeroAmount(secondaryDisplayText) &&
             secondaryDisplayText !== '—')
         }
-        className="mb-1"
+        className="h-3.5"
         data-testid="multichain-token-list-item-secondary-value-skeleton"
       >
         <SensitiveText

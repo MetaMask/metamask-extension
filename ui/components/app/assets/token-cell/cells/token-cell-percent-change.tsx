@@ -29,7 +29,7 @@ export const TokenCellPercentChange = React.memo(
     if (token.isFiatLoading) {
       return (
         <Skeleton
-          className="h-4 w-8"
+          className="h-3.5 w-8"
           data-testid="multichain-token-list-item-percentage-skeleton"
         />
       );
