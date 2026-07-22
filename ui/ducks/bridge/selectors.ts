@@ -15,7 +15,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
@@ -974,7 +974,7 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
 export const isNativeBalanceInsufficientForQuote = (
-  quote: QuoteResponse & QuoteMetadata,
+  quote: QuoteResponseV1 & QuoteMetadata,
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
@@ -1011,7 +1011,7 @@ export const resolveMinimumBalanceToKeep = (
     : '0';
 
 export const computeQuoteValidationErrors = (
-  quote: (QuoteMetadata & QuoteResponse) | undefined | null,
+  quote: (QuoteMetadata & QuoteResponseV1) | undefined | null,
   {
     priceImpactThresholds: { warning, error },
     isHardwareWalletAccount,

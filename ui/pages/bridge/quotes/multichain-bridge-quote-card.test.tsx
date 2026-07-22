@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
-  QuoteResponse,
+  QuoteResponseV1,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -191,22 +191,22 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              feeData: {
-                ...quote.quote.feeData,
-                metabridge: {
-                  ...quote.quote.feeData.metabridge,
-                  amount: '1',
-                  quoteBpsFee: 87.5,
-                },
+        quotes: (
+          mockBridgeQuotesErc20Erc20 as unknown as QuoteResponseV1[]
+        ).map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            feeData: {
+              ...quote.quote.feeData,
+              metabridge: {
+                ...quote.quote.feeData.metabridge,
+                amount: '1',
+                quoteBpsFee: 87.5,
               },
             },
-          }),
-        ),
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -519,7 +519,7 @@ describe('MultichainBridgeQuoteCard', () => {
                 priceImpact,
               },
             },
-          })) as unknown as QuoteResponse[],
+          })) as unknown as QuoteResponseV1[],
           quotesLastFetched: Date.now() - 5000,
           quotesLoadingStatus: RequestStatus.LOADING,
         },

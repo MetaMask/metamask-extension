@@ -4,7 +4,7 @@ import {
   calcLatestSrcBalance,
   isNonEvmChainId,
   formatChainIdToHex,
-  type QuoteResponse,
+  type QuoteResponseV1,
   isNativeAddress,
   RequestStatus,
   type QuoteMetadata,
@@ -215,7 +215,7 @@ const bridgeSlice = createSlice({
       state,
       {
         payload: { sentAmount, quote },
-      }: { payload: QuoteResponse & QuoteMetadata },
+      }: { payload: QuoteResponseV1 & QuoteMetadata },
     ) => {
       const pairChanged = didAssetPairChange(
         state.fromToken?.assetId,

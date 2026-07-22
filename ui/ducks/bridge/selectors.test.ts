@@ -2,7 +2,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   ChainId,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   QuoteStreamCompleteReason,
   SortOrder,
   formatChainIdToCaip,
@@ -156,7 +156,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.BTC,
           srcTokenAmount,
         },
-        quotes: btcQuote ? ([btcQuote] as unknown as QuoteResponse[]) : [],
+        quotes: btcQuote ? ([btcQuote] as unknown as QuoteResponseV1[]) : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -250,7 +250,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.TRON,
           srcTokenAmount,
         },
-        quotes: tronQuote ? ([tronQuote] as unknown as QuoteResponse[]) : [],
+        quotes: tronQuote ? ([tronQuote] as unknown as QuoteResponseV1[]) : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -1088,7 +1088,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteResponse;
+      } = recommendedQuote as QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1182,7 +1182,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteResponse;
+      } = recommendedQuote as QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1266,7 +1266,7 @@ describe('Bridge selectors', () => {
         },
       ];
       result.sortedQuotes.forEach(
-        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+        (quote: QuoteMetadata & QuoteResponseV1, idx: number) => {
           expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
         },
       );
@@ -1279,7 +1279,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      } = recommendedQuote as QuoteMetadata & QuoteResponseV1;
       expect({
         quote,
         approval,
@@ -1349,7 +1349,7 @@ describe('Bridge selectors', () => {
       );
       expect(sortedQuotes).toHaveLength(2);
       sortedQuotes.forEach(
-        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+        (quote: QuoteMetadata & QuoteResponseV1, idx: number) => {
           expect(
             quoteMetadataKeys.every((k) =>
               Object.keys(quote ?? {}).includes(k),
@@ -1373,10 +1373,10 @@ describe('Bridge selectors', () => {
               estimatedProcessingTimeInSeconds: 1,
               quote: {
                 ...(mockBridgeQuotesNativeErc20[0]
-                  .quote as unknown as QuoteResponse['quote']),
+                  .quote as unknown as QuoteResponseV1['quote']),
                 requestId: 'fastestQuote',
               },
-            } as unknown as QuoteResponse,
+            } as unknown as QuoteResponseV1,
           ],
         },
       });
@@ -1459,7 +1459,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1563,7 +1563,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1668,7 +1668,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect({
         quote,
         approval,
@@ -1804,7 +1804,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,

@@ -54,7 +54,7 @@ const getSelectedAccountAddress = () => {
   return account.address;
 };
 
-const createQuoteResponse = (overrides?: {
+const createQuoteResponseV1 = (overrides?: {
   srcTokenAmount?: string;
   destTokenAmount?: string;
   minDestTokenAmount?: string;
@@ -210,7 +210,7 @@ const getMetaMaskStateWithDappSwap = ({
   dappSwapUiEnabled?: boolean;
   includeQuote?: boolean;
 }) => {
-  const quotes = includeQuote ? [createQuoteResponse()] : [];
+  const quotes = includeQuote ? [createQuoteResponseV1()] : [];
 
   return {
     ...mockMetaMaskState,

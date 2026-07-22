@@ -5,7 +5,7 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
   QuoteStreamCompleteReason,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
@@ -486,7 +486,7 @@ describe('PrepareBridgePage', () => {
       },
       estimatedProcessingTimeInSeconds: 600,
       nonEvmFeesInNative: '0.00000001',
-    } as unknown as QuoteResponse;
+    } as unknown as QuoteResponseV1;
 
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {

@@ -1,5 +1,5 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
-import type { QuoteResponse } from '@metamask/bridge-controller';
+import type { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -108,7 +108,7 @@ describe('usePrefillFromBridgeState', () => {
       .mockReturnValue('popup');
     const mockStoreState = createBridgeMockStore({
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponseV1[],
       },
       featureFlagOverrides: {
         bridgeConfig: {

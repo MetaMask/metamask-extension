@@ -1331,7 +1331,7 @@ function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
   };
 }
 
-function buildTronQuoteResponse(fixture: TronQuoteFixture) {
+function buildTronQuoteResponseV1(fixture: TronQuoteFixture) {
   const srcAsset = buildTronAsset(fixture.src);
   const destAsset = buildTronAsset(fixture.dest);
   const feeSun = fixture.feeSun ?? 8_750;
@@ -1411,7 +1411,7 @@ export async function mockBridgeGetTronQuoteFor(
     .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
     .thenCallback(() => ({
       statusCode: 200,
-      json: [buildTronQuoteResponse(fixture)],
+      json: [buildTronQuoteResponseV1(fixture)],
     }));
 }
 

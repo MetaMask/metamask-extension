@@ -1,5 +1,5 @@
 import React from 'react';
-import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
+import { QuoteResponseV1, RequestStatus } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';

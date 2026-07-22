@@ -5,7 +5,10 @@ import {
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponseV1,
+} from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
@@ -73,7 +76,7 @@ export default function useSubmitBridgeTransaction() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBridgeTransaction = async (
-    quoteResponse: QuoteResponse & QuoteMetadata,
+    quoteResponse: QuoteResponseV1 & QuoteMetadata,
   ) => {
     setIsSubmitting(true);
 

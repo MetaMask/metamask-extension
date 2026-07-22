@@ -4,7 +4,7 @@ import {
   isNativeAddress,
   selectMinimumBalanceForRentExemptionInSOL,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -36,7 +36,7 @@ export const computeHasSufficientGasForQuoteForMetrics = ({
   fromToken,
   minimumBalanceToKeep,
 }: {
-  quote: (QuoteResponse & QuoteMetadata) | null;
+  quote: (QuoteResponseV1 & QuoteMetadata) | null;
   nativeBalance: ReturnType<typeof getFromNativeBalance>;
   fromToken: ReturnType<typeof getFromToken>;
   minimumBalanceToKeep: string;
@@ -76,7 +76,7 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
   );
 
   return useCallback(
-    (quote: (QuoteResponse & QuoteMetadata) | null): boolean | null => {
+    (quote: (QuoteResponseV1 & QuoteMetadata) | null): boolean | null => {
       const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
       const minimumBalanceToKeep = resolveMinimumBalanceToKeep(
         srcChainId,
