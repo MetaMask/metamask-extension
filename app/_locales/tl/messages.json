@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Mga Opsyon sa Account"
   },
-  "accountPermissionToast": {
-    "message": "In-update ang mga pahintulot ng account"
-  },
   "accountSelectionRequired": {
     "message": "Kailangan mong pumili ng account!"
   },
@@ -3109,9 +3106,6 @@
   },
   "decimal": {
     "message": "Decimal na token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Ang mga decimal ay dapat na hindi bababa sa 0, at hihigit sa 36."
   },
   "decrypt": {
     "message": "I-decrypt"

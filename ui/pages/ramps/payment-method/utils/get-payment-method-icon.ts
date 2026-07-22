@@ -30,12 +30,14 @@ const PAYMENT_ICON_FIELD_ICONS: Record<string, IconName> = {
  * @returns Matching `IconName`, defaulting to wallet.
  */
 export function getPaymentMethodIconName(
-  paymentType: string,
-  icon?: string,
+  paymentType?: string | null,
+  icon?: string | null,
 ): IconName {
-  const typeIcon = PAYMENT_TYPE_ICONS[paymentType.toLowerCase()];
-  if (typeIcon) {
-    return typeIcon;
+  if (paymentType) {
+    const typeIcon = PAYMENT_TYPE_ICONS[paymentType.toLowerCase()];
+    if (typeIcon) {
+      return typeIcon;
+    }
   }
 
   if (icon) {

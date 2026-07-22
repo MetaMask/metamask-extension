@@ -11,6 +11,11 @@ import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
 import { BatchSellReviewPage } from './batch-sell-review-page';
 
+// Referenced from inside the `useBatchSellHighRateAlertModal` jest.mock(..)
+// factory below, so its name must start with `mock` (see other `mock`-
+// prefixed variables further down for the same reason).
+const mockOpenHighAlertModal = jest.fn();
+
 // ── Hooks ──────────────────────────────────────────────────────────────────
 jest.mock('./hooks/useBatchSellQuotesConfig');
 jest.mock('./hooks/useBatchSellQuotesFetching');
@@ -18,6 +23,12 @@ jest.mock('./hooks/useBatchSellTradesFetching', () => ({
   useBatchSellTradesFetching: jest.fn(),
 }));
 jest.mock('./hooks/useBatchSellAggregateValidation');
+jest.mock('../../hooks/useBatchSellHighRateAlertModal', () => ({
+  useBatchSellHighRateAlertModal: () => ({
+    openHighAlertModal: mockOpenHighAlertModal,
+    closeHighAlertModal: jest.fn(),
+  }),
+}));
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 jest.mock('./utils/hasAtLeastOneQuoteAvailable', () => ({
@@ -168,8 +179,12 @@ const mockUseSelector = jest.mocked(useSelector);
 
 // ── Default return values ──────────────────────────────────────────────────
 const defaultQuotesConfig = {
+  // Two enabled assets by default so `onReviewClick` takes the
+  // "open the review-and-confirm modal" branch; tests for the
+  // single-enabled-asset ("high alert modal") branch override this.
   sendAssetsConfig: {
     [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+    [BATCH_SELL_ASSET_IDS.USDT]: buildSendAssetConfigEntry(true),
   },
   selectedReceiveAsset: buildReceivedAsset({
     assetId: BATCH_SELL_ASSET_IDS.USDC,
@@ -423,6 +438,90 @@ describe('BatchSellReviewPage', () => {
             .getAttribute('data-fees-loading'),
         ).toBe('true');
       });
+    });
+  });
+
+  describe('onReviewClick', () => {
+    it('opens the review-and-confirm modal (not the high alert modal) when more than one asset is enabled to sell', () => {
+      renderPage();
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).not.toHaveBeenCalled();
+      expect(screen.getByTestId('review-confirm-modal')).toBeInTheDocument();
+    });
+
+    it('opens the review-and-confirm modal when no assets are enabled to sell', () => {
+      renderPage({
+        quotesConfig: {
+          sendAssetsConfig: {
+            [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(false),
+          },
+        },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).not.toHaveBeenCalled();
+      expect(screen.getByTestId('review-confirm-modal')).toBeInTheDocument();
+    });
+
+    it('opens the high alert modal instead of the review-and-confirm modal when exactly one asset is enabled to sell', () => {
+      const singleAssetConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+      };
+      renderPage({ quotesConfig: { sendAssetsConfig: singleAssetConfig } });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledTimes(1);
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        singleAssetConfig[BATCH_SELL_ASSET_IDS.DAI].asset,
+        defaultQuotesConfig.selectedReceiveAsset.assetId,
+      );
+      expect(
+        screen.queryByTestId('review-confirm-modal'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('ignores disabled assets when counting how many assets are enabled to sell', () => {
+      const oneEnabledOneDisabledConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+        [BATCH_SELL_ASSET_IDS.USDT]: buildSendAssetConfigEntry(false),
+      };
+      renderPage({
+        quotesConfig: { sendAssetsConfig: oneEnabledOneDisabledConfig },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        oneEnabledOneDisabledConfig[BATCH_SELL_ASSET_IDS.DAI].asset,
+        defaultQuotesConfig.selectedReceiveAsset.assetId,
+      );
+    });
+
+    it('passes the currently selected receive asset id to the high alert modal', () => {
+      const singleAssetConfig = {
+        [BATCH_SELL_ASSET_IDS.DAI]: buildSendAssetConfigEntry(true),
+      };
+      const selectedReceiveAsset = buildReceivedAsset({
+        assetId: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
+        symbol: 'ETH',
+      });
+      renderPage({
+        quotesConfig: {
+          sendAssetsConfig: singleAssetConfig,
+          selectedReceiveAsset,
+        },
+      });
+
+      fireEvent.click(screen.getByTestId('footer-review'));
+
+      expect(mockOpenHighAlertModal).toHaveBeenCalledWith(
+        expect.anything(),
+        selectedReceiveAsset.assetId,
+      );
     });
   });
 

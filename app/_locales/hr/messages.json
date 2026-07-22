@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Precizni decimalni brojevi"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalni brojevni ne smiju biti 0 i ne smiju prekoračivati 36."
-  },
   "delete": {
     "message": "Izbriši"
   },

@@ -34,6 +34,7 @@ import {
   getFromToken,
   getQuoteRequest,
   getSlippage,
+  getIsSlippageUserOverride,
   getToChain,
   getToChains,
   getToToken,
@@ -124,6 +125,7 @@ const PrepareBridgePage = ({
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -231,7 +233,7 @@ const PrepareBridgePage = ({
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
         : isQuoteRequestInsufficientBal,
-      slippage,
+      ...(slippage === undefined ? {} : { slippage }),
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
@@ -261,12 +263,26 @@ const PrepareBridgePage = ({
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
+  const previousSlippageRef = useRef(slippage);
 
   useEffect(() => {
-    dispatch(setSelectedQuote(null));
+    const previousSlippage = previousSlippageRef.current;
+    previousSlippageRef.current = slippage;
+
     if (!quoteParams) {
       return;
     }
+
+    const isHydrationOnlySlippageChange =
+      !isSlippageUserOverride &&
+      previousSlippage === undefined &&
+      slippage !== undefined;
+
+    if (isHydrationOnlySlippageChange) {
+      return;
+    }
+
+    dispatch(setSelectedQuote(null));
     const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -293,7 +309,7 @@ const PrepareBridgePage = ({
       quoteParams,
       eventProperties,
     );
-  }, [quoteParams]);
+  }, [quoteParams, isSlippageUserOverride, slippage]);
 
   // Trace swap/bridge view loaded
   useEffect(() => {
@@ -377,8 +393,6 @@ const PrepareBridgePage = ({
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           containerProps={{
@@ -590,7 +604,10 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
             paddingInline={4}
+            paddingTop={4}
             paddingBottom={4}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
