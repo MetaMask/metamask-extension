@@ -17,11 +17,15 @@ import {
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsSwapsEventSource,
+  ScreenViewedEntryPoint,
+} from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { resetBridgeController } from '../../../ducks/bridge/actions';
+import { transitionForward } from '../../ui/transition';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -51,13 +55,13 @@ const NavTab = ({
         name={icon}
         size={IconSize.Lg}
         color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
-        className="group-hover/tab:text-icon-default-hover"
+        className="transition-colors duration-200 group-hover/tab:text-icon-default-hover"
       />
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={isActive ? TextColor.TextDefault : TextColor.TextAlternative}
-        className="group-hover/tab:text-text-default"
+        className="transition-colors duration-200 group-hover/tab:text-text-default"
       >
         {label}
       </Text>
@@ -88,33 +92,51 @@ export function BottomNavBar() {
 
   const handleHomeClick = useCallback(() => {
     resetBridgeIfNeeded();
-    navigate(
-      lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-      { state: { stayOnHomePage: true } },
+    transitionForward(() =>
+      navigate(
+        lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
+        {
+          state: {
+            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+            stayOnHomePage: true,
+          },
+        },
+      ),
     );
   }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
 
   const handlePerpsClick = useCallback(() => {
     resetBridgeIfNeeded();
-    navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } });
+    transitionForward(() =>
+      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
+    );
   }, [navigate, resetBridgeIfNeeded]);
 
   const handleSwapsClick = useCallback(() => {
     if (isSwaps) {
       return;
     }
-    openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar);
+    transitionForward(() =>
+      openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
+    );
   }, [openBridgeExperience, isSwaps]);
 
   const handleActivityClick = useCallback(() => {
     resetBridgeIfNeeded();
-    navigate(ACTIVITY_ROUTE, { state: { stayOnHomePage: true } });
+    transitionForward(() =>
+      navigate(ACTIVITY_ROUTE, {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
+    );
   }, [navigate, resetBridgeIfNeeded]);
 
   return (
     <nav
       data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2 z-[100]"
+      className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab

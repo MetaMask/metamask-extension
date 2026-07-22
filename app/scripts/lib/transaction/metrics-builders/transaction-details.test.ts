@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { createBuilderRequest } from './test-utils';
