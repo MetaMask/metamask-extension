@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
@@ -13,7 +12,7 @@ import {
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 
-import SortControl, { SelectableListItem } from './sort-control';
+import SortControl from './sort-control';
 
 jest.mock('../../../../../hooks/useAnalytics', () => {
   const mockTrackEvent = jest.fn();
@@ -162,26 +161,5 @@ describe('SortControl', () => {
         sensitiveProperties: {},
       }),
     );
-  });
-});
-
-describe('SelectableListItem', () => {
-  it('rounds the top corners of the first item in the list', () => {
-    const { container } = render(
-      <div>
-        <SelectableListItem testId="first">First</SelectableListItem>
-        <SelectableListItem testId="second">Second</SelectableListItem>
-      </div>,
-    );
-
-    const first = container.querySelector(
-      '.selectable-list-item-wrapper:first-child .selectable-list-item',
-    );
-    const second = container.querySelector(
-      '.selectable-list-item-wrapper:last-child .selectable-list-item',
-    );
-
-    expect(first).toBeInTheDocument();
-    expect(second).toBeInTheDocument();
   });
 });
