@@ -19,7 +19,7 @@ import { mockIdentityServices } from '../identity/mocks';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
-describe('Add wallet TEST', function () {
+describe('Add wallet', function () {
   const arrange = async () => {
     const unencryptedAccounts = accountsToMockForAccountsSync;
     const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
