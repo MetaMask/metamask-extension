@@ -4396,11 +4396,14 @@
     },
     "nock>debug": {
       "globals": {
+        "clients": true,
         "console": true,
         "document": true,
         "localStorage": true,
         "navigator": true,
-        "process": true
+        "process": true,
+        "registration": true,
+        "serviceWorker": true
       },
       "packages": {
         "mocha>ms": true,
@@ -5283,12 +5286,15 @@
     },
     "loglevel": {
       "globals": {
+        "clients": true,
         "console": true,
         "define": true,
         "document.cookie": true,
         "localStorage": true,
         "log": "write",
-        "navigator": true
+        "navigator": true,
+        "registration": true,
+        "serviceWorker": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {

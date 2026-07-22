@@ -786,7 +786,7 @@
     "remote-redux-devtools": "^0.5.16",
     "resolve-url-loader": "^3.1.5",
     "sass-embedded": "^1.100.0",
-    "sass-loader": "^14.1.1",
+    "sass-loader": "^17.0.0",
     "schema-utils": "^4.2.0",
     "selenium-webdriver": "^4.44.0",
     "semver": "^7.5.4",

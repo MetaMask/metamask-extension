@@ -33381,7 +33381,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
     sass-embedded: "npm:^1.100.0"
-    sass-loader: "npm:^14.1.1"
+    sass-loader: "npm:^17.0.0"
     schema-utils: "npm:^4.2.0"
     selenium-webdriver: "npm:^4.44.0"
     semver: "npm:^7.5.4"
@@ -39385,21 +39385,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "sass-loader@npm:14.1.1"
-  dependencies:
-    neo-async: "npm:^2.6.2"
+"sass-loader@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "sass-loader@npm:17.0.0"
   peerDependencies:
-    "@rspack/core": 0.x || 1.x
-    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+    "@rspack/core": 0.x || ^1.0.0 || ^2.0.0-0
     sass: ^1.3.0
     sass-embedded: "*"
     webpack: ^5.0.0
   peerDependenciesMeta:
     "@rspack/core":
-      optional: true
-    node-sass:
       optional: true
     sass:
       optional: true
@@ -39407,7 +39402,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 10/6cc0cb8143d04cb462c10efffbab86e9c4ea971bbdbc22d8c01f4ebf774fcf9b4fed775aaec6af23aeb7d440b37dce76cf6f2746ae36421d16ad4182f2220bc8
+  checksum: 10/f740c61f235a31220af1a53f1482f0033714333fbf9ce77896f0fdd75793ce6c0a95e16adf2952e3e390a8157327db70ca4aafe754fce7061b8cecd2e1083173
   languageName: node
   linkType: hard
 

@@ -18,6 +18,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -528,14 +529,12 @@ const config = {
             loader: 'sass-loader',
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
-              implementation: 'sass-embedded',
-              api: 'modern',
-              // Disable the webpackImporter, as we:
-              //  a) don't want to rely on it in case we want to switch away
-              //     from webpack in the future
-              //  b) the sass importer is faster
-              //  c) the "modern" sass api doesn't work with the
-              //     webpackImporter yet.
+              implementation: sassEmbedded,
+              api: 'modern-compiler',
+              // Disable Webpack's Sass importer because Sass's native
+              // importer keeps stylesheet resolution independent of Webpack
+              // and is faster for our current import graph. All current
+              // non-relative imports resolve through the loadPaths below.
               webpackImporter: false,
               sassOptions: {
                 // We don't need to specify the charset because the HTML
