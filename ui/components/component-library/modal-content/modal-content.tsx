@@ -43,6 +43,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     }: ModalContentProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
     const isPureBlack = usePureBlack();
     const {
       onClose,
