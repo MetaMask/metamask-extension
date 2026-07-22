@@ -2505,6 +2505,35 @@ describe('Actions', () => {
       expect(actionTypes).toContain('HIDE_LOADING_INDICATION');
     });
 
+    it('forwards pendingMetadata to the background when provided', async () => {
+      const store = mockStore();
+      const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';
+      const assetId =
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      const pendingMetadata = {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        chainId: '0x1',
+        decimals: 6,
+        name: 'USD Coin',
+        symbol: 'USDC',
+      };
+      const addCustomAssetStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.addCustomAsset(accountId, assetId, pendingMetadata),
+      );
+
+      expect(
+        addCustomAssetStub.calledOnceWith(accountId, assetId, pendingMetadata),
+      ).toBe(true);
+    });
+
     it('hides loading indicator when addCustomAsset in background fails', async () => {
       const store = mockStore();
       const accountId = '11e8977e-3dcd-4751-871f-2b438c839179';

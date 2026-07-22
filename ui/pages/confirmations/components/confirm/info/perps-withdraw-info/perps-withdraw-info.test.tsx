@@ -74,6 +74,7 @@ describe('PerpsWithdrawInfo', () => {
     expect(useAddTokenMock).toHaveBeenCalledWith({
       chainId: ARBITRUM_USDC.chainId,
       decimals: ARBITRUM_USDC.decimals,
+      name: ARBITRUM_USDC.name,
       symbol: ARBITRUM_USDC.symbol,
       tokenAddress: ARBITRUM_USDC.address,
     });

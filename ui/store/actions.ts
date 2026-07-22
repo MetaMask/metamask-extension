@@ -3116,15 +3116,23 @@ export function hideAsset(
  *
  * @param accountId - The account ID
  * @param assetId - The asset ID (CAIP-19)
+ * @param pendingMetadata - Optional token metadata used to seed
+ * `assetsInfo` immediately so the UI can render the token before the
+ * controller fetches its canonical metadata.
  * @returns void
  */
 export function addCustomAsset(
   accountId: AccountId,
   assetId: Caip19AssetId,
+  pendingMetadata?: Record<string, unknown>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addCustomAsset', [accountId, assetId]);
+      await submitRequestToBackground('addCustomAsset', [
+        accountId,
+        assetId,
+        pendingMetadata,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
