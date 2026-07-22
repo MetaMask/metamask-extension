@@ -13,6 +13,7 @@ import { useEventListener } from '../../hooks/useEventListener';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
@@ -28,7 +29,7 @@ import {
   groupActivityListItems,
   type ActivityListFilter,
 } from './helpers';
-import { useActivityScreenOpened } from './useActivityScreenOpened';
+import { useActivityScreenViewed } from './useActivityScreenViewed';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -36,7 +37,10 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
-export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
+export function ActivityList({
+  filter,
+  entryPoint,
+}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
@@ -71,13 +75,14 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     [evmItems, groupedItems],
   );
 
-  useActivityScreenOpened({
+  useActivityScreenViewed({
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems].filter(
       (item) => item.status === 'pending',
     ).length,
+    entryPoint,
   });
 
   const itemRef = useItemInView({

@@ -17,7 +17,10 @@ import {
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsSwapsEventSource,
+  ScreenViewedEntryPoint,
+} from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -92,7 +95,12 @@ export function BottomNavBar() {
     transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        { state: { stayOnHomePage: true } },
+        {
+          state: {
+            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+            stayOnHomePage: true,
+          },
+        },
       ),
     );
   }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
@@ -116,7 +124,12 @@ export function BottomNavBar() {
   const handleActivityClick = useCallback(() => {
     resetBridgeIfNeeded();
     transitionForward(() =>
-      navigate(ACTIVITY_ROUTE, { state: { stayOnHomePage: true } }),
+      navigate(ACTIVITY_ROUTE, {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
     );
   }, [navigate, resetBridgeIfNeeded]);
 
