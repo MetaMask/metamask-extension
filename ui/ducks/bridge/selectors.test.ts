@@ -1126,6 +1126,35 @@ describe('Bridge selectors', () => {
         securityData: undefined,
       });
     });
+
+    it('returns USDC as default token when swapping from Stellar', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.STELLAR),
+          ),
+          toToken: null,
+        },
+      });
+      const result = getToToken(state as never);
+
+      expect(result).toStrictEqual({
+        accountType: undefined,
+        assetId:
+          'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+        balance: '0',
+        chainId: 'stellar:pubnet',
+        decimals: 7,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/asset/USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN.png',
+        isVerified: undefined,
+        name: 'USDC',
+        rwaData: undefined,
+        securityData: undefined,
+        symbol: 'USDC',
+        tokenFiatAmount: undefined,
+      });
+    });
   });
 
   describe('getFromAmount', () => {
