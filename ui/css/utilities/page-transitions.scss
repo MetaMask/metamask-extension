@@ -64,24 +64,6 @@
   mix-blend-mode: normal;
 }
 
-/*
-  The bottom nav is persistent across page transitions, so it should not animate —
-  keep it in its current state instead of crossfading it.
-*/
-::view-transition-group(bottom-nav-bar) {
-  animation-duration: 0s;
-}
-
-::view-transition-old(bottom-nav-bar),
-::view-transition-new(bottom-nav-bar) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-::view-transition-old(bottom-nav-bar) {
-  display: none;
-}
-
 /* Forward: old fades out, new fades in + scale up */
 :root[data-page-transition='forward']::view-transition-old(root) {
   animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
