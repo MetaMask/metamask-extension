@@ -81,7 +81,11 @@ export async function isKnownSafeDeepLinkAsset(
     }
 
     const SPAM_SECURITY_RESULT_TYPE = 'Spam';
-    return asset.securityData?.resultType !== SPAM_SECURITY_RESULT_TYPE;
+    const MALICIOUS_SECURITY_RESULT_TYPE = 'Malicious';
+    return (
+      asset.securityData?.resultType !== SPAM_SECURITY_RESULT_TYPE &&
+      asset.securityData?.resultType !== MALICIOUS_SECURITY_RESULT_TYPE
+    );
   } catch {
     return false;
   }

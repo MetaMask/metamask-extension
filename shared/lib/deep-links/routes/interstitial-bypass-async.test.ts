@@ -29,6 +29,8 @@ const AKITA_ASSET_ID =
   'eip155:1/erc20:0x3301ee63fb29f863f2333bd4466acb46cd8323e6';
 const WARB_ASSET_ID =
   'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
+const CLM_SPAM_ASSET_ID =
+  'eip155:1/erc20:0x0b4c2708f052dca413600e237675e4d6778a9375';
 
 function buildSearchResult(assetId: CaipAssetType, resultType?: string) {
   return {
@@ -122,9 +124,9 @@ describe('isKnownSafeDeepLinkAsset', () => {
       },
     },
     {
-      description: 'returns true for Malicious meme coins',
+      description: 'returns false for Malicious meme coins',
       assetId: WARB_ASSET_ID,
-      expected: true,
+      expected: false,
       arrange: () => {
         mockSearchTokens.mockResolvedValue(
           mockSearchResponse([
@@ -160,11 +162,26 @@ describe('isKnownSafeDeepLinkAsset', () => {
   const unsafeTokenLookupCases = [
     {
       description: 'returns false only when the security scan result is Spam',
+      assetId: CLM_SPAM_ASSET_ID,
+      expected: false,
+      arrange: () => {
+        mockSearchTokens.mockResolvedValue(
+          mockSearchResponse([
+            { assetId: CLM_SPAM_ASSET_ID, resultType: 'Spam' },
+          ]),
+        );
+      },
+    },
+    {
+      description:
+        'returns false only when the security scan result is Malicious',
       assetId: WARB_ASSET_ID,
       expected: false,
       arrange: () => {
         mockSearchTokens.mockResolvedValue(
-          mockSearchResponse([{ assetId: WARB_ASSET_ID, resultType: 'Spam' }]),
+          mockSearchResponse([
+            { assetId: WARB_ASSET_ID, resultType: 'Malicious' },
+          ]),
         );
       },
     },
@@ -346,12 +363,14 @@ describe('canBypassDeepLinkInterstitial', () => {
       description: 'does not bypass /asset for spam listings',
       route: { pathname: '/asset' },
       deepLinkUrl: new URL(
-        `https://link.metamask.io/asset?assetId=${WARB_ASSET_ID}`,
+        `https://link.metamask.io/asset?assetId=${CLM_SPAM_ASSET_ID}`,
       ),
       expected: false,
       arrange: () => {
         mockSearchTokens.mockResolvedValue(
-          mockSearchResponse([{ assetId: WARB_ASSET_ID, resultType: 'Spam' }]),
+          mockSearchResponse([
+            { assetId: CLM_SPAM_ASSET_ID, resultType: 'Spam' },
+          ]),
         );
       },
     },
