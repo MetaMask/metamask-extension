@@ -2454,9 +2454,6 @@
   "clear": {
     "message": "Löschen"
   },
-  "clearActivity": {
-    "message": "Aktivitäten und Nonce-Daten löschen"
-  },
   "clearActivityDescription": {
     "message": "Setzt die Nonce des Kontos zurück und löscht Daten aus dem Aktivitäten-Tab in Ihrer Wallet. Nur das aktuelle Konto und Netzwerk sind betroffen. Ihr Guthaben und Ihre eingehenden Transaktionen bleiben unverändert."
   },
@@ -5700,9 +5697,6 @@
   },
   "networksSmallCase": {
     "message": "Netzwerke"
-  },
-  "nevermind": {
-    "message": "Schon gut"
   },
   "new": {
     "message": "Neu!"

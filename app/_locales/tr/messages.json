@@ -2454,9 +2454,6 @@
   "clear": {
     "message": "Temizle"
   },
-  "clearActivity": {
-    "message": "Aktiviteyi ve nonce verilerini temizle"
-  },
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
   },
@@ -5704,9 +5701,6 @@
   },
   "networksSmallCase": {
     "message": "ağ"
-  },
-  "nevermind": {
-    "message": "Boş ver"
   },
   "new": {
     "message": "Yeni!"

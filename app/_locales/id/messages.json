@@ -2454,9 +2454,6 @@
   "clear": {
     "message": "Hapus"
   },
-  "clearActivity": {
-    "message": "Hapus aktivitas dan data nonce"
-  },
   "clearActivityDescription": {
     "message": "Mereset nonce akun dan menghapus data dari tab aktivitas di dompet Anda. Hanya akun dan jaringan saat ini yang akan terpengaruh. Saldo dan transaksi masuk tidak akan berubah."
   },
@@ -5704,9 +5701,6 @@
   },
   "networksSmallCase": {
     "message": "jaringan"
-  },
-  "nevermind": {
-    "message": "Abaikan"
   },
   "new": {
     "message": "Baru!"

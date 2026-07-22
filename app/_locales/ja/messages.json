@@ -2454,9 +2454,6 @@
   "clear": {
     "message": "消去"
   },
-  "clearActivity": {
-    "message": "アクティビティとナンスデータを消去"
-  },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
   },
@@ -5704,9 +5701,6 @@
   },
   "networksSmallCase": {
     "message": "ネットワーク"
-  },
-  "nevermind": {
-    "message": "取り消し"
   },
   "new": {
     "message": "新登場!"

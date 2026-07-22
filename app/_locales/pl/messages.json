@@ -346,9 +346,6 @@
   "networks": {
     "message": "Sieci"
   },
-  "nevermind": {
-    "message": "Nie ważne"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
