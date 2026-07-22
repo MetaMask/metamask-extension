@@ -13,9 +13,20 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
+import {
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '../../../helpers/constants/routes';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const mockAnalyticsTrackEvent = jest.fn();
 
@@ -415,6 +426,48 @@ describe('PerpsView', () => {
       expect(
         screen.queryByTestId('transaction-card-tx-004'),
       ).not.toBeInTheDocument();
+    });
+
+    it('navigates to the Perps transaction details page when a Recent Activity trade row is clicked', () => {
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-001'));
+
+      const tradeTransaction = mocks.mockTransactions.find(
+        (transaction) => transaction.id === 'tx-001',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        PERPS_TRANSACTION_DETAILS_ROUTE,
+        { state: { transaction: tradeTransaction } },
+      );
+    });
+
+    it('navigates to the generic tx details route when a Recent Activity deposit row is clicked', () => {
+      jest.mocked(usePerpsTransactionHistory).mockReturnValueOnce({
+        transactions: mocks.mockTransactions,
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('transaction-card-tx-005'));
+
+      const depositTransaction = mocks.mockTransactions.find(
+        (transaction) => transaction.id === 'tx-005',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${TX_DETAILS_ROUTE}/eip155:42161/${depositTransaction?.depositWithdrawal?.txHash}`,
+        { state: undefined },
+      );
     });
 
     it('shows watchlist when mock watchlist symbols match market data', () => {

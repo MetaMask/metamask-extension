@@ -23,11 +23,9 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  DEFAULT_ROUTE,
-  PERPS_MARKET_DETAIL_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { getPerpsTransactionDestination } from '../../components/app/perps/utils/getPerpsTransactionDestination';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
@@ -107,13 +105,14 @@ const PerpsActivityPage = () => {
     navigate(-1);
   }, [navigate]);
 
-  // Navigate to the market detail page when an order transaction is clicked
+  // Navigate to the transaction's details view. Orders/trades/funding open
+  // the dedicated Perps transaction details page; deposits/withdrawals open
+  // the existing generic on-chain transaction details route.
   const handleTransactionClick = useCallback(
     (transaction: PerpsTransaction) => {
-      if (transaction.type === 'order') {
-        navigate(
-          `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(transaction.symbol)}`,
-        );
+      const destination = getPerpsTransactionDestination(transaction);
+      if (destination) {
+        navigate(destination.pathname, { state: destination.state });
       }
     },
     [navigate],
@@ -223,11 +222,7 @@ const PerpsActivityPage = () => {
                     <TransactionCard
                       key={transaction.id}
                       transaction={transaction}
-                      onClick={
-                        transaction.type === 'order'
-                          ? handleTransactionClick
-                          : undefined
-                      }
+                      onClick={handleTransactionClick}
                       screenName={
                         PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
                       }
