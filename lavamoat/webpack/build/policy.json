@@ -1,4 +1,9 @@
 {
+  "resolutions": {
+    "sass-embedded": {
+      "@bufbuild/protobuf/codegenv2": "./node_modules/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js"
+    }
+  },
   "resources": {
     "@babel/code-frame": {
       "globals": {
@@ -245,6 +250,9 @@
     },
     "sass-embedded>@bufbuild/protobuf": {
       "globals": {
+        "AsyncIterator": true,
+        "Bun": true,
+        "Deno": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "__values": true,
@@ -1093,6 +1101,13 @@
         "process": true
       }
     },
+    "sass-embedded>colorjs.io": {
+      "globals": {
+        "CSS": true,
+        "console.warn": true,
+        "process.env.NODE_ENV.toLowerCase": true
+      }
+    },
     "webpack-dev-server>compression>compressible": {
       "packages": {
         "koa>mime-types>mime-db": true
@@ -1611,7 +1626,7 @@
     },
     "schema-utils>ajv>fast-uri": {
       "globals": {
-        "URL.domainToASCII": true
+        "URL": true
       }
     },
     "eslint>@nodelib/fs.walk>fastq": {
@@ -2581,6 +2596,7 @@
         "child_process": true,
         "events": true,
         "fs": true,
+        "module.createRequire": true,
         "path": true,
         "stream": true,
         "url": true,
@@ -2590,10 +2606,10 @@
       "globals": {
         "Buffer": true,
         "URL": true,
-        "__dirname": true,
-        "__filename": true,
         "console.error": true,
+        "console.warn": true,
         "process.arch": true,
+        "process.argv": true,
         "process.cwd": true,
         "process.execPath": true,
         "process.platform": true,
@@ -2602,9 +2618,11 @@
       "packages": {
         "sass-embedded>@bufbuild/protobuf": true,
         "sass-embedded>buffer-builder": true,
+        "sass-embedded>colorjs.io": true,
         "sass-embedded>immutable": true,
         "wait-on>rxjs": true,
         "mocha>supports-color": true,
+        "sass-embedded>sync-child-process": true,
         "sass-embedded>varint": true
       }
     },
@@ -2895,6 +2913,30 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
+      }
+    },
+    "sass-embedded>sync-child-process": {
+      "builtin": {
+        "fs.existsSync": true,
+        "path.dirname": true,
+        "path.join": true,
+        "stream.Writable": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "__filename": true,
+        "console.error": true
+      },
+      "packages": {
+        "sass-embedded>sync-child-process>sync-message-port": true
+      }
+    },
+    "sass-embedded>sync-child-process>sync-message-port": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "worker_threads.MessageChannel": true,
+        "worker_threads.receiveMessageOnPort": true
       }
     },
     "tailwindcss": {
