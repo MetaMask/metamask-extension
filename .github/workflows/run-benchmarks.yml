@@ -17,7 +17,9 @@ jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
-    continue-on-error: true
+    # No continue-on-error: each leg gates its own metrics (gate step below), so a
+    # metric breach fails just that leg and only that leg is re-run to re-measure.
+    # The `quality-gate` job separately evaluates all legs together.
     strategy:
       fail-fast: false
       matrix:
@@ -68,6 +70,7 @@ jobs:
           run-id: ${{ inputs.builds-from-run }}
 
       - name: Run the benchmark
+        id: run-benchmark
         run: >-
           ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
@@ -112,10 +115,29 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+      # compare-benchmarks.ts evaluates each result file independently, so
+      # pointing --current at this leg's single-file dir gates exactly this leg.
+      # A breach fails the leg, so it can be re-run in isolation. Honors the
+      # skip-benchmark-gate label; runs only when the benchmark produced a result.
+      - name: Gate this benchmark leg
+        if: ${{ github.event_name == 'pull_request' && steps.run-benchmark.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/$REPO/issues/$PR_NUMBER/labels" --jq '.[].name' | grep -qx 'skip-benchmark-gate'; then
+            echo "skip-benchmark-gate label present — skipping per-leg gate"
+            exit 0
+          fi
+          yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
+
   benchmarks-page-load:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     name: chrome-webpack-pageLoadBenchmark
-    continue-on-error: true
+    # Not continue-on-error: this job gates its own metrics below so a breach
+    # fails it and it can be re-run in isolation (see the matrix `benchmarks` job).
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -148,6 +170,7 @@ jobs:
         run: yarn playwright install chromium
 
       - name: Run dapp page load benchmarks
+        id: run-page-load
         run: yarn test:e2e:benchmark --preset=pageLoadBenchmark
 
       - name: Send benchmark results to Sentry (main/release only)
@@ -189,6 +212,23 @@ jobs:
           path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
           retention-days: 7
           if-no-files-found: ignore
+
+      # Gate this job against its own page-load result file so a breach fails it
+      # and it can be re-run in isolation. Same rationale/label handling as the
+      # matrix `benchmarks` job's per-leg gate.
+      - name: Gate this benchmark leg
+        if: ${{ github.event_name == 'pull_request' && steps.run-page-load.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/$REPO/issues/$PR_NUMBER/labels" --jq '.[].name' | grep -qx 'skip-benchmark-gate'; then
+            echo "skip-benchmark-gate label present — skipping per-leg gate"
+            exit 0
+          fi
+          yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
+        shell: bash
 
   # Evaluates benchmark results against constant thresholds (THRESHOLD_REGISTRY).
   # Rollout across 4 phases:
