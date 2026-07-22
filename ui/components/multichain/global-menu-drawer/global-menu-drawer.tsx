@@ -362,8 +362,12 @@ export const GlobalMenuDrawer = ({
           style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
-            className={`h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
-            backgroundColor={BoxBackgroundColor.BackgroundDefault}
+            className={`h-full min-h-0 flex flex-col overflow-hidden ${isPureBlack ? 'bg-[var(--color-background-alternative)]' : 'bg-[var(--color-background-default)]'} shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
+            backgroundColor={
+              isPureBlack
+                ? BoxBackgroundColor.BackgroundAlternative
+                : BoxBackgroundColor.BackgroundDefault
+            }
           >
             {showCloseButton && (
               <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">
