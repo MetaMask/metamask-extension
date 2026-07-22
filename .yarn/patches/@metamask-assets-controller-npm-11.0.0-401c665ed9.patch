@@ -121,7 +121,7 @@ index e3db944242bcb8957a71a4064ab1e97e0984f381..9bfb36daca8b9cfa44a57b6c4aa59563
          log('Failed to fetch supported networks', { error });
          return new Set();
      }
-+}, _TokenDataSource_getSuggestedOccurrenceFloors =
++}, _TokenDataSource_getSuggestedOccurrenceFloors = 
 +/**
 + * Fetches per-chain suggested occurrence floors from Token API
 + * (`GET /v1/suggestedOccurrenceFloors`). Caching is handled by
@@ -290,7 +290,7 @@ index 0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c..2d5114e066b3a084f2984ad80a0e642f
          log('Failed to fetch supported networks', { error });
          return new Set();
      }
-+}, _TokenDataSource_getSuggestedOccurrenceFloors =
++}, _TokenDataSource_getSuggestedOccurrenceFloors = 
 +/**
 + * Fetches per-chain suggested occurrence floors from Token API
 + * (`GET /v1/suggestedOccurrenceFloors`). Caching is handled by
@@ -403,8 +403,8 @@ index bdfbeddb3e56e815a0d6b04c710ac0d3e0ae7752..c40596fbb8b38e5a018c3518df8c76bb
      }
  }
  exports.TokensApiClient = TokensApiClient;
--_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain =
-+_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain =
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
  /**
   * Check whether the given chain is present in the supported-networks list.
   *
@@ -412,7 +412,7 @@ index bdfbeddb3e56e815a0d6b04c710ac0d3e0ae7752..c40596fbb8b38e5a018c3518df8c76bb
          }
      })(), "f");
      return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
-+}, _TokensApiClient_getOccurrenceFloor =
++}, _TokensApiClient_getOccurrenceFloor = 
 +/**
 + * Resolve the `occurrenceFloor` query param for a chain from Token API
 + * `/v1/suggestedOccurrenceFloors`. Falls back to
@@ -432,7 +432,7 @@ index bdfbeddb3e56e815a0d6b04c710ac0d3e0ae7752..c40596fbb8b38e5a018c3518df8c76bb
 +    const decimalChainId = String((0, controller_utils_1.convertHexToDecimal)(hexChainId));
 +    return (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f")?.[decimalChainId] ??
 +        DEFAULT_OCCURRENCE_FLOOR);
-+}, _TokensApiClient_refreshSuggestedOccurrenceFloors =
++}, _TokensApiClient_refreshSuggestedOccurrenceFloors = 
 +/**
 + * Fetch `/v1/suggestedOccurrenceFloors` and update the instance cache.
 + * Concurrent callers share the in-flight Promise. Failures leave the cache
@@ -608,8 +608,8 @@ index 9378ce05a607e280b393428fdb88a96d41dda5fb..76fad5da7d5b8540be578df2fec80c67
          });
      }
  }
--_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain =
-+_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain =
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloors = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsCachedAt = new WeakMap(), _TokensApiClient_suggestedOccurrenceFloorsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
  /**
   * Check whether the given chain is present in the supported-networks list.
   *
@@ -617,7 +617,7 @@ index 9378ce05a607e280b393428fdb88a96d41dda5fb..76fad5da7d5b8540be578df2fec80c67
          }
      })(), "f");
      return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
-+}, _TokensApiClient_getOccurrenceFloor =
++}, _TokensApiClient_getOccurrenceFloor = 
 +/**
 + * Resolve the `occurrenceFloor` query param for a chain from Token API
 + * `/v1/suggestedOccurrenceFloors`. Falls back to
@@ -637,7 +637,7 @@ index 9378ce05a607e280b393428fdb88a96d41dda5fb..76fad5da7d5b8540be578df2fec80c67
 +    const decimalChainId = String(convertHexToDecimal(hexChainId));
 +    return (__classPrivateFieldGet(this, _TokensApiClient_suggestedOccurrenceFloors, "f")?.[decimalChainId] ??
 +        DEFAULT_OCCURRENCE_FLOOR);
-+}, _TokensApiClient_refreshSuggestedOccurrenceFloors =
++}, _TokensApiClient_refreshSuggestedOccurrenceFloors = 
 +/**
 + * Fetch `/v1/suggestedOccurrenceFloors` and update the instance cache.
 + * Concurrent callers share the in-flight Promise. Failures leave the cache
