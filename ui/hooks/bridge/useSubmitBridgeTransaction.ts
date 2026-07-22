@@ -193,18 +193,6 @@ export default function useSubmitBridgeTransaction() {
       return;
     }
 
-    const intentData = quoteResponse.quote.intent;
-
-    if (hardwareWalletUsed && intentData) {
-      const error = new Error(
-        'Hardware wallets cannot submit bridge intent quotes',
-      );
-      captureException(error);
-      dispatch(setWasTxDeclined(true));
-      setIsSubmitting(false);
-      throw error;
-    }
-
     if (hardwareWalletUsed && !isHardwareWalletSigningPage) {
       navigateToHwSigningPage();
       setIsSubmitting(false);

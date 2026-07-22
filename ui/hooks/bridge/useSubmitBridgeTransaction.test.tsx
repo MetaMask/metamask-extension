@@ -255,7 +255,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it.only('executes EVM bridge transaction with no approval', async () => {
+    it('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -588,10 +588,19 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
     });
 
-    it('blocks hardware-wallet intent quotes without routing to hardware wallet signatures', async () => {
-      const store = makeMockStore();
+    it('routes hardware-wallet intent quotes to hardware wallet signatures without submitting immediately', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
       isHardwareWalletSpy.mockImplementation(() => true);
-      submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -610,15 +619,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         await result.current.submitBridgeTransaction(quoteWithIntent);
       });
 
-      expect(mockUseNavigate).not.toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
-        expect.anything(),
-      );
-      expect(captureExceptionSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: 'Hardware wallets cannot submit bridge intent quotes',
-        }),
-      );
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitIntentSpy).not.toHaveBeenCalled();
+      expect(submitTxSpy).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
