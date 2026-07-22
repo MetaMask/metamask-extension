@@ -129,7 +129,7 @@ describe('IndexedDBStore', () => {
   });
 
   describe('onForcedClose', () => {
-    it('is invoked when the connection receives a versionchange (e.g. shutdown/upgrade)', async () => {
+    it('is invoked with "versionchange" when the connection receives a versionchange (e.g. shutdown/upgrade)', async () => {
       await db.open(dbName, dbVersion);
       const onForcedClose = jest.fn();
       db.onForcedClose = onForcedClose;
@@ -145,7 +145,22 @@ describe('IndexedDBStore', () => {
         req.onerror = () => reject(req.error);
       });
 
-      expect(onForcedClose).toHaveBeenCalled();
+      expect(onForcedClose).toHaveBeenCalledWith('versionchange');
+    });
+
+    it('is invoked with "close" when the connection receives a close event (e.g. browser shutdown)', async () => {
+      const openSpy = jest.spyOn(indexedDB, 'open');
+      await db.open(dbName, dbVersion);
+      const onForcedClose = jest.fn();
+      db.onForcedClose = onForcedClose;
+
+      // Simulate the browser firing `close` on our live connection (as happens
+      // during shutdown) by invoking the handler wired in `open`.
+      const request = openSpy.mock.results[0].value as IDBOpenDBRequest;
+      request.result.onclose?.(new Event('close'));
+
+      expect(onForcedClose).toHaveBeenCalledWith('close');
+      openSpy.mockRestore();
     });
 
     it('clears the closed connection so open can reconnect', async () => {

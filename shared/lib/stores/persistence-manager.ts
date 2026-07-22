@@ -390,6 +390,27 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
+   * Reports that the backup IndexedDB was force-closed by the browser. Emitted
+   * regardless of whether shutdown suspension is enabled, so we get a baseline
+   * of how often these events happen (and whether they are `close` vs
+   * `versionchange`) independent of the feature rollout. `IndexedDBStore` only
+   * fires this once per live connection, so it stays low-volume without extra
+   * deduplication here.
+   *
+   * @param reason - Which browser event triggered the forced close.
+   */
+  #reportBackupDbForcedClose(reason: 'close' | 'versionchange') {
+    captureMessage('MetaMask - backup IndexedDB force-closed', {
+      level: 'info',
+      tags: {
+        'persistence.event': 'backup-idb-forced-close',
+        'persistence.idbCloseReason': reason,
+      },
+      fingerprint: ['persistence-event', 'backup-idb-forced-close'],
+    });
+  }
+
+  /**
    * Resumes writes previously suspended by {@link suspendWrites}. Called when a
    * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`) or when a
    * recovery probe confirms the browser is still responsive.
@@ -556,8 +577,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       const db = new IndexedDBStore();
       await db.open('metamask-backup', 1);
       // If the browser force-closes the backup DB (e.g. during shutdown),
-      // proactively suspend writes so we don't start a write we can't finish.
-      db.onForcedClose = () => this.suspendWrites('idb-close');
+      // report it (for baseline telemetry) and proactively suspend writes so we
+      // don't start a write we can't finish.
+      db.onForcedClose = (reason) => {
+        this.#reportBackupDbForcedClose(reason);
+        this.suspendWrites('idb-close');
+      };
       this.#backupDb = db;
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of

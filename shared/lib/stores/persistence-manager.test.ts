@@ -675,6 +675,66 @@ describe('PersistenceManager', () => {
       });
     });
 
+    describe('backup IndexedDB force-close telemetry', () => {
+      // Captures the IndexedDBStore instance created inside #openBackupDatabase
+      // so we can invoke the wired `onForcedClose` handler directly.
+      async function openAndCaptureBackupStore(): Promise<IndexedDBStore> {
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        await manager.open();
+        // `mock.instances[0]` is the `this` of the first `open` call, i.e. the
+        // IndexedDBStore created inside #openBackupDatabase.
+        const backupStore = openSpy.mock.instances[0] as IndexedDBStore;
+        openSpy.mockRestore();
+        if (!backupStore) {
+          throw new Error('backup store was not created');
+        }
+        return backupStore;
+      }
+
+      it('reports a versionchange force-close even while the feature flag is disabled', async () => {
+        const backupStore = await openAndCaptureBackupStore();
+
+        backupStore.onForcedClose?.('versionchange');
+
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - backup IndexedDB force-closed',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'backup-idb-forced-close',
+              'persistence.idbCloseReason': 'versionchange',
+            }),
+          }),
+        );
+        // Telemetry is emitted at the source, so suspension stays flag-gated.
+        expect(manager.writesSuspended).toBe(false);
+      });
+
+      it('reports a close force-close and suspends writes when the feature flag is enabled', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const backupStore = await openAndCaptureBackupStore();
+
+        backupStore.onForcedClose?.('close');
+
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - backup IndexedDB force-closed',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'backup-idb-forced-close',
+              'persistence.idbCloseReason': 'close',
+            }),
+          }),
+        );
+        expect(manager.writesSuspended).toBe(true);
+
+        // Clear the recovery timer scheduled by the idb-close suspension.
+        manager.resumeWrites();
+      });
+    });
+
     describe('recovery for inferred triggers', () => {
       // How often the recovery probe runs; mirrors SHUTDOWN_RECOVERY_RETRY_MS
       // in the implementation.
