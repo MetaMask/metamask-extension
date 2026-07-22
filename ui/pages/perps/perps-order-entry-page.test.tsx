@@ -2323,7 +2323,6 @@ describe('PerpsOrderEntryPage', () => {
     it('shows fallback order failure toast for non-Error throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
-          // eslint-disable-next-line prefer-promise-reject-errors
           return Promise.reject('string error');
         }
         return Promise.resolve({ success: true });
