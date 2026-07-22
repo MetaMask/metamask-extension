@@ -11,6 +11,7 @@ import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -232,6 +233,7 @@ export const CoinOverview = ({
   );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
+  const isEvm = isEvmChainId(chainId);
 
   const period = '1d';
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
@@ -249,6 +251,11 @@ export const CoinOverview = ({
     !showNativeTokenAsMain &&
     hasBalance &&
     aggregateFiatBalanceIsZero;
+  const hasKnownZeroNonEvmBalance =
+    !isEvm &&
+    balance !== null &&
+    balance !== undefined &&
+    isZeroAmount(balance);
 
   const shouldShowBalanceLoadingState = useMemo(
     () =>
@@ -256,6 +263,7 @@ export const CoinOverview = ({
       (Boolean(selectedAccountGroup) &&
         !isTestnet &&
         !balanceIsCached &&
+        !hasKnownZeroNonEvmBalance &&
         !hasBalance &&
         (balanceIsLoading || !balanceIsLoaded)),
     [
@@ -266,6 +274,7 @@ export const CoinOverview = ({
       balanceIsLoading,
       balanceIsLoaded,
       shouldDelayZeroFiatBalance,
+      hasKnownZeroNonEvmBalance,
     ],
   );
 
@@ -274,12 +283,14 @@ export const CoinOverview = ({
       Boolean(selectedAccountGroup) &&
       !isTestnet &&
       !balanceIsCached &&
+      !hasKnownZeroNonEvmBalance &&
       !hasBalance &&
       !shouldShowBalanceLoadingState,
     [
       selectedAccountGroup,
       isTestnet,
       balanceIsCached,
+      hasKnownZeroNonEvmBalance,
       hasBalance,
       shouldShowBalanceLoadingState,
     ],
