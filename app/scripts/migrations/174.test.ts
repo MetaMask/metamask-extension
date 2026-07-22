@@ -451,11 +451,9 @@ describe(`migration #${newVersion}`, () => {
       });
 
       const {
-        // eslint-disable-next-line no-unused-vars
         data: { BridgeStatusController: _, ...otherOldStates },
       } = oldState;
       const {
-        // eslint-disable-next-line no-unused-vars
         data: {
           BridgeStatusController: bridgeStatusControllerState,
           ...otherStates
