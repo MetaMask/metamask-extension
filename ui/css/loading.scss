@@ -38,6 +38,14 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  :root {
+    // Pure black: use #000000 directly since design system tokens are not
+    // available before `[data-theme]` is set on <html> by React. This ensures
+    // the loading screen background matches pure black mode on OLED displays.
+    // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+    background-color: #000000;
+  }
+
   .loading-timeout-message {
     // the design system uses dark grey300 for `--color-text-alternative` in
     // dark mode, but the design system only switches to dark mode once the

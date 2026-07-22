@@ -42,6 +42,11 @@ html[data-theme='dark'] {
   --bar-border-color: var(--color-border-muted);
 }
 
+// TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+html[data-theme='dark'][data-pure-black='true'] {
+  background-color: var(--color-background-default);
+}
+
 #app-content,
 #critical-error-content {
   overflow-x: hidden;
