@@ -69,12 +69,14 @@ type ReviewAndConfirmModalProps = {
 
 type YouSellRowProps = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
+  quotes?: BatchSellQuotesResults['quotes'];
   isExpanded: boolean;
   onToggle: () => void;
 };
 
 const YouSellRow = ({
   sendAssetsConfig,
+  quotes,
   isExpanded,
   onToggle,
 }: YouSellRowProps) => {
@@ -82,13 +84,16 @@ const YouSellRow = ({
 
   const members = useMemo(
     () =>
-      Object.values(sendAssetsConfig)
-        .filter(({ enabled }) => enabled)
-        .map(({ asset }) => ({
+      Object.entries(sendAssetsConfig)
+        .filter(
+          ([assetId, { enabled }]) =>
+            enabled && quotes?.[assetId as CaipAssetType]?.hasQuote,
+        )
+        .map(([, { asset }]) => ({
           avatarValue: asset.iconUrl ?? '',
           symbol: asset.symbol,
         })),
-    [sendAssetsConfig],
+    [sendAssetsConfig, quotes],
   );
 
   const tokenCount = members.length;
@@ -316,6 +321,7 @@ export const ReviewAndConfirmModal = ({
         <ModalBody>
           <YouSellRow
             sendAssetsConfig={sendAssetsConfig}
+            quotes={quotes}
             isExpanded={isYouSellExpanded}
             onToggle={() => setIsYouSellExpanded((prev) => !prev)}
           />
