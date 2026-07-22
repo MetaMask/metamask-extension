@@ -123,7 +123,7 @@ export function BottomNavBar() {
   return (
     <nav
       data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2 z-[100]"
+      className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab
