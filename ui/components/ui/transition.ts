@@ -20,7 +20,7 @@ export const isViewTransitionSupported = (): boolean => {
 type TransitionCallback = () => void | Promise<void>;
 
 const startTransition = (
-  direction: 'forward' | 'back' | 'slide-forward' | 'slide-back',
+  direction: 'forward' | 'back',
   callback: TransitionCallback,
 ) => {
   if (!isViewTransitionSupported()) {
@@ -40,24 +40,4 @@ export const transitionForward = (callback: TransitionCallback) => {
 
 export const transitionBack = (callback: TransitionCallback) => {
   startTransition('back', callback);
-};
-
-/**
- * Slides the incoming page in from the right (and the outgoing page out to the
- * left), mirroring the drawer-style motion of the global menu.
- *
- * @param callback - The navigation (or DOM-updating) work to run inside the transition.
- */
-export const transitionSlideForward = (callback: TransitionCallback) => {
-  startTransition('slide-forward', callback);
-};
-
-/**
- * Reverse of {@link transitionSlideForward}: slides the incoming page in from
- * the left.
- *
- * @param callback - The navigation (or DOM-updating) work to run inside the transition.
- */
-export const transitionSlideBack = (callback: TransitionCallback) => {
-  startTransition('slide-back', callback);
 };
