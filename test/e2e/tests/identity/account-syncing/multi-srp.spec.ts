@@ -120,7 +120,6 @@ describe('Account syncing - Multiple SRPs', function () {
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Add account with custom name to specific SRP
         await accountListPage.addMultichainAccount({

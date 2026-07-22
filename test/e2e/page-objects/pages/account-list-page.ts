@@ -252,7 +252,7 @@ class AccountListPage {
     expectedErrorMessage: string = '',
   ): Promise<void> {
     console.log(`Watch EOA account with address ${address}`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.chooseWalletTypeWatchEthereumAccountButton,
     );
@@ -285,8 +285,7 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.waitUntilSyncingIsCompleted();
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -310,7 +309,7 @@ class AccountListPage {
    */
   async addMultichainWallet(): Promise<void> {
     console.log(`Adding new multichain wallet`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
   }
 
   /**
@@ -334,6 +333,15 @@ class AccountListPage {
       waitAtLeastGuard: largeDelayMs,
     });
     await this.checkAddWalletButtonIsDisplayed();
+  }
+
+  /**
+   * Clicks the "Add wallet" button, first waiting until account syncing is
+   * completed since the button is initially enabled, then disabled, and then enabled again, causig flakiness.
+   */
+  private async clickAddWalletButton(): Promise<void> {
+    await this.waitUntilSyncingIsCompleted();
+    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
@@ -405,8 +413,7 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.waitUntilSyncingIsCompleted();
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -557,7 +564,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -805,7 +812,7 @@ class AccountListPage {
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     if (expectedAvailability) {
       await this.driver.waitForSelector(
         this.chooseWalletTypeWatchEthereumAccountButton,
@@ -938,7 +945,7 @@ class AccountListPage {
   async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importWalletFromMultichainWalletModalButton,
     );

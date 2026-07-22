@@ -116,7 +116,6 @@ describe('Account syncing - Settings Toggle', function () {
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Create third account with sync disabled - this should NOT sync to user storage
         await accountListPage.addMultichainAccount();
