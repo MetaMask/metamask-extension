@@ -265,18 +265,33 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: ADD_WALLET_PAGE_ROUTE,
+    label: 'Add Wallet Page',
+    trackInAnalytics: false,
+  },
+  {
     path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
     label: 'Smart Account Page',
     trackInAnalytics: true,
   },
   {
-    path: `${ASSET_ROUTE}/:asset/:id`,
-    label: 'Asset Page',
-    trackInAnalytics: true,
+    path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+    label: 'Account Address List Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+    label: 'Account Private Key List Page',
+    trackInAnalytics: false,
   },
   {
     path: `${ASSET_ROUTE}/image/:asset/:id`,
     label: 'Nft Image Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+    label: 'Asset Page',
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
@@ -290,6 +305,16 @@ export const ROUTES = [
     path: CURRENCY_ROUTE,
     label: 'Currency Settings Page',
     trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_AND_PASSWORD_ROUTE,
+    label: 'Security And Password Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: AUTO_LOCK_ROUTE,
+    label: 'Auto Lock Settings Page',
+    trackInAnalytics: false,
   },
   {
     path: MANAGE_WALLET_RECOVERY_ROUTE,
@@ -312,6 +337,61 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: PRIVACY_ROUTE,
+    label: 'Privacy Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: THIRD_PARTY_APIS_ROUTE,
+    label: 'Third Party APIs Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTIONS_ROUTE,
+    label: 'Transactions Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_ROUTE,
+    label: 'Transaction Shield Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+    label: 'Transaction Shield Manage Plan Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
+    label: 'Transaction Shield Manage Past Plan Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_CLAIM_ROUTES.BASE,
+    label: 'Transaction Shield Claims Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL,
+    label: 'Transaction Shield New Claim Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL,
+    label: 'Transaction Shield Edit Draft Claim Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL,
+    label: 'Transaction Shield View Pending Claim Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL,
+    label: 'Transaction Shield View History Claim Page',
+    trackInAnalytics: false,
+  },
+  {
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     label: 'Preferences And Display Settings Page',
     trackInAnalytics: true,
@@ -332,6 +412,11 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: DEVELOPER_TOOLS_ROUTE,
+    label: 'Developer Tools Settings Page',
+    trackInAnalytics: false,
+  },
+  {
     path: DEVELOPER_OPTIONS_ROUTE,
     label: 'Developer Options Page',
     // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
@@ -346,6 +431,36 @@ export const ROUTES = [
     path: ABOUT_US_ROUTE,
     label: 'About Us Page',
     trackInAnalytics: true,
+  },
+  {
+    path: SYNC_ACCOUNTS_ROUTE,
+    label: 'Sync Accounts Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: BASIC_FUNCTIONALITY_OFF_ROUTE,
+    label: 'Basic Functionality Off Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: RAMPS_BUILD_QUOTE_ROUTE,
+    label: 'Ramps Build Quote Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: RAMPS_TOKEN_SELECTION_ROUTE,
+    label: 'Ramps Token Selection Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: RAMPS_PAYMENT_METHOD_ROUTE,
+    label: 'Ramps Payment Method Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: RAMPS_PROVIDER_SELECTION_ROUTE,
+    label: 'Ramps Provider Selection Page',
+    trackInAnalytics: false,
   },
   {
     path: NETWORKS_ROUTE,
@@ -462,7 +577,11 @@ export const ROUTES = [
     label: 'Connect Hardware Wallet Page',
     trackInAnalytics: true,
   },
-  { path: SEND_ROUTE, label: 'Send Page', trackInAnalytics: true },
+  {
+    path: `${SEND_ROUTE}/:page?`,
+    label: 'Send Page',
+    trackInAnalytics: true,
+  },
   { path: REMOTE_ROUTE, label: 'Remote Mode Page', trackInAnalytics: true },
   {
     path: REMOTE_ROUTE_SETUP_SWAPS,
@@ -527,6 +646,26 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+    label: 'Notifications Wallet Activity Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+    label: 'Notifications Perps Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+    label: 'Notifications Marketing Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+    label: 'Notifications Agentic CLI Settings Page',
+    trackInAnalytics: false,
+  },
+  {
     path: CONNECTED_ROUTE,
     label: 'Sites Connected To This Account Page',
     trackInAnalytics: true,
@@ -570,6 +709,11 @@ export const ROUTES = [
     path: `${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
     label: 'Encryption Public Key Request Page',
     trackInAnalytics: true,
+  },
+  {
+    path: SWAP_ASSETS_PATH,
+    label: 'Prepare Bridge Assets Page',
+    trackInAnalytics: false,
   },
   {
     path: SWAP_PATH,
@@ -648,6 +792,16 @@ export const ROUTES = [
     label: 'Onboarding Account Not Found',
     trackInAnalytics: false,
   },
+  {
+    path: ONBOARDING_SETUP_PASSKEY_ROUTE,
+    label: 'Onboarding Setup Passkey',
+    trackInAnalytics: false,
+  },
+  {
+    path: ONBOARDING_DOWNLOAD_APP_ROUTE,
+    label: 'Onboarding Download App',
+    trackInAnalytics: false,
+  },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
   {
@@ -686,12 +840,12 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: TOKEN_TRANSFER_ROUTE,
+    path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
     label: 'Gator Permissions Token Transfer',
     trackInAnalytics: false,
   },
   {
-    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
+    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },

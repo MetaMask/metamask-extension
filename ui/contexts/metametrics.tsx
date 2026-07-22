@@ -22,7 +22,7 @@ import { captureException, captureMessage } from '../../shared/lib/sentry';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
-  getPaths,
+  ROUTES,
   DEFAULT_ROUTE,
   type AppRoutes,
 } from '../helpers/constants/routes';
@@ -249,12 +249,13 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    // v6 matchPath doesn't support array of paths, so we loop to find first match
-    const paths = getPaths();
+    // Match against all known app routes (tracked and intentionally untracked).
+    // v6 matchPath doesn't support array of paths, so we loop to find first match.
     let match: ReturnType<typeof matchPath> = null;
-    for (const path of paths) {
+    let matchedRoute: AppRoutes | null = null;
+    for (const route of ROUTES) {
       // Normalize empty string paths to '/' - they're aliases for the Home route
-      const normalizedPath = path === '' ? DEFAULT_ROUTE : path;
+      const normalizedPath = route.path === '' ? DEFAULT_ROUTE : route.path;
       match = matchPath(
         {
           path: normalizedPath,
@@ -264,11 +265,12 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         location.pathname,
       );
       if (match) {
+        matchedRoute = route;
         break;
       }
     }
-    // Start by checking for a missing match route. If this falls through to
-    // the else if, then we know we have a matched route for tracking.
+    // Only report truly unknown paths. Known routes with trackInAnalytics:false
+    // are intentional and must not create Sentry noise.
     if (!match) {
       captureMessage(`Segment page tracking found unmatched route`, {
         extra: {
@@ -277,6 +279,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         },
       });
     } else if (
+      matchedRoute?.trackInAnalytics &&
       previousTrackedPagePath !== match.pattern.path &&
       !(
         environmentType === 'notification' &&
@@ -302,7 +305,12 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         referrer: context.referrer,
       });
     }
-    previousTrackedPagePath = match?.pattern?.path;
+    // Only remember analytics-tracked pages. Untracked matches must leave this
+    // undefined so the notification-window skip for the initial `/` load still works
+    // (module-scoped across popup, notification, and fullscreen providers).
+    previousTrackedPagePath = matchedRoute?.trackInAnalytics
+      ? match?.pattern.path
+      : undefined;
   }, [
     location.pathname,
     location.search,
