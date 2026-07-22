@@ -25,29 +25,30 @@ import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { Tooltip } from 'react-tippy';
 import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarFavicon,
+  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextButton,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
-import {
-  AvatarBase,
-  AvatarBaseSize,
-  AvatarFavicon,
-  AvatarFaviconSize,
-  Button,
-  ButtonLink,
-  ButtonSize,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../components/component-library';
 import {
   Content,
   Footer,
@@ -55,13 +56,7 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import { Tab, Tabs } from '../../../components/ui/tabs';
@@ -560,7 +555,7 @@ export const MultichainAccountsConnectPage = ({
         >
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
-              backgroundColor={BackgroundColor.backgroundMuted}
+              className="bg-muted"
               size={AvatarFaviconSize.Lg}
               src={targetSubjectMetadata.iconUrl}
               name={title}
@@ -568,15 +563,11 @@ export const MultichainAccountsConnectPage = ({
           ) : (
             <AvatarBase
               size={AvatarBaseSize.Lg}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              color={TextColor.textAlternative}
-              style={{ borderWidth: '0px' }}
-              backgroundColor={BackgroundColor.backgroundMuted}
-            >
-              {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
-            </AvatarBase>
+              className="border-0 bg-muted"
+              fallbackText={
+                isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)
+              }
+            />
           )}
         </Box>
         <Box
@@ -587,7 +578,7 @@ export const MultichainAccountsConnectPage = ({
           marginBottom={1}
         >
           <Text
-            variant={TextVariant.headingLg}
+            variant={TextVariant.HeadingLg}
             style={{
               wordBreak: 'break-word',
               whiteSpace: 'normal',
@@ -603,7 +594,7 @@ export const MultichainAccountsConnectPage = ({
             >
               <Icon
                 name={IconName.VerifiedFilled}
-                color={IconColor.successDefault}
+                color={IconColor.SuccessDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
@@ -616,14 +607,14 @@ export const MultichainAccountsConnectPage = ({
             >
               <Icon
                 name={IconName.Danger}
-                color={IconColor.errorDefault}
+                color={IconColor.ErrorDefault}
                 size={IconSize.Sm}
               />
             </Tooltip>
           )}
         </Box>
         <Box className="flex" justifyContent={BoxJustifyContent.Center}>
-          <Text color={TextColor.textAlternative}>
+          <Text color={TextColor.TextAlternative}>
             {t('connectionDescription')}
           </Text>
         </Box>
@@ -653,12 +644,12 @@ export const MultichainAccountsConnectPage = ({
                   justifyContent={BoxJustifyContent.Start}
                   alignItems={BoxAlignItems.Center}
                 >
-                  <ButtonLink
+                  <TextButton
                     onClick={setModeToEditAccounts}
                     data-testid="edit"
                   >
                     {t('selectAccountToConnect')}
-                  </ButtonLink>
+                  </TextButton>
                 </Box>
               )}
               {selectedAccountGroupIds.length > 0 && (
@@ -679,16 +670,16 @@ export const MultichainAccountsConnectPage = ({
                     <Icon
                       name={IconName.Edit}
                       size={IconSize.Md}
-                      color={IconColor.infoDefault}
+                      color={IconColor.InfoDefault}
                     />
                   </Box>
-                  <ButtonLink
-                    color={TextColor.infoDefault}
+                  <TextButton
+                    color={TextColor.InfoDefault}
                     onClick={setModeToEditAccounts}
                     data-testid="edit"
                   >
                     {t('editAccounts')}
-                  </ButtonLink>
+                  </TextButton>
                 </Box>
               )}
             </Box>
@@ -723,7 +714,7 @@ export const MultichainAccountsConnectPage = ({
         >
           <Box gap={4} className="flex w-full">
             <Button
-              block
+              isFullWidth
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
@@ -732,17 +723,19 @@ export const MultichainAccountsConnectPage = ({
               {t('cancel')}
             </Button>
             <Button
-              block
+              isFullWidth
               data-testid="confirm-btn"
               size={ButtonSize.Lg}
               onClick={onConfirm}
-              danger={trustSignalState === TrustSignalDisplayState.Malicious}
+              isDanger={
+                trustSignalState === TrustSignalDisplayState.Malicious
+              }
               startIconName={
                 trustSignalState === TrustSignalDisplayState.Malicious
                   ? IconName.Danger
                   : undefined
               }
-              disabled={
+              isDisabled={
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
