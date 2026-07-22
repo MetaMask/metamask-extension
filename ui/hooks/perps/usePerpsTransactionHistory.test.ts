@@ -74,10 +74,21 @@ jest.mock('./stream/usePerpsLiveFills', () => ({
   }),
 }));
 
+const mockUseWalletPerpsDepositTransactions = jest.fn().mockReturnValue([]);
+
+// Mock useWalletPerpsDepositTransactions — depends on redux state, which
+// these tests don't provide a Provider for. Individual tests can override
+// the return value to exercise the wallet-deposit merge/dedup behavior.
+jest.mock('./useWalletPerpsDepositTransactions', () => ({
+  useWalletPerpsDepositTransactions: () =>
+    mockUseWalletPerpsDepositTransactions(),
+}));
+
 describe('usePerpsTransactionHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     resetCoalesceCacheForTests();
+    mockUseWalletPerpsDepositTransactions.mockReturnValue([]);
     // Default: return appropriate data per method
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsGetOrderFills') {
@@ -289,5 +300,78 @@ describe('usePerpsTransactionHistory', () => {
     const ids = result.current.transactions.map((tx) => tx.id);
     const uniqueIds = [...new Set(ids)];
     expect(ids.length).toBe(uniqueIds.length);
+  });
+
+  describe('wallet-sourced deposits', () => {
+    it('includes a wallet deposit not yet reflected in user history', async () => {
+      mockUseWalletPerpsDepositTransactions.mockReturnValue([
+        {
+          id: 'wallet-deposit-tx-1',
+          type: 'deposit',
+          category: 'deposit',
+          title: 'Deposited 100.00 USDC',
+          subtitle: 'Completed',
+          timestamp: Date.now(),
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '+$100.00',
+            amountNumber: 100,
+            isPositive: true,
+            asset: 'USDC',
+            txHash: '0xabc',
+            status: 'completed',
+            type: 'deposit',
+          },
+        },
+      ]);
+
+      const { result } = renderHook(() =>
+        usePerpsTransactionHistory({ skipInitialFetch: true }),
+      );
+
+      await act(async () => {
+        await result.current.refetch();
+      });
+
+      expect(
+        result.current.transactions.some(
+          (tx) => tx.id === 'wallet-deposit-tx-1',
+        ),
+      ).toBe(true);
+    });
+
+    it('sorts a wallet deposit into the merged, timestamp-descending list', async () => {
+      const newestTimestamp = Date.now() + 10_000;
+      mockUseWalletPerpsDepositTransactions.mockReturnValue([
+        {
+          id: 'wallet-deposit-tx-1',
+          type: 'deposit',
+          category: 'deposit',
+          title: 'Deposited 100.00 USDC',
+          subtitle: 'Completed',
+          timestamp: newestTimestamp,
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '+$100.00',
+            amountNumber: 100,
+            isPositive: true,
+            asset: 'USDC',
+            txHash: '0xabc',
+            status: 'completed',
+            type: 'deposit',
+          },
+        },
+      ]);
+
+      const { result } = renderHook(() =>
+        usePerpsTransactionHistory({ skipInitialFetch: true }),
+      );
+
+      await act(async () => {
+        await result.current.refetch();
+      });
+
+      expect(result.current.transactions[0].id).toBe('wallet-deposit-tx-1');
+    });
   });
 });

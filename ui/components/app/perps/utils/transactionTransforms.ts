@@ -15,12 +15,20 @@ import type {
   UserHistoryItem,
 } from '@metamask/perps-controller';
 import {
+  TransactionStatus as WalletTransactionStatus,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
   FillType,
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
   type PerpsTransaction,
 } from '../types/transactionHistory';
 import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
+import { parseStandardTokenTransactionData } from '../../../../../shared/lib/transaction.utils';
+import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
+import { ARBITRUM_USDC } from '../../../../pages/confirmations/constants/perps';
+import { getTokenTransferData } from '../../../../pages/confirmations/utils/transaction-pay';
 import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from './orderUtils';
 
@@ -545,6 +553,115 @@ export function transformUserHistoryToTransactions(
         },
       };
     });
+}
+
+/**
+ * Maps a wallet TransactionController status to the subset of Perps
+ * deposit statuses this transform surfaces. Only `confirmed` resolves to a
+ * status, since the Activity page's deposit/withdrawal row always renders
+ * a "Completed" subtitle regardless of `depositWithdrawal.status` — showing
+ * a pending or failed wallet transaction here would render a misleading
+ * "Completed" label.
+ */
+const WALLET_STATUS_TO_DEPOSIT_STATUS: Partial<
+  Record<WalletTransactionStatus, 'completed'>
+> = {
+  [WalletTransactionStatus.confirmed]: 'completed',
+};
+
+/**
+ * Transform wallet-tracked Perps deposit transactions (`perpsDeposit` /
+ * `perpsDepositAndOrder`) into `PerpsTransaction` rows.
+ *
+ * HyperLiquid's user-history ledger (the primary source `transformUserHistoryToTransactions`
+ * draws from) only reflects a deposit once the bridged funds have actually
+ * landed on HyperLiquid, which can lag behind the wallet's own on-chain
+ * deposit transaction confirming. Without this fallback, a just-completed
+ * deposit can be invisible under the Activity page's Deposits filter for a
+ * while even though the user's Perps balance already reflects it.
+ * `usePerpsTransactionHistory` merges this list with the user-history
+ * deposits and de-duplicates by `txHash`, so once the ledger catches up the
+ * two representations of the same deposit collapse into one.
+ *
+ * @param transactions - Array of TransactionMeta with type `perpsDeposit` or
+ * `perpsDepositAndOrder`, already scoped to the active account.
+ * @returns Array of PerpsTransaction objects with type 'deposit'.
+ */
+export function transformWalletPerpsDepositsToTransactions(
+  transactions: TransactionMeta[],
+): PerpsTransaction[] {
+  return transactions
+    .filter(
+      (tx) => WALLET_STATUS_TO_DEPOSIT_STATUS[tx.status] === 'completed',
+    )
+    .map((tx) => {
+      const tokenTransfer = getTokenTransferData(tx);
+      const decoded = tokenTransfer
+        ? parseStandardTokenTransactionData(tokenTransfer.data)
+        : undefined;
+      const rawAmount = decoded?.args?._value?.toString?.();
+      const amountBN =
+        rawAmount === undefined
+          ? new BigNumber(0)
+          : calcTokenAmount(rawAmount, ARBITRUM_USDC.decimals);
+
+      const displayAmount = `+$${amountBN.toFixed(2)}`;
+      const title = amountBN.isZero()
+        ? 'Deposit'
+        : `Deposited ${amountBN.toFixed(2)} ${ARBITRUM_USDC.symbol}`;
+
+      return {
+        id: `wallet-deposit-${tx.id}`,
+        type: 'deposit' as const,
+        category: 'deposit' as const,
+        title,
+        subtitle: 'Completed',
+        timestamp: tx.time ?? 0,
+        symbol: ARBITRUM_USDC.symbol,
+        depositWithdrawal: {
+          amount: displayAmount,
+          amountNumber: amountBN.toNumber(),
+          isPositive: true,
+          asset: ARBITRUM_USDC.symbol,
+          txHash: tx.hash ?? '',
+          status: 'completed' as const,
+          type: 'deposit' as const,
+        },
+      };
+    });
+}
+
+/**
+ * Filters out wallet-sourced deposit transactions whose `txHash` already
+ * appears among `existingDeposits` (typically the user-history deposits
+ * already present in the merged transaction list).
+ *
+ * Used by `usePerpsTransactionHistory` to avoid showing the same deposit
+ * twice once HyperLiquid's user-history ledger catches up with a deposit
+ * that was initially only visible via the wallet's own transaction record.
+ *
+ * @param walletDeposits - Deposit transactions sourced from the wallet's
+ * TransactionController (see `transformWalletPerpsDepositsToTransactions`).
+ * @param existingDeposits - Deposit transactions already present in the
+ * merged list (e.g. from user history) to de-duplicate against.
+ * @returns The subset of `walletDeposits` not already represented.
+ */
+export function dedupeWalletDepositsByTxHash(
+  walletDeposits: PerpsTransaction[],
+  existingDeposits: PerpsTransaction[],
+): PerpsTransaction[] {
+  const existingTxHashes = new Set<string>();
+  for (const tx of existingDeposits) {
+    const txHash = tx.depositWithdrawal?.txHash?.toLowerCase();
+    if (tx.type === 'deposit' && txHash) {
+      existingTxHashes.add(txHash);
+    }
+  }
+
+  return walletDeposits.filter((tx) => {
+    const txHash = tx.depositWithdrawal?.txHash?.toLowerCase();
+    return !txHash || !existingTxHashes.has(txHash);
+  });
 }
 
 /**
