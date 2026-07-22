@@ -454,18 +454,30 @@ class TokensTab extends HomePage {
     await this.returnFromTokenManagementToHome();
   }
 
-  async openNetworksFilter(): Promise<void> {
-    console.log(`Opening the network filter`);
-    await this.driver.clickElement(this.networksToggle);
+  /**
+   * Waits until the network filter toggle is present, visible, and no longer
+   * remounting/moving before interaction. Guards against post-network-switch
+   * homepage re-renders that can swallow a click.
+   */
+  async waitForNetworksToggleStable(): Promise<void> {
+    console.log('Waiting for network filter toggle to be stable');
     await this.driver.waitUntil(
       async () => {
-        return Boolean(await this.driver.findElement(this.modalCloseButton));
+        return await this.driver.isElementPresentAndVisible(
+          this.networksToggle,
+          1000,
+        );
       },
-      {
-        timeout: 5000,
-        interval: 100,
-      },
+      { timeout: 15000, interval: 200, stableFor: 1000 },
     );
+    await this.driver.waitForElementToStopMoving(this.networksToggle);
+  }
+
+  async openNetworksFilter(): Promise<void> {
+    console.log(`Opening the network filter`);
+    await this.waitForNetworksToggleStable();
+    await this.driver.clickElement(this.networksToggle);
+    await this.driver.waitForSelector(this.modalCloseButton);
   }
 
   /**
