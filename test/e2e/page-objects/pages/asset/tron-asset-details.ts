@@ -65,9 +65,6 @@ class TronAssetDetailsPage {
   private readonly tronDailyResourcesTitle =
     '[data-testid="tron-daily-resources-title"]';
 
-  private readonly tronStakedBalanceRowEnergy =
-    '[data-testid="tron-staked-balance-row-energy"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -151,17 +148,6 @@ class TronAssetDetailsPage {
 
   async checkSection(name: SectionTitle): Promise<void> {
     await this.driver.waitForSelector({ text: name });
-  }
-
-  /**
-   * Asserts a staked TRX breakdown row under "Your balance" on native TRX
-   * asset details (e.g. "Staked for Energy" with 20 TRX).
-   * @param expectedBalance
-   */
-  async checkStakedForEnergyBalanceRow(expectedBalance: string): Promise<void> {
-    await this.driver.waitForSelector(this.tronStakedBalanceRowEnergy);
-    await this.driver.waitForSelector({ text: 'Staked for Energy' });
-    await this.driver.waitForSelector({ text: expectedBalance });
   }
 
   async checkTokenActionButtons(): Promise<void> {

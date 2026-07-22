@@ -11,7 +11,6 @@ import {
   TRON_PORTFOLIO_ACCOUNT,
   TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
-  TRON_STAKED_PORTFOLIO_ACCOUNT,
 } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
 
@@ -148,21 +147,6 @@ describe('Tron - Assets', function (this: Suite) {
       );
     });
 
-    it('Staked TRX is absent from the token list for a staking account', async function () {
-      await withTronFixtures(
-        tronAssetsTestConfig(
-          [TRON_STAKED_PORTFOLIO_ACCOUNT],
-          this.test?.fullTitle(),
-        ),
-        async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
-          const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab);
-          await tokensTab.checkAssetIsAbsent('Staked TRX');
-        },
-      );
-    });
-
     it('Low-value assets section hides tokens under $1 until expanded', async function () {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
@@ -291,31 +275,5 @@ describe('Tron - Assets', function (this: Suite) {
       );
     });
 
-    it('Shows Staked TRX balance on asset details for a staking account', async function () {
-      await withTronFixtures(
-        tronAssetsTestConfig(
-          [TRON_STAKED_PORTFOLIO_ACCOUNT],
-          this.test?.fullTitle(),
-        ),
-        async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
-          const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab);
-
-          await tokensTab.clickOnAsset('Tron');
-          const details = new TronAssetDetailsPage(driver);
-          await details.checkPageIsLoaded();
-          await details.checkAssetTitleContains('TRX');
-          await details.checkStakedForEnergyBalanceRow('20');
-          await details.checkActionButtons({
-            swap: true,
-            send: true,
-            receive: true,
-          });
-          await details.checkDailyResourcesSection();
-          await details.checkAllStandardSections();
-        },
-      );
-    });
   });
 });

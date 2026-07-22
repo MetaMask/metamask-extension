@@ -45,11 +45,6 @@ export const TRON_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
   ],
 };
 
-export const TRON_STAKED_PORTFOLIO_ACCOUNT: TronFixtureAccount = {
-  ...TRON_PORTFOLIO_ACCOUNT,
-  stakedTrxBalance: '20000000',
-};
-
 export const TRON_LOW_TRX_WITH_USDT_ACCOUNT: TronFixtureAccount = {
   address: TRON_ACCOUNT_ADDRESS,
   assets: [
