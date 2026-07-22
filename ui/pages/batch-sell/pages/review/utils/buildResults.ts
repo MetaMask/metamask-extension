@@ -14,7 +14,7 @@ export const buildResults = ({
   validationErrorsByIndex,
   isLoading,
 }: {
-  controllerResult: ReturnType<typeof getBatchSellQuotes>;
+  controllerResult: Partial<ReturnType<typeof getBatchSellQuotes>>;
   entries: SendAssetEntry[];
   receivedAsset: BatchSellQuotesConfig['receivedAsset'];
   validationErrorsByIndex: QuoteValidationErrors[];
@@ -44,7 +44,7 @@ export const buildResults = ({
 
       const slotIndex = enabledSlotIndex;
       enabledSlotIndex += 1;
-      const recommendedQuote = recommendedQuotes[slotIndex];
+      const recommendedQuote = recommendedQuotes?.[slotIndex];
       if (!recommendedQuote) {
         return [
           entry.assetId,
@@ -89,7 +89,7 @@ export const buildResults = ({
   // disabled slots, so the UI does not re-sum anything itself. They stay
   // `undefined` until the first quote lands so consumers can render a skeleton
   // instead of a deceptive "0".
-  const hasAnyQuote = recommendedQuotes.some((quote) => Boolean(quote));
+  const hasAnyQuote = recommendedQuotes?.some((quote) => Boolean(quote));
   const totalReceivedAmount = hasAnyQuote
     ? toFinite(totalReceived?.normalizedAmount)
     : undefined;

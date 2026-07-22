@@ -24,7 +24,7 @@ export function buildBatchSellAsset(
     balance: '100',
     iconUrl: 'https://example.com/usdc.png',
     ...overrides,
-    symbol: overrides.symbol ?? ('USDC' as const),
+    symbol: overrides.symbol ?? 'USDC',
   };
 }
 
@@ -38,7 +38,7 @@ export function buildSendAssetEntry(
     slippagePercent: 0.5,
     enabled: true,
     ...overrides,
-  };
+  } as never;
 }
 
 /**
@@ -74,7 +74,7 @@ export function buildRecommendedQuote(
         amount: overrides.dest?.amount,
       },
     },
-  };
+  } as QuoteResponse;
 }
 
 /**
