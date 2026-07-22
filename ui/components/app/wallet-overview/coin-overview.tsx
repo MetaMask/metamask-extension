@@ -251,46 +251,41 @@ export const CoinOverview = ({
     !showNativeTokenAsMain &&
     hasBalance &&
     aggregateFiatBalanceIsZero;
-  const hasKnownZeroNonEvmBalance =
-    !isEvm &&
-    balance !== null &&
-    balance !== undefined &&
-    isZeroAmount(balance);
 
   const shouldShowBalanceLoadingState = useMemo(
     () =>
-      shouldDelayZeroFiatBalance ||
-      (Boolean(selectedAccountGroup) &&
-        !isTestnet &&
-        !balanceIsCached &&
-        !hasKnownZeroNonEvmBalance &&
-        !hasBalance &&
-        (balanceIsLoading || !balanceIsLoaded)),
+      isEvm &&
+      (shouldDelayZeroFiatBalance ||
+        (Boolean(selectedAccountGroup) &&
+          !isTestnet &&
+          !balanceIsCached &&
+          !hasBalance &&
+          (balanceIsLoading || !balanceIsLoaded))),
     [
+      isEvm,
+      shouldDelayZeroFiatBalance,
       selectedAccountGroup,
       isTestnet,
       balanceIsCached,
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
-      shouldDelayZeroFiatBalance,
-      hasKnownZeroNonEvmBalance,
     ],
   );
 
   const shouldShowBalanceEmptyState = useMemo(
     () =>
+      isEvm &&
       Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
-      !hasKnownZeroNonEvmBalance &&
-      !hasBalance &&
+        !isTestnet &&
+        !balanceIsCached &&
+        !hasBalance &&
       !shouldShowBalanceLoadingState,
     [
+      isEvm,
       selectedAccountGroup,
       isTestnet,
       balanceIsCached,
-      hasKnownZeroNonEvmBalance,
       hasBalance,
       shouldShowBalanceLoadingState,
     ],
