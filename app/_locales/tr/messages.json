@@ -206,7 +206,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_pending_title": {
-    "message": "Trustline aktivasyonu yapıldı $1",
+    "message": "Trustline aktivasyonu yapılıyor $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_success_description": {
