@@ -42,7 +42,6 @@ export type BridgeFeeRowProps = {
   tooltipDescription?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
   tooltipDescription,

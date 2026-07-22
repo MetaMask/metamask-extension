@@ -1,5 +1,4 @@
 import {
-  type QuoteResponseV1,
   RequestStatus,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';

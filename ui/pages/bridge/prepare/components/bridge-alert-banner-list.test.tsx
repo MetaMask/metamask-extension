@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {

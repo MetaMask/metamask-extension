@@ -237,7 +237,7 @@ export const BridgeQuotesModal = ({
                     >
                       {formatTokenAmount(
                         locale,
-                        dest.normalizedAmount,
+                        dest.normalizedAmount ?? '0',
                         dest.asset.symbol,
                       )}
                     </Text>
@@ -324,7 +324,8 @@ export const BridgeQuotesModal = ({
                                 nativeCurrency,
                               )
                             : formatCurrencyAmount(
-                                quote.quote.priceData?.cost?.valueInCurrency,
+                                quote.quote.priceData?.cost?.valueInCurrency ??
+                                  '0',
                                 currency,
                                 2,
                               ),

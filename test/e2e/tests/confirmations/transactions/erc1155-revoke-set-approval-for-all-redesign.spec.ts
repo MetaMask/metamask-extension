@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from '../../../mock-e2e';
 import { setTokenPermissions } from '../../../page-objects/flows/token-dapp-transactions.flow';

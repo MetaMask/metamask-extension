@@ -981,20 +981,21 @@ export const isNativeBalanceInsufficientForQuote = (
   fromAssetId: CaipAssetType,
   minimumBalanceToKeep: string,
 ): boolean => {
+  const totalNetworkFee = sumAmounts(
+    quote?.quote?.feeData?.network,
+    quote?.quote?.feeData?.relayer,
+  )?.normalizedAmount;
+  const sentAmount = quote.quote?.src?.normalizedAmount;
+  if (!sentAmount || !totalNetworkFee) {
+    return false;
+  }
   return isNativeAddress(fromAssetId)
     ? new BigNumber(nativeBalance)
-        .sub(
-          sumAmounts(
-            quote?.quote?.feeData?.network,
-            quote?.quote?.feeData?.relayer,
-          )?.normalizedAmount ?? '0',
-        )
-        .sub(quote.quote?.src?.normalizedAmount ?? '0')
+        .sub(totalNetworkFee)
+        .sub(sentAmount)
         .sub(minimumBalanceToKeep)
         .lte(0)
-    : new BigNumber(nativeBalance).lte(
-        quote?.quote?.feeData?.network?.[0].normalizedAmount ?? '0',
-      );
+    : new BigNumber(nativeBalance).lte(totalNetworkFee);
 };
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
