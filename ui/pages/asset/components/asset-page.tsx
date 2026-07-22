@@ -35,10 +35,8 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import {
   isEvmChainId,
-  isTronStakedAsset,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -74,7 +72,6 @@ import {
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
-  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
 import {
@@ -110,19 +107,6 @@ import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
 
-const getTronStakedBalanceRowTestId = (assetId: CaipAssetType): string => {
-  const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
-  const caipType = `${assetNamespace}:${assetReference}`;
-
-  switch (caipType) {
-    case TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY:
-      return 'tron-staked-balance-row-energy';
-    case TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_BANDWIDTH:
-      return 'tron-staked-balance-row-bandwidth';
-    default:
-      return 'tron-staked-balance-row';
-  }
-};
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -140,9 +124,6 @@ const AssetPage = ({
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
-  const accountGroupAssetsWithTronSpecial = useSelector(
-    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
-  );
   const caipChainId = isCaipChainId(asset.chainId)
     ? asset.chainId
     : formatChainIdToCaip(asset.chainId);
@@ -309,19 +290,6 @@ const AssetPage = ({
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
   const showTronResources = isTron && type === AssetType.native;
 
-  const tronStakedBalanceAssets = useMemo(() => {
-    if (!showTronResources) {
-      return [];
-    }
-
-    return (accountGroupAssetsWithTronSpecial[chainId] ?? []).filter(
-      (groupAsset) =>
-        isTronStakedAsset(groupAsset.assetId) &&
-        groupAsset.balance !== '0' &&
-        groupAsset.balance !== undefined,
-    );
-  }, [showTronResources, accountGroupAssetsWithTronSpecial, chainId]);
-
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
   const isMusdAssetPage =
@@ -479,39 +447,7 @@ const AssetPage = ({
                 musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
               />
             )}
-            {tronStakedBalanceAssets.map((stakedAsset) => {
-              const stakedBalance = stakedAsset.balance ?? '0';
-              const stakedFiatAmount = stakedAsset.fiat?.balance ?? 0;
 
-              return (
-                <Box
-                  key={stakedAsset.assetId}
-                  data-testid={getTronStakedBalanceRowTestId(
-                    stakedAsset.assetId as CaipAssetType,
-                  )}
-                >
-                  <TokenCell
-                    token={{
-                      address: stakedAsset.assetId as Hex,
-                      chainId,
-                      symbol: stakedAsset.symbol,
-                      image: stakedAsset.image,
-                      title: stakedAsset.name ?? stakedAsset.symbol,
-                      tokenFiatAmount: showFiat ? stakedFiatAmount : null,
-                      string: stakedBalance ? stakedBalance.toString() : '',
-                      decimals: stakedAsset.decimals,
-                      aggregators: [],
-                      isNative: false,
-                      balance: stakedBalance,
-                      secondary: stakedBalance ? Number(stakedBalance) : 0,
-                      accountType: stakedAsset.accountType,
-                      assetId: stakedAsset.assetId,
-                    }}
-                    safeChains={safeChains}
-                  />
-                </Box>
-              );
-            })}
           </>
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}

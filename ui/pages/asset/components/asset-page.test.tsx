@@ -1,12 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import {
-  EthAccountType,
-  EthScope,
-  TrxAccountType,
-} from '@metamask/keyring-api';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -16,8 +12,6 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
@@ -25,12 +19,7 @@ import {
   mockMultichainNetworkState,
 } from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import {
-  getAssetsBySelectedAccountGroup,
-  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
-} from '../../../selectors/assets';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { getMultichainIsTron } from '../../../selectors/multichain';
+import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
@@ -68,15 +57,6 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
-
-jest.mock(
-  '@metamask/client-utils',
-  () => ({
-    mapKeyringTransaction: jest.fn(),
-    mapLocalTransaction: jest.fn(),
-  }),
-  { virtual: true },
-);
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({
@@ -208,25 +188,6 @@ function mockGetDefaultAssetsBySelectedAccountGroup() {
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
   getAssetsBySelectedAccountGroup: jest.fn(),
-  getAssetsBySelectedAccountGroupWithTronSpecialAssets: jest.fn(),
-}));
-
-jest.mock('../../../selectors/multichain-accounts/account-tree', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../selectors/multichain-accounts/account-tree')
-  >('../../../selectors/multichain-accounts/account-tree');
-
-  return {
-    ...actual,
-    getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(
-      actual.getInternalAccountBySelectedAccountGroupAndCaip,
-    ),
-  };
-});
-
-jest.mock('../../../selectors/multichain', () => ({
-  ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainIsTron: jest.fn(),
 }));
 
 describe('AssetPage', () => {
@@ -394,18 +355,6 @@ describe('AssetPage', () => {
     (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
       mockGetDefaultAssetsBySelectedAccountGroup(),
     );
-    (
-      getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
-    ).mockReturnValue({});
-    (
-      getInternalAccountBySelectedAccountGroupAndCaip as unknown as jest.Mock
-    ).mockImplementation(
-      jest.requireActual<
-        typeof import('../../../selectors/multichain-accounts/account-tree')
-      >('../../../selectors/multichain-accounts/account-tree')
-        .getInternalAccountBySelectedAccountGroupAndCaip,
-    );
-    (getMultichainIsTron as jest.Mock).mockReturnValue(false);
 
     // Mock implementation for useMultiPolling
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
@@ -642,111 +591,6 @@ describe('AssetPage', () => {
       '/0x1',
     );
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
-  });
-
-  describe('Tron staked balance rows', () => {
-    const tronNative = {
-      ...native,
-      chainId: MultichainNetworks.TRON,
-      symbol: 'TRX',
-    } as never;
-
-    const tronStakedAssets = [
-      {
-        assetId: `${MultichainNetworks.TRON}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY}`,
-        balance: '10',
-        fiat: { balance: 1 },
-        symbol: 'TRX',
-        name: 'Staked for energy',
-        image: '',
-        decimals: 6,
-      },
-      {
-        assetId: `${MultichainNetworks.TRON}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_BANDWIDTH}`,
-        balance: '20',
-        fiat: { balance: 2 },
-        symbol: 'TRX',
-        name: 'Staked for bandwidth',
-        image: '',
-        decimals: 6,
-      },
-    ];
-
-    const tronAccount = {
-      id: 'tron-account',
-      address: 'TTestAddress123',
-      type: TrxAccountType.Eoa,
-      scopes: [MultichainNetworks.TRON],
-      metadata: {
-        name: 'Tron Account',
-        keyring: { type: 'HD Key Tree' },
-      },
-      methods: [],
-    } as never;
-
-    it('does not render staked balances for a non-TRX asset page', () => {
-      (
-        getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
-      ).mockReturnValue({
-        [MultichainNetworks.TRON]: tronStakedAssets,
-      });
-
-      renderWithProvider(
-        <AssetPage asset={native} optionsButton={null} />,
-        store,
-      );
-
-      expect(screen.queryByTestId('tron-staked-balance-row')).toBeNull();
-    });
-
-    it('renders energy and bandwidth staked balances on the TRX asset page', () => {
-      (getMultichainIsTron as jest.Mock).mockReturnValue(true);
-      (
-        getInternalAccountBySelectedAccountGroupAndCaip as unknown as jest.Mock
-      ).mockReturnValue(tronAccount);
-      (
-        getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
-      ).mockReturnValue({
-        [MultichainNetworks.TRON]: tronStakedAssets,
-      });
-
-      renderWithProvider(
-        <AssetPage asset={tronNative} optionsButton={null} />,
-        store,
-      );
-
-      expect(
-        screen.getByTestId('tron-staked-balance-row-energy'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('tron-staked-balance-row-bandwidth'),
-      ).toBeInTheDocument();
-    });
-
-    it('does not render staked balances with a zero balance', () => {
-      (getMultichainIsTron as jest.Mock).mockReturnValue(true);
-      (
-        getInternalAccountBySelectedAccountGroupAndCaip as unknown as jest.Mock
-      ).mockReturnValue(tronAccount);
-      (
-        getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
-      ).mockReturnValue({
-        [MultichainNetworks.TRON]: tronStakedAssets.map((asset) => ({
-          ...asset,
-          balance: '0',
-        })),
-      });
-
-      renderWithProvider(
-        <AssetPage asset={tronNative} optionsButton={null} />,
-        store,
-      );
-
-      expect(screen.queryByTestId('tron-staked-balance-row-energy')).toBeNull();
-      expect(
-        screen.queryByTestId('tron-staked-balance-row-bandwidth'),
-      ).toBeNull();
-    });
   });
 
   it('should render an ERC20 asset without prices', async () => {
