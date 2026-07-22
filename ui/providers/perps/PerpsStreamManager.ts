@@ -83,6 +83,18 @@ const OPTIMISTIC_OVERRIDE_TTL_MS = 30000;
 // Prevents immediate overwrite from stale WebSocket data
 const WEBSOCKET_BLOCK_MS = 3000;
 
+// Maximum age of a controller-persisted user-data snapshot (positions/orders/
+// account) that we trust for the cold-mount "skip loading skeleton"
+// optimization. The controller only refreshes `cachedUserDataByProvider` via
+// REST preload while its WebSocket is disconnected (see
+// `#performUserDataPreload`), so this snapshot can go stale for long periods
+// if the WebSocket reports "connected" without ever delivering a live
+// correction (e.g. a position closed on another device while this session's
+// stream stalled silently). Beyond this age we treat the snapshot as absent
+// so the channel falls through to its normal REST-fallback + WebSocket
+// reconciliation path instead of rendering a phantom position indefinitely.
+const MAX_USER_DATA_CACHE_AGE_MS = 5 * 60 * 1000;
+
 class PerpsStreamManager {
   // Data channels
   positions: PerpsDataChannel<Position[]>;
@@ -715,6 +727,15 @@ class PerpsStreamManager {
    * initialised for, so an account switch while the popup is closed does
    * not paint the old account's data under the new account's identity.
    *
+   * They are also skipped when `snapshot.timestamp` is older than
+   * `MAX_USER_DATA_CACHE_AGE_MS`: the controller only refreshes this cache
+   * via REST while its WebSocket is disconnected, so a long-stale snapshot
+   * (e.g. a position closed elsewhere while this session's stream stalled
+   * without reporting disconnected) would otherwise render a phantom
+   * position/order indefinitely, since seeding the channel here also
+   * suppresses the WS-grace REST fallback below. Skipping falls through to
+   * that normal REST-fallback + WebSocket reconciliation path instead.
+   *
    * Empty arrays intentionally no-op: pushing an empty array would flip
    * `hasCachedData()` to true (since the pushed reference differs from
    * `initialValue`) and suppress the WS-grace REST fallback in each
@@ -726,6 +747,7 @@ class PerpsStreamManager {
    * @param snapshot.orders - Cached orders for `snapshot.address`.
    * @param snapshot.account - Cached `AccountState` for `snapshot.address`.
    * @param snapshot.address - Address that owns the user-scoped entries. User channels are skipped unless this matches the currently selected address. Pass `null` to hydrate nothing user-scoped.
+   * @param snapshot.timestamp - When the user-scoped entries were last refreshed by the controller. User channels are skipped when this is older than `MAX_USER_DATA_CACHE_AGE_MS`. Omit only for legacy/test snapshots — real controller entries always carry a timestamp.
    * @param selectedAddress - Address the caller considers active; must equal `snapshot.address` for user channels to hydrate.
    */
   hydrateFromControllerCache(
@@ -735,6 +757,7 @@ class PerpsStreamManager {
       orders?: Order[] | null;
       account?: AccountState | null;
       address?: string | null;
+      timestamp?: number | null;
     },
     selectedAddress?: string | null,
   ): void {
@@ -747,6 +770,13 @@ class PerpsStreamManager {
       !selectedAddress ||
       !snapshotAddress ||
       snapshotAddress.toLowerCase() !== selectedAddress.toLowerCase()
+    ) {
+      return;
+    }
+
+    if (
+      typeof snapshot.timestamp === 'number' &&
+      Date.now() - snapshot.timestamp > MAX_USER_DATA_CACHE_AGE_MS
     ) {
       return;
     }

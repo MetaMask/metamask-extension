@@ -1438,5 +1438,72 @@ describe('PerpsStreamManager', () => {
       expect(manager.markets.hasCachedData()).toBe(true);
       expect(manager.positions.hasCachedData()).toBe(false);
     });
+
+    // Regression test for #44616: a phantom position (closed on another
+    // device/session) kept rendering forever because a long-stale
+    // `cachedUserDataByProvider` snapshot was hydrated unconditionally on
+    // every popup mount, which also suppressed the WS-grace REST fallback
+    // that would otherwise have corrected it.
+    it('refuses to hydrate user-scoped channels when the snapshot is older than the max cache age', () => {
+      const now = Date.now();
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        {
+          positions,
+          orders: [{ orderId: '1' } as never],
+          account: { totalBalance: '100' } as never,
+          address: ADDR,
+          timestamp: now - 5 * 60 * 1000 - 1,
+        },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+      expect(manager.orders.hasCachedData()).toBe(false);
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('hydrates user-scoped channels when the snapshot is within the max cache age', () => {
+      const now = Date.now();
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        {
+          positions,
+          address: ADDR,
+          timestamp: now - 5 * 60 * 1000 + 1,
+        },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+      expect(manager.positions.getCachedData()).toEqual(positions);
+    });
+
+    it('hydrates user-scoped channels when no timestamp is provided (legacy snapshot)', () => {
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache({ positions, address: ADDR }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+    });
+
+    it('still hydrates markets when the user-scoped snapshot is stale', () => {
+      const markets = [{ symbol: 'BTC' } as never];
+
+      manager.hydrateFromControllerCache(
+        {
+          markets,
+          positions: [makePosition('BTC')],
+          address: ADDR,
+          timestamp: Date.now() - 24 * 60 * 60 * 1000,
+        },
+        ADDR,
+      );
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
   });
 });
