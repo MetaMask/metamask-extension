@@ -66,7 +66,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
-      'MetaMetricsController:trackEvent',
       'MetaMetricsController:createEventFragment',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',

@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Options du compte"
   },
-  "accountPermissionToast": {
-    "message": "Les autorisations accordées au compte ont été mises à jour"
-  },
   "accountSelectionRequired": {
     "message": "Vous devez sélectionner un compte !"
   },
@@ -2014,10 +2011,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
-  "bridgeDetailsTitle": {
-    "message": "Détails concernant la passerelle",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2019,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Sélectionnez le montant"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Consulter sur $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Cette transaction se déroule sur deux réseaux. Un lien indique la source, l’autre indique la destination une fois la transaction confirmée."
@@ -2313,42 +2303,11 @@
   "bridgeSendLoading": {
     "message": "Envoi depuis la chaîne source"
   },
-  "bridgeStatusComplete": {
-    "message": "Effectuée",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Échec",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "En cours de traitement",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 reçu sur $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Réception de $1 sur $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "A échangé $1 contre $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Échange de $1 contre $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspect"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Jeton suspect"
-  },
-  "bridgeTo": {
-    "message": "Établir une passerelle vers"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "Le $1 est un jeton malveillant."
@@ -2364,56 +2323,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Aucun jeton correspondant à vos critères de recherche : $1"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transaction $1 sur 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Passerelle établie"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Établissement d’une passerelle"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Contactez"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Assistance MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Cela fait-il plus de 3 heures ?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Statut"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Échangé"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Échanger"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Horodatage"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "Le $1 à $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 sur",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Total des frais de transaction"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Vous avez reçu"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Vous avez envoyé"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Utiliser le montant maximum autorisé"
@@ -2431,12 +2340,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Solde minimum de réserve en $1 requis",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Passerelle établie"
-  },
-  "bridgedToChain": {
-    "message": "Passerelle établie vers $1"
   },
   "bridging": {
     "message": "Établissement d’une passerelle"
@@ -3204,9 +3107,6 @@
   "decimal": {
     "message": "Nombre de décimales du jeton"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
-  },
   "decrypt": {
     "message": "Décrypter"
   },
@@ -3463,10 +3363,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Adresse de réception"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID Tx de destination",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Détails"
@@ -5503,10 +5399,6 @@
     "message": "Détails du bonus pouvant être réclamé",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Convertir des $1 en mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Détails du bonus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5889,14 +5781,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Détection automatique des NFT activée"
   },
-  "nftBought": {
-    "message": "A acheté $1"
-  },
   "nftEmptyDescription": {
     "message": "Le monde des NFT s’offre à vous. Commencez votre collection dès aujourd’hui."
-  },
-  "nftMinted": {
-    "message": "A minté $1"
   },
   "nftOptions": {
     "message": "Options NFT"
@@ -7075,9 +6961,6 @@
   "perpsDateYesterday": {
     "message": "Hier"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Contrats à terme perpétuels financés"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Échec de la passerelle"
   },
@@ -7735,10 +7618,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Retrait du compte de trading de contrats à terme perpétuels",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
@@ -8409,9 +8288,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "L’opération a été effectuée avec succès."
   },
-  "retryTransaction": {
-    "message": "Retenter la transaction"
-  },
   "reusedTokenNameWarning": {
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },
@@ -8465,10 +8341,6 @@
   },
   "revokePermission": {
     "message": "Retirer l'autorisation"
-  },
-  "revokePermissionTitle": {
-    "message": "Révoquer l’autorisation de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vous allez retirer à quelqu’un l’autorisation de dépenser des jetons depuis votre compte."
@@ -8940,14 +8812,6 @@
   "sent": {
     "message": "Envoyé"
   },
-  "sentSpecifiedTokens": {
-    "message": "A envoyé $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "A échangé des $1 contre des $2 et les a envoyés",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
@@ -8956,10 +8820,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Demande de retrait"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Approuver $1 sans limite de dépenses",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configurer",
@@ -9662,9 +9522,6 @@
   },
   "sign": {
     "message": "Signer"
-  },
-  "signatureRequest": {
-    "message": "Demande de signature"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Le NFT sera affiché dans votre portefeuille si l’offre est acceptée."
@@ -10476,10 +10333,6 @@
   "swapDecentralizedExchange": {
     "message": "Échange décentralisé"
   },
-  "swapDetailsTitle": {
-    "message": "Détails du swap",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Contrat direct"
   },
@@ -10683,10 +10536,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "Impossible d’échanger ce jeton dans cette région"
-  },
-  "swapTokenToToken": {
-    "message": "Swap de $1 vers $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "Échanger des jetons"
@@ -10962,10 +10811,6 @@
   "transactionIncludesTypes": {
     "message": "Cette transaction comprend : $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Cette transaction était protégée. Nous l’avons annulée pour éviter toute perte de fonds indésirable.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Paramètres de la transaction"
   },
@@ -10974,10 +10819,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction soumise"
-  },
-  "transactionTotalGasFee": {
-    "message": "Montant total des frais de gaz",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
@@ -11303,9 +11144,6 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Afficher les détails"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"

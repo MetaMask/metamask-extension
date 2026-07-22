@@ -268,8 +268,40 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
     expect(getModalName()).toBeNull();
+  });
+
+  it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'setRampsSelectedToken') {
+        throw new Error('Token not found');
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+    const opened = await goToBuy(result, { assetId });
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('intent with supported assetId matches case-insensitively', async () => {
@@ -291,7 +323,9 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
     expect(opened).toBe(true);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: 'eip155:1/erc20:0xabc' },
+    });
   });
 
   it('intent with assetId absent from a settled catalog → shows RAMPS_UNSUPPORTED', async () => {
@@ -355,7 +389,9 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
     expect(getModalName()).toBeNull();
   });
 });

@@ -93,7 +93,9 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { checkGmxHasReferralCode } from './lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from './lib/defi-referrals/referral-api-check';
 import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
-import MetaMaskController from './metamask-controller';
+import MetaMaskController, {
+  HARDWARE_DEVICE_READ_TIMEOUT_MS,
+} from './metamask-controller';
 import { trackEvent } from './controllers/analytics';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -2295,6 +2297,64 @@ describe('MetaMaskController', () => {
           ).toBe(LedgerKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
+
+        it('does not hold the controller lock while paging a wedged device, and times out the abandoned read', async () => {
+          // Regression test: a locked Trezor makes `getFirstPage` hang
+          // forever. This used to run under the controller operation mutex,
+          // wedging every other locked keyring operation (unlock, account
+          // creation, Backup & Sync account syncing) until browser restart.
+          const getFirstPageSpy = jest
+            .spyOn(TrezorKeyring.prototype, 'getFirstPage')
+            .mockReturnValue(new Promise(() => undefined));
+
+          // Intercept the device-read backstop timer so the test can fire it
+          // deterministically without faking every timer in the app.
+          const originalSetTimeout = global.setTimeout;
+          let fireDeviceReadTimeout;
+          const setTimeoutSpy = jest
+            .spyOn(global, 'setTimeout')
+            .mockImplementation((handler, timeout, ...args) => {
+              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
+                fireDeviceReadTimeout = handler;
+                return 0;
+              }
+              return originalSetTimeout(handler, timeout, ...args);
+            });
+
+          try {
+            const wedgedConnect = metamaskController.connectHardware(
+              HardwareDeviceNames.trezor,
+              0,
+            );
+            // Swallow the timeout rejection asserted below so the wedged
+            // promise never surfaces as an unhandled rejection.
+            wedgedConnect.catch(() => undefined);
+
+            // Let `connectHardware` reach the (hanging) device read.
+            await new Promise((resolve) => {
+              const poll = () =>
+                getFirstPageSpy.mock.calls.length > 0
+                  ? resolve()
+                  : originalSetTimeout(poll, 5);
+              poll();
+            });
+
+            // A locked keyring operation must still complete while the
+            // device read is pending.
+            await expect(
+              metamaskController.keyringController.addNewAccount(),
+            ).resolves.toBeDefined();
+
+            // The abandoned device read is bounded by the UX backstop.
+            fireDeviceReadTimeout();
+            await expect(wedgedConnect).rejects.toThrow(
+              'Hardware wallet device read timed out',
+            );
+          } finally {
+            getFirstPageSpy.mockRestore();
+            setTimeoutSpy.mockRestore();
+          }
+        });
       });
 
       describe('checkHardwareStatus', () => {
@@ -2320,8 +2380,22 @@ describe('MetaMaskController', () => {
                 addNewKeyring,
               });
             });
+          // The mutating prelude (`setHdPath`) runs under the lock, while the
+          // status probe itself is a device read on the lock-free path.
           const withKeyringV2Spy = jest
             .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
+
+              return await callback({
+                keyring: {
+                  isUnlocked,
+                  setHdPath,
+                },
+              });
+            });
+          const withKeyringV2UnsafeSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2Unsafe')
             .mockImplementation(async (selector, callback) => {
               expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
 
@@ -2346,6 +2420,7 @@ describe('MetaMaskController', () => {
           } finally {
             withControllerSpy.mockRestore();
             withKeyringV2Spy.mockRestore();
+            withKeyringV2UnsafeSpy.mockRestore();
           }
         });
 
@@ -2384,8 +2459,15 @@ describe('MetaMaskController', () => {
             },
           };
 
+          // The transport-preference prelude runs under the lock, while the
+          // configuration read is a device read on the lock-free path.
           const withKeyringSpy = jest
             .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (_selector, fn) => {
+              return await fn({ keyring: mockKeyring });
+            });
+          const withKeyringUnsafeSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2Unsafe')
             .mockImplementation(async (_selector, fn) => {
               return await fn({ keyring: mockKeyring });
             });
@@ -2402,6 +2484,7 @@ describe('MetaMaskController', () => {
             expect(result).toStrictEqual(mockConfiguration);
           } finally {
             withKeyringSpy.mockRestore();
+            withKeyringUnsafeSpy.mockRestore();
           }
         });
       });
