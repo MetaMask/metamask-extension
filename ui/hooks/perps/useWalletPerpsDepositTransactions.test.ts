@@ -1,5 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { useWalletPerpsDepositTransactions } from './useWalletPerpsDepositTransactions';
@@ -73,7 +76,9 @@ describe('useWalletPerpsDepositTransactions', () => {
 
   it('includes perpsDepositAndOrder transactions', () => {
     setSelectors({
-      transactions: [createMockTx({ type: TransactionType.perpsDepositAndOrder })],
+      transactions: [
+        createMockTx({ type: TransactionType.perpsDepositAndOrder }),
+      ],
     });
 
     const { result } = renderHook(() => useWalletPerpsDepositTransactions());

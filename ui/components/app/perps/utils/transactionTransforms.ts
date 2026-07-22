@@ -591,9 +591,7 @@ export function transformWalletPerpsDepositsToTransactions(
   transactions: TransactionMeta[],
 ): PerpsTransaction[] {
   return transactions
-    .filter(
-      (tx) => WALLET_STATUS_TO_DEPOSIT_STATUS[tx.status] === 'completed',
-    )
+    .filter((tx) => WALLET_STATUS_TO_DEPOSIT_STATUS[tx.status] === 'completed')
     .map((tx) => {
       const tokenTransfer = getTokenTransferData(tx);
       const decoded = tokenTransfer
