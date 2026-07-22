@@ -9,7 +9,7 @@
       var(--color-background-default) -59.02%,
       var(--color-background-section) 294.26%
     );
-  border-top: 1px solid var(--color-border-muted);
+  border-top: 1px solid var(--bar-border-color);
   z-index: design-system.$dapp-connection-bar-z-index;
   view-transition-name: dapp-connection-bar;
 

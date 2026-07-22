@@ -33,6 +33,14 @@ html[data-theme] {
   background-color: var(--color-background-alternative);
 }
 
+/* Border for pinned bars (bottom nav bar, dapp connection control bar) */
+html[data-theme='light'] {
+  --bar-border-color: rgba(183, 187, 200, 0.2);
+}
+html[data-theme='dark'] {
+  --bar-border-color: var(--color-border-muted);
+}
+
 #app-content,
 #critical-error-content {
   overflow-x: hidden;
