@@ -220,7 +220,7 @@ export const BridgeQuotesModal = ({
                                 nativeCurrency,
                               )
                             : formatCurrencyAmount(
-                                cost?.valueInCurrency,
+                                cost?.valueInCurrency ?? '0',
                                 currency,
                                 2,
                               ),
