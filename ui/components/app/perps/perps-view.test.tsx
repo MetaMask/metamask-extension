@@ -689,6 +689,64 @@ describe('PerpsView', () => {
     expect(screen.queryByTestId('perps-watchlist-BTC')).not.toBeInTheDocument();
   });
 
+  describe('tutorial modal auto-open', () => {
+    const buildFirstTimeUserStore = () =>
+      configureStore({
+        metamask: {
+          ...mockState.metamask,
+          isTestnet: false,
+          isFirstTimeUser: { testnet: false, mainnet: true },
+          watchlistMarkets: {
+            testnet: [],
+            mainnet: ['BTC', 'ETH'],
+          },
+        },
+      });
+
+    it('auto-opens the tutorial for a first-time user once loading resolves', () => {
+      const store = buildFirstTimeUserStore();
+
+      renderWithProvider(<PerpsView />, store);
+
+      expect(store.getState().perpsTutorial.tutorialModalOpen).toBe(true);
+      expect(store.getState().perpsTutorial.autoOpenAttempted).toBe(true);
+    });
+
+    it('does not re-open the tutorial when the tab remounts after its data has already loaded once (e.g. navigating back from Market Details)', () => {
+      const store = buildFirstTimeUserStore();
+
+      // First mount: simulate the user navigating away (e.g. tapping into
+      // Market Details) before the perps data finishes loading, so the
+      // auto-open decision never gets to run.
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: [],
+        isInitialLoading: true,
+      });
+
+      const { unmount } = renderWithProvider(<PerpsView />, store);
+
+      expect(store.getState().perpsTutorial.tutorialModalOpen).toBe(false);
+      // The one-time attempt is claimed immediately on mount, regardless of
+      // the still-pending load.
+      expect(store.getState().perpsTutorial.autoOpenAttempted).toBe(true);
+
+      unmount();
+
+      // Second mount: simulate returning to the Perps tab (e.g. clicking
+      // "back" on Market Details) once the data has finished loading.
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, store);
+
+      // The tutorial must NOT pop open on this remount — the one-time
+      // attempt was already spent by the first mount.
+      expect(store.getState().perpsTutorial.tutorialModalOpen).toBe(false);
+    });
+  });
+
   describe('analytics tracking', () => {
     it('fires Perp Screen Viewed with wallet_home_perps_tab screen_type once loading completes', () => {
       renderWithProvider(<PerpsView />, mockStore);

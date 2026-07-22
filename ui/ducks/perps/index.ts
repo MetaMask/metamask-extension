@@ -12,6 +12,7 @@ export {
   setTutorialModalOpen,
   setTutorialActiveStep,
   markTutorialCompleted,
+  markTutorialAutoOpenAttempted,
   resetTutorialState,
   PerpsTutorialStep,
   TUTORIAL_STEPS_ORDER,
@@ -22,4 +23,5 @@ export {
   selectTutorialModalOpen,
   selectTutorialActiveStep,
   selectTutorialCompleted,
+  selectTutorialAutoOpenAttempted,
 } from './selectors';
