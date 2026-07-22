@@ -108,6 +108,10 @@ import {
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
 import {
+  getStellarMinimumReserveForSwap,
+  type StellarAssetsSelectorState,
+} from '../../selectors/stellar-assets';
+import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
   getDefaultToToken,
@@ -147,7 +151,8 @@ export type BridgeAppState = {
     MultichainNetworkControllerState &
     TokenListState &
     RemoteFeatureFlagControllerState &
-    CurrencyRateState & {
+    CurrencyRateState &
+    NonNullable<StellarAssetsSelectorState['metamask']> & {
       useExternalServices: boolean;
     };
   bridge: BridgeState;
@@ -838,8 +843,49 @@ export const getFormattedPriceImpactFiat = createSelector(
     formatPriceImpactFiat(activeQuote, currentCurrency),
 );
 
+const getStellarMinimumReserveForBridge = (state: BridgeAppState): string => {
+  const fromToken = getFromToken(state);
+  const fromAccount = getFromAccount(state);
+
+  if (
+    !fromToken?.chainId ||
+    !isStellarChainId(fromToken.chainId) ||
+    !fromAccount?.id
+  ) {
+    return '0';
+  }
+
+  return getStellarMinimumReserveForSwap(
+    state,
+    fromAccount.id,
+    fromToken.assetId,
+    getToToken(state)?.assetId,
+  );
+};
+
+const getNativeReserveMinimum = createSelector(
+  [getFromToken, getStellarMinimumReserveForBridge],
+  (fromToken, stellarMinimumReserve) => {
+    const isBitcoinNativeReserveChain = Boolean(
+      fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
+    );
+    const isStellarNativeReserveChain = Boolean(
+      fromToken?.chainId && isStellarChainId(fromToken.chainId),
+    );
+
+    return {
+      minimumNativeReserveBalance: isStellarNativeReserveChain
+        ? stellarMinimumReserve
+        : getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId),
+      isBitcoinNativeReserveChain,
+      isStellarNativeReserveChain,
+    };
+  },
+);
+
 // Native reserve balances are used for gas-sponsored networks like Monad,
-// and for BTC as a buffer between quote-time and submit-time fee computation.
+// for BTC as a buffer between quote-time and submit-time fee computation,
+// and for Stellar's dynamic baseReserve (plus a trustline subentry when needed).
 export const getInsufficientNativeReserveError = createSelector(
   [
     getFromToken,
@@ -847,6 +893,7 @@ export const getInsufficientNativeReserveError = createSelector(
     _getValidatedSrcAmount,
     getGasFeesSponsoredNetworkEnabled,
     (state: BridgeAppState) => isHardwareWallet(state as never),
+    getNativeReserveMinimum,
   ],
   (
     fromToken,
@@ -854,6 +901,11 @@ export const getInsufficientNativeReserveError = createSelector(
     validatedSrcAmount,
     gasFeesSponsoredNetworkEnabledMap,
     isHardwareWalletAccount,
+    {
+      minimumNativeReserveBalance,
+      isBitcoinNativeReserveChain,
+      isStellarNativeReserveChain,
+    },
   ) => {
     const isNetworkGasSponsored =
       !fromToken?.chainId || isNonEvmChainId(fromToken.chainId)
@@ -867,15 +919,11 @@ export const getInsufficientNativeReserveError = createSelector(
             ],
           );
 
-    const minimumNativeReserveBalance = getMinimumReserveBalanceForCaipAssetId(
-      fromToken?.assetId,
-    );
-    const isBitcoinNativeReserveChain = Boolean(
-      fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
-    );
     const shouldApplyNativeReserve =
       minimumNativeReserveBalance !== '0' &&
-      (isNetworkGasSponsored || isBitcoinNativeReserveChain);
+      (isNetworkGasSponsored ||
+        isBitcoinNativeReserveChain ||
+        isStellarNativeReserveChain);
 
     const minimumNativeBalanceToBeKeptInAccount = shouldApplyNativeReserve
       ? minimumNativeReserveBalance
@@ -902,6 +950,7 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     getFromNativeBalance,
     _getValidatedSrcAmount,
     getBridgeQuotes,
+    getNativeReserveMinimum,
   ],
   (
     insufficientNativeReserveError,
@@ -909,13 +958,18 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     nativeBalance,
     validatedSrcAmount,
     { activeQuote },
+    {
+      minimumNativeReserveBalance,
+      isBitcoinNativeReserveChain,
+      isStellarNativeReserveChain,
+    },
   ) => {
-    const isBitcoinNativeReserveChain = Boolean(
-      fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
-    );
+    const isQuoteAwareNativeReserveChain =
+      isBitcoinNativeReserveChain || isStellarNativeReserveChain;
 
     if (
-      isBitcoinNativeReserveChain &&
+      isQuoteAwareNativeReserveChain &&
+      minimumNativeReserveBalance !== '0' &&
       activeQuote?.totalNetworkFee?.amount &&
       activeQuote?.sentAmount?.amount &&
       nativeBalance &&
@@ -937,18 +991,16 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
         0,
       );
 
-      const minimumNativeBalanceToBeKeptInAccount =
-        getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
       const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
-        .sub(minimumNativeBalanceToBeKeptInAccount)
+        .sub(minimumNativeReserveBalance)
         .sub(quoteSourceOverhead);
 
       return buildInsufficientNativeReserveError({
         fromToken,
         nativeBalance,
         validatedSrcAmount,
-        minimumNativeBalanceToBeKeptInAccount,
+        minimumNativeBalanceToBeKeptInAccount: minimumNativeReserveBalance,
         maxSwappableNativeBalance,
       });
     }

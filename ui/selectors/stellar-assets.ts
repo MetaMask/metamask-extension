@@ -5,21 +5,23 @@ import { BigNumber } from 'bignumber.js';
 import {
   getNativeAssetInfoForAsset,
   getTrustlineAssetInfoForAsset,
-  type StellarAssetsControllerState,
 } from '../../app/scripts/controllers/stellar-assets-controller';
 /* eslint-enable import-x/no-restricted-paths */
 import { isSupportBaseReserve } from '../../shared/lib/multichain/spendable-balance';
+import { getAdditionalReserveForMissingTrustline } from '../../shared/lib/multichain/trustline';
 import { createParameterizedSelector } from '../../shared/lib/selectors/selector-creators';
 
 const ACCOUNT_ASSET_LRU_CACHE_SIZE = 50;
 
-type StellarAssetsSelectorState = {
-  metamask?: Pick<StellarAssetsControllerState, 'accountAssets'>;
+export type StellarAssetsSelectorState = {
+  metamask?: {
+    accountAssets?: Record<string, Record<string, unknown>>;
+  };
 };
 
 function getStellarAccountAssets(
   state: StellarAssetsSelectorState,
-): StellarAssetsControllerState['accountAssets'] {
+): Record<string, Record<string, unknown>> {
   return state.metamask?.accountAssets ?? {};
 }
 
@@ -74,11 +76,71 @@ export const getStellarBaseReserveForAccountAsset = createParameterizedSelector(
 export const getStellarTrustlineAssetInfoForAccount =
   createParameterizedSelector(ACCOUNT_ASSET_LRU_CACHE_SIZE)(
     getStellarAccountAssets,
-    (_state, accountId: string) => accountId,
-    (_state, _accountId: string, assetId: CaipAssetType) => assetId,
+    (_state: StellarAssetsSelectorState, accountId: string) => accountId,
+    (
+      _state: StellarAssetsSelectorState,
+      _accountId: string,
+      assetId: CaipAssetType,
+    ) => assetId,
     (accountAssets, accountId, assetId) =>
       getTrustlineAssetInfoForAsset(
         assetId,
         accountAssets[accountId]?.[assetId],
       ),
   );
+
+/**
+ * Returns the dynamic native reserve required for a Stellar swap.
+ *
+ * The cached native reserve already includes existing account subentries. One
+ * additional base reserve is included when the destination classic asset does
+ * not yet have a trustline. Missing or zero native enrichment is treated as
+ * unavailable so it cannot produce a guessed trustline-only reserve.
+ */
+export const getStellarMinimumReserveForSwap = createParameterizedSelector(
+  ACCOUNT_ASSET_LRU_CACHE_SIZE,
+)(
+  getStellarAccountAssets,
+  (_state: StellarAssetsSelectorState, accountId: string) => accountId,
+  (
+    _state: StellarAssetsSelectorState,
+    _accountId: string,
+    nativeAssetId: CaipAssetType,
+  ) => nativeAssetId,
+  (
+    _state: StellarAssetsSelectorState,
+    _accountId: string,
+    _nativeAssetId: CaipAssetType,
+    toAssetId?: CaipAssetType,
+  ) => toAssetId,
+  (accountAssets, accountId, nativeAssetId, toAssetId) => {
+    const baseReserve = resolveBaseReserve(
+      nativeAssetId,
+      getNativeAssetInfoForAsset(
+        nativeAssetId,
+        accountAssets[accountId]?.[nativeAssetId],
+      ),
+    );
+    const parsedBaseReserve = new BigNumber(baseReserve ?? 0);
+
+    if (!parsedBaseReserve.gt(0)) {
+      return '0';
+    }
+
+    const trustlineInfo = toAssetId
+      ? getTrustlineAssetInfoForAsset(
+          toAssetId,
+          accountAssets[accountId]?.[toAssetId],
+        )
+      : undefined;
+
+    return parsedBaseReserve
+      .plus(
+        getAdditionalReserveForMissingTrustline({
+          toAssetId,
+          toAssetMetadata: trustlineInfo,
+        }),
+      )
+      .toString();
+  },
+);

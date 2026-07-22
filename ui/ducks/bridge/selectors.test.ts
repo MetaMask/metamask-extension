@@ -21,7 +21,10 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { MOCK_ACCOUNT_TRON_MAINNET } from '../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_STELLAR_PUBNET,
+  MOCK_ACCOUNT_TRON_MAINNET,
+} from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
@@ -77,6 +80,21 @@ import {
   resolveMinimumBalanceToKeep,
 } from './selectors';
 import { toBridgeToken } from './utils';
+
+const STELLAR_CLASSIC_ASSET_ISSUER =
+  'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const STELLAR_CLASSIC_ASSET_ID =
+  `stellar:pubnet/asset:USDC-${STELLAR_CLASSIC_ASSET_ISSUER}` as const;
+
+const STELLAR_CLASSIC_ASSET = {
+  symbol: 'USDC',
+  name: 'USD Coin',
+  address: `USDC-${STELLAR_CLASSIC_ASSET_ISSUER}`,
+  decimals: 7,
+  iconUrl: '',
+  chainId: ChainId.STELLAR,
+  assetId: STELLAR_CLASSIC_ASSET_ID,
+};
 
 describe('Bridge selectors', () => {
   const getErc20QuoteAssetExchangeRates = (usdExchangeRate: string) =>
@@ -191,6 +209,106 @@ describe('Bridge selectors', () => {
         usdExchangeRate,
       },
     }) as never;
+
+  const createStellarBridgeState = ({
+    fromTokenInputValue = '7.5',
+    fromNativeBalance = '10',
+    baseReserve = '2.5',
+    toToken = toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+    toAssetAccountInfo,
+    nonEvmFeesInNative,
+    srcTokenAmount = '75000000',
+  }: {
+    fromTokenInputValue?: string;
+    fromNativeBalance?: string;
+    baseReserve?: string | null;
+    toToken?: ReturnType<typeof toBridgeToken>;
+    toAssetAccountInfo?: { limit: string };
+    nonEvmFeesInNative?: string;
+    srcTokenAmount?: string;
+  } = {}) => {
+    const xlmAsset = getNativeAssetForChainId(ChainId.STELLAR);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const accountId = MOCK_ACCOUNT_STELLAR_PUBNET.id;
+    const accountAssetsForAccount: Record<string, { baseReserve: string } | { limit: string }> =
+      {};
+
+    if (baseReserve !== null) {
+      accountAssetsForAccount[xlmAsset.assetId] = { baseReserve };
+    }
+    if (toAssetAccountInfo && toToken?.assetId) {
+      accountAssetsForAccount[toToken.assetId] = toAssetAccountInfo;
+    }
+
+    const stellarQuote =
+      nonEvmFeesInNative === undefined
+        ? undefined
+        : {
+            quote: {
+              requestId: 'stellar-quote',
+              bridgeId: 'rango',
+              aggregator: 'rango',
+              srcChainId: ChainId.STELLAR,
+              srcTokenAmount,
+              srcAsset: xlmAsset,
+              destChainId: ChainId.ETH,
+              destTokenAmount: '1000000000000000000',
+              destAsset: ethAsset,
+              minDestTokenAmount: '990000000000000000',
+              feeData: {
+                metabridge: {
+                  amount: '0',
+                  asset: xlmAsset,
+                },
+              },
+              bridges: ['rango'],
+              protocols: ['rango'],
+              steps: [],
+            },
+            trade: {
+              xdr: 'AAAA',
+            },
+            estimatedProcessingTimeInSeconds: 30,
+            nonEvmFeesInNative,
+          };
+
+    return createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue,
+        fromToken: toBridgeToken(xlmAsset),
+        toToken,
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.STELLAR,
+          srcTokenAmount,
+        },
+        quotes: stellarQuote
+          ? ([stellarQuote] as unknown as QuoteResponse[])
+          : [],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          accounts: {
+            [accountId]: MOCK_ACCOUNT_STELLAR_PUBNET,
+          },
+          selectedAccount: accountId,
+        },
+        balances: {
+          [accountId]: {
+            [xlmAsset.assetId]: {
+              amount: fromNativeBalance,
+              unit: 'XLM',
+            },
+          },
+        },
+        accountAssets: {
+          [accountId]: accountAssetsForAccount,
+        },
+      },
+    });
+  };
 
   const createTronBridgeState = ({
     fromTokenInputValue = '1',
@@ -2872,6 +2990,137 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
+      expect(result.isInsufficientNativeReserve).toBe(false);
+      expect(result.isInsufficientGasForQuote).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Stellar when amount exceeds balance minus baseReserve', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.6',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        srcTokenAmount: '76000000',
+      });
+      const result = getValidationErrors(state as never);
+
+      // 10 - 7.6 = 2.4 XLM remaining, which is < 2.5 XLM reserve
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Stellar when amount fits in spendable balance', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.5',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        srcTokenAmount: '75000000',
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should not apply a Stellar native reserve when baseReserve enrichment is missing', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '9.9',
+        fromNativeBalance: '10',
+        baseReserve: null,
+        srcTokenAmount: '99000000',
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientNativeReserve).toBe(false);
+      expect(
+        getInsufficientNativeReserveError(state as never),
+      ).toBeUndefined();
+    });
+
+    it('should not apply a Stellar native reserve when baseReserve enrichment is zero', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '9.9',
+        fromNativeBalance: '10',
+        baseReserve: '0',
+        toToken: toBridgeToken(STELLAR_CLASSIC_ASSET),
+        srcTokenAmount: '99000000',
+      });
+
+      expect(
+        getInsufficientNativeReserveError(state as never),
+      ).toBeUndefined();
+      expect(getValidationErrors(state as never).isInsufficientNativeReserve).toBe(
+        false,
+      );
+    });
+
+    it('should add one base-reserve subentry when destination trustline metadata is missing', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.5',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        toToken: toBridgeToken(STELLAR_CLASSIC_ASSET),
+        srcTokenAmount: '75000000',
+      });
+      const nativeReserveError = getInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '3',
+        maxSwappableNativeBalance: '7',
+      });
+      expect(getValidationErrors(state as never).isInsufficientNativeReserve).toBe(
+        true,
+      );
+    });
+
+    it('should not add a trustline subentry when the destination classic asset already has a trustline', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.5',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        toToken: toBridgeToken(STELLAR_CLASSIC_ASSET),
+        toAssetAccountInfo: { limit: '1000' },
+        srcTokenAmount: '75000000',
+      });
+
+      expect(
+        getInsufficientNativeReserveError(state as never),
+      ).toBeUndefined();
+      expect(getValidationErrors(state as never).isInsufficientNativeReserve).toBe(
+        false,
+      );
+    });
+
+    it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Stellar when the quote fee is payable but the reserve would be depleted', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.5',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        nonEvmFeesInNative: '0.0000001',
+        srcTokenAmount: '75000000',
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
+        '7.4999999',
+      );
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Stellar when the quote fee cannot be paid', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '7.5',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        nonEvmFeesInNative: '2.6',
+        srcTokenAmount: '75000000',
+      });
+      const result = getValidationErrors(state as never);
+
+      // balance - fee - sent = 10 - 2.6 - 7.5 = -0.1 <= 0 → gas insufficiency
       expect(result.isInsufficientNativeReserve).toBe(false);
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
