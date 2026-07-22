@@ -202,10 +202,23 @@ const WalletActivitySectionContent = ({
   const handleToggleAccountNotifications = useCallback(
     async (address: string, nextValue: boolean) => {
       const lowerAddress = address.toLowerCase();
-      const enabledCountBefore = accountAddresses.filter(
+
+      // Aggregate events track user-facing intention (optimistic UI), not BE lag.
+      // Capture the boundary *before* this click's pending override is applied.
+      const optimisticEnabledCount = accountAddresses.filter(
         getAccountEnabledValue,
       ).length;
-      const wasEnabled = isAccountEnabled(address);
+      let aggregateTransition: boolean | null = null;
+      if (nextValue && optimisticEnabledCount === 0) {
+        aggregateTransition = true;
+      } else if (
+        !nextValue &&
+        optimisticEnabledCount === 1 &&
+        getAccountEnabledValue(address)
+      ) {
+        aggregateTransition = false;
+      }
+
       const generation =
         (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
       accountToggleGenerationRef.current[lowerAddress] = generation;
@@ -220,10 +233,8 @@ const WalletActivitySectionContent = ({
           await refetchAccountSettings();
           await refetchNotificationPreferences();
           listNotifications();
-          if (nextValue && enabledCountBefore === 0) {
-            trackWalletActivityAggregateToggle(true);
-          } else if (!nextValue && enabledCountBefore === 1 && wasEnabled) {
-            trackWalletActivityAggregateToggle(false);
+          if (aggregateTransition !== null) {
+            trackWalletActivityAggregateToggle(aggregateTransition);
           }
         } catch {
           // write failed; chain resolves so subsequent toggles can still run
@@ -248,7 +259,6 @@ const WalletActivitySectionContent = ({
     [
       accountAddresses,
       getAccountEnabledValue,
-      isAccountEnabled,
       listNotifications,
       refetchAccountSettings,
       refetchNotificationPreferences,
