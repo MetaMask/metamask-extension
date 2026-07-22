@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconColor,
   IconName,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useEventListener } from '../../../hooks/useEventListener';
@@ -48,6 +49,8 @@ export const GlobalMenuDrawer = ({
   anchorElement,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -359,7 +362,7 @@ export const GlobalMenuDrawer = ({
           style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
-            className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+            className={`h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
             backgroundColor={BoxBackgroundColor.BackgroundDefault}
           >
             {showCloseButton && (
