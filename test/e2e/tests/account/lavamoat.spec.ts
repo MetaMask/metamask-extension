@@ -4,26 +4,6 @@ import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 
-type ThrowLavamoatErrorScriptResult = {
-  message: string | null;
-  name: string | null;
-};
-
-const throwLavamoatErrorScript = `
-try {
-  globalThis.stateHooks.throwLavamoatError();
-  return {
-    message: null,
-    name: null,
-  };
-} catch (error) {
-  return {
-    message: error instanceof Error ? error.message : String(error),
-    name: error instanceof Error ? error.name : 'Error',
-  };
-}
-`;
-
 describe('lavamoat', function (this: Mocha.Suite) {
   it('the UI environment enforces the lavamoat policy', async function () {
     await withFixtures(
@@ -33,11 +13,8 @@ describe('lavamoat', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
-        const result: ThrowLavamoatErrorScriptResult =
-          await driver.executeScript(throwLavamoatErrorScript);
-        assert.equal(result.name, 'TypeError');
-        assert.match(
-          result.message ?? '',
+        await assert.rejects(
+          driver.executeScript('globalThis.stateHooks.throwLavamoatError();'),
           /Cannot read properties of undefined \(reading 'log'\)/u,
         );
       },
@@ -53,22 +30,16 @@ describe('lavamoat', function (this: Mocha.Suite) {
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
           await driver.navigate(PAGES.HOME);
-          const result: ThrowLavamoatErrorScriptResult =
-            await driver.executeScriptInExtensionServiceWorker(
-              throwLavamoatErrorScript,
-            );
-          assert.equal(result.name, 'TypeError');
-          assert.match(
-            result.message ?? '',
+          await assert.rejects(
+            driver.executeScriptInExtensionServiceWorker(
+              'globalThis.stateHooks.throwLavamoatError();',
+            ),
             /Cannot read properties of undefined \(reading 'log'\)/u,
           );
         } else {
           await driver.navigate(PAGES.BACKGROUND);
-          const result: ThrowLavamoatErrorScriptResult =
-            await driver.executeScript(throwLavamoatErrorScript);
-          assert.equal(result.name, 'TypeError');
-          assert.match(
-            result.message ?? '',
+          await assert.rejects(
+            driver.executeScript('globalThis.stateHooks.throwLavamoatError();'),
             /Cannot read properties of undefined \(reading 'log'\)/u,
           );
         }
