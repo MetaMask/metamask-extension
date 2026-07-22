@@ -286,7 +286,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     }) => {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatch(
           customOnHideOpts.action(
             ...(customOnHideOpts.args ?? []),
