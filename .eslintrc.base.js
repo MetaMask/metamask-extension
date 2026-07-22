@@ -7,25 +7,15 @@ const {
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
-  overrides: [
-    {
-      files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-      rules: {
-        // Keep generated messenger action type formatting stable while the
-        // repository transitions from eslint-plugin-prettier to oxfmt.
-        'prettier/prettier': ['error', { endOfLine: 'auto' }],
-      },
-    },
-  ],
-
   plugins: ['@metamask/design-tokens'],
 
   globals: {
     document: 'readonly',
     window: 'readonly',
-    // Our ESLint config is stuck at ES2017 because Browserify doesn't support the spread operator.
-    // We can remove this global after we've migrated away from Browserify and updated our ESLint
-    // config to at least ES2021.
+    // `AggregateError` (ES2021) is used in our source, but `@metamask/eslint-config`
+    // pins `parserOptions.ecmaVersion` to 2017 (a transitive dependency uses Esprima,
+    // which can't parse ES2018+ syntax such as object rest/spread). Declare it manually
+    // until that shared config is bumped to at least ES2021.
     AggregateError: 'readonly',
   },
 
@@ -145,7 +135,20 @@ module.exports = {
     'import-x/order': [
       'error',
       {
-        groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        pathGroups: [
+          {
+            pattern: '#*/**',
+            group: 'internal',
+          },
+        ],
         'newlines-between': 'ignore',
         alphabetize: {
           order: 'ignore',
