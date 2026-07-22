@@ -7257,9 +7257,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@25.0.0-preview-069d5ced2":
-  version: 25.0.0-preview-069d5ced2
-  resolution: "@metamask-previews/notification-services-controller@npm:25.0.0-preview-069d5ced2"
+"@metamask/notification-services-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/notification-services-controller@npm:26.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/authenticated-user-storage": "npm:^3.0.1"
@@ -7275,7 +7275,7 @@ __metadata:
     loglevel: "npm:^1.8.1"
     semver: "npm:^7.6.3"
     uuid: "npm:^8.3.2"
-  checksum: 10/9b3f3fe39f89933a16f0a2bb60363b584a1b59feb5efda2eb81fa01786a8cea72f021552d5114f55576a59fcfae8e914858733500bae2a55f34ad0fe6911f243
+  checksum: 10/9d5a051323733ddf7daff4fd4e1d5d5d98cf2182e49f3b6cd1a5b852e9d33301ab09fb4ed710f4b4c385658e806e24b6c0e30f6f1e58bdac13217b82f5c2fad7
   languageName: node
   linkType: hard
 
@@ -32860,7 +32860,7 @@ __metadata:
     "@metamask/name-controller": "npm:^9.1.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/network-enablement-controller": "npm:^5.6.0"
-    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@25.0.0-preview-069d5ced2"
+    "@metamask/notification-services-controller": "npm:^26.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^2.0.1"
