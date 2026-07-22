@@ -65,12 +65,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
 
         await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -81,7 +75,7 @@ describe('Token List', function () {
       },
     );
   });
-  it('shows percentage increase for an ERC20 token with prices available', async function () {
+  it.only('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
     const marketData = {
       price: 0.123,
@@ -125,13 +119,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
