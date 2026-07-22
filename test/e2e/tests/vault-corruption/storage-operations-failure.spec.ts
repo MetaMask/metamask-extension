@@ -4,7 +4,6 @@ import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { type Driver } from '../../webdriver/driver';
-import { login } from '../../page-objects/flows/login.flow';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
@@ -143,8 +142,6 @@ describe('Storage Operations Failure Recovery', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await login(driver);
-
           const events = await getEventPayloads(driver, mockedEndpoints);
           assert.equal(events.length, 1);
           assert.equal(
