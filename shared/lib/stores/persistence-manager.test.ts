@@ -674,6 +674,151 @@ describe('PersistenceManager', () => {
         expect(manager.writesSuspended).toBe(false);
       });
     });
+
+    describe('recovery for inferred triggers', () => {
+      // How often the recovery probe runs; mirrors SHUTDOWN_RECOVERY_RETRY_MS
+      // in the implementation.
+      const RETRY_MS = 250;
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+        manager.setShutdownSuspensionEnabled(true);
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('resumes writes after a reactive suspension once storage is responsive again', async () => {
+        // No backup DB was opened, so the probe falls back to storage.local.
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+
+        manager.suspendWrites('reactive');
+        expect(manager.writesSuspended).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes resumed: shutdown recovered',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-resumed-recovery',
+              'persistence.shutdownTrigger': 'reactive',
+            }),
+          }),
+        );
+      });
+
+      it('resumes writes after an idb-close suspension once both the backup database and storage.local respond', async () => {
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const getSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'get')
+          .mockResolvedValue([undefined]);
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+        // Populate #backupDb so the probe exercises the IndexedDB path.
+        await manager.open();
+
+        manager.suspendWrites('idb-close');
+        expect(manager.writesSuspended).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        // Both stores are probed before resuming.
+        expect(openSpy).toHaveBeenCalledWith('metamask-backup', 1);
+        expect(getSpy).toHaveBeenCalledWith(['meta']);
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended).toBe(false);
+
+        openSpy.mockRestore();
+        getSpy.mockRestore();
+      });
+
+      it('stays suspended while the backup database is healthy but storage.local still fails', async () => {
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const getSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'get')
+          .mockResolvedValue([undefined]);
+        // The backup DB always responds, but storage.local fails once then
+        // recovers. Writes must not resume until storage.local is responsive.
+        mockStoreGet
+          .mockRejectedValueOnce(new Error('The browser is shutting down.'))
+          .mockResolvedValueOnce(MOCK_DATA);
+        await manager.open();
+
+        manager.suspendWrites('idb-close');
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // storage.local still failing: stay suspended despite a healthy backup DB.
+        expect(manager.writesSuspended).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // storage.local recovered: now writes resume.
+        expect(manager.writesSuspended).toBe(false);
+
+        openSpy.mockRestore();
+        getSpy.mockRestore();
+      });
+
+      it('keeps retrying while storage stays unresponsive and resumes on the first success', async () => {
+        mockStoreGet
+          .mockRejectedValueOnce(new Error('still shutting down'))
+          .mockResolvedValueOnce(MOCK_DATA);
+
+        manager.suspendWrites('reactive');
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // First probe failed: still suspended and scheduled again.
+        expect(manager.writesSuspended).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // Second probe succeeded: writes resume.
+        expect(manager.writesSuspended).toBe(false);
+        expect(mockStoreGet).toHaveBeenCalledTimes(2);
+      });
+
+      it('does not schedule a recovery probe for the onSuspend lifecycle trigger', async () => {
+        manager.suspendWrites('onSuspend');
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+        expect(manager.writesSuspended).toBe(true);
+      });
+
+      it('cancels a pending recovery probe when writes resume', async () => {
+        manager.suspendWrites('reactive');
+        manager.resumeWrites();
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+
+      it('cancels a pending recovery probe on reset', async () => {
+        manager.suspendWrites('reactive');
+        await manager.reset();
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+
+      it('cancels a pending recovery probe when suspension is disabled', async () => {
+        manager.suspendWrites('reactive');
+        manager.setShutdownSuspensionEnabled(false);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Locks', () => {

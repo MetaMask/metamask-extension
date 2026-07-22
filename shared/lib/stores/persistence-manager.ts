@@ -149,6 +149,28 @@ export function hasVault(state?: MetaMaskStateType | Backup | null): state is {
 const STATE_LOCK = 'state-lock';
 
 /**
+ * What detected a suspected browser shutdown. `onSuspend` is the proactive MV3
+ * lifecycle signal (paired with `onSuspendCanceled`); `reactive` and
+ * `idb-close` are inferred heuristics that can be false positives, so they are
+ * recoverable (see {@link SHUTDOWN_RECOVERY_RETRY_MS}). `unknown` is the
+ * default when a caller omits the trigger.
+ */
+export type ShutdownTrigger =
+  | 'reactive'
+  | 'onSuspend'
+  | 'idb-close'
+  | 'unknown';
+
+/**
+ * How often to re-probe storage after suspending writes due to an inferred
+ * shutdown signal (`reactive`/`idb-close`). Set to a quarter of the 1000ms
+ * persist debounce (`wait` in `safe-reload.ts`) so a false positive recovers
+ * quickly. A genuine shutdown tears down the service worker, so probing stops
+ * on its own.
+ */
+const SHUTDOWN_RECOVERY_RETRY_MS = 250;
+
+/**
  * The PersistenceManager class serves as a high-level manager for handling
  * storage-related operations using a local storage system. It provides methods to read
  * and write state, manage metadata, and handle errors or corruption in the
@@ -220,6 +242,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * is reported at most once per suspension (mirrors `#dataPersistenceFailing`).
    */
   #shutdownReported: boolean = false;
+
+  /**
+   * Pending recovery-probe timer for an inferred shutdown suspension
+   * (`reactive`/`idb-close`). Non-null while a probe is scheduled; cleared once
+   * writes resume, are reset, or suspension is disabled.
+   */
+  #shutdownRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -301,6 +330,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     if (!enabled) {
       this.#writesSuspended = false;
       this.#shutdownReported = false;
+      this.#clearShutdownRecoveryTimer();
     }
   }
 
@@ -326,9 +356,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * @param trigger - What detected the shutdown, for telemetry only. Defaults
    * to `'unknown'` when the caller does not specify one.
    */
-  suspendWrites(
-    trigger: 'reactive' | 'onSuspend' | 'idb-close' | 'unknown' = 'unknown',
-  ) {
+  suspendWrites(trigger: ShutdownTrigger = 'unknown') {
     if (!this.#shutdownSuspensionEnabled) {
       return;
     }
@@ -349,15 +377,115 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         fingerprint: ['persistence-event', 'writes-suspended-shutdown'],
       });
     }
+
+    // `reactive` and `idb-close` are inferred heuristics that can misfire (e.g.
+    // a transient write error or a spurious IndexedDB `versionchange`). If they
+    // do, nothing would ever resume writes, leaving the extension stuck. So we
+    // periodically probe storage and resume once the browser proves responsive.
+    // `onSuspend` is the authoritative lifecycle signal and recovers via its
+    // own `onSuspendCanceled` pairing, so it is left alone.
+    if (trigger === 'reactive' || trigger === 'idb-close') {
+      this.#scheduleShutdownRecovery(trigger);
+    }
   }
 
   /**
    * Resumes writes previously suspended by {@link suspendWrites}. Called when a
-   * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`).
+   * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`) or when a
+   * recovery probe confirms the browser is still responsive.
    */
   resumeWrites() {
     this.#writesSuspended = false;
     this.#shutdownReported = false;
+    this.#clearShutdownRecoveryTimer();
+  }
+
+  /**
+   * Schedules a one-shot recovery probe for an inferred shutdown suspension.
+   * No-op if a probe is already pending, so repeated `suspendWrites` calls do
+   * not stack timers.
+   *
+   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   */
+  #scheduleShutdownRecovery(trigger: ShutdownTrigger) {
+    if (this.#shutdownRecoveryTimer !== null) {
+      return;
+    }
+    this.#shutdownRecoveryTimer = setTimeout(() => {
+      this.#shutdownRecoveryTimer = null;
+      // Best-effort: the probe handles its own errors and reschedules, so any
+      // unexpected rejection here is swallowed rather than left floating.
+      this.#attemptShutdownRecovery(trigger).catch(() => undefined);
+    }, SHUTDOWN_RECOVERY_RETRY_MS);
+  }
+
+  /**
+   * Probes storage once. If the probe succeeds the suspension was a false
+   * positive, so writes resume; if it fails the browser is likely really
+   * shutting down, so another probe is scheduled. A genuine shutdown tears down
+   * the service worker before the next probe, so this stops on its own.
+   *
+   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   */
+  async #attemptShutdownRecovery(trigger: ShutdownTrigger) {
+    // Writes were already resumed, reset, or suspension disabled; nothing to do.
+    if (!this.#writesSuspended || !this.#shutdownSuspensionEnabled) {
+      return;
+    }
+
+    try {
+      await this.#probeStorageAlive();
+    } catch {
+      // Still failing: keep suspended and try again later.
+      this.#scheduleShutdownRecovery(trigger);
+      return;
+    }
+
+    const wasReported = this.#shutdownReported;
+    this.resumeWrites();
+    if (wasReported) {
+      captureMessage('MetaMask - writes resumed: shutdown recovered', {
+        level: 'info',
+        tags: {
+          'persistence.event': 'writes-resumed-recovery',
+          'persistence.shutdownTrigger': trigger,
+        },
+        fingerprint: ['persistence-event', 'writes-resumed-recovery'],
+      });
+    }
+  }
+
+  /**
+   * Checks whether storage is responsive again after an inferred shutdown
+   * suspension. Every store we can reach must respond before we resume, so we
+   * never restart writes to one store while another is still unresponsive.
+   *
+   * The backup IndexedDB (when available) is checked first: reopening reconnects
+   * after an `idb-close` (the store nulls its handle on forced close), and the
+   * `get` round-trip exercises the browser for the `reactive` case where the
+   * handle is still open. It is skipped when no backup database exists (e.g.
+   * Firefox private browsing). Then `storage.local` (the store that `reactive`
+   * suspensions come from) is read to confirm the primary database is
+   * responsive again.
+   *
+   * Throws if any reachable store is still unresponsive.
+   */
+  async #probeStorageAlive(): Promise<void> {
+    if (this.#backupDb) {
+      await this.#backupDb.open('metamask-backup', 1);
+      await this.#backupDb.get(['meta']);
+    }
+    await this.#localStore.get();
+  }
+
+  /**
+   * Cancels any pending recovery probe.
+   */
+  #clearShutdownRecoveryTimer() {
+    if (this.#shutdownRecoveryTimer !== null) {
+      clearTimeout(this.#shutdownRecoveryTimer);
+      this.#shutdownRecoveryTimer = null;
+    }
   }
 
   /**
@@ -1033,6 +1161,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         // config set by the background and is intentionally left intact).
         this.#writesSuspended = false;
         this.#shutdownReported = false;
+        this.#clearShutdownRecoveryTimer();
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
