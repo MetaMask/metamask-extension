@@ -1,9 +1,6 @@
 import { HardwareWalletError, ErrorCode } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
-import {
-  DeviceEvent,
-  type HardwareWalletConnectionState,
-} from './types';
+import { DeviceEvent, type HardwareWalletConnectionState } from './types';
 
 export { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
 
