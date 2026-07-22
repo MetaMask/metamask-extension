@@ -6,6 +6,43 @@
   --page-scale-distance: 0.97;
 }
 
+.global-menu-route-transition-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.global-menu-route-transition-wrapper--animating {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1051;
+  width: 100%;
+  max-width: var(--width-max);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.global-menu-route-transition-wrapper__content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-background-default);
+}
+
+.global-menu-route-transition-wrapper__content--forward {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+.global-menu-route-transition-wrapper__content--back {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
 /* Clip overflow and make size changes instant (don't animate height) */
 ::view-transition-group(root) {
   overflow: hidden;
@@ -21,6 +58,24 @@
 ::view-transition-old(root),
 ::view-transition-new(root) {
   mix-blend-mode: normal;
+}
+
+/*
+  The bottom nav is persistent across page transitions, so it should not animate —
+  keep it in its current state instead of crossfading it.
+*/
+::view-transition-group(bottom-nav-bar) {
+  animation-duration: 0s;
+}
+
+::view-transition-old(bottom-nav-bar),
+::view-transition-new(bottom-nav-bar) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(bottom-nav-bar) {
+  display: none;
 }
 
 /* Forward: old fades out, new fades in + scale up */
@@ -79,6 +134,11 @@
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+
+  .global-menu-route-transition-wrapper__content--forward,
+  .global-menu-route-transition-wrapper__content--back {
     animation-duration: 0.01ms !important;
   }
 }

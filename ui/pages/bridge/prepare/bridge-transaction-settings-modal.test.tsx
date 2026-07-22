@@ -217,6 +217,23 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
   });
 
+  it('allows submitting the currently selected slippage preset as a user override', async () => {
+    const { getByTestId, store } = renderModal(2);
+
+    await openModal(getByTestId);
+    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(store.getState().bridge.isSlippageUserOverride).toBeFalsy();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('2%'));
+    });
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
+
+    await submitUpdate(getByTestId);
+    expect(store.getState().bridge.slippage).toBe(2);
+    expect(store.getState().bridge.isSlippageUserOverride).toBe(true);
+  });
+
   it('should render hardcoded slippage amount (0.5)', async () => {
     const initialSlippage = 0.5;
     const finalSlippage = '2';
@@ -226,11 +243,12 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expectButtonStates(MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS);
 
-    // Click and blur Custom button
+    // Click and blur Custom button with the current value still marks dirty so
+    // Submit can lock in a user override for the hydrated/default slippage.
     await interactWithCustomInput(getByTestId);
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
 
-    // Change custom input to .5
+    // Change custom input to .5 (same as current slippage) — still dirty/enabled
     await interactWithCustomInput(getByTestId, async (input) => {
       input.focus();
       await userEvent.keyboard('{backspace}');
@@ -238,7 +256,7 @@ describe('BridgeTransactionSettingsModal', () => {
       await userEvent.keyboard('.');
       await userEvent.keyboard('5');
     });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Change custom input to 2

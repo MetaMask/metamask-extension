@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
@@ -10,9 +11,45 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { buildSolanaTestSpecificMock } from './common-solana';
+import { SolanaNode } from '../../seeder/solana/node';
+import {
+  buildSolanaTestSpecificMock,
+  commonSolanaAddress,
+  LAMPORTS_PER_SOL,
+  mockClientSideDetectionApi,
+  mockMultiCoinPrice,
+  mockPhishingDetectionApi,
+  mockPriceApiExchangeRates,
+  mockPriceApiSpotPrice,
+} from './common-solana';
+import { proxySolanaBlockchainCalls } from './mocks/local-solana-node-mocks';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
-const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
+const solSendAmountFiatValue = '$11.28';
+
+const SOLANA_ACCOUNT_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const LOCAL_SOLANA_BALANCE = 50 * LAMPORTS_PER_SOL;
+
+async function buildLocalSolanaTestSpecificMock(
+  mockServer: Mockttp,
+  localNodes: unknown[],
+): Promise<MockedEndpoint[]> {
+  const solanaNode = localNodes.find(
+    (node): node is SolanaNode => node instanceof SolanaNode,
+  );
+  if (!solanaNode) {
+    throw new Error('Solana local node was not started');
+  }
+
+  return [
+    await mockMultiCoinPrice(mockServer),
+    await mockPriceApiSpotPrice(mockServer),
+    await mockPriceApiExchangeRates(mockServer),
+    await mockClientSideDetectionApi(mockServer),
+    await mockPhishingDetectionApi(mockServer),
+    ...(await proxySolanaBlockchainCalls(mockServer, solanaNode)),
+  ];
+}
 
 describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
@@ -34,10 +71,13 @@ describe('Send flow', function (this: Suite) {
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.fillRecipient('2433asd');
+        await sendPage.fillRecipient({
+          recipientAddress: '2433asd',
+          validAddress: false,
+        });
         await sendPage.checkInvalidAddressError();
 
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('1');
         await sendPage.checkInsufficientFundsError();
         assert.equal(
@@ -51,13 +91,30 @@ describe('Send flow', function (this: Suite) {
 
   it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
+    // Captured in afterLocalNodesStart (which runs before the network mocks
+    // are set up) so the mock builder can proxy calls to the local node.
+    // testSpecificMock itself keeps its single-argument contract.
+    let localNodes: unknown[] = [];
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockGetTransactionSuccess: true,
-        }),
+        localNodeOptions: [
+          'anvil',
+          {
+            type: 'solana',
+            options: {
+              initialBalances: {
+                [SOLANA_ACCOUNT_ADDRESS]: LOCAL_SOLANA_BALANCE,
+              },
+            },
+          },
+        ],
+        afterLocalNodesStart: (nodeContext: { localNodes: unknown[] }) => {
+          localNodes = nodeContext.localNodes;
+        },
+        testSpecificMock: (mockServer: Mockttp) =>
+          buildLocalSolanaTestSpecificMock(mockServer, localNodes),
       },
       async ({ driver }) => {
         await login(driver);
@@ -76,8 +133,10 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
+        await sendPage.waitForSendAmountBalance();
+        await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
         assert.equal(
           await sendPage.isContinueButtonEnabled(),
           true,
@@ -93,7 +152,7 @@ describe('Send flow', function (this: Suite) {
 
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAction({ action: 'Sent SOL' });
-        await activityTab.checkTxAmountInActivity('-0.007079 SOL', 1);
+        await activityTab.checkTxAmountInActivity('-0.1 SOL', 1);
         await activityTab.checkNoFailedTransactions();
       },
     );
@@ -103,7 +162,7 @@ describe('Send flow', function (this: Suite) {
     this.timeout(120000);
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock({
           mockGetTransactionFailed: true,
@@ -126,7 +185,7 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendPage.fillRecipient(commonSolanaAddress);
+        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         assert.equal(
           await sendPage.isContinueButtonEnabled(),

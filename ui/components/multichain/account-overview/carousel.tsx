@@ -1,10 +1,10 @@
-import React, { useContext, useState, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -20,10 +20,8 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const [displayedSlideIds, setDisplayedSlideIds] = useState<Set<string>>(
-    new Set(),
-  );
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
@@ -50,25 +48,38 @@ export const Carousel = () => {
       clickHandled = true;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.BannerSelect,
-      category: MetaMetricsEventCategory.Banner,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        banner_name: key,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.BannerSelect)
+        .addCategory(MetaMetricsEventCategory.Banner)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          banner_name: key,
+        })
+        .build(),
+    );
 
     return clickHandled;
   };
 
   const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.BannerDismissed)
+        .addCategory(MetaMetricsEventCategory.Banner)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          banner_name: slideId,
+        })
+        .build(),
+    );
+
     if (isLastSlide) {
-      trackEvent({
-        event: MetaMetricsEventName.BannerCloseAll,
-        category: MetaMetricsEventCategory.Banner,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.BannerCloseAll)
+          .addCategory(MetaMetricsEventCategory.Banner)
+          .build(),
+      );
     }
 
     dispatch(removeSlide(slideId));
@@ -76,20 +87,21 @@ export const Carousel = () => {
 
   const handleActiveSlideChange = useCallback(
     (slide: CarouselSlide) => {
-      if (!displayedSlideIds.has(slide.id)) {
-        trackEvent({
-          event: MetaMetricsEventName.BannerDisplay,
-          category: MetaMetricsEventCategory.Banner,
-          properties: {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            banner_name: slide.id,
-          },
-        });
-        setDisplayedSlideIds((prev) => new Set(prev).add(slide.id));
+      if (!displayedSlideIds.current.has(slide.id)) {
+        displayedSlideIds.current.add(slide.id);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.BannerDisplay)
+            .addCategory(MetaMetricsEventCategory.Banner)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              banner_name: slide.id,
+            })
+            .build(),
+        );
       }
     },
-    [displayedSlideIds, trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   if (!isCarouselEnabled) {

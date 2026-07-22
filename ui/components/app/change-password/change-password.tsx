@@ -1,12 +1,5 @@
 import EventEmitter from 'events';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import log from 'loglevel';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -37,10 +30,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
-  isPasskeyCeremonySilentError,
-  translatePasskeyError,
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
@@ -53,18 +43,14 @@ import {
   changePasswordWithPasskeyVerification,
   checkIsSeedlessPasswordOutdated,
   forceUpdateMetamaskState,
-  generatePasskeyAuthenticationOptions,
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import {
-  getIsPasskeyFeatureAvailable,
-  getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
-  getIsEnrolledPasskeyIncompatibleWithSidepanel,
-} from '../../../selectors';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+  useIsPasskeyActive,
+  useIsPasskeyIncompatibleInSidepanel,
+} from '../../../hooks/usePasskeyAvailability';
 import PasswordForm from '../password-form/password-form';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -72,7 +58,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -80,6 +66,12 @@ import {
 import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
+import {
+  PasskeyVerification,
+  runPasskeyVerificationCeremony,
+} from '../passkey-verification';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -102,19 +94,14 @@ const ChangePassword = ({
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
-  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
-    getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  );
-  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleWithSidepanel =
+    useIsPasskeyIncompatibleInSidepanel();
   const mustDeferPasskeyToBrowserTab =
-    isSidePanel &&
-    isEnrolledPasskeyIncompatibleWithSidepanel &&
-    isPasskeyActive;
+    isPasskeyActive && isPasskeyIncompatibleWithSidepanel;
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const animationEventEmitter = useRef(new EventEmitter());
   const hasDeferredPasskeyToBrowserTabRef = useRef(false);
 
@@ -124,9 +111,7 @@ const ChangePassword = ({
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
-  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(
-    () => isPasskeyActive && !mustDeferPasskeyToBrowserTab,
-  );
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -178,16 +163,17 @@ const ChangePassword = ({
     }
 
     const startedAt = Date.now();
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.PasswordChangeWithPasskey,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        status: 'started',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        passkey_renewal_enabled: isPasskeyRenewalEnabled,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'started',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+        })
+        .build(),
+    );
 
     let isPasskeyRenewed = false;
     try {
@@ -200,34 +186,36 @@ const ChangePassword = ({
       );
       isPasskeyRenewed = isPasskeyRenewalEnabled;
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasswordChangeWithPasskey,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_renewal_enabled: isPasskeyRenewalEnabled,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_renewal_enabled: isPasskeyRenewalEnabled,
+          })
+          .build(),
+      );
     } catch (error) {
       const errorCode = getPasskeyErrorCode(error);
       const durationMs = Date.now() - startedAt;
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasswordChangeWithPasskey,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: 'failed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_renewal_enabled: isPasskeyRenewalEnabled,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: durationMs,
-          reason: errorCode,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_renewal_enabled: isPasskeyRenewalEnabled,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
 
       captureException(
         createSentryError(
@@ -274,7 +262,7 @@ const ChangePassword = ({
       } else {
         // Remove enrollment before changing the password so a failure after
         // `changePassword` cannot leave an enrolled-but-invalid passkey on disk.
-        if (isPasskeyRegistered) {
+        if (isPasskeyActive) {
           await removePasskeyWithPasswordVerification(currentPassword);
           await forceUpdateMetamaskState(dispatch);
         }
@@ -282,15 +270,16 @@ const ChangePassword = ({
       }
 
       // Track password changed event
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasswordChanged,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: isPasskeyRenewalSuccessful,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasswordChanged)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            biometrics_enabled: isPasskeyRenewalSuccessful,
+          })
+          .build(),
+      );
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
@@ -316,15 +305,16 @@ const ChangePassword = ({
 
   const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        text: 'Learn More',
-        location: 'change_password',
-        url: ZENDESK_URLS.PASSWORD_ARTICLE,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          text: 'Learn More',
+          location: 'change_password',
+          url: ZENDESK_URLS.PASSWORD_ARTICLE,
+        })
+        .build(),
+    );
   };
 
   const createPasswordLink = (
@@ -357,44 +347,6 @@ const ChangePassword = ({
     [],
   );
 
-  const performPasskeyAuthentication = useCallback(async () => {
-    setIsVerifyingPasskey(true);
-    try {
-      const authOptions = await generatePasskeyAuthenticationOptions();
-      const response = await startPasskeyAuthentication(authOptions);
-      return response;
-    } catch (error: unknown) {
-      if (isPasskeyCeremonySilentError(error)) {
-        log.debug(
-          'Passkey authentication from change-password toggle cancelled or timed out',
-          error,
-        );
-      } else {
-        captureException(
-          createSentryError(
-            'Passkey verification during change password failed',
-            error,
-          ),
-        );
-        toast.error(
-          <ToastContent
-            title={
-              translatePasskeyError(
-                error,
-                t as (key: string, substitutions?: string[]) => string,
-                passkeyMethodLabel,
-              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-            }
-          />,
-          { duration: autoHideToastDelay },
-        );
-      }
-      return null;
-    } finally {
-      setIsVerifyingPasskey(false);
-    }
-  }, [passkeyMethodLabel, t]);
-
   const openChangePasswordInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(
@@ -413,63 +365,26 @@ const ChangePassword = ({
     openChangePasswordInFullScreen();
   }, [mustDeferPasskeyToBrowserTab, openChangePasswordInFullScreen]);
 
-  // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
-  useEffect(() => {
-    if (
-      !isPasskeyActive ||
-      mustDeferPasskeyToBrowserTab ||
-      step !== ChangePasswordSteps.VerifyPasskey ||
-      passkeyAuthenticationResponse !== null
-    ) {
-      return;
-    }
-
-    let aborted = false;
-
-    (async () => {
-      try {
-        const response = await performPasskeyAuthentication();
-        if (aborted) {
-          return;
-        }
-        setPasskeyAuthenticationResponse(response);
-        setIsPasskeyRenewalEnabled(Boolean(response));
-        setCurrentPassword('');
-
-        if (response) {
-          setStep(ChangePasswordSteps.ChangePassword);
-        } else {
-          setStep(ChangePasswordSteps.VerifyCurrentPassword);
-        }
-      } catch {
-        if (aborted) {
-          return;
-        }
-        setPasskeyAuthenticationResponse(null);
-        setIsPasskeyRenewalEnabled(false);
-        setCurrentPassword('');
-        setStep(ChangePasswordSteps.VerifyCurrentPassword);
-      }
-    })();
-
-    return () => {
-      aborted = true;
-      cancelPasskeyCeremony();
-      setIsVerifyingPasskey(false);
-    };
-  }, [
-    isPasskeyActive,
-    mustDeferPasskeyToBrowserTab,
-    passkeyAuthenticationResponse,
-    step,
-    performPasskeyAuthentication,
-  ]);
-
   const handleUseVerifyPassword = useCallback(() => {
-    cancelPasskeyCeremony();
-    setIsVerifyingPasskey(false);
     setPasskeyAuthenticationResponse(null);
     setIsPasskeyRenewalEnabled(false);
+    setStep(ChangePasswordSteps.VerifyCurrentPassword);
+  }, []);
+
+  const handlePasskeyVerified = useCallback(
+    (response: PasskeyAuthenticationResponse) => {
+      setPasskeyAuthenticationResponse(response);
+      setIsPasskeyRenewalEnabled(true);
+      setCurrentPassword('');
+      setStep(ChangePasswordSteps.ChangePassword);
+    },
+    [],
+  );
+
+  const handlePasskeyCeremonyFailed = useCallback(() => {
+    setPasskeyAuthenticationResponse(null);
+    setIsPasskeyRenewalEnabled(false);
+    setCurrentPassword('');
     setStep(ChangePasswordSteps.VerifyCurrentPassword);
   }, []);
 
@@ -490,15 +405,27 @@ const ChangePassword = ({
         return;
       }
 
-      const response = await performPasskeyAuthentication();
-      setPasskeyAuthenticationResponse(response);
-      setIsPasskeyRenewalEnabled(Boolean(response));
+      setIsVerifyingPasskey(true);
+      try {
+        const response = await runPasskeyVerificationCeremony({
+          sentryContext: 'Passkey authentication from change-password toggle',
+          passkeyMethodLabel,
+          t,
+          showErrorToast: true,
+          toastDurationMs: autoHideToastDelay,
+        });
+        setPasskeyAuthenticationResponse(response);
+        setIsPasskeyRenewalEnabled(Boolean(response));
+      } finally {
+        setIsVerifyingPasskey(false);
+      }
     },
     [
       isPasskeyActive,
       isVerifyingPasskey,
       passkeyAuthenticationResponse,
-      performPasskeyAuthentication,
+      passkeyMethodLabel,
+      t,
     ],
   );
 
@@ -556,51 +483,18 @@ const ChangePassword = ({
       )}
 
       {step === ChangePasswordSteps.VerifyPasskey && (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          marginTop={12}
-          gap={4}
-          data-testid="change-password-passkey-verifying"
-        >
-          <Spinner className="change-password__spinner" />
-          <Text
-            variant={TextVariant.BodyLg}
-            fontWeight={FontWeight.Medium}
-            className="text-center"
-          >
-            {t('passkeyVerifyingTitle', [passkeyMethodLabel])}
-          </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            className="text-center"
-          >
-            {t('passkeyVerifyingDescription', [passkeyMethodLabel])}
-          </Text>
-          {isSidePanel &&
-          isVerifyingPasskey &&
-          !mustDeferPasskeyToBrowserTab ? (
-            <TextButton
-              type="button"
-              data-testid="change-password-passkey-verifying-open-full-screen"
-              color={TextColor.PrimaryDefault}
-              className="text-center"
-              onClick={() => setShowPasskeyTroubleshootModal(true)}
-            >
-              {t('passkeyTroubleshootVerify')}
-            </TextButton>
-          ) : null}
-          <TextButton
-            type="button"
-            data-testid="change-password-verify-passkey-use-password"
-            color={TextColor.PrimaryDefault}
-            className="text-center mt-4"
-            onClick={handleUseVerifyPassword}
-          >
-            {t('usePassword')}
-          </TextButton>
-        </Box>
+        <PasskeyVerification
+          flow="change-password"
+          autoRunOnMount={!mustDeferPasskeyToBrowserTab}
+          deferToBrowserTab={mustDeferPasskeyToBrowserTab}
+          troubleshootLocation="settings-change-password"
+          onOpenFullScreen={openChangePasswordInFullScreen}
+          showErrorToast
+          toastDurationMs={autoHideToastDelay}
+          onVerified={handlePasskeyVerified}
+          onCeremonyFailed={handlePasskeyCeremonyFailed}
+          onUsePassword={handleUseVerifyPassword}
+        />
       )}
 
       {step === ChangePasswordSteps.ChangePassword && (

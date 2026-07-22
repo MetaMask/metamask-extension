@@ -62,6 +62,62 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
     );
   });
 
+  it('automatically repopulates ScopeCards after a dapp page refresh without re-prompting', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        dappOptions: MM_CONNECT_TEST_DAPP_OPTIONS,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openPage();
+
+        // Connect to 3 EVM chains + Solana so the rehydration check covers
+        // both EVM and non-EVM scopes in the persisted CAIP-25 permission.
+        const expectedScopes = [
+          MM_CONNECT_EVM_CHAINS.LOCALHOST,
+          MM_CONNECT_EVM_CHAINS.POLYGON,
+          MM_CONNECT_EVM_CHAINS.LINEA,
+          SOLANA_MAINNET_SCOPE,
+        ];
+        await testDapp.selectNetworks(expectedScopes);
+        await testDapp.clickConnect();
+
+        // Approve the wallet_createSession dialog in the extension.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new ConnectAccountConfirmation(driver);
+        await confirmation.checkPageIsLoaded();
+        await confirmation.confirmConnect();
+
+        // Verify the initial session is established before we refresh.
+        await testDapp.switchTo();
+        for (const scope of expectedScopes) {
+          await testDapp.checkScopeCardVisible(scope);
+        }
+
+        // Refresh the dapp tab. The dapp must reconstruct its multichain
+        // session purely from the wallet's persisted CAIP-25 permission —
+        // no second wallet_createSession dialog should appear, and the
+        // user should not have to re-select networks or click Connect.
+        await driver.refresh();
+
+        // Without any further interaction, every ScopeCard from the
+        // original session must reappear. If rehydration is broken, these
+        // selectors will time out (because `app-section-scopes` is only
+        // rendered when `sessionScopes` is non-empty), and if the dapp
+        // re-prompts on load, the connect dialog would steal focus before
+        // the ScopeCards could render.
+        await testDapp.checkConnectionStatus('connected');
+        for (const scope of expectedScopes) {
+          await testDapp.checkScopeCardVisible(scope);
+        }
+      },
+    );
+  });
+
   it('routes personal_sign requests to the correct chain and handles Solana signMessage', async function () {
     await withFixtures(
       {

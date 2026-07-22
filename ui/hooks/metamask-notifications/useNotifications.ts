@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
 import {
@@ -24,6 +24,8 @@ import {
   setUserHasTurnedOffNotificationsOnce,
   updateNotificationSubscriptionExpiration,
 } from '../../contexts/metamask-notifications/notification-storage-keys';
+import { getDataCollectionForMarketing } from '../../selectors/metametrics';
+import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
 /**
  * useState that only applies updates while mounted. Prevents
@@ -164,6 +166,11 @@ export function useEnableNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
+  const hasMarketingConsent = Boolean(
+    useSelector(getDataCollectionForMarketing),
+  );
+  const isFeatureAnnouncementsEnabled =
+    useSelector(selectIsFeatureAnnouncementsEnabled) ?? true;
 
   const [error, setError] = useSafeState<string | null>(null);
 
@@ -171,14 +178,19 @@ export function useEnableNotifications(): {
     setError(null);
 
     try {
-      await dispatch(enableMetamaskNotifications());
+      await dispatch(
+        enableMetamaskNotifications({
+          hasMarketingConsent,
+          productAnnouncementEnabled: isFeatureAnnouncementsEnabled,
+        }),
+      );
       await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
     }
-  }, [dispatch, setError]);
+  }, [dispatch, hasMarketingConsent, isFeatureAnnouncementsEnabled, setError]);
 
   return {
     enableNotifications,

@@ -25,9 +25,6 @@ jest.mock('./i18n', () => ({
   fetchLocale: jest.fn(),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
-jest.mock('./deep-linking', () => ({
-  openCustomProtocol: jest.fn(),
-}));
 jest.mock('./get-first-preferred-lang-code', () => jest.fn());
 jest.mock('./switch-direction', () => ({
   switchDirectionForPreferredLocale: jest.fn(),

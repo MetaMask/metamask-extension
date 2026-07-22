@@ -28,7 +28,8 @@ describe('Sessions', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            participateInMetaMetrics: true,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -49,7 +50,8 @@ describe('Sessions', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            participateInMetaMetrics: false,
+            completedMetaMetricsOnboarding: true,
+            optedIn: false,
           })
           .build(),
         title: this.test?.fullTitle(),

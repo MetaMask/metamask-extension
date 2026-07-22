@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambah alias"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Lanjutan"
   },
-  "customToken": {
-    "message": "Token Tersuai"
-  },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
   "delete": {
     "message": "Padam"
@@ -335,9 +326,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
@@ -369,9 +357,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Kamera web tidak ditemui"
-  },
-  "notEnoughGas": {
-    "message": "Tidak Cukup Gas"
   },
   "ofTextNofM": {
     "message": "daripada"
@@ -507,9 +492,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "signed": {
     "message": "Ditandatangani"

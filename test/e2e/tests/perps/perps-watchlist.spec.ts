@@ -41,8 +41,10 @@ describe('Perps Watchlist', function (this: Suite) {
         // Add BTC to the watchlist
         await marketDetailPage.clickFavoriteButton();
 
-        // Navigate back to Perps home
+        // Navigate back to Perps home: history.back lands on the market
+        // list, so use the market list back control to reach the home route.
         await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
 
         // Verify the watchlist section is now visible and contains BTC
         await perpsTab.waitForWatchlistMarket('BTC');
@@ -71,6 +73,7 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketDetailPage.navigateToMarket('ETH');
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
         await perpsTab.waitForWatchlistMarket('ETH');
 
         // Remove ETH from the watchlist
@@ -84,6 +87,7 @@ describe('Perps Watchlist', function (this: Suite) {
 
         // Navigate back to Perps home and verify the watchlist section is gone
         await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
         await perpsTab.checkWatchlistSectionGone();
       },
     );
@@ -110,12 +114,14 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketDetailPage.navigateToMarket('ETH');
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
 
         // Add AVAX to watchlist
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('AVAX');
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
 
         await perpsTab.waitForWatchlistMarket('ETH');
         await perpsTab.waitForWatchlistMarket('AVAX');

@@ -1,10 +1,12 @@
 import { asset } from './asset';
+import { batchSell } from './batch-sell';
 import { buy } from './buy';
 import { card } from './card';
 import { home } from './home';
 import { nfts } from './nfts';
 import { notifications } from './notifications';
 import { onboarding } from './onboarding';
+import { money } from './money';
 import { musd } from './musd';
 import { perps } from './perps';
 import { perpsAsset } from './perps-asset';
@@ -46,6 +48,7 @@ if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
 }
 
 addRoute(buy);
+addRoute(batchSell);
 addRoute(sell);
 addRoute(card);
 addRoute(home);
@@ -53,6 +56,7 @@ addRoute(nfts);
 addRoute(notifications);
 addRoute(onboarding);
 addRoute(swap);
+addRoute(money);
 addRoute(musd);
 addRoute(perps);
 addRoute(perpsAsset);

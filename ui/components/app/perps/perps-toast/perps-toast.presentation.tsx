@@ -47,7 +47,7 @@ export const PERPS_TOAST_PRESENTATION_BY_VARIANT: Record<
     icon: {
       type: 'avatar-icon',
       name: IconName.Warning,
-      severity: AvatarIconSeverity.Error,
+      severity: AvatarIconSeverity.Danger,
       size: AvatarIconSize.Md,
       dataTestId: 'perps-toast-icon-warning',
     },
@@ -85,7 +85,7 @@ const PERPS_ERROR_PRESENTATION: PerpsToastPresentation = {
   icon: {
     type: 'avatar-icon',
     name: IconName.Warning,
-    severity: AvatarIconSeverity.Error,
+    severity: AvatarIconSeverity.Danger,
     size: AvatarIconSize.Md,
     dataTestId: 'perps-toast-icon-warning',
   },
@@ -109,6 +109,7 @@ export const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
   [PERPS_TOAST_KEYS.CLOSE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
+  [PERPS_TOAST_KEYS.LIMIT_CLOSE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
   [PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED]: PERPS_ERROR_PRESENTATION,
@@ -120,6 +121,7 @@ export const PERPS_TOAST_PRESENTATION_BY_KEY: Record<
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,
   [PERPS_TOAST_KEYS.PARTIAL_CLOSE_SUCCESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.success,
+  [PERPS_TOAST_KEYS.PARTIAL_LIMIT_CLOSE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.REVERSE_FAILED]: PERPS_ERROR_PRESENTATION,
   [PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS]:
     PERPS_TOAST_PRESENTATION_BY_VARIANT.info,

@@ -33,6 +33,10 @@
     height: 100%;
     width: 100%;
     max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
+
+    .wallet-overview-fullscreen > & {
+      align-self: center;
+    }
   }
 
   &__currency-wrapper {
