@@ -120,9 +120,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
                 ? BackgroundColor.backgroundAlternative
                 : BackgroundColor.backgroundDefault
             }
-            borderColor={
-              isPureBlack ? BorderColor.borderMuted : undefined
-            }
+            borderColor={isPureBlack ? BorderColor.borderMuted : undefined}
             borderWidth={isPureBlack ? 1 : undefined}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
