@@ -12,6 +12,7 @@ import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
   applyGatingPolicy,
+  applyNoiseTolerance,
   compareMetric,
   compareBenchmarkEntries,
   formatDeltaPercent,
@@ -573,5 +574,76 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(
       THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],
     ).toBeUndefined();
+  });
+
+  describe('applyNoiseTolerance', () => {
+    const makeComparison = (
+      severity: ThresholdViolation['severity'],
+      value: number,
+      threshold: number,
+    ): BenchmarkEntryComparison => ({
+      benchmarkName: 'onboardingImportWallet',
+      relativeMetrics: [],
+      absoluteViolations: [
+        { metricId: 'total', percentile: 'p75', value, threshold, severity },
+      ],
+      hasRegression: false,
+      hasWarning: severity === THRESHOLD_SEVERITY.Warn,
+      absoluteFailed: severity === THRESHOLD_SEVERITY.Fail,
+    });
+
+    const makeResults = (stdDev?: number): BenchmarkResults =>
+      ({
+        mean: { total: 11000 },
+        stdDev: stdDev === undefined ? {} : { total: stdDev },
+        p75: { total: 11291 },
+        p95: { total: 11689 },
+      }) as unknown as BenchmarkResults;
+
+    // Observed on a live benchmark run (onboardingImportWallet,
+    // chrome-webpack): p75 11291 vs limit 11050, breach 241ms < stdDev 303ms
+    // — a coin-flip on which samples landed.
+    it('downgrades a Fail to Warn when the breach is within one stdDev', () => {
+      const result = applyNoiseTolerance(
+        makeComparison(THRESHOLD_SEVERITY.Fail, 11291, 11050),
+        makeResults(303),
+      );
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+      expect(result.absoluteFailed).toBe(false);
+      expect(result.hasWarning).toBe(true);
+    });
+
+    it('keeps a Fail when the breach exceeds one stdDev', () => {
+      const result = applyNoiseTolerance(
+        makeComparison(THRESHOLD_SEVERITY.Fail, 12000, 11050),
+        makeResults(303),
+      );
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Fail,
+      );
+      expect(result.absoluteFailed).toBe(true);
+    });
+
+    it('leaves the violation unchanged when stdDev is unavailable', () => {
+      const result = applyNoiseTolerance(
+        makeComparison(THRESHOLD_SEVERITY.Fail, 11291, 11050),
+        makeResults(undefined),
+      );
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Fail,
+      );
+    });
+
+    it('does not touch Warn-severity violations', () => {
+      const result = applyNoiseTolerance(
+        makeComparison(THRESHOLD_SEVERITY.Warn, 11291, 11050),
+        makeResults(1),
+      );
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+    });
   });
 });

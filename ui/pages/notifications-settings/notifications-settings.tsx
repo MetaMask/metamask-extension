@@ -16,8 +16,6 @@ import { NotificationsSettingsAllowNotifications } from './notifications-setting
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { useNotificationAccountGroups } from './notifications-settings-helpers';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsContent() {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
