@@ -1,9 +1,17 @@
+import { matchPath } from 'react-router-dom';
 import {
+  ASSET_DETAILS_ROUTE,
+  ASSET_ROUTE,
   ROUTES,
   getPaths,
   PATH_NAME_MAP,
   DEVELOPER_OPTIONS_ROUTE,
 } from './routes';
+
+const findMatchingAnalyticsPath = (pathname: string) =>
+  getPaths().find((path) =>
+    matchPath({ path, end: true, caseSensitive: false }, pathname),
+  );
 
 describe('Routes Constants', () => {
   describe('ROUTES Array', () => {
@@ -112,6 +120,25 @@ describe('Routes Constants', () => {
           expect(getPaths()).not.toContain(route.path);
         }
       });
+    });
+  });
+
+  describe('asset analytics routes', () => {
+    it('matches native asset pages without an asset address', () => {
+      const matchingPath = findMatchingAnalyticsPath('/asset/0xe708/');
+
+      expect(matchingPath).toBe(ASSET_DETAILS_ROUTE);
+      expect(PATH_NAME_MAP.get(ASSET_DETAILS_ROUTE)).toBe('Asset Page');
+    });
+
+    it('matches NFT image pages before the generic asset route', () => {
+      const nftImageRoute = `${ASSET_ROUTE}/image/:asset/:id` as const;
+      const matchingPath = findMatchingAnalyticsPath(
+        '/asset/image/0x1234/5678',
+      );
+
+      expect(matchingPath).toBe(nftImageRoute);
+      expect(PATH_NAME_MAP.get(nftImageRoute)).toBe('Nft Image Page');
     });
   });
 });

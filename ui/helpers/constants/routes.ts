@@ -13,6 +13,8 @@ export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
+export const ASSET_DETAILS_ROUTE =
+  `${ASSET_ROUTE}/:chainId/:asset?/:id?` as const;
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings/assets';
@@ -270,13 +272,13 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${ASSET_ROUTE}/:asset/:id`,
-    label: 'Asset Page',
+    path: `${ASSET_ROUTE}/image/:asset/:id`,
+    label: 'Nft Image Page',
     trackInAnalytics: true,
   },
   {
-    path: `${ASSET_ROUTE}/image/:asset/:id`,
-    label: 'Nft Image Page',
+    path: ASSET_DETAILS_ROUTE,
+    label: 'Asset Page',
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },

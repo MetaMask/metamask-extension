@@ -17,6 +17,7 @@ import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
+  ASSET_DETAILS_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -416,7 +417,7 @@ export const routeConfig = [
         element: <NftFullImage />,
       },
       {
-        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+        path: ASSET_DETAILS_ROUTE,
         element: <Asset />,
       },
       {
