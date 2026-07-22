@@ -71,7 +71,7 @@ jest.mock('@nktkas/hyperliquid', () => {
 
 // eslint-disable-next-line import-x/first, import-x/no-namespace
 
-const {mockState} = (hl as unknown as { mockState: MockState });
+const { mockState } = hl as unknown as { mockState: MockState };
 
 const flush = async () => {
   // Drain a few microtasks so both the resolve (.then) and reject (.then skip
@@ -309,7 +309,11 @@ describe('AggregatedOrderBookConnection', () => {
         isTestnet: () => false,
       });
       const onStatusChange = jest.fn();
-      connection.subscribe({ symbol: 'BTC', callback: jest.fn(), onStatusChange });
+      connection.subscribe({
+        symbol: 'BTC',
+        callback: jest.fn(),
+        onStatusChange,
+      });
 
       expect(onStatusChange).toHaveBeenNthCalledWith(1, 'connecting');
       await flush();
@@ -321,7 +325,11 @@ describe('AggregatedOrderBookConnection', () => {
         isTestnet: () => false,
       });
       const onStatusChange = jest.fn();
-      connection.subscribe({ symbol: 'BTC', callback: jest.fn(), onStatusChange });
+      connection.subscribe({
+        symbol: 'BTC',
+        callback: jest.fn(),
+        onStatusChange,
+      });
       const { socket } = mockState.transports[0];
 
       socket.dispatchEvent(new Event('open'));
@@ -336,7 +344,11 @@ describe('AggregatedOrderBookConnection', () => {
         isTestnet: () => false,
       });
       const onStatusChange = jest.fn();
-      connection.subscribe({ symbol: 'BTC', callback: jest.fn(), onStatusChange });
+      connection.subscribe({
+        symbol: 'BTC',
+        callback: jest.fn(),
+        onStatusChange,
+      });
 
       mockState.transports[0].socket.dispatchEvent(new Event('terminate'));
       expect(onStatusChange).toHaveBeenLastCalledWith('error');
@@ -348,7 +360,11 @@ describe('AggregatedOrderBookConnection', () => {
         isTestnet: () => false,
       });
       const onStatusChange = jest.fn();
-      connection.subscribe({ symbol: 'BTC', callback: jest.fn(), onStatusChange });
+      connection.subscribe({
+        symbol: 'BTC',
+        callback: jest.fn(),
+        onStatusChange,
+      });
 
       await flush();
       expect(onStatusChange).toHaveBeenLastCalledWith('error');
@@ -376,7 +392,10 @@ describe('AggregatedOrderBookConnection', () => {
       const connection = new AggregatedOrderBookConnection({
         isTestnet: () => false,
       });
-      const unsub = connection.subscribe({ symbol: 'BTC', callback: jest.fn() });
+      const unsub = connection.subscribe({
+        symbol: 'BTC',
+        callback: jest.fn(),
+      });
       mockState.transports[0].socket.dispatchEvent(new Event('terminate'));
 
       // Reconnect flow: tear the dead subscription down, then resubscribe.

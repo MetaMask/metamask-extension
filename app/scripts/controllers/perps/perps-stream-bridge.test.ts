@@ -847,9 +847,7 @@ describe('PerpsStreamBridge', () => {
   describe('perpsActivateOrderBookAggregatedStream / perpsDeactivateOrderBookAggregatedStream', () => {
     it('subscribes on the dedicated connection and emits on orderBookAggregated channel', async () => {
       const controller = createMockController();
-      const subscribeAggregatedOrderBook = jest
-        .fn()
-        .mockReturnValue(jest.fn());
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
         subscribeAggregatedOrderBook,
@@ -891,9 +889,7 @@ describe('PerpsStreamBridge', () => {
 
     it('emits connection status on the orderBookAggregatedStatus channel', async () => {
       const controller = createMockController();
-      const subscribeAggregatedOrderBook = jest
-        .fn()
-        .mockReturnValue(jest.fn());
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
       const { bridge, emit } = createBridge({
         controller: controller as unknown as PerpsController,
         subscribeAggregatedOrderBook,
@@ -930,7 +926,9 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateOrderBookStream as (p: {
           symbol: string;
         }) => Promise<void>
-      )({ symbol: 'ETH' });
+      )({
+        symbol: 'ETH',
+      });
       await (
         api.perpsActivateOrderBookAggregatedStream as (p: {
           symbol: string;
@@ -953,9 +951,7 @@ describe('PerpsStreamBridge', () => {
     it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
       const controller = createMockController();
       const controllerApi = createMockControllerApi();
-      const subscribeAggregatedOrderBook = jest
-        .fn()
-        .mockReturnValue(jest.fn());
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
       let resolveInit: () => void = () => undefined;
       controllerApi.perpsInit.mockReturnValue(
         new Promise<void>((resolve) => {
@@ -997,7 +993,11 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '1h', duration: '1d' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+        duration: '1d',
+      });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledWith({
         symbol: 'ETH',
@@ -1029,13 +1029,19 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '1h' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+      });
       (
         api.perpsDeactivateCandleStream as (p: {
           symbol: string;
           interval: string;
         }) => void
-      )({ symbol: 'ETH', interval: '1h' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+      });
 
       jest.advanceTimersByTime(150);
 
@@ -1064,12 +1070,18 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'BTC', interval: '1h' });
+      )({
+        symbol: 'BTC',
+        interval: '1h',
+      });
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '4h' });
+      )({
+        symbol: 'ETH',
+        interval: '4h',
+      });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledTimes(2);
 
@@ -1325,7 +1337,9 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ priceSymbols: ['ETH'] });
+      )({
+        priceSymbols: ['ETH'],
+      });
 
       expect(() => bridge.destroy()).not.toThrow();
     });
@@ -1369,7 +1383,9 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ priceSymbols: ['ETH'] });
+      )({
+        priceSymbols: ['ETH'],
+      });
 
       expect(() => {
         bridge.destroy();

@@ -181,7 +181,14 @@ describe('usePerpsLiveOrderBook', () => {
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateOrderBookAggregatedStream',
-        [{ symbol: 'BTC', levels: undefined, nSigFigs: 3, mantissa: undefined }],
+        [
+          {
+            symbol: 'BTC',
+            levels: undefined,
+            nSigFigs: 3,
+            mantissa: undefined,
+          },
+        ],
       );
     });
   });
