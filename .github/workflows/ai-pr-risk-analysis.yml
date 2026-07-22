@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: MetaMask/ai-analyzer
-          ref: v1
+          ref: infra-3751-gate-override-medium-cherry-picks
           path: .ai-analyzer-action
           token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
@@ -46,3 +46,9 @@ jobs:
           add-label: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          # TEST VALUES (infra-3751 pre-merge validation) — revert to production
+          # (ref: v1, author: runway-github[bot], title: cherry.?pick) for Part B.
+          gate-override-risk-threshold: medium
+          gate-override-base-pattern: '^release/'
+          gate-override-author: 'Qbandev'
+          gate-override-title-pattern: 'infra-3751'
