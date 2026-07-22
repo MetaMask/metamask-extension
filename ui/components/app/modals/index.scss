@@ -17,8 +17,6 @@
 
   &__content {
     margin: 0;
-    // TODO: @metamask/design-system-engineers remove background-color once pure black ships targeted(13.43.0) — managed via modalStyle in modal.tsx
-    background-color: var(--color-background-default);
     animation-fill-mode: forwards;
   }
 
