@@ -9,10 +9,6 @@
   flex-flow: column;
   border-radius: 8px;
 
-  [data-pure-black='true'] & {
-    background-color: var(--color-background-alternative);
-  }
-
   @include design-system.screen-sm-max {
     max-height: 450px;
   }

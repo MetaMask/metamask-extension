@@ -331,14 +331,12 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
   // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
   const modalStyle = {
     ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
-    ...(isPureBlack && { border: '1px solid var(--color-border-muted)' }),
-  };
-  const contentStyle = {
-    ...(modal.contentStyle ?? {}),
     ...(isPureBlack && {
       backgroundColor: 'var(--color-background-alternative)',
+      border: '1px solid var(--color-border-muted)',
     }),
   };
+  const contentStyle = modal.contentStyle ?? {};
 
   return (
     <FadeModal
