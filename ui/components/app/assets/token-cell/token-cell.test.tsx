@@ -14,6 +14,7 @@ import {
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
   getAllTokens,
+  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
@@ -188,6 +189,7 @@ describe('Token Cell', () => {
     ticker: 'ETH',
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
+  let mockAnyEnabledNetworksAreAvailable = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -220,6 +222,9 @@ describe('Token Cell', () => {
     if (selector === getUseSafeChainsListValidation) {
       return true;
     }
+    if (selector === selectAnyEnabledNetworksAreAvailable) {
+      return mockAnyEnabledNetworksAreAvailable;
+    }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
@@ -248,6 +253,10 @@ describe('Token Cell', () => {
     return undefined;
   });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
+
+  beforeEach(() => {
+    mockAnyEnabledNetworksAreAvailable = true;
+  });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
@@ -294,6 +303,30 @@ describe('Token Cell', () => {
 
     expect(amountElement).toBeInTheDocument();
     expect(amountElement.textContent).toBe('5.00M TEST');
+  });
+
+  it('shows a skeleton for native token percentage while fiat is loading', () => {
+    mockAnyEnabledNetworksAreAvailable = false;
+
+    const nativeTokenWithoutFiatAmount = {
+      ...propToken,
+      isNative: true,
+      tokenFiatAmount: undefined,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell
+        {...({
+          ...props,
+          token: nativeTokenWithoutFiatAmount,
+        } as TokenCellProps)}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
   });
 
   describe('musd.convert', () => {
