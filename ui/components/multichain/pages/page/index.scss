@@ -4,6 +4,9 @@
 
 .multichain-page {
   $height-screen-sm-min: 720px;
+  // Match the fullscreen max width in base-styles.scss (`--width-max: 798px`).
+  // Keep the side shadow hidden until the viewport is wider than that container.
+  $fullscreen-max-width-with-side-shadow: 799px;
 
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 

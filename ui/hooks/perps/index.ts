@@ -43,6 +43,7 @@ export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

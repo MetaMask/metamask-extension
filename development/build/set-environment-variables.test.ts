@@ -31,6 +31,7 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'QR_SYNC_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
+  'MM_PURE_BLACK_PREVIEW',
 ];
 
 function getVariablesForSetEnvironmentVariables() {
@@ -57,6 +58,7 @@ function getVariablesForSetEnvironmentVariables() {
     QR_SYNC_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
+    MM_PURE_BLACK_PREVIEW: false,
   });
 
   return variables;

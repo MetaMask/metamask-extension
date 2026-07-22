@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useDeferredValue } from '../../hooks/useDeferredValue';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -18,7 +18,7 @@ import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsModal } from '../details/transaction-details-modal';
+import { TransactionDetails } from '../details/transaction-details';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
@@ -41,6 +41,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
   const [networks, setNetworks] = useState<string[] | null>(null);
   const deferredNetworks = useDeferredValue(networks);
@@ -86,7 +87,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   useEventListener('popstate', () => {
-    setSelectedItem(null);
+    dialogRef.current?.close?.();
   });
 
   const handleClick = (item: ActivityListItem) => {
@@ -103,7 +104,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         })
         .build(),
     );
+
     setSelectedItem(item);
+
+    if (dialogRef.current && !dialogRef.current.open) {
+      dialogRef.current.showModal?.();
+    }
 
     const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
     const alreadyOnDetails = window.location.hash.includes(
@@ -123,16 +129,22 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       return;
     }
 
+    const activityType = selectedItem.type;
+    setSelectedItem(null);
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsClosed)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          activity_type: selectedItem.type,
+          activity_type: activityType,
         })
         .build(),
     );
-    window.history.back();
+
+    if (window.location.hash.includes(`${TX_DETAILS_ROUTE}/`)) {
+      window.history.back();
+    }
   };
 
   return (
@@ -181,12 +193,17 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         }}
       />
 
-      <TransactionDetailsModal
-        isOpen={Boolean(selectedItem?.hash)}
-        chainId={selectedItem?.chainId}
-        txIdentifier={selectedItem?.hash}
+      <dialog
+        ref={dialogRef}
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default"
         onClose={handleClose}
-      />
+      >
+        <TransactionDetails
+          chainId={selectedItem?.chainId}
+          txIdentifier={selectedItem?.hash}
+          onBack={() => dialogRef.current?.close?.()}
+        />
+      </dialog>
     </PendingTransactionCancelSpeedUpProvider>
   );
 }

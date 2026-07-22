@@ -58,6 +58,10 @@ jest.mock('../../components/app/transaction-activity-empty-state', () => ({
   ),
 }));
 
+jest.mock('../details/transaction-details', () => ({
+  TransactionDetails: () => null,
+}));
+
 describe('ActivityList', () => {
   afterEach(() => {
     jest.clearAllMocks();

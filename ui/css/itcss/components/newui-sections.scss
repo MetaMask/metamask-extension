@@ -44,24 +44,11 @@
 }
 
 // main-container media queries
+// Match the fullscreen max width in base-styles.scss (`--width-max: 798px`).
+// Keep the side shadow hidden until the viewport is wider than that container.
+$fullscreen-max-width-with-side-shadow: 799px;
 
-@include design-system.screen-sm-min {
-  .main-container {
-    &--has-shadow {
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    }
-  }
-}
-
-@include design-system.screen-md-min {
-  .main-container {
-    &--has-shadow {
-      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-    }
-  }
-}
-
-@include design-system.screen-lg-min {
+@media screen and (min-width: $fullscreen-max-width-with-side-shadow) {
   .main-container {
     &--has-shadow {
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
