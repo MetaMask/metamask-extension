@@ -7,7 +7,7 @@
       },
       "packages": {
         "@babel/code-frame>@babel/helper-validator-identifier": true,
-        "loose-envify>js-tokens": true,
+        "@babel/code-frame>js-tokens": true,
         "postcss>picocolors": true
       }
     },
@@ -58,12 +58,12 @@
       },
       "packages": {
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
       }
     },
-    "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": {
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -83,22 +83,22 @@
         "@babel/core>@babel/helper-compilation-targets>semver": true
       }
     },
-    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": {
+    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": {
       "globals": {
         "console.warn": true
       },
       "packages": {
         "@babel/core": true,
-        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
         "depcheck>@babel/traverse": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true
       }
     },
-    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": {
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -124,7 +124,7 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": {
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -132,8 +132,8 @@
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
       "packages": {
         "@babel/core": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -180,8 +180,8 @@
       },
       "packages": {
         "@babel/core": true,
-        "@babel/plugin-transform-private-property-in-object>@babel/helper-annotate-as-pure": true,
-        "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
         "react-compiler-webpack>@babel/plugin-syntax-typescript": true
@@ -257,7 +257,7 @@
         "TextDecoder": true
       }
     },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
+    "@babel/core>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
       },
@@ -271,7 +271,7 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
@@ -280,9 +280,9 @@
         "define": true
       }
     },
-    "terser>@jridgewell/source-map": {
+    "terser-webpack-plugin>terser>@jridgewell/source-map": {
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
@@ -395,21 +395,6 @@
     },
     "@lydell/node-pty>@lydell/node-pty-win32-x64": {
       "native": true
-    },
-    "@metamask/build-utils>@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
     },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir": {
       "builtin": {
@@ -965,7 +950,7 @@
         "Buffer.isBuffer": true
       }
     },
-    "terser>source-map-support>buffer-from": {
+    "browserify>concat-stream>buffer-from": {
       "globals": {
         "Buffer": true
       }
@@ -1039,7 +1024,7 @@
         "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
-        "del>is-glob": true,
+        "eslint>is-glob": true,
         "chokidar>normalize-path": true,
         "chokidar>readdirp": true
       }
@@ -1416,7 +1401,7 @@
         "setTimeout": true
       },
       "packages": {
-        "del>graceful-fs": true,
+        "webpack>graceful-fs": true,
         "webpack>tapable": true
       }
     },
@@ -1524,7 +1509,7 @@
         "eslint-plugin-react>estraverse": true
       }
     },
-    "eta": {
+    "html-bundler-webpack-plugin>eta": {
       "builtin": {
         "node:fs": true,
         "node:path": true
@@ -1756,10 +1741,10 @@
         "path.posix.dirname": true
       },
       "packages": {
-        "del>is-glob": true
+        "eslint>is-glob": true
       }
     },
-    "del>graceful-fs": {
+    "webpack>graceful-fs": {
       "builtin": {
         "assert.equal": true,
         "constants.O_SYMLINK": true,
@@ -1829,7 +1814,7 @@
         "html-bundler-webpack-plugin>ansis": true,
         "css-loader": true,
         "webpack>enhanced-resolve": true,
-        "eta": true,
+        "html-bundler-webpack-plugin>eta": true,
         "html-bundler-webpack-plugin>html-minifier-terser": true,
         "webpack>tapable": true,
         "webpack": true
@@ -1840,13 +1825,13 @@
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
         "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
-        "terser": true
+        "terser-webpack-plugin>terser": true
       }
     },
     "koa>http-errors": {
       "packages": {
         "koa>cookies>depd": true,
-        "pumpify>inherits": true,
+        "duplexify>inherits": true,
         "koa>http-errors>setprototypeof": true,
         "koa>statuses": true,
         "koa>http-errors>toidentifier": true
@@ -1883,7 +1868,7 @@
       "packages": {
         "nock>debug": true,
         "@viem/anvil>http-proxy": true,
-        "del>is-glob": true,
+        "eslint>is-glob": true,
         "webpack-dev-server>http-proxy-middleware>is-plain-object": true,
         "micromatch": true
       }
@@ -1945,12 +1930,12 @@
         "eslint>@eslint/eslintrc>import-fresh>resolve-from": true
       }
     },
-    "webpack-dev-server>serve-index>http-errors>inherits": {
+    "duplexify>inherits": {
       "builtin": {
         "util.inherits": true
       }
     },
-    "pumpify>inherits": {
+    "webpack-dev-server>serve-index>http-errors>inherits": {
       "builtin": {
         "util.inherits": true
       }
@@ -1971,9 +1956,9 @@
         "eslint-plugin-react>hasown": true
       }
     },
-    "del>is-glob": {
+    "eslint>is-glob": {
       "packages": {
-        "del>is-glob>is-extglob": true
+        "eslint>is-glob>is-extglob": true
       }
     },
     "terser-webpack-plugin>jest-worker": {
@@ -2449,6 +2434,7 @@
     },
     "mockttp>express>qs": {
       "packages": {
+        "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>side-channel": true
       }
     },
@@ -2688,7 +2674,7 @@
         "process": true
       }
     },
-    "@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
+    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
       "globals": {
         "console": true,
         "process": true
@@ -2863,7 +2849,7 @@
         "console": true
       }
     },
-    "terser>source-map-support": {
+    "addons-linter>source-map-support": {
       "builtin": {
         "fs": true,
         "path.dirname": true,
@@ -2875,8 +2861,8 @@
         "process": true
       },
       "packages": {
-        "terser>source-map-support>buffer-from": true,
-        "terser>source-map-support>source-map": true
+        "browserify>concat-stream>buffer-from": true,
+        "addons-linter>source-map-support>source-map": true
       }
     },
     "yargs>string-width": {
@@ -2893,7 +2879,7 @@
     },
     "tailwindcss>sucrase": {
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
       }
@@ -2934,7 +2920,7 @@
         "tailwindcss>dlv": true,
         "fast-glob": true,
         "eslint>glob-parent": true,
-        "del>is-glob": true,
+        "eslint>is-glob": true,
         "tailwindcss>jiti": true,
         "micromatch": true,
         "chokidar>normalize-path": true,
@@ -2950,21 +2936,6 @@
     "webpack>tapable": {
       "builtin": {
         "util.deprecate": true
-      }
-    },
-    "terser": {
-      "globals": {
-        "Buffer": true,
-        "atob": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "define": true,
-        "process": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map": true,
-        "jsdom>acorn": true
       }
     },
     "terser-webpack-plugin": {
@@ -2988,8 +2959,23 @@
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
-        "terser": true,
+        "terser-webpack-plugin>terser": true,
         "html-bundler-webpack-plugin>handlebars>uglify-js": true
+      }
+    },
+    "terser-webpack-plugin>terser": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process": true
+      },
+      "packages": {
+        "terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "jsdom>acorn": true
       }
     },
     "thread-loader": {
@@ -3145,7 +3131,7 @@
         "textChanges": true
       },
       "packages": {
-        "terser>source-map-support": true
+        "addons-linter>source-map-support": true
       }
     },
     "html-bundler-webpack-plugin>handlebars>uglify-js": {
@@ -3210,7 +3196,7 @@
       },
       "packages": {
         "webpack>glob-to-regexp": true,
-        "del>graceful-fs": true
+        "webpack>graceful-fs": true
       }
     },
     "webpack": {
@@ -3312,7 +3298,7 @@
         "webpack>es-module-lexer": true,
         "webpack>eslint-scope": true,
         "webpack>glob-to-regexp": true,
-        "del>graceful-fs": true,
+        "webpack>graceful-fs": true,
         "html-bundler-webpack-plugin": true,
         "webpack>json-parse-even-better-errors": true,
         "webpack>loader-runner": true,
@@ -3434,7 +3420,7 @@
         "webpack-dev-server>compression": true,
         "webpack-dev-server>connect-history-api-fallback": true,
         "mockttp>express": true,
-        "del>graceful-fs": true,
+        "webpack>graceful-fs": true,
         "webpack-dev-server>http-proxy-middleware": true,
         "webpack-dev-server>ipaddr.js": true,
         "webpack-dev-server>launch-editor": true,
