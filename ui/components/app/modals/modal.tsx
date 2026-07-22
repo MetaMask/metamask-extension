@@ -19,8 +19,6 @@ import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-import ConfirmResetAccount from './confirm-reset-account';
-
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
@@ -79,19 +77,6 @@ const MODALS: Record<string, ModalConfig> = {
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
       paddingRight:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-    },
-  },
-
-  CONFIRM_RESET_ACCOUNT: {
-    contents: <ConfirmResetAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
