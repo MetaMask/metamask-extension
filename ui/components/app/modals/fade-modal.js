@@ -125,7 +125,6 @@ const FadeModal = forwardRef(function FadeModal(
     closeOnClick = true,
     contentStyle = {},
     keyboard = true,
-    modalClassName = '',
     modalStyle = {},
     onShow = () => undefined,
     onHide = () => undefined,
@@ -258,11 +257,7 @@ const FadeModal = forwardRef(function FadeModal(
 
   return (
     <span>
-      <div
-        className={`modal${modalClassName ? ` ${modalClassName}` : ''}`}
-        style={modalStyle}
-        data-testid={testId}
-      >
+      <div className="modal" style={modalStyle} data-testid={testId}>
         <div
           className="modal__content"
           ref={contentRef}
@@ -283,7 +278,6 @@ FadeModal.propTypes = {
   closeOnClick: PropTypes.bool,
   contentStyle: PropTypes.object,
   keyboard: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-  modalClassName: PropTypes.string,
   modalStyle: PropTypes.object,
   onShow: PropTypes.func,
   onHide: PropTypes.func,

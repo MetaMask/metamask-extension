@@ -12,7 +12,6 @@ export type FadeModalProps = {
   closeOnClick?: boolean;
   contentStyle?: React.CSSProperties;
   keyboard?: boolean | ((event: KeyboardEvent) => void);
-  modalClassName?: string;
   modalStyle?: React.CSSProperties;
   onShow?: () => void;
   onHide?: () => void;

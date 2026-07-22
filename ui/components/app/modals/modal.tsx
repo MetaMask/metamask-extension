@@ -329,21 +329,15 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  const baseModalStyle =
-    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
-  const contentStyle = modal.contentStyle ?? {};
   // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const modalClassName = isPureBlack
-    ? 'bg-background-alternative border border-border-muted'
-    : undefined;
-  // Strip inline background/border when pure black is active so Tailwind classes take effect
-  const modalStyle = isPureBlack
-    ? Object.fromEntries(
-        Object.entries(baseModalStyle).filter(
-          ([key]) => key !== 'backgroundColor' && key !== 'border',
-        ),
-      )
-    : baseModalStyle;
+  const modalStyle = {
+    ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
+    ...(isPureBlack && {
+      backgroundColor: 'var(--color-background-alternative)',
+      border: '1px solid var(--color-border-muted)',
+    }),
+  };
+  const contentStyle = modal.contentStyle ?? {};
 
   return (
     <FadeModal
@@ -355,7 +349,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         hideModal(modal.customOnHideOpts);
       }}
       ref={modalRef}
-      modalClassName={modalClassName}
       modalStyle={modalStyle}
       contentStyle={contentStyle}
       backdropStyle={BACKDROPSTYLE}
