@@ -110,17 +110,20 @@ class SendPage {
     );
   }
 
-  async checkContinueButtonDisabled(): Promise<void> {
-    console.log('Waiting for continue button to be disabled');
+  /**
+   * Waits for the continue button to reach the expected enabled/disabled state.
+   *
+   * @param options - Wait options.
+   * @param options.state - Expected button state (`enabled` or `disabled`).
+   */
+  async checkContinueButton({
+    state,
+  }: {
+    state: 'enabled' | 'disabled';
+  }): Promise<void> {
+    console.log(`Waiting for continue button to be ${state}`);
     await this.driver.waitForSelector(this.continueButton, {
-      state: 'disabled',
-    });
-  }
-
-  async checkContinueButtonEnabled(): Promise<void> {
-    console.log('Waiting for continue button to be enabled');
-    await this.driver.waitForSelector(this.continueButton, {
-      state: 'enabled',
+      state,
     });
   }
 

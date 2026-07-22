@@ -98,7 +98,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
         await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount('0.5');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
         await sendPage.pressContinueButton();
 
         const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);

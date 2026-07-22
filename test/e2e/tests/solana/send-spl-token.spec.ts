@@ -279,10 +279,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 
@@ -362,10 +362,10 @@ describe('Send flow - SPL Token', function (this: Suite) {
           'USDC',
         );
 
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 

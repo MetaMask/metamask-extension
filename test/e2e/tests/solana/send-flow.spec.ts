@@ -79,7 +79,7 @@ describe('Send flow', function (this: Suite) {
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('1');
         await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
       },
     );
   });
@@ -123,12 +123,12 @@ describe('Send flow', function (this: Suite) {
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
         await sendPage.waitForSendAmountBalance();
         await sendPage.waitForSendAmountFiatValue(solSendAmountFiatValue);
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 
@@ -167,10 +167,10 @@ describe('Send flow', function (this: Suite) {
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
 
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
         await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
         await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.pressContinueButton();
 
