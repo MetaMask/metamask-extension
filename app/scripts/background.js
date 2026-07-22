@@ -9,6 +9,8 @@
 // eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
+import { runDummyPackage } from 'dummy-package';
+
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
@@ -236,6 +238,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
     persistenceManager,
     { validateVault: false },
   );
+  global.stateHooks.throwLavamoatError = () => runDummyPackage();
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);

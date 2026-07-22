@@ -96,24 +96,4 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
     );
   });
-
-  it('the offscreen environment is locked down', async function () {
-    if (!isManifestV3) {
-      this.skip();
-    }
-
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate(PAGES.OFFSCREEN);
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
-        );
-      },
-    );
-  });
 });

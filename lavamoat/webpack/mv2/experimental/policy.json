@@ -4465,6 +4465,11 @@
         "console.warn": true
       }
     },
+    "dummy-package": {
+      "globals": {
+        "console.log": true
+      }
+    },
     "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
