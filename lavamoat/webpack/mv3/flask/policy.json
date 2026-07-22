@@ -2597,7 +2597,6 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
