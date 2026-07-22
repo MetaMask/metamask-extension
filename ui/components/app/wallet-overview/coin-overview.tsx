@@ -55,6 +55,7 @@ import { BalanceEmptyState } from '../balance-empty-state';
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectBalanceBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -211,7 +212,17 @@ export const CoinOverview = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { privacyMode } = useSelector(getPreferences);
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      Boolean(
+        showNativeTokenAsMainBalance &&
+        Object.keys(enabledNetworks).length === 1,
+      ),
+    [showNativeTokenAsMainBalance, enabledNetworks],
+  );
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
@@ -219,6 +230,7 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
   const period = '1d';
@@ -226,13 +238,26 @@ export const CoinOverview = ({
 
   useRewardsModal();
 
+  const aggregateFiatBalanceIsZero = isZeroAmount(
+    selectedGroupBalance?.totalBalanceInUserCurrency ?? 0,
+  );
+
+  const shouldDelayZeroFiatBalance =
+    Boolean(selectedAccountGroup) &&
+    !isTestnet &&
+    !balanceIsCached &&
+    !showNativeTokenAsMain &&
+    hasBalance &&
+    aggregateFiatBalanceIsZero;
+
   const shouldShowBalanceLoadingState = useMemo(
     () =>
-      Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
-      !hasBalance &&
-      (balanceIsLoading || !balanceIsLoaded),
+      shouldDelayZeroFiatBalance ||
+      (Boolean(selectedAccountGroup) &&
+        !isTestnet &&
+        !balanceIsCached &&
+        !hasBalance &&
+        (balanceIsLoading || !balanceIsLoaded)),
     [
       selectedAccountGroup,
       isTestnet,
@@ -240,6 +265,7 @@ export const CoinOverview = ({
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
+      shouldDelayZeroFiatBalance,
     ],
   );
 
