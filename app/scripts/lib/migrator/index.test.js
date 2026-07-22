@@ -68,7 +68,6 @@ describe('migrations', () => {
       const testNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('.test.')[0];
-          // eslint-disable-next-line jest/no-if
           if (/^\d+$/u.test(name)) {
             acc.push(name);
           }
