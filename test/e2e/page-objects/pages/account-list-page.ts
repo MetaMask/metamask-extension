@@ -2,9 +2,6 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../constants';
-import PrivacySettings from './settings/privacy-settings';
-import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -970,39 +967,6 @@ class AccountListPage {
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.delay(500);
     await this.driver.clickElement(this.exportSrpButton);
-  }
-
-  async checkAccountBelongsToSrp(
-    accountName: string,
-    srpIndex: number,
-  ): Promise<void> {
-    console.log(`Check that current account is an imported account`);
-    await new HeaderNavbar(this.driver).openSettingsPage();
-    const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToSecurityAndPasswordSettings();
-
-    const privacySettings = new PrivacySettings(this.driver);
-    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-    await privacySettings.openSrpList();
-
-    if (srpIndex === 0) {
-      throw new Error('SRP index must be > 0');
-    }
-
-    const selectedSrp = await this.driver.waitForSelector({
-      css: '.select-srp__container',
-      text: `Secret Recovery Phrase ${srpIndex}`,
-    });
-    const showAccountsButton = await this.driver.waitForSelector(
-      `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
-    );
-    await showAccountsButton.click();
-
-    await this.driver.findNestedElement(selectedSrp, {
-      text: accountName,
-      tag: 'p',
-    });
   }
 
   async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
