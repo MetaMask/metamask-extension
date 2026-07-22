@@ -154,24 +154,16 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
-      // Destination token in title; token pair in subtitle when both known.
-      // API bridge rows may only include the source leg.
+      // Token in title. API bridge rows may only include the source leg.
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
-        const sourceSymbol = sourceToken?.symbol;
-        const destinationSymbol = destinationToken?.symbol;
-        const symbol = destinationSymbol ?? sourceSymbol ?? '';
-        const subtitle =
-          sourceSymbol && destinationSymbol
-            ? `${sourceSymbol} → ${destinationSymbol}`
-            : undefined;
+        const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
 
         return {
           avatarTokens: destinationToken
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle,
           primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
           primaryDirection: (destinationToken ?? sourceToken)?.direction,
           ...(destinationToken

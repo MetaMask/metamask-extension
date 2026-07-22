@@ -48,9 +48,7 @@ export const verifySubmittedSwapTransaction = async ({
   const expectedDestToken = quote.tokenTo ?? expectedSwapTokens?.tokenTo;
 
   if (quote.unapproved) {
-    action = isBridge
-      ? `Bridged ${expectedDestToken ?? expectedSrcToken}`
-      : 'Swapped';
+    action = isBridge ? `Bridged ${expectedSrcToken}` : 'Swapped';
     await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
@@ -61,9 +59,7 @@ export const verifySubmittedSwapTransaction = async ({
       txIndex: 2,
     });
   } else {
-    action = isBridge
-      ? `Bridged ${expectedDestToken ?? expectedSrcToken}`
-      : 'Swapped';
+    action = isBridge ? `Bridged ${expectedSrcToken}` : 'Swapped';
     await activityTab.checkTxAction({
       action,
       confirmedTx: expectedTransactionsCount,
