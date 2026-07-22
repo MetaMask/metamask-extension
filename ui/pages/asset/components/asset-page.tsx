@@ -35,10 +35,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  isEvmChainId,
-  toAssetId,
-} from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -106,7 +103,6 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
-
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -447,7 +443,6 @@ const AssetPage = ({
                 musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
               />
             )}
-
           </>
         )}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
