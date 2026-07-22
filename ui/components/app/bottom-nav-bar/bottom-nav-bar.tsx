@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -16,10 +16,13 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
+import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
+import useBridging from '../../../hooks/bridge/useBridging';
+import { resetBridgeController } from '../../../ducks/bridge/actions';
+import { transitionForward } from '../../ui/transition';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -49,13 +52,13 @@ const NavTab = ({
         name={icon}
         size={IconSize.Lg}
         color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
-        className="group-hover/tab:text-icon-default-hover"
+        className="transition-colors duration-200 group-hover/tab:text-icon-default-hover"
       />
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={isActive ? TextColor.TextDefault : TextColor.TextAlternative}
-        className="group-hover/tab:text-text-default"
+        className="transition-colors duration-200 group-hover/tab:text-text-default"
       >
         {label}
       </Text>
@@ -65,33 +68,57 @@ const NavTab = ({
 
 export function BottomNavBar() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
+  const { openBridgeExperience } = useBridging();
 
   const { isHome, isPerps, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
 
-  const handleHomeClick = useCallback(
-    () =>
+  // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
+  // controller (clears quotes + cache) and pass stayOnHomePage:true so that
+  // ConfirmationRouter doesn't redirect back during the async reset window.
+  const resetBridgeIfNeeded = useCallback(() => {
+    if (isSwaps) {
+      dispatch(resetBridgeController());
+    }
+  }, [dispatch, isSwaps]);
+
+  const handleHomeClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
+        { state: { stayOnHomePage: true } },
       ),
-    [navigate, lastActiveTab],
-  );
+    );
+  }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
 
-  const handlePerpsClick = useCallback(
-    () => navigate(PERPS_HOME_PAGE_ROUTE),
-    [navigate],
-  );
+  const handlePerpsClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    transitionForward(() =>
+      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  }, [navigate, resetBridgeIfNeeded]);
 
-  const handleSwapsClick = useCallback(() => navigate(SWAP_PATH), [navigate]);
+  const handleSwapsClick = useCallback(() => {
+    if (isSwaps) {
+      return;
+    }
+    transitionForward(() =>
+      openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
+    );
+  }, [openBridgeExperience, isSwaps]);
 
-  const handleActivityClick = useCallback(
-    () => navigate(ACTIVITY_ROUTE),
-    [navigate],
-  );
+  const handleActivityClick = useCallback(() => {
+    resetBridgeIfNeeded();
+    transitionForward(() =>
+      navigate(ACTIVITY_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  }, [navigate, resetBridgeIfNeeded]);
 
   return (
     <nav
@@ -109,7 +136,7 @@ export function BottomNavBar() {
       {isPerpsAvailable && (
         <NavTab
           isActive={isPerps}
-          icon={IconName.Candlestick}
+          icon={isPerps ? IconName.CandlestickFilled : IconName.Candlestick}
           label={t('perps')}
           onClick={handlePerpsClick}
           data-testid="bottom-nav-perps"

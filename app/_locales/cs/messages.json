@@ -78,9 +78,6 @@
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -251,9 +248,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"

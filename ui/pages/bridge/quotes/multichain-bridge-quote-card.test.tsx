@@ -16,13 +16,14 @@ import {
   MOCK_LEDGER_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
+import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { useRewards } from '../../../hooks/bridge/useRewards';
+import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { getToAccounts } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
@@ -34,6 +35,14 @@ import {
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
 }));
+
+jest.mock('../../../hooks/bridge/useCountdownTimer', () => ({
+  useCountdownTimer: jest.fn(),
+}));
+
+const mockUseCountdownTimer = useCountdownTimer as jest.MockedFunction<
+  typeof useCountdownTimer
+>;
 
 const mockUseRewards = useRewards as jest.MockedFunction<typeof useRewards>;
 const mockOnOpenPriceImpactWarningModal = jest.fn();
@@ -51,6 +60,7 @@ describe('MultichainBridgeQuoteCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseRewards.mockReturnValue(defaultUseRewardsReturn);
+    mockUseCountdownTimer.mockReturnValue(30);
   });
 
   it('renders a four-row skeleton while the quote card is loading', () => {
@@ -99,7 +109,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -190,7 +200,7 @@ describe('MultichainBridgeQuoteCard', () => {
                 ...quote.quote.feeData,
                 metabridge: {
                   ...quote.quote.feeData.metabridge,
-                  amount: '1000000000000000000',
+                  amount: '1',
                   quoteBpsFee: 87.5,
                 },
               },
@@ -282,7 +292,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -374,7 +384,7 @@ describe('MultichainBridgeQuoteCard', () => {
             usdExchangeRate: '.99',
           },
         },
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quoteRequest: {
           insufficientBal: false,
           srcChainId: 10,
@@ -567,7 +577,7 @@ describe('MultichainBridgeQuoteCard', () => {
             srcTokenAmount: '14000000',
           },
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         },
@@ -810,15 +820,13 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              gasSponsored: true,
-            },
-          }),
-        ),
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            gasSponsored: true,
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -902,7 +910,7 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -971,13 +979,13 @@ describe('MultichainBridgeQuoteCard', () => {
         quoteRequest: {
           insufficientBal: true,
           srcChainId: 10,
-          destChainId: 10,
+          destChainId: 137,
           srcTokenAddress: zeroAddress(),
           destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
           srcTokenAmount: '1000000000000000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -1040,15 +1048,13 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              gasIncluded: true,
-            },
-          }),
-        ),
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            gasIncluded: true,
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },

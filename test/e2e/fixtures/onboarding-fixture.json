@@ -39,7 +39,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 216,
+      "currentMigrationVersion": 219,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -2046,7 +2046,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -2112,6 +2111,17 @@
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
       "syncQueue": {}
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2306,6 +2316,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 216
+    "version": 219
   }
 }

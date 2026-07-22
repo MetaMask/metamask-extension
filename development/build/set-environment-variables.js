@@ -70,10 +70,14 @@ function setEnvironmentVariables({
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
+    QR_SYNC_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('QR_SYNC_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
+    MM_PURE_BLACK_PREVIEW: variables.getMaybe('MM_PURE_BLACK_PREVIEW'),
   });
 }
 

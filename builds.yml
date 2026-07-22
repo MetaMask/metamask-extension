@@ -29,7 +29,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
@@ -55,7 +55,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -80,10 +80,11 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
+      - QR_SYNC_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -104,7 +105,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
@@ -266,6 +267,7 @@ env:
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
   - QUICKNODE_ARC_URL: null
+  - QUICKNODE_ROBINHOOD_URL: null
 
   ###
   # API keys to 3rd party services
@@ -369,7 +371,10 @@ env:
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
-  - ADD_DEVICE_SYNC_ENABLED: false
+  - QR_SYNC_ENABLED: false
+  # Pure-black (OLED) dark mode. Set to true in .metamaskrc for local dev,
+  # or change this entry to true to enable for all users in a build.
+  - MM_PURE_BLACK_PREVIEW: false
 
   ###
   # Meta variables
@@ -435,3 +440,11 @@ env:
 
   # Basic Functionality toggle (required for onboarding)
   - BFT_CONSOLIDATION_ENABLED: false
+
+  # Sentry browser SDK serverless environment checks
+  - FUNCTIONS_WORKER_RUNTIME: ''
+  - LAMBDA_TASK_ROOT: ''
+  - K_SERVICE: ''
+  - CF_PAGES: ''
+  - VERCEL: ''
+  - NETLIFY: ''
