@@ -415,7 +415,7 @@ export function AssetPickerModal({
     return unlistedAssetMetadata ? [unlistedAssetMetadata] : filteredTokenList;
   }, [unlistedAssetMetadata, filteredTokenList]);
 
-  const getNetworkPickerLabel = () => {
+  const networkPickerLabel = useMemo(() => {
     if (!isMultiselectEnabled) {
       return (
         (selectedNetwork?.chainId &&
@@ -438,7 +438,13 @@ export function AssetPickerModal({
       default:
         return t('someNetworks', [selectedChainIds?.length]);
     }
-  };
+  }, [
+    isMultiselectEnabled,
+    selectedNetwork,
+    selectedChainIds,
+    allNetworksToUse.length,
+    t,
+  ]);
 
   return (
     <Modal
@@ -488,7 +494,7 @@ export function AssetPickerModal({
             justifyContent={JustifyContent.center}
           >
             <PickerNetwork
-              label={getNetworkPickerLabel()}
+              label={networkPickerLabel}
               src={
                 selectedNetwork?.chainId
                   ? getImageForChainId(selectedNetwork.chainId)
