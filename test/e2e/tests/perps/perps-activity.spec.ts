@@ -19,7 +19,6 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
-import { PerpsTransactionDetailsPage } from '../../page-objects/pages/perps/perps-transaction-details-page';
 import { getPerpsConfigEligibleWithActivity } from './perps-fixture-config';
 import { WS_WITH_ACTIVITY_DATA } from './mocks/websocketActivityMocks';
 
@@ -194,14 +193,13 @@ describe('Perps Activity', function (this: Suite) {
         await activityPage.selectFilter('order');
         await activityPage.waitForAnyTransactionCard();
 
-        // Click the first order card — navigates to the dedicated Perps
-        // transaction details page (orders/trades/funding are off-chain
-        // events with no market-detail-page equivalent).
+        // Click the first order card — navigates to the transaction details page
         await activityPage.clickFirstTransactionCard();
 
         // Verify we landed on the transaction details page
-        const transactionDetailsPage = new PerpsTransactionDetailsPage(driver);
-        await transactionDetailsPage.checkPageIsLoaded();
+        await driver.waitForSelector({
+          testId: 'perps-transaction-details-page',
+        });
       },
     );
   });
