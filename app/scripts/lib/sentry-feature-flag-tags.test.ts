@@ -23,7 +23,9 @@ describe('getFeatureFlagTags', () => {
     it('reads flags from the background post-init shape (state.RemoteFeatureFlagController.remoteFeatureFlags)', () => {
       const appState = {
         state: {
-          RemoteFeatureFlagController: { remoteFeatureFlags: { [FLAG]: false } },
+          RemoteFeatureFlagController: {
+            remoteFeatureFlags: { [FLAG]: false },
+          },
         },
       };
 
@@ -145,5 +147,4 @@ describe('getFeatureFlagTags', () => {
       });
     });
   });
-
 });
