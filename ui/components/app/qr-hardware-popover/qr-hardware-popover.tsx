@@ -183,6 +183,7 @@ const QRHardwarePopover = () => {
           <QRHardwareSignRequest
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
+            setCameraPermissionDenied={setCameraPermissionDenied}
             handleCancel={signRequestCancel}
             request={activeScanRequest.request}
           />
