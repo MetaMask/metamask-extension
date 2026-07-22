@@ -842,7 +842,6 @@
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
-      "eslint-import-resolver-typescript>unrs-resolver": false,
       "@sentry/cli#2.56.0": true,
       "@swc/core#1.13.2": true,
       "core-js-pure#3.41.0": true,
