@@ -22,12 +22,6 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { mockSegment } from './mocks/segment';
 
-/**
- * Historically this Segment event was named "Wallet Password Created".
- * Do not use the constants from the metrics constants files, because if these
- * change we want a strong indicator to our data team that the shape of data
- * will change.
- */
 const WALLET_CREATION_ATTEMPTED_EVENT = 'Wallet Creation Attempted';
 
 async function navigateToCreatePasswordPage(driver: Driver) {
@@ -70,9 +64,13 @@ async function completeOnboardingFromPasswordPage(
   await homePage.waitForLoadingOverlayToDisappear();
 }
 
-function getWalletCreationAttemptedEvents(
-  events: { type?: string; event?: string }[],
-) {
+type SegmentTrackEvent = {
+  type?: string;
+  event?: string;
+  properties?: Record<string, unknown>;
+};
+
+function getWalletCreationAttemptedEvents(events: SegmentTrackEvent[]) {
   return events.filter(
     (event) =>
       event.type === 'track' && event.event === WALLET_CREATION_ATTEMPTED_EVENT,
