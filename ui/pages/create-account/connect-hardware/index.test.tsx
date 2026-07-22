@@ -9,6 +9,8 @@ import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import {
@@ -24,6 +26,10 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
+import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
+import configureStore from '../../../store/store';
 import ConnectHardwareForm, {
   LEDGER_HD_PATHS,
   LATTICE_HD_PATHS,
@@ -70,8 +76,6 @@ jest.mock('../../../store/actions', () => ({
   }),
 }));
 
-const mockGetActiveQrCodeScanRequest = jest.fn().mockReturnValue(null);
-
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
   getSelectedAddress: () => '0xselectedAddress',
@@ -80,8 +84,9 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
-  getActiveQrCodeScanRequest: (...args: unknown[]) =>
-    mockGetActiveQrCodeScanRequest(...args),
+  getActiveQrCodeScanRequest: (state: {
+    metamask?: { activeQrCodeScanRequest?: unknown };
+  }) => state.metamask?.activeQrCodeScanRequest ?? null,
 }));
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
@@ -129,6 +134,7 @@ function createMockState(overrides?: Record<string, unknown>) {
         },
       ],
       ledgerTransportType: LedgerTransportTypes.webhid,
+      activeQrCodeScanRequest: null,
     },
     appState: {
       networkDropdownOpen: false,
@@ -148,6 +154,7 @@ function createMockState(overrides?: Record<string, unknown>) {
         [HardwareDeviceNames.ledger]: DEFAULT_HD_PATH,
         [HardwareDeviceNames.oneKey]: DEFAULT_HD_PATH,
         [HardwareDeviceNames.trezor]: DEFAULT_HD_PATH,
+        [HardwareDeviceNames.qr]: DEFAULT_HD_PATH,
       },
       mostRecentOverviewPage: '',
       ledgerTransportType: LedgerTransportTypes.webhid,
@@ -184,6 +191,55 @@ describe('ConnectHardwareForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationKey = 'default';
+    mockCheckHardwareStatus.mockResolvedValue(false);
+  });
+
+  describe('QR pair scan completion', () => {
+    const pairScanRequest = {
+      type: QrScanRequestType.PAIR,
+      requestId: 'pair-request-1',
+    };
+
+    it('probes hardware status and reconnects after a QR pair scan clears', async () => {
+      mockCheckHardwareStatus.mockResolvedValue(true);
+      mockConnectHardware.mockResolvedValue([
+        {
+          address: '0x2222222222222222222222222222222222222222',
+          index: 0,
+        },
+      ]);
+
+      const base = createMockState();
+      const store = configureStore({
+        ...base,
+        metamask: {
+          ...base.metamask,
+          activeQrCodeScanRequest: pairScanRequest,
+        },
+      });
+      renderWithProvider(<ConnectHardwareForm />, store);
+
+      await act(async () => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { activeQrCodeScanRequest: null },
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockCheckHardwareStatus).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          0,
+          DEFAULT_HD_PATH,
+          false,
+          expect.any(Function),
+        );
+      });
+    });
   });
 
   describe('exported HD path constants', () => {
@@ -597,6 +653,25 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(
           screen.getByText(tEn('QRHardwarePubkeyAccountOutOfRange')),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('displays youNeedToAllowCameraAccess when QR camera permission was denied', async () => {
+      mockConnectHardware.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.PermissionCameraDenied,
+          HardwareWalletType.Qr,
+        ),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice('QRCode');
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('youNeedToAllowCameraAccess')),
         ).toBeInTheDocument();
       });
     });

@@ -229,8 +229,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
+} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -5434,6 +5433,10 @@ export default class MetamaskController extends EventEmitter {
         deviceRead: true,
       },
       async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no isUnlocked(); pairing is reported via getMode().
+          return Boolean(keyring.getMode());
+        }
         return keyring.isUnlocked();
       },
     );

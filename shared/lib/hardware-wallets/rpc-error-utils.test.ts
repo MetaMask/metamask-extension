@@ -17,9 +17,9 @@ import {
   extractMessageFromUnknownError,
   hasUserRejectedMessage,
   isTrezorDesktopConnectionMissingError,
-} from './rpcErrorUtils';
+} from './rpc-error-utils';
 
-describe('rpcErrorUtils', () => {
+describe('rpc-error-utils', () => {
   const mockWalletType = HardwareWalletType.Ledger;
   const trezorWalletType = HardwareWalletType.Trezor;
 

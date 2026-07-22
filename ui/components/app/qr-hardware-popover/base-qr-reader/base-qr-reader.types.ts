@@ -69,6 +69,11 @@ export type BaseQrReaderProps = {
   setErrorTitle: (title: string) => void;
   /** Signals the parent that BaseQrReader is showing error content. */
   setErrorActive: (active: boolean) => void;
+  /**
+   * Reports whether the scanner is currently showing a camera-permission
+   * recovery state so the parent can cancel with a permission-denied error.
+   */
+  setCameraPermissionDenied?: (denied: boolean) => void;
 };
 
 /**

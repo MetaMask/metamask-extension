@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,6 +27,8 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../../helpers/constants/routes';
+import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -56,6 +59,7 @@ const QRHardwarePopover = () => {
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const [errorTitle, setErrorTitle] = useState('');
   const [errorActive, setErrorActive] = useState(false);
+  const cameraPermissionDeniedRef = useRef(false);
 
   const { txData } = useSelector(
     (state: { confirmTransaction: ConfirmTransactionSlice }) => {
@@ -76,10 +80,22 @@ const QRHardwarePopover = () => {
   }
 
   const dispatch = useDispatch();
-  const walletImporterCancel = useCallback(
-    () => dispatch(cancelQrCodeScan()),
-    [dispatch],
-  );
+  const setCameraPermissionDenied = useCallback((denied: boolean) => {
+    cameraPermissionDeniedRef.current = denied;
+  }, []);
+
+  const getCameraPermissionDeniedError = useCallback(() => {
+    return cameraPermissionDeniedRef.current
+      ? createHardwareWalletError(
+          ErrorCode.PermissionCameraDenied,
+          HardwareWalletType.Qr,
+        )
+      : undefined;
+  }, []);
+
+  const walletImporterCancel = useCallback(() => {
+    dispatch(cancelQrCodeScan(getCameraPermissionDeniedError()));
+  }, [dispatch, getCameraPermissionDeniedError]);
 
   const signRequestCancel = useCallback(() => {
     // txData may not be populated yet if the user cancels before Redux
@@ -93,8 +109,8 @@ const QRHardwarePopover = () => {
       );
       dispatch(cancelTx(txDataRef.current));
     }
-    dispatch(cancelQrCodeScan());
-  }, [dispatch]);
+    dispatch(cancelQrCodeScan(getCameraPermissionDeniedError()));
+  }, [dispatch, getCameraPermissionDeniedError]);
 
   // Error-specific title takes priority. When the child is showing error
   // content (errorActive) without a specific title, suppress the flow heading
@@ -160,6 +176,7 @@ const QRHardwarePopover = () => {
             handleCancel={walletImporterCancel}
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
+            setCameraPermissionDenied={setCameraPermissionDenied}
           />
         )}
         {activeScanRequest.type === QrScanRequestType.SIGN && (
