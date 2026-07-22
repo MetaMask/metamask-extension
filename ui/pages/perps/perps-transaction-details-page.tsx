@@ -157,7 +157,10 @@ const TradeDetailRows = ({
         label={t('perpsEntryPrice')}
         value={formatPerpsFiatUniversal(fill.entryPrice)}
       />
-      <DetailRow label={t('perpsSize')} value={`${fill.size} ${displaySymbol}`} />
+      <DetailRow
+        label={t('perpsSize')}
+        value={`${fill.size} ${displaySymbol}`}
+      />
       {showPnl && (
         <DetailRow
           label={t('perpsPnl')}
@@ -264,7 +267,10 @@ const PerpsTransactionDetailsPage = () => {
             justifyContent={BoxJustifyContent.Center}
             data-testid="perps-transaction-details-not-found"
           >
-            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
               {t('perpsNoTransactions')}
             </Text>
           </Box>
@@ -298,7 +304,10 @@ const PerpsTransactionDetailsPage = () => {
           paddingBottom={4}
           data-testid="perps-transaction-details-hero"
         >
-          <PerpsTokenLogo symbol={transaction.symbol} size={AvatarTokenSize.Lg} />
+          <PerpsTokenLogo
+            symbol={transaction.symbol}
+            size={AvatarTokenSize.Lg}
+          />
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
@@ -314,7 +323,10 @@ const PerpsTransactionDetailsPage = () => {
           </Box>
         </Box>
 
-        <Box flexDirection={BoxFlexDirection.Column} className="divide-y divide-border-muted">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          className="divide-y divide-border-muted"
+        >
           <DetailRow
             label={t('perpsOrderDate')}
             value={formatDateTime(transaction.timestamp)}
