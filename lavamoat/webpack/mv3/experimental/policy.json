@@ -1158,9 +1158,10 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/wallet>@metamask/connectivity-controller": {
+    "@metamask/connectivity-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/base-controller": true,
+        "reselect": true
       }
     },
     "@metamask/controller-utils": {
@@ -1973,6 +1974,21 @@
         "async-mutex": true
       }
     },
+    "@metamask/network-connection-banner-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/client-controller": true,
+        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
@@ -1988,7 +2004,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
+        "@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -2016,7 +2032,8 @@
         "@metamask/keyring-api": true,
         "@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "reselect": true
       }
     },
     "@metamask/transaction-controller>@metamask/nonce-tracker": {
@@ -2742,7 +2759,7 @@
         "@metamask/address-book-controller": true,
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/wallet>@metamask/connectivity-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
