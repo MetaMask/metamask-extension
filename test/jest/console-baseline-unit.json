@@ -185,9 +185,6 @@
       "MetaMask: Background connection not initialized": 9,
       "React: PropTypes validation failures": 1
     },
-    "ui/components/app/assets/asset-list/asset-list.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/components/app/assets/defi-list/defi-tab.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
@@ -226,8 +223,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/components/app/metametrics-toggle/metametrics-toggle.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "error: Error: MetaMetrics context trackEvent was": 3
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/app/modals/customize-nonce/customize-nonce.test.js": {
       "React: PropTypes validation failures": 1
@@ -355,9 +351,6 @@
     "ui/components/multichain/app-header/app-header.test.js": {
       "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Input stability warnings": 3
-    },
-    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -895,7 +888,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/settings/debug-tab/debug-content/debug-content.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 11,
+      "React: Act warnings (component updates not wrapped)": 8,
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/debug-tab/debug-content/toggle-row-component.test.tsx": {
@@ -956,9 +949,6 @@
     "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -970,7 +960,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/shield/plan/shield-payment-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6
+      "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/shield/plan/shield-plan.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
