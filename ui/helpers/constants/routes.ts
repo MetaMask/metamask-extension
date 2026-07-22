@@ -13,6 +13,9 @@ export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
+export const ASSET_DETAILS_ROUTE =
+  `${ASSET_ROUTE}/:chainId/:asset?/:id?` as const;
+export const ASSET_IMAGE_ROUTE = `${ASSET_ROUTE}/image/:asset/:id` as const;
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
 export const ASSETS_ROUTE = '/settings/assets';
@@ -106,6 +109,7 @@ export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const HARDWARE_WALLET_REPAIR_ROUTE = '/hardware-wallet-repair';
 export const SEND_ROUTE = '/send';
+export const SEND_PAGE_ROUTE = `${SEND_ROUTE}/:page?` as const;
 export const REMOTE_ROUTE = '/remote';
 export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
 export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
@@ -113,7 +117,11 @@ export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
+export const TOKEN_TRANSFER_DETAILS_ROUTE =
+  `${TOKEN_TRANSFER_ROUTE}/:origin?` as const;
 export const REVIEW_GATOR_PERMISSIONS_ROUTE = '/review-gator-permissions';
+export const REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE =
+  `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?` as const;
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -285,12 +293,12 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: `${ASSET_ROUTE}/image/:asset/:id`,
+    path: ASSET_IMAGE_ROUTE,
     label: 'Nft Image Page',
     trackInAnalytics: true,
   },
   {
-    path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+    path: ASSET_DETAILS_ROUTE,
     label: 'Asset Page',
     trackInAnalytics: true,
   },
@@ -578,7 +586,7 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: `${SEND_ROUTE}/:page?`,
+    path: SEND_PAGE_ROUTE,
     label: 'Send Page',
     trackInAnalytics: true,
   },
@@ -840,12 +848,12 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
+    path: TOKEN_TRANSFER_DETAILS_ROUTE,
     label: 'Gator Permissions Token Transfer',
     trackInAnalytics: false,
   },
   {
-    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
+    path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
