@@ -7325,7 +7325,7 @@
     "message": "Status"
   },
   "perpsOrderType": {
-    "message": "Type"
+    "message": "Order type"
   },
   "perpsOrderValue": {
     "message": "Order value"

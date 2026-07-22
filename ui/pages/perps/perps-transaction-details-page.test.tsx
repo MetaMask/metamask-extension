@@ -54,14 +54,10 @@ const createMockStore = () =>
 // plain string, but `createMemoryRouter`'s `initialEntries` also accepts a
 // location descriptor object (needed here to carry `state`), hence the cast.
 const renderWithTransaction = (transaction?: PerpsTransaction) =>
-  renderWithProvider(
-    <PerpsTransactionDetailsPage />,
-    createMockStore(),
-    {
-      pathname: PERPS_TRANSACTION_DETAILS_ROUTE,
-      state: transaction ? { transaction } : null,
-    } as unknown as string,
-  );
+  renderWithProvider(<PerpsTransactionDetailsPage />, createMockStore(), {
+    pathname: PERPS_TRANSACTION_DETAILS_ROUTE,
+    state: transaction ? { transaction } : null,
+  } as unknown as string);
 
 describe('PerpsTransactionDetailsPage', () => {
   beforeEach(() => {
@@ -114,7 +110,9 @@ describe('PerpsTransactionDetailsPage', () => {
       expect(
         screen.getByText(messages.perpsOrderStatus.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('Open')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusOpen.message),
+      ).toBeInTheDocument();
 
       expect(
         screen.getByText(messages.perpsOrderType.message),
