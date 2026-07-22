@@ -2025,7 +2025,6 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
@@ -2039,7 +2038,8 @@
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@nktkas/hyperliquid": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid": true,
+        "@metamask/perps-controller>bignumber.js": true,
         "uuid": true
       }
     },
@@ -2826,36 +2826,44 @@
         "@ngraveio/bc-ur>sha.js": true
       }
     },
-    "@nktkas/hyperliquid": {
+    "@metamask/perps-controller>@nktkas/hyperliquid": {
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "CustomEvent": true,
         "DOMException": true,
+        "DecompressionStream": true,
         "Event": true,
         "EventTarget": true,
         "Headers": true,
+        "Response": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
+        "atob": true,
         "clearInterval": true,
+        "clearTimeout": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
-        "@nktkas/hyperliquid>@nktkas/rews": true,
-        "@nktkas/hyperliquid>@noble/hashes": true,
-        "@nktkas/hyperliquid>valibot": true
+        "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
+        "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
       }
     },
-    "@nktkas/hyperliquid>@nktkas/rews": {
+    "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "CloseEvent": true,
-        "CustomEvent": true,
+        "DOMException": true,
         "Event": true,
         "EventTarget": true,
         "MessageEvent": true,
+        "TextEncoder": true,
+        "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
@@ -2926,7 +2934,7 @@
         "crypto": true
       }
     },
-    "@nktkas/hyperliquid>@noble/hashes": {
+    "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3892,6 +3900,11 @@
       }
     },
     "@metamask/notification-services-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
@@ -6788,7 +6801,7 @@
         "msCrypto": true
       }
     },
-    "@nktkas/hyperliquid>valibot": {
+    "@metamask/perps-controller>@nktkas/hyperliquid>valibot": {
       "globals": {
         "Blob": true,
         "File": true,

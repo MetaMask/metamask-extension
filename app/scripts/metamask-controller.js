@@ -129,6 +129,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
@@ -352,7 +353,6 @@ import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
 import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { AggregatedOrderBookConnection } from './controllers/perps/aggregated-order-book-connection';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
