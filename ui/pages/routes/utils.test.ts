@@ -1,8 +1,83 @@
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   extractIdFromPathname,
   getRelativeLocationForNestedRoutes,
+  setDocumentPureBlack,
+  setTheme,
 } from './utils';
+
+describe('setDocumentPureBlack', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-pure-black');
+  });
+
+  it('sets data-pure-black on the document root when active', () => {
+    setDocumentPureBlack(true);
+    expect(document.documentElement.getAttribute('data-pure-black')).toBe(
+      'true',
+    );
+  });
+
+  it('removes data-pure-black from the document root when inactive', () => {
+    document.documentElement.setAttribute('data-pure-black', 'true');
+    setDocumentPureBlack(false);
+    expect(document.documentElement.hasAttribute('data-pure-black')).toBe(
+      false,
+    );
+  });
+});
+
+describe('setTheme', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+    document.documentElement.removeAttribute('data-pure-black');
+    delete process.env.MM_PURE_BLACK_PREVIEW;
+  });
+
+  it('sets data-theme on the document root from the resolved theme', () => {
+    setTheme(ThemeType.light);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.light,
+    );
+    expect(document.documentElement.hasAttribute('data-pure-black')).toBe(
+      false,
+    );
+  });
+
+  it('does not set data-pure-black when theme is dark and MM_PURE_BLACK_PREVIEW is off', () => {
+    setTheme(ThemeType.dark);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.dark,
+    );
+    expect(document.documentElement.hasAttribute('data-pure-black')).toBe(
+      false,
+    );
+  });
+
+  it('sets data-pure-black when theme is dark and MM_PURE_BLACK_PREVIEW is on', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'true';
+    setTheme(ThemeType.dark);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.dark,
+    );
+    expect(document.documentElement.getAttribute('data-pure-black')).toBe(
+      'true',
+    );
+  });
+
+  it('does not set data-pure-black when theme is light even with MM_PURE_BLACK_PREVIEW on', () => {
+    process.env.MM_PURE_BLACK_PREVIEW = 'true';
+    document.documentElement.setAttribute('data-pure-black', 'true');
+    setTheme(ThemeType.light);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.light,
+    );
+    expect(document.documentElement.hasAttribute('data-pure-black')).toBe(
+      false,
+    );
+  });
+});
 
 describe('extractIdFromPathname', () => {
   const BASE_ROUTE = `${CONFIRM_TRANSACTION_ROUTE}/`;
