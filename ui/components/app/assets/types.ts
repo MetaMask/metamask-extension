@@ -58,9 +58,6 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
-    // TODO: Sync the name `accountAssetInfo` to `metadata`,
-    // it is the generic name for asset metadata.
-    accountAssetInfo?: Asset['accountAssetInfo'];
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
