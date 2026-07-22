@@ -191,8 +191,7 @@ describe('PersistenceManager', () => {
       expect(persistError).toBeUndefined();
       expect(writeRetryRecoveredListener).toHaveBeenCalledWith({
         event: 'set-retry-recovered',
-        firstErrorMessage:
-          'Simulated storage.local.set failure for testing',
+        firstErrorMessage: 'Simulated storage.local.set failure for testing',
         firstErrorName: 'Error',
         retryDelayMs: WRITE_RETRY_DELAY_MS,
       });
