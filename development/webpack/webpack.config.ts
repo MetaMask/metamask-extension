@@ -529,29 +529,32 @@ const config = {
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
               implementation: 'sass-embedded',
+              api: 'modern',
+              // Disable the webpackImporter, as we:
+              //  a) don't want to rely on it in case we want to switch away
+              //     from webpack in the future
+              //  b) the sass importer is faster
+              //  c) the "modern" sass api doesn't work with the
+              //     webpackImporter yet.
+              webpackImporter: false,
               sassOptions: {
-                api: 'modern',
                 // We don't need to specify the charset because the HTML
                 // already does and browsers use the HTML's charset for CSS.
                 // Additionally, webpack + sass can cause problems with the
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
-                // The order of includePaths is important; prefer our own
+                quietDeps: true,
+                // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+                silenceDeprecations: ['import'],
+                // The order of loadPaths is important; prefer our own
                 // folders over `node_modules`
-                includePaths: [
+                loadPaths: [
                   // enables aliases to `@use design - system`,
                   // `@use utilities`, etc.
                   join(context, '../ui/css'),
                   join(context, '../node_modules'),
                 ],
-                // Disable the webpackImporter, as we:
-                //  a) don't want to rely on it in case we want to switch away
-                //     from webpack in the future
-                //  b) the sass importer is faster
-                //  c) the "modern" sass api doesn't work with the
-                //     webpackImporter yet.
-                webpackImporter: false,
               },
             },
           },

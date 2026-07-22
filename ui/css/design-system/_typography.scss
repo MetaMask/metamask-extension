@@ -15,19 +15,19 @@ $typography-variants: (
   'h9': 0.5rem,
 );
 
-$font-size-h1: map-get($typography-variants, 'h1');
-$font-size-h2: map-get($typography-variants, 'h2');
-$font-size-h3: map-get($typography-variants, 'h3');
-$font-size-h4: map-get($typography-variants, 'h4');
-$font-size-h5: map-get($typography-variants, 'h5');
-$font-size-h6: map-get($typography-variants, 'h6');
-$font-size-paragraph: map-get($typography-variants, 'paragraph');
-$font-size-h7: map-get($typography-variants, 'h7');
-$font-size-h8: map-get($typography-variants, 'h8');
-$font-size-h9: map-get($typography-variants, 'h9');
+$font-size-h1: map.get($typography-variants, 'h1');
+$font-size-h2: map.get($typography-variants, 'h2');
+$font-size-h3: map.get($typography-variants, 'h3');
+$font-size-h4: map.get($typography-variants, 'h4');
+$font-size-h5: map.get($typography-variants, 'h5');
+$font-size-h6: map.get($typography-variants, 'h6');
+$font-size-paragraph: map.get($typography-variants, 'paragraph');
+$font-size-h7: map.get($typography-variants, 'h7');
+$font-size-h8: map.get($typography-variants, 'h8');
+$font-size-h9: map.get($typography-variants, 'h9');
 
 @mixin typography($variant) {
-  font-size: map-get($typography-variants, $variant);
+  font-size: map.get($typography-variants, $variant);
   font-family: $font-family;
   line-height: 140%;
   font-style: normal;
