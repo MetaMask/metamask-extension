@@ -907,10 +907,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
 
@@ -992,7 +988,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: walletFundsObtainedMonitorMessenger,
       events: ['NotificationServicesController:notificationsListUpdated'],
       actions: [
-        'MetaMetricsController:trackEvent',
         'AppStateController:setCanTrackWalletFundsObtained',
         'OnboardingController:getState',
         'NotificationServicesController:getState',
@@ -3639,7 +3634,6 @@ export default class MetamaskController extends EventEmitter {
               excludeMetaMetricsId: options?.excludeMetaMetricsId,
               matomoEvent: options?.matomoEvent,
             }),
-          options,
         );
       },
       trackAnalyticsEvent: trackEvent,
@@ -5016,11 +5010,8 @@ export default class MetamaskController extends EventEmitter {
           createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
             .addProperties({
               status: 'completed',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: newHdEntropyIndex,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_bitcoin_accounts_discovered:
                 discoveredAccounts?.Bitcoin,
             })

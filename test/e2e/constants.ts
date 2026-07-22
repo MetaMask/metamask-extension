@@ -265,6 +265,37 @@ export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
 /* Default TRON address shortened display (Account 1) */
 export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
 
+/**
+ * Tron addresses derived from `E2E_SRP` for HD accounts 1-8 (BIP44 path
+ * `m/44'/195'/0'/0/i`). Used by `account-derivation.spec.ts` to verify
+ * derivation across the first 8 accounts. Re-derive with the script in
+ * `docs/superpowers/plans/2026-04-30-tron-account-derivation.md` Task 1
+ * if the SRP or derivation path ever changes.
+ *
+ * Note: index 0 matches `DEFAULT_TRON_ADDRESS`. `DEFAULT_TRON_ADDRESS_2` is
+ * an unrelated recipient address used in send-flow tests — it is not a
+ * snap-derived account and does not appear in this array.
+ */
+export const EXPECTED_TRON_ADDRESSES_BY_INDEX = [
+  DEFAULT_TRON_ADDRESS,
+  'TQMPuQSHEiUevynTJSCDeh3QSBwJeFKC6W',
+  'TRQwNiQKov6hQ3pEKVGj2t8ge8YM9vu8ZY',
+  'TR5uG9oGNSr5hKcCLdN5zF498BTij5Yz1x',
+  'THbDj5zszwXFqBuzexjXF71uEU58BVcp3A',
+  'TBfAcJpbucUvLashnYvQ3uQyeLuD2vAs5J',
+  'TFcoStNDSQZLadR2MasxMo7E3c19hwvw63',
+  'TRnntwBfRqh4aXZVaZuLT9Htk1r9JBU4WY',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
