@@ -58,21 +58,6 @@ export const anyScopesMatch = (
 };
 
 /**
- * Helper function to check if a single account scope matches the target scope.
- * This is a convenience wrapper around anyScopesMatch for single scope comparisons.
- *
- * @param accountScope - Single scope string from the account
- * @param targetScope - The target scope to match against
- * @returns True if the scope matches, false otherwise
- */
-export const scopeMatches = (
-  accountScope: string,
-  targetScope: string,
-): boolean => {
-  return anyScopesMatch([accountScope], targetScope);
-};
-
-/**
  * Checks if an account supports the requested chain IDs
  *
  * @param accountScopes - Array of account scopes to check

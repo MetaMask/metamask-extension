@@ -23,7 +23,6 @@ const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
 const {
   // Omitted from generic Perps manifest flags because the production payload is
   // large and the withdraw confirmation tests provide a small explicit override.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_post_quote: _confirmationsPayPostQuote,
   ...PERPS_PROD_REMOTE_FLAGS
 } = PROD_REMOTE_FLAGS;

@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -11,6 +12,8 @@ import {
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
+  ETH_11_USDC_TO_ARB_METADATA,
+  OP_0_005_ETH_TO_ARB_METADATA,
 } from '../../../test/data/bridge/dummy-quotes';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
@@ -222,13 +225,16 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        ...ETH_11_USDC_TO_ARB_METADATA,
+      };
+
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
-        );
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
+
+      expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
@@ -249,19 +255,21 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('executes EVM bridge transaction with no approval', async () => {
+    it.only('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
+      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+        ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
+        ...OP_0_005_ETH_TO_ARB_METADATA,
+      };
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
-        );
+        await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
+
+      expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(result.current.isSubmitting).toBe(false);
@@ -277,9 +285,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       await act(async () => {
         await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
         );
       });
 
@@ -323,9 +329,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       await act(async () => {
         await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
         );
       });
 
@@ -500,9 +504,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       await act(async () => {
         await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
         );
       });
 
@@ -526,16 +528,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
           intent: {
             order: {},
-          },
+          } as never,
         },
       };
 
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          quoteWithIntent as any,
-        );
+        await result.current.submitBridgeTransaction(quoteWithIntent);
       });
 
       expect(submitIntentSpy).toHaveBeenCalledWith({
@@ -571,16 +569,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
           intent: {
             order: {},
-          },
+          } as never,
         },
       };
 
       await act(async () => {
-        await result.current.submitBridgeTransaction(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          quoteWithIntent as any,
-        );
+        await result.current.submitBridgeTransaction(quoteWithIntent);
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
@@ -608,19 +602,13 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
           intent: {
             order: {},
-          },
+          } as never,
         },
       };
 
-      await expect(
-        act(async () => {
-          await result.current.submitBridgeTransaction(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            quoteWithIntent as any,
-          );
-        }),
-      ).rejects.toThrow('Hardware wallets cannot submit bridge intent quotes');
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
 
       expect(mockUseNavigate).not.toHaveBeenCalledWith(
         `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,

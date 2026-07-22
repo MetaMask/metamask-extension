@@ -24,8 +24,8 @@ import {
 import { MOCK_ACCOUNT_TRON_MAINNET } from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
+import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
@@ -1051,7 +1051,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -1088,7 +1088,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      } = recommendedQuote as QuoteResponse;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1131,7 +1131,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1170,11 +1170,9 @@ describe('Bridge selectors', () => {
           valueInCurrency: '0.33900007473646602',
         },
       ];
-      result.sortedQuotes.forEach(
-        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
-          expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
-        },
-      );
+      result.sortedQuotes.forEach((quote, idx: number) => {
+        expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+      });
 
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
@@ -1184,7 +1182,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteMetadata & QuoteResponse;
+      } = recommendedQuote as QuoteResponse;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         quote,
@@ -1227,7 +1225,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1323,7 +1321,7 @@ describe('Bridge selectors', () => {
     it('should sort quotes by adjustedReturn', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
       });
 
@@ -1369,7 +1367,7 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { sortOrder: SortOrder.ETA_ASC },
         bridgeStateOverrides: {
           quotes: [
-            ...(mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[]),
+            ...mockBridgeQuotesNativeErc20,
             {
               ...mockBridgeQuotesNativeErc20[0],
               estimatedProcessingTimeInSeconds: 1,
@@ -1425,7 +1423,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('1'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
@@ -1515,7 +1513,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -1619,7 +1617,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
@@ -1756,7 +1754,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
           assetExchangeRates: mockErc20SrcAssetRates('20'),
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
@@ -2218,7 +2216,7 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
-          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotes: mockErc20Erc20Quotes,
         },
       });
       const result = getValidationErrors(state as never);
@@ -2241,7 +2239,7 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
       });
       const result = getValidationErrors(state as never);
@@ -2270,7 +2268,7 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
       });
       const result = getValidationErrors(state as never);
@@ -2347,7 +2345,7 @@ describe('Bridge selectors', () => {
           fromTokenExchangeRate: 2524.25,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quoteRequest: {
             srcChainId: 10,
             srcTokenAddress: zeroAddress(),
@@ -2429,7 +2427,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -2542,7 +2540,7 @@ describe('Bridge selectors', () => {
                 ...quote.quote,
                 priceData: { ...quote.quote.priceData, priceImpact },
               },
-            })) as unknown as QuoteResponse[],
+            })),
             quoteRequest: {
               srcChainId: 10,
               srcTokenAddress: zeroAddress(),
@@ -4225,7 +4223,7 @@ describe('Bridge selectors', () => {
               ...quote.quote,
               priceData: { ...quote.quote.priceData, priceImpact: '0.15' },
             },
-          })) as unknown as QuoteResponse[],
+          })),
         },
       });
       const result = getPriceImpact(state as never);
@@ -4249,7 +4247,7 @@ describe('Bridge selectors', () => {
               ...quote.quote,
               priceData: { ...quote.quote.priceData, priceImpact: undefined },
             },
-          })) as unknown as QuoteResponse[],
+          })),
         },
       });
       const result = getPriceImpact(state as never);
@@ -4267,7 +4265,7 @@ describe('Bridge selectors', () => {
               ...quote.quote,
               priceData: { ...quote.quote.priceData, priceImpact: '0.15' },
             },
-          })) as unknown as QuoteResponse[],
+          })),
         },
       });
       const result = getFormattedPriceImpactPercentage(state as never);
@@ -4289,8 +4287,7 @@ describe('Bridge selectors', () => {
       // so selectBridgeQuotesWithMetadata can look up exchange rates and compute valueInCurrency.
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes:
-            DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
           quoteRequest: {
             srcChainId: 10,
             srcTokenAddress: zeroAddress(),
@@ -4502,7 +4499,7 @@ describe('Bridge selectors', () => {
               ...quote.quote,
               priceData: { ...quote.quote.priceData, priceImpact: '0.07' },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quoteRequest: {
             srcChainId: 10,
             srcTokenAddress: zeroAddress(),
