@@ -117,6 +117,10 @@ class AccountListPage {
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
+  private readonly multichainAccountListSearch = {
+    testId: 'multichain-account-list-search',
+  };
+
   private readonly multichainAccountMenuAddresses = {
     tag: 'p',
     text: 'Addresses',
@@ -228,7 +232,7 @@ class AccountListPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.addMultichainAccountButton,
-        this.addMultichainWalletButton,
+        this.multichainAccountListSearch,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
@@ -325,11 +329,11 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.checkAddWalletButtonIsDisplayed();
     await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
       timeout,
       waitAtLeastGuard: largeDelayMs,
     });
+    await this.checkAddWalletButtonIsDisplayed();
   }
 
   /**
