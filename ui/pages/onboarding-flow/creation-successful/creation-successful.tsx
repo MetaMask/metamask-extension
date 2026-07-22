@@ -39,8 +39,6 @@ import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import WalletReadyAnimation from './wallet-ready-animation';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const t = useI18nContext();

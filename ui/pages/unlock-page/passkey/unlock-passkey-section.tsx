@@ -164,7 +164,6 @@ export const UnlockPasskeySection = ({
                 status: 'cancelled',
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 duration_ms: durationMs,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 reason: errorCode,
               })
               .build(),

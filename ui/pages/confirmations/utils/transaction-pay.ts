@@ -115,7 +115,6 @@ export function getAvailableTokens({
           t.chainId === chainId && t.address === getNativeTokenAddress(chainId),
       );
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const noNativeBalance =
         !nativeToken || new BigNumber(nativeToken.balance ?? 0).isZero();
 
