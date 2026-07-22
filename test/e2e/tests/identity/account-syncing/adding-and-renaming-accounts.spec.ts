@@ -72,7 +72,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -128,7 +127,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify both accounts from previous phase are still visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -203,7 +201,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify all accounts and renames are properly synced
         await accountListPage.checkAccountDisplayedInAccountList(

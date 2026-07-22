@@ -57,7 +57,6 @@ describe('Account syncing - Accounts with Balances', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Should see default account
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');

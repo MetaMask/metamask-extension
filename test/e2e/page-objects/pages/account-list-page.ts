@@ -228,15 +228,21 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.addMultichainAccountButton,
-        this.multichainAccountListSearch,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [this.addMultichainAccountButton, this.multichainAccountListSearch],
+        { timeout },
+      );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
+    }
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted(timeout);
     }
     console.log('Account list is loaded');
   }
@@ -252,7 +258,7 @@ class AccountListPage {
     expectedErrorMessage: string = '',
   ): Promise<void> {
     console.log(`Watch EOA account with address ${address}`);
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.chooseWalletTypeWatchEthereumAccountButton,
     );
@@ -285,7 +291,7 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -309,7 +315,7 @@ class AccountListPage {
    */
   async addMultichainWallet(): Promise<void> {
     console.log(`Adding new multichain wallet`);
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
@@ -333,15 +339,6 @@ class AccountListPage {
       waitAtLeastGuard: largeDelayMs,
     });
     await this.checkAddWalletButtonIsDisplayed();
-  }
-
-  /**
-   * Clicks the "Add wallet" button, first waiting until account syncing is
-   * completed since the button is initially enabled, then disabled, and then enabled again, causig flakiness.
-   */
-  private async clickAddWalletButton(): Promise<void> {
-    await this.waitUntilSyncingIsCompleted();
-    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
@@ -413,7 +410,7 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -564,7 +561,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -812,7 +809,7 @@ class AccountListPage {
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     if (expectedAvailability) {
       await this.driver.waitForSelector(
         this.chooseWalletTypeWatchEthereumAccountButton,
@@ -945,7 +942,7 @@ class AccountListPage {
   async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    await this.clickAddWalletButton();
+    await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importWalletFromMultichainWalletModalButton,
     );

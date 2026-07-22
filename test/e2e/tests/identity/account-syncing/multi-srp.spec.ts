@@ -69,7 +69,6 @@ describe('Account syncing - Multiple SRPs', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(

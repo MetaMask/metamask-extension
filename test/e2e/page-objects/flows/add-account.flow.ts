@@ -81,8 +81,8 @@ export const addMultipleAccounts = async ({
  * @param driver - The WebDriver instance.
  * @param privateKey - The private key to import.
  * @param options - Optional flow configuration.
- * @param options.accountListTimeout - When set, waits for account syncing to
- * finish (with this timeout in ms) before importing.
+ * @param options.accountListTimeout - Timeout while waiting for the account list
+ * (including account syncing) to be ready.
  */
 export async function importPrivateKeyAccount(
   driver: Driver,
@@ -93,12 +93,7 @@ export async function importPrivateKeyAccount(
   await homepage.headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded();
-  if (options.accountListTimeout !== undefined) {
-    await accountListPage.waitUntilSyncingIsCompleted(
-      options.accountListTimeout,
-    );
-  }
+  await accountListPage.checkPageIsLoaded(options.accountListTimeout);
   await accountListPage.addNewImportedAccount(privateKey);
   await accountListPage.closeMultichainAccountsPage();
 }

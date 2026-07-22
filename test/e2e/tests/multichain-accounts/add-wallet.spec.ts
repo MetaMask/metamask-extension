@@ -102,14 +102,12 @@ describe('Add wallet', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
         // Extended timeout: AccountTreeController sync (triggered by the
         // multi-SRP vault) can take longer than the default 10s on Firefox CI.
-        await accountListPage.waitUntilSyncingIsCompleted(30000);
+        await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.startImportSecretPhrase(E2E_SRP);
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.waitUntilSyncingIsCompleted(30000);
+        await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
