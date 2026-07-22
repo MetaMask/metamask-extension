@@ -4,6 +4,11 @@ import React, { useState } from 'react';
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
+
 describe('Popover', () => {
   it('should render popover element correctly', () => {
     const { getByTestId, getByText, container } = render(
@@ -330,5 +335,20 @@ describe('Popover', () => {
 
     // Assert that the popover is closed after the click event
     expect(queryByText('Click outside to close')).not.toBeInTheDocument();
+  });
+
+  it('applies background-alternative when pure black mode is active', () => {
+    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
+    usePureBlack.mockReturnValue(true);
+
+    const { getByTestId } = render(
+      <Popover data-testid="popover" isOpen={true} isPortal={false}>
+        Popover
+      </Popover>,
+    );
+
+    expect(getByTestId('popover')).toHaveClass(
+      'mm-box--background-color-background-alternative',
+    );
   });
 });
