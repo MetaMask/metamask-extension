@@ -54,7 +54,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
-      "pendingShieldCohort": "string",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",
@@ -319,5 +318,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 217 }
+  "meta": { "storageKind": "split", "version": 219 }
 }

@@ -24,32 +24,32 @@ export enum BuildTypeEnv {
 
   /**
    * UAT build for flask build type.
-   * This will be used when we run the UAT (QA or dist) flask build. (e.g. `yarn build --build-type flask dist`)
+   * This will be used when we run the UAT (QA or dist) flask build. (e.g. `yarn dist --type flask`)
    */
   UatFlask = 'UatFlask',
 
   /**
    * Production build for main build type.
-   * This will be used when we run the production build. (e.g. `yarn build prod`)
+   * This will be used when we run the production build. (e.g. `yarn webpack:lavamoat:build --zip --env production`)
    */
   ProdMain = 'ProdMain',
 
   /**
    * Production build for flask build type.
-   * This will be used when we run the production flask build. (e.g. `yarn build --build-type flask prod`)
+   * This will be used when we run the production flask build. (e.g. `yarn webpack:lavamoat:build --type flask --zip --env production`)
    */
   ProdFlask = 'ProdFlask',
 
   /**
    * Beta build for (production or release candidate) main build type.
-   * This will be used when we run the beta build (e.g. `yarn build beta`) on the
+   * This will be used when we run the beta build (e.g. `yarn webpack:lavamoat:build --type beta --zip`) on the
    * (production or release candidate) environment.
    */
   Beta = 'Beta',
 
   /**
    * Beta build for the UAT environment.
-   * This will be used when we run the beta build (e.g. `yarn build beta`) on the feature PRs.
+   * This will be used when we run the beta build (e.g. `yarn webpack:lavamoat:build --type beta --zip`) on the feature PRs.
    */
   UatBeta = 'UatBeta',
 }
@@ -206,15 +206,6 @@ export function isProductionBuild() {
  */
 export function isReleaseCandidateBuild() {
   return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
-}
-
-export function getProfilePairingEnv(): ProfileSyncEnv {
-  if (isProductionBuild() || isReleaseCandidateBuild()) {
-    return ProfileSyncEnv.PRD;
-  } else if (isDevOrTestBuild()) {
-    return ProfileSyncEnv.DEV;
-  }
-  return ProfileSyncEnv.UAT;
 }
 
 /**

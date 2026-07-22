@@ -89,7 +89,6 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import { augmentAssetControllersState } from '../components/app/assets/enablement/arc';
@@ -294,8 +293,6 @@ export const getTokenBalancesEvm = createSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -325,8 +322,6 @@ export const getTokenBalancesEvm = createSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -908,7 +903,6 @@ export const selectBalanceForAllWallets = createSelector(
         accountTreeState,
         accountsById,
         enabledNetworkMap,
-        traceAsControllerCallback,
       );
     }
     return calculateBalanceForAllWallets(
@@ -979,7 +973,6 @@ export const selectBalanceChangeBySelectedAccountGroup = (
           enabledNetworkMap,
           groupId,
           period,
-          traceAsControllerCallback,
         );
       }
       return calculateBalanceChangeForAccountGroup(
@@ -1219,6 +1212,108 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     });
 
     return hasEvmBalance || hasNonEvmBalance || hasErc20Tokens;
+  },
+);
+
+/**
+ * Determines whether balance data has loaded for the selected account group.
+ * A missing balance record means the wallet can still be hydrating, so the UI
+ * should avoid showing the zero-balance empty state until a zero is confirmed.
+ *
+ * @param state - Redux state containing account tree, accounts, and balances.
+ * @returns true if the account group has at least one mainnet balance record.
+ */
+export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
+  [
+    selectAccountTreeStateForBalances,
+    selectAccountsStateForBalances,
+    selectMultichainBalancesStateForBalances,
+    selectAllMainnetNetworksEnabledMap,
+    getAccountTrackerControllerAccountsByChainId,
+  ],
+  (
+    accountTreeState,
+    accountsState,
+    multichainBalancesState,
+    allMainnetNetworksMap,
+    accountsByChainId,
+  ): boolean => {
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return false;
+    }
+
+    const accountTree = accountTreeState?.accountTree;
+    if (!accountTree?.wallets) {
+      return false;
+    }
+
+    let groupAccountIds: string[] = [];
+    for (const treeWallet of Object.values(accountTree.wallets)) {
+      if (treeWallet.groups[selectedGroupId]) {
+        groupAccountIds = treeWallet.groups[selectedGroupId].accounts || [];
+        break;
+      }
+    }
+
+    if (groupAccountIds.length === 0) {
+      return false;
+    }
+
+    const groupAccountIdsSet = new Set(groupAccountIds);
+    const groupEvmAddresses = new Set<string>();
+    const groupNonEvmAccountIds = new Set<string>();
+
+    Object.entries(accountsState.internalAccounts?.accounts || {}).forEach(
+      ([accountId, account]) => {
+        if (!groupAccountIdsSet.has(accountId)) {
+          return;
+        }
+
+        if (isEvmAccountType(account.type) && account.address) {
+          groupEvmAddresses.add(account.address.toLowerCase());
+          return;
+        }
+
+        groupNonEvmAccountIds.add(accountId);
+      },
+    );
+
+    const mainnetEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.eip155 || {}),
+    );
+    const mainnetNonEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.solana || {}).concat(
+        Object.keys(allMainnetNetworksMap?.bip122 || {}),
+      ),
+    );
+
+    const hasLoadedEvmBalance = Object.entries(accountsByChainId || {}).some(
+      ([chainId, chainAccounts]) => {
+        if (!mainnetEvmChainIds.has(chainId) || !isObject(chainAccounts)) {
+          return false;
+        }
+
+        return Object.keys(chainAccounts).some((address) =>
+          groupEvmAddresses.has(address.toLowerCase()),
+        );
+      },
+    );
+
+    const hasLoadedNonEvmBalance = Object.entries(
+      multichainBalancesState?.balances || {},
+    ).some(([accountId, accountBalances]) => {
+      if (!groupNonEvmAccountIds.has(accountId) || !isObject(accountBalances)) {
+        return false;
+      }
+
+      return Object.keys(accountBalances).some((assetId) => {
+        const chainId = assetId.split('/')[0];
+        return mainnetNonEvmChainIds.has(chainId);
+      });
+    });
+
+    return hasLoadedEvmBalance || hasLoadedNonEvmBalance;
   },
 );
 

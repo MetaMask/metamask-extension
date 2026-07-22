@@ -97,8 +97,6 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import-x/first */
-
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -746,12 +744,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternallyConnectable(...args);
 });
 
-function saveTimestamp() {
-  const timestamp = new Date().toISOString();
-
-  browser.storage.session.set({ timestamp });
-}
-
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
@@ -839,20 +831,13 @@ async function initialize(backup) {
   // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
   if (process.env.IN_TEST && window.navigator?.webdriver) {
     const { getSocketBackgroundToMocha } =
-      // Use `require` to make it easier to exclude this test code from the Browserify build.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+      // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+      // eslint-disable-next-line n/global-require
       require('../../test/e2e/background-socket/socket-background-to-mocha');
     getSocketBackgroundToMocha();
   }
 
   if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-    saveTimestamp();
-    setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-
     const sessionData = await browser.storage.session.get([
       'isFirstMetaMaskControllerSetup',
     ]);
@@ -1023,8 +1008,8 @@ export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
-    // Use `require` to make it easier to exclude this test code from the Browserify build.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+    // eslint-disable-next-line n/global-require
     const { generateWalletState } = require('./fixtures/generate-wallet-state');
     const fixtureBuilder = await generateWalletState(withState, false);
 
@@ -1081,7 +1066,7 @@ export async function loadStateFromPersistence(backup) {
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
-      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+      ? // eslint-disable-next-line n/global-require
         require('../../test/e2e/fixtures/default-fixture.json').meta.version
       : null,
   });

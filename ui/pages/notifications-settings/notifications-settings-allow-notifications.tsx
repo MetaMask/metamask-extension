@@ -33,8 +33,6 @@ import {
   NotificationsSettingsType,
 } from '../../components/multichain';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsAllowNotifications({
   loading,
   setLoading,
@@ -66,8 +64,6 @@ export function NotificationsSettingsAllowNotifications({
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = errorEnableNotifications || errorDisableNotifications;
 
   useEffect(() => {
@@ -169,8 +165,6 @@ export function NotificationsSettingsAllowNotifications({
     >
       <NotificationsSettingsBox
         value={toggleValue}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={toggleNotifications}
         disabled={disabled}
         loading={loading}

@@ -2,100 +2,74 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../constants';
-import PrivacySettings from './settings/privacy-settings';
-import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
   private readonly driver: Driver;
-
-  private readonly accountListBalance =
-    '[data-testid="first-currency-display"]';
-
-  private readonly accountPageBalance = '[data-testid="balance-display"]';
-
-  private readonly accountValueAndSuffix =
-    '[data-testid="account-value-and-suffix"]';
-
-  private readonly accountListItem =
-    '.multichain-account-menu-popover__list--menu-item';
-
-  private readonly multichainAccountListItem = '.multichain-account-cell';
-
-  private readonly walletHeader =
-    '[data-testid="multichain-account-tree-wallet-header"]';
-
-  private readonly accountMenuButton =
-    '[data-testid="account-list-menu-details"]';
 
   private readonly accountDetailsTab = {
     text: 'Account details',
     tag: 'button',
   };
 
-  private readonly multichainAccountOptionsMenuButton =
-    '[data-testid="multichain-account-cell-end-accessory"]';
+  private readonly accountListBalance =
+    '[data-testid="first-currency-display"]';
 
-  // Indexed XPath so the correct account is targeted when multiple accounts
-  // share the same label (e.g. "Account 1" across multiple SRPs).
-  private readonly multichainAccountOptionsMenuButtonByLabel = (
-    accountLabel: string,
-    srpIndex: number,
-  ) =>
-    `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
-      `${accountLabel} options`,
-    )}])[${srpIndex + 1}]`;
+  private readonly accountListItem =
+    '.multichain-account-menu-popover__list--menu-item';
+
+  private readonly accountMenuButton =
+    '[data-testid="account-list-menu-details"]';
+
+  private readonly accountPageBalance = '[data-testid="balance-display"]';
+
+  private readonly accountValueAndSuffix =
+    '[data-testid="account-value-and-suffix"]';
 
   private readonly addHardwareWalletButton =
     '[data-testid="choose-wallet-type-hardware-wallet"]';
-
-  private readonly chooseWalletTypeWatchEthereumAccountButton =
-    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
   private readonly addingAccountMessage = {
     text: 'Adding account...',
     tag: 'p',
   };
 
-  private readonly addSnapAccountButton =
-    '[data-testid="choose-wallet-type-snap-account"]';
-
-  private readonly walletDetailsButton = {
-    text: 'Details',
-    tag: 'button',
-  };
-
-  private readonly closeAccountModalButton =
-    'header button[aria-label="Close"]';
-
-  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
-
-  private readonly closeMultichainAccountsPageButton =
-    '.multichain-page-header button[aria-label="Back"]';
+  private readonly addMultichainAccountButton =
+    '[data-testid="add-multichain-account-button"]';
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
-  private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-wallet"]';
+  private readonly addSnapAccountButton =
+    '[data-testid="choose-wallet-type-snap-account"]';
 
-  private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-account"]';
+  private readonly addWalletButtonReady = {
+    tag: 'p',
+    text: 'Add wallet',
+  };
 
-  private readonly multichainAccountMenuItem =
-    '.multichain-account-cell-menu-item';
+  private readonly addWalletButtonSyncing = {
+    tag: 'p',
+    text: 'Syncing...',
+  };
 
-  private readonly multichainAccountNameInput =
-    '[data-testid="account-name-input"] input';
+  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
 
-  private readonly multichainAccountNameInputConfirmButton =
-    '[data-testid="account-name-confirm-button"]';
+  private readonly chooseWalletTypeWatchEthereumAccountButton =
+    '[data-testid="choose-wallet-type-watch-ethereum-account"]';
 
-  private readonly addMultichainAccountButton =
-    '[data-testid="add-multichain-account-button"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
+
+  private readonly closeMultichainAccountsPageButton =
+    '.multichain-page-header button[aria-label="Back"]';
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
+
+  private readonly exportSrpButton = {
+    text: 'Show Secret Recovery Phrase',
+    tag: 'button',
+  };
 
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
@@ -106,26 +80,43 @@ class AccountListPage {
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
 
-  private readonly unhideAccountButton =
-    '[data-testid="multichain-account-menu-item-showAccount"]';
-
   private readonly importAccountConfirmButton =
     '[data-testid="import-account-confirm-button"]';
 
-  private readonly importAccountPrivateKeyInput = '#private-key-box';
-
   private readonly importAccountDropdownOption = '.dropdown__select';
+
+  private readonly importAccountFromMultichainWalletModalButton =
+    '[data-testid="choose-wallet-type-import-account"]';
+
+  private readonly importAccountJsonFileInput =
+    'input[data-testid="file-input"]';
 
   private readonly importAccountJsonFileOption = {
     text: 'JSON File',
     tag: 'option',
   };
 
-  private readonly importAccountJsonFileInput =
-    'input[data-testid="file-input"]';
-
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
+
+  private readonly importAccountPrivateKeyInput = '#private-key-box';
+
+  private readonly importSrpConfirmButton = {
+    text: 'Continue',
+    tag: 'span',
+  };
+
+  private readonly importSrpInput =
+    '[data-testid="srp-input-import__srp-note"]';
+
+  private readonly importWalletFromMultichainWalletModalButton =
+    '[data-testid="choose-wallet-type-import-wallet"]';
+
+  private readonly multichainAccountListItem = '.multichain-account-cell';
+
+  private readonly multichainAccountListSearch = {
+    testId: 'multichain-account-list-search',
+  };
 
   private readonly multichainAccountMenuAddresses = {
     tag: 'p',
@@ -142,6 +133,9 @@ class AccountListPage {
     text: 'Hide account',
   };
 
+  private readonly multichainAccountMenuItem =
+    '.multichain-account-cell-menu-item';
+
   private readonly multichainAccountMenuPin = {
     tag: 'p',
     text: 'Pin to top',
@@ -152,11 +146,27 @@ class AccountListPage {
     text: 'Rename',
   };
 
+  private readonly multichainAccountNameInput =
+    '[data-testid="account-name-input"] input';
+
+  private readonly multichainAccountNameInputConfirmButton =
+    '[data-testid="account-name-confirm-button"]';
+
+  private readonly multichainAccountOptionsMenuButton =
+    '[data-testid="multichain-account-cell-end-accessory"]';
+
+  // Indexed XPath so the correct account is targeted when multiple accounts
+  // share the same label (e.g. "Account 1" across multiple SRPs).
+  private readonly multichainAccountOptionsMenuButtonByLabel = (
+    accountLabel: string,
+    srpIndex: number,
+  ) =>
+    `(//*[@data-testid="multichain-account-cell-end-accessory" and @aria-label=${quoteXPathText(
+      `${accountLabel} options`,
+    )}])[${srpIndex + 1}]`;
+
   private readonly pinAccountButton =
     '[data-testid="multichain-account-menu-item-pinToTop"]';
-
-  private readonly unpinAccountButton =
-    '[data-testid="multichain-account-menu-item-unpin"]';
 
   private readonly pinnedHeader =
     '[data-testid="multichain-account-tree-pinned-header"]';
@@ -179,6 +189,25 @@ class AccountListPage {
     tag: 'button',
   };
 
+  private readonly unhideAccountButton =
+    '[data-testid="multichain-account-menu-item-showAccount"]';
+
+  private readonly unpinAccountButton =
+    '[data-testid="multichain-account-menu-item-unpin"]';
+
+  private readonly viewAccountOnExplorerButton = {
+    text: 'View on explorer',
+    tag: 'p',
+  };
+
+  private readonly walletDetailsButton = {
+    text: 'Details',
+    tag: 'button',
+  };
+
+  private readonly walletHeader =
+    '[data-testid="multichain-account-tree-wallet-header"]';
+
   private readonly watchAccountAddressInput =
     'input#address-input[type="text"]';
 
@@ -192,29 +221,6 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpInput =
-    '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly importSrpConfirmButton = {
-    text: 'Continue',
-    tag: 'span',
-  };
-
-  private readonly exportSrpButton = {
-    text: 'Show Secret Recovery Phrase',
-    tag: 'button',
-  };
-
-  private readonly viewAccountOnExplorerButton = {
-    text: 'View on explorer',
-    tag: 'p',
-  };
-
-  private readonly syncingMessage = {
-    text: 'Syncing...',
-    tag: 'p',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -225,16 +231,15 @@ class AccountListPage {
   ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.addMultichainWalletButton],
+        [this.addMultichainAccountButton, this.multichainAccountListSearch],
         { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
-
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted();
+      await this.waitUntilSyncingIsCompleted(timeout);
     }
     console.log('Account list is loaded');
   }
@@ -321,11 +326,16 @@ class AccountListPage {
 
   /**
    * Waiting until syncing is completed.
+   *
+   * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(): Promise<void> {
+  async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
+      timeout,
+      waitAtLeastGuard: largeDelayMs,
+    });
     await this.checkAddWalletButtonIsDisplayed();
-    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
@@ -726,7 +736,7 @@ class AccountListPage {
 
   async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
-    await this.driver.waitForSelector(this.addMultichainWalletButton);
+    await this.driver.waitForSelector(this.addWalletButtonReady);
   }
 
   async clickWalletDetailsButton(): Promise<void> {
@@ -942,39 +952,6 @@ class AccountListPage {
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.delay(500);
     await this.driver.clickElement(this.exportSrpButton);
-  }
-
-  async checkAccountBelongsToSrp(
-    accountName: string,
-    srpIndex: number,
-  ): Promise<void> {
-    console.log(`Check that current account is an imported account`);
-    await new HeaderNavbar(this.driver).openSettingsPage();
-    const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToSecurityAndPasswordSettings();
-
-    const privacySettings = new PrivacySettings(this.driver);
-    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-    await privacySettings.openSrpList();
-
-    if (srpIndex === 0) {
-      throw new Error('SRP index must be > 0');
-    }
-
-    const selectedSrp = await this.driver.waitForSelector({
-      css: '.select-srp__container',
-      text: `Secret Recovery Phrase ${srpIndex}`,
-    });
-    const showAccountsButton = await this.driver.waitForSelector(
-      `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
-    );
-    await showAccountsButton.click();
-
-    await this.driver.findNestedElement(selectedSrp, {
-      text: accountName,
-      tag: 'p',
-    });
   }
 
   async checkAccountNameIsDisplayed(accountName: string): Promise<void> {

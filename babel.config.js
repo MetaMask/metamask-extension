@@ -17,19 +17,10 @@ module.exports = function (api) {
           `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
-        plugins: [['babel-plugin-react-compiler', { target: '17' }]],
+        plugins: [['babel-plugin-react-compiler', { target: '18' }]],
       },
     ],
     plugins: [
-      // `browserify` is old and busted, and doesn't support `??=` (and other
-      // logical assignment operators) or private class features. Keep these
-      // syntax transforms enabled even when our browser support floor is high
-      // enough to run them natively.
-      '@babel/plugin-transform-class-properties',
-      '@babel/plugin-transform-class-static-block',
-      '@babel/plugin-transform-private-methods',
-      '@babel/plugin-transform-private-property-in-object',
-      '@babel/plugin-transform-logical-assignment-operators',
       [
         path.resolve(
           __dirname,

@@ -33,6 +33,7 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { ERC20 } from '@metamask/controller-utils';
+import { useDeferredValue } from '../../hooks/useDeferredValue';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -87,7 +88,6 @@ import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { getIsNetworkManagementEnabled } from '../../selectors/multichain/feature-flags';
-import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
@@ -113,6 +113,7 @@ import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -124,7 +125,6 @@ type EvmToken = {
   image?: string;
 };
 
-const SEARCH_DEBOUNCE_MS = 300;
 const TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS = 5000;
 const TOKEN_LIST_PAGINATION_THRESHOLD_PX = ASSET_CELL_HEIGHT * 4;
 const EMPTY_TOKEN_SEARCH_RESULTS: TokenSearchResult[] = [];
@@ -247,6 +247,28 @@ const normalizeToHexChainId = (chainId: string): string => {
 const getTokenAddressKey = (chainId: string, address: string) =>
   `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
 
+const getManagedTokenListOrderKey = (token: ManagedAsset) => {
+  if ('address' in token && token.address && token.chainId) {
+    return getTokenAddressKey(String(token.chainId), token.address);
+  }
+
+  return String(token.assetId).toLowerCase();
+};
+
+const getSearchResultListOrderKey = (result: TokenSearchResult) => {
+  const payload = convertSearchResultToImportPayload(result);
+  if (payload?.hexChainId) {
+    return getTokenAddressKey(payload.hexChainId, payload.assetReference);
+  }
+
+  return result.assetId.toLowerCase();
+};
+
+const getTokenManagementListItemOrderKey = (item: TokenManagementListItem) =>
+  item.type === 'managed'
+    ? getManagedTokenListOrderKey(item.token)
+    : getSearchResultListOrderKey(item.result);
+
 const getIgnoredTokenAddressesByChain = (
   allIgnoredTokensByChain: Record<string, Record<string, string[]>>,
   selectedAddress?: string,
@@ -367,6 +389,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -419,6 +442,7 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
   const hasTrackedScreenOpenedRef = useRef(false);
+  const tokenListOrderRef = useRef<Map<string, number>>(new Map());
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -628,13 +652,11 @@ export const TokenManagementPage = () => {
     useExternalServices,
   ]);
 
-  const normalizedSearchQuery = searchQuery.trim();
-  const hasQuery = normalizedSearchQuery.length > 0;
-  const debouncedSearchQuery = useDebouncedValue(
-    normalizedSearchQuery,
-    SEARCH_DEBOUNCE_MS,
-  );
-  const tokenSearchQuery = hasQuery ? debouncedSearchQuery : '';
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const immediateNormalizedQuery = searchQuery.trim();
+  const deferredNormalizedQuery = deferredSearchQuery.trim();
+  const hasQuery = immediateNormalizedQuery.length > 0;
+  const tokenSearchQuery = hasQuery ? deferredNormalizedQuery : '';
 
   const searchNetworks = useMemo(() => {
     if (enabledCaipChainIds.length === 0) {
@@ -656,11 +678,10 @@ export const TokenManagementPage = () => {
     enableTokenBrowse: !hasQuery,
   });
 
-  const isWaitingForDebounce =
-    hasQuery && normalizedSearchQuery !== debouncedSearchQuery;
+  const isSearchPending = searchQuery !== deferredSearchQuery;
 
   const apiTokenResults = useMemo(() => {
-    if (hasQuery && debouncedSearchQuery.length === 0) {
+    if (hasQuery && deferredNormalizedQuery.length === 0) {
       return EMPTY_TOKEN_SEARCH_RESULTS;
     }
 
@@ -678,15 +699,15 @@ export const TokenManagementPage = () => {
       const reference = getAssetReferenceFromAssetId(result.assetId);
       return reference?.toLowerCase() !== ARC_USDC_TOKEN_ADDRESS;
     });
-  }, [debouncedSearchQuery.length, hasQuery, searchResponse?.data]);
+  }, [deferredNormalizedQuery.length, hasQuery, searchResponse?.data]);
   const searchResults = useMemo(
     () => (hasQuery ? apiTokenResults : EMPTY_TOKEN_SEARCH_RESULTS),
     [apiTokenResults, hasQuery],
   );
   const hasResults = searchResults.length > 0;
   const isSearching =
-    isWaitingForDebounce ||
-    (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
+    isSearchPending ||
+    (hasQuery && deferredNormalizedQuery.length > 0 && isSearchFetching);
   const searchError = searchQueryError;
 
   const importedEvmTokensByChain = useMemo(() => {
@@ -1028,7 +1049,27 @@ export const TokenManagementPage = () => {
         return;
       }
 
+      const tokenAddedEvent = createEventBuilder(
+        MetaMetricsEventName.TokenAdded,
+      )
+        .addCategory(MetaMetricsEventCategory.Wallet)
+        .addSensitiveProperties({
+          [METRICS_PROPERTIES.chainId]:
+            payload.hexChainId ?? payload.caipChainId,
+          [METRICS_PROPERTIES.tokenStandard]: payload.isEvm
+            ? ERC20
+            : TokenStandard.none,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.tokenContractAddress]: payload.assetReference,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: payload.decimals,
+          [METRICS_PROPERTIES.tokenSymbol]: payload.symbol,
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+        })
+        .build();
+
       if (unstageHide(stagedKey)) {
+        trackEvent(tokenAddedEvent);
         return;
       }
       removeCommittedHideKey(stagedKey);
@@ -1075,6 +1116,7 @@ export const TokenManagementPage = () => {
               : []),
           ]);
 
+          trackEvent(tokenAddedEvent);
           return;
         }
 
@@ -1093,6 +1135,7 @@ export const TokenManagementPage = () => {
               ]
             : []),
         ]);
+        trackEvent(tokenAddedEvent);
       } finally {
         removePendingKey(stagedKey);
       }
@@ -1103,9 +1146,11 @@ export const TokenManagementPage = () => {
       getAccountForChain,
       getNetworkMeta,
       isAssetsUnifiedStateInBuild,
+      createEventBuilder,
       removePendingKey,
       removeCommittedHideKey,
       stageHide,
+      trackEvent,
       unstageHide,
     ],
   );
@@ -1115,9 +1160,9 @@ export const TokenManagementPage = () => {
       event.preventDefault();
       commitStagedHides()
         .catch(() => undefined)
-        .finally(() => navigate(DEFAULT_ROUTE));
+        .finally(() => runCloseTransition(() => navigate(DEFAULT_ROUTE)));
     },
-    [commitStagedHides, navigate],
+    [commitStagedHides, navigate, runCloseTransition],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -1315,23 +1360,45 @@ export const TokenManagementPage = () => {
   ]);
 
   const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    if (hasQuery) {
-      return searchResults.map((result) => ({
-        type: 'api-result',
-        result,
-      }));
-    }
+    const nextTokenListItems = (() => {
+      if (hasQuery) {
+        return searchResults.map((result) => ({
+          type: 'api-result' as const,
+          result,
+        }));
+      }
 
-    return [
-      ...visibleTokens.map((token) => ({
-        type: 'managed' as const,
-        token,
-      })),
-      ...browseApiResults.map((result) => ({
-        type: 'api-result' as const,
-        result,
-      })),
-    ];
+      return [
+        ...visibleTokens.map((token) => ({
+          type: 'managed' as const,
+          token,
+        })),
+        ...browseApiResults.map((result) => ({
+          type: 'api-result' as const,
+          result,
+        })),
+      ];
+    })();
+
+    nextTokenListItems.forEach((item) => {
+      const itemKey = getTokenManagementListItemOrderKey(item);
+      if (!tokenListOrderRef.current.has(itemKey)) {
+        tokenListOrderRef.current.set(itemKey, tokenListOrderRef.current.size);
+      }
+    });
+
+    return [...nextTokenListItems].sort((itemA, itemB) => {
+      const itemAOrder =
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemA),
+        ) ?? Number.MAX_SAFE_INTEGER;
+      const itemBOrder =
+        tokenListOrderRef.current.get(
+          getTokenManagementListItemOrderKey(itemB),
+        ) ?? Number.MAX_SAFE_INTEGER;
+
+      return itemAOrder - itemBOrder;
+    });
   }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
   const tokenManagementViewState =
     tokenListItems.length === 0
@@ -1350,7 +1417,7 @@ export const TokenManagementPage = () => {
 
     hasTrackedScreenOpenedRef.current = true;
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
           screen: TOKEN_MANAGEMENT_SCREEN,
@@ -1379,14 +1446,8 @@ export const TokenManagementPage = () => {
   );
 
   const getTokenListItemKey = useCallback(
-    (item: TokenManagementListItem, index: number) => {
-      if (item.type === 'managed') {
-        return `managed-${getTokenKey(item.token)}`;
-      }
-
-      return `${getSearchResultKey(item.result)}-${index}`;
-    },
-    [getSearchResultKey, getTokenKey],
+    (item: TokenManagementListItem) => getTokenManagementListItemOrderKey(item),
+    [],
   );
 
   const handleListScroll = useCallback(

@@ -488,8 +488,6 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -555,8 +553,6 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -583,7 +579,9 @@ export const NetworksForm = ({
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({
@@ -614,7 +612,6 @@ export const NetworksForm = ({
         )}
 
         {isRpcFailoverEnabled &&
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         defaultRpcEndpoint &&
         defaultRpcEndpoint.failoverUrls &&
         defaultRpcEndpoint.failoverUrls.length > 0 ? (
@@ -821,8 +818,6 @@ export const NetworksForm = ({
             variant={DSButtonVariant.Primary}
             size={DSButtonSize.Lg}
             isDisabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
             className="w-full rounded-xl"
             data-testid="page-container-footer-next"
@@ -832,8 +827,6 @@ export const NetworksForm = ({
         ) : (
           <ButtonPrimary
             disabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Full}
