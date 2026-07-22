@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js';
 import { type QuoteResponseV1 } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 

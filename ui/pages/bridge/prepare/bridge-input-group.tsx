@@ -112,8 +112,6 @@ export const BridgeInputGroup = ({
   const balanceAmount = useSelector(getFromTokenBalance);
 
   const isAmountReadOnly =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
   const shouldShowAmountSkeleton = Boolean(
     showAmountSkeleton && isAmountReadOnly,
