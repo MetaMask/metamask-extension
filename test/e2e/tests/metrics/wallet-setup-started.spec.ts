@@ -31,8 +31,13 @@ describe('Wallet Setup Started event', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         const trackEvents = events.filter(
-          (event: { type?: string; event?: string }) =>
-            event.type === 'track' && event.event === WALLET_SETUP_STARTED_EVENT,
+          (event: {
+            type?: string;
+            event?: string;
+            properties?: Record<string, unknown>;
+          }) =>
+            event.type === 'track' &&
+            event.event === WALLET_SETUP_STARTED_EVENT,
         );
 
         assert.equal(trackEvents.length, 1);
