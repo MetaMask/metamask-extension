@@ -586,6 +586,62 @@ describe('PersistenceManager', () => {
         expect(manager.writesSuspended()).toBe(false);
         expect(mockedCaptureMessage).not.toHaveBeenCalled();
       });
+
+      it('preserves a pending shutdown across a no-op disable sync', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        // Startup often re-applies `false` while the flag is still default-off.
+        manager.setShutdownSuspensionEnabled(false);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('does not let a later inferred trigger demote a pending onSuspend', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.IdbClose);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('drops pending when the feature is turned off after having been enabled', () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.setShutdownSuspensionEnabled(false);
+
+        // Re-enable must not inherit the previous suspension or a pending signal.
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-shutdown',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
     });
 
     describe('reactive detection (data storageKind / set)', () => {

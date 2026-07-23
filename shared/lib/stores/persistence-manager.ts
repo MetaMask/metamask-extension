@@ -340,15 +340,25 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Enabling honors a shutdown signal that arrived while the flag was still off
    * (see {@link suspendWrites}).
    *
+   * A no-op disable while already off does **not** clear
+   * `#pendingShutdownTrigger`: startup often syncs `false` before the
+   * persisted/live flag is known, and that must not erase a buffered
+   * `onSuspend` waiting to be applied.
+   *
    * @param enabled - Whether shutdown write-suspension is active.
    */
   setShutdownSuspensionEnabled(enabled: boolean) {
+    const wasEnabled = this.#shutdownSuspensionEnabled;
     this.#shutdownSuspensionEnabled = enabled;
     if (!enabled) {
       this.#shutdownTrigger = null;
       this.#shutdownReported = false;
-      this.#pendingShutdownTrigger = null;
       this.#clearShutdownRecoveryTimer();
+      // Drop pending only when the feature is turned off after having been on.
+      // false→false syncs (common at startup) must preserve a cold-start signal.
+      if (wasEnabled) {
+        this.#pendingShutdownTrigger = null;
+      }
       return;
     }
     // If a shutdown was signaled before the flag was applied (e.g. a buffered
@@ -389,7 +399,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   suspendWrites(trigger: ShutdownTrigger = ShutdownTrigger.Unknown) {
     if (!this.#shutdownSuspensionEnabled) {
-      this.#pendingShutdownTrigger = trigger;
+      // Same OnSuspend authority as the enabled path: inferred triggers must
+      // not demote a pending lifecycle signal before the flag is applied.
+      if (trigger === ShutdownTrigger.OnSuspend) {
+        this.#pendingShutdownTrigger = ShutdownTrigger.OnSuspend;
+      } else if (this.#pendingShutdownTrigger !== ShutdownTrigger.OnSuspend) {
+        this.#pendingShutdownTrigger = trigger;
+      }
       return;
     }
     this.#pendingShutdownTrigger = null;
