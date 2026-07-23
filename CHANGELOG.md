@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Fixed
+### Fixed
 
 - Fixed sponsored network fee transfer to show the `Paid by MetaMask` label in activity page (#44314)
 
