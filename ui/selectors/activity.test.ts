@@ -1,4 +1,5 @@
 import { StatusTypes } from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -160,7 +161,7 @@ describe('selectNonEvmActivityItems', () => {
     };
     (
       state.metamask as MetaMaskReduxState['metamask'] & {
-        txHistory: Record<string, unknown>;
+        txHistory: Record<string, BridgeHistoryItem>;
       }
     ).txHistory = {
       [solanaTxId]: {
@@ -187,7 +188,7 @@ describe('selectNonEvmActivityItems', () => {
           srcChain: { txHash: solanaTxId },
           destChain: { amount: '38467' },
         },
-      },
+      } as unknown as BridgeHistoryItem,
     };
 
     const [activity] = selectNonEvmActivityItems(state);
