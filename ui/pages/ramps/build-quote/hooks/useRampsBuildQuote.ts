@@ -1,7 +1,17 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { normalizeProviderCode } from '@metamask/ramps-controller';
+import {
+  getInternalOrderCode,
+  normalizeProviderCode,
+} from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -71,7 +81,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     paymentMethods,
     paymentMethodsStatus,
     getBuyWidgetData,
+    addOrder,
     addPrecreatedOrder,
+    getOrderFromCallback,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -183,6 +195,75 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const [isContinuing, setIsContinuing] = useState(false);
   const [continueError, setContinueError] = useState<string | null>(null);
 
+  // Tears down the tab listeners registered below. Kept in a ref so the
+  // unmount effect can always reach the latest pair without re-running.
+  const cleanupRedirectWatchRef = useRef<(() => void) | null>(null);
+
+  useEffect(
+    () => () => {
+      cleanupRedirectWatchRef.current?.();
+    },
+    [],
+  );
+
+  // Providers using the classic redirect/checkout flow (no precreated
+  // orderId) only create the order once the user finishes checkout on their
+  // hosted page and it navigates to our callback URL. Watch the tab we just
+  // opened for that navigation, then resolve the order via the callback URL.
+  //
+  // ponytail: this listener lives for as long as this hook is mounted. If the
+  // user closes the wallet UI before the checkout tab redirects, the order
+  // never resolves client-side. Move this into a background service
+  // (mirroring app/scripts/services/subscription/subscription-service.ts) if
+  // that gap needs closing — see docs/superpowers/specs for the write-up.
+  const watchForRedirectCallback = useCallback(
+    (openedTabId: number, providerCode: string) => {
+      const onTabUpdated = (
+        tabId: number,
+        changeInfo: { url?: string; pendingUrl?: string },
+      ) => {
+        if (tabId !== openedTabId) {
+          return;
+        }
+        const candidateUrl = changeInfo.url ?? changeInfo.pendingUrl;
+        if (!candidateUrl?.startsWith(getRampCallbackBaseUrl())) {
+          return;
+        }
+        cleanupRedirectWatchRef.current?.();
+        global.platform.closeTab(tabId);
+        getOrderFromCallback(providerCode, candidateUrl, walletAddress)
+          .then(async (order) => {
+            await addOrder(order);
+            const orderId = getInternalOrderCode(order);
+            navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', orderId));
+          })
+          .catch((error) => {
+            setContinueError(
+              parseUserFacingError(error, t('rampsBuyWidgetError')),
+            );
+          });
+      };
+
+      const onTabRemoved = (tabId: number) => {
+        if (tabId !== openedTabId) {
+          return;
+        }
+        // User closed the checkout tab without finishing — not an error.
+        cleanupRedirectWatchRef.current?.();
+      };
+
+      cleanupRedirectWatchRef.current = () => {
+        global.platform.removeTabUpdatedListener(onTabUpdated);
+        global.platform.removeTabRemovedListener(onTabRemoved);
+        cleanupRedirectWatchRef.current = null;
+      };
+
+      global.platform.addTabUpdatedListener(onTabUpdated);
+      global.platform.addTabRemovedListener(onTabRemoved);
+    },
+    [addOrder, getOrderFromCallback, navigate, t, walletAddress],
+  );
+
   const handleContinue = useCallback(async () => {
     if (!canContinue || !selectedQuote || isContinuing) {
       return;
@@ -197,17 +278,22 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       }
       // Open the provider checkout in a new tab; the widget is hosted by the
       // provider, not rendered in the extension.
-      global.platform.openTab({ url: widget.url });
-      // A provider that precreates the order returns its id — seed it so the
-      // order-details page can resolve and refresh it.
+      const openedTab = await global.platform.openTab({ url: widget.url });
+      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
       if (widget.orderId) {
+        // A provider that precreates the order returns its id — seed it so
+        // the order-details page can resolve and refresh it.
         await addPrecreatedOrder({
           orderId: widget.orderId,
-          providerCode: normalizeProviderCode(selectedProvider?.id ?? ''),
+          providerCode,
           walletAddress,
           chainId: selectedToken?.chainId,
         });
         navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', widget.orderId));
+      } else if (openedTab.id !== undefined) {
+        // Redirect-flow provider — no order exists yet, wait for checkout to
+        // complete and resolve it from the callback URL instead.
+        watchForRedirectCallback(openedTab.id, providerCode);
       }
     } catch (error) {
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
@@ -225,6 +311,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedToken?.chainId,
     t,
     walletAddress,
+    watchForRedirectCallback,
   ]);
 
   const viewKind = resolveBuildQuoteViewKind({
