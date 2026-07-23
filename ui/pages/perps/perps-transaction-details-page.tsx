@@ -138,7 +138,10 @@ const TradeDetailRows = ({
         <Row
           label={t('perpsPnl')}
           value={
-            <SignedValue value={formatPnl(pnlNumber)} isPositive={pnlNumber >= 0} />
+            <SignedValue
+              value={formatPnl(pnlNumber)}
+              isPositive={pnlNumber >= 0}
+            />
           }
         />
       )}
