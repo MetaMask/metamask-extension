@@ -14,7 +14,10 @@ import {
   ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
@@ -505,6 +508,54 @@ describe('Onboarding Create Password', () => {
           {
             replace: true,
           },
+        );
+      });
+    });
+
+    it('tracks Wallet Creation Attempted when creating a new wallet password', async () => {
+      // Historically this Segment event was named "Wallet Password Created".
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.WalletCreationAttempted,
+            properties: expect.objectContaining({
+              category: MetaMetricsEventCategory.Onboarding,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
+            }),
+          }),
         );
       });
     });
