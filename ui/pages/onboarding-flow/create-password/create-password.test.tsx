@@ -14,7 +14,10 @@ import {
   ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
@@ -60,10 +63,18 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const getWalletSetupCompletedEvent = () => {
+const getTrackedEvent = (eventName: MetaMetricsEventName) => {
   return mockTrackEvent.mock.calls.find(
-    (args) => args[0]?.name === MetaMetricsEventName.WalletSetupCompleted,
+    (args) => args[0]?.name === eventName,
   )?.[0];
+};
+
+const getWalletSetupCompletedEvent = () => {
+  return getTrackedEvent(MetaMetricsEventName.WalletSetupCompleted);
+};
+
+const getWalletImportedEvent = () => {
+  return getTrackedEvent(MetaMetricsEventName.WalletImported);
 };
 
 const backgroundConnectionMock = new Proxy(
@@ -678,6 +689,59 @@ describe('Onboarding Create Password', () => {
             replace: true,
           },
         );
+      });
+    });
+
+    it('tracks Wallet Imported when import succeeds', async () => {
+      const mockStore = configureMockStore([thunk])(importMockState);
+
+      const props = {
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue(undefined),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword {...props} />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(getWalletImportedEvent()).toBeDefined();
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletImportAttempted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+          }),
+        }),
+      );
+
+      expect(getWalletImportedEvent()).toMatchObject({
+        name: MetaMetricsEventName.WalletImported,
+        properties: {
+          category: MetaMetricsEventCategory.Onboarding,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+        },
       });
     });
 
