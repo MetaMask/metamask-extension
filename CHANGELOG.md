@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.42.0]
 
+### Uncategorized
+
+- N/A (#44656)
+- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot (#43872)" (#43872)
+
 ### Added
 
 - Added skeleton for balance overview (#44703)
