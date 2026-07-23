@@ -48,12 +48,7 @@ export function EnforcedSimulationsRow() {
   }, [transactionId]);
 
   useEffect(() => {
-    if (
-      isUnavailable ||
-      !isEligible ||
-      hasAutoEnabled ||
-      !transactionId
-    ) {
+    if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
       return;
     }
 
