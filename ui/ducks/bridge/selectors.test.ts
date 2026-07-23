@@ -1,4 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
+import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
   type QuoteMetadata,
@@ -218,14 +219,17 @@ describe('Bridge selectors', () => {
     toAssetAccountInfo,
     nonEvmFeesInNative,
     srcTokenAmount = '75000000',
+    metabridgeFeeAmount = '0',
   }: {
     fromTokenInputValue?: string;
     fromNativeBalance?: string;
     baseReserve?: string | null;
     toToken?: ReturnType<typeof toBridgeToken>;
     toAssetAccountInfo?: { limit: string };
-    nonEvmFeesInNative?: string;
+    /** `undefined` = no quote, `null` = quote whose snap fee computation failed */
+    nonEvmFeesInNative?: string | null;
     srcTokenAmount?: string;
+    metabridgeFeeAmount?: string;
   } = {}) => {
     const xlmAsset = getNativeAssetForChainId(ChainId.STELLAR);
     const ethAsset = getNativeAssetForChainId(ChainId.ETH);
@@ -240,6 +244,13 @@ describe('Bridge selectors', () => {
       accountAssetsForAccount[toToken.assetId] = toAssetAccountInfo;
     }
 
+    // Stellar provider fees are deducted from the input amount: the quote's
+    // srcTokenAmount is the routed amount (input - metabridge fee), so the
+    // sent amount (srcTokenAmount + metabridge fee) equals the input.
+    const quoteSrcTokenAmount = new BigNumber(srcTokenAmount)
+      .minus(metabridgeFeeAmount)
+      .toString();
+
     const stellarQuote =
       nonEvmFeesInNative === undefined
         ? undefined
@@ -249,7 +260,7 @@ describe('Bridge selectors', () => {
               bridgeId: 'rango',
               aggregator: 'rango',
               srcChainId: ChainId.STELLAR,
-              srcTokenAmount,
+              srcTokenAmount: quoteSrcTokenAmount,
               srcAsset: xlmAsset,
               destChainId: ChainId.ETH,
               destTokenAmount: '1000000000000000000',
@@ -257,7 +268,7 @@ describe('Bridge selectors', () => {
               minDestTokenAmount: '990000000000000000',
               feeData: {
                 metabridge: {
-                  amount: '0',
+                  amount: metabridgeFeeAmount,
                   asset: xlmAsset,
                 },
               },
@@ -269,7 +280,7 @@ describe('Bridge selectors', () => {
               xdr: 'AAAA',
             },
             estimatedProcessingTimeInSeconds: 30,
-            nonEvmFeesInNative,
+            nonEvmFeesInNative: nonEvmFeesInNative ?? undefined,
           };
 
     return createBridgeMockStore({
@@ -3119,39 +3130,130 @@ describe('Bridge selectors', () => {
       );
     });
 
-    it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Stellar when the quote fee is payable but the reserve would be depleted', () => {
+    it('should subtract a plausible snap fee from the Stellar max allowed', () => {
+      // The snap-computed network fee is real when the simulation succeeds:
+      // max = 10 - 0.0000001 - 2.5 = 7.4999999
       const state = createStellarBridgeState({
-        fromTokenInputValue: '7.5',
+        fromTokenInputValue: '7.6',
         fromNativeBalance: '10',
         baseReserve: '2.5',
         nonEvmFeesInNative: '0.0000001',
-        srcTokenAmount: '75000000',
+        srcTokenAmount: '76000000',
       });
       const result = getValidationErrors(state as never);
       const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
         state as never,
       );
 
-      expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
-        '7.4999999',
-      );
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '2.5',
+        maxSwappableNativeBalance: '7.4999999',
+      });
       expect(result.isInsufficientNativeReserve).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
     });
 
-    it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Stellar when the quote fee cannot be paid', () => {
+    it('should substitute a conservative fee when the snap misreports the required amount as the fee', () => {
+      // The Stellar snap's computeFee returns the amount required by the
+      // failed simulation as the "fee" when the balance can't cover the
+      // swap. The implausible fee is replaced by the 0.1 XLM bound and must
+      // not trigger the gas alert: max = 10 - 0.1 - 2.5 = 7.4
       const state = createStellarBridgeState({
-        fromTokenInputValue: '7.5',
+        fromTokenInputValue: '8',
         fromNativeBalance: '10',
         baseReserve: '2.5',
-        nonEvmFeesInNative: '2.6',
-        srcTokenAmount: '75000000',
+        nonEvmFeesInNative: '8',
+        srcTokenAmount: '80000000',
       });
       const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
 
-      // balance - fee - sent = 10 - 2.6 - 7.5 = -0.1 <= 0 → gas insufficiency
-      expect(result.isInsufficientNativeReserve).toBe(false);
-      expect(result.isInsufficientGasForQuote).toBe(true);
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '2.5',
+        maxSwappableNativeBalance: '7.4',
+      });
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should keep the Stellar reserve warning instead of the gas error when the sent amount consumes the full balance', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '9.98',
+        fromNativeBalance: '10',
+        baseReserve: '2.5',
+        nonEvmFeesInNative: '0.05',
+        srcTokenAmount: '99800000',
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      // balance - fee - sent = 10 - 0.05 - 9.98 <= 0, but the reserve
+      // warning is more actionable than the gas error on Stellar:
+      // max = 10 - 0.05 - 2.5 = 7.45
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '2.5',
+        maxSwappableNativeBalance: '7.45',
+      });
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should not subtract the metabridge fee from the Stellar max allowed', () => {
+      // Real-world shape: balance 91.510816, base reserve 5 + 0.5 for the
+      // missing trustline, misreported snap fee replaced by the 0.1 bound.
+      // The metabridge fee is deducted from the sent amount (not charged on
+      // top), so it must not reduce the max:
+      // max = 91.510816 - 0.1 - 5.5 = 85.910816
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '89',
+        fromNativeBalance: '91.510816',
+        baseReserve: '5',
+        toToken: toBridgeToken(STELLAR_CLASSIC_ASSET),
+        nonEvmFeesInNative: '88.22125',
+        srcTokenAmount: '890000000',
+        metabridgeFeeAmount: '7787500',
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '5.5',
+        maxSwappableNativeBalance: '85.910816',
+      });
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should substitute a conservative fee when the snap fee computation failed', () => {
+      // When the balance cannot cover the swap the snap may fail to compute
+      // a fee at all (nonEvmFeesInNative is undefined); the reserve warning
+      // still applies with max = 91.510816 - 0.1 - 5.5 = 85.910816
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '87',
+        fromNativeBalance: '91.510816',
+        baseReserve: '5',
+        toToken: toBridgeToken(STELLAR_CLASSIC_ASSET),
+        nonEvmFeesInNative: null,
+        srcTokenAmount: '870000000',
+        metabridgeFeeAmount: '7612500',
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '5.5',
+        maxSwappableNativeBalance: '85.910816',
+      });
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
     });
 
     it('should return isInsufficientNativeReserve=false on Solana even when trying to use full balance', () => {

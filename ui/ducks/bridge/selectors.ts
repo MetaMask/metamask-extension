@@ -943,6 +943,15 @@ export const getInsufficientNativeReserveError = createSelector(
   },
 );
 
+/**
+ * Upper bound for a plausible Stellar network fee, in XLM. Real fees are
+ * ~0.00001 XLM (100 stroops per operation) and stay far below this bound
+ * even under surge pricing. A reported fee above it is the Stellar snap's
+ * computeFee fallback misreporting the amount required by a failed
+ * simulation, so the bound doubles as a conservative fee estimate.
+ */
+const STELLAR_MAX_PLAUSIBLE_NETWORK_FEE_XLM = '0.1';
+
 export const getActiveQuoteInsufficientNativeReserveError = createSelector(
   [
     getInsufficientNativeReserveError,
@@ -970,26 +979,51 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     if (
       isQuoteAwareNativeReserveChain &&
       minimumNativeReserveBalance !== '0' &&
-      activeQuote?.totalNetworkFee?.amount &&
       activeQuote?.sentAmount?.amount &&
       nativeBalance &&
       validatedSrcAmount &&
-      new BigNumber(activeQuote.totalNetworkFee.amount).gt(0)
+      // Bitcoin needs a real quote fee. Stellar substitutes a conservative
+      // estimate below when the snap-reported fee is missing or implausible.
+      (isStellarNativeReserveChain ||
+        new BigNumber(activeQuote?.totalNetworkFee?.amount ?? '0').gt(0))
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
-      const totalNetworkFee = new BigNumber(activeQuote.totalNetworkFee.amount);
+      const reportedNetworkFee = new BigNumber(
+        activeQuote.totalNetworkFee?.amount ?? '0',
+      );
       const sentAmount = new BigNumber(activeQuote.sentAmount.amount);
 
-      if (
-        nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
-      ) {
-        return undefined;
-      }
+      // The Stellar snap's computeFee reports the amount required by the
+      // failed simulation as the "fee" when the balance cannot cover the
+      // swap, and reports nothing when validation throws. Real Stellar fees
+      // are far below the plausibility bound, so replace a missing or
+      // implausible fee with the bound itself: the max stays slightly
+      // conservative, and requoting at that amount simulates successfully
+      // and converges on the real fee.
+      const isReportedFeePlausible =
+        reportedNetworkFee.gt(0) &&
+        reportedNetworkFee.lte(STELLAR_MAX_PLAUSIBLE_NETWORK_FEE_XLM);
+      const totalNetworkFee =
+        isStellarNativeReserveChain && !isReportedFeePlausible
+          ? new BigNumber(STELLAR_MAX_PLAUSIBLE_NETWORK_FEE_XLM)
+          : reportedNetworkFee;
 
+      // Provider fees charged on top of the input amount (zero on Stellar,
+      // where provider fees are deducted from the sent amount instead).
       const quoteSourceOverhead = BigNumber.max(
         sentAmount.sub(validatedSrcAmount),
         0,
       );
+
+      if (
+        !isStellarNativeReserveChain &&
+        nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
+      ) {
+        // Defer to the gas error: the quote fee itself cannot be paid. On
+        // Stellar the reserve warning is more actionable instead (the user
+        // holds the balance, it is just reserved), so fall through there.
+        return undefined;
+      }
 
       const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
@@ -1018,10 +1052,10 @@ export const getQuoteRequestInsufficientBal = createSelector(
   (fromTokenBalance, validatedSrcAmount, insufficientNativeReserveError) =>
     Boolean(
       insufficientNativeReserveError ||
-      (validatedSrcAmount &&
-        fromTokenBalance &&
-        !Number.isNaN(Number(fromTokenBalance)) &&
-        new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
+        (validatedSrcAmount &&
+          fromTokenBalance &&
+          !Number.isNaN(Number(fromTokenBalance)) &&
+          new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
     ),
 );
 
@@ -1108,13 +1142,20 @@ export const computeQuoteValidationErrors = (
   );
 
   const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
+  // On Stellar the reserve warning supersedes the gas error: when the balance
+  // can't cover fee + amount it is because of the reserve, and the snap's
+  // computeFee fallback misreports the required amount as the fee, which
+  // would otherwise trigger a misleading "more XLM needed for gas" alert.
+  const isGasErrorSupersededByReserve = Boolean(
+    srcChainId && isStellarChainId(srcChainId) && isInsufficientNativeReserve,
+  );
   const isNetworkFeeUnavailable = Boolean(
     quote &&
-    srcChainId &&
-    (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
-    !isGasless &&
-    (quote.totalNetworkFee?.amount === undefined ||
-      new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
+      srcChainId &&
+      (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
+      !isGasless &&
+      (quote.totalNetworkFee?.amount === undefined ||
+        new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
   );
 
   const parsedPriceImpactNumber = Number(quote?.quote?.priceData?.priceImpact);
@@ -1126,32 +1167,33 @@ export const computeQuoteValidationErrors = (
     // Shown prior to fetching quotes (native reserve error takes precedence)
     isInsufficientGasBalance: Boolean(
       nativeBalance &&
-      !quote &&
-      validatedSrcAmount &&
-      fromToken &&
-      !isGasless &&
-      (isNativeAddress(fromToken.assetId)
-        ? new BigNumber(nativeBalance)
-            .sub(minimumBalanceToKeep)
-            .lte(validatedSrcAmount)
-        : new BigNumber(nativeBalance).lte(0)),
+        !quote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToKeep)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
     ),
     isInsufficientNativeReserve,
     isNetworkFeeUnavailable,
     // Shown after fetching quotes
     isInsufficientGasForQuote: Boolean(
       !isNetworkFeeUnavailable &&
-      nativeBalance &&
-      quote &&
-      fromToken &&
-      fromTokenInputValue &&
-      !isGasless &&
-      isNativeBalanceInsufficientForQuote(
-        quote,
-        nativeBalance,
-        fromToken,
-        minimumBalanceToKeep,
-      ),
+        !isGasErrorSupersededByReserve &&
+        nativeBalance &&
+        quote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        isNativeBalanceInsufficientForQuote(
+          quote,
+          nativeBalance,
+          fromToken,
+          minimumBalanceToKeep,
+        ),
     ),
     isInsufficientBalance:
       validatedSrcAmount &&
@@ -1171,8 +1213,8 @@ export const computeQuoteValidationErrors = (
         : false,
     isPriceImpactWarning: Boolean(
       priceImpactNumber &&
-      priceImpactNumber > warning &&
-      priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
     ),
     isPriceImpactError: Boolean(priceImpactNumber && priceImpactNumber > error),
   };
@@ -1233,10 +1275,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         quoteStreamCompleteData?.hasQuotes === false ||
         Boolean(
           !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
+            isValidQuoteRequest(quoteRequest) &&
+            quotesLastFetchedMs &&
+            !isLoading &&
+            quotesRefreshCount > 0,
         ),
     };
   },
