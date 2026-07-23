@@ -2446,9 +2446,6 @@
   "clear": {
     "message": "清除"
   },
-  "clearActivity": {
-    "message": "清除活动和 nonce 数据"
-  },
   "clearActivityDescription": {
     "message": "重设账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和待入账的交易不会改变。"
   },
@@ -5689,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "网络"
-  },
-  "nevermind": {
-    "message": "没关系"
   },
   "new": {
     "message": "新增!"

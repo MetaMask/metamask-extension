@@ -2446,9 +2446,6 @@
   "clear": {
     "message": "I-clear"
   },
-  "clearActivity": {
-    "message": "I-clear ang aktibidad at datos ng nonce"
-  },
   "clearActivityDescription": {
     "message": "Nire-reset ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
   },
@@ -5689,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "mga network"
-  },
-  "nevermind": {
-    "message": "Huwag na"
   },
   "new": {
     "message": "Bago!"

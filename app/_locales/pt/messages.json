@@ -2446,9 +2446,6 @@
   "clear": {
     "message": "Limpar"
   },
-  "clearActivity": {
-    "message": "Limpar dados de atividades e nonce"
-  },
   "clearActivityDescription": {
     "message": "Redefine o nonce da conta e apaga os dados da guia de atividades da sua carteira. Somente a conta e a rede atuais serão afetadas. Seus saldos e transações recebidas não serão alterados."
   },
@@ -5689,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "redes"
-  },
-  "nevermind": {
-    "message": "Não importa"
   },
   "new": {
     "message": "Nova!"

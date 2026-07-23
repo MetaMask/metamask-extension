@@ -883,9 +883,6 @@
   "clear": {
     "message": "Glan"
   },
-  "clearActivity": {
-    "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
-  },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
   },
@@ -3090,9 +3087,6 @@
   },
   "networksSmallCase": {
     "message": "líonraí"
-  },
-  "nevermind": {
-    "message": "Ná miste"
   },
   "new": {
     "message": "Nua!"
