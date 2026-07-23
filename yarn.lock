@@ -5800,7 +5800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:77.8.0, @metamask/bridge-controller@npm:^77.7.0":
+"@metamask/bridge-controller@npm:77.8.0":
   version: 77.8.0
   resolution: "@metamask/bridge-controller@npm:77.8.0"
   dependencies:
