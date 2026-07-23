@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
 import copyToClipboard from 'copy-to-clipboard';
 import configureStore from '../../../../store/store';
@@ -84,13 +85,12 @@ describe('OrderContent (completed)', () => {
   });
 
   it('copies the full order id when the order id is clicked', async () => {
+    const user = userEvent.setup();
     renderContent(completedOrder);
-    fireEvent.click(screen.getByTestId('ramps-order-details-order-id'));
-    await waitFor(() =>
-      expect(copyToClipboard).toHaveBeenCalledWith(
-        'provider-order-1234567890',
-        expect.anything(),
-      ),
+    await user.click(screen.getByTestId('ramps-order-details-order-id'));
+    expect(copyToClipboard).toHaveBeenCalledWith(
+      'provider-order-1234567890',
+      expect.anything(),
     );
   });
 
