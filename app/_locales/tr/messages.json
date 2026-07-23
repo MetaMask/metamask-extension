@@ -1002,12 +1002,10 @@
     "message": "Takas başarısız oldu"
   },
   "activity_swap_pending_title": {
-    "message": "$1 ile $2 takas ediliyor",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas ediliyor"
   },
   "activity_swap_success_title": {
-    "message": "$1 ile $2 takas edildi",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas edildi"
   },
   "activity_unwrap_failed_description": {
     "message": "Çözme başarısız oldu"
