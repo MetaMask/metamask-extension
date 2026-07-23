@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrades Sentry SDK from v8 to v10, improving telemetry and enabling full incorporation of backend instrumentation (API, RPC, (#42867)
   DB, Cache, CDN domains) into Sentry distributed tracing.
 - Deleted token cache (#44522)
-- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot (#43872)" (#43872)
+- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot" (#43872)
 
 ### Added
 
