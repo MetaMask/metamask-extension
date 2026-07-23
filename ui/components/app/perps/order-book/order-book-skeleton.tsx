@@ -83,7 +83,6 @@ export const PerpsOrderBookSkeleton = ({
         {rowWidths.map(({ price, value }, index) => (
           <OrderBookRowSkeleton
             // Positional slots — same pattern as live ask/bid rows.
-            // eslint-disable-next-line react/no-array-index-key
             key={`ask-skeleton-${index}`}
             priceWidth={price}
             valueWidth={value}
@@ -105,7 +104,6 @@ export const PerpsOrderBookSkeleton = ({
       <Box flexDirection={BoxFlexDirection.Column} className="shrink-0">
         {rowWidths.map(({ price, value }, index) => (
           <OrderBookRowSkeleton
-            // eslint-disable-next-line react/no-array-index-key
             key={`bid-skeleton-${index}`}
             priceWidth={price}
             valueWidth={value}

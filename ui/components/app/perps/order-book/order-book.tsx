@@ -550,7 +550,6 @@ export const PerpsOrderBook = ({
                   // Key by ladder rank, not price: each row is a positional slot,
                   // so React reuses the same DOM node and updates it in place
                   // across live ticks instead of remounting every update.
-                  // eslint-disable-next-line react/no-array-index-key
                   key={`ask-${index}`}
                   level={level}
                   side="ask"
@@ -608,7 +607,6 @@ export const PerpsOrderBook = ({
                 <OrderBookRow
                   // Key by ladder rank, not price (see asks above): positional
                   // slots reused in place avoid per-tick remounts.
-                  // eslint-disable-next-line react/no-array-index-key
                   key={`bid-${index}`}
                   level={level}
                   side="bid"
