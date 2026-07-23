@@ -8,11 +8,7 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-  QuoteResponseV1,
-} from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useAppSelector } from '../../../../store/store';
 

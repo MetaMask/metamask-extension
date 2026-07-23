@@ -12,7 +12,6 @@ import {
 import { PopoverPosition } from '../../../components/component-library';
 import {
   getValidationErrors,
-  getFormattedPriceImpactPercentage,
   getBridgeQuotes,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';

@@ -1,8 +1,6 @@
 import {
   getNativeAssetForChainId,
   toQuoteResponseV2,
-  type QuoteResponse,
-  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 
 export const OP_0_005_ETH_TO_ARB_METADATA = {

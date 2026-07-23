@@ -330,7 +330,4 @@ const mockQuotes = [
   },
 ];
 
-export default mockQuotes.map((quote) =>
-  // mergeQuoteMetadata(toQuoteResponseV2(quote), quote),
-  toQuoteResponseV2(quote),
-);
+export default mockQuotes.map(toQuoteResponseV2);
