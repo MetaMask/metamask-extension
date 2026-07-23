@@ -7,7 +7,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -305,7 +305,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -782,7 +782,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -1206,7 +1206,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -2055,7 +2055,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2475,7 +2475,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3179,7 +3179,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3269,7 +3269,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
