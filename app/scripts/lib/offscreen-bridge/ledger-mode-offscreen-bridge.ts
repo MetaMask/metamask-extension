@@ -4,9 +4,8 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../../shared/lib/hardware-wallets/feature-flags';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
-import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 
 type RemoteFeatureFlagState = {
   remoteFeatureFlags?: Record<string, unknown>;
@@ -32,11 +31,13 @@ type LedgerModeController = {
 export function sendSwitchLedgerModeMessage(mode: LedgerHandlerMode): void {
   try {
     // Fire-and-forget; offscreen may not be ready yet.
-    browser.runtime.sendMessage({
-      target: OffscreenCommunicationTarget.extension,
-      event: OffscreenCommunicationEvents.switchLedgerMode,
-      mode,
-    });
+    browser.runtime
+      .sendMessage({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode,
+      })
+      .catch(() => undefined);
   } catch {
     // noop
   }
@@ -51,29 +52,50 @@ export function sendSwitchLedgerModeMessage(mode: LedgerHandlerMode): void {
  * No-op on MV2 (no offscreen document).
  *
  * @param controller - Controller exposing getLedgerMode and messenger subscribe.
+ * @param offscreenReady - Resolves once the offscreen listener is registered.
  */
 export function setupLedgerModeOffscreenBridge(
   controller: LedgerModeController,
+  offscreenReady: Promise<void> | null,
 ): void {
   if (!isManifestV3) {
     return;
   }
 
-  sendSwitchLedgerModeMessage(controller.getLedgerMode());
+  // The offscreen router emits this after registering its mode listener.
+  // This second handshake covers createOffscreen() resolving via its timeout
+  // before the offscreen document has actually finished booting.
+  browser.runtime.onMessage.addListener(
+    (message: Record<string, unknown>): undefined => {
+      if (
+        message.target === OffscreenCommunicationTarget.extensionMain &&
+        message.event === OffscreenCommunicationEvents.ledgerModeReady
+      ) {
+        sendSwitchLedgerModeMessage(controller.getLedgerMode());
+      }
+      return undefined;
+    },
+  );
+
+  // The initial message must wait for the offscreen router to register its
+  // listener. Reading the mode after that wait also captures flag changes that
+  // occurred while the offscreen document was booting.
+  Promise.resolve(offscreenReady)
+    .then(() => {
+      sendSwitchLedgerModeMessage(controller.getLedgerMode());
+    })
+    .catch(() => {
+      // The offscreen document is unavailable, so there is no receiver.
+    });
 
   // When the `ledgerDmk` flag toggles, push a `switchLedgerMode` event to
   // the offscreen document so it can hot-swap the active Ledger handler.
   controller.controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (isDmkEnabled) => {
-      sendSwitchLedgerModeMessage(
-        isDmkEnabled ? LedgerHandlerMode.DMK : LedgerHandlerMode.Legacy,
-      );
+    () => {
+      // Resolve through the controller so manifest overrides remain applied.
+      sendSwitchLedgerModeMessage(controller.getLedgerMode());
     },
-    (state) =>
-      getBooleanFeatureFlag(
-        state.remoteFeatureFlags?.[ENABLE_DMK_FEATURE_FLAG],
-        false,
-      ),
+    (state) => isDmkFeatureEnabled(state.remoteFeatureFlags),
   );
 }

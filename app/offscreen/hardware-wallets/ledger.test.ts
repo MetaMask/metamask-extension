@@ -802,6 +802,33 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    describe('signDelegationAuthorization', () => {
+      it('returns an explicit error when the Legacy handler is active', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        const response = await sendAction(
+          LedgerAction.signDelegationAuthorization,
+          {
+            hdPath: "m/44'/60'/0'/0/0",
+            chainId: 1,
+            contractAddress: '0x1234',
+            nonce: 2,
+          },
+        );
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message:
+              'Ledger delegation authorization signing requires DMK mode',
+          }),
+        });
+        consoleSpy.mockRestore();
+      });
+    });
+
     describe('transport cleanup', () => {
       const flushPromises = () =>
         new Promise((resolve) => setTimeout(resolve, 0));

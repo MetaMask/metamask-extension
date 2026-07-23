@@ -17,7 +17,7 @@ import {
   extractMessageFromUnknownError,
   hasUserRejectedMessage,
   isTrezorDesktopConnectionMissingError,
-} from './rpcErrorUtils';
+} from './rpc-error-utils';
 
 describe('rpcErrorUtils', () => {
   const mockWalletType = HardwareWalletType.Ledger;
@@ -242,7 +242,7 @@ describe('rpcErrorUtils', () => {
       expect(result.severity).toBe(Severity.Err);
       expect(result.category).toBe(Category.Connection);
       expect(result.userMessage).toBe('Device disconnected');
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         transport: 'usb',
         walletType: mockWalletType,
       });
@@ -318,7 +318,7 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('Some other error');
-      expect(result.metadata).toEqual({ walletType: mockWalletType });
+      expect(result.metadata).toStrictEqual({ walletType: mockWalletType });
     });
 
     it('handles non-Error input by converting to string', () => {
@@ -435,7 +435,7 @@ describe('rpcErrorUtils', () => {
       expect(result.userMessage).toBe(
         'Transaction was rejected. Please approve on your device to continue.',
       );
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         walletType: HardwareWalletType.Ledger,
       });
     });
@@ -454,7 +454,7 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('User rejected');
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         walletType: HardwareWalletType.Ledger,
       });
     });
@@ -470,7 +470,7 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('Internal error');
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         walletType: HardwareWalletType.Ledger,
       });
     });
@@ -498,7 +498,7 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe(
         'Keyring Controller signTypedMessage: HardwareWalletError: Ledger: User rejected action on device',
       );
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         walletType: HardwareWalletType.Ledger,
       });
     });
@@ -636,7 +636,7 @@ describe('rpcErrorUtils', () => {
       expect(result.code).toBe(ErrorCode.DeviceDisconnected);
       expect(result.message).toBe('Serialized cause message');
       expect(result.stack).toBe('serialized stack trace');
-      expect(result.metadata).toEqual({
+      expect(result.metadata).toStrictEqual({
         recreatedTxId: 'tx-123',
         walletType: HardwareWalletType.Ledger,
       });
