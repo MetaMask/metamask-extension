@@ -90,7 +90,7 @@ describe('PerpsOrderBook', () => {
   });
 
   describe('loading and empty states', () => {
-    it('renders the loading state while waiting for the first update', () => {
+    it('renders a ladder skeleton while waiting for the first update', () => {
       mockUsePerpsLiveOrderBook.mockReturnValue({
         orderBook: null,
         isInitialLoading: true,
@@ -101,8 +101,14 @@ describe('PerpsOrderBook', () => {
       renderOrderBook();
 
       expect(
+        screen.getByTestId('perps-order-book-skeleton'),
+      ).toBeInTheDocument();
+      expect(
         screen.getByText(messages.perpsOrderBookLoading.message),
       ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.perpsOrderBookNoData.message),
+      ).not.toBeInTheDocument();
     });
 
     it('renders the empty state when there is no data', () => {

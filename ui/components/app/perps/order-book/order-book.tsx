@@ -36,6 +36,7 @@ import {
   selectDefaultGrouping,
 } from './order-book.utils';
 import { PerpsOrderBookConfigModal } from './order-book-config-modal';
+import { PerpsOrderBookSkeleton } from './order-book-skeleton';
 import type {
   OrderBookListCurrency,
   OrderBookListMetric,
@@ -399,25 +400,26 @@ export const PerpsOrderBook = ({
   // than an indefinite "Loading…" or a misleading "No data".
   const hasConnectionError = connectionStatus === 'error';
 
-  const showPlaceholder =
-    hasConnectionError ||
-    isInitialLoading ||
-    !aggregatedOrderBook ||
-    !grouped ||
-    !hasLadder;
+  // Prefer a ladder-shaped skeleton over a centered "Loading…" label so the
+  // panel keeps the same top-anchored structure (and the depth ratio does not
+  // jump) when the first book update arrives.
+  const showLoadingSkeleton =
+    isInitialLoading && !hasConnectionError && !hasLadder;
 
-  let placeholderMessage = t('perpsOrderBookNoData');
-  if (hasConnectionError) {
-    placeholderMessage = t('perpsOrderBookConnectionError');
-  } else if (isInitialLoading) {
-    placeholderMessage = t('perpsOrderBookLoading');
-  }
+  const showPlaceholder =
+    !showLoadingSkeleton &&
+    (hasConnectionError || !aggregatedOrderBook || !grouped || !hasLadder);
+
+  const placeholderMessage = hasConnectionError
+    ? t('perpsOrderBookConnectionError')
+    : t('perpsOrderBookNoData');
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       className="h-full w-full overflow-hidden bg-default"
       data-testid={dataTestId}
+      aria-busy={showLoadingSkeleton || undefined}
     >
       {/* Header: view toggle (left) + settings (right) */}
       <Box
@@ -476,7 +478,13 @@ export const PerpsOrderBook = ({
       </Box>
 
       {/* Ladder */}
-      {showPlaceholder ? (
+      {showLoadingSkeleton && (
+        <>
+          <span className="sr-only">{t('perpsOrderBookLoading')}</span>
+          <PerpsOrderBookSkeleton data-testid={`${dataTestId}-skeleton`} />
+        </>
+      )}
+      {showPlaceholder && (
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
@@ -506,7 +514,8 @@ export const PerpsOrderBook = ({
             </Button>
           )}
         </Box>
-      ) : (
+      )}
+      {!showLoadingSkeleton && !showPlaceholder && (
         <Box
           flexDirection={BoxFlexDirection.Column}
           className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
