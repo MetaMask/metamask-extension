@@ -5800,7 +5800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^77.5.0":
+"@metamask/bridge-controller@npm:77.5.0":
   version: 77.5.0
   resolution: "@metamask/bridge-controller@npm:77.5.0"
   dependencies:
@@ -5830,6 +5830,39 @@ __metadata:
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
   checksum: 10/0a388bcc626eea68b78fd8a75d9b63db3c41a67b8c3f5f14dea106a48621e0d570eefa54527bde222f02dcca59e018b21aaff23f3000b9b8a31e6c29e961eaaa
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A77.5.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch":
+  version: 77.5.0
+  resolution: "@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A77.5.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch::version=77.5.0&hash=e36d1e"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^39.0.5"
+    "@metamask/assets-controller": "npm:^11.0.0"
+    "@metamask/assets-controllers": "npm:^109.4.1"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/gas-fee-controller": "npm:^26.2.4"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-network-controller": "npm:^3.2.1"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/polling-controller": "npm:^16.0.8"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
+    uuid: "npm:^8.3.2"
+  checksum: 10/9db4fc20d663c2d61eb9ae89abaa8d6a8569c4f45c6a0e09eba392c228b66344b1dbe3e775156176fa7e4683c0a772e98df4ff6eff940ae923ec3bf578c39aa6
   languageName: node
   linkType: hard
 
