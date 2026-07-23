@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { EthScope } from '@metamask/keyring-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
@@ -50,6 +50,7 @@ import {
   addNetwork,
   setEnabledAllPopularNetworks,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
@@ -59,11 +60,17 @@ import {
   getShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
 import { NetworkListItem } from '../../../../multichain/network-list-item';
+import Tooltip from '../../../../ui/tooltip';
 
 type HomeNetworkFilterModalProps = {
   isOpen: boolean;
@@ -76,6 +83,7 @@ type NetworkRowProps = {
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
+  disabledTooltip?: string;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -88,6 +96,7 @@ export type NetworkSelectionItem = {
   chainId?: string;
   selected?: boolean;
   disabled?: boolean;
+  disabledTooltip?: string;
   endIconName?: IconName;
   onClick: () => void;
   testId: string;
@@ -143,10 +152,33 @@ const HomeNetworkFilterRow = ({
   chainId,
   selected = false,
   disabled = false,
+  disabledTooltip,
   endIconName,
   onClick,
   testId,
 }: NetworkRowProps) => {
+  let endAccessory: React.ReactNode;
+
+  if (disabledTooltip) {
+    endAccessory = (
+      <Tooltip
+        position="top"
+        title={disabledTooltip}
+        wrapperClassName="flex items-center justify-center"
+      >
+        <Box className="flex items-center justify-center rounded-lg p-1">
+          <Icon name={IconName.Info} size={IconSize.Sm} />
+        </Box>
+      </Tooltip>
+    );
+  } else if (endIconName) {
+    endAccessory = (
+      <Box className="flex items-center justify-center rounded-lg p-1">
+        <Icon name={endIconName} size={IconSize.Lg} />
+      </Box>
+    );
+  }
+
   return (
     <Box data-testid={testId}>
       <NetworkListItem
@@ -155,15 +187,9 @@ const HomeNetworkFilterRow = ({
         chainId={chainId}
         selected={selected}
         disabled={disabled}
-        onClick={onClick}
+        onClick={disabled ? () => undefined : onClick}
         focus={false}
-        endAccessory={
-          endIconName ? (
-            <Box className="flex items-center justify-center rounded-lg p-1">
-              <Icon name={endIconName} size={IconSize.Lg} />
-            </Box>
-          ) : undefined
-        }
+        endAccessory={endAccessory}
         showEndAccessory={!selected}
       />
     </Box>
@@ -313,6 +339,10 @@ const HomeNetworkFilterModalContent = ({
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const rawMultichainNetworkConfigurationsByChainId = useSelector(
+    (state: MetaMaskReduxState) =>
+      state.metamask.multichainNetworkConfigurationsByChainId,
+  );
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const useExternalServices = useSelector(getUseExternalServices);
   const showTestnets = useSelector(getShowTestNetworks);
@@ -322,6 +352,26 @@ const HomeNetworkFilterModalContent = ({
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+      const multichainAccountsState =
+        state as unknown as MultichainAccountsState;
+      const selectedAccountGroup = getSelectedAccountGroup(
+        multichainAccountsState,
+      );
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+        multichainAccountsState,
+        selectedAccountGroup,
+      );
+
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
+    },
+  );
   const { handleNetworkChange } = useNetworkChangeHandlers();
   const {
     nonTestNetworks: allDefaultNetworkMap,
@@ -329,6 +379,21 @@ const HomeNetworkFilterModalContent = ({
   } = useNetworkManagerState({ showDefaultNetworks: true });
   const { nonTestNetworks: customNetworkMap, testNetworks: testNetworkMap } =
     useNetworkManagerState();
+
+  const allDefaultNetworksForSelectedAccountGroup = useMemo(
+    () =>
+      isEvmOnlySelectedAccountGroup
+        ? {
+            ...rawMultichainNetworkConfigurationsByChainId,
+            ...allDefaultNetworkMap,
+          }
+        : allDefaultNetworkMap,
+    [
+      allDefaultNetworkMap,
+      isEvmOnlySelectedAccountGroup,
+      rawMultichainNetworkConfigurationsByChainId,
+    ],
+  );
 
   const enabledNetworkSet = useMemo(
     () => new Set(enabledNetworks),
@@ -344,22 +409,30 @@ const HomeNetworkFilterModalContent = ({
     [enabledNetworkSet, enabledNetworks.length],
   );
 
+  const isNetworkDisabled = useCallback(
+    (network: MultichainNetworkConfiguration) =>
+      !network.isEvm && isEvmOnlySelectedAccountGroup,
+    [isEvmOnlySelectedAccountGroup],
+  );
+  const getDisabledTooltip = useCallback(
+    (disabled: boolean) =>
+      disabled ? t('networkNotSupportedByThisAccount') : undefined,
+    [t],
+  );
+
   const defaultNetworks = useMemo(() => {
-    return sortNetworks(allDefaultNetworkMap, orderedNetworksList).filter(
-      (network) => {
-        if (!isNetworkInDefaultNetworkTab(network)) {
-          return false;
-        }
+    return sortNetworks(
+      allDefaultNetworksForSelectedAccountGroup,
+      orderedNetworksList,
+    ).filter((network) => {
+      if (!isNetworkInDefaultNetworkTab(network)) {
+        return false;
+      }
 
-        if (!useExternalServices && !network.isEvm) {
-          return false;
-        }
-
-        return network.isEvm ? Boolean(evmAccountGroup) : true;
-      },
-    );
+      return network.isEvm ? Boolean(evmAccountGroup) : useExternalServices;
+    });
   }, [
-    allDefaultNetworkMap,
+    allDefaultNetworksForSelectedAccountGroup,
     evmAccountGroup,
     isNetworkInDefaultNetworkTab,
     orderedNetworksList,
@@ -368,13 +441,13 @@ const HomeNetworkFilterModalContent = ({
 
   const customNetworks = useMemo(() => {
     return sortNetworks(customNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) => network.isEvm || useExternalServices,
     );
   }, [customNetworkMap, orderedNetworksList, useExternalServices]);
 
   const testNetworks = useMemo(() => {
     return sortNetworks(testNetworkMap, orderedNetworksList).filter(
-      (network) => useExternalServices || network.isEvm,
+      (network) => network.isEvm || useExternalServices,
     );
   }, [orderedNetworksList, testNetworkMap, useExternalServices]);
 
@@ -390,7 +463,7 @@ const HomeNetworkFilterModalContent = ({
       ({ chainId }) => !evmNetworks[chainId],
     ).filter(
       ({ chainId }) =>
-        useExternalServices || isEvmChainId(chainId as CaipChainId),
+        isEvmChainId(chainId as CaipChainId) || useExternalServices,
     );
 
     return getFilteredFeaturedNetworks(
@@ -433,11 +506,13 @@ const HomeNetworkFilterModalContent = ({
         key: 'default-networks',
         title: hasOnlyDefaultNetworks ? undefined : t('defaultNetworks'),
         items: defaultNetworks.map((network) => ({
+          disabled: isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-network-${getSelectableChainId(network)}`,
         })),
@@ -449,11 +524,13 @@ const HomeNetworkFilterModalContent = ({
         key: 'custom-networks',
         title: t('customNetworks'),
         items: customNetworks.map((network) => ({
+          disabled: isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-custom-${getSelectableChainId(network)}`,
         })),
@@ -465,11 +542,13 @@ const HomeNetworkFilterModalContent = ({
         key: 'test-networks',
         title: t('testnets'),
         items: testNetworks.map((network) => ({
+          disabled: isNetworkDisabled(network),
           key: network.chainId,
           name: network.name,
           iconSrc: getNetworkIcon(network),
           chainId: getSelectableChainId(network),
           selected: isNetworkSelected(network),
+          disabledTooltip: getDisabledTooltip(isNetworkDisabled(network)),
           onClick: () => handleSelectNetwork(network.chainId),
           testId: `home-network-filter-test-${getSelectableChainId(network)}`,
         })),
@@ -480,18 +559,26 @@ const HomeNetworkFilterModalContent = ({
       nextSections.push({
         key: 'additional-networks',
         title: t('additionalNetworks'),
-        items: additionalNetworks.map((network) => ({
-          key: network.chainId,
-          name: network.name,
-          iconSrc:
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ],
-          chainId: network.chainId,
-          endIconName: IconName.Add,
-          onClick: () => handleAddNetwork(network),
-          testId: `home-network-filter-additional-${network.chainId}`,
-        })),
+        items: additionalNetworks.map((network) => {
+          const disabled =
+            !isEvmChainId(network.chainId as CaipChainId) &&
+            isEvmOnlySelectedAccountGroup;
+
+          return {
+            key: network.chainId,
+            name: network.name,
+            iconSrc:
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+              ],
+            chainId: network.chainId,
+            disabled,
+            disabledTooltip: getDisabledTooltip(disabled),
+            endIconName: IconName.Add,
+            onClick: () => handleAddNetwork(network),
+            testId: `home-network-filter-additional-${network.chainId}`,
+          };
+        }),
       });
     }
 
@@ -500,9 +587,12 @@ const HomeNetworkFilterModalContent = ({
     additionalNetworks,
     customNetworks,
     defaultNetworks,
+    getDisabledTooltip,
     handleAddNetwork,
     handleSelectNetwork,
     hasOnlyDefaultNetworks,
+    isEvmOnlySelectedAccountGroup,
+    isNetworkDisabled,
     isNetworkSelected,
     showTestnets,
     t,
