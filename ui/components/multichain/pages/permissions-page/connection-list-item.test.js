@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-if */
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';

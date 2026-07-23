@@ -40,7 +40,6 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
 const DEFAULT_APP_CONTEXT = {
   app: { name: 'MetaMask Extension', version: '1.0.0' },
   userAgent: '',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   marketingCampaignCookieId: null,
 };
 
@@ -114,7 +113,6 @@ describe('createPlatformAdapter', () => {
       expect(segment.track).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           }),
         }),
@@ -132,7 +130,6 @@ describe('createPlatformAdapter', () => {
       expect(segment.track).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: 'campaign-cookie-id',
           }),
         }),
@@ -186,7 +183,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'msg-1',
@@ -344,7 +340,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'id-1',
@@ -401,7 +396,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'page-1',

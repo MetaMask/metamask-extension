@@ -7,7 +7,6 @@ import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
 import { Toast } from '../../multichain/toast/toast';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsErrorToast() {
   const { isOpen, title, description, actionText, onActionClick } =
     useSelector(selectErrorToast);

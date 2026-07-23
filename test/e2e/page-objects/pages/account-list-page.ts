@@ -39,11 +39,18 @@ class AccountListPage {
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
-  private readonly addMultichainWalletButtonEnabled =
-    '[data-testid="account-list-add-wallet-button"]:not([disabled])';
-
   private readonly addSnapAccountButton =
     '[data-testid="choose-wallet-type-snap-account"]';
+
+  private readonly addWalletButtonReady = {
+    tag: 'p',
+    text: 'Add wallet',
+  };
+
+  private readonly addWalletButtonSyncing = {
+    tag: 'p',
+    text: 'Syncing...',
+  };
 
   private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
 
@@ -106,6 +113,10 @@ class AccountListPage {
     '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
+
+  private readonly multichainAccountListSearch = {
+    testId: 'multichain-account-list-search',
+  };
 
   private readonly multichainAccountMenuAddresses = {
     tag: 'p',
@@ -178,11 +189,6 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly syncingMessage = {
-    text: 'Syncing...',
-    tag: 'p',
-  };
-
   private readonly unhideAccountButton =
     '[data-testid="multichain-account-menu-item-showAccount"]';
 
@@ -225,16 +231,15 @@ class AccountListPage {
   ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.addMultichainWalletButton],
+        [this.addMultichainAccountButton, this.multichainAccountListSearch],
         { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
-
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted();
+      await this.waitUntilSyncingIsCompleted(timeout);
     }
     console.log('Account list is loaded');
   }
@@ -283,7 +288,6 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.waitForAddWalletButtonStablyEnabled();
     await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
@@ -326,11 +330,16 @@ class AccountListPage {
 
   /**
    * Waiting until syncing is completed.
+   *
+   * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(): Promise<void> {
+  async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
+      timeout,
+      waitAtLeastGuard: largeDelayMs,
+    });
     await this.checkAddWalletButtonIsDisplayed();
-    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
@@ -402,7 +411,6 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.waitForAddWalletButtonStablyEnabled();
     await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
@@ -732,26 +740,7 @@ class AccountListPage {
 
   async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
-    await this.driver.waitForSelector(this.addMultichainWalletButton);
-  }
-
-  /**
-   * Waits until the "Add wallet" button is enabled and stays enabled,
-   * ensuring AccountTreeController sync has fully settled before clicking.
-   * The button is disabled while `isAccountTreeSyncingInProgress` is true;
-   * stableFor guards against sync flickering (briefly enabled then disabled again).
-   */
-  async waitForAddWalletButtonStablyEnabled(): Promise<void> {
-    console.log('Waiting for add wallet button to be stably enabled');
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          this.addMultichainWalletButtonEnabled,
-          1000,
-        );
-      },
-      { timeout: 30000, interval: 500, stableFor: 2000 },
-    );
+    await this.driver.waitForSelector(this.addWalletButtonReady);
   }
 
   async clickWalletDetailsButton(): Promise<void> {
