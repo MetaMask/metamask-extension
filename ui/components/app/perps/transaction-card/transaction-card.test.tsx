@@ -320,9 +320,7 @@ describe('TransactionCard', () => {
       );
 
       expect(
-        screen.getByText(
-          `${messages.perpsDepositedVerb.message} 5.00 USDC`,
-        ),
+        screen.getByText(`${messages.perpsDepositedVerb.message} 5.00 USDC`),
       ).toBeInTheDocument();
     });
 
