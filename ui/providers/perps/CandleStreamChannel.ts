@@ -428,7 +428,7 @@ export class CandleStreamChannel {
       entry.isConnected = false;
     });
 
-    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+    // eslint-disable-next-line no-empty-function
     entry.unsubscribeFromSource = () => {};
   }
 

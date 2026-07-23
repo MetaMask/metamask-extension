@@ -49,8 +49,6 @@ type RecoveryPhraseProps = {
   secretRecoveryPhrase: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RecoveryPhrase({
   secretRecoveryPhrase,
 }: RecoveryPhraseProps) {
