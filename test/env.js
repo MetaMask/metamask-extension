@@ -20,4 +20,4 @@ process.env.METAMASK_SHIELD_ENABLED = 'false';
 process.env.PERPS_ENABLED = 'true';
 process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
 process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'false';
-process.env.BRIDGE_DEBUG = 'false';
+process.env.BRIDGE_DEBUG = '0';

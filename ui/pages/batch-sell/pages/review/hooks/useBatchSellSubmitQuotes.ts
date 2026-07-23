@@ -13,7 +13,6 @@ import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { parseCaipAssetType } from '@metamask/utils';
 
 type UseBatchSellSubmitQuotesArgs = {
   quoteResponses: (QuoteResponse | null)[];

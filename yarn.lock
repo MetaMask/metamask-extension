@@ -5869,8 +5869,8 @@ __metadata:
   linkType: hard
 
 "@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
-  version: 77.7.0
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=802ef8&locator=metamask-crx%40workspace%3A."
+  version: 77.8.0
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=3797de&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5897,17 +5897,17 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/825ea57b4c652a662e671c9893fece4f0e16e7ebb1e5be4132d174790e402cd1684f08efec51cf220a4e48ec7b4f7273a64764e4d5a12df061829d9228fd8b84
+  checksum: 10/3d4a15c30bd6e4de52ef333e5f767d072456986b0592d7b820395e722dc1b4515b68b12a76be54c2cb63151896c8537b4306b51ad1e1cfa21d19d7aeac6ed1e7
   languageName: node
   linkType: hard
 
 "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
   version: 74.4.0
-  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=96ca3c&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=fb3b8a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/accounts-controller": "npm:^39.0.5"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/bridge-controller": "npm:^77.7.0"
+    "@metamask/bridge-controller": "npm:^77.8.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/gas-fee-controller": "npm:^26.2.4"
     "@metamask/keyring-controller": "npm:^27.1.0"
@@ -5921,7 +5921,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/5b8b8d0bf5a60a1b9d731678b35302f784f2939388877b0c3206a1b321233beb2eff50339bc8ca082811d3547f09a7b4017ed34edcbe094dcf3f86ca1457f0bd
+  checksum: 10/a06a13c6e9873bca8150bde7b0d12d3f3dbff61f08c22bd46e46325c931af5ba9246c27b95b64c3ddc9a1d568bf7592181fd90743eaa874c9bbe9ef3a86fa4c0
   languageName: node
   linkType: hard
 
@@ -8458,7 +8458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^69.0.0, @metamask/transaction-controller@npm:^69.2.1":
+"@metamask/transaction-controller@npm:^69.0.0, @metamask/transaction-controller@npm:^69.1.0, @metamask/transaction-controller@npm:^69.2.1":
   version: 69.2.1
   resolution: "@metamask/transaction-controller@npm:69.2.1"
   dependencies:

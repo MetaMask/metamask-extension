@@ -13,7 +13,10 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_DEBUG_ENABLED,
+  BRIDGE_ONLY_CHAINS,
+} from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -541,7 +544,10 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              unvalidatedQuote?.quote.dest.valueInCurrency ?? undefined
+              (unvalidatedQuote?.quote.dest.valueInCurrency ?? '') +
+                (BRIDGE_DEBUG_ENABLED
+                  ? `(${unvalidatedQuote?.toTokenAmount?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                  : '') || undefined
             }
             amountFieldProps={{
               testId: 'to-amount',

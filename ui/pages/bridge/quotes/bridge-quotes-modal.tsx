@@ -65,13 +65,6 @@ export const BridgeQuotesModal = ({
     [recommendedQuote],
   );
 
-  // console.log(sortedQuotes.map((quote) => quote.cost));
-  // console.log(sortedQuotes.map((quote) => quote.quote.priceData?.cost));
-  // console.log(sortedQuotes.map((quote) => quote.quote.src?.valueInCurrency));
-  // console.log(sortedQuotes.map((quote) => quote.quote.dest?.valueInCurrency));
-  // console.log(sortedQuotes.map((quote) => quote.quote.feeData?.relayer));
-  // console.log(sortedQuotes.map((quote) => quote.quote.feeData?.network));
-
   const handleQuoteSelected = useCallback(
     (quote: QuoteResponse) => {
       const networkFee = sumAmounts(quote.quote.feeData.network);
@@ -148,7 +141,7 @@ export const BridgeQuotesModal = ({
             (quote: QuoteResponse & QuoteMetadata, index: number) => {
               const {
                 toTokenAmount,
-                quote: { dest, priceData, protocols, requestId },
+                quote: { dest, protocols, requestId },
               } = quote;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
@@ -181,40 +174,6 @@ export const BridgeQuotesModal = ({
                     />
                   )}
 
-                  {BRIDGE_DEBUG_ENABLED && (
-                    <Row
-                      maxWidth={BlockSize.Full}
-                      width={BlockSize.Full}
-                      gap={2}
-                    >
-                      {/* PROVIDER NAME */}
-                      <Text
-                        variant={TextVariant.bodyMd}
-                        fontWeight={FontWeight.Medium}
-                        ellipsis={true}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          flexShrink: 1,
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {startCase(protocols[0])}
-                      </Text>
-                      {/* DEST AMOUNT */}
-                      <Text
-                        variant={TextVariant.bodyMd}
-                        fontWeight={FontWeight.Medium}
-                        style={{ whiteSpace: 'nowrap' }}
-                        color={TextColor.textMuted}
-                      >
-                        {formatTokenAmount(
-                          locale,
-                          toTokenAmount?.amount,
-                          dest.asset.symbol,
-                        )}
-                      </Text>
-                    </Row>
-                  )}
                   <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
                     {/* PROVIDER NAME */}
                     <Text
@@ -240,67 +199,12 @@ export const BridgeQuotesModal = ({
                         dest.normalizedAmount ?? '0',
                         dest.asset.symbol,
                       )}
+                      {BRIDGE_DEBUG_ENABLED
+                        ? ` (${toTokenAmount?.amount ?? '0'})`
+                        : ''}
                     </Text>
                   </Row>
 
-                  {BRIDGE_DEBUG_ENABLED && (
-                    <Row
-                      alignItems={AlignItems.stretch}
-                      gap={2}
-                      width={BlockSize.Full}
-                    >
-                      {/* TOTAL COST + TAG */}
-                      <Row gap={1}>
-                        <Text
-                          variant={TextVariant.bodySm}
-                          color={TextColor.textMuted}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          {t('quotedTotalCost', [
-                            quote.cost?.valueInCurrency === null
-                              ? formatTokenAmount(
-                                  locale,
-                                  quote.totalNetworkFee?.amount,
-                                  nativeCurrency,
-                                )
-                              : formatCurrencyAmount(
-                                  quote.cost?.valueInCurrency,
-                                  currency,
-                                  2,
-                                ),
-                          ])}
-                        </Text>
-                        {isRecommended && (
-                          <Tag
-                            backgroundColor={BackgroundColor.successMuted}
-                            labelProps={{
-                              color: TextColor.successDefault,
-                              fontWeight: FontWeight.Medium,
-                            }}
-                            style={{
-                              whiteSpace: 'nowrap',
-                              paddingInline: 6,
-                              paddingTop: 0,
-                              paddingBottom: 0,
-                            }}
-                            label={t('bridgeLowestCost')}
-                          />
-                        )}
-                      </Row>
-                      {/* RECEIVED AMOUNT */}
-                      <Text
-                        variant={TextVariant.bodySm}
-                        color={TextColor.textMuted}
-                        style={{ whiteSpace: 'nowrap' }}
-                      >
-                        {formatCurrencyAmount(
-                          quote.toTokenAmount?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ?? ''}
-                      </Text>
-                    </Row>
-                  )}
                   <Row
                     alignItems={AlignItems.stretch}
                     gap={2}
@@ -314,7 +218,12 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          !quote.quote.priceData?.cost?.valueInCurrency
+                          !quote.quote.priceData?.priceImpact
+                            ?.valueInCurrency &&
+                          sumAmounts(
+                            quote.quote.feeData.network,
+                            quote.quote.feeData.relayer,
+                          )?.normalizedAmount
                             ? formatTokenAmount(
                                 locale,
                                 sumAmounts(
@@ -322,13 +231,19 @@ export const BridgeQuotesModal = ({
                                   quote.quote.feeData.relayer,
                                 )?.normalizedAmount,
                                 nativeCurrency,
-                              )
+                              ) +
+                              (BRIDGE_DEBUG_ENABLED
+                                ? ` (${quote.totalNetworkFee?.amount?.slice(0, 10) ?? '0'})`
+                                : '')
                             : formatCurrencyAmount(
-                                quote.quote.priceData?.cost?.valueInCurrency ??
-                                  '0',
+                                quote.quote.priceData?.priceImpact
+                                  ?.valueInCurrency ?? '0',
                                 currency,
                                 2,
-                              ),
+                              ) +
+                              (BRIDGE_DEBUG_ENABLED
+                                ? ` (${quote.cost?.valueInCurrency?.slice(0, 6) ?? '0'})`
+                                : ''),
                         ])}
                       </Text>
                       {isRecommended && (
@@ -354,11 +269,14 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {formatCurrencyAmount(
+                      {(formatCurrencyAmount(
                         quote.quote.dest.valueInCurrency,
                         currency,
                         2,
-                      ) ?? ''}
+                      ) ?? '') +
+                        (BRIDGE_DEBUG_ENABLED
+                          ? ` (${quote.toTokenAmount?.valueInCurrency?.slice(0, 10) ?? '0'})`
+                          : '')}
                     </Text>
                   </Row>
                 </Column>

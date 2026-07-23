@@ -726,6 +726,8 @@ export const getBridgeQuotes = createSelector(
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
+      // Decides whether to prioritize legacy metadata over new metadata
+      migrationPhase: '1.5',
     });
     return quotes;
   },

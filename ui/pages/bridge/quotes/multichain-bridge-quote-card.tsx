@@ -230,14 +230,6 @@ export const MultichainBridgeQuoteCard = ({
             </Tooltip>
           </Row>
           <Row gap={1}>
-            {BRIDGE_DEBUG_ENABLED && (
-              <Text variant={TextVariant.bodySm} color={TextColor.textMuted}>
-                {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
-                  locale,
-                  activeQuote.swapRate,
-                )} ${activeQuote.quote.dest.asset.symbol}`}
-              </Text>
-            )}
             <Text
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
@@ -245,7 +237,7 @@ export const MultichainBridgeQuoteCard = ({
               {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
                 locale,
                 activeQuote.quote.priceData?.swapRate,
-              )} ${activeQuote.quote.dest.asset.symbol}`}
+              )}${BRIDGE_DEBUG_ENABLED ? ` (${activeQuote.swapRate})` : ''}${activeQuote.quote.dest.asset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -322,53 +314,6 @@ export const MultichainBridgeQuoteCard = ({
             )}
             {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
-                {BRIDGE_DEBUG_ENABLED && (
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={
-                      isEstimatedReturnLow
-                        ? TextColor.warningDefault
-                        : TextColor.textMuted
-                    }
-                    style={{
-                      textDecoration: 'line-through',
-                    }}
-                    data-testid="network-fees-included-original-amount"
-                  >
-                    {activeQuote.includedTxFees?.valueInCurrency
-                      ? formatNetworkFee(
-                          activeQuote.includedTxFees.valueInCurrency,
-                          currency,
-                        )
-                      : formatNetworkFee(
-                          activeQuote.gasFee?.total?.valueInCurrency,
-                          currency,
-                        )}
-                  </Text>
-                )}
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textAlternative
-                  }
-                  style={{
-                    textDecoration: 'line-through',
-                  }}
-                  data-testid="network-fees-included-original-amount"
-                >
-                  {activeQuote.includedTxFees?.valueInCurrency
-                    ? formatNetworkFee(
-                        activeQuote.includedTxFees.valueInCurrency,
-                        currency,
-                      )
-                    : formatNetworkFee(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
-                        currency,
-                      )}
-                </Text>
-
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -384,14 +329,19 @@ export const MultichainBridgeQuoteCard = ({
                         sumAmounts(activeQuote.quote.feeData.txFee)
                           ?.valueInCurrency,
                         currency,
-                      )
+                      ) +
+                      (BRIDGE_DEBUG_ENABLED
+                        ? ` (${activeQuote.includedTxFees?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                        : '')
                     : formatNetworkFee(
                         sumAmounts(activeQuote.quote.feeData.network)
                           ?.valueInCurrency,
                         currency,
-                      )}
+                      ) +
+                      (BRIDGE_DEBUG_ENABLED
+                        ? ` (${activeQuote.gasFee?.total?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                        : '')}
                 </Text>
-
                 <Text
                   variant={TextVariant.bodySm}
                   color={
@@ -404,24 +354,6 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
               </Row>
             )}
-            {!shouldShowGasSponsored &&
-              !activeQuote.quote.gasIncluded &&
-              BRIDGE_DEBUG_ENABLED && (
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={
-                    isEstimatedReturnLow
-                      ? TextColor.warningDefault
-                      : TextColor.textMuted
-                  }
-                  data-testid="network-fees"
-                >
-                  {formatNetworkFee(
-                    activeQuote.gasFee?.total?.valueInCurrency,
-                    currency,
-                  )}
-                </Text>
-              )}
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
@@ -436,7 +368,18 @@ export const MultichainBridgeQuoteCard = ({
                   sumAmounts(activeQuote.quote.feeData.network)
                     ?.valueInCurrency,
                   currency,
-                )}
+                ) +
+                  (BRIDGE_DEBUG_ENABLED
+                    ? ` (${activeQuote.gasFee?.total?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                    : '') +
+                  (BRIDGE_DEBUG_ENABLED
+                    ? ` / AMOUNT: ${sumAmounts(
+                        activeQuote.quote.feeData.network,
+                      )?.normalizedAmount?.slice(
+                        0,
+                        8,
+                      )}  (${activeQuote.gasFee?.total?.amount?.slice(0, 8) ?? '0'})`
+                    : '')}
               </Text>
             )}
           </Row>
@@ -482,38 +425,6 @@ export const MultichainBridgeQuoteCard = ({
         />
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount?.amount && BRIDGE_DEBUG_ENABLED && (
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row gap={2}>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {t('minimumReceivedLabel')}
-              </Text>
-              <Tooltip
-                style={{ width: 350 }}
-                title={t('minimumReceivedExplanationTitle')}
-                position={PopoverPosition.TopStart}
-                offset={[-48, 16]}
-              >
-                {t('minimumReceivedExplanation')}
-              </Tooltip>
-            </Row>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textMuted}
-              data-testid="minimum-received"
-            >
-              {formatTokenAmount(
-                locale,
-                activeQuote.minToTokenAmount?.amount,
-                activeQuote.quote.dest.asset.symbol,
-              )}
-            </Text>
-          </Row>
-        )}
-
         {activeQuote.quote.dest?.minAmountNormalized && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
@@ -542,6 +453,9 @@ export const MultichainBridgeQuoteCard = ({
                 activeQuote.quote.dest.minAmountNormalized,
                 activeQuote.quote.dest.asset.symbol,
               )}
+              {BRIDGE_DEBUG_ENABLED
+                ? ` (${activeQuote.minToTokenAmount?.amount ?? '0'})`
+                : ''}
             </Text>
           </Row>
         )}

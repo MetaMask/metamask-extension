@@ -1,6 +1,5 @@
 import {
   getNativeAssetForChainId,
-  type QuoteResponse,
   toQuoteResponseV2,
 } from '@metamask/bridge-controller';
 
