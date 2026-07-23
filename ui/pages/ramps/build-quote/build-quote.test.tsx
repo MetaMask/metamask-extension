@@ -121,9 +121,9 @@ describe('RampsBuildQuoteScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationState = null;
-    (
-      global as unknown as { platform: { openTab: jest.Mock } }
-    ).platform = { openTab: mockOpenTab };
+    (global as unknown as { platform: { openTab: jest.Mock } }).platform = {
+      openTab: mockOpenTab,
+    };
     useRampsController.mockReturnValue(mockControllerState());
     useRampsQuotes.mockReturnValue({
       data: {

@@ -93,9 +93,9 @@ describe('OrderContent (completed)', () => {
 
   it('has an accessible name on the copy-order-id button', () => {
     renderContent(completedOrder);
-    expect(
-      screen.getByRole('button', { name: 'Copy to clipboard' }),
-    ).toBe(screen.getByTestId('ramps-order-details-order-id'));
+    expect(screen.getByRole('button', { name: 'Copy to clipboard' })).toBe(
+      screen.getByTestId('ramps-order-details-order-id'),
+    );
   });
 
   it('matches the completed snapshot', () => {
@@ -249,8 +249,6 @@ describe('OrderContent (pending)', () => {
     } as unknown as RampsOrder);
     expect(
       screen.getByTestId('ramps-order-details-status-description'),
-    ).toHaveTextContent(
-      'Card purchases may take a few minutes to complete.',
-    );
+    ).toHaveTextContent('Card purchases may take a few minutes to complete.');
   });
 });

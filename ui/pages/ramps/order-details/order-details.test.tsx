@@ -74,9 +74,7 @@ describe('RampsOrderDetailsScreen', () => {
       '/ramps/order-details/order-1',
     );
 
-    expect(
-      screen.getByTestId('ramps-order-details-error'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('ramps-order-details-error')).toBeInTheDocument();
   });
 
   it('navigates to wallet overview when Done is clicked', () => {
