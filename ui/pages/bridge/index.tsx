@@ -119,8 +119,6 @@ const CrossChainSwap = () => {
           iconName={IconName.ArrowLeft}
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleBack}
         />
       }

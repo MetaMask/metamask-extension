@@ -1047,15 +1047,13 @@
     "message": ""
   },
   "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapping"
   },
   "activity_swap_success_description": {
     "message": ""
   },
   "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapped"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"
@@ -3311,6 +3309,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theTopTradersPage": {
+    "message": "the Follow Trading page"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
@@ -7018,6 +7019,12 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Price can't be more than 95% away from the market price"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Enter a valid limit price to continue."
+  },
   "perpsCloseLong": {
     "message": "Close long"
   },
@@ -7026,6 +7033,9 @@
   },
   "perpsClosePosition": {
     "message": "Close position"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Current price is unavailable. Try again in a moment."
   },
   "perpsCloseShort": {
     "message": "Close short"
@@ -7556,6 +7566,10 @@
     "message": "Your PnL is $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Failed to place close order",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 margin to $2 position",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7607,6 +7621,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Position partially closed",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Failed to place partial close order",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
@@ -8173,13 +8191,19 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBestRate": {
+    "message": "Best rate"
+  },
   "rampsBuyToken": {
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
   },
   "rampsBuyingViaProvider": {
-    "message": "Buying via $1",
+    "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Change provider."
   },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
@@ -8193,8 +8217,22 @@
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
   },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maximum purchase is $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Minimum purchase is $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Most reliable"
+  },
   "rampsNoPaymentMethodsAvailable": {
     "message": "No payment methods are available."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "No providers available."
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
@@ -8202,6 +8240,9 @@
   "rampsOnNetwork": {
     "message": "on $1",
     "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Other options"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
@@ -8239,11 +8280,21 @@
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "Previously used"
+  },
+  "rampsProviders": {
+    "message": "Providers"
+  },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Quotes displayed for $1.",
+    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"

@@ -488,6 +488,7 @@ export async function mockTronGetAccountResource(
       address: TRON_ACCOUNT_ADDRESS,
       visible: true,
     })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -813,6 +814,7 @@ export async function mockExchangeRates(
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
     .withQuery({ baseCurrency: 'usd' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -849,6 +851,7 @@ export async function mockFiatExchangeRates(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v1/exchange-rates/fiat')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
