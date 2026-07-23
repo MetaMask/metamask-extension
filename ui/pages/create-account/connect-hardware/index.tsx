@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable react-compiler/react-compiler */
 import React, {
   useCallback,
   useContext,

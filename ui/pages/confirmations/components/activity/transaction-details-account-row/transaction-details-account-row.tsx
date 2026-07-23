@@ -43,7 +43,6 @@ function selectFirstAccountGroupName(state: unknown): string | undefined {
     : undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
