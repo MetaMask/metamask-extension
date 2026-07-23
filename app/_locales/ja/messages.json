@@ -1002,12 +1002,10 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしています"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしました"
   },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"

@@ -3,20 +3,22 @@ import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 
-type UseActivityScreenOpenedProps = {
+type UseActivityScreenViewedProps = {
   filter: ActivityListFilter | undefined;
   isSettled: boolean;
   isEmpty: boolean;
   pendingLength: number;
+  entryPoint?: ScreenViewedEntryPoint;
 };
 
 /**
- * Fires the ActivityScreenOpened metric once, after the activity list has
+ * Fires the ActivityScreenViewed metric once, after the activity list has
  * settled (networks initialised + initial load complete).
  * Does nothing when `filter` is provided so it doesn't fire on asset detail view.
  * @param options0
@@ -24,13 +26,15 @@ type UseActivityScreenOpenedProps = {
  * @param options0.isSettled
  * @param options0.isEmpty
  * @param options0.pendingLength
+ * @param options0.entryPoint
  */
-export const useActivityScreenOpened = ({
+export const useActivityScreenViewed = ({
   filter,
   isSettled,
   isEmpty,
   pendingLength,
-}: UseActivityScreenOpenedProps) => {
+  entryPoint,
+}: UseActivityScreenViewedProps) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const networkFilter = useSelector(selectEnabledNetworksAsCaipChainIds);
 
@@ -54,16 +58,17 @@ export const useActivityScreenOpened = ({
     } = metricsRef.current;
 
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.ActivityScreenOpened)
+      createEventBuilder(MetaMetricsEventName.ActivityScreenViewed)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
           /* eslint-disable @typescript-eslint/naming-convention */
           network_filter: networks,
           is_empty: empty,
           pending_transactions: pending,
+          entry_point: entryPoint,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
-  }, [filter, isSettled, trackEvent]);
+  }, [filter, isSettled, trackEvent, entryPoint]);
 };

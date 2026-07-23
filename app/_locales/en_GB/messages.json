@@ -1047,15 +1047,13 @@
     "message": ""
   },
   "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapping"
   },
   "activity_swap_success_description": {
     "message": ""
   },
   "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapped"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"
@@ -3311,6 +3309,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theTopTradersPage": {
+    "message": "the Follow Trading page"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
@@ -5751,6 +5752,9 @@
   },
   "networkNameTron": {
     "message": "Tron"
+  },
+  "networkNotSupportedByThisAccount": {
+    "message": "Not supported by this account."
   },
   "networkOptions": {
     "message": "Network options"

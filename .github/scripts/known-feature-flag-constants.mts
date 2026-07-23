@@ -65,6 +65,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/transaction/pay-prefill.ts',
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',
   },
+  {
+    key: 'DEFI_CONTROLLER_V2_FLAG',
+    file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
+    exportName: 'DEFI_CONTROLLER_V2_FLAG',
+  },
 ];
 
 /**

@@ -307,8 +307,14 @@ export class LedgerDmkBridgeHandler {
 
   /**
    * Subscribes to `onSessionStateChange` to detect device disconnects.
-   * On disconnect, destroys the cached bridge so the next action triggers
-   * a fresh connection.
+   * On disconnect, tears down the cached bridge so the next action triggers
+   * a fresh connection — but keeps the HID device-event listeners registered
+   * so replug still fires `ledgerDeviceConnect`.
+   *
+   * The router reuses the same handler instance across disconnect/replug
+   * cycles, so a full `destroy()` here would strip the HID listeners and the
+   * extension would stop receiving connect events until the handler was
+   * recreated. `tearDownBridge()` avoids that by preserving listeners.
    * @param bridge
    */
   private setupDisconnectMonitoring(bridge: LedgerDmkBridge): void {
@@ -318,7 +324,7 @@ export class LedgerDmkBridgeHandler {
     this.sessionStateSubscription = bridge.onSessionStateChange.subscribe({
       next: ({ connected }) => {
         if (!connected) {
-          this.destroy().catch(() => {
+          this.tearDownBridge().catch(() => {
             // Best-effort cleanup after disconnect
           });
         }
@@ -629,16 +635,16 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Destroys the cached bridge and cleans up subscriptions.
-   * Safe to call multiple times.
+   * Tears down the cached bridge and session state without removing the
+   * HID device-event listeners or the chrome.runtime message listener.
+   *
+   * Used on device disconnect: the router keeps the same handler instance,
+   * so the HID listeners must stay registered to detect replug. Bumping
+   * `bridgeGeneration` also discards any in-flight `constructBridge()`
+   * result so it cannot resurrect the torn-down bridge.
    */
-  async destroy(): Promise<void> {
+  private async tearDownBridge(): Promise<void> {
     this.bridgeGeneration += 1;
-    this.removeDeviceEventListeners();
-    if (this.messageListenerFn) {
-      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
-      this.messageListenerFn = null;
-    }
     if (this.sessionStateSubscription) {
       this.sessionStateSubscription.unsubscribe();
       this.sessionStateSubscription = null;
@@ -653,5 +659,23 @@ export class LedgerDmkBridgeHandler {
     }
     this.bridgePromise = null;
     this.sessionId = null;
+  }
+
+  /**
+   * Destroys the cached bridge and cleans up subscriptions and listeners.
+   *
+   * Removes the HID device-event listeners and the message listener in
+   * addition to the bridge teardown performed by `tearDownBridge()`. Use
+   * this when the handler is being retired (e.g. during `switchLedgerHandler`),
+   * not for a device disconnect — see `setupDisconnectMonitoring`.
+   * Safe to call multiple times.
+   */
+  async destroy(): Promise<void> {
+    this.removeDeviceEventListeners();
+    if (this.messageListenerFn) {
+      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
+      this.messageListenerFn = null;
+    }
+    await this.tearDownBridge();
   }
 }

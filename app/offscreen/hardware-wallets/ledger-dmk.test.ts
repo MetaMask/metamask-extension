@@ -8,8 +8,11 @@ import {
 
 import { NEVER, of, Subject, throwError } from 'rxjs';
 
-import { LedgerAction } from '../../../shared/constants/offscreen-communication';
-
+import {
+  LedgerAction,
+  OffscreenCommunicationEvents,
+} from '../../../shared/constants/offscreen-communication';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import { LedgerDmkBridgeHandler } from './ledger-dmk';
 
 // Mock the transport factory (virtual: ESM-only package has no CJS export for Jest)
@@ -498,6 +501,64 @@ describe('LedgerDmkBridgeHandler', () => {
       }, 0);
       await handler.handleAction(LedgerAction.updateTransport);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+    });
+
+    it('preserves HID listeners on device disconnect (replug still notifies)', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      mockHidGetDevices.mockResolvedValue([]);
+      await handler.init(true);
+
+      const connectListener = mockHidAddEventListener.mock.calls.find(
+        ([event]) => event === 'connect',
+      )?.[1];
+      const disconnectListener = mockHidAddEventListener.mock.calls.find(
+        ([event]) => event === 'disconnect',
+      )?.[1];
+      expect(connectListener).toBeDefined();
+      expect(disconnectListener).toBeDefined();
+
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.updateTransport);
+
+      // Simulate unplug
+      mockOnSessionStateChangeSubject.next({ connected: false });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+
+      // The router keeps the handler instance, so HID listeners must remain
+      // registered for replug to fire `ledgerDeviceConnect`.
+      expect(mockHidRemoveEventListener).not.toHaveBeenCalledWith(
+        'connect',
+        connectListener,
+      );
+      expect(mockHidRemoveEventListener).not.toHaveBeenCalledWith(
+        'disconnect',
+        disconnectListener,
+      );
+
+      // Replug should still notify the extension.
+      mockSendMessage.mockClear();
+      connectListener?.({ device: { vendorId: Number(LEDGER_USB_VENDOR_ID) } });
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: OffscreenCommunicationEvents.ledgerDeviceConnect,
+          payload: true,
+        }),
+      );
+
+      // Full destroy() (hot-swap) still removes the listeners.
+      mockHidRemoveEventListener.mockClear();
+      await handler.destroy();
+      expect(mockHidRemoveEventListener).toHaveBeenCalledWith(
+        'connect',
+        connectListener,
+      );
+      expect(mockHidRemoveEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        disconnectListener,
+      );
     });
 
     it('retries bridge construction after a failure', async () => {
