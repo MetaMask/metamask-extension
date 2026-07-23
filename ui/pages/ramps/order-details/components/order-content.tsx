@@ -240,7 +240,7 @@ export function OrderContent({ order }: { order: RampsOrder }) {
           >
             {t(getStatusLabelKey(order.status))}
           </Text>
-          {order.statusDescription && !isPending ? (
+          {order.statusDescription && isPending ? (
             // ponytail: inline description instead of mobile's modal — conveys
             // the same info without a modal or a deprecated Tooltip import.
             <Text

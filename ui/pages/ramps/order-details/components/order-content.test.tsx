@@ -120,14 +120,14 @@ describe('OrderContent (completed)', () => {
     );
   });
 
-  it('renders the status description inline for a terminal order', () => {
+  it('hides the status description for a terminal order', () => {
     renderContent({
       ...completedOrder,
       statusDescription: 'Your funds have been delivered.',
     } as unknown as RampsOrder);
     expect(
-      screen.getByTestId('ramps-order-details-status-description'),
-    ).toHaveTextContent('Your funds have been delivered.');
+      screen.queryByTestId('ramps-order-details-status-description'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders bank transfer details when paymentDetails are present', () => {
@@ -240,5 +240,17 @@ describe('OrderContent (pending)', () => {
   it('matches the pending snapshot', () => {
     const { container } = renderContent(pendingOrder);
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders the status description inline for a pending order', () => {
+    renderContent({
+      ...pendingOrder,
+      statusDescription: 'Card purchases may take a few minutes to complete.',
+    } as unknown as RampsOrder);
+    expect(
+      screen.getByTestId('ramps-order-details-status-description'),
+    ).toHaveTextContent(
+      'Card purchases may take a few minutes to complete.',
+    );
   });
 });
