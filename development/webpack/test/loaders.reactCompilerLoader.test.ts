@@ -36,7 +36,6 @@ describe('getReactCompilerLoader', () => {
 
       const opts = (
         loader as {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           options: { __verbose?: boolean };
         }
       ).options;
@@ -52,7 +51,6 @@ describe('getReactCompilerLoader', () => {
 
       const opts = (
         loader as {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           options: { __verbose?: boolean };
         }
       ).options;
@@ -109,7 +107,6 @@ describe('getReactCompilerLoader', () => {
 
       const opts = (
         loader as {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           options: { __verbose?: boolean };
         }
       ).options;

@@ -1047,15 +1047,13 @@
     "message": ""
   },
   "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapping"
   },
   "activity_swap_success_description": {
     "message": ""
   },
   "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapped"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"
@@ -2526,9 +2524,6 @@
   },
   "clear": {
     "message": "Clear"
-  },
-  "clearActivity": {
-    "message": "Clear activity and nonce data"
   },
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
@@ -4332,6 +4327,9 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectionTimeout": {
+    "message": "The device is taking too long to respond or the connection timed out. Make sure your device is connected and unlocked, then try again."
+  },
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
@@ -5755,6 +5753,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Not supported by this account."
+  },
   "networkOptions": {
     "message": "Network options"
   },
@@ -5799,9 +5800,6 @@
   },
   "networksSmallCase": {
     "message": "networks"
-  },
-  "nevermind": {
-    "message": "Nevermind"
   },
   "new": {
     "message": "New!"

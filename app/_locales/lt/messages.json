@@ -349,9 +349,6 @@
   "networks": {
     "message": "Tinklai"
   },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
-  },
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"

@@ -1002,12 +1002,10 @@
     "message": "Error al canjear"
   },
   "activity_swap_pending_title": {
-    "message": "Canjeando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Canjeando"
   },
   "activity_swap_success_title": {
-    "message": "Se canjeó $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Se canjeó"
   },
   "activity_unwrap_failed_description": {
     "message": "Error al desenvolver"
@@ -2453,9 +2451,6 @@
   },
   "clear": {
     "message": "Borrar"
-  },
-  "clearActivity": {
-    "message": "Borrar datos de actividad y nonce"
   },
   "clearActivityDescription": {
     "message": "Restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo la cuenta actual y la red se verán afectadas. Tus saldos y transacciones entrantes no cambiarán."
@@ -5704,9 +5699,6 @@
   },
   "networksSmallCase": {
     "message": "redes"
-  },
-  "nevermind": {
-    "message": "No importa"
   },
   "new": {
     "message": "Nuevo!"
