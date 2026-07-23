@@ -2452,9 +2452,6 @@
   "clear": {
     "message": "Xóa"
   },
-  "clearActivity": {
-    "message": "Xóa dữ liệu hoạt động và số nonce"
-  },
   "clearActivityDescription": {
     "message": "Đặt lại số nonce của tài khoản và xóa dữ liệu trong tab hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại sẽ bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
   },
@@ -5702,9 +5699,6 @@
   },
   "networksSmallCase": {
     "message": "mạng"
-  },
-  "nevermind": {
-    "message": "Bỏ qua"
   },
   "new": {
     "message": "Mới!"

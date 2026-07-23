@@ -2452,9 +2452,6 @@
   "clear": {
     "message": "Effacer"
   },
-  "clearActivity": {
-    "message": "Effacer les données d’activité et de nonce"
-  },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
@@ -5698,9 +5695,6 @@
   },
   "networksSmallCase": {
     "message": "réseaux"
-  },
-  "nevermind": {
-    "message": "J’ai changé d’avis"
   },
   "new": {
     "message": "Nouveau!"
