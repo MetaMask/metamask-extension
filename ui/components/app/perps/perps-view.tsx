@@ -38,6 +38,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
+import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import type { PerpsTransaction } from './types';
 import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
@@ -155,6 +156,8 @@ export const PerpsView = () => {
       const destination = getPerpsTransactionDestination(transaction);
       if (destination) {
         navigate(destination.pathname, { state: destination.state });
+      } else {
+        navigate(PERPS_ACTIVITY_ROUTE);
       }
     },
     [navigate],
