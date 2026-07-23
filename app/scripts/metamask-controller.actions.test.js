@@ -920,24 +920,21 @@ describe('MetaMaskController', function () {
     });
 
     describe('#exportAccountsWithPasskey', function () {
-      it('delegates to the passkey controller and returns its result', async function () {
+      it('delegates to the passkey controller action and returns its result', async function () {
         const addresses = ['0xAddressOne', '0xAddressTwo'];
-        const exportSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportAccountsWithPasskey',
-          )
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
           .mockResolvedValue([
             'priv-key-0xAddressOne',
             'priv-key-0xAddressTwo',
           ]);
 
-        const result = await metamaskController.exportAccountsWithPasskey(
-          authenticationResponse,
-          addresses,
-        );
+        const result = await metamaskController
+          .getApi()
+          .exportAccountsWithPasskey(authenticationResponse, addresses);
 
-        expect(exportSpy).toHaveBeenCalledWith(
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:exportAccountsWithPasskey',
           authenticationResponse,
           addresses,
         );
@@ -949,16 +946,15 @@ describe('MetaMaskController', function () {
 
       it('propagates errors from the passkey controller', async function () {
         jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'exportAccountsWithPasskey',
-          )
+          .spyOn(metamaskController.controllerMessenger, 'call')
           .mockRejectedValue(new Error('invalid assertion'));
 
         await expect(
-          metamaskController.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddressOne',
-          ]),
+          metamaskController
+            .getApi()
+            .exportAccountsWithPasskey(authenticationResponse, [
+              '0xAddressOne',
+            ]),
         ).rejects.toThrow('invalid assertion');
       });
     });

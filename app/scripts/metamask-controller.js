@@ -4401,22 +4401,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Reveals the private keys of multiple accounts after verifying a single
-   * passkey assertion, used as a password-less alternative to
-   * {@link exportAccounts} for the multichain account group reveal.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {string[]} addresses - The addresses whose private keys should be revealed.
-   * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
-   */
-  async exportAccountsWithPasskey(authenticationResponse, addresses) {
-    return this.passkeyController.exportAccountsWithPasskey(
-      authenticationResponse,
-      addresses,
-    );
-  }
-
-  /**
    * Syncs the seed phrases with the social login flow.
    *
    * @returns {Promise<void>}
