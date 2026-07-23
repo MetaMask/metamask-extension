@@ -44,10 +44,14 @@ const mockDetectNfts = jest.fn((_) => () => Promise.resolve());
 const mockSetTokenNetworkFilter = jest.fn((_) => ({
   type: 'SET_TOKEN_NETWORK_FILTER',
 }));
+const mockSetEnabledNetworks = jest.fn((_) => ({
+  type: 'SET_ENABLED_NETWORKS',
+}));
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setActiveNetwork: (id: string) => mockSetActiveNetwork(id),
+  setEnabledNetworks: (chainId: string) => mockSetEnabledNetworks(chainId),
   setNetworkClientIdForDomain: (origin: string, id: string) =>
     mockSetNetworkClientIdForDomain(origin, id),
   addPermittedChain: (origin: string, chainId: string) =>
@@ -313,6 +317,10 @@ describe('DappBarNetworkSelectorPopover', () => {
 
     it('activates the selected network client', () => {
       expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
+    });
+
+    it('enables the selected network so the testnet-aware balance stays in sync', () => {
+      expect(mockSetEnabledNetworks).toHaveBeenCalledWith('0x38');
     });
 
     it('resets the custom nonce', () => {
