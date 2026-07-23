@@ -27,9 +27,7 @@ jest.mock('../../../hooks/useIsFirefox', () => ({
   useIsFirefox: jest.fn().mockReturnValue(false),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const buildTypes = jest.requireMock('../../../../shared/lib/build-types');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { useIsFirefox } = jest.requireMock('../../../hooks/useIsFirefox');
 
 type LocationCaptureProps = {

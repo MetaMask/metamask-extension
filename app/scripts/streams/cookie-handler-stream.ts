@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
@@ -205,8 +204,6 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }

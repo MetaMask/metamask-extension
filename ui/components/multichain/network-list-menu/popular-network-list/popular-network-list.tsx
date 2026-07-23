@@ -176,8 +176,6 @@ const PopularNetworkList = ({
                 iconName={IconName.Add}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('add')}
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 

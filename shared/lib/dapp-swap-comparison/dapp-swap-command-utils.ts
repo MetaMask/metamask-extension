@@ -128,7 +128,6 @@ const SWAP_EXACT_IN_STRUCT = `(address currencyIn,${
   PATH_KEY_STRUCT
 }[] path,uint128 amountIn,uint128 amountOutMinimum)`;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const V4_BASE_ACTIONS_ABI_DEFINITION: Partial<
   Record<V4Actions, { name: string; type: string }[]>
 > = {
