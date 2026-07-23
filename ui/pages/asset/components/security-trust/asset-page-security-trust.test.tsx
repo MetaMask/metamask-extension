@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
@@ -92,6 +93,33 @@ describe('AssetPageSecurityTrust', () => {
     const { getByTestId } = renderSlots();
     expect(getByTestId('security-trust-section')).toBeInTheDocument();
     expect(getByTestId('security-trust-entry-card')).toBeInTheDocument();
+  });
+
+  it('opens info modal when verified badge is clicked', () => {
+    const { getAllByTestId, getByTestId } = renderSlots();
+
+    fireEvent.click(getAllByTestId('security-badge-verified')[0]);
+    expect(getByTestId('security-trust-info-modal')).toBeInTheDocument();
+    expect(getByTestId('security-trust-info-modal-got-it')).toBeInTheDocument();
+  });
+
+  it('opens info modal when malicious banner is clicked', () => {
+    const { getByTestId } = renderSlots({
+      securityData: {
+        ...mockSecurityData,
+        resultType: 'Malicious',
+        features: [
+          {
+            featureId: 'KNOWN_MALICIOUS',
+            type: 'Malicious',
+            description: 'Known malicious',
+          },
+        ],
+      },
+    });
+
+    fireEvent.click(getByTestId('security-banner-malicious'));
+    expect(getByTestId('security-trust-info-modal')).toBeInTheDocument();
   });
 
   it('renders nothing when feature is disabled', () => {

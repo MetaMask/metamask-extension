@@ -9075,6 +9075,9 @@
   "securityTrustVerified": {
     "message": "Verified"
   },
+  "securityTrustContinueAnyway": {
+    "message": "Continue anyway"
+  },
   "securityTrustNoIssues": {
     "message": "No issues"
   },

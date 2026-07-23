@@ -8,6 +8,7 @@ export type SecurityBannerProps = {
   testId: string;
   title?: string;
   description: string;
+  onClick?: () => void;
 };
 
 export const SecurityBanner = ({
@@ -16,11 +17,29 @@ export const SecurityBanner = ({
   testId,
   title,
   description,
-}: SecurityBannerProps) => (
-  <BannerAlert
-    data-testid={testId}
-    severity={severity}
-    title={title ?? securityConfig.label}
-    description={description}
-  />
-);
+  onClick,
+}: SecurityBannerProps) => {
+  const banner = (
+    <BannerAlert
+      data-testid={onClick ? undefined : testId}
+      severity={severity}
+      title={title ?? securityConfig.label}
+      description={description}
+    />
+  );
+
+  if (!onClick) {
+    return banner;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      data-testid={testId}
+      className="w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+    >
+      {banner}
+    </button>
+  );
+};

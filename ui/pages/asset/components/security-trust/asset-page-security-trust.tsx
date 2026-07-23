@@ -6,8 +6,10 @@ import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import React, {
   createContext,
+  useCallback,
   useContext,
   useMemo,
+  useState,
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -24,6 +26,13 @@ import {
   type SecurityTrustEntryCardToken,
 } from './security-trust-entry-card';
 import { SecurityTrustVerifiedBadge } from './security-trust-inline-badge';
+import { SecurityTrustInfoModal } from './security-trust-info-modal';
+import type { SecurityTrustSheetParams } from './security-trust-sheet-types';
+import { getSecurityTrustInfoSheetParams } from './use-security-trust-info-sheet';
+import {
+  getSecurityTrustCtaSheetParams,
+  shouldGateSecurityTrustCta,
+} from './use-security-trust-cta-gate';
 
 export type AssetPageSecurityTrustToken = {
   symbol: string;
@@ -41,6 +50,8 @@ type AssetPageSecurityTrustProviderProps = {
   children: ReactNode;
 };
 
+type SecurityTrustCtaSource = 'buy' | 'swap';
+
 type AssetPageSecurityTrustContextValue = {
   isEnabled: boolean;
   securityConfig: ResultTypeConfig;
@@ -51,6 +62,8 @@ type AssetPageSecurityTrustContextValue = {
   showSecurityBanner: boolean;
   showSecurityTrustSection: boolean;
   securityBannerDescription: string;
+  openInfoSheet: () => void;
+  gateCtaAction: (action: () => void, source: SecurityTrustCtaSource) => void;
 };
 
 const AssetPageSecurityTrustContext =
@@ -58,6 +71,15 @@ const AssetPageSecurityTrustContext =
 
 const useAssetPageSecurityTrustContext = () =>
   useContext(AssetPageSecurityTrustContext);
+
+/**
+ * Optional CTA gate hook for Buy/Swap buttons inside the provider tree.
+ * Returns undefined when rendered outside the provider.
+ */
+export const useAssetPageSecurityTrustCtaGate = () => {
+  const context = useAssetPageSecurityTrustContext();
+  return context?.gateCtaAction;
+};
 
 /**
  * Provides Security & Trust data and visibility for the Token Details Page.
@@ -72,6 +94,11 @@ export const AssetPageSecurityTrustProvider = ({
   const isEnabled = useSelector(selectIsTokenSecurityTrustEnabled);
   const resolvedAssetId =
     isEnabled && assetId ? (assetId as CaipAssetType) : null;
+  const [sheetParams, setSheetParams] =
+    useState<SecurityTrustSheetParams | null>(null);
+  const [pendingProceed, setPendingProceed] = useState<(() => void) | null>(
+    null,
+  );
 
   const {
     securityData,
@@ -112,6 +139,59 @@ export const AssetPageSecurityTrustProvider = ({
     };
   }, [resolvedAssetId, token]);
 
+  const closeSheet = useCallback(() => {
+    setSheetParams(null);
+    setPendingProceed(null);
+  }, []);
+
+  const openInfoSheet = useCallback(() => {
+    if (!securityData) {
+      return;
+    }
+
+    const params = getSecurityTrustInfoSheetParams(
+      securityData,
+      securityConfig,
+      tokenDisplaySymbol || undefined,
+    );
+
+    if (params) {
+      setPendingProceed(null);
+      setSheetParams(params);
+    }
+  }, [securityConfig, securityData, tokenDisplaySymbol]);
+
+  const gateCtaAction = useCallback(
+    (action: () => void, source: SecurityTrustCtaSource) => {
+      if (!securityData || !shouldGateSecurityTrustCta(securityData.resultType)) {
+        action();
+        return;
+      }
+
+      const params = getSecurityTrustCtaSheetParams(
+        securityData,
+        securityConfig,
+        tokenDisplaySymbol || undefined,
+        action,
+        source,
+      );
+
+      if (!params) {
+        action();
+        return;
+      }
+
+      setPendingProceed(() => action);
+      setSheetParams(params);
+    },
+    [securityConfig, securityData, tokenDisplaySymbol],
+  );
+
+  const handleProceed = useCallback(() => {
+    pendingProceed?.();
+    closeSheet();
+  }, [closeSheet, pendingProceed]);
+
   const contextValue = useMemo<AssetPageSecurityTrustContextValue>(
     () => ({
       isEnabled,
@@ -132,11 +212,15 @@ export const AssetPageSecurityTrustProvider = ({
         !securityDataError &&
         (isSecurityDataLoading || !!securityData?.resultType),
       securityBannerDescription,
+      openInfoSheet,
+      gateCtaAction,
     }),
     [
       entryCardToken,
+      gateCtaAction,
       isEnabled,
       isSecurityDataLoading,
+      openInfoSheet,
       securityBannerDescription,
       securityConfig,
       securityData,
@@ -147,6 +231,12 @@ export const AssetPageSecurityTrustProvider = ({
   return (
     <AssetPageSecurityTrustContext.Provider value={contextValue}>
       {children}
+      <SecurityTrustInfoModal
+        isOpen={Boolean(sheetParams)}
+        onClose={closeSheet}
+        onProceed={pendingProceed ? handleProceed : undefined}
+        sheetParams={sheetParams}
+      />
     </AssetPageSecurityTrustContext.Provider>
   );
 };
@@ -162,7 +252,12 @@ export const AssetPageSecurityTrustHeaderBadge = () => {
     return null;
   }
 
-  return <SecurityTrustVerifiedBadge badge={context.securityConfig.badge} />;
+  return (
+    <SecurityTrustVerifiedBadge
+      badge={context.securityConfig.badge}
+      onClick={context.openInfoSheet}
+    />
+  );
 };
 
 /** Warning banner shown below the token name row on TDP. */
@@ -174,7 +269,8 @@ export const AssetPageSecurityTrustBanner = () => {
     return null;
   }
 
-  const { securityData, securityConfig, securityBannerDescription } = context;
+  const { securityData, securityConfig, securityBannerDescription, openInfoSheet } =
+    context;
   const isMalicious = securityData.resultType === 'Malicious';
 
   return (
@@ -193,6 +289,7 @@ export const AssetPageSecurityTrustBanner = () => {
           isMalicious ? t('securityTrustMaliciousTokenTitle') : undefined
         }
         description={securityBannerDescription}
+        onClick={openInfoSheet}
       />
     </Box>
   );

@@ -25,21 +25,39 @@ export type SecurityTrustInlineBadgeConfig = NonNullable<
 type SecurityTrustInlineBadgeProps = {
   badge: SecurityTrustInlineBadgeConfig;
   testId?: string;
+  onClick?: () => void;
 };
 
 export const SecurityTrustInlineBadge = ({
   badge,
   testId,
+  onClick,
 }: SecurityTrustInlineBadgeProps) => {
   if (badge.label === null) {
-    return (
+    const verifiedIcon = (
       <Icon
-        data-testid={testId}
+        data-testid={onClick ? undefined : testId}
         name={badge.icon}
         size={IconSize.Sm}
         color={badge.iconColor}
       />
     );
+
+    if (onClick) {
+      return (
+        <button
+          type="button"
+          onClick={onClick}
+          data-testid={testId}
+          aria-label={testId ?? 'security-badge'}
+          className="cursor-pointer border-0 bg-transparent p-0 leading-none"
+        >
+          {verifiedIcon}
+        </button>
+      );
+    }
+
+    return verifiedIcon;
   }
 
   const backgroundColor =
@@ -47,7 +65,7 @@ export const SecurityTrustInlineBadge = ({
       ? BackgroundColor.warningMuted
       : BackgroundColor.errorMuted;
 
-  return (
+  const tag = (
     <Tag
       label={badge.label}
       iconName={badge.icon}
@@ -68,20 +86,37 @@ export const SecurityTrustInlineBadge = ({
       }}
     />
   );
+
+  if (!onClick) {
+    return tag;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      data-testid={testId}
+      className="cursor-pointer border-0 bg-transparent p-0"
+    >
+      {tag}
+    </button>
+  );
 };
 
 export const SecurityTrustVerifiedBadge = ({
   badge,
   testId = 'security-badge-verified',
+  onClick,
 }: {
   badge: SecurityTrustInlineBadgeConfig;
   testId?: string;
+  onClick?: () => void;
 }) => (
   <Box
     flexDirection={BoxFlexDirection.Row}
     alignItems={BoxAlignItems.Center}
-    data-testid={testId}
+    data-testid={onClick ? undefined : testId}
   >
-    <SecurityTrustInlineBadge badge={badge} testId={testId} />
+    <SecurityTrustInlineBadge badge={badge} testId={testId} onClick={onClick} />
   </Box>
 );
