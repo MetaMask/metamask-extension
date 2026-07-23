@@ -1,13 +1,10 @@
-# Posts a Slack Block Kit message after a successful Main workflow run on release/X.Y.Z,
-# when there is a release PR into stable for the release branch.
+# Slack RC notify after Main on release/X.Y.Z when Publish prerelease succeeded
+# (Builds ready), even if other Main jobs failed. Needs a release PR → stable.
 # See .github/scripts/slack-rc-notification.mts
 #
-# Test without waiting for Main:
-#   Actions → RC Slack notify → Run workflow → fill head_sha, semver, github_run_id, test_channel
-#   (requires SLACK_BOT_TOKEN secret and vars.AWS_CLOUDFRONT_URL for real download URLs)
-#
-# Optional repo variable (Settings → Variables): SLACK_RC_CHANNEL — if set, automated workflow_run
-# posts there instead of #release-extension-* (use only for staging; clear when done).
+# Manual test: Actions → RC Slack notify → Run workflow
+# Optional vars.SLACK_RC_CHANNEL overrides #release-extension-* (staging only).
+# workflow_run uses YAML from the default branch only.
 
 name: RC Slack notify
 
@@ -37,28 +34,30 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  actions: read
 
 jobs:
   notify:
     runs-on: ubuntu-latest
-    # workflow_dispatch: manual test to a channel. workflow_run: successful push to semver release branch in this repo.
+    # Dispatch: manual. workflow_run: Main success|failure; gate requires Publish prerelease.
     if: >-
       ${{
         github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'workflow_run' &&
-          github.event.workflow_run.conclusion == 'success' &&
+          contains(fromJson('["success","failure"]'), github.event.workflow_run.conclusion) &&
           github.event.workflow_run.event == 'push' &&
           github.event.workflow_run.head_repository.full_name == github.repository &&
           startsWith(github.event.workflow_run.head_branch, 'release/'))
       }}
     steps:
-      - name: Find release PR (workflow_run only)
+      - name: Find release PR and confirm Builds ready (workflow_run only)
         id: gate
         if: github.event_name == 'workflow_run'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
           echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -71,13 +70,27 @@ jobs:
             echo "No PR with base stable for head $BRANCH — skipping Slack."
             exit 0
           fi
+          # Same signal as PR "Builds ready"
+          PUBLISH_CONCLUSION="$(
+            gh run view "$WORKFLOW_RUN_ID" --repo "$GH_REPO" --json jobs --jq '
+              [
+                .jobs[]
+                | select(.name == "Publish prerelease" or (.name | startswith("Publish prerelease /")))
+              ]
+              | .[0].conclusion // empty
+            '
+          )"
+          if [[ "$PUBLISH_CONCLUSION" != "success" ]]; then
+            echo "Publish prerelease conclusion=${PUBLISH_CONCLUSION:-missing} on run ${WORKFLOW_RUN_ID} — skipping Slack (no Builds ready)."
+            exit 0
+          fi
           PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
           {
             echo "skip=false"
             echo "semver=${BRANCH#release/}"
             echo "pr_number=${PR_NUMBER}"
           } >> "$GITHUB_OUTPUT"
-          echo "Proceeding: found release PR #${PR_NUMBER}."
+          echo "Proceeding: found release PR #${PR_NUMBER}; Publish prerelease succeeded."
 
       - name: Set notification variables
         id: notif
