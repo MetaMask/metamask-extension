@@ -401,7 +401,7 @@ describe('AssetList', () => {
         expect(trace).toHaveBeenCalledWith({ name: 'Asset Details' });
         expect(getMockTrackEvent()).toHaveBeenCalledWith(
           expect.objectContaining({
-            name: MetaMetricsEventName.TokenScreenOpened,
+            name: MetaMetricsEventName.TokenScreenViewed,
             properties: {
               category: MetaMetricsEventCategory.Navigation,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
