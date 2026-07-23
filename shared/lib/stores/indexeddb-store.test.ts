@@ -25,10 +25,28 @@ describe('IndexedDBStore', () => {
   describe('open', () => {
     it('opens the database successfully and creates store on first open', async () => {
       await db.open(dbName, dbVersion);
+      expect(db.isOpen()).toBe(true);
       // Verify the database is open by performing an operation
       await db.set({ key: 'value' });
       const values = await db.get(['key']);
       expect(values).toStrictEqual(['value']);
+    });
+
+    it('reports isOpen as false before open and after a forced close', async () => {
+      expect(db.isOpen()).toBe(false);
+      await db.open(dbName, dbVersion);
+      expect(db.isOpen()).toBe(true);
+
+      await new Promise<void>((resolve, reject) => {
+        const req = indexedDB.open(dbName, dbVersion + 1);
+        req.onsuccess = () => {
+          req.result.close();
+          resolve();
+        };
+        req.onerror = () => reject(req.error);
+      });
+
+      expect(db.isOpen()).toBe(false);
     });
 
     it('rejects with TypeError for invalid version (0)', async () => {

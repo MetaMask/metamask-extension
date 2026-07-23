@@ -799,8 +799,14 @@ describe('PersistenceManager', () => {
           .mockImplementation(async function (this: IndexedDBStore) {
             created.push(this);
           });
+        // open() is mocked without a live handle; stub isOpen so the manager
+        // records `#open = true` the same way a real successful open would.
+        const isOpenSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'isOpen')
+          .mockReturnValue(true);
         await manager.open();
         openSpy.mockRestore();
+        isOpenSpy.mockRestore();
         const [backupStore] = created;
         if (!backupStore) {
           throw new Error('backup store was not created');
@@ -879,6 +885,36 @@ describe('PersistenceManager', () => {
         expect(setSpy).toHaveBeenCalled();
         openSpy.mockRestore();
         setSpy.mockRestore();
+      });
+
+      it('does not leave the backup marked open when a force-close races open completion', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        let openCalls = 0;
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockImplementation(async function (this: IndexedDBStore) {
+            openCalls += 1;
+            if (openCalls === 1) {
+              // onForcedClose is wired before open(); simulate a close that
+              // finishes during the open turn and leaves the handle dead.
+              this.onForcedClose?.('close');
+            }
+          });
+        const isOpenSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'isOpen')
+          .mockImplementation(() => openCalls >= 2);
+
+        await manager.open();
+        expect(manager.writesSuspended()).toBe(true);
+        expect(openCalls).toBe(1);
+
+        manager.resumeWrites();
+        await manager.open();
+
+        expect(openCalls).toBe(2);
+        openSpy.mockRestore();
+        isOpenSpy.mockRestore();
       });
     });
 

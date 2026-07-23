@@ -681,17 +681,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // handle instead of orphaning it. IndexedDBStore.open() is a no-op when
       // already connected.
       const db = this.#backupDb ?? new IndexedDBStore();
-      await db.open('metamask-backup', 1);
-      // If the browser force-closes the backup DB (e.g. during shutdown),
-      // report it (for baseline telemetry) and proactively suspend writes so we
-      // don't start a write we can't finish. Clear `#open` so a later `open()`
-      // reconnects instead of no-oping against a dead handle.
+      // Wire before open() so a force-close during/just after open is observed
+      // (and so we never assign `#open = true` after onForcedClose cleared it).
       db.onForcedClose = (reason) => {
         this.#reportBackupDbForcedClose(reason);
         this.#open = false;
         this.suspendWrites(ShutdownTrigger.IdbClose);
       };
+      await db.open('metamask-backup', 1);
       this.#backupDb = db;
+      // Synchronous with isOpen(): no IndexedDB event can run between the check
+      // and the assignment, so a close that already fired cannot be stomped.
+      this.#open = db.isOpen();
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
       // private browsing mode due to this bug:
@@ -714,12 +715,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         console.warn(
           'Could not open backup database; automatic vault recovery will not be available.',
         );
+        // Treat the manager as open without a backup so set/persist can proceed.
+        this.#open = true;
       } else {
         // rethrow since we couldn't handle it here.
         throw error;
       }
     }
-    this.#open = true;
   }
 
   /**

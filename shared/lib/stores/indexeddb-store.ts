@@ -28,6 +28,13 @@ export class IndexedDBStore {
   onForcedClose?: (reason: 'close' | 'versionchange') => void;
 
   /**
+   * Whether this store currently holds a live database connection.
+   */
+  isOpen(): boolean {
+    return this.#db !== null;
+  }
+
+  /**
    * Opens the database, running migrations if necessary.
    *
    * @param name - The name of the database.
