@@ -20,6 +20,10 @@ class SnapSignTransactionConfirmation {
 
   private addressTestId = 'snap-ui-address';
 
+  private insufficientFundsBanner = {
+    text: 'Insufficient funds',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -43,6 +47,20 @@ class SnapSignTransactionConfirmation {
 
   async clickFooterConfirmButton() {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async checkFeeAssetIsDisplayed(asset: string): Promise<void> {
+    await this.driver.findElement({ text: asset });
+  }
+
+  async checkInsufficientFundsBannerIsDisplayed(): Promise<void> {
+    await this.driver.findElement(this.insufficientFundsBanner);
+  }
+
+  async checkConfirmButtonIsDisabled(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton, {
+      state: 'disabled',
+    });
   }
 }
 export default SnapSignTransactionConfirmation;
