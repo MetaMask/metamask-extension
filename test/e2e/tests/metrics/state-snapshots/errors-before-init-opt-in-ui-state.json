@@ -100,6 +100,9 @@
       },
       "currentCurrency": "usd"
     },
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": "object"
+    },
     "EnsController": {
       "ensEntries": "object",
       "ensResolutionsByAddress": "object"
