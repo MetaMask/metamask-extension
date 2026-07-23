@@ -275,8 +275,29 @@ describe('PasswordForm', () => {
 
       expect(screen.queryByText('passwordsDontMatch')).not.toBeInTheDocument();
 
+      // Same length as confirm so the mismatch is a complete-length attempt.
       act(() => {
-        typePassword('changed_password');
+        typePassword('X]2$GHvw&W');
+      });
+
+      expect(screen.getByText('passwordsDontMatch')).toBeInTheDocument();
+    });
+
+    it('does not show mismatch error until confirm reaches the minimum length', () => {
+      act(() => {
+        typePassword(VALID_PASSWORD);
+      });
+
+      // Differing input shorter than the minimum length: no error yet.
+      act(() => {
+        typeConfirmPassword(SHORT_PASSWORD);
+      });
+
+      expect(screen.queryByText('passwordsDontMatch')).not.toBeInTheDocument();
+
+      // Once confirm reaches the minimum length and still differs, show error.
+      act(() => {
+        typeConfirmPassword('X]2$GHvw&W');
       });
 
       expect(screen.getByText('passwordsDontMatch')).toBeInTheDocument();

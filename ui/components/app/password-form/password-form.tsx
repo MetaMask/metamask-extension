@@ -46,9 +46,10 @@ export default function PasswordForm({
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
       const confirmError =
-        !confirmPassword || passwordInput === confirmPassword
-          ? ''
-          : t('passwordsDontMatch');
+        confirmPassword.length >= PASSWORD_MIN_LENGTH &&
+        passwordInput !== confirmPassword
+          ? t('passwordsDontMatch')
+          : '';
 
       setPassword(passwordInput);
 
@@ -61,9 +62,10 @@ export default function PasswordForm({
   const handleConfirmPasswordChange = useCallback(
     (confirmPasswordInput: string) => {
       const error =
-        password === confirmPasswordInput || confirmPasswordInput.length === 0
-          ? ''
-          : t('passwordsDontMatch');
+        confirmPasswordInput.length >= PASSWORD_MIN_LENGTH &&
+        password !== confirmPasswordInput
+          ? t('passwordsDontMatch')
+          : '';
 
       setConfirmPassword(confirmPasswordInput);
       setConfirmPasswordError(error);
