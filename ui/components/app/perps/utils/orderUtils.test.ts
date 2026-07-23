@@ -169,8 +169,9 @@ describe('orderUtils', () => {
       ).toBe(true);
     });
 
-    it('excludes full-position reduce-only and isPositionTpsl orders', () => {
+    it('includes full-position plain reduce-only limit closes', () => {
       const fullClose = makeOrder({
+        orderType: 'limit',
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -179,14 +180,32 @@ describe('orderUtils', () => {
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
-        false,
+        true,
       );
+    });
 
+    it('excludes orders flagged as position TP/SL', () => {
       const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
       expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+    });
+
+    it('excludes full-position TP/SL identified by detailed order type', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const positionTpsl = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        detailedOrderType: 'Take Profit Limit',
+      });
+
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpsl, position),
+      ).toBe(false);
     });
 
     it('excludes zero-size reduce-only trigger orders matching the position even without isPositionTpsl flag', () => {
@@ -546,6 +565,24 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
+    it('shows full-position plain limit-close orders', () => {
+      const fullClose = makeOrder({
+        orderType: 'limit',
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [fullClose],
+        existingPosition: position,
+      });
+
+      expect(result).toHaveLength(1);
+    });
+
     it('adds synthetic TP/SL rows and keeps them in the list', () => {
       const limitOrder = makeOrder({
         orderType: 'limit',
@@ -661,11 +698,24 @@ describe('orderUtils', () => {
       expect(formatOrderLabel(order)).toBe('Stop market close short');
     });
 
-    it('treats isTrigger alone as closing (no reduceOnly)', () => {
+    it('treats a non-reduce-only trigger as an opening order', () => {
       const order = makeOrder({
         side: 'sell',
         orderType: 'market',
         isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market short');
+    });
+
+    it('treats a position TP/SL order as closing', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: false,
+        isPositionTpsl: true,
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop market close long');

@@ -18,9 +18,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isWebUrl } from '../../../../../app/scripts/lib/util';
+import { isWebUrl } from '../../../../../shared/lib/url-utils';
 
 const AddRpcUrlModal = ({
   onAdded,
@@ -99,8 +97,6 @@ const AddRpcUrlModal = ({
           disabled={Boolean(error)}
           size={ButtonPrimarySize.Lg}
           data-testid="page-container-footer-next"
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             if (url && !error && nameRef.current) {
               onAdded(url, nameRef.current.value || undefined);

@@ -1,6 +1,6 @@
 import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -8,47 +8,43 @@ import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
+import { getFungibleAssetForRoute } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+import {
+  getRouteAssetChainId,
+  LocationStateToken,
+  useRouteAssetToken,
+} from './hooks/useRouteAssetToken';
+import { resolveAssetRouteLookup } from './util';
 
 type LocationState = {
-  token?: {
-    address: string;
-    symbol: string;
-    name: string;
-    chainId: string;
-    image?: string;
-    isNative?: boolean;
-    decimals: number;
-  };
+  token?: LocationStateToken;
 };
 
 const Asset = () => {
   const params = useParams<{
-    chainId: Hex;
+    chainId: Hex | CaipChainId;
     asset: string;
     id: string;
   }>();
   const location = useLocation();
   const locationState = location.state as LocationState | undefined;
 
-  const { chainId, asset, id } = params;
-  const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
+  const { chainId, id, decodedAsset, assetId } =
+    resolveAssetRouteLookup(params);
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
   const ownedToken = useSelector((state) =>
-    getTokenByAccountAndAddressAndChainId(
-      state,
-      undefined, // Defaults to the selected account
-      decodedAsset,
-      chainId as Hex | CaipChainId,
-    ),
+    getFungibleAssetForRoute(state, { assetId, chainId, decodedAsset }),
   );
 
-  // Use token from location state as fallback when user doesn't own the token
-  const token = ownedToken ?? locationState?.token;
+  const { token, isLoading, hasError } = useRouteAssetToken({
+    ownedToken,
+    locationStateToken: locationState?.token,
+    assetId,
+  });
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
@@ -62,27 +58,32 @@ const Asset = () => {
     el?.scroll(0, 0);
   }, []);
 
-  const content = (() => {
+  const renderContent = useCallback(() => {
     if (nft) {
       return <NftDetails nft={nft} nftChainId={chainId} />;
     }
 
-    const isInvalid = !token || !chainId;
+    if (isLoading) {
+      return null;
+    }
+
+    const isInvalid = !token || !chainId || hasError;
     if (isInvalid) {
       return <Navigate to={DEFAULT_ROUTE} />;
     }
 
-    const shouldShowToken = !token.isNative && token.address;
-    if (shouldShowToken) {
-      return <TokenAsset chainId={chainId} token={token} />;
+    const displayChainId = getRouteAssetChainId(token, chainId) as Hex;
+
+    if (token.isNative) {
+      return <NativeAsset chainId={displayChainId} token={token} />;
     }
 
-    return <NativeAsset chainId={chainId} token={token} />;
-  })();
+    return <TokenAsset chainId={displayChainId} token={token} />;
+  }, [chainId, hasError, isLoading, nft, token]);
 
   return (
     <ScrollContainer className="main-container asset__container">
-      {content}
+      {renderContent()}
     </ScrollContainer>
   );
 };

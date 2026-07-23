@@ -100,10 +100,6 @@ export type MetaMetricsEventPayload = {
    */
   category?: string;
   /**
-   * The action ID to deduplicate event requests from the UI.
-   */
-  actionId?: string;
-  /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
    */
@@ -140,19 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /*
-   * The unique identifier for the event.
-   */
-  uniqueIdentifier?: string;
-  /**
-   * Whether the event is a duplicate of an anonymized event.
-   */
-  isDuplicateAnonymizedEvent?: boolean;
-  /**
-   * The timestamp of the event. If provided, this timestamp will be used
-   * instead of the current time when sending to Segment.
-   */
-  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -164,26 +147,9 @@ export type UnsanitizedMetaMetricsEventPayload = Omit<
 
 export type MetaMetricsEventOptions = {
   /**
-   * Whether or not the event happened during the opt-in workflow.
-   */
-  isOptIn?: boolean;
-  /**
-   * Whether the segment queue should be flushed after tracking the event.
-   * Recommended if the result of tracking the event must be known before UI
-   * transition or update.
-   */
-  flushImmediately?: boolean;
-  /**
    * Whether to exclude the user's `metaMetricsId` for anonymity.
    */
   excludeMetaMetricsId?: boolean;
-  /**
-   * An override for the `metaMetricsId` in the event (no pun intended) one is
-   * created as a part of an asynchronous workflow, such as awaiting the result
-   * of the MetaMetrics opt-in function that generates the user's
-   * `metaMetricsId`.
-   */
-  metaMetricsId?: string;
   /**
    * Is this event a holdover from Matomo that needs further migration? When
    * true, sends the data to a special Segment source that marks the event data
@@ -197,10 +163,6 @@ export type MetaMetricsEventOptions = {
 };
 
 export type MetaMetricsEventFragment = {
-  /**
-   * The action ID of transaction metadata object.
-   */
-  actionId?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
@@ -323,11 +285,26 @@ export type SegmentEventPayload = {
     chain_id: string | null;
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id_caip?: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
     revenue?: number;
     value?: number;
     currency?: string;
     category?: string;
+    /**
+     * The profile ID of the user if they have been signed in.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    profile_id?: string;
+    /**
+     * The canonical profile ID grouping profile IDs for the same person.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    canonical_profile_id?: string;
   };
   /**
    * The context the event occurred in.
@@ -379,19 +356,6 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * The action ID of the page view.
-   */
-  actionId?: string;
-};
-
-export type MetaMetricsPageOptions = {
-  /**
-   * Is the current path one of the pages in the onboarding workflow? (If this
-   * is true and participateInMetaMetrics is null, then the page view will be
-   * tracked.)
-   */
-  isOptInPath?: boolean;
 };
 
 /**
@@ -571,11 +535,11 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
-   * The profile ID of the user if they have been signed in
+   * The canonical profile ID of the user if they have been signed in
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  profile_id?: string;
+  canonical_profile_id?: string;
   /**
    * The account type derived from the user's onboarding flow.
    */
@@ -787,7 +751,7 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user signs in
    */
-  ProfileId = 'profile_id',
+  CanonicalProfileId = 'canonical_profile_id',
   /**
    * Identifies the account type derived from the user's onboarding flow.
    */
@@ -813,8 +777,6 @@ export enum MetaMetricsUserTrait {
   /**
    * Whether the device is mobile or desktop.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).
@@ -905,6 +867,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -990,6 +953,7 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
+  NavBatchSellButtonClicked = 'Batch Sell Button Clicked',
   NftAdded = 'NFT Added',
   NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
@@ -1027,6 +991,8 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
+  SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1038,6 +1004,14 @@ export enum MetaMetricsEventName {
   SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
+  SecurityCheckStarted = 'Security Check Started',
+  SecurityCheckQuestionAnswered = 'Security Check Question Answered',
+  SecurityCheckCompletedClean = 'Security Check Completed Clean',
+  SecurityCheckDismissed = 'Security Check Dismissed',
+  ScamWarningShown = 'Scam Warning Shown',
+  ScamWarningStopped = 'Scam Warning Stopped',
+  ScamWarningContactSupport = 'Scam Warning Contact Support',
+  ScamWarningProceeded = 'Scam Warning Proceeded',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -1064,7 +1038,7 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   ImportCustomTokenViewed = 'Import Custom Token Viewed',
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
-  TokenScreenOpened = 'Token Screen Opened',
+  TokenScreenViewed = 'Token Screen Viewed',
   TokenAdded = 'Token Added',
   LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1105,12 +1079,15 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  NftScreenViewed = 'NFT Screen Viewed',
   NftDetailsOpened = 'NFT Details Opened',
-  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiScreenViewed = 'DeFi Screen Viewed',
   DeFiDetailsOpened = 'DeFi Details Opened',
-  ActivityScreenOpened = 'Activity Screen Opened',
+  ActivityScreenViewed = 'Activity Screen Viewed',
   PerpsScreenViewed = 'Perp Screen Viewed',
   PerpsUiInteraction = 'Perp UI Interaction',
   PerpsTradeTransaction = 'Perp Trade Transaction',
@@ -1213,6 +1190,8 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
+  HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
+  QrHardwareScanFailed = 'QR Hardware Scan Failed',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -1369,6 +1348,11 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
+export enum MetaMetricsEventVerificationMethod {
+  Password = 'password',
+  Passkey = 'passkey',
+}
+
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
   GasTimeout = 'gas_timeout',
@@ -1387,7 +1371,10 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
@@ -1462,4 +1449,9 @@ export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
+}
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
 }

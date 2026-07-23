@@ -4,9 +4,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'clsx';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   resolvePendingApproval,
@@ -24,7 +31,6 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Box,
   Text,
 } from '../../components/component-library';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
@@ -40,16 +46,9 @@ import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accoun
 import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {
-  AlignItems,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  FlexWrap,
   IconColor,
-  JustifyContent,
   TextAlign,
   TextVariant,
-  BlockSize,
   TextColor,
 } from '../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
@@ -87,7 +86,7 @@ const ConfirmAddSuggestedNFT = () => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
@@ -116,22 +115,30 @@ const ConfirmAddSuggestedNFT = () => {
       suggestedNfts.map(async ({ requestData: { asset }, id }) => {
         await dispatch(resolvePendingApproval(id, null));
 
-        trackEvent({
-          event: MetaMetricsEventName.NftAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_contract_address: asset.address,
-            token_symbol: asset.symbol,
-            token_id: asset.tokenId,
-            token_standard: asset.standard,
-            asset_type: AssetType.NFT,
-            source: MetaMetricsTokenEventSource.Dapp,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.NftAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              token_contract_address: asset.address,
+              token_symbol: asset.symbol,
+              token_id: asset.tokenId,
+              token_standard: asset.standard,
+              asset_type: AssetType.NFT,
+              source: MetaMetricsTokenEventSource.Dapp,
+            })
+            .build(),
+        );
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedNfts,
+  ]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
@@ -196,11 +203,8 @@ const ConfirmAddSuggestedNFT = () => {
 
   return (
     <Box
-      className={classNames}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className={`flex h-full w-full ${classNames}`}
+      flexDirection={BoxFlexDirection.Column}
     >
       <Nav confirmationId={approvalId} />
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
@@ -212,11 +216,11 @@ const ConfirmAddSuggestedNFT = () => {
           chainId={chainId}
         />
         <Box
+          className="flex"
           paddingTop={4}
           paddingRight={4}
           paddingLeft={4}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
+          justifyContent={BoxJustifyContent.Center}
         >
           <SiteOrigin
             chip
@@ -253,11 +257,7 @@ const ConfirmAddSuggestedNFT = () => {
         </Text>
       </Box>
       <Box className="page-container__content confirm-add-suggested-nft__content">
-        <Box
-          className="confirm-add-suggested-nft__card"
-          padding={2}
-          borderRadius={BorderRadius.MD}
-        >
+        <Box className="rounded-md confirm-add-suggested-nft__card" padding={2}>
           <Box
             className={classnames({
               'confirm-add-suggested-nft__nft-list': suggestedNfts.length > 1,
@@ -295,9 +295,8 @@ const ConfirmAddSuggestedNFT = () => {
                 if (suggestedNfts.length === 1) {
                   return (
                     <Box
-                      className="confirm-add-suggested-nft__nft-single"
+                      className="rounded-md confirm-add-suggested-nft__nft-single"
                       key={`confirm-add-suggested-nft__nft-single-${id}`}
-                      borderRadius={BorderRadius.MD}
                       margin={0}
                       padding={0}
                     >
@@ -315,19 +314,17 @@ const ConfirmAddSuggestedNFT = () => {
                         />
                       )}
                       <Box
+                        className="flex"
                         padding={1}
-                        display={Display.Flex}
-                        flexDirection={FlexDirection.Row}
-                        justifyContent={JustifyContent.spaceBetween}
-                        alignItems={AlignItems.Center}
+                        flexDirection={BoxFlexDirection.Row}
+                        justifyContent={BoxJustifyContent.Between}
+                        alignItems={BoxAlignItems.Center}
                       >
                         <Box
-                          display={Display.Flex}
-                          flexDirection={FlexDirection.Column}
-                          justifyContent={JustifyContent.spaceEvenly}
-                          flexWrap={FlexWrap.NoWrap}
-                          width={BlockSize.Full}
-                          className="confirm-add-suggested-nft__nft-single-sub-details"
+                          className="flex w-full confirm-add-suggested-nft__nft-single-sub-details"
+                          flexDirection={BoxFlexDirection.Column}
+                          justifyContent={BoxJustifyContent.Evenly}
+                          flexWrap={BoxFlexWrap.NoWrap}
                         >
                           {rpcPrefs.blockExplorerUrl ? (
                             <ButtonLink
@@ -362,21 +359,20 @@ const ConfirmAddSuggestedNFT = () => {
                 }
                 return (
                   <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Row}
-                    flexWrap={FlexWrap.NoWrap}
-                    alignItems={AlignItems.Center}
-                    justifyContent={JustifyContent.spaceBetween}
+                    className="flex confirm-add-suggested-nft__nft-list-item"
+                    flexDirection={BoxFlexDirection.Row}
+                    flexWrap={BoxFlexWrap.NoWrap}
+                    alignItems={BoxAlignItems.Center}
+                    justifyContent={BoxJustifyContent.Between}
                     marginBottom={4}
-                    className="confirm-add-suggested-nft__nft-list-item"
                     key={`${address}-${tokenId}`}
                   >
                     <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Row}
-                      flexWrap={FlexWrap.NoWrap}
-                      alignItems={AlignItems.Center}
-                      justifyContent={JustifyContent.spaceBetween}
+                      className="flex"
+                      flexDirection={BoxFlexDirection.Row}
+                      flexWrap={BoxFlexWrap.NoWrap}
+                      alignItems={BoxAlignItems.Center}
+                      justifyContent={BoxJustifyContent.Between}
                     >
                       {nftImageURL ? (
                         <img
@@ -388,12 +384,10 @@ const ConfirmAddSuggestedNFT = () => {
                         <NftDefaultImage className="confirm-add-suggested-nft__nft-image-default" />
                       )}
                       <Box
-                        display={Display.Flex}
-                        flexDirection={FlexDirection.Column}
-                        justifyContent={JustifyContent.spaceEvenly}
-                        flexWrap={FlexWrap.NoWrap}
-                        width={BlockSize.Full}
-                        className="confirm-add-suggested-nft__nft-sub-details"
+                        className="flex w-full confirm-add-suggested-nft__nft-sub-details"
+                        flexDirection={BoxFlexDirection.Column}
+                        justifyContent={BoxJustifyContent.Evenly}
+                        flexWrap={BoxFlexWrap.NoWrap}
                       >
                         {rpcPrefs.blockExplorerUrl ? (
                           <ButtonLink

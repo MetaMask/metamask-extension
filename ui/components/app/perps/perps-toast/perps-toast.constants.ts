@@ -1,11 +1,16 @@
 export type PerpsToastVariant = 'info' | 'success' | 'error';
 
 export const PERPS_TOAST_KEYS = {
+  CLOSE_ALL_FAILED: 'perpsToastCloseAllFailed',
+  CLOSE_ALL_IN_PROGRESS: 'perpsToastCloseAllInProgress',
+  CLOSE_ALL_PARTIAL: 'perpsToastCloseAllPartial',
+  CLOSE_ALL_SUCCESS: 'perpsToastCloseAllSuccess',
   CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
   INCREASE_POSITION_CROSS_MARGIN_BLOCKED: 'perpsCrossMarginNotSupportedTitle',
   CANCEL_ORDER_SUCCESS: 'perpsToastCancelOrderSuccess',
   CLOSE_FAILED: 'perpsToastCloseFailed',
   CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
+  LIMIT_CLOSE_FAILED: 'perpsToastLimitCloseFailed',
   MARGIN_ADD_SUCCESS: 'perpsToastMarginAddSuccess',
   MARGIN_ADJUSTMENT_FAILED: 'perpsToastMarginAdjustmentFailed',
   MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
@@ -13,6 +18,7 @@ export const PERPS_TOAST_KEYS = {
   PARTIAL_CLOSE_FAILED: 'perpsToastPartialCloseFailed',
   PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
   PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
+  PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
   REVERSE_FAILED: 'perpsToastReverseFailed',
   REVERSE_IN_PROGRESS: 'perpsToastReverseInProgress',
   REVERSE_SUCCESS: 'perpsToastReverseSuccess',

@@ -2,34 +2,32 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalBody,
   ModalFooter,
-  Box,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
-  BorderRadius,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setShowMultiRpcModal } from '../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -49,10 +47,9 @@ function MultiRpcEditModal() {
       <ModalContent>
         <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            borderRadius={BorderRadius.SM}
+            className="flex rounded-sm"
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
           >
             <img src="/images/networks1.png" />
           </Box>

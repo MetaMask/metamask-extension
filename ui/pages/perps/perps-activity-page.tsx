@@ -50,7 +50,7 @@ import {
  * Displays the full transaction history with filter tabs
  * Accessible via /perps/activity route
  */
-const PerpsActivityPage: React.FC = () => {
+const PerpsActivityPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);

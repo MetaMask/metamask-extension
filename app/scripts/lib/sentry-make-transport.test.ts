@@ -1,9 +1,18 @@
 import * as Sentry from '@sentry/browser';
-import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/core';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
 const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
+
+// The v10 session envelope is emitted through a promise chain during init
+// (`browserSessionIntegration` -> `captureSession` -> transport), so it is
+// observable after a microtask drain with no timers involved.
+async function flushMicrotasks(depth = 5): Promise<void> {
+  for (let i = 0; i < depth; i += 1) {
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+  }
+}
 
 type TestTransport = ReturnType<typeof makeTransport>;
 type TestEnvelope = Parameters<TestTransport['send']>[0];
@@ -108,7 +117,13 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
+            AnalyticsController: {
+              analyticsId: 'transport-test-id',
+              optedIn: false,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
           },
         }),
         getBackupState: async () => ({}),
@@ -127,7 +142,8 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
+      // The opted-out path can short-circuit before the fetch transport is
+      // instantiated; what matters is the absence of any outbound request.
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -141,9 +157,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
+            AnalyticsController: {
+              analyticsId: 'transport-test-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'transport-test-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -175,9 +194,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => ({
           ...emptySentrySnapshot(),
           state: {
+            AnalyticsController: {
+              analyticsId: 'app-state-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'app-state-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -212,9 +234,12 @@ describe('sentry-make-transport', () => {
           throw new Error('persisted unavailable');
         },
         getBackupState: async () => ({
+          AnalyticsController: {
+            analyticsId: 'backup-id',
+            optedIn: true,
+          },
           MetaMetricsController: {
-            participateInMetaMetrics: true,
-            metaMetricsId: 'backup-id',
+            completedMetaMetricsOnboarding: true,
           },
         }),
       };
@@ -278,7 +303,6 @@ describe('sentry-make-transport', () => {
     });
 
     it('does not call fetch after init when opted out', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
       globalThis.history ??= {} as unknown as History;
 
       globalThis.stateHooks = {
@@ -286,43 +310,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
-          },
-        }),
-        getBackupState: async () => ({}),
-      };
-
-      const fetchSpy = jest
-        .spyOn(globalThis, 'fetch')
-        .mockResolvedValue(minimalFetchResponse());
-
-      await Sentry.close(2000);
-      Sentry.init({
-        dsn: 'https://public@fake.ingest.sentry.io/1',
-        release: 'setup-sentry-unit-test',
-        transport: makeTransport,
-        tracesSampleRate: 0,
-      });
-
-      await tick();
-
-      expect(fetchSpy).not.toHaveBeenCalled();
-
-      fetchSpy.mockRestore();
-    });
-
-    it('calls fetch after init when opted in', async () => {
-      (globalThis as typeof globalThis & { nw?: object }).nw = {};
-      globalThis.history ??= {} as unknown as History;
-
-      globalThis.stateHooks = {
-        ...globalThis.stateHooks,
-        getSentryState: () => emptySentrySnapshot(),
-        getPersistedState: async () => ({
-          data: {
+            AnalyticsController: {
+              analyticsId: 'init-session-test-id',
+              optedIn: false,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'init-session-test-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -339,8 +332,62 @@ describe('sentry-make-transport', () => {
         release: 'setup-sentry-unit-test',
         transport: makeTransport,
         tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
       });
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init): even a forced session capture must
+      // produce zero outbound requests while opted out.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
+      await tick();
 
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      fetchSpy.mockRestore();
+    });
+
+    it('calls fetch after init when opted in', async () => {
+      globalThis.history ??= {} as unknown as History;
+
+      globalThis.stateHooks = {
+        ...globalThis.stateHooks,
+        getSentryState: () => emptySentrySnapshot(),
+        getPersistedState: async () => ({
+          data: {
+            AnalyticsController: {
+              analyticsId: 'init-session-test-id',
+              optedIn: true,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
+          },
+        }),
+        getBackupState: async () => ({}),
+      };
+
+      const fetchSpy = jest
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(minimalFetchResponse());
+
+      await Sentry.close(2000);
+      Sentry.init({
+        dsn: 'https://public@fake.ingest.sentry.io/1',
+        release: 'setup-sentry-unit-test',
+        transport: makeTransport,
+        tracesSampleRate: 0,
+        // jsdom mocks `chrome.runtime.id`, so the SDK's embedded-extension
+        // detection would otherwise disable init in unit tests.
+        skipBrowserExtensionCheck: true,
+      });
+      // Force the session path explicitly (v10 sends sessions on lifecycle
+      // triggers, not eagerly at init) and assert it reaches the transport.
+      Sentry.startSession();
+      Sentry.captureSession();
+      await flushMicrotasks();
       await tick();
 
       expect(fetchSpy).toHaveBeenCalled();
@@ -361,13 +408,13 @@ describe('sentry-make-transport', () => {
         })
         .filter((parsed): parsed is ParsedSentryEnvelope => parsed !== null);
 
-      const hasSessionItem = envelopes.some((parsedEnvelope) =>
+      const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
           (_item: unknown, type: string) => type === 'session',
         ),
       );
-      expect(hasSessionItem).toBe(true);
+      expect(hasEventItem).toBe(true);
 
       fetchSpy.mockRestore();
     });

@@ -9,12 +9,9 @@ import { addAccount } from '../../page-objects/flows/add-account.flow';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import {
-  account1Short,
-  account2Short,
-  connectSolanaTestDapp,
-  switchToAccount,
-} from './testHelpers';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { switchToAccount } from '../../page-objects/flows/account-list.flow';
+import { account1Short, account2Short } from './testHelpers';
 
 describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {

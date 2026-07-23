@@ -1,16 +1,24 @@
 import { useCallback } from 'react';
 import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { type Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
+} from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
 } from '../../../../../shared/lib/network.utils';
 import { openWindow } from '../../../../helpers/utils/window';
-import { setEditedNetwork, showModal } from '../../../../store/actions';
+import { isDisableableDefaultNetwork } from '../../../../helpers/utils/network-sections';
+import {
+  removeNetwork,
+  setEditedNetwork,
+  showModal,
+} from '../../../../store/actions';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getNetworkDiscoverButtonEnabled,
@@ -18,7 +26,16 @@ import {
 } from '../../../../selectors';
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';
+
+export type NetworkItemCallbacks = {
+  onDelete?: () => void;
+  onDeleteMenuLabel?: 'disable' | 'delete';
+  onEdit?: () => void;
+  onDiscoverClick?: () => void;
+  onRpcConfigEdit?: () => void;
+  onRpcSelect?: () => void;
+};
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
@@ -33,7 +50,7 @@ export const useNetworkItemCallbacks = () => {
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
+  const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const isDiscoverBtnEnabled = useCallback(
     (chainId: Hex | `${string}:${string}`): boolean => {
@@ -67,69 +84,95 @@ export const useNetworkItemCallbacks = () => {
   );
 
   const getItemCallbacks = useCallback(
-    (
-      network: MultichainNetworkConfiguration,
-    ): Record<string, (() => void) | undefined> => {
+    (network: MultichainNetworkConfiguration): NetworkItemCallbacks => {
       const { chainId, isEvm } = network;
+      const hexChainId = isEvm ? convertCaipToHexChainId(chainId) : undefined;
+      const isDisableableDefault = isDisableableDefaultNetwork(chainId);
+      const isEthereumMainnet =
+        chainId === EthScope.Mainnet ||
+        (isEvm && hexChainId === CHAIN_IDS.MAINNET);
+      const isSelectedNetwork =
+        chainId === currentChainId ||
+        (Boolean(hexChainId) && hexChainId === currentChainId);
 
-      if (!isEvm) {
-        return {
-          onDiscoverClick: isDiscoverBtnEnabled(chainId)
-            ? () => {
-                openWindow(
-                  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[chainId],
-                  '_blank',
-                );
-              }
-            : undefined,
-        };
-      }
-      const hexChainId = convertCaipToHexChainId(chainId);
-      const isDeletable =
+      const canRemoveOrDisable =
         isUnlocked &&
-        network.chainId !== currentChainId &&
-        network.chainId !== EthScope.Mainnet;
+        !isSelectedNetwork &&
+        (isDisableableDefault
+          ? !isEthereumMainnet
+          : isEvm &&
+            chainId !== currentChainId &&
+            chainId !== EthScope.Mainnet);
+
+      let onDeleteMenuLabel: 'disable' | 'delete' | undefined;
+      if (canRemoveOrDisable) {
+        onDeleteMenuLabel = isDisableableDefault ? 'disable' : 'delete';
+      }
 
       const modalProps = {
         onConfirm: () => undefined,
         onHide: () => undefined,
       };
 
-      return {
-        onDelete: isDeletable
-          ? () => {
-              dispatch(
-                showModal({
-                  name: 'CONFIRM_DELETE_NETWORK',
-                  target: hexChainId,
-                  ...modalProps,
-                }),
-              );
+      const discoverChainId = isEvm ? hexChainId : chainId;
+      const onDiscoverClick = isDiscoverBtnEnabled(
+        discoverChainId as Hex | `${string}:${string}`,
+      )
+        ? () => {
+            openWindow(
+              CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[
+                discoverChainId as keyof typeof CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP
+              ],
+              '_blank',
+            );
+          }
+        : undefined;
+
+      const onDelete = canRemoveOrDisable
+        ? () => {
+            if (isDisableableDefault) {
+              dispatch(removeNetwork(chainId as CaipChainId));
+              return;
             }
-          : undefined,
+            dispatch(
+              showModal({
+                name: 'CONFIRM_DELETE_NETWORK',
+                target: hexChainId,
+                ...modalProps,
+              }),
+            );
+          }
+        : undefined;
+
+      if (!isEvm) {
+        return {
+          onDelete,
+          onDeleteMenuLabel,
+          onDiscoverClick,
+        };
+      }
+
+      const evmHexChainId = convertCaipToHexChainId(chainId);
+
+      return {
+        onDelete,
+        onDeleteMenuLabel,
         onEdit: () => {
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
               nickname: network.name,
             }),
           );
           setSearchParams({ view: 'edit' });
         },
-        onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
-          ? () => {
-              openWindow(
-                CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP[hexChainId],
-                '_blank',
-              );
-            }
-          : undefined,
+        onDiscoverClick,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
               setSearchParams({ view: 'add-rpc' });
               dispatch(
                 setEditedNetwork({
-                  chainId: hexChainId,
+                  chainId: evmHexChainId,
                 }),
               );
             }
@@ -137,7 +180,7 @@ export const useNetworkItemCallbacks = () => {
         onRpcSelect: () => {
           dispatch(
             setEditedNetwork({
-              chainId: hexChainId,
+              chainId: evmHexChainId,
             }),
           );
           setSearchParams({ view: 'select-rpc' });

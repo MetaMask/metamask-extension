@@ -7,6 +7,7 @@ import {
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
 import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getDomainResolutions } from '../ducks/domains';
@@ -236,6 +237,28 @@ describe('useDisplayName', () => {
         icon: null,
         subtitle: null,
       });
+    });
+
+    it('derives the token icon URL when the API omits iconUrl', () => {
+      const ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+      const CHAIN_ID = CHAIN_IDS.MAINNET;
+
+      mockERC20Token(ADDRESS, CHAIN_ID, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK, '');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: ADDRESS,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: CHAIN_ID,
+          }),
+        state,
+      );
+
+      expect(result.current.image).toBe(getAssetImageUrl(ADDRESS, CHAIN_ID));
+      expect(result.current.image).toBe(
+        `https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/${ADDRESS}.png`,
+      );
     });
 
     it('returns ERC-20 token symbol', () => {

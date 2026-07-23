@@ -10,7 +10,7 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-price-data-unavailable"
   >
     <svg
@@ -32,7 +32,7 @@ exports[`BridgeAlertBannerList price-data-unavailable banner renders the banner 
         No price information
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -57,40 +57,7 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-insufficient-gas"
   >
     <svg
@@ -112,7 +79,7 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         More ETH needed for gas
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -121,10 +88,10 @@ exports[`BridgeAlertBannerList should render the insufficient-gas alert when ins
         </p>
       </div>
       <div
-        class="mt-4"
+        class="mt-2"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          class="inline-flex items-center justify-center rounded-xl px-3 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
           role="button"
         >
           <span
@@ -151,7 +118,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-market-closed"
   >
     <svg
@@ -173,45 +140,12 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         Market closed
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           This stock token is currently outside trading hours. Try again when the market reopens.
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
         </p>
       </div>
     </div>
@@ -231,7 +165,7 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-market-closed"
   >
     <svg
@@ -253,45 +187,12 @@ exports[`BridgeAlertBannerList should render the market-closed alert when market
         Market closed
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           This stock token is currently outside trading hours. Try again when the market reopens.
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
         </p>
       </div>
     </div>
@@ -311,7 +212,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
@@ -338,39 +239,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when no quotes 
       </div>
     </div>
   </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
-        </p>
-      </div>
-    </div>
-  </div>
 </div>
 `;
 
@@ -386,7 +254,7 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-no-quotes"
   >
     <svg
@@ -413,39 +281,6 @@ exports[`BridgeAlertBannerList should render the no-quotes alert when reason is 
       </div>
     </div>
   </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
-        </p>
-      </div>
-    </div>
-  </div>
 </div>
 `;
 
@@ -461,7 +296,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-token-security"
   >
     <svg
@@ -483,7 +318,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
         USDC is a malicious token.
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
@@ -492,10 +327,10 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
     </div>
     <button
       aria-label="Close banner"
-      class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default ml-3 self-start"
+      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default -mt-1"
     >
       <svg
-        class="inline-block w-5 h-5 text-inherit"
+        class="inline-block w-6 h-6 text-inherit"
         fill="currentColor"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
@@ -505,39 +340,6 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
         />
       </svg>
     </button>
-  </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
-        </p>
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -554,7 +356,7 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
   data-testid="bridge-banner-alerts"
 >
   <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
+    class="flex flex-row gap-4 items-start px-4 py-3 bg-error-muted rounded-xl"
     data-testid="bridge-tx-alert"
   >
     <svg
@@ -576,45 +378,12 @@ exports[`BridgeAlertBannerList should render the tx-alert alert when tx alert is
         This transaction will be reverted
       </p>
       <div
-        class="mt-1"
+        class=""
       >
         <p
           class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           Tx alert description Please select a different quote.
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="flex flex-row gap-2 items-start p-3 pl-2 bg-error-muted rounded-sm border-l-4 border-error-default"
-    data-testid="bridge-price-data-unavailable"
-  >
-    <svg
-      class="inline-block w-6 h-6 text-error-default"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
-      />
-    </svg>
-    <div
-      class="min-w-0 flex-1"
-    >
-      <p
-        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-      >
-        No price information
-      </p>
-      <div
-        class="mt-1"
-      >
-        <p
-          class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-        >
-          We couldn't get price information for this token. Make sure the amount received is what you expect before continuing.
         </p>
       </div>
     </div>

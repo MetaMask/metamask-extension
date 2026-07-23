@@ -506,6 +506,168 @@ describe('Selectors', () => {
         ).toBe(true);
       },
     );
+
+    jestIt('uses the remote allowed RPC hosts flag when present', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+      const state = createSwapsMockStore();
+      (
+        state.metamask.remoteFeatureFlags as Record<string, unknown>
+      ).smartTransactionsAllowedRpcHosts = ['.example.com'];
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://rpc.example.com/',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+    });
+
+    jestIt(
+      'rejects default hosts when the remote allowed RPC hosts flag overrides them',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+        const state = createSwapsMockStore();
+        (
+          state.metamask.remoteFeatureFlags as Record<string, unknown>
+        ).smartTransactionsAllowedRpcHosts = ['.example.com'];
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.infura.io/v3/some-project-id',
+            }),
+          },
+        };
+
+        expect(getSmartTransactionsEnabled(newState)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'falls back to default hosts when the remote flag is missing or empty',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+        const state = createSwapsMockStore();
+        (
+          state.metamask.remoteFeatureFlags as Record<string, unknown>
+        ).smartTransactionsAllowedRpcHosts = [];
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.infura.io/v3/some-project-id',
+            }),
+          },
+        };
+
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'falls back to default hosts when the remote flag is invalid',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+        const state = createSwapsMockStore();
+        (
+          state.metamask.remoteFeatureFlags as Record<string, unknown>
+        ).smartTransactionsAllowedRpcHosts = [123];
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.infura.io/v3/some-project-id',
+            }),
+          },
+        };
+
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'permits a host that exactly matches a non-dotted allowed host',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+        const state = createSwapsMockStore();
+        (
+          state.metamask.remoteFeatureFlags as Record<string, unknown>
+        ).smartTransactionsAllowedRpcHosts = ['mainnet.base.org'];
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.base.org/',
+            }),
+          },
+        };
+
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'rejects a host that only suffix-matches a non-dotted allowed host',
+      () => {
+        jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+        const state = createSwapsMockStore();
+        (
+          state.metamask.remoteFeatureFlags as Record<string, unknown>
+        ).smartTransactionsAllowedRpcHosts = ['mainnet.base.org'];
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://evilmainnet.base.org/',
+            }),
+          },
+        };
+
+        expect(getSmartTransactionsEnabled(newState)).toBe(false);
+      },
+    );
+
+    jestIt('permits a subdomain of a dotted allowed host', () => {
+      jest.spyOn(envModule, 'isProduction').mockReturnValue(true);
+
+      const state = createSwapsMockStore();
+      (
+        state.metamask.remoteFeatureFlags as Record<string, unknown>
+      ).smartTransactionsAllowedRpcHosts = ['.infura.io'];
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/some-project-id',
+          }),
+        },
+      };
+
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+    });
   });
 
   describe('getIsSmartTransaction', () => {

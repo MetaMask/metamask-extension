@@ -680,7 +680,8 @@ const state = {
         name: 'Approve Tokens',
       },
     },
-    participateInMetaMetrics: true,
+    completedMetaMetricsOnboarding: true,
+    optedIn: true,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
@@ -1282,7 +1283,7 @@ const state = {
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
     selectedNetworkClientId: 'test-networkConfigurationId-1',
-    metaMetricsId:
+    analyticsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
     currentCurrency: 'usd',
     currencyRates: {
@@ -1620,7 +1621,6 @@ const state = {
     qrCodeData: null,
     networkDropdownOpen: false,
     isLoading: false,
-    warning: null,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",

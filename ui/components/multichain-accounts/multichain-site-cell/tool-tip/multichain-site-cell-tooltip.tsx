@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 import { Tooltip } from 'react-tippy';
 import {
   AvatarAccount,
@@ -174,9 +175,12 @@ export const MultichainSiteCellTooltip =
     const t = useI18nContext();
     const avatarAccountVariant = useSelector(getAvatarType);
 
-    const seedAddresses = useSelector((state: MultichainAccountsState) =>
-      getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
+    const selectSeedAddresses = useCallback(
+      (state: MultichainAccountsState) =>
+        getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
+      [accountGroups],
     );
+    const seedAddresses = useSelector(selectSeedAddresses, isEqual);
 
     const avatarAccountsData = useMemo(() => {
       return (

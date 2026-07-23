@@ -29,15 +29,8 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_PROD_CLIENT_ID
-      - APPLE_PROD_CLIENT_ID
-      - TELEGRAM_PROD_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_PROD_CLIENT_ID
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -62,15 +55,8 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_BETA_CLIENT_ID
-      - APPLE_BETA_CLIENT_ID
-      - TELEGRAM_BETA_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_BETA_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_BETA_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_BETA_CLIENT_ID
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -94,17 +80,11 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      # for seedless onboarding (social login)
-      - GOOGLE_EXPERIMENTAL_CLIENT_ID
-      - APPLE_EXPERIMENTAL_CLIENT_ID
-      - TELEGRAM_EXPERIMENTAL_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
+      - QR_SYNC_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -125,19 +105,12 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      # for seedless onboarding (social login)
-      - GOOGLE_FLASK_CLIENT_ID
-      - APPLE_FLASK_CLIENT_ID
-      - TELEGRAM_FLASK_CLIENT_ID
-      - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
-      - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_FLASK_CLIENT_ID
       - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
@@ -269,6 +242,7 @@ env:
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
   - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
   - VAPID_KEY:
+  - COMPLIANCE_API_URL: https://compliance.api.cx.metamask.io
   - FIREBASE_API_KEY:
   - FIREBASE_AUTH_DOMAIN:
   - FIREBASE_STORAGE_BUCKET:
@@ -292,6 +266,8 @@ env:
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
+  - QUICKNODE_ARC_URL: null
+  - QUICKNODE_ROBINHOOD_URL: null
 
   ###
   # API keys to 3rd party services
@@ -393,6 +369,12 @@ env:
   - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
+  # Build-time gate: when true, the Add Device Sync tab is shown in Settings
+  # (device pairing via QR code scan and verification code).
+  - QR_SYNC_ENABLED: false
+  # Pure-black (OLED) dark mode. Set to true in .metamaskrc for local dev,
+  # or change this entry to true to enable for all users in a build.
+  - MM_PURE_BLACK_PREVIEW: false
 
   ###
   # Meta variables
@@ -439,22 +421,7 @@ env:
   # development and QA only; must remain false for production builds.
   - FORCE_ENFORCED_SIMULATIONS: false
 
-  # OAuth (Social login)
-  - GOOGLE_CLIENT_ID_REF
-  - APPLE_CLIENT_ID_REF
-  - TELEGRAM_CLIENT_ID_REF
   - SEEDLESS_ONBOARDING_ENABLED: 'true'
-  - GOOGLE_CLIENT_ID: ''
-  - APPLE_CLIENT_ID: ''
-  - TELEGRAM_CLIENT_ID: ''
-  # OAuth (Social login) for UAT(QA) builds
-  - GOOGLE_CLIENT_ID_FLASK_UAT: ''
-  - APPLE_CLIENT_ID_FLASK_UAT: ''
-  - TELEGRAM_CLIENT_ID_FLASK_UAT: ''
-  - GOOGLE_CLIENT_ID_UAT: ''
-  - APPLE_CLIENT_ID_UAT: ''
-  - TELEGRAM_CLIENT_ID_UAT: ''
-  - TELEGRAM_LOGIN_ENABLED: 'false'
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'
@@ -470,3 +437,14 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+
+  # Basic Functionality toggle (required for onboarding)
+  - BFT_CONSOLIDATION_ENABLED: false
+
+  # Sentry browser SDK serverless environment checks
+  - FUNCTIONS_WORKER_RUNTIME: ''
+  - LAMBDA_TASK_ROOT: ''
+  - K_SERVICE: ''
+  - CF_PAGES: ''
+  - VERCEL: ''
+  - NETLIFY: ''

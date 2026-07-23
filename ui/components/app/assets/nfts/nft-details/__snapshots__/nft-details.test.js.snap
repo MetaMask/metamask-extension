@@ -7,7 +7,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box multichain-page-content nft-details__content mm-box--margin-top-4 mm-box--padding-4 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
@@ -18,11 +18,11 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="nft__back"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
@@ -31,11 +31,11 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           >
             <button
               aria-label="NFT Options"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               data-testid="nft-options__button"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/more-vertical.svg');"
               />
             </button>
@@ -58,7 +58,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                   class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
                 >
                   <div
-                    class="mm-box nft-item__default-image nft-default nft-default--clickable mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                    class="flex-row items-center justify-center flex nft-item__default-image nft-default rounded-lg nft-default--clickable"
                     data-testid="nft-default-image"
                     tabindex="0"
                   >
@@ -127,7 +127,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                 data-testid="nft-address-copy"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>

@@ -14,9 +14,33 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../helpers/constants/routes';
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// gate is a passthrough here; real gating behavior is covered in
+// useComplianceGate.test.tsx.
+jest.mock('../../components/app/compliance', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {
+    useComplianceGate: () => value,
+    useSelectedAccountComplianceGate: () => value,
+  };
+});
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -75,6 +99,15 @@ jest.mock('@metamask/perps-controller', () => ({
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
   },
+  MARKET_CATEGORIES: [
+    'crypto',
+    'stock',
+    'pre-ipo',
+    'index',
+    'etf',
+    'commodity',
+    'forex',
+  ],
 }));
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
@@ -369,6 +402,7 @@ describe('PerpsMarketDetailPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -421,6 +455,102 @@ describe('PerpsMarketDetailPage', () => {
       await renderPage(store);
 
       expect(screen.getByText(/15\.79%/u)).toBeInTheDocument();
+    });
+
+    it('masks position P&L, return, size, and margin when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-return-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-position-size-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(
+        screen.getByTestId('perps-position-margin-value'),
+      ).toHaveTextContent('••••••');
+    });
+
+    it('uses the default text color instead of green/red for P&L and return when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      const pnl = screen.getByTestId('perps-position-pnl-value');
+      const returnValue = screen.getByTestId('perps-position-return-value');
+      expect(pnl).toHaveClass('text-default');
+      expect(pnl).not.toHaveClass('text-success-default');
+      expect(pnl).not.toHaveClass('text-error-default');
+      expect(returnValue).toHaveClass('text-default');
+      expect(returnValue).not.toHaveClass('text-success-default');
+      expect(returnValue).not.toHaveClass('text-error-default');
+    });
+
+    it('uses the success color for a profitable P&L outside of privacy mode', async () => {
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-position-pnl-value')).toHaveClass(
+        'text-success-default',
+      );
+    });
+
+    it('masks entry price, liquidation price, funding payments, and auto close TP/SL when privacy mode is enabled', async () => {
+      const state = createMockState(true);
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          preferences: {
+            ...state.metamask.preferences,
+            privacyMode: true,
+          },
+        },
+      });
+
+      await renderPage(store);
+
+      expect(
+        screen.getByTestId('perps-position-entry-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-liquidation-value'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-position-funding-value'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByTestId('perps-auto-close-tp-value')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getByTestId('perps-auto-close-sl-value')).toHaveTextContent(
+        '••••••',
+      );
     });
 
     it('shows order filled toast when route state has pendingOrderSymbol and matching position exists', async () => {
@@ -558,10 +688,15 @@ describe('PerpsMarketDetailPage', () => {
     it('displays market symbol and price', async () => {
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-price')).toBeInTheDocument();
-      expect(getByText('ETH-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Ethereum',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'ETH-USDC perp',
+      );
     });
 
     it('displays the market max leverage pill in the header', async () => {
@@ -595,10 +730,42 @@ describe('PerpsMarketDetailPage', () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      expect(getByText('BTC-USD')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Bitcoin',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'BTC-USDC perp',
+      );
+    });
+
+    it('shows the ticker instead of the full name in the header when the full asset names flag is disabled', async () => {
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const state = createMockState(true);
+      state.metamask.remoteFeatureFlags.perpsShowFullAssetNames = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent('BTC');
+      expect(getByTestId('perps-market-detail-name')).not.toHaveTextContent(
+        'Bitcoin',
+      );
+    });
+
+    it('navigates to the market list when the header chevron is clicked', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      getByTestId('perps-market-detail-market-list-button').click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_MARKET_LIST_ROUTE);
     });
 
     it('displays back button', async () => {
@@ -611,7 +778,13 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates to wallet Perps tab when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 2,
+        configurable: true,
+      });
+
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -619,9 +792,36 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith({
-        pathname: '/',
-        search: 'tab=perps',
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
+    });
+
+    it('falls back to Perps tab when history is empty', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 1,
+        configurable: true,
+      });
+
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const backButton = getByTestId('perps-market-detail-back-button');
+      backButton.click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/', search: 'tab=perps' },
+        { replace: true },
+      );
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
       });
     });
 
@@ -753,15 +953,20 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders HIP-3 equity market (TSLA)', async () => {
+    it('renders HIP-3 stock market (TSLA)', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = await renderPage(store);
+      const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
-      // Should display "TSLA-USD" with the stripped display name
-      expect(getByText('TSLA-USD')).toBeInTheDocument();
+      // Should display the full name and the ticker-collateral pair (stripped display name)
+      expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
+        'Tesla',
+      );
+      expect(getByTestId('perps-market-detail-pair')).toHaveTextContent(
+        'TSLA-USDC perp',
+      );
     });
 
     it('displays position section when user has a position', async () => {
@@ -1720,6 +1925,44 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('orders section spacing (TAT-3264)', () => {
+    it('renders the orders section header with the same top spacing token as the stats section header', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const ordersHeader = screen.getByTestId('perps-orders-section-header');
+      const statsHeader = screen.getByTestId('perps-stats-section-header');
+
+      // Both adjacent section headers must use the page's section-spacing token
+      // (paddingTop={4} → 16px → `pt-4`). Before the fix the orders header had no
+      // paddingTop, so it sat flush against the preceding block.
+      expect(ordersHeader).toHaveClass('pt-4');
+      expect(statsHeader).toHaveClass('pt-4');
+    });
+
+    it('does not render the orders section when there are no open orders (empty-state, no regression)', () => {
+      const savedOrders = mockOrders.splice(0, mockOrders.length);
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+      try {
+        const store = mockStore(createMockState(true));
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(
+          screen.queryByTestId('perps-orders-section-header'),
+        ).not.toBeInTheDocument();
+        // The rest of the page still renders correctly.
+        expect(
+          screen.getByTestId('perps-stats-section-header'),
+        ).toBeInTheDocument();
+      } finally {
+        mockOrders.push(...savedOrders);
+      }
     });
   });
 });

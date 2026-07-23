@@ -85,8 +85,8 @@ AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Me
 Zero-config setup:
 
 ```bash
-yarn install # clones MetaMask/skills into .skills-cache/metamask-skills
-yarn skills  # syncs all default skills from the cache
+yarn install # refreshes the MetaMask/skills cache via the shared `@metamask/skills` CLI
+yarn skills  # syncs all default skills through the `metamask-skills sync` command
 ```
 
 Optional local configuration:
@@ -100,7 +100,7 @@ SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
 
 Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
 
-Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build. The repo uses the shared `@metamask/skills` package so sync/cache behavior stays uniform across MetaMask packages. To opt into best-effort regeneration during install/setup, set `SKILLS_AUTO_UPDATE=1` in your shell or `.skills.local`.
 
 ## Git Hooks
 
@@ -130,7 +130,7 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 
 `yarn start` is backed by Webpack. You can also call `yarn webpack` directly for advanced build-system debugging; see the [Webpack README](./development/webpack/README.md) for more information.
 
-`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test:webpack`.
+`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test`.
 
 #### React and Redux DevTools
 
@@ -170,15 +170,15 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 
 1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom production-like Webpack test build. This command allows you to generate test builds for various types, including:
-   - `yarn build:test:webpack` for main build
-   - `yarn build:test:flask:webpack` for flask build
-   - `yarn build:test:webpack:mv2` for mv2 build
+   - `yarn build:test` for main build
+   - `yarn build:test:flask` for flask build
+   - `yarn build:test:mv2` for mv2 build
 3. Start a Webpack test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
    - `yarn start:test:mv2` for mv2 build
 
-Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test:webpack` for production-like LavaMoat verification.
+Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test` for production-like LavaMoat verification.
 
 #### Running Tests
 
@@ -229,7 +229,7 @@ For code examples and detailed guidelines, see [Feature flags in E2E tests](http
 
 ##### Build-time feature flags (compile-time)
 
-Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test:webpack`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
+Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
 
 #### Feature Flag Registry
 
@@ -296,7 +296,7 @@ Different build types have different e2e tests sets. In order to run them look i
 
 Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
 
-- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~12 minutes for the browserify builds, and ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
+- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
   - `[force-builds]` in the last commit message, or a `force-builds` label on the PR — Forces fresh builds even when CI would otherwise reuse prior artifacts. Useful when you need to verify that builds work after changing only non-code files (CI configs, docs, etc.), or if the automatic system is making a mistake.
   - `[skip-builds]` in the last commit message, or a `skip-builds` label on the PR — Reuses builds from the most recent prior run **without** verifying the source hash. This is the fastest option for iterating on tests or non-build changes, but it **blocks merging** — you must remove the tag/label and push again before the PR can enter the merge queue.
 - **Automatic E2E skipping** — CI automatically skips E2E tests when the PR's changes don't require them (e.g., docs-only, CI-only, or test-only changes with reused builds). You can override this in both directions:
@@ -319,11 +319,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-policies` to ask the MetaMask bot to automatically update the policies for you.
   - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
   - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
-    - There are two sets of LavaMoat policy files:
-      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:webapp:auto`. Add `--help` for usage.
-        - These should be regenerated whenever the production dependencies for the webapp change.
-      - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
-        - This should be regenerated whenever the dependencies used by the build system itself change.
+    - The webpack app LavaMoat policy files live under `lavamoat/webpack/*/policy.json` and are re-generated by `yarn lavamoat:auto`.
+      - These should be regenerated whenever the production dependencies for the app change.
     - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
     - Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
       macOS and Windows users may see extraneous changes relating to optional dependencies.

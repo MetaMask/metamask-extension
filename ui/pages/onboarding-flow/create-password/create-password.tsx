@@ -14,31 +14,30 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getIsSocialLoginFlow,
-  getSocialLoginType,
-  getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
+  getDeferredDeepLinkParameters,
+  getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
-  forceUpdateMetamaskState,
   getIsSeedlessOnboardingUserAuthenticated,
-  resetOnboarding,
   setDataCollectionForMarketing,
   setMarketingConsent,
 } from '../../../store/actions';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -53,10 +52,6 @@ type CreatePasswordProps = {
   secretRecoveryPhrase: string;
 };
 
-const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
@@ -64,34 +59,33 @@ export default function CreatePassword({
 }: CreatePasswordProps) {
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isFirefox = useIsFirefox();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const {
-    trackEvent,
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
+  const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const isOptedIn = useSelector(getOptedIn);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const metametricsId = useSelector(getMetaMetricsId);
-  const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
-    'base64',
-  );
+  const analyticsId = useSelector(getAnalyticsId);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
+  const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
-    participateInMetaMetrics && base64MetametricsId,
+    completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
   );
   const analyticsIframeQuery = {
-    mmi: base64MetametricsId,
+    mmi: base64AnalyticsId,
     env: 'production',
   };
   const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
@@ -134,7 +128,7 @@ export default function CreatePassword({
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
-            isParticipateInMetaMetricsSet
+            completedMetaMetricsOnboarding
               ? ONBOARDING_COMPLETION_ROUTE
               : ONBOARDING_METAMETRICS,
             { replace: true },
@@ -153,11 +147,12 @@ export default function CreatePassword({
     }
   }, [
     currentKeyring,
+    isFirefox,
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
-    isParticipateInMetaMetricsSet,
+    completedMetaMetricsOnboarding,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
   ]);
@@ -172,53 +167,42 @@ export default function CreatePassword({
     })();
   }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
-  // Helper function to determine account type for analytics
-  const getAccountType = (
-    baseType: MetaMetricsEventAccountType,
-    includesSocialLogin: boolean = false,
-  ) => {
-    if (includesSocialLogin && socialLoginType) {
-      const socialProvider = String(socialLoginType).toLowerCase();
-      return `${baseType}_${socialProvider}`;
-    }
-    return baseType;
-  };
-
   const handleWalletImport = async (password: string) => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletImportAttempted,
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletImportAttempted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .build(),
+    );
 
     await importWithRecoveryPhrase(password, secretRecoveryPhrase);
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletImported,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        biometrics_enabled: false,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletImported)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+        })
+        .build(),
+    );
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletSetupCompleted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_setup_type: 'import',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_wallet: false,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Imported,
-          isSocialLoginFlow,
-        ),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletSetupCompleted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: 'import',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+          ...utmProperties,
+        })
+        .build(),
+    );
 
     if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
@@ -233,17 +217,15 @@ export default function CreatePassword({
     password: string,
     termsChecked: boolean,
   ) => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletCreationAttempted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletCreationAttempted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+        })
+        .build(),
+    );
 
     setNewAccountCreationInProgress(true);
     await createNewAccount(password);
@@ -253,47 +235,45 @@ export default function CreatePassword({
       bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletCreated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        biometrics_enabled: false,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletCreated)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+        })
+        .build(),
+    );
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletSetupCompleted,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_setup_type: 'new',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_wallet: true,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.WalletSetupCompleted)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: 'new',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
+          ...utmProperties,
+        })
+        .build(),
+    );
     if (isSocialLoginFlow) {
       // track analytics preference selected event for social login users
       // as social login users will not see the metametrics screen
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-          [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
-          location: 'onboarding_create_password',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
+            location: 'onboarding_create_password',
+          })
+          .build(),
+      );
 
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
@@ -327,11 +307,7 @@ export default function CreatePassword({
       // for SRP import flow, we will just navigate back to the import SRP page
       navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
     } else {
-      // reset onboarding flow
-      await dispatch(resetOnboarding());
-      await forceUpdateMetamaskState(dispatch);
-
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+      await resetOnboardingAndReturn();
     }
   };
 
@@ -339,10 +315,11 @@ export default function CreatePassword({
     password: string,
     termsChecked: boolean,
   ) => {
-    if (!password) {
+    if (!password || isSubmitting) {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       // If secretRecoveryPhrase is defined we are in import wallet flow
       if (
@@ -357,10 +334,14 @@ export default function CreatePassword({
     } catch (error) {
       log.error('Error creating password', error);
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletSetupFailure,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.WalletSetupFailure)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .build(),
+      );
+      setNewAccountCreationInProgress(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -370,6 +351,7 @@ export default function CreatePassword({
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}
         onBack={handleBackClick}
+        loading={isSubmitting}
       />
       {shouldInjectMetametricsIframe ? (
         <iframe

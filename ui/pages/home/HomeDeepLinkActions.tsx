@@ -1,10 +1,39 @@
-import { FC, memo, useCallback, useEffect, useMemo } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { memo, useCallback, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  BATCH_SELL_SELECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { selectIsNetworkMenuOpen } from '../../selectors';
+import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
 import { toggleNetworkMenu } from '../../store/actions';
-import { HomeQueryParams } from '../../../shared/lib/deep-links/routes/home';
+import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
+import {
+  DEEP_LINK_ORIGIN,
+  HomeQueryParams,
+} from '../../../shared/lib/deep-links/routes/home';
+
+export type HomeDeepLinkQrCode = {
+  deeplinkUrl: string;
+  descriptionKey: string;
+  titleKey: string;
+};
+
+type HomeDeepLinkActionsProps = Record<string, never>;
+
+function isDeepLinkUrlForPath(urlString: string | undefined, pathname: string) {
+  if (!urlString) {
+    return false;
+  }
+
+  try {
+    const url = new URL(urlString);
+    return url.origin === DEEP_LINK_ORIGIN && url.pathname === pathname;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Reusable hook to handle deep link actions for the home route.
@@ -14,7 +43,9 @@ export const useHomeDeepLinkEffects = () => {
   const isHomeRoute = pathname === DEFAULT_ROUTE;
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
+  const batchSellEnabled = useSelector(getIsBatchSellEnabled);
   const dispatch = useDispatch();
 
   const openNetworkSelectorModal = useCallback(() => {
@@ -23,17 +54,84 @@ export const useHomeDeepLinkEffects = () => {
     }
   }, [dispatch, isNetworkMenuOpen]);
 
+  const handleBatchSellDeepLink = useCallback(
+    (deeplinkUrl: string) => {
+      if (batchSellEnabled) {
+        navigate(BATCH_SELL_SELECT_ROUTE);
+        return;
+      }
+
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrBatchSellDescription',
+          titleKey: 'deepLinkQrBatchSellTitle',
+        }),
+      );
+    },
+    [batchSellEnabled, navigate, dispatch],
+  );
+
+  const openPredictQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrPredictDescription',
+          titleKey: 'deepLinkQrPredictTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const openTrendingQrCodeModal = useCallback(
+    (deeplinkUrl: string) => {
+      dispatch(
+        setHomeDeepLinkQrCode({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrTrendingDescription',
+          titleKey: 'deepLinkQrTrendingTitle',
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const deepLinkHandlers: Record<
     HomeQueryParams,
-    { isValidParam: (param?: string) => boolean; action: () => void }
+    {
+      isValidParam: (param?: string) => boolean;
+      action: (param: string) => void;
+    }
   > = useMemo(
     () => ({
+      [HomeQueryParams.BatchSellDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/batch-sell'),
+        action: handleBatchSellDeepLink,
+      },
       [HomeQueryParams.OpenNetworkSelector]: {
         isValidParam: (param?: string) => param?.toLowerCase() === 'true',
         action: openNetworkSelectorModal,
       },
+      [HomeQueryParams.PredictDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/predict'),
+        action: openPredictQrCodeModal,
+      },
+      [HomeQueryParams.TrendingDeeplinkUrl]: {
+        isValidParam: (param?: string) =>
+          isDeepLinkUrlForPath(param, '/trending'),
+        action: openTrendingQrCodeModal,
+      },
     }),
-    [openNetworkSelectorModal],
+    [
+      handleBatchSellDeepLink,
+      openNetworkSelectorModal,
+      openPredictQrCodeModal,
+      openTrendingQrCodeModal,
+    ],
   );
 
   const clearDeepLinkParams = useCallback(() => {
@@ -46,9 +144,9 @@ export const useHomeDeepLinkEffects = () => {
   }, [setSearchParams, deepLinkHandlers]);
 
   const handleDeepLinkAction = useCallback(
-    (action: () => void) => {
-      action();
+    (action: (param: string) => void, param: string) => {
       clearDeepLinkParams();
+      action(param);
     },
     [clearDeepLinkParams],
   );
@@ -61,7 +159,7 @@ export const useHomeDeepLinkEffects = () => {
     for (const [key, value] of searchParams.entries()) {
       const deepLink = deepLinkHandlers[key as HomeQueryParams];
       if (deepLink?.isValidParam(value)) {
-        handleDeepLinkAction(deepLink.action);
+        handleDeepLinkAction(deepLink.action, value);
         break;
       }
     }
@@ -69,10 +167,11 @@ export const useHomeDeepLinkEffects = () => {
 };
 
 /**
- * Ghost component that manages the useHomeDeepLinkEffects
- * Can be used in non-functional components (that cannot use hooks)
+ * Ghost component that manages the useHomeDeepLinkEffects.
+ * Dispatches deep-link QR code data to Redux so
+ * DeeplinkQrCodeModalContainer can render it independently.
  */
-export const HomeDeepLinkActions: FC = memo(() => {
+export const HomeDeepLinkActions = memo(() => {
   useHomeDeepLinkEffects();
   return null;
 });

@@ -3,8 +3,8 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 const SHOW_DEFAULT_ADDRESS_FLAG = {
   remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
@@ -69,8 +69,7 @@ describe('Show default address', function (this: Suite) {
         );
         await preferencesAndDisplaySettings.checkPageIsLoaded();
         await preferencesAndDisplaySettings.toggleShowDefaultAddress();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // Check on home page that default address is not present
         await homePage.checkPageIsLoaded();

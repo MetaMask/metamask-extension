@@ -7,12 +7,6 @@
     "message": "Le chargement prend plus de temps que d’habitude.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Erreur"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Données de transaction incompatibles. Veuillez vérifier les détails de la transaction."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Il n’y a plus de comptes. Si vous souhaitez accéder à un autre compte non répertorié ci-dessous, veuillez reconnecter votre portefeuille matériel et le sélectionner."
   },
@@ -70,17 +64,23 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
+  "accessRestrictedContactSupport": {
+    "message": "Contacter le service d’assistance"
+  },
+  "accessRestrictedDescriptionLine1": {
+    "message": "Cette adresse de portefeuille a été signalée lors du contrôle de conformité. Par conséquent, certains services MetaMask ne sont pas disponibles."
+  },
+  "accessRestrictedDescriptionLine2": {
+    "message": "Si vous pensez qu’il s’agit d’une erreur, contactez le service d’assistance pour demander une réévaluation."
+  },
+  "accessRestrictedTitle": {
+    "message": "Accès restreint"
+  },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
   },
   "account": {
     "message": "Compte"
-  },
-  "accountActivity": {
-    "message": "Activité du compte"
-  },
-  "accountActivityText": {
-    "message": "Sélectionnez les comptes pour lesquels vous souhaitez recevoir des notifications :"
   },
   "accountAlreadyExistsLogin": {
     "message": "Se connecter"
@@ -88,6 +88,9 @@
   "accountAlreadyExistsLoginDescription": {
     "message": "Un portefeuille utilisant « $1 » existe déjà. Voulez-vous essayer de vous y connecter à la place ?",
     "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "Un portefeuille est déjà associé à ce compte Telegram. Voulez-vous déverrouiller ce portefeuille ?"
   },
   "accountAlreadyExistsTitle": {
     "message": "Ce portefeuille existe déjà"
@@ -124,14 +127,15 @@
     "message": "Nous n’avons pas trouvé de portefeuille pour « $1 ». Voulez-vous en créer un nouveau avec cet identifiant ?",
     "description": "$1 is the account email"
   },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Nous n’avons pas trouvé de portefeuille associé au compte $1. Voulez-vous en créer un nouveau avec cet identifiant ?",
+    "description": "$1 is the social login provider"
+  },
   "accountNotFoundTitle": {
     "message": "Portefeuille non trouvé"
   },
   "accountOptions": {
     "message": "Options du compte"
-  },
-  "accountPermissionToast": {
-    "message": "Les autorisations accordées au compte ont été mises à jour"
   },
   "accountSelectionRequired": {
     "message": "Vous devez sélectionner un compte !"
@@ -163,16 +167,77 @@
   "activity": {
     "message": "Activité"
   },
+  "activityEmptyDescription": {
+    "message": "Échangez votre premier jeton aujourd’hui."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Ajoutez des fonds à votre portefeuille pour démarrer."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Échec de l’approbation"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Approuver le plafond de dépenses"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Plafond de dépenses approuvé"
+  },
+  "activity_assetActivation_failed_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_failed_title": {
+    "message": "Échec de l’activation de la « trustline »"
+  },
+  "activity_assetActivation_pending_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_pending_title": {
+    "message": "Activation de la « trustline » $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetActivation_success_title": {
+    "message": "« Trustline » activée $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_failed_title": {
+    "message": "Échec de la désactivation de la « trustline »"
+  },
+  "activity_assetDeactivation_pending_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_pending_title": {
+    "message": "Désactivation de la « trustline » $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_assetDeactivation_success_title": {
+    "message": "« Trustline » désactivée $1",
     "description": "$1 is the token symbol"
   },
   "activity_bridge_failed_description": {
@@ -180,6 +245,36 @@
   },
   "activity_bridge_failed_title": {
     "message": "Échec de la passerelle"
+  },
+  "activity_bridge_pending_description": {
+    "message": "Établir la passerelle vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "Établir la passerelle vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "Passerelle établie vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "Passerelle établie vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "L’achat a échoué"
+  },
+  "activity_buy_failed_title": {
+    "message": "Échec de l’achat"
+  },
+  "activity_buy_pending_description": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "A acheté $1",
@@ -189,14 +284,119 @@
     "message": "A acheté $1",
     "description": "$1 is the token symbol"
   },
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Échec de réclamation"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Réclamer le bonus en mUSD"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Bonus en mUSD réclamé"
+  },
+  "activity_claim_failed_description": {
+    "message": "La réclamation a échoué"
+  },
+  "activity_claim_failed_title": {
+    "message": "Échec de la réclamation"
+  },
+  "activity_claim_pending_description": {
+    "message": "Réclamer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Réclamer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "A réclamé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "$1 réclamé",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Le déploiement a échoué"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Échec de déploiement"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Déployer un contrat"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Déployer un contrat"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Contrat déployé"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Contrat déployé"
+  },
+  "activity_contractInteraction_failed_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Échec de l’interaction"
+  },
+  "activity_contractInteraction_pending_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Interaction en cours"
+  },
+  "activity_contractInteraction_success_description": {
+    "message": "Avec $1",
+    "description": "$1 is the shortened contract address"
+  },
   "activity_contractInteraction_success_title": {
-    "message": "Interaction de contrats intelligents"
+    "message": "Interaction avec un contrat"
+  },
+  "activity_convert_failed_description": {
+    "message": "La conversion a échoué"
+  },
+  "activity_convert_failed_title": {
+    "message": "Échec de la conversion"
+  },
+  "activity_convert_pending_description": {
+    "message": "Convertir en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Convertir en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "A converti en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_title": {
+    "message": "$1 converti",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "Le dépôt a échoué"
   },
   "activity_deposit_failed_title": {
     "message": "Le dépôt a échoué"
+  },
+  "activity_deposit_pending_description": {
+    "message": "Déposer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "Déposer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "Déposé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "$1 déposé",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "Transaction"
@@ -208,16 +408,31 @@
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "L’augmentation a échoué"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Augmenter le plafond de dépenses en cours"
   },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Plafond des dépenses augmenté"
+  },
   "activity_lendingDeposit_failed_title": {
     "message": "Le dépôt a échoué"
+  },
+  "activity_lendingDeposit_pending_title": {
+    "message": "Dépôt de prêt"
+  },
+  "activity_lendingDeposit_success_title": {
+    "message": "Dépôt de prêt"
   },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Le retrait a échoué"
@@ -225,15 +440,241 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "Le retrait a échoué"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Retrait de prêt"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "Retirer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "Retirer en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_lendingWithdrawal_success_title": {
-    "message": "Retrait de prêt"
+    "message": "Prêt retiré"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "La position courte a échoué"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Échec de la fermeture de position courte"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Fermer la position courte - marché fermé"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Fermer la position courte - marché fermé"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Position courte fermée - marché fermé"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Position courte fermée - marché fermé"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Fermer la position courte - marché"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Fermer la position courte - marché"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Position courte fermée - marché"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Position courte fermée - marché"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Échec de l’achat"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Acheter des $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "A acheté $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Échec du Mint"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "Minter des $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "A minté $1",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_failed_title": {
+    "message": "La vente a échoué"
+  },
+  "activity_nftSell_pending_title": {
+    "message": "Vendre en $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftSell_success_title": {
+    "message": "Vendu en $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Compte approvisionné"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Compte approvisionné"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Fermer une position longue - échec de liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Fermer une position longue - échec de liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Fermer la position longue - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Fermer la position longue - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Position longue fermée - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Position longue fermée - liquidée"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Fermer une position longue - échec de stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Fermer une position longue - échec de stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Fermer la position longue - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Fermer la position longue - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Position longue fermée - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Position longue fermée - stop loss"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "La fermeture de position longue a échoué"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Échec de fermeture de position longue"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Fermer la position longue - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Fermer la position longue - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Position longue fermée - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Position longue fermée - take profit"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "La fermeture de position longue a échoué"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Échec de fermeture de position longue"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Fermer la position longue"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Fermer la position longue"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Position longue fermée"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Position longue fermée"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Fermer une position courte - échec de liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Fermer une position courte - échec de liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Fermer la position courte - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Fermer la position courte - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Position courte fermée - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Position courte fermée - liquidée"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Fermer la position courte - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Fermer la position courte - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Position courte fermée - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Position courte fermée - stop loss"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Fermer la position courte - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Fermer la position courte - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Position courte fermée - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Position courte fermée - take profit"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Fermer la position courte"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Fermer la position courte"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "Fermer la position courte"
@@ -241,17 +682,107 @@
   "activity_perpsCloseShort_success_title": {
     "message": "Fermer la position courte"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "L’ouverture de position longue a échoué"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Échec d’ouverture de position longue"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Ouvrir la position longue"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Ouvrir la position longue"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "Position longue ouverte"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsOpenShort_failed_description": {
+    "message": "L’ouverture de position longue a échoué"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Échec d’ouverture de position longue"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Ouvrir la position courte"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Ouvrir la position courte"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Position courte ouverte"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Position courte ouverte"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Le paiement de l’approvisionnement a échoué"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Échec de paiement de l’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Payer les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Payer les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "A payé les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Frais d’approvisionnement payés"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Échec de réception des frais"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Échec de réception des frais"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Recevoir des frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Recevoir des frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "A reçu de frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Frais d’approvisionnement reçus"
+  },
+  "activity_perpsWithdraw_failed_description": {
     "message": "Le retrait a échoué"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Le retrait a échoué"
+  },
+  "activity_perpsWithdraw_pending_description": {
+    "message": "Retirer des fonds"
+  },
+  "activity_perpsWithdraw_pending_title": {
+    "message": "Retirer des fonds"
+  },
+  "activity_perpsWithdraw_success_description": {
+    "message": "Retrait sur le perps"
+  },
+  "activity_perpsWithdraw_success_title": {
+    "message": "Retrait sur le perps"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "L’encaissement a échoué"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "Échec à l’encaissement"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Encaisser"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Encaisser"
   },
   "activity_predictionCashedOut_success_description": {
     "message": "Encaissé"
@@ -259,11 +790,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "Encaissé"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "La réclamation a échoué"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Échec de la réclamation"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Réclamer les gains"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Réclamer les gains"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Gains réclamés"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Gains réclamés"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "La prédiction a échoué"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Échec de la prédiction"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Placer la prédiction"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Placer la prédiction"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "Prédiction placée"
   },
   "activity_predictionPlaced_success_title": {
     "message": "Prédiction placée"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Échec d’approvisionnement"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Compte approvisionné"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Compte approvisionné"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "Le retrait a échoué"
@@ -277,33 +856,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "Retrait en cours"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Retrait des prédictions"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Retrait des prédictions"
+  },
   "activity_receive_failed_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Échec de réception"
   },
   "activity_receive_pending_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "Recevoir en $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "A reçu en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "Échec de la révocation"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Révoquer le plafond de dépenses"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Plafond de dépenses révoqué"
+  },
+  "activity_sell_failed_description": {
+    "message": "La vente a échoué"
+  },
+  "activity_sell_failed_title": {
+    "message": "Échec de la vente"
+  },
+  "activity_sell_pending_description": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "Vers : $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Échec de l’envoi"
   },
   "activity_send_pending_description": {
     "message": "Vers : $1",
@@ -321,11 +951,105 @@
     "message": "A envoyé $1",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "La mise à niveau a échoué"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Échec de la mise à niveau"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Mettre un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Mettre un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "A mis un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Compte intelligent mis à niveau"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Fermer la position courte - stop marché"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Fermer la position courte - stop marché"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Position courte fermée - stop marché"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Position courte fermée - stop marché"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "Échec du swap"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "Échanger en $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "Échangé en $1",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "Échec du swap"
+  },
+  "activity_swap_pending_title": {
+    "message": "Échange"
+  },
+  "activity_swap_success_title": {
+    "message": "Échangé"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Le déballage a échoué"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Échec du déballage"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "Déballer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "Déballer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "A déballé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "$1 déballé",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "L’emballage a échoué"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Échec de l’emballage"
+  },
+  "activity_wrap_pending_description": {
+    "message": "Emballer les $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "Emballer les $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "A emballé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "$1 emballé",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Ajouter"
@@ -347,9 +1071,6 @@
   },
   "addAccount": {
     "message": "Ajouter un compte"
-  },
-  "addAcquiredTokens": {
-    "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
   "addAlias": {
     "message": "Ajouter un alias"
@@ -396,6 +1117,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Ajoutez uniquement des amis et des adresses de confiance"
+  },
+  "addFromChainlist": {
+    "message": "Ajouter depuis ChainList"
   },
   "addFunds": {
     "message": "Ajouter des fonds"
@@ -452,6 +1176,65 @@
   "addWallet": {
     "message": "Ajouter un portefeuille"
   },
+  "add_device_success_desc_imported_plural": {
+    "message": "$1 comptes importés ont été synchronisés avec votre téléphone.",
+    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
+  },
+  "add_device_success_desc_imported_singular": {
+    "message": "1 compte importé a été synchronisé avec votre téléphone.",
+    "description": "Used when a single imported account was synced"
+  },
+  "add_device_success_desc_wallet_plural": {
+    "message": "$1 portefeuilles ont été synchronisés avec votre téléphone.",
+    "description": "$1 is the number of wallets. Used when only wallets were synced"
+  },
+  "add_device_success_desc_wallet_plural_imported_plural": {
+    "message": "$1 portefeuilles et $2 comptes importés ont été synchronisés avec votre téléphone.",
+    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
+  },
+  "add_device_success_desc_wallet_plural_imported_singular": {
+    "message": "$1 portefeuilles et 1 compte importé ont été synchronisés avec votre téléphone.",
+    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
+  },
+  "add_device_success_desc_wallet_singular": {
+    "message": "1 portefeuille a été synchronisé avec votre téléphone.",
+    "description": "Used when a single wallet was synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_plural": {
+    "message": "1 portefeuilles et $1 comptes importés ont été synchronisés avec votre téléphone.",
+    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
+  },
+  "add_device_success_desc_wallet_singular_imported_singular": {
+    "message": "1 portefeuille et 1 compte importé ont été synchronisés avec votre téléphone.",
+    "description": "Used when a single wallet and a single imported account were synced"
+  },
+  "add_device_success_title": {
+    "message": "Appareil appairé"
+  },
+  "add_device_syncing_desc": {
+    "message": "Envoi des comptes sélectionnés vers votre téléphone."
+  },
+  "add_device_syncing_title": {
+    "message": "Importation des comptes"
+  },
+  "add_device_try_again": {
+    "message": "Réessayer"
+  },
+  "add_device_validating_desc": {
+    "message": "Établissement d'une connexion sécurisée et chiffrée avec votre téléphone."
+  },
+  "add_device_validating_title": {
+    "message": "Appairage des appareils"
+  },
+  "add_wallets": {
+    "message": "Choisissez ce que vous souhaitez synchroniser"
+  },
+  "add_wallets_desc": {
+    "message": "Sélectionnez les portefeuilles et les comptes à importer sur votre téléphone. Vous pourrez modifier ce choix ultérieurement."
+  },
+  "added": {
+    "message": "Ajoutée"
+  },
   "addedProtectionDescription": {
     "message": "Vous interagissez avec une adresse inconnue. Cela permet d’éviter les transactions malveillantes."
   },
@@ -487,6 +1270,15 @@
   "addressMismatchPunycode": {
     "message": "Version Punycode : $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Altérées"
+  },
+  "addressPoisoningMessage": {
+    "message": "On dirait vraiment une adresse que vous avez déjà utilisée. Elle a peut-être été créée pour vous inciter à envoyer de l’argent au mauvais destinataire."
+  },
+  "addressPoisoningTitle": {
+    "message": "Empoisonnement d’adresse détecté"
   },
   "addressQrCodeModalDescription": {
     "message": "Utilisez cette adresse pour recevoir des jetons et des objets de collection sur $1",
@@ -830,8 +1622,20 @@
   "asset": {
     "message": "Actif"
   },
+  "assetActivate": {
+    "message": "Activer",
+    "description": "Primary button to activate an asset."
+  },
+  "assetActivateDescription": {
+    "message": "Activez $1 sur $2 pour commencer.",
+    "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
+  },
   "assetChartNoHistoricalPrices": {
     "message": "Nous n’avons pas pu récupérer de données historiques"
+  },
+  "assetInactive": {
+    "message": "Inactif",
+    "description": "Label for a trustline token the user imported but has not established an on-chain trustline for yet"
   },
   "assetOptions": {
     "message": "Options d’actifs"
@@ -842,21 +1646,9 @@
   "assetsDescription": {
     "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
   },
-  "asterdexReferralConfirmText": {
-    "message": "Oui, bénéficiez d’un cashback de 4 %",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
-  },
   "asterdexReferralSubtitle": {
     "message": "Obtenez 4 % de remise sur vos transactions avec un code de parrainage MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralSubtitle2": {
-    "message": "Bénéficiez d’un cashback de 4 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Ce cashback s’applique à tous vos futurs ordres de bourse, conformément aux $1 d’AsterDEX. MetaMask perçoit une commission.",
-    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "asterdexReferralTitle": {
-    "message": "Bénéficiez d’un cashback de 4 % sur AsterDEX",
-    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
@@ -908,9 +1700,6 @@
   },
   "back": {
     "message": "Retour"
-  },
-  "backToHome": {
-    "message": "Retour à la page d’accueil"
   },
   "backUpIncomplete": {
     "message": "Sauvegarde incomplète"
@@ -1049,6 +1838,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Fonctionnalité de base"
   },
+  "batchSell": {
+    "message": "Vente par lot"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Continuer avec ($1) jetons"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Continuer avec ($1) jeton"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "Vous n’avez pas de jetons ? Pas de problème. Découvrez et achetez des jetons pour les vendre par lot."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Obtenir de nouvelles cotations"
+  },
+  "batchSellHighRateAlert": {
+    "message": "Alerte de taux élevé"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "La vente par lot d’un jeton pourrait entraîner un taux plus élevé. Souhaitez-vous effectuer un échange à la place ?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "$1 jetons au maximum"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "Le montant minimum que vous recevrez si le prix change pendant le traitement de votre transaction, en fonction de votre tolérance au slippage. Il s’agit d’une estimation fournie par nos fournisseurs de liquidité. Le montant final peut différer."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Les frais de réseau dépendent du trafic sur le réseau et de la complexité de votre transaction."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Sélectionnez un stablecoin"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "Tous les jetons doivent être sur le même réseau."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Sélectionnez jusqu’à 5 jetons"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Votre transaction n’aboutira pas si la variation de prix dépasse le pourcentage de slippage."
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 jeton"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 jetons"
+  },
   "bestQuote": {
     "message": "Meilleure cotation"
   },
@@ -1149,6 +1986,9 @@
   "bridge": {
     "message": "Établir une passerelle"
   },
+  "bridgeAgain": {
+    "message": "Transférer à nouveau"
+  },
   "bridgeAllowSwappingOf": {
     "message": "Autoriser l’accès exact à $1 $2 sur $3 pour l’établissement d’une passerelle",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
@@ -1169,27 +2009,23 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Créer un compte Solana"
+  "bridgeDiscountBadgeDao": {
+    "message": "DAO"
   },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Pour échanger avec le réseau Solana, vous avez besoin d’un compte et d’une adresse de réception."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Vous devez d’abord avoir un compte Solana."
-  },
-  "bridgeDetailsTitle": {
-    "message": "Détails concernant la passerelle",
-    "description": "Title for the modal showing details about a bridge transaction."
+  "bridgeDiscountBadgePromo": {
+    "message": "Offre promotionnelle"
   },
   "bridgeEnterAmount": {
     "message": "Sélectionnez le montant"
   },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Consulter sur $1"
+  "bridgeExplorerPopupDescription": {
+    "message": "Cette transaction se déroule sur deux réseaux. Un lien indique la source, l’autre indique la destination une fois la transaction confirmée."
   },
   "bridgeFee": {
     "message": "Frais de passerelle"
+  },
+  "bridgeFeeDisclaimer": {
+    "message": "Comprend des frais MetaMask de $1 %"
   },
   "bridgeFromTo": {
     "message": "Établir une passerelle pour transférer $1 $2 vers $3",
@@ -1294,6 +2130,18 @@
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Avertissement d’impact sur les prix"
+  },
+  "bridgeQrHardwareSignDisplayStepTitle": {
+    "message": "Étape $1 sur $2 : scannez ce code QR avec votre portefeuille",
+    "description": "Title for the QR code display step in a QR hardware-wallet bridge/swap signing flow. The user scans the QR code shown in MetaMask with their wallet. $1 is the current step number and $2 is the total step count."
+  },
+  "bridgeQrHardwareSignLastStepTitle": {
+    "message": "Dernière étape : scannez le code QR affiché sur votre portefeuille",
+    "description": "Title for the final QR hardware-wallet signing page in a bridge/swap flow."
+  },
+  "bridgeQrHardwareSignStepTitle": {
+    "message": "Étape $1 sur $2 : scannez le code QR affiché sur votre portefeuille",
+    "description": "Title for the approval QR hardware-wallet signing page. $1 is the current step number and $2 is the total step count."
   },
   "bridgeQuoteStreamCompleteAmountTooHigh": {
     "message": "Aucun devis disponible. Essayez avec un montant inférieur."
@@ -1453,45 +2301,11 @@
   "bridgeSendLoading": {
     "message": "Envoi depuis la chaîne source"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Compte Solana créé"
-  },
-  "bridgeStatusComplete": {
-    "message": "Effectuée",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Échec",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "En cours de traitement",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 reçu sur $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Réception de $1 sur $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "A échangé $1 contre $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Échange de $1 contre $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspect"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Jeton suspect"
-  },
-  "bridgeTo": {
-    "message": "Établir une passerelle vers"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "Le $1 est un jeton malveillant."
@@ -1507,56 +2321,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Aucun jeton correspondant à vos critères de recherche : $1"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transaction $1 sur 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Passerelle établie"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Établissement d’une passerelle"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Contactez"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Assistance MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Cela fait-il plus de 3 heures ?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Statut"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Échangé"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Échanger"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Horodatage"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "Le $1 à $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 sur",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Total des frais de transaction"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Vous avez reçu"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Vous avez envoyé"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Utiliser le montant maximum autorisé"
@@ -1574,12 +2338,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Solde minimum de réserve en $1 requis",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Passerelle établie"
-  },
-  "bridgedToChain": {
-    "message": "Passerelle établie vers $1"
   },
   "bridging": {
     "message": "Établissement d’une passerelle"
@@ -1648,6 +2406,18 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Le symbole de ce jeton ne correspond pas au nom du réseau ou à l’ID de chaîne saisi. De nombreux jetons populaires utilisent des symboles similaires dont les escrocs peuvent se servir pour vous amener à leur envoyer un jeton de plus grande valeur en retour. Vérifiez toutes les informations avant de continuer."
   },
+  "chainlistLearnHowToStaySafe": {
+    "message": "Découvrez comment sécuriser votre compte.",
+    "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
+  },
+  "chainlistNetworkDataSourceBanner": {
+    "message": "Les données relatives aux réseaux proviennent de ChainList. Vérifiez-les toujours avant d’ajouter un réseau. $1",
+    "description": "Informational banner shown on the Add from ChainList screen. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistNetworkDetails": {
+    "message": "Symbole : $1 · ID : $2",
+    "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
   "changeInSettings": {
     "message": "Modifier dans les paramètres"
   },
@@ -1682,9 +2452,6 @@
   "clear": {
     "message": "Effacer"
   },
-  "clearActivity": {
-    "message": "Effacer les données d’activité et de nonce"
-  },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
@@ -1705,9 +2472,6 @@
     "message": "Fermer $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
-  "closeWindowAnytime": {
-    "message": "Vous pouvez fermer cette fenêtre à tout moment."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -1721,6 +2485,9 @@
   "communityContributedLanguagesSectionTitle": {
     "message": "Contribution de la communauté",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
+  "compareAddresses": {
+    "message": "Comparer les adresses"
   },
   "completed": {
     "message": "Terminé"
@@ -1915,6 +2682,9 @@
   "confirmTitleDescSign": {
     "message": "Vérifiez les détails de la demande avant de la confirmer."
   },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Ce site demande l’autorisation de révoquer vos autorisations de jetons."
+  },
   "confirmTitlePermission": {
     "message": "Demande d’autorisation"
   },
@@ -2108,6 +2878,9 @@
   "contractInteraction": {
     "message": "Interaction avec un contrat"
   },
+  "convertAgain": {
+    "message": "Effectuer une nouvelle conversion"
+  },
   "convertTokenToNFTDescription": {
     "message": "Nous avons détecté que cet actif est un NFT. MetaMask prend désormais nativement en charge les NFT. Voulez-vous le retirer de votre liste de jetons et l’ajouter en tant que NFT ?"
   },
@@ -2259,20 +3032,11 @@
   "customSlippage": {
     "message": "Personnaliser"
   },
-  "customToken": {
-    "message": "Jeton personnalisé"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Tout un chacun peut créer un jeton, y compris créer de fausses copies de jetons existants. En savoir plus sur $1"
   },
   "customerSupport": {
     "message": "assistance à la clientèle"
-  },
-  "customizeYourNotifications": {
-    "message": "Personnalisez vos notifications"
-  },
-  "customizeYourNotificationsText": {
-    "message": "Activez les types de notifications que vous souhaitez recevoir :"
   },
   "dappConnections": {
     "message": "Connexions aux dapps"
@@ -2326,6 +3090,9 @@
   "dateCreated": {
     "message": "Date de création"
   },
+  "day": {
+    "message": "Jour"
+  },
   "debitCreditPurchaseOptions": {
     "message": "Options d’achat par carte de débit ou de crédit"
   },
@@ -2334,9 +3101,6 @@
   },
   "decimal": {
     "message": "Nombre de décimales du jeton"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
   },
   "decrypt": {
     "message": "Décrypter"
@@ -2357,6 +3121,24 @@
   },
   "decryptRequest": {
     "message": "Décrypter la demande"
+  },
+  "deepLinkQrBatchSellDescription": {
+    "message": "La vente groupée est disponible sur l’application mobile MetaMask. Scannez ce code avec votre appareil mobile pour l’utiliser."
+  },
+  "deepLinkQrBatchSellTitle": {
+    "message": "Ouvrir la vente groupée sur mobile"
+  },
+  "deepLinkQrPredictDescription": {
+    "message": "Pour accéder aux marchés des prédictions de MetaMask, scannez le code QR avec votre appareil mobile."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Ouvrir les marchés de prédiction sur téléphone portable"
+  },
+  "deepLinkQrTrendingDescription": {
+    "message": "La fonctionnalité « Explorer » est disponible sur l’application mobile MetaMask. Scannez ce code avec votre appareil mobile pour l’utiliser."
+  },
+  "deepLinkQrTrendingTitle": {
+    "message": "Ouvrir la page « Explorer » sur mobile"
   },
   "deepLink_Caution": {
     "message": "Agissez avec prudence"
@@ -2407,6 +3189,9 @@
   "deepLink_theAssetPage": {
     "message": "la page des actifs"
   },
+  "deepLink_theBatchSellPage": {
+    "message": "la page des ventes groupées"
+  },
   "deepLink_theBuyPage": {
     "message": "la page d’achat"
   },
@@ -2415,6 +3200,9 @@
   },
   "deepLink_theHomePage": {
     "message": "la page d’accueil"
+  },
+  "deepLink_theMoneyPage": {
+    "message": "la page « Money »"
   },
   "deepLink_theMusdEducationPage": {
     "message": "la page d’information sur la conversion en MUSD"
@@ -2449,8 +3237,14 @@
   "deepLink_theTransactionShieldPage": {
     "message": "la page de protection des transactions"
   },
+  "deepLink_theTrendingPage": {
+    "message": "la page « Explorer »"
+  },
   "default": {
     "message": "Par défaut"
+  },
+  "defaultNetworks": {
+    "message": "Réseaux par défaut"
   },
   "defaultRpcUrl": {
     "message": "URL par défaut du RPC"
@@ -2467,17 +3261,16 @@
   "defiEmptyDescription": {
     "message": "Prêtez, empruntez et échangez, directement depuis votre portefeuille."
   },
+  "defiIcon": {
+    "message": "Icône DeFi"
+  },
   "defiReferralCheckboxLabel": {
     "message": "Autorisez MetaMask à ajouter un code de parrainage. Cette autorisation est permanente. Le site offre des réductions selon ses conditions générales. MetaMask perçoit une commission.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralNoThanks": {
-    "message": "Non, merci",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
   "defiReferralTerms": {
     "message": "conditions générales",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
+    "description": "The text for the partner terms link in the DeFi referral confirmation screen"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2566,15 +3359,14 @@
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Adresse de réception"
   },
-  "destinationTransactionIdLabel": {
-    "message": "ID Tx de destination",
-    "description": "Label for the destination transaction ID field."
-  },
   "details": {
     "message": "Détails"
   },
   "developerTools": {
     "message": "Outils pour les développeurs"
+  },
+  "disable": {
+    "message": "Désactiver"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé, car l’augmentation minimale de 10 % par rapport aux frais de gaz initiaux n’est pas respectée.",
@@ -2790,9 +3582,6 @@
   "enableAutoDetect": {
     "message": " Activer la détection automatique"
   },
-  "enableFromSettings": {
-    "message": " Activez-la depuis les paramètres."
-  },
   "enableSmartContractAccount": {
     "message": "Utilisez un compte intelligent"
   },
@@ -2809,9 +3598,6 @@
   "enabled": {
     "message": "Activé"
   },
-  "enabledNetworks": {
-    "message": "Réseaux activés"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 aimerait avoir votre clé publique de cryptage. En y consentant, ce site sera en mesure de vous composer des messages cryptés.",
     "description": "$1 is the web3 site name"
@@ -2822,9 +3608,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L’URL de RPC que vous avez saisie a renvoyé un ID de chaîne différent ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "enhancedTokenDetectionAlertMessage": {
-    "message": "La détection améliorée des jetons est actuellement disponible sur $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
     "message": "MetaMask vous permet de voir les domaines ENS dans la barre d’adresse de votre navigateur. Voici comment cela fonctionne :"
@@ -2885,6 +3668,31 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Saisir le mot de passe MetaMask"
+  },
+  "enter_verification_code": {
+    "message": "Saisissez le code de vérification"
+  },
+  "enter_verification_code_desc": {
+    "message": "Pour des raisons de sécurité, saisissez le code affiché dans l’application MetaMask sur votre appareil."
+  },
+  "enter_verification_code_error": {
+    "message": "Code incorrect. Veuillez réessayer."
+  },
+  "enter_verification_code_expired": {
+    "message": "Le code de vérification a expiré"
+  },
+  "enter_verification_code_expires_in": {
+    "message": "Expire dans $1 s",
+    "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_your_password": {
+    "message": "Saisissez votre mot de passe"
+  },
+  "enter_your_password_desc": {
+    "message": "Pour assurer la sécurité de votre compte, saisissez votre mot de passe pour afficher le code QR."
+  },
+  "enteredMalicious": {
+    "message": "L’adresse que vous avez saisie"
   },
   "errorCode": {
     "message": "Code : $1",
@@ -3002,6 +3810,9 @@
   },
   "exploreDefi": {
     "message": "Explorez la DeFi"
+  },
+  "exploreTokens": {
+    "message": "Explorer les jetons"
   },
   "exportYourData": {
     "message": "Exportez vos données"
@@ -3174,6 +3985,12 @@
   "gasPriceFetchFailed": {
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
   },
+  "gasSponsorshipModalTitle": {
+    "message": "Frais de réseau"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask prend en charge les frais de réseau liés à cette transaction. Cela inclut l'activation unique d'un compte intelligent."
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Ce réseau spécifique exige que vous mainteniez une réserve de $1 $2 sur votre compte.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -3235,6 +4052,14 @@
     "message": "Hebdomadaire",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "Toutes les fonctions de révocation pour les standards ERC-20, ERC-1155 et ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Date d’expiration",
     "description": "Label for the expiration date of a permission"
@@ -3254,6 +4079,13 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Octroi maximal",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "Facilitateur MetaMask x402"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Méthodes de révocation",
+    "description": "Label for the enabled token approval revocation methods"
   },
   "gatorPermissionsRevocationPending": {
     "message": "Révocation en attente",
@@ -3299,6 +4131,9 @@
   "generalDescription": {
     "message": "Synchronisez les paramètres entre différents appareils, sélectionnez les préférences réseau et suivez les données relatives aux jetons"
   },
+  "generateNewQrCode": {
+    "message": "Générer un nouveau code QR"
+  },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
   },
@@ -3312,21 +4147,9 @@
     "message": "Préparez votre portefeuille pour utiliser web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
-  "gmxReferralConfirmText": {
-    "message": "Oui, économisez 5 %",
-    "description": "Primary button label on the GMX referral confirmation screen"
-  },
   "gmxReferralSubtitle": {
     "message": "Économisez jusqu’à 5 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
-  },
-  "gmxReferralSubtitle2": {
-    "message": "Économisez 5 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Cette réduction s’applique à tous vos futurs ordres de bourse, conformément aux $1 de GMX. MetaMask perçoit une commission.",
-    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
-  },
-  "gmxReferralTitle": {
-    "message": "Économisez 5 % sur GMX",
-    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Accéder au site"
@@ -3346,6 +4169,62 @@
   "hardware": {
     "message": "Matériel"
   },
+  "hardwareAllSetTitle": {
+    "message": "Et voilà ",
+    "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
+  },
+  "hardwareAlmostThereTitle": {
+    "message": "Vous y êtes presque ! Confirmez à nouveau sur votre appareil",
+    "description": "Title shown when the user has signed all but the final signature on their hardware wallet."
+  },
+  "hardwareApproveAmount": {
+    "message": "Approuver $1 $2",
+    "description": "Label for the first hardware-wallet bridge signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareApprovedAmount": {
+    "message": "$1 $2 approuvés",
+    "description": "Label for a completed hardware-wallet bridge approval signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareDeviceDisconnected": {
+    "message": "Reconnectez votre appareil et réessayez",
+    "description": "Title shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareReconnectDevice": {
+    "message": "Reconnectez votre appareil pour continuer",
+    "description": "Description shown when a hardware wallet device disconnects during signing."
+  },
+  "hardwareRejected": {
+    "message": "Demande rejetée",
+    "description": "Label for a rejected hardware-wallet bridge signature."
+  },
+  "hardwareResendTransaction": {
+    "message": "Renvoyer la transaction",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
+  "hardwareSendAmount": {
+    "message": "Envoyer $1 $2",
+    "description": "Label for a pending hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSendingAmount": {
+    "message": "Envoi de $1 $2",
+    "description": "Label for the active hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSentAmount": {
+    "message": "$1 $2 envoyés",
+    "description": "Label for a submitted hardware-wallet bridge send signature. $1 is the token amount and $2 is the token symbol."
+  },
+  "hardwareSpender": {
+    "message": "Dépenseur : $1",
+    "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
+  },
+  "hardwareToAddress": {
+    "message": "Vers : $1",
+    "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareTransactionRejected": {
+    "message": "Vous avez rejeté cette transaction sur votre appareil",
+    "description": "Title shown after a hardware-wallet bridge transaction is rejected on the device."
+  },
   "hardwareWalletConnected": {
     "message": "Portefeuille matériel connecté"
   },
@@ -3353,7 +4232,8 @@
     "message": "Continuer"
   },
   "hardwareWalletErrorReconnectButton": {
-    "message": "Reconnecter"
+    "message": "Reconnectez-vous et réessayez",
+    "description": "Button label shown when a hardware wallet is disconnected during signing."
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Assurez-vous que votre portefeuille matériel est correctement connecté via USB"
@@ -3412,6 +4292,39 @@
   "hardwareWalletLookingForDevice": {
     "message": "À la recherche de votre $1…",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "Détection de l’appareil en cours…"
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "Appareil non détecté. Vérifiez les étapes précédentes et réessayez."
+  },
+  "hardwareWalletRepairLink": {
+    "message": "Recommencer la connexion depuis le début"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Autorisez MetaMask à :"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "Assurez-vous que le câble USB est bien connecté à votre appareil et à votre ordinateur. Essayez un autre port USB ou un autre câble."
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "Vérifiez la connexion USB"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "Saisissez votre code PIN pour déverrouiller votre portefeuille matériel."
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "Déverrouillez votre appareil"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "Votre appareil a été reconnecté avec succès. Vous pouvez fermer cet onglet."
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "Appareil connecté"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "Connecter l’appareil matériel"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Assurez-vous que votre $1 est branché et sélectionnez l'application Ethereum."
@@ -3535,27 +4448,31 @@
   "holdToRevealUnlockedLabel": {
     "message": "appuyez longuement pour révéler le cercle déverrouillé"
   },
+  "home": {
+    "message": "Accueil",
+    "description": "Label for the Home tab in the bottom navigation bar"
+  },
   "honeypotDescription": {
     "message": "Ce jeton peut présenter un risque d’arnaque au pot de miel. Il est conseillé de faire preuve de diligence raisonnable avant d’interagir ce jeton afin d’éviter toute perte financière potentielle."
   },
   "honeypotTitle": {
     "message": "Pot de miel"
   },
-  "hyperliquidReferralConfirmText": {
-    "message": "Oui, économisez 4 %",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Appliquer un code de parrainage MetaMask à toutes les transactions futures selon les $1 de Hyperliquid. MetaMask perçoit une commission.",
+    "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
   },
   "hyperliquidReferralSubtitle": {
     "message": "Économisez jusqu’à 4 % sur vos ordres de bourse avec un code de parrainage MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "hyperliquidReferralSubtitle2": {
-    "message": "Économisez 4 % sur vos ordres de bourse en utilisant un code de parrainage MetaMask. Cette réduction s’applique à tous vos futurs ordres de bourse, conformément aux $1 de Hyperliquid. MetaMask perçoit une commission.",
-    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+    "message": "Économisez 4 % sur vos transactions grâce à un code de parrainage MetaMask.",
+    "description": "The subtitle of the redesigned Hyperliquid referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "Économisez 4 % sur Hyperliquid",
-    "description": "Title of the Hyperliquid referral confirmation screen"
+    "description": "The title of the redesigned Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Je comprends"
@@ -3625,15 +4542,6 @@
   "importSecretRecoveryPhrase": {
     "message": "Importer la phrase secrète de récupération"
   },
-  "importTokenQuestion": {
-    "message": "Importer un jeton ?"
-  },
-  "importTokenWarning": {
-    "message": "Tout un chacun peut créer un jeton avec n’importe quel nom, y compris de fausses versions de jetons existants. Ajoutez et échangez avec prudence !"
-  },
-  "importTokensCamelCase": {
-    "message": "Importer des jetons"
-  },
   "importTokensError": {
     "message": "Impossible d’importer les jetons. Veuillez ressayer plus tard."
   },
@@ -3644,6 +4552,9 @@
   "imported": {
     "message": "Importés",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includesSmartAccountActivation": {
+    "message": "Comprend l'activation d'un compte intelligent"
   },
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
@@ -3820,6 +4731,9 @@
   "knownAddressRecipient": {
     "message": "Adresse contractuelle connue."
   },
+  "knownSafeAddress": {
+    "message": "Adresse connue"
+  },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
   },
@@ -3883,6 +4797,54 @@
   "ledgerConnectionInstructionStepThree": {
     "message": "Assurez-vous que votre dispositif Ledger est branché et sélectionnez l'application Ethereum."
   },
+  "ledgerConnectionStatusAppClosedDescription": {
+    "message": "Veuillez l’ouvrir sur votre appareil Ledger pour continuer"
+  },
+  "ledgerConnectionStatusAppClosedTitle": {
+    "message": "L’application Ethereum est fermée"
+  },
+  "ledgerConnectionStatusDeviceFoundTitle": {
+    "message": "Appareil Ledger trouvé"
+  },
+  "ledgerConnectionStatusDeviceLockedDescription": {
+    "message": "Veuillez déverrouiller votre appareil Ledger pour continuer"
+  },
+  "ledgerConnectionStatusDeviceLockedTitle": {
+    "message": "Ledger est verrouillé"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepOpenEthApp": {
+    "message": "Installez et ouvrez l’application Ethereum"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepPlugIn": {
+    "message": "Branchez votre appareil Ledger à l’ordinateur"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepRetry": {
+    "message": "Essayez de vous reconnecter"
+  },
+  "ledgerConnectionStatusDeviceNotFoundStepUnlock": {
+    "message": "Déverrouillez votre appareil Ledger"
+  },
+  "ledgerConnectionStatusDeviceNotFoundTitle": {
+    "message": "Appareil introuvable"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveDescription": {
+    "message": "Veuillez déconnecter puis reconnecter votre appareil"
+  },
+  "ledgerConnectionStatusDeviceUnresponsiveTitle": {
+    "message": "L’appareil Ledger ne répond pas"
+  },
+  "ledgerConnectionStatusGenericErrorDescription": {
+    "message": "Vérifiez que votre appareil Ledger est configuré avec la phrase secrète de récupération ou la clé privée du compte sélectionné"
+  },
+  "ledgerConnectionStatusGenericErrorTitle": {
+    "message": "Une erreur s’est produite"
+  },
+  "ledgerConnectionStatusSearchingDescription": {
+    "message": "Veuillez patienter pendant que nous recherchons votre appareil…"
+  },
+  "ledgerConnectionStatusSearchingTitle": {
+    "message": "Recherche de votre appareil"
+  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Il est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre application déjà connectée à celui-ci, puis essayez de vous reconnecter."
   },
@@ -3928,9 +4890,6 @@
   },
   "lightTheme": {
     "message": "Clair"
-  },
-  "likeToImportToken": {
-    "message": "Voulez-vous importer ce jeton ?"
   },
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
@@ -4003,6 +4962,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "La session a expiré"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Mettre Telegram à jour"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Nous n’avons pas pu nous connecter à Telegram. Cela se produit généralement lorsque votre application Telegram n’est plus à jour. Veuillez la mettre à jour et réessayer."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Connexion impossible avec Telegram"
+  },
   "logo": {
     "message": "logo $1",
     "description": "$1 is the name of the ticker"
@@ -4016,6 +4984,10 @@
   },
   "lowLowercase": {
     "message": "faible"
+  },
+  "lowValueAssets": {
+    "message": "Jetons de faible valeur ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Réseau principal Ethereum"
@@ -4142,7 +5114,7 @@
     "message": "Commission MetaMask"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Les notifications du portefeuille ne sont actuellement pas activées."
+    "message": "Activer les notifications"
   },
   "metamaskSwap": {
     "message": "Swap MetaMask"
@@ -4196,6 +5168,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
+  },
+  "mmFee": {
+    "message": "Frais MetaMask de $1 %"
   },
   "month": {
     "message": "mois"
@@ -4419,10 +5394,6 @@
     "message": "Détails du bonus pouvant être réclamé",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Convertir des $1 en mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Détails du bonus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -4486,9 +5457,6 @@
   },
   "musdTermsApply": {
     "message": "Des conditions s’appliquent."
-  },
-  "mustSelectOne": {
-    "message": "Vous devez sélectionner au moins 1 jeton."
   },
   "name": {
     "message": "Nom"
@@ -4728,9 +5696,6 @@
   "networksSmallCase": {
     "message": "réseaux"
   },
-  "nevermind": {
-    "message": "J’ai changé d’avis"
-  },
   "new": {
     "message": "Nouveau!"
   },
@@ -4752,7 +5717,7 @@
     "message": "« $1 » a été ajouté avec succès !"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Paramètres > Sécurité et confidentialité"
+    "message": "Paramètres > Actifs"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Pour afficher vos NFT en utilisant Opensea, activez l’option « Afficher les supports NFT » dans $1.",
@@ -4785,9 +5750,6 @@
   "newPrivacyPolicyTitle": {
     "message": "Nous avons mis à jour notre politique de confidentialité"
   },
-  "newRpcUrl": {
-    "message": "Nouvelle URL de RPC"
-  },
   "newTokensImportedMessage": {
     "message": "Vous avez importé avec succès $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -4811,14 +5773,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Détection automatique des NFT activée"
   },
-  "nftBought": {
-    "message": "A acheté $1"
-  },
   "nftEmptyDescription": {
     "message": "Le monde des NFT s’offre à vous. Commencez votre collection dès aujourd’hui."
-  },
-  "nftMinted": {
-    "message": "A minté $1"
   },
   "nftOptions": {
     "message": "Options NFT"
@@ -4883,6 +5839,9 @@
   "noOptionsAvailableMessage": {
     "message": "Ce moyen d’échange n’est pas disponible pour le moment. Essayez de modifier le montant, le réseau ou le jeton et nous vous trouverons la meilleure option."
   },
+  "noQuoteAvailable": {
+    "message": "Aucune cotation disponible"
+  },
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
@@ -4921,9 +5880,6 @@
   },
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
-  },
-  "notEnoughGas": {
-    "message": "Pas assez de gaz"
   },
   "notificationDetail": {
     "message": "Détails"
@@ -5030,6 +5986,9 @@
   "notificationItemUnStakingRequested": {
     "message": "Déstaking demandé"
   },
+  "notificationSettings": {
+    "message": "Paramètres de notification"
+  },
   "notificationTransactionFailedMessage": {
     "message": "La transaction $1 a échoué ! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -5084,14 +6043,65 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Vous n’avez pas encore reçu de notifications."
   },
+  "notificationsSettingsAgenticCliDescription": {
+    "message": "Demandes de connexion CLI, autorisations et mises à jour de session pour Agentic"
+  },
+  "notificationsSettingsAgenticCliTitle": {
+    "message": "CLI Agentic"
+  },
   "notificationsSettingsBoxError": {
     "message": "Un problème est survenu, veuillez réessayer."
   },
+  "notificationsSettingsDeselectAll": {
+    "message": "Tout désélectionner"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "Intégrée"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "En activant l’option, vous acceptez de recevoir des informations sur les produits et des actualités marketing de la part de MetaMask."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Mises à jour de produits, annonces de nouvelles fonctionnalités et lancements de nouveaux produits"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Mises à jour et récompenses"
+  },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications. Pour activer les notifications, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1 nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
+    "message": "Choisissez les notifications à recevoir et le mode de transmission."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Découvrir comment"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Évolution des positions sur les contrats à terme perpétuels, liquidations, taux de financement et mises à jour de marges"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Activité de trading"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Comptes"
+  },
+  "notificationsSettingsSelectAccountsDescription": {
+    "message": "Choisissez les comptes pour lesquels vous souhaitez recevoir des notifications."
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "Intégrée"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Achats, ventes, transferts, échanges et récompenses"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Activité du portefeuille"
   },
   "numberOfTokens": {
     "message": "Nombre de jetons"
@@ -5258,6 +6268,9 @@
   "openWallet": {
     "message": "Ouvrir le portefeuille"
   },
+  "opensInNewTab": {
+    "message": "s’ouvre dans un nouvel onglet"
+  },
   "options": {
     "message": "Options"
   },
@@ -5285,6 +6298,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Autres autorisations sur ce site"
+  },
+  "otherQrWallet": {
+    "message": "Autre portefeuille QR"
   },
   "otherSnaps": {
     "message": "autres Snaps",
@@ -5856,6 +6872,9 @@
     "message": "Disponible pour le trading",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBalance": {
+    "message": "Solde des contrats à terme"
+  },
   "perpsBasicFunctionalityOff": {
     "message": "Cette fonctionnalité n’est pas disponible lorsque les fonctionnalités de base sont désactivées."
   },
@@ -5885,6 +6904,12 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
+  },
+  "perpsCloseAllDescription": {
+    "message": "Nous fermerons toutes vos positions ouvertes au prix actuel du marché."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Fermer toutes les positions"
   },
   "perpsCloseAmount": {
     "message": "Montant à clôturer"
@@ -5919,14 +6944,14 @@
   "perpsCrossMarginNotSupportedTitle": {
     "message": "Marge croisée non prise en charge"
   },
+  "perpsCurrentPrice": {
+    "message": "Prix actuel"
+  },
   "perpsDateToday": {
     "message": "Aujourd’hui"
   },
   "perpsDateYesterday": {
     "message": "Hier"
-  },
-  "perpsDepositActivityTitle": {
-    "message": "Contrats à terme perpétuels financés"
   },
   "perpsDepositErrorBridgeFailed": {
     "message": "Échec de la passerelle"
@@ -5993,6 +7018,18 @@
   "perpsFees": {
     "message": "Frais"
   },
+  "perpsFeesTooltipHyperliquidFee": {
+    "message": "Commission Hyperliquid",
+    "description": "Label for the Hyperliquid protocol fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipMetamaskFee": {
+    "message": "Commission MetaMask",
+    "description": "Label for the MetaMask fee rate in the Perps order summary fees tooltip"
+  },
+  "perpsFeesTooltipProviderFee": {
+    "message": "Commission du fournisseur",
+    "description": "Fallback label for the protocol fee rate in the Perps order summary fees tooltip"
+  },
   "perpsFilterAll": {
     "message": "Tous"
   },
@@ -6002,14 +7039,26 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Forex"
+  },
+  "perpsFilterIndex": {
+    "message": "Indice"
   },
   "perpsFilterNew": {
     "message": "Nouveau"
   },
+  "perpsFilterPreIpo": {
+    "message": "Pré-IPO"
+  },
   "perpsFilterStocks": {
     "message": "Actions"
+  },
+  "perpsFundAgain": {
+    "message": "Réapprovisionner le compte"
   },
   "perpsFunding": {
     "message": "Approvisionnement"
@@ -6037,6 +7086,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Marge insuffisante pour passer cet ordre."
+  },
+  "perpsKeepPositions": {
+    "message": "Conserver les positions"
   },
   "perpsLearnBasics": {
     "message": "Apprenez les bases des contrats perpétuels"
@@ -6072,6 +7124,10 @@
   "perpsLiquidationPrice": {
     "message": "Prix de liquidation"
   },
+  "perpsLiquidationPriceTooltip": {
+    "message": "Si le cours atteint ce prix, vos positions seront liquidées et vous perdrez votre marge. Un effet de levier plus élevé augmente ce risque.",
+    "description": "Tooltip content for the liquidation price row on the Perps order summary"
+  },
   "perpsLong": {
     "message": "Acheter"
   },
@@ -6080,6 +7136,10 @@
   },
   "perpsMarginRiskWarning": {
     "message": "La suppression de la marge rapproche votre position du prix de liquidation. Veillez à maintenir une marge de sécurité suffisante."
+  },
+  "perpsMarginTooltip": {
+    "message": "La marge est la somme d’argent que vous immobilisez pour ouvrir une position. Elle sert de garantie et correspond au montant maximal que vous pouvez perdre sur la position.",
+    "description": "Tooltip content for the margin row on the Perps order summary"
   },
   "perpsMarket": {
     "message": "Marché"
@@ -6163,6 +7223,10 @@
   "perpsOrders": {
     "message": "Ordres"
   },
+  "perpsPerpMarketSubtitle": {
+    "message": "$1-$2 perp",
+    "description": "$1 is the market ticker (e.g. BTC), $2 is the collateral asset (e.g. USDC). Shown as the market pair subtitle on the perps market detail header, e.g. 'BTC-USDC perp'."
+  },
   "perpsPnl": {
     "message": "Résultat"
   },
@@ -6231,8 +7295,45 @@
   "perpsSize": {
     "message": "Taille"
   },
+  "perpsSlippage": {
+    "message": "Slippage/effet de glissement"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Votre transaction ne sera pas validée si le prix dépasse ce seuil."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Définir le slippage"
+  },
+  "perpsSlippageCustom": {
+    "message": "Personnalisé"
+  },
+  "perpsSlippageEditAriaLabel": {
+    "message": "Ajuster l’effet de glissement maximal"
+  },
   "perpsSlippageExceeded": {
     "message": "Slippage dépassé. Ajustez votre tolérance au slippage et réessayez."
+  },
+  "perpsSlippageExceedsMax": {
+    "message": "L’effet de glissement estimé ($1 %) dépasse votre effet de glissement maximal ($2 %). Augmentez le plafond ou réduisez le volume de l’ordre.",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Pourcentage maximal de slippage"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "Saisissez une valeur comprise entre $1 % et $2 %",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "Estimation : $1 % / Max. : $2 %",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "Estimation : – / Max. : $1 %",
+    "description": "$1 is max slippage percent"
+  },
+  "perpsSlippageSet": {
+    "message": "Définir"
   },
   "perpsSortByFundingRate": {
     "message": "Taux de financement"
@@ -6322,6 +7423,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Commande annulée",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Échec de la fermeture de toutes les positions",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Fermeture de toutes les positions",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "$1 position(s) sur $2 fermée(s)",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "Toutes les positions ont été fermées",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Échec de la fermeture de la position",
@@ -6493,10 +7610,6 @@
   },
   "perpsWithdraw": {
     "message": "Retirer"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Retrait du compte de trading de contrats à terme perpétuels",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
@@ -6691,9 +7804,6 @@
   "proceedWithTransaction": {
     "message": "Je veux tout de même continuer"
   },
-  "productAnnouncements": {
-    "message": "Annonces de produits"
-  },
   "provide": {
     "message": "Fournir"
   },
@@ -6883,6 +7993,21 @@
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrCodeExpired": {
+    "message": "Le code QR a expiré"
+  },
+  "qrCodeExpiresIn": {
+    "message": "Expire dans $1 s",
+    "description": "$1 is the number of seconds remaining before the QR code expires"
+  },
+  "qrErrorMismatchedTransactionBody": {
+    "message": "Ce code QR concerne une autre transaction. Annulez l’opération et réessayez, en veillant à scanner d’abord le code QR affiché dans MetaMask avec votre portefeuille matériel.",
+    "description": "Body text when a signature QR belongs to a previous transaction."
+  },
+  "qrErrorMismatchedTransactionTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when a signature QR belongs to a different transaction."
+  },
   "qrErrorNonUrPairingBody": {
     "message": "Retournez sur votre portefeuille matériel et trouvez l’option permettant de partager ou d’exporter vos comptes, choisissez MetaMask, puis scannez le code QR.",
     "description": "Body text for the non-UR QR code error during pairing."
@@ -6923,6 +8048,14 @@
     "message": "Code QR incorrect",
     "description": "Title shown when the UR type does not match what is expected during signing."
   },
+  "qrHardwareScanSignatureFinal": {
+    "message": "Scannez le dernier code QR",
+    "description": "Button label for scanning the final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrHardwareScanSignatureNext": {
+    "message": "Scannez le code QR suivant",
+    "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
   "queued": {
     "message": "En attente"
   },
@@ -6931,6 +8064,9 @@
   },
   "quotedTotalCost": {
     "message": "Coût total : $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Aucun jeton disponible"
   },
   "rank": {
     "message": "Rang"
@@ -6988,6 +8124,9 @@
   },
   "redeemer": {
     "message": "Racheteur"
+  },
+  "redeemers": {
+    "message": "Utilisateurs"
   },
   "redeposit": {
     "message": "Déposer à nouveau"
@@ -7141,9 +8280,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "L’opération a été effectuée avec succès."
   },
-  "retryTransaction": {
-    "message": "Retenter la transaction"
-  },
   "reusedTokenNameWarning": {
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },
@@ -7197,10 +8333,6 @@
   },
   "revokePermission": {
     "message": "Retirer l'autorisation"
-  },
-  "revokePermissionTitle": {
-    "message": "Révoquer l’autorisation de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vous allez retirer à quelqu’un l’autorisation de dépenser des jetons depuis votre compte."
@@ -7339,6 +8471,10 @@
     "message": "Connexion en cours…",
     "description": "Text shown while the user is signing in to view their rewards points"
   },
+  "rewardsVipReferralTagLabel": {
+    "message": "VIP",
+    "description": "Label on the gold VIP tag shown next to a VIP referral code"
+  },
   "rpcNameOptional": {
     "message": "Nom du RPC (facultatif)"
   },
@@ -7351,11 +8487,114 @@
   "save": {
     "message": "Sauvegarder"
   },
+  "scamQuestionnaireContinue": {
+    "message": "Continuer"
+  },
+  "scamQuestionnaireHeaderTitle": {
+    "message": "Contrôle de sécurité"
+  },
+  "scamQuestionnaireQ1No": {
+    "message": "Non, je connais cette personne dans la vie réelle"
+  },
+  "scamQuestionnaireQ1Subtitle": {
+    "message": "Cela inclut les applications de rencontre, les réseaux sociaux et les discussions de groupe, même si vous avez déjà discuté par visioconférence."
+  },
+  "scamQuestionnaireQ1Title": {
+    "message": "Est-ce qu’une personne que vous ne connaissez qu’en ligne vous a demandé d’envoyer cet argent ?"
+  },
+  "scamQuestionnaireQ1Yes": {
+    "message": "Oui, une personne que j’ai rencontrée en ligne m’a demandé d’envoyer cet argent"
+  },
+  "scamQuestionnaireQ2GoodsSubtitle": {
+    "message": "Payer un commerçant pour un bien ou un service que je reçois"
+  },
+  "scamQuestionnaireQ2GoodsTitle": {
+    "message": "Acheter des biens ou des services"
+  },
+  "scamQuestionnaireQ2GovernmentSubtitle": {
+    "message": "Amendes, impôts ou frais administratifs à régler en crypto-monnaie"
+  },
+  "scamQuestionnaireQ2GovernmentTitle": {
+    "message": "Payer des amendes à la police ou à une administration"
+  },
+  "scamQuestionnaireQ2HelpingSubtitle": {
+    "message": "Envoyer de l’argent à un partenaire, un membre de la famille ou un ami dans le besoin"
+  },
+  "scamQuestionnaireQ2HelpingTitle": {
+    "message": "Aider un proche"
+  },
+  "scamQuestionnaireQ2InvestmentSubtitle": {
+    "message": "Acheter des crypto-monnaies ou des jetons, ou profiter d’une opportunité financière"
+  },
+  "scamQuestionnaireQ2InvestmentTitle": {
+    "message": "Investissement"
+  },
+  "scamQuestionnaireQ2JobSubtitle": {
+    "message": "Frais d’inscription, équipement ou rémunération pour des tâches"
+  },
+  "scamQuestionnaireQ2JobTitle": {
+    "message": "Une opportunité d’emploi ou liée au travail"
+  },
+  "scamQuestionnaireQ2SelfTransferSubtitle": {
+    "message": "Transfert de fonds vers mon propre compte ou vers une solution de stockage déconnectée"
+  },
+  "scamQuestionnaireQ2SelfTransferTitle": {
+    "message": "Transfert de fonds entre mes propres portefeuilles"
+  },
+  "scamQuestionnaireQ2Subtitle": {
+    "message": "Choisissez l’option qui décrit le mieux ce paiement."
+  },
+  "scamQuestionnaireQ2Title": {
+    "message": "À quelle fin ce paiement est-il destiné ?"
+  },
+  "scamQuestionnaireQ3No": {
+    "message": "Non, j’agis seul"
+  },
+  "scamQuestionnaireQ3Subtitle": {
+    "message": "Cela peut se faire par téléphone, par visioconférence ou via le partage d’écran."
+  },
+  "scamQuestionnaireQ3Title": {
+    "message": "Quelqu’un vous aide-t-il à effectuer cette transaction ?"
+  },
+  "scamQuestionnaireQ3Yes": {
+    "message": "Oui, quelqu’un est en train de m’expliquer les étapes en ce moment même"
+  },
+  "scamQuestionnaireSelectAnswer": {
+    "message": "Sélectionnez une réponse"
+  },
+  "scamQuestionnaireWarningContactSupport": {
+    "message": "Contacter le service d’assistance"
+  },
+  "scamQuestionnaireWarningProceedAnyway": {
+    "message": "Ignorer les risques et continuer quand même"
+  },
+  "scamQuestionnaireWarningProceedAnywayCountdown": {
+    "message": "Continuer quand même dans $1 s",
+    "description": "$1 is the number of seconds remaining before the user can continue"
+  },
+  "scamQuestionnaireWarningReasonIrreversibleDetail": {
+    "message": "Une fois l’envoi effectué, vos fonds ne peuvent plus être récupérés."
+  },
+  "scamQuestionnaireWarningReasonIrreversibleEmphasis": {
+    "message": "Les transferts de crypto-monnaies sont irréversibles."
+  },
+  "scamQuestionnaireWarningReasonKnownScam": {
+    "message": "D’après vos réponses et les antécédents de ce destinataire, cette transaction pourrait être une arnaque."
+  },
+  "scamQuestionnaireWarningStopPayment": {
+    "message": "Annuler ce paiement"
+  },
+  "scamQuestionnaireWarningTitle": {
+    "message": "Vous pourriez être victime d’une arnaque en ce moment même"
+  },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"
   },
   "scanQrCode": {
     "message": "Scannez le code QR"
+  },
+  "scan_qr_code_desc": {
+    "message": "Scannez ce code à l’aide de l’application MetaMask sur l’appareil que vous souhaitez ajouter."
   },
   "scrollDown": {
     "message": "Faites défiler vers le bas"
@@ -7368,6 +8607,9 @@
   },
   "searchForAnAssetToSend": {
     "message": "Rechercher un actif à envoyer"
+  },
+  "searchNetworkNameOrChainId": {
+    "message": "Rechercher un nom de réseau ou un ID de chaîne"
   },
   "searchNetworks": {
     "message": "Rechercher des réseaux"
@@ -7384,6 +8626,9 @@
   "searchYourAccounts": {
     "message": "Recherchez vos comptes",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
+  "searchingForBestQuotes": {
+    "message": "Recherche des meilleures cotations"
   },
   "second": {
     "message": "s"
@@ -7520,11 +8765,25 @@
   "selectedAccountMismatch": {
     "message": "Compte différent sélectionné"
   },
+  "sellAll": {
+    "message": "Tout vendre"
+  },
   "send": {
     "message": "Envoyer"
   },
+  "sendAlertNewAddressMessage": {
+    "message": "C'est la première fois que vous effectuez un envoi vers cette adresse. Vérifiez qu'elle est correcte avant de continuer : $1",
+    "description": "$1 is the recipient address"
+  },
+  "sendAlertNewAddressTitle": {
+    "message": "Nouvelle adresse"
+  },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
+  },
+  "sendBundleHwGasPayment": {
+    "message": "Paiement des frais de réseau avec $1",
+    "description": "$1 is the symbol of the token being used to pay the network fee"
   },
   "sendSelectReceiveAsset": {
     "message": "Sélectionnez l’actif que vous recevrez"
@@ -7545,14 +8804,6 @@
   "sent": {
     "message": "Envoyé"
   },
-  "sentSpecifiedTokens": {
-    "message": "A envoyé $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "A échangé des $1 contre des $2 et les a envoyés",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
@@ -7561,10 +8812,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Demande de retrait"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Approuver $1 sans limite de dépenses",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configurer",
@@ -8268,9 +9515,6 @@
   "sign": {
     "message": "Signer"
   },
-  "signatureRequest": {
-    "message": "Demande de signature"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Le NFT sera affiché dans votre portefeuille si l’offre est acceptée."
   },
@@ -8436,24 +9680,6 @@
   },
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
-  },
-  "smartTransactionCancelled": {
-    "message": "Votre transaction a été annulée"
-  },
-  "smartTransactionCancelledDescription": {
-    "message": "Votre transaction n’a pas pu être finalisée, elle a donc été annulée pour vous éviter de payer inutilement des frais de gaz."
-  },
-  "smartTransactionError": {
-    "message": "Votre transaction a échoué"
-  },
-  "smartTransactionErrorDescription": {
-    "message": "Des changements soudains sur le marché peuvent entraîner des échecs de transaction. Si le problème persiste, contactez le service d’assistance à la clientèle de MetaMask."
-  },
-  "smartTransactionPending": {
-    "message": "Votre transaction a été soumise"
-  },
-  "smartTransactionSuccess": {
-    "message": "Votre transaction a été finalisée"
   },
   "smartTransactions": {
     "message": "Transactions intelligentes"
@@ -8688,6 +9914,18 @@
   "speedUpTransactionTitle": {
     "message": "Accélérer la transaction"
   },
+  "spendableBalance": {
+    "message": "Disponible"
+  },
+  "spendableBalanceBaseReserved": {
+    "message": "Réservé (bloqué)"
+  },
+  "spendableBalanceFiatValue": {
+    "message": "Valeur"
+  },
+  "spendableBalanceTotalBalance": {
+    "message": "Solde total"
+  },
   "spender": {
     "message": "Dépenseur"
   },
@@ -8759,6 +9997,19 @@
   "srpPasteTip": {
     "message": "Vous pouvez coller toute votre phrase de récupération secrète dans n’importe quel champ",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Des pirates de $1, tentent de vous piéger en vous demandant de leur communiquer votre phrase secrète de récupération. Quiconque dispose de cette phrase peut voler tout le contenu de votre portefeuille.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Retour à la sécurité"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Vous pourriez être victime d’une arnaque en ce moment même"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Danger"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Commencer"
@@ -8847,6 +10098,9 @@
   "standardAccountLabel": {
     "message": "Compte standard"
   },
+  "start_with_new_qr_code": {
+    "message": "Commencer avec un nouveau code QR"
+  },
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
@@ -8903,6 +10157,18 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "Une erreur s’est produite lors de l’ajout de cette « trustline ». Veuillez réessayer.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Une erreur s’est produite lors de la suppression de cette « trustline ». Veuillez réessayer.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
+    "message": "Il vous reste $1 $2 dans ce portefeuille. Vous devez transférer ou échanger la totalité de ce montant avant de désactiver cet actif sur Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "Toujours en cours de connexion à $1…",
@@ -9015,6 +10281,9 @@
   "swapAdjustSlippage": {
     "message": "Ajuster l’effet de glissement"
   },
+  "swapAgain": {
+    "message": "Échanger à nouveau"
+  },
   "swapAggregator": {
     "message": "Agrégateur"
   },
@@ -9055,10 +10324,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "Échange décentralisé"
-  },
-  "swapDetailsTitle": {
-    "message": "Détails du swap",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Contrat direct"
@@ -9264,10 +10529,6 @@
   "swapTokenNotAvailable": {
     "message": "Impossible d’échanger ce jeton dans cette région"
   },
-  "swapTokenToToken": {
-    "message": "Swap de $1 vers $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Échanger des jetons"
   },
@@ -9332,6 +10593,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Le symbole doit comporter 11 caractères ou moins."
   },
+  "syncAccounts": {
+    "message": "Synchroniser avec le mobile"
+  },
   "syncing": {
     "message": "Synchronisation..."
   },
@@ -9361,9 +10625,6 @@
   },
   "termsOfUseTitle": {
     "message": "Nos conditions d’utilisation ont été mises à jour"
-  },
-  "testNetworks": {
-    "message": "Réseaux de test"
   },
   "testnets": {
     "message": "Testnets"
@@ -9408,9 +10669,6 @@
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
   },
-  "tokenContractError": {
-    "message": "Cette adresse est une adresse de contrat de jetons. Si vous envoyez des jetons à cette adresse, vous les perdrez."
-  },
   "tokenContractWarning": {
     "message": "Avertissement concernant le contrat de jetons"
   },
@@ -9420,9 +10678,6 @@
   },
   "tokenDecimal": {
     "message": "Nombre de décimales du jeton"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "La décimale du jeton est requise. Trouvez-la sur : $1"
   },
   "tokenDetails": {
     "message": "Détails du jeton"
@@ -9481,11 +10736,17 @@
   "total": {
     "message": "Total"
   },
+  "totalAmount": {
+    "message": "Montant total"
+  },
+  "totalReceived": {
+    "message": "Total reçu"
+  },
   "totalVolume": {
     "message": "Volume total"
   },
   "transaction": {
-    "message": "transaction"
+    "message": "Transaction"
   },
   "transactionConfirmed": {
     "message": "La transaction a été confirmée"
@@ -9532,6 +10793,9 @@
   "transactionHistoryTotalGasFee": {
     "message": "Montant total des frais de gaz"
   },
+  "transactionIdCopied": {
+    "message": "ID de transaction copié"
+  },
   "transactionIdLabel": {
     "message": "ID de transaction",
     "description": "Label for the source transaction ID field."
@@ -9547,10 +10811,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction soumise"
-  },
-  "transactionTotalGasFee": {
-    "message": "Montant total des frais de gaz",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
@@ -9573,6 +10833,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suite Desktop est nécessaire pour utiliser Trezor. Veuillez installer et ouvrir Trezor Suite (suite.trezor.io), puis réessayer.",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "Bande passante"
@@ -9656,29 +10920,8 @@
   "turnOn": {
     "message": "Activer"
   },
-  "turnOnMetamaskNotifications": {
-    "message": "Activer les notifications"
-  },
-  "turnOnMetamaskNotificationsButton": {
-    "message": "Activer"
-  },
   "turnOnMetamaskNotificationsError": {
     "message": "Une erreur s’est produite lors de la création des notifications. Veuillez réessayer plus tard."
-  },
-  "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Restez au courant de ce qui se passe dans votre portefeuille grâce aux notifications."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyBold": {
-    "message": "paramètres de notification."
-  },
-  "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
-  },
-  "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Pour activer les notifications du portefeuille, nous utilisons un profil pour synchroniser certains paramètres entre vos appareils. $1"
-  },
-  "turnOnMetamaskNotificationsMessageThird": {
-    "message": "Vous pouvez désactiver les notifications à tout moment dans les $1"
   },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
@@ -9709,8 +10952,19 @@
   "unavailable": {
     "message": "Non disponible"
   },
+  "unavailableNetworkConnection": {
+    "message": "Connexion au réseau non disponible"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "La connexion à $1 n’est pas fiable. Vérifiez la configuration de votre connexion réseau avant de continuer ou réessayez plus tard.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
+  },
+  "unexpectedError": {
+    "message": "Une erreur inattendue s’est produite.",
+    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Autoriser l’accès uniquement à $1 $2 sur $3 pour l’échange"
@@ -9735,6 +10989,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Réseau inconnu",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Type d’autorisation inconnue"
   },
   "unknownQrCode": {
     "message": "Erreur : nous n’avons pas pu identifier le code QR"
@@ -9876,15 +11133,9 @@
   "view": {
     "message": "Affichez"
   },
-  "viewActivity": {
-    "message": "Voir l’activité"
-  },
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Afficher les détails"
   },
   "viewOnBlockExplorer": {
     "message": "Afficher sur l’explorateur de blocs"
@@ -9906,12 +11157,13 @@
   "viewTokenDetails": {
     "message": "Afficher les détails du jeton"
   },
-  "viewTransaction": {
-    "message": "Voir la transaction"
-  },
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Visiter le site"
@@ -10027,6 +11279,9 @@
   "yes": {
     "message": "Oui"
   },
+  "yesSwap": {
+    "message": "Oui, procéder à l’échange"
+  },
   "you": {
     "message": "Vous"
   },
@@ -10040,9 +11295,16 @@
     "message": "Vous avez reçu",
     "description": "Label indicating the amount and asset the user received."
   },
+  "youSell": {
+    "message": "Vous vendez"
+  },
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youWithdrew": {
+    "message": "Vous avez retiré",
+    "description": "Label indicating the amount and asset the user withdrew."
   },
   "youllReceive": {
     "message": "Vous recevrez",

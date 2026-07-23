@@ -30,9 +30,6 @@
   "activity": {
     "message": "交易紀錄"
   },
-  "addAcquiredTokens": {
-    "message": "將您已經擁有的代幣顯示於 MetaMask"
-  },
   "addAlias": {
     "message": "新增化名"
   },
@@ -278,14 +275,8 @@
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },
-  "customToken": {
-    "message": "自訂代幣"
-  },
   "decimal": {
     "message": "小數點位數"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "小數點位數至少為 0，至多為 36。"
   },
   "decrypt": {
     "message": "解密"
@@ -496,9 +487,6 @@
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
-  "importTokensCamelCase": {
-    "message": "Import Tokens"
-  },
   "imported": {
     "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -625,9 +613,6 @@
     "message": "驗證網路的詳細資料",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mustSelectOne": {
-    "message": "必須選擇至少 1 代幣。"
-  },
   "name": {
     "message": "名稱"
   },
@@ -660,9 +645,6 @@
   "networks": {
     "message": "網路"
   },
-  "nevermind": {
-    "message": "算了"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -690,9 +672,6 @@
   },
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
-  },
-  "notEnoughGas": {
-    "message": "Gas 不夠"
   },
   "ofTextNofM": {
     "message": "之"
@@ -799,9 +778,6 @@
   "restore": {
     "message": "還原"
   },
-  "retryTransaction": {
-    "message": "重試交易"
-  },
   "reusedTokenNameWarning": {
     "message": "這裡的其中一個代幣重複使用了您關注的另一個代幣的符號，這可能會造成混淆甚至讓您被誤導。"
   },
@@ -874,9 +850,6 @@
   },
   "sign": {
     "message": "簽署"
-  },
-  "signatureRequest": {
-    "message": "請求簽署"
   },
   "signed": {
     "message": "已簽署"
@@ -952,9 +925,6 @@
   },
   "tokenContractAddress": {
     "message": "代幣合約位址"
-  },
-  "tokenDecimalFetchFailed": {
-    "message": "需要填入代幣的小數位數。"
   },
   "tokenSymbol": {
     "message": "代幣代號"

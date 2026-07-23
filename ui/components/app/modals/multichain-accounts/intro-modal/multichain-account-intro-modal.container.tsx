@@ -26,9 +26,9 @@ type ContainerProps = {
   onClose: () => void;
 };
 
-export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
+export const MultichainAccountIntroModalContainer = ({
   onClose,
-}) => {
+}: ContainerProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);

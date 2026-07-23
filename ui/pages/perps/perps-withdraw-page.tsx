@@ -79,7 +79,7 @@ function parsePerpsAmountInput(raw: string): number {
  * The Perps tab opens this page by default; confirmations-backed withdraw remains
  * gated by the Pay post-quote feature flag.
  */
-const PerpsWithdrawPage: React.FC = () => {
+const PerpsWithdrawPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { formatCurrency } = useFormatters();

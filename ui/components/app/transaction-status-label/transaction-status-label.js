@@ -6,8 +6,8 @@ import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
-const QUEUED_PSEUDO_STATUS = 'queued';
-const SIGNING_PSUEDO_STATUS = 'signing';
+export const QUEUED_PSEUDO_STATUS = 'queued';
+export const SIGNING_PSUEDO_STATUS = 'signing';
 
 /**
  * A note about status logic for this component:
@@ -32,7 +32,7 @@ const statusToClassNameHash = {
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
 };
 
-function getStatusKey(status, isEarliestNonce) {
+export function getStatusKey(status, isEarliestNonce) {
   if (status === TransactionStatus.approved) {
     return SIGNING_PSUEDO_STATUS;
   }

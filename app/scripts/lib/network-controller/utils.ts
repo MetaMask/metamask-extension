@@ -22,46 +22,46 @@ export const PRODUCTION_LIKE_ENVIRONMENTS = [
  *
  * - The RPC endpoint is slow
  * - The user does not have local connectivity issues
- * - The user is in the MetaMetrics sample
+ * - The user is in the Analytics sample
  *
  * @param args - The arguments.
  * @param args.error - The connection or response error encountered after making
  * a request to the RPC endpoint.
- * @param args.metaMetricsId - The MetaMetrics ID of the user.
+ * @param args.analyticsId - The analytics ID of the user.
  * @returns True if Segment events should be created, false otherwise.
  */
 export function shouldCreateRpcServiceEvents({
   error,
-  metaMetricsId,
+  analyticsId,
 }: {
   error?: unknown;
-  metaMetricsId: string | null | undefined;
+  analyticsId: string | null | undefined;
 }) {
   return (
     (!error || !isConnectionError(error)) &&
-    metaMetricsId !== undefined &&
-    metaMetricsId !== null &&
-    isSamplingMetaMetricsUser(metaMetricsId)
+    analyticsId !== undefined &&
+    analyticsId !== null &&
+    isSamplingAnalyticsUser(analyticsId)
   );
 }
 
 /**
- * Determines whether the user is included in the sample for MetaMetrics.
+ * Determines whether the user is included in the sample for Analytics.
  *
  * In production and for a release candidate, we sample only 1% of the available
  * events; in development and testing we create every event.
  *
- * @param metaMetricsId - The MetaMetrics ID of the user.
- * @returns True if the user is included in the sample for MetaMetrics, false
+ * @param analyticsId - The analytics ID of the user.
+ * @returns True if the user is included in the sample for Analytics, false
  * otherwise.
  */
-function isSamplingMetaMetricsUser(metaMetricsId: string) {
+function isSamplingAnalyticsUser(analyticsId: string) {
   if (process.env.METAMASK_ENVIRONMENT === undefined) {
     return false;
   }
 
   if (PRODUCTION_LIKE_ENVIRONMENTS.includes(process.env.METAMASK_ENVIRONMENT)) {
-    return generateDeterministicRandomNumber(metaMetricsId) < SAMPLING_RATE;
+    return generateDeterministicRandomNumber(analyticsId) < SAMPLING_RATE;
   }
 
   return true;

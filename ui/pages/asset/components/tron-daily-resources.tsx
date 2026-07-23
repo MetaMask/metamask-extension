@@ -2,21 +2,19 @@ import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
-  Text,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Text,
   TextColor,
   TextVariant,
-  IconColor,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
@@ -81,10 +79,10 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       </svg>
       {/* Icon in the center */}
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         style={{
           position: 'absolute',
           top: '50%',
@@ -97,7 +95,7 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       >
         <Icon
           name={iconName}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
         />
       </Box>
@@ -112,6 +110,8 @@ type ResourceRowProps = {
   description: string;
   currentValue: string;
   maxValue: string;
+  testId: string;
+  descriptionTestId: string;
 };
 
 const ResourceRow = ({
@@ -121,43 +121,47 @@ const ResourceRow = ({
   description,
   currentValue,
   maxValue,
+  testId,
+  descriptionTestId,
 }: ResourceRowProps) => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       marginTop={3}
+      data-testid={testId}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={4}
       >
         <ResourceCircle resource={resource} iconName={iconName} />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
+        <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {label}
           </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid={descriptionTestId}
+          >
             {description}
           </Text>
         </Box>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Row}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {currentValue}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           /{maxValue}
         </Text>
       </Box>
@@ -200,23 +204,32 @@ export const TronDailyResources = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={1}
       paddingBottom={3}
+      data-testid="tron-daily-resources"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
         marginBottom={3}
       >
-        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.HeadingSm}
+          color={TextColor.TextDefault}
+          data-testid="tron-daily-resources-title"
+        >
           {t('tronDailyResources')}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          data-testid="tron-daily-resources-description"
+        >
           {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
         </Text>
       </Box>
@@ -234,6 +247,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(energy.current)}
         maxValue={formatValue(energy.max)}
+        testId="tron-daily-resources-energy"
+        descriptionTestId="tron-daily-resources-energy-description"
       />
 
       <ResourceRow
@@ -249,6 +264,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(bandwidth.current)}
         maxValue={formatValue(bandwidth.max)}
+        testId="tron-daily-resources-bandwidth"
+        descriptionTestId="tron-daily-resources-bandwidth-description"
       />
     </Box>
   );

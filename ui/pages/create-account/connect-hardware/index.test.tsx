@@ -30,6 +30,21 @@ import ConnectHardwareForm, {
   TREZOR_HD_PATHS,
 } from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
@@ -75,13 +90,6 @@ jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
   getAllBridgeableNetworks: () => [],
-}));
-
-const MOCK_RECENT_PAGE = '/home';
-jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: jest
-    .fn()
-    .mockImplementation(() => MOCK_RECENT_PAGE),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -131,7 +139,6 @@ function createMockState(overrides?: Record<string, unknown>) {
         modalState: { name: null, props: {} },
         previousModalState: { name: null },
       },
-      warning: null,
       chainId: '0x1',
       rpcPrefs: null,
       accounts: [],
@@ -526,6 +533,23 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
+    it('displays the generic timeout error for non-Ledger timeout errors', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error('Trezor getPublicKey timed out after 120000 ms'),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('hardwareWalletConnectionTimeout')),
+        ).toBeInTheDocument();
+      });
+      expect(screen.queryByText(tEn('ledgerTimeout'))).not.toBeInTheDocument();
+    });
+
     it('displays U2F error message for non-Firefox browser', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStore = configureMockStore([thunk])(createMockState());
@@ -698,7 +722,7 @@ describe('ConnectHardwareForm', () => {
         expect(unlockButton).toBeDisabled();
       });
 
-      it('navigates to overview page on successful unlock', async () => {
+      it('navigates to home page on successful unlock', async () => {
         const checkboxes = screen.getAllByTestId('hw-account-list__item');
         const firstCheckbox = checkboxes[0].querySelector(
           'input[type="checkbox"]',
@@ -715,7 +739,7 @@ describe('ConnectHardwareForm', () => {
         });
 
         await waitFor(() => {
-          expect(mockUseNavigate).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
+          expect(mockUseNavigate).toHaveBeenCalledWith('/');
         });
       });
 
@@ -787,6 +811,19 @@ describe('ConnectHardwareForm', () => {
             null,
             '',
           );
+        });
+      });
+    });
+
+    describe('onCancel', () => {
+      it('returns to device selection view on cancel', async () => {
+        const cancelButton = screen.getByTestId(
+          'connect-hardware-account-list-cancel-btn',
+        );
+        fireEvent.click(cancelButton);
+
+        await waitFor(() => {
+          expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
         });
       });
     });

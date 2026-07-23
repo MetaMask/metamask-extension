@@ -7,9 +7,6 @@ INFURA_PROJECT_ID=00000000000
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
 SEEDLESS_ONBOARDING_ENABLED='false'
 
-; Set this to `true` to enable Telegram login
-TELEGRAM_LOGIN_ENABLED='false'
-
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
@@ -27,11 +24,6 @@ PASSKEY_ENABLED='false'
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
-
-; These variables are required for OAuth Service
-GOOGLE_CLIENT_ID=
-APPLE_CLIENT_ID=
-TELEGRAM_CLIENT_ID=
 
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
@@ -103,6 +95,10 @@ BLOCKAID_PUBLIC_KEY=
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
+; Set to `true` to enable the QR Sync Sync tab in Settings
+; (device pairing, QR code scan and verification flow)
+; QR_SYNC_ENABLED='false'
+
 ; Set to `true` to enable the new hardware wallet onboarding flow
 ; (device discovery, error handling, account selection).
 ; Entry points to connecting remain unchanged regardless of this flag.
@@ -112,3 +108,7 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
+
+; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
+; To enable for all users, change the corresponding entry in builds.yml to `true`.
+MM_PURE_BLACK_PREVIEW=false

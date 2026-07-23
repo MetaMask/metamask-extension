@@ -1,16 +1,21 @@
-import React, { FunctionComponent, useEffect } from 'react';
-import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import { PickersActionBar } from '@mui/x-date-pickers/PickersActionBar';
+import type { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
-import { makeStyles } from '@material-ui/core/styles';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-/**
- * The props for the SnapUIDateTimePicker component.
- */
 export type SnapUIDateTimePickerProps = {
   name: string;
   type: 'date' | 'time' | 'datetime';
@@ -23,36 +28,15 @@ export type SnapUIDateTimePickerProps = {
   disabled?: boolean;
 };
 
-/**
- * Styles for the SnapUIDateTimePicker component.
- */
-const useStyle = makeStyles({
-  root: {
-    width: '100%',
-  },
-  input: {
-    fontFamily: 'var(--font-family-default)',
-    backgroundColor: 'var(--color-background-default)',
-    border: '1px solid var(--color-border-muted)',
-    color: 'var(--color-text-default)',
-    height: '100%',
-    maxHeight: '58px',
-    minHeight: '48px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    borderRadius: '8px',
-    fontSize: 'var(--typography-s-body-md-font-size)',
-    '& > input': {
-      padding: '0 16px',
-    },
-  },
-});
+// MUI action identifiers — not display text. MUI resolves these to translated
+// labels via the localeText passed to LocalizationProvider in snap-ui-renderer.
+const PICKER_ACTION_BAR_ACTIONS = ['clear', 'cancel', 'accept'] as const;
 
 /**
  * Normalizes the date based on the picker type.
  *
  * @param date - The date to normalize.
- * @param type - The type of the picker (date, time, datetime).
+ * @param type - The type of the picker.
  * @returns The normalized date.
  */
 function normalizeDate(
@@ -62,15 +46,29 @@ function normalizeDate(
   if (!date) {
     return null;
   }
-  switch (type) {
-    case 'date':
-      return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    case 'time':
-      return date.set({ second: 0, millisecond: 0 });
-    case 'datetime':
-    default:
-      return date;
+  if (type === 'date') {
+    return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
   }
+  return date.set({ second: 0, millisecond: 0 });
+}
+
+/**
+ * Parses a raw interface value (ISO string, empty string, null, or undefined)
+ * into a normalized DateTime, or null when unset/invalid.
+ *
+ * @param value - The raw value from the Snap interface.
+ * @param type - The type of the picker.
+ * @returns The parsed and normalized DateTime, or null.
+ */
+function parseInitialIsoValue(
+  value: string | undefined | null,
+  type: 'date' | 'time' | 'datetime',
+): DateTime | null {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+  const parsed = DateTime.fromISO(value);
+  return parsed.isValid ? (normalizeDate(parsed, type) as DateTime) : null;
 }
 
 /**
@@ -101,30 +99,124 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disablePast = false,
   disableFuture = false,
 }) => {
-  const t = useI18nContext();
   const { handleInputChange, getValue } = useSnapInterfaceContext();
+  const initialValue = getValue(name, form) as string | undefined | null;
 
-  const initialValue = getValue(name, form) as string;
-
-  const [value, setValue] = React.useState<DateTime | null>(
-    initialValue ? DateTime.fromISO(initialValue) : null,
+  const [value, setValue] = React.useState<DateTime | null>(() =>
+    parseInitialIsoValue(initialValue, type),
   );
 
-  const classes = useStyle();
-
   useEffect(() => {
-    if (initialValue !== undefined && initialValue !== null) {
-      setValue(DateTime.fromISO(initialValue));
+    const parsed = parseInitialIsoValue(initialValue, type);
+    if (parsed !== null) {
+      setValue(parsed);
     }
-  }, [initialValue]);
+  }, [initialValue, type]);
 
-  const handleChange = (date: DateTime | null) => {
-    const normalizedDate = normalizeDate(date, type);
+  const draftRef = useRef<DateTime | null>(null);
 
-    const isoString = normalizedDate ? normalizedDate.toISO() : null;
+  // Re-assigned each render so the stable CustomActionBar reads current state.
+  const actionsRef = useRef({
+    commit: () => undefined as void,
+    clear: () => undefined as void,
+  });
+  actionsRef.current = {
+    commit: () => {
+      const toCommit = normalizeDate(
+        draftRef.current ?? value ?? DateTime.now(),
+        type,
+      ) as DateTime;
+      setValue(toCommit);
+      handleInputChange(name, toCommit.toISO(), form);
+    },
+    clear: () => {
+      if (value === null) {
+        return;
+      }
+      setValue(null);
+      handleInputChange(name, null, form);
+    },
+  };
 
-    setValue(normalizedDate);
-    handleInputChange(name, isoString, form);
+  // Created once so MUI never remounts the action bar. MUI v7 does not fire
+  // onAccept when OK is pressed without changing the value, so we intercept it.
+  const CustomActionBar = useMemo(
+    () =>
+      function customActionBar(props: PickersActionBarProps) {
+        return (
+          <PickersActionBar
+            {...props}
+            onAccept={() => {
+              actionsRef.current.commit();
+              props.onAccept();
+            }}
+            onClear={() => {
+              actionsRef.current.clear();
+              props.onClear();
+            }}
+          />
+        );
+      },
+    [],
+  );
+
+  const handleChange = useCallback((date: DateTime | null) => {
+    draftRef.current = date;
+  }, []);
+
+  const handleOpen = useCallback(() => {
+    draftRef.current = value;
+  }, [value]);
+
+  const pickerSlotProps = useMemo(
+    () => ({
+      textField: {
+        inputProps: {
+          placeholder,
+          readOnly: true,
+          onFocus: (e: React.FocusEvent<HTMLInputElement>) => e.target.blur(),
+          // Show the placeholder when empty — key must be absent (not undefined)
+          // when a value is committed so MUI's controlled rendering takes effect.
+          ...(value === null ? { value: '' } : {}),
+        },
+        InputProps: {
+          disableUnderline: true,
+          sx: {
+            fontFamily: 'var(--font-family-default)',
+            backgroundColor: 'var(--color-background-default)',
+            border: '1px solid var(--color-border-muted)',
+            color: 'var(--color-text-default)',
+            maxHeight: '58px',
+            minHeight: '48px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            borderRadius: '8px',
+            fontSize: 'var(--typography-s-body-md-font-size)',
+            '& > input': {
+              padding: '0 16px',
+            },
+          },
+        },
+        variant: 'standard' as const,
+        fullWidth: true,
+      },
+      actionBar: { actions: [...PICKER_ACTION_BAR_ACTIONS] },
+    }),
+    [placeholder, value],
+  );
+
+  // value ?? today ensures today is highlighted in the calendar when the field
+  // is empty; inputProps.value = '' keeps the textbox showing the placeholder.
+  const today = normalizeDate(DateTime.now(), type) as DateTime;
+  const pickerValue = value ?? today;
+
+  const sharedPickerProps = {
+    value: pickerValue,
+    onChange: handleChange,
+    onOpen: handleOpen,
+    disabled,
+    slotProps: pickerSlotProps,
+    slots: { actionBar: CustomActionBar },
   };
 
   return (
@@ -135,62 +227,30 @@ export const SnapUIDateTimePicker: FunctionComponent<
     >
       {label && <Label htmlFor={name}>{label}</Label>}
       {type === 'datetime' && (
-        <DateTimePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--datetime',
-          )}
-          value={value}
-          onChange={handleChange}
-          disabled={disabled}
+        <MobileDateTimePicker
+          className="snap-ui-renderer__date-time-picker--datetime"
+          {...sharedPickerProps}
           disablePast={disablePast}
           disableFuture={disableFuture}
-          placeholder={placeholder}
-          clearable
-          InputProps={{ disableUnderline: true, className: classes.input }}
-          format={'D T'}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
+          localeText={{ toolbarTitle: '' }}
           ampm={false}
         />
       )}
       {type === 'date' && (
-        <DatePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--date',
-          )}
-          value={value}
-          onChange={handleChange}
-          disabled={disabled}
+        <MobileDatePicker
+          className="snap-ui-renderer__date-time-picker--date"
+          {...sharedPickerProps}
           disablePast={disablePast}
           disableFuture={disableFuture}
-          InputProps={{ disableUnderline: true, className: classes.input }}
-          clearable
-          placeholder={placeholder}
-          format={'D'}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
+          localeText={{ toolbarTitle: '' }}
         />
       )}
       {type === 'time' && (
-        <TimePicker
-          className={classnames(
-            classes.root,
-            'snap-ui-renderer__date-time-picker--time',
-          )}
-          value={value}
-          onChange={handleChange}
-          disabled={disabled}
-          InputProps={{ disableUnderline: true, className: classes.input }}
-          clearable
-          placeholder={placeholder}
-          clearLabel={t('clear')}
-          cancelLabel={t('cancel')}
-          okLabel={t('ok').toUpperCase()}
+        <MobileTimePicker
+          className="snap-ui-renderer__date-time-picker--time"
+          {...sharedPickerProps}
           ampm={false}
+          localeText={{ toolbarTitle: '' }}
         />
       )}
       {error && (

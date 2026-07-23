@@ -39,6 +39,8 @@ import {
   getAggregatedGatorPermissionsCountAcrossAllChains,
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
+import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
+import { transitionForward } from '../../../ui/transition';
 import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
@@ -46,12 +48,13 @@ export const GatorPermissionsPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
 
   const fromPath = searchParams.get('from') ?? undefined;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }
@@ -72,10 +75,10 @@ export const GatorPermissionsPage = () => {
   ) => {
     switch (permissionGroupName) {
       case 'sites':
-        navigate(PERMISSIONS);
+        transitionForward(() => navigate(PERMISSIONS));
         break;
       case 'token-transfer':
-        navigate(TOKEN_TRANSFER_ROUTE);
+        transitionForward(() => navigate(TOKEN_TRANSFER_ROUTE));
         break;
       default:
         console.error('Invalid permission group name:', permissionGroupName);
@@ -212,7 +215,7 @@ export const GatorPermissionsPage = () => {
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
             onClick={handleBack}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
           />
         }
       >

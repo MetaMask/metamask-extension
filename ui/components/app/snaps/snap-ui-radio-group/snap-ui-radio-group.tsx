@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -29,14 +29,14 @@ export type SnapUIRadioGroupProps = {
   disabled?: boolean;
 };
 
-export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
+export const SnapUIRadioGroup = ({
   name,
   label,
   error,
   form,
   disabled,
   ...props
-}) => {
+}: SnapUIRadioGroupProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;
@@ -72,15 +72,11 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
             style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             disabled={disabled || option.disabled}
           />
           <Text
             className={classnames({
               'snap-ui-renderer__radio-label--disabled':
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 disabled || option.disabled,
             })}
             as="label"

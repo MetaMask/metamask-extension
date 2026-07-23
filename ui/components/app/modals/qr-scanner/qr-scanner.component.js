@@ -4,9 +4,7 @@ import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
@@ -178,7 +176,8 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     (async () => {
       await checkEnvironment();
     })();
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only runs on component mount and unmount
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only runs on component mount and unmount
   }, []);
 
   useEffect(() => {

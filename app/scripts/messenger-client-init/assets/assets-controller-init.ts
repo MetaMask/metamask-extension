@@ -7,7 +7,6 @@ import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
@@ -177,7 +176,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       pollInterval: 30_000,
       enabled: false,
     },
-    trace: traceAsControllerCallback,
     isOnboarded: () => {
       try {
         const { completedOnboarding } = initMessenger.call(
@@ -188,6 +186,11 @@ export const AssetsControllerInit: MessengerClientInitFunction<
         return false;
       }
     },
+    // TEMPORARY (ASSETS-3346): legacy state slices used to heal wiped `assetsInfo` metadata.
+    tempMigrateAssetsInfoMetadataAssets3346: () => ({
+      TokensController: persistedState.TokensController,
+      AccountsController: persistedState.AccountsController,
+    }),
   });
 
   return { messengerClient };

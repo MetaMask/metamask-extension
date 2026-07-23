@@ -23,7 +23,8 @@ jest.mock('react-router-dom', () => {
 type StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled?: boolean;
-    participateInMetaMetrics?: boolean;
+    optedIn?: boolean;
+    completedMetaMetricsOnboarding?: boolean;
     isSignedIn?: boolean;
     useExternalServices?: boolean;
     internalAccounts?: {
@@ -55,7 +56,8 @@ type StateOverrides = {
 const initialState: StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled: false,
-    participateInMetaMetrics: true,
+    completedMetaMetricsOnboarding: true,
+    optedIn: true,
     isSignedIn: false,
     useExternalServices: true,
     internalAccounts: {

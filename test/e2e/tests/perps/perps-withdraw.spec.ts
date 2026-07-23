@@ -1,12 +1,9 @@
 /**
  * Perps Withdraw E2E tests
  *
- * These tests cover the Withdraw page: navigation, form validation,
- * summary row visibility, and cancel/back navigation.
- *
- * PREREQUISITE: All tests below require PERPS_ENABLED=true in the extension build
- * so the background PerpsController is included and can service `perpsInit` RPC calls.
- * Set PERPS_ENABLED=true in .metamaskrc (see .metamaskrc.dist) before running locally.
+ * These tests cover the legacy Withdraw page and the newer Withdraw
+ * confirmation flow: navigation, form validation, summary row visibility,
+ * and confirmation UI state.
  *
  * The Withdraw page is accessible from Perps Home → balance dropdown → Withdraw.
  * Uses {@link WS_USER_WITH_FUNDED_ACCOUNT} so the balance bar leaves the loading skeleton.
@@ -21,15 +18,47 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
+import { PerpsWithdrawConfirmation } from '../../page-objects/pages/confirmations/perps-withdraw-confirmation';
+import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsWithdrawPage } from '../../page-objects/pages/perps/perps-withdraw-page';
-import { getPerpsConfigEligible } from './perps-fixture-config';
+import {
+  getPerpsConfigEligible,
+  getPerpsConfigEligibleWithArbitrumUsdc,
+} from './perps-fixture-config';
 import { WS_USER_WITH_FUNDED_ACCOUNT } from './mocks/websocketPositionMocks';
 
 const withdrawFixtures = (title?: string) => ({
   ...getPerpsConfigEligible(title),
   perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
 });
+
+const withdrawConfirmationFixtures = (title?: string) => {
+  const fixtures = {
+    ...getPerpsConfigEligibleWithArbitrumUsdc(title),
+    perpsWebSocketSpecificMocks: WS_USER_WITH_FUNDED_ACCOUNT,
+  };
+
+  return {
+    ...fixtures,
+  };
+};
+
+async function openPerpsWithdrawConfirmation(
+  driver: Driver,
+): Promise<PerpsWithdrawConfirmation> {
+  await login(driver, { validateBalance: false });
+
+  const perpsTab = new PerpsTab(driver);
+  await perpsTab.navigateToPerpsHome();
+  await perpsTab.checkPageIsLoaded();
+  await perpsTab.waitForBalanceSection();
+  await perpsTab.clickWithdraw();
+
+  const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
+  await withdrawConfirmation.checkPageIsLoaded();
+
+  return withdrawConfirmation;
+}
 
 describe('Perps Withdraw', function (this: Suite) {
   this.timeout(120000);
@@ -42,11 +71,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -63,11 +92,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -87,11 +116,11 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
@@ -109,17 +138,51 @@ describe('Perps Withdraw', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.checkPageIsLoaded();
+        await perpsTab.waitForBalanceSection();
+        await perpsTab.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
         await withdrawPage.checkPageIsLoaded();
         await withdrawPage.fillAmount('99999');
         await withdrawPage.waitForValidationMessage('exceeds');
         await withdrawPage.assertSubmitDisabled();
+      },
+    );
+  });
+
+  it('submits a valid withdrawal from the confirmation flow', async function () {
+    await withFixtures(
+      {
+        ...withdrawConfirmationFixtures(this.test?.fullTitle()),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const withdrawConfirmation =
+          await openPerpsWithdrawConfirmation(driver);
+
+        await withdrawConfirmation.checkAvailableBalance('$10,000.00');
+        await withdrawConfirmation.fillAmount('50');
+        await withdrawConfirmation.checkDestinationToken('USDC');
+        await withdrawConfirmation.checkWithdrawButtonEnabled();
+        await withdrawConfirmation.clickWithdraw();
+        await withdrawConfirmation.waitForSuccessToast();
+      },
+    );
+  });
+
+  it('blocks withdrawal amounts above the Perps available balance', async function () {
+    await withFixtures(
+      {
+        ...withdrawConfirmationFixtures(this.test?.fullTitle()),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const withdrawConfirmation =
+          await openPerpsWithdrawConfirmation(driver);
+
+        await withdrawConfirmation.fillAmount('10001');
+        await withdrawConfirmation.waitForInsufficientFundsReason();
       },
     );
   });

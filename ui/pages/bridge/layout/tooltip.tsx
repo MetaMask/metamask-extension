@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Box } from '@metamask/design-system-react';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -12,7 +12,6 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
-  Display,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -30,6 +29,7 @@ const Tooltip = React.forwardRef(
       disabled = false,
       onClose,
       iconName,
+      iconColor = IconColor.iconAlternative,
       style,
       ...props
     }: PopoverProps<'div'> & {
@@ -37,6 +37,7 @@ const Tooltip = React.forwardRef(
       disabled?: boolean;
       onClose?: () => void;
       iconName?: IconName;
+      iconColor?: IconColor;
     },
     ref?: PolymorphicRef<'div'>,
   ) => {
@@ -55,21 +56,13 @@ const Tooltip = React.forwardRef(
           ref={setBoxRef}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          display={Display.Flex}
+          className="flex"
         >
           {triggerElement ??
             (iconName && (
-              <Icon
-                color={IconColor.iconAlternative}
-                name={iconName}
-                size={IconSize.Sm}
-              />
+              <Icon color={iconColor} name={iconName} size={IconSize.Sm} />
             )) ?? (
-              <Icon
-                name={IconName.Info}
-                color={IconColor.iconAlternative}
-                size={IconSize.Sm}
-              />
+              <Icon name={IconName.Info} color={iconColor} size={IconSize.Sm} />
             )}
         </Box>
         {!disabled && (

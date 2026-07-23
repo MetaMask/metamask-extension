@@ -32,12 +32,12 @@ import { isDigitsOnlyInput } from '../../utils';
  * @param props.maxLeverage - Maximum allowed leverage
  * @param props.minLeverage - Minimum allowed leverage (default: 1)
  */
-export const LeverageSlider: React.FC<LeverageSliderProps> = ({
+export const LeverageSlider = ({
   leverage,
   onLeverageChange,
   maxLeverage,
   minLeverage = 1,
-}) => {
+}: LeverageSliderProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [inputValue, setInputValue] = useState<string>(String(leverage));
@@ -47,7 +47,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   }, [leverage]);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
       setInputValue(String(newValue));
@@ -56,7 +56,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   );
 
   const handleSliderChangeCommitted = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       if (newValue !== leverage) {
         track(MetaMetricsEventName.PerpsUiInteraction, {

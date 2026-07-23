@@ -1,15 +1,15 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -46,8 +46,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const assetListPage = new AssetListPage(driver);
-          await assetListPage.importCustomTokenByChain(
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.importCustomTokenByChain(
             '0x539',
             '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
           );
@@ -79,8 +79,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
-          const activityList = new ActivityListPage(driver);
-          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         },
       );
     });

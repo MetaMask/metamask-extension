@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
@@ -107,6 +106,26 @@ describe('NetworkListItem', () => {
     expect(
       queryByTestId('network-list-item-options-delete'),
     ).not.toBeInTheDocument();
+  });
+
+  it('uses the ban icon for the disable menu item', () => {
+    const { getByTestId } = render(
+      <NetworkListItem
+        {...DEFAULT_PROPS}
+        deleteMenuLabel="disable"
+        onDeleteClick={jest.fn()}
+      />,
+    );
+
+    const menuButton = getByTestId('network-list-item-options-button-0x1');
+    fireEvent.click(menuButton);
+
+    const icon = getByTestId('network-list-item-options-delete').querySelector(
+      '.mm-icon',
+    );
+    expect(icon).toHaveStyle("mask-image: url('./images/icons/ban.svg')");
+
+    fireEvent.click(menuButton);
   });
 });
 

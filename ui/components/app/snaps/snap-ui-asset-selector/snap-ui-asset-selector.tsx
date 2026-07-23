@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { CaipAccountId, CaipChainId } from '@metamask/utils';
 
 import { SnapUISelector } from '../snap-ui-selector';
@@ -38,7 +38,7 @@ import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
  * @param props.networkIcon - The network icon.
  * @returns The Asset Selector option.
  */
-const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
+const SnapUIAssetSelectorOption = ({
   icon,
   symbol,
   name,
@@ -46,7 +46,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   fiat,
   networkName,
   networkIcon,
-}) => (
+}: SnapUIAsset) => (
   <Box
     className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
@@ -122,9 +122,12 @@ type SnapUIAssetSelectorProps = {
  * @param props.disabled - Whether the selector is disabled.
  * @returns The AssetSelector component.
  */
-export const SnapUIAssetSelector: FunctionComponent<
-  SnapUIAssetSelectorProps
-> = ({ addresses, chainIds, disabled, ...props }) => {
+export const SnapUIAssetSelector = ({
+  addresses,
+  chainIds,
+  disabled,
+  ...props
+}: SnapUIAssetSelectorProps) => {
   const t = useI18nContext();
   const assets = useSnapAssetSelectorData({ addresses, chainIds });
 
@@ -144,8 +147,6 @@ export const SnapUIAssetSelector: FunctionComponent<
       title={t('snapUIAssetSelectorTitle')}
       options={options}
       optionComponents={optionComponents}
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       disabled={disabled || assets.length === 0}
       {...props}
     />

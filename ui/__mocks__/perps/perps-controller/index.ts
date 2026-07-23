@@ -564,9 +564,6 @@ export const PERPS_TRANSACTIONS_HISTORY_CONSTANTS = {
   DefaultFundingHistoryDays: 365,
 } as const;
 
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-// ESLint override: BaseController requires 'type' for Json compatibility, not 'interface'
-
 /**
  * Market data with prices for UI display
  * Protocol-agnostic interface for market information with formatted values
@@ -765,10 +762,42 @@ export type TradeConfiguration = {
 export type OrderType = 'market' | 'limit';
 
 // Market asset type classification (reusable across components)
-export type MarketType = 'crypto' | 'equity' | 'commodity' | 'forex';
+export type MarketType =
+  | 'crypto'
+  | 'stock'
+  | 'pre-ipo'
+  | 'index'
+  | 'etf'
+  | 'commodity'
+  | 'forex';
 
-// Market type filter including 'all' option and combined 'stocks_and_commodities' for UI filtering
-export type MarketTypeFilter = MarketType | 'all' | 'stocks_and_commodities';
+export type MarketTypeFilter = MarketType | 'all' | 'new';
+
+export const MARKET_CATEGORIES = [
+  'crypto',
+  'stock',
+  'pre-ipo',
+  'index',
+  'etf',
+  'commodity',
+  'forex',
+] as const satisfies readonly MarketType[];
+
+export function isHip3Market(
+  market: Pick<PerpsMarketData, 'isHip3' | 'marketSource'>,
+): boolean {
+  return Boolean(market.isHip3) || Boolean(market.marketSource);
+}
+
+export function getMarketTypeFilter(
+  market: Pick<PerpsMarketData, 'isHip3' | 'marketSource' | 'marketType'>,
+): MarketTypeFilter {
+  if (market.marketType) {
+    return market.marketType;
+  }
+
+  return isHip3Market(market) ? 'new' : 'crypto';
+}
 
 // Badge type for market badges in UI (used by marketUtils)
 export type BadgeType = MarketType | 'experimental' | 'dex';
@@ -1060,9 +1089,16 @@ export type PerpsMarketData = {
    */
   marketSource?: string | null;
   /**
+   * Whether this is a HIP-3 market.
+   */
+  isHip3?: boolean;
+  /**
    * Market asset type classification (optional)
    * - crypto: Cryptocurrency (default for most markets)
-   * - equity: Stock/equity markets (HIP-3)
+   * - stock: Individual stocks (HIP-3)
+   * - pre-ipo: Pre-IPO assets (HIP-3)
+   * - index: Indices (HIP-3)
+   * - etf: Exchange-traded funds (HIP-3)
    * - commodity: Commodity markets (HIP-3)
    * - forex: Foreign exchange pairs (HIP-3)
    */
@@ -1229,7 +1265,7 @@ export type PerpsControllerConfig = {
    */
   fallbackBlockedRegions?: string[];
   /**
-   * Fallback HIP-3 equity perps master switch to use when RemoteFeatureFlagController fails to fetch.
+   * Fallback HIP-3 perps master switch to use when RemoteFeatureFlagController fails to fetch.
    * Controls whether HIP-3 (builder-deployed) DEXs are enabled.
    * The fallback is set by default if defined and replaced with remote feature flag once available.
    */

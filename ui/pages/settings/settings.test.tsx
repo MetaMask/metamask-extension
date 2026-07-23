@@ -9,6 +9,8 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -27,7 +29,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
@@ -85,9 +88,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -106,9 +107,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
     });
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
@@ -192,7 +191,7 @@ describe('Settings', () => {
       });
     });
 
-    it('navigates to parent tab when back is clicked on a sub-page', async () => {
+    it('navigates to parent tab without global-menu transition when back is clicked on a sub-page', async () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
@@ -206,6 +205,21 @@ describe('Settings', () => {
         expect(mockNavigate).toHaveBeenCalledWith(
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
+      });
+    });
+
+    it('navigates from a notification section back to the main notifications settings page', async () => {
+      mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
+      renderSettings(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
       });
     });
   });

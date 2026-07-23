@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -62,7 +62,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
@@ -70,12 +70,10 @@ import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
-// TODO: Remove restricted import
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../../../../app/scripts/lib/util';
+} from '../../../../../../shared/lib/url-utils';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
@@ -87,8 +85,6 @@ import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NftDetailsComponent({
   nft,
   nftChainId,
@@ -119,7 +115,7 @@ export function NftDetailsComponent({
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
@@ -149,8 +145,6 @@ export function NftDetailsComponent({
     typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
 
@@ -191,8 +185,6 @@ export function NftDetailsComponent({
     }
     // return the one that is available
     const topBidValue =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.price?.amount?.native ||
       collection?.topBid?.price?.amount?.native;
     if (!topBidValue) {
@@ -204,8 +196,6 @@ export function NftDetailsComponent({
 
   const getTopBidSourceDomain = () => {
     return (
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.source?.url ||
       (collection?.topBid?.sourceDomain
         ? `https://${collection.topBid?.sourceDomain}`
@@ -216,16 +206,17 @@ export function NftDetailsComponent({
   const { chainId } = currentChain;
 
   useEffect(() => {
-    trackEvent({
-      event: MetaMetricsEventName.NftDetailsOpened,
-      category: MetaMetricsEventCategory.Tokens,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-      },
-    });
-  }, [trackEvent, chainId]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NftDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+        })
+        .build(),
+    );
+  }, [chainId, createEventBuilder, trackEvent]);
 
   const onRemove = async () => {
     try {
@@ -322,12 +313,8 @@ export function NftDetailsComponent({
     return getShortDateFormatterV2().format(date);
   };
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
   const hasCollectionSection =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     collection?.name || collection?.tokenCount || collection?.creator;
   const hasAttributesSection = attributes && attributes?.length !== 0;
 
@@ -365,8 +352,6 @@ export function NftDetailsComponent({
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
@@ -378,7 +363,7 @@ export function NftDetailsComponent({
         >
           <ButtonIcon
             color={IconColor.iconDefault}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={() => navigate(DEFAULT_ROUTE)}
@@ -392,8 +377,6 @@ export function NftDetailsComponent({
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -417,8 +400,6 @@ export function NftDetailsComponent({
           </Box>
         </Box>
         <Box>
-          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || collection?.name ? (
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
@@ -429,8 +410,6 @@ export function NftDetailsComponent({
                 style={{ fontSize: '24px' }}
                 data-testid="nft-details__name"
               >
-                {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
                 {name || collection?.name}
               </Text>
               {collection?.openseaVerificationStatus === 'verified' ? (
@@ -850,8 +829,6 @@ export function NftDetailsComponent({
                 data-testid="nft-address-copy"
                 onClick={() => {
                   (handleAddressCopy as (text: string) => void)?.(
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                     collection?.creator || '',
                   );
                 }}
@@ -925,8 +902,6 @@ export function NftDetailsComponent({
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}
@@ -944,8 +919,6 @@ export function NftDetailsComponent({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NftDetails({ nft, nftChainId }: { nft: Nft; nftChainId?: string }) {
   return <NftDetailsComponent nft={nft} nftChainId={nftChainId ?? ''} />;
 }

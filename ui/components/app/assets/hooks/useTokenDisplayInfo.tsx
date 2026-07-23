@@ -3,12 +3,14 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { isCaipChainId } from '@metamask/utils';
 import {
+  getAllTokens,
   getEnabledNetworksByNamespace,
   getShowFiatInTestnets,
-  getTokenList,
+  getUseCurrencyRateCheck,
+  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   isChainIdMainnet,
@@ -31,7 +33,7 @@ export const useTokenDisplayInfo = ({
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
-  const tokenList = useSelector(getTokenList) || {};
+  const allTokens = useSelector(getAllTokens);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -58,6 +60,10 @@ export const useTokenDisplayInfo = ({
 
   const isMainnet = !isTestnetSelected;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
   // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
@@ -68,6 +74,9 @@ export const useTokenDisplayInfo = ({
 
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnetSelected && showFiatInTestnets));
+  const shouldAttemptFiat =
+    useCurrencyRateCheck &&
+    (isMainnet || (isTestnetSelected && showFiatInTestnets));
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
@@ -78,6 +87,10 @@ export const useTokenDisplayInfo = ({
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
+  const isFiatLoading =
+    shouldAttemptFiat &&
+    (token.tokenFiatAmount === null || token.tokenFiatAmount === undefined) &&
+    !anyEnabledNetworksAreAvailable;
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
@@ -86,10 +99,12 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
-    const tokenData = Object.values(tokenList).find(
-      (tokenToFind) =>
-        isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
-        isEqualCaseInsensitive(tokenToFind.address, token.address),
+    const tokenData = (
+      Object.values(
+        allTokens[token.chainId as `0x${string}`] ?? {},
+      ).flat() as Token[]
+    ).find((tokenToFind) =>
+      isEqualCaseInsensitive(tokenToFind.address, token.address),
     );
 
     const title =
@@ -103,7 +118,7 @@ export const useTokenDisplayInfo = ({
       token.symbol;
 
     const tokenImage =
-      tokenData?.iconUrl ||
+      tokenData?.image ||
       (token.chainId &&
         erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
           ?.iconUrl) ||
@@ -115,6 +130,7 @@ export const useTokenDisplayInfo = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
+      isFiatLoading,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
     };
@@ -130,6 +146,7 @@ export const useTokenDisplayInfo = ({
     title: token.title,
     tokenImage: token.image,
     secondary: showFiat ? nonEvmSecondary : null,
+    isFiatLoading,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

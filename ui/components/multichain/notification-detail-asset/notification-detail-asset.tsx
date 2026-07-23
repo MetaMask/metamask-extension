@@ -1,5 +1,4 @@
 import React from 'react';
-import type { FC } from 'react';
 
 import { NotificationDetail } from '../notification-detail';
 import {
@@ -58,13 +57,13 @@ const createTextComponent = (
  * @param props.value - The value to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
+export const NotificationDetailAsset = ({
   icon,
   label,
   detail,
   fiatValue,
   value,
-}): JSX.Element => {
+}: NotificationDetailAssetProps): JSX.Element => {
   const badgeIcon = (
     <AvatarToken
       src={icon.badge?.src}
@@ -77,8 +76,6 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
 
   const badgeWrapper = icon.badge ? (
     <BadgeWrapper
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={icon.badge.position || BadgeWrapperPosition.topRight}
       badge={badgeIcon}
     >

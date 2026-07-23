@@ -10,7 +10,7 @@ import {
   expectNoMockRequest,
 } from '../../helpers/mock-server';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -263,9 +263,8 @@ describe('MultiRpc:', function (this: Suite) {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const assetListPage = new AssetListPage(driver);
-        const originalFilterLabel =
-          await assetListPage.getNetworksFilterLabel();
+        const tokensTab = new TokensTab(driver);
+        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -399,9 +398,8 @@ describe('MultiRpc:', function (this: Suite) {
 
       async ({ driver }) => {
         await login(driver);
-        const assetListPage = new AssetListPage(driver);
-        const originalFilterLabel =
-          await assetListPage.getNetworksFilterLabel();
+        const tokensTab = new TokensTab(driver);
+        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -424,7 +422,7 @@ describe('MultiRpc:', function (this: Suite) {
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
+        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
 
         // check that the second rpc is selected in the network dialog
         await headerNavbar.openGlobalNetworksMenu();

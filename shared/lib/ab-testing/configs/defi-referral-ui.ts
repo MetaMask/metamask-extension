@@ -1,48 +1,38 @@
 import { MetaMetricsEventName } from '../../../constants/metametrics';
 import type { ABTestAnalyticsMapping } from '../ab-test-analytics';
+import { ABTestVariant, type ABTestVariantName } from '../variants';
 
 export const DEFI_REFERRAL_UI_AB_TEST_KEY =
-  'coreExtensionUxCeux1024AbtestReferralUi';
+  'coreExtensionUxCeux1096AbtestReferralUi';
 
-export const DefiReferralUIABTestVariant = {
-  Control: 'control',
-  Treatment: 'treatment',
-} as const;
-
-export type DefiReferralUIABTestVariants = {
-  control: {
-    isRedesignEnabled: false;
-  };
-  treatment: {
-    isRedesignEnabled: true;
-  };
+type DefiReferralUIVariantConfig = {
+  isRedesignEnabled: boolean;
 };
 
-export const DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS: DefiReferralUIABTestVariants =
-  {
-    [DefiReferralUIABTestVariant.Control]: {
-      isRedesignEnabled: false,
-    },
-    [DefiReferralUIABTestVariant.Treatment]: {
-      isRedesignEnabled: true,
-    },
-  };
+export const DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS: Record<
+  ABTestVariantName,
+  DefiReferralUIVariantConfig
+> = {
+  [ABTestVariant.Control]: {
+    isRedesignEnabled: false,
+  },
+  [ABTestVariant.Treatment]: {
+    isRedesignEnabled: true,
+  },
+};
 
 export const DEFI_REFERRAL_UI_AB_TEST_EXPOSURE_METADATA = {
-  experimentName: 'DeFi Referral UI',
+  experimentName: 'DeFi Referral UI 2',
   variationNames: {
-    [DefiReferralUIABTestVariant.Control]: 'Legacy UI with checkbox',
-    [DefiReferralUIABTestVariant.Treatment]: 'Redesigned UI',
+    [ABTestVariant.Control]: 'Legacy UI',
+    [ABTestVariant.Treatment]: 'Redesigned UI with updated copy',
   },
 } as const;
 
 export const DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping =
   {
     flagKey: DEFI_REFERRAL_UI_AB_TEST_KEY,
-    validVariants: [
-      DefiReferralUIABTestVariant.Control,
-      DefiReferralUIABTestVariant.Treatment,
-    ],
+    validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
     eventNames: [
       MetaMetricsEventName.ReferralViewed,
       MetaMetricsEventName.ReferralConfirmButtonClicked,

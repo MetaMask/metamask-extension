@@ -13,6 +13,9 @@ import {
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
+  getAllTokens,
+  selectAnyEnabledNetworksAreAvailable,
+  selectERC20TokensByChain,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
@@ -21,7 +24,6 @@ import {
 } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
@@ -40,12 +42,6 @@ jest.mock('react-redux', () => {
 jest.mock('../../../../hooks/useTokenFiatAmount', () => {
   return {
     useTokenFiatAmount: jest.fn(),
-  };
-});
-
-jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
-  return {
-    useIsOriginalTokenSymbol: jest.fn(),
   };
 });
 
@@ -116,8 +112,6 @@ describe('Token Cell', () => {
       preferences: {},
     },
   };
-
-  (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
@@ -195,6 +189,7 @@ describe('Token Cell', () => {
     ticker: 'ETH',
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
+  let mockAnyEnabledNetworksAreAvailable = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -227,14 +222,41 @@ describe('Token Cell', () => {
     if (selector === getUseSafeChainsListValidation) {
       return true;
     }
+    if (selector === selectAnyEnabledNetworksAreAvailable) {
+      return mockAnyEnabledNetworksAreAvailable;
+    }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
       };
     }
+    if (selector === getAllTokens) {
+      return {};
+    }
+    if (selector === selectERC20TokensByChain) {
+      // Keyed by chainId → { data: { [lowercaseAddress]: tokenEntry } }
+      // so useTokenDisplayInfo can resolve the tokenImage from it.
+      return {
+        '0x1': {
+          data: {
+            '0xanothertoken': {
+              iconUrl: './images/test_image.svg',
+              symbol: 'TEST',
+              name: 'TEST',
+              decimals: 18,
+              address: '0xAnotherToken',
+            },
+          },
+        },
+      };
+    }
     return undefined;
   });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
+
+  beforeEach(() => {
+    mockAnyEnabledNetworksAreAvailable = true;
+  });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
@@ -281,6 +303,30 @@ describe('Token Cell', () => {
 
     expect(amountElement).toBeInTheDocument();
     expect(amountElement.textContent).toBe('5.00M TEST');
+  });
+
+  it('shows a skeleton for native token percentage while fiat is loading', () => {
+    mockAnyEnabledNetworksAreAvailable = false;
+
+    const nativeTokenWithoutFiatAmount = {
+      ...propToken,
+      isNative: true,
+      tokenFiatAmount: undefined,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell
+        {...({
+          ...props,
+          token: nativeTokenWithoutFiatAmount,
+        } as TokenCellProps)}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
   });
 
   describe('musd.convert', () => {

@@ -18,11 +18,10 @@ import {
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   getFirstTimeFlowType,
-  getIsParticipateInMetaMetricsSet,
+  getCompletedMetaMetricsOnboarding,
   getIsSocialLoginFlow,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
@@ -34,10 +33,8 @@ import {
   isMain,
 } from '../../../../shared/lib/build-types';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlowSwitch() {
-  /* eslint-disable prefer-const */
+  const isFirefox = useIsFirefox();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
@@ -48,8 +45,8 @@ export default function OnboardingFlowSwitch() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
 
   if (completedOnboarding) {
@@ -60,7 +57,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          isParticipateInMetaMetricsSet
+          completedMetaMetricsOnboarding
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }
@@ -85,11 +82,7 @@ export default function OnboardingFlowSwitch() {
     } else if (isMain() || isBeta() || isExperimental()) {
       redirect = (
         <Navigate
-          to={
-            getBrowserName() === PLATFORM_FIREFOX
-              ? ONBOARDING_METAMETRICS
-              : ONBOARDING_WELCOME_ROUTE
-          }
+          to={isFirefox ? ONBOARDING_METAMETRICS : ONBOARDING_WELCOME_ROUTE}
           replace
         />
       );

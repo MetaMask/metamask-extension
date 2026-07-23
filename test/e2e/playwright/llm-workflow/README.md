@@ -78,7 +78,7 @@ The `mm` CLI is the primary interface for interacting with the extension. It aut
 
 ```bash
 # 1. Build the extension
-yarn build:test:webpack
+yarn build:test
 
 # 2. Launch the session (starts daemon + browser)
 mm launch
@@ -157,6 +157,12 @@ Use a preset fixture or provide custom wallet state.
 ```bash
 mm launch --state custom --preset withMultipleAccounts
 ```
+
+---
+
+## Known Limitations
+
+- **Pre-launch network mocking:** `mm mock-network` uses Playwright route interception, which is only active after `mm launch` completes. Requests made during extension startup (before the session is active) cannot be intercepted. Pre-launch mocking support will be added in a future update.
 
 ---
 

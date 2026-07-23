@@ -32,11 +32,11 @@
       margin-bottom: 16px;
     }
 
-    &__text-area-wrapper {
+    &__memo-field .MuiInputBase-root {
       height: 96px !important;
     }
 
-    &__text-area {
+    &__memo-field textarea {
       line-height: initial !important;
     }
 

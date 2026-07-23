@@ -26,6 +26,11 @@
     "unconnectedAccountAlertShownOrigins": "object",
     "web3ShimUsageOrigins": "object"
   },
+  "AnalyticsController": {
+    "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+    "eventQueue": "object",
+    "optedIn": true
+  },
   "AnnouncementController": { "announcements": "object" },
   "AppMetadataController": {
     "currentAppVersion": "string",
@@ -47,6 +52,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
@@ -62,8 +68,8 @@
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "perpsTabBadgeSeen": "boolean",
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
@@ -88,13 +94,16 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
+  "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean",
-    "srpSessionData": "object"
+    "needsProfilePairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
+    "batchSellTrades": null,
+    "batchSellTradesLoadingStatus": null,
+    "inputPrimaryDenomination": "string",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -107,32 +116,30 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
-  "BridgeStatusController": { "txHistory": "object" },
+  "BridgeStatusController": {
+    "quoteUpdateStatusStore": "object",
+    "txHistory": "object"
+  },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
+  "ComplianceController": {
+    "lastCheckedAt": null,
+    "walletComplianceStatusMap": "object"
+  },
+  "ConfigRegistryController": {
+    "configs": "object",
+    "etag": null,
+    "lastFetched": null,
+    "version": null
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currencyRates": {
-      "BNB": {
-        "conversionDate": null,
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MON": {
         "conversionDate": "object",
-        "conversionRate": null,
-        "usdConversionRate": null
-      },
-      "POL": {
-        "conversionDate": null,
-        "conversionRate": null,
+        "conversionRate": 1700,
         "usdConversionRate": null
       }
     },
@@ -171,13 +178,11 @@
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
+    "completedMetaMetricsOnboarding": true,
     "dataCollectionForMarketing": "boolean",
     "eventsBeforeMetricsOptIn": "object",
     "fragments": "object",
     "marketingCampaignCookieId": null,
-    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
-    "participateInMetaMetrics": true,
-    "segmentApiCalls": "object",
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object"
   },
@@ -216,6 +221,7 @@
       "bip122": "object",
       "eip155": "object",
       "solana": "object",
+      "stellar": "object",
       "tron": "object"
     },
     "nativeAssetIdentifiers": "object"
@@ -247,6 +253,7 @@
   "OnboardingController": {
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
+    "hasSeenOnboardingCompletionPage": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -268,7 +275,6 @@
     "advancedGasFee": {},
     "currentLocale": "en",
     "dismissSeedBackUpReminder": false,
-    "enableMV3TimestampSave": true,
     "featureFlags": {},
     "forgottenPassword": false,
     "ipfsGateway": "string",
@@ -283,7 +289,9 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "gasSponsorshipOptOutByChainId": "object",
       "hideZeroBalanceTokens": false,
+      "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
       "showConfirmationAdvancedDetails": false,
       "showDefaultAddress": "boolean",
@@ -320,6 +328,18 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": "object",
+  "QrSyncController": "object",
+  "RampsController": {
+    "countries": "object",
+    "nativeProviders": "object",
+    "orders": "object",
+    "paymentMethods": "object",
+    "providerAutoSelected": "boolean",
+    "providers": "object",
+    "requests": "object",
+    "tokens": "object",
+    "userRegion": null
+  },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",
     "localOverrides": "object",
@@ -381,7 +401,7 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
+  "TokenListController": { "tokensChainsCache": {} },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

@@ -22,6 +22,7 @@ export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
   balanceUsdOverride,
+  prefillMaxOnLoad = false,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -33,6 +34,11 @@ export function useTransactionCustomAmount({
    * shared hook to those flows.
    */
   balanceUsdOverride?: number;
+  /**
+   * When true, the amount field is pre-filled with the max balance once it is
+   * available, unless the user has already edited it.
+   */
+  prefillMaxOnLoad?: boolean;
 } = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
@@ -55,6 +61,8 @@ export function useTransactionCustomAmount({
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
+  const hasPrefilledMaxRef = useRef(false);
+  const userEditedRef = useRef(false);
 
   // Create and update debounced function
   useEffect(() => {
@@ -150,9 +158,15 @@ export function useTransactionCustomAmount({
 
   const updatePendingAmount = useCallback(
     (value: string) => {
-      let newAmount = value.replace(/^0+/u, '') || '0';
+      // Record the manual edit synchronously so prefill can't overwrite it
+      // before the debounced `isInputChanged` catches up.
+      userEditedRef.current = true;
 
-      if (newAmount.startsWith('.') || newAmount.startsWith(',')) {
+      // The input allows a comma as decimal separator, but BigNumber throws
+      // on commas, so normalize it to a dot before it reaches state.
+      let newAmount = value.replace(',', '.').replace(/^0+/u, '') || '0';
+
+      if (newAmount.startsWith('.')) {
         newAmount = `0${newAmount}`;
       }
 
@@ -179,11 +193,20 @@ export function useTransactionCustomAmount({
   );
 
   const updatePendingAmountPercentage = useCallback(
-    (percentage: number) => {
+    (
+      percentage: number,
+      { isPrefill = false }: { isPrefill?: boolean } = {},
+    ) => {
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
 
       if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
         return;
+      }
+
+      // A user-initiated percentage click counts as an edit so prefill won't
+      // later override it.
+      if (!isPrefill) {
+        userEditedRef.current = true;
       }
 
       const newAmountFiatValue = new BigNumber(percentage)
@@ -207,9 +230,19 @@ export function useTransactionCustomAmount({
         upsertTransactionUIMetricsFragment(transactionId, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: `${percentage}%`,
+            mm_pay_amount_input_type: isPrefill
+              ? 'prefilled_max'
+              : `${percentage}%`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
+            // Record the USD amount prefilled at load so the controller metrics
+            // builder can attach it to the executed transaction events.
+            ...(isPrefill
+              ? {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  mm_pay_prefilled_amount: Number(newAmountFiat),
+                }
+              : {}),
           },
         });
       }
@@ -222,6 +255,9 @@ export function useTransactionCustomAmount({
         hasBalanceUsdOverride,
       );
 
+      // Percentage / prefill updates apply immediately, so drop any pending
+      // debounced typing update that would otherwise overwrite them.
+      debounceRef.current?.cancel();
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
         updateTokenAmountCallback(newAmountHuman);
@@ -238,6 +274,30 @@ export function useTransactionCustomAmount({
       updateTokenAmountCallback,
     ],
   );
+
+  // Reset the prefill guards when the confirmation changes so a new
+  // transaction in the same UI instance can prefill again.
+  useEffect(() => {
+    hasPrefilledMaxRef.current = false;
+    userEditedRef.current = false;
+  }, [transactionId]);
+
+  // Pre-fill the max amount once the balance is known, unless the user has
+  // already edited the field. `userEditedRef` is used instead of
+  // `isInputChanged` because the latter also flips from debounced sync of
+  // existing required-token USD, which would wrongly block prefill.
+  useEffect(() => {
+    if (
+      !prefillMaxOnLoad ||
+      hasPrefilledMaxRef.current ||
+      userEditedRef.current ||
+      !(balanceUsd > 0)
+    ) {
+      return;
+    }
+    hasPrefilledMaxRef.current = true;
+    updatePendingAmountPercentage(100, { isPrefill: true });
+  }, [prefillMaxOnLoad, balanceUsd, updatePendingAmountPercentage]);
 
   return {
     amountFiat,

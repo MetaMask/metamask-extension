@@ -27,9 +27,7 @@ import { useDisplayName } from '../../../hooks/snaps/useDisplayName';
 import { useGatorPermissionTokenInfo } from '../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { PermissionItemProps } from './types';
 
-export const PermissionItem: React.FC<PermissionItemProps> = ({
-  permission,
-}) => {
+export const PermissionItem = ({ permission }: PermissionItemProps) => {
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );

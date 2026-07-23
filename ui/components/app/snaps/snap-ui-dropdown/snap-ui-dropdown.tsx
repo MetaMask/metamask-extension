@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -22,14 +22,14 @@ export type SnapUIDropdownProps = {
   disabled?: boolean;
 };
 
-export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
+export const SnapUIDropdown = ({
   name,
   label,
   error,
   form,
   disabled,
   ...props
-}) => {
+}: SnapUIDropdownProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

@@ -35,8 +35,7 @@ import {
   MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-// eslint-disable-next-line import-x/no-restricted-paths -- align with multichain.ts spy target
-import * as utilModule from '../../app/scripts/lib/util';
+import * as utilModule from '../../shared/lib/asset-conversion-rates';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import type { MetaMaskReduxState } from '../store/store';

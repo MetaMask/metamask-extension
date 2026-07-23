@@ -13,6 +13,7 @@ import {
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
 import { createHardwareWalletError } from './errors';
 import {
@@ -167,8 +168,36 @@ describe('HardwareWalletErrorProvider', () => {
         error,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),
+        onRepairDevice: expect.any(Function),
         isOpen: true,
       });
+    });
+
+    it('opens the repair page with the wallet type query parameter', () => {
+      const openExtensionInBrowser = jest.fn();
+      globalThis.platform = { openExtensionInBrowser } as never;
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Trezor,
+        'Device is locked',
+      );
+
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+
+      const { onRepairDevice } = (showModal as jest.Mock).mock.calls[0][0];
+
+      act(() => {
+        onRepairDevice(HardwareWalletType.Trezor);
+      });
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(
+        HARDWARE_WALLET_REPAIR_ROUTE,
+        `walletType=${HardwareWalletType.Trezor}`,
+      );
     });
 
     it('does not show manually triggered error modal when suppression is enabled', () => {
@@ -339,6 +368,7 @@ describe('HardwareWalletErrorProvider', () => {
         error: userCancelError,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),
+        onRepairDevice: expect.any(Function),
         isOpen: true,
       });
     });

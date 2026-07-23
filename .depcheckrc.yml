@@ -11,19 +11,23 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
-  # peer deps of @mui/material v5, consumed internally by MUI (not imported directly)
+  # peer deps of @mui/material v5; no direct imports in app source (MUI resolves them)
   - '@emotion/react'
   - '@emotion/styled'
-  # v5 pre-installed ahead of migration from @material-ui/core (v4 path);
-  # imports switch to @mui/material in the migration branch
-  - '@mui/material'
-  # future use for Snaps date pickers; v7 supports React 17 + MUI v5
+  # present for upcoming date-picker migration; not imported yet — depcheck would flag unused
   - '@mui/x-date-pickers'
 
   #
   # dev deps
   #
 
+  # ESLint import resolvers, referenced by short name in `import-x/resolver`
+  # settings in .eslintrc.js (`node`, `typescript`) rather than imported
+  - 'eslint-import-resolver-node'
+  - 'eslint-import-resolver-typescript'
+  # invoked as a string transform (`bundler.transform('babelify')`) in the
+  # ts-migration dashboard build, so depcheck can't see the reference
+  - 'babelify'
   # all @types/* packages are imported implicitly by TypeScript
   - '@types/*'
   # safety fallback for npm lifecycle scripts, not used normally
@@ -52,7 +56,6 @@ ignores:
   - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer
-  - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   - '@metamask/design-system-shared' # scanned by Tailwind JIT to generate utility classes; dev dependency not imported directly
@@ -73,7 +76,6 @@ ignores:
   # jest environments
   - 'jest-environment-jsdom'
   # webpack
-  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
   - 'webpack-bundle-analyzer' # build tool
@@ -115,8 +117,9 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
-  # perps poc
-  - '@metamask/perps-controller'
+  # package.json subpath imports
+  - '#ui'
+  - '#shared'
 
 # files depcheck should not parse
 ignorePatterns:

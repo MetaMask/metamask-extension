@@ -28,6 +28,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { getIframeProperties } from './getIframeProperties';
 
@@ -237,6 +238,7 @@ function isMultichainRequestMethod(method) {
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
  * @param {MetaMetricsController} [opts.metaMetricsController]
+ * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
 
@@ -251,6 +253,7 @@ export default function createRPCMethodTrackingMiddleware({
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
+  analyticsController,
   getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
@@ -303,11 +306,11 @@ export default function createRPCMethodTrackingMiddleware({
       globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
-    // Get the participateInMetaMetrics state to determine if we should track
+    // Get the optedIn state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
-    const userParticipatingInMetaMetrics =
-      metaMetricsController.state.participateInMetaMetrics === true;
+    // the analytics controller's trackEvent method as well.
+    const { optedIn } = analyticsController.state;
+    const userParticipatingInMetaMetrics = optedIn === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
@@ -466,14 +469,16 @@ export default function createRPCMethodTrackingMiddleware({
           eventCategory,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties: eventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(eventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
@@ -579,14 +584,16 @@ export default function createRPCMethodTrackingMiddleware({
           fragmentPayload,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(properties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
       return callback();
     });

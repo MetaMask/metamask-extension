@@ -50,14 +50,14 @@ export type EditMarginModalProps = {
  * @param options0.currentPrice
  * @param options0.mode
  */
-export const EditMarginModal: React.FC<EditMarginModalProps> = ({
+export const EditMarginModal = ({
   isOpen,
   onClose,
   position,
   account,
   currentPrice,
   mode,
-}) => {
+}: EditMarginModalProps) => {
   const t = useI18nContext();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,

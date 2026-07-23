@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library';
@@ -13,10 +13,9 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
-import { THIRD_PARTY_API_ITEMS } from '../search-config';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
+import { PRIVACY_ITEMS } from '../search-config';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,7 +24,7 @@ import {
 export const IpfsGatewayItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const ipfsGatewayFromState = useSelector(
     (state: MetaMaskReduxState) => state.metamask.ipfsGateway,
@@ -64,14 +63,15 @@ export const IpfsGatewayItem = () => {
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        use_ipfs_gateway: newValue,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          use_ipfs_gateway: newValue,
+        })
+        .build(),
+    );
 
     if (currentValue) {
       dispatch(setIsIpfsGatewayEnabled(false));
@@ -87,7 +87,7 @@ export const IpfsGatewayItem = () => {
   return (
     <Box className={ipfsToggle ? 'mb-4' : undefined}>
       <SettingsToggleItem
-        title={t(THIRD_PARTY_API_ITEMS['ipfs-gateway'])}
+        title={t(PRIVACY_ITEMS['ipfs-gateway'])}
         description={t('ipfsGatewayDescriptionV2')}
         value={ipfsToggle}
         onToggle={handleToggle}

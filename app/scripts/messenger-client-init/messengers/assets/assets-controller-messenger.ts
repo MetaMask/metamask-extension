@@ -47,37 +47,50 @@ export function getAssetsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Account group + network context for RpcDataSource (core#9388)
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'NetworkEnablementController:getState',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'AccountsController:getSelectedAccount',
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      'BackendWebSocketService:addChannelCallback',
+      'BackendWebSocketService:removeChannelCallback',
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
-      'AccountsController:getSelectedAccount',
     ],
     events: [
+      // core#9388: RPC balance refresh on account-group switch / tree updates
       'AccountTreeController:selectedAccountGroupChange',
-      'ClientController:stateChange',
+      // core#9478: use exported :stateChange (not local :stateChanged aliases)
+      'AccountTreeController:stateChange',
+      // core#9388: RPC balance refresh when enabling custom RPC networks (e.g. DXC)
+      // StakedBalanceDataSource also listens to this
       'NetworkEnablementController:stateChange',
+      // UI + keyring lifecycle (RpcDataSource only runs when UI open + unlocked)
+      'ClientController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
-      'NetworkController:stateChange',
-      'NetworkController:networkRemoved',
+      // Network picker (EVM selected network switch)
+      'NetworkController:networkDidChange',
       'NetworkController:networkAdded',
+      'NetworkController:networkRemoved',
+      // RpcDataSource + StakedBalanceDataSource
+      'NetworkController:stateChange',
+      // Snap + WS + tx + preferences
       'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
       'SnapController:snapInstalled',
       'PreferencesController:stateChange',
-      'AccountTreeController:stateChange',
       'TransactionController:transactionConfirmed',
-      'TransactionController:incomingTransactionsReceived',
       'TransactionController:unapprovedTransactionAdded',
+      // Real-time post-tx balances (AccountActivityService WS path)
+      'AccountActivityService:balanceUpdated',
     ],
   });
 

@@ -25,10 +25,10 @@ export type PerpsEmptyStateProps = {
  * @param options0.className - Additional CSS class names
  * @param options0.onStartTrade - Callback when the CTA button is clicked
  */
-export const PerpsEmptyState: React.FC<PerpsEmptyStateProps> = ({
+export const PerpsEmptyState = ({
   className,
   onStartTrade,
-}) => {
+}: PerpsEmptyStateProps) => {
   const t = useI18nContext();
 
   // TODO: Replace with themed perps image when available

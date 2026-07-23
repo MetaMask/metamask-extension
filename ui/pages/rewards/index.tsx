@@ -11,7 +11,7 @@ import {
 } from '../../ducks/rewards';
 import { REWARDS_DEEPLINK_HOST } from '../../components/app/rewards/utils/constants';
 
-const RewardsPage: React.FC = () => {
+const RewardsPage = () => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const location = useLocation();
   const navigate = useNavigate();

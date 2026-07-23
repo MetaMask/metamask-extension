@@ -217,6 +217,21 @@ describe('PersistenceManager', () => {
       });
     });
 
+    it('does not capture exception if reporting is disabled and store.get throws', async () => {
+      const error = new Error('store.get error');
+      mockStoreGet.mockRejectedValueOnce(error);
+
+      await expect(
+        manager.get({ validateVault: false, reportErrors: false }),
+      ).rejects.toThrow(error);
+
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith(
+        'Error retrieving the current state of the local store:',
+        error,
+      );
+    });
+
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
@@ -293,6 +308,56 @@ describe('PersistenceManager', () => {
       );
     });
   });
+
+  describe('getBackup', () => {
+    it('returns all backed up controller state', async () => {
+      await manager.open();
+      await manager.reset();
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+
+      mockStoreSet.mockResolvedValueOnce(undefined);
+
+      const [result, error] = await manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+      } as unknown as MetaMaskStateType);
+
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
+      /* eslint-disable-next-line jest/prefer-strict-equal -- IndexedDB structuredClone can change object prototypes */
+      expect(await manager.getBackup()).toEqual({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+        meta: {
+          version: 10,
+        },
+      });
+    });
+  });
+
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {
       manager.storageKind = 'data';

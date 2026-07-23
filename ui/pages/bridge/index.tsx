@@ -2,17 +2,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
-import { I18nContext } from '../../contexts/i18n';
-import {
-  PREPARE_SWAP_ROUTE,
-  AWAITING_SIGNATURES_ROUTE,
-} from '../../helpers/constants/routes';
-import { toRelativeRoutePath } from '../routes/utils';
 import {
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   IconName,
-} from '../../components/component-library';
+  Text,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
+import { I18nContext } from '../../contexts/i18n';
+import {
+  PREPARE_SWAP_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
+} from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
@@ -26,6 +30,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
@@ -34,6 +39,7 @@ import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
+import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
@@ -84,72 +90,101 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
 
+  const showBottomBar = useBottomNavBar();
+
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
 
-  return (
-    <Page className="bridge__container">
-      <Header
-        textProps={{ variant: TextVariant.headingSm }}
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={handleBack}
-          />
-        }
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
-        }
-      >
+  const swapHeader = showBottomBar ? (
+    <div className="flex items-center justify-between p-4 gap-4">
+      <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
         {t('swap')}
-      </Header>
-      <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
-      </Content>
-    </Page>
+      </Text>
+      <ButtonIcon
+        iconName={IconName.Setting}
+        size={ButtonIconSize.Md}
+        ariaLabel={t('settings')}
+        data-testid="bridge__header-settings-button"
+        onClick={() => {
+          setIsSettingsModalOpen(true);
+        }}
+      />
+    </div>
+  ) : (
+    <Header
+      textProps={{ variant: TextVariant.headingSm }}
+      startAccessory={
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('back')}
+          onClick={handleBack}
+        />
+      }
+      endAccessory={
+        <ButtonIcon
+          iconName={IconName.Setting}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('settings')}
+          data-testid="bridge__header-settings-button"
+          onClick={() => {
+            setIsSettingsModalOpen(true);
+          }}
+        />
+      }
+    >
+      {t('swap')}
+    </Header>
+  );
+
+  return (
+    <Routes>
+      {/*
+       * Behind the network management feature flag, token selection is shown on
+       * its own page instead of inside the prepare-bridge modal. It renders its
+       * own page shell, so it lives outside the shared swap header.
+       */}
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ASSETS_ROUTE)}
+        element={<BridgeAssetPickerPage />}
+      />
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <BridgeTransactionSettingsModal
+                isOpen={isSettingsModalOpen}
+                onClose={() => {
+                  setIsSettingsModalOpen(false);
+                }}
+              />
+              <PrepareBridgePage
+                onOpenSettings={() => setIsSettingsModalOpen(true)}
+              />
+            </Content>
+          </Page>
+        }
+      />
+      <Route
+        path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <Content>
+                <AwaitingSignatures />
+              </Content>
+              <Footer>
+                <AwaitingSignaturesCancelButton />
+              </Footer>
+            </Content>
+          </Page>
+        }
+      />
+    </Routes>
   );
 };
 

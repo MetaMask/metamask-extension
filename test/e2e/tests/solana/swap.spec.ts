@@ -1,17 +1,21 @@
 import { merge } from 'lodash';
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
 } from '../btc/mocks/tokens-api';
+import {
+  mockAccountsApiV2SupportedNetworks,
+  mockAccountsApiV5MultiaccountBalances,
+} from './mocks/accounts-api';
 import {
   mockSolanaBalanceQuote,
   mockGetMinimumBalanceForRentExemption,
@@ -40,13 +44,17 @@ import {
   mockBridgeGetTokens,
   mockBridgeSearchTokens,
   mockGetSignaturesForWalletOnly,
+  mockSecurityAlertSwap,
+  mockClientSideDetectionApi,
+  mockPhishingDetectionApi,
 } from './common-solana';
 
-const isUnifiedAssetsEnabled =
-  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+const isUnifiedAssetsEnabled = true;
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+const SOL_CAIP_ASSET = `${SOLANA_CHAIN_ID}/slip44:501`;
+const USDC_CAIP_ASSET = `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
 
 /**
  * Mock V2 supportedNetworks to include Solana so the AccountsApiDataSource
@@ -114,6 +122,83 @@ async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
     }));
 }
 
+async function mockAccountsApiV5WithSolanaNativeOnly(mockServer: Mockttp) {
+  const balances = [
+    {
+      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+      assetId: 'eip155:1337/slip44:1',
+      balance: '25',
+    },
+    {
+      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
+      assetId: `${SOLANA_CHAIN_ID}/slip44:501`,
+      balance: '50',
+    },
+  ];
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
+async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
+  const solanaAssets: Record<
+    string,
+    {
+      name: string;
+      symbol: string;
+      decimals: number;
+      iconUrl?: string;
+      coingeckoId?: string;
+    }
+  > = {
+    [SOL_CAIP_ASSET]: {
+      name: 'Solana',
+      symbol: 'SOL',
+      decimals: 9,
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+      coingeckoId: 'solana',
+    },
+    [USDC_CAIP_ASSET]: {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      iconUrl:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+      coingeckoId: 'usd-coin',
+    },
+  };
+
+  return mockServer
+    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets.*solana/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIdsParam = url.searchParams.getAll('assetIds').join(',');
+      const ids = assetIdsParam
+        ? assetIdsParam
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
+        : [];
+      const results = ids
+        .filter((id) => solanaAssets[id])
+        .map((id) => ({ assetId: id, ...solanaAssets[id] }));
+      return { statusCode: 200, json: results };
+    });
+}
+
 /**
  * Same HTTP mocks as `main` when unified assets state is off (no accounts v2/v5,
  * no tokens v2/v3 extras; uses `mockGetSignaturesForWalletOnly`).
@@ -133,7 +218,7 @@ async function mockSwapUSDCtoSOLLegacy(
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromUSDCtoSOL(mockServer),
+    ...(await mockQuoteFromUSDCtoSOL(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -157,14 +242,14 @@ async function mockSwapUSDCtoSOLUnified(
   return [
     await mockAccountsApiV2WithSolana(mockServer),
     await mockAccountsApiV5WithSolana(mockServer),
-    await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
+    await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromUSDCtoSOL(mockServer),
+    ...(await mockQuoteFromUSDCtoSOL(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -172,13 +257,11 @@ async function mockSwapUSDCtoSOLUnified(
     await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
     await mockGetUSDCSOLTransaction(mockServer, signatureHolder),
     await mockGetMintAccountInfo(mockServer),
-    await mockGetSignaturesSuccessSwap(mockServer, signatureHolder),
+    await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
     await mockBridgeTxStatus(mockServer, 'USDC_TO_SOL', signatureHolder),
-    await mockTokenApiAssets(mockServer),
+    await mockSolanaTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
-    await mockTokensV3Assets(mockServer),
   ];
 }
 
@@ -200,7 +283,7 @@ async function mockSwapNoQuotesLegacy(
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockNoQuotesAvailable(mockServer),
+    ...(await mockNoQuotesAvailable(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -216,13 +299,15 @@ async function mockSwapNoQuotesUnified(
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
   return [
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockNoQuotesAvailable(mockServer),
+    ...(await mockNoQuotesAvailable(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -255,7 +340,7 @@ async function mockSwapSOLtoUSDCFailedLegacy(
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromSoltoUSDC(mockServer),
+    ...(await mockQuoteFromSoltoUSDC(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -276,13 +361,17 @@ async function mockSwapSOLtoUSDCFailedUnified(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
+    await mockClientSideDetectionApi(mockServer),
+    await mockPhishingDetectionApi(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromSoltoUSDC(mockServer),
+    ...(await mockQuoteFromSoltoUSDC(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -291,6 +380,7 @@ async function mockSwapSOLtoUSDCFailedUnified(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
+    await mockSecurityAlertSwap(mockServer),
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
@@ -324,7 +414,7 @@ async function mockSwapSOLtoUSDCLegacy(
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromSoltoUSDC(mockServer),
+    ...(await mockQuoteFromSoltoUSDC(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -346,15 +436,17 @@ async function mockSwapSOLtoUSDCUnified(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
-    await mockAccountsApiV2WithSolana(mockServer),
-    await mockAccountsApiV5WithSolana(mockServer),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
+    await mockClientSideDetectionApi(mockServer),
+    await mockPhishingDetectionApi(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
     await simulateSolanaTransaction(mockServer),
     await mockSolanaBalanceQuote({ mockServer }),
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    await mockQuoteFromSoltoUSDC(mockServer),
+    ...(await mockQuoteFromSoltoUSDC(mockServer)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
@@ -364,6 +456,7 @@ async function mockSwapSOLtoUSDCUnified(
     await mockGetMintAccountInfo(mockServer),
     await mockGetSignaturesSuccessSwap(mockServer, signatureHolder),
     await mockBridgeTxStatus(mockServer, 'SOL_TO_USDC', signatureHolder),
+    await mockSecurityAlertSwap(mockServer),
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
@@ -380,15 +473,23 @@ async function mockSwapSOLtoUSDC(
     : mockSwapSOLtoUSDCLegacy(mockServer);
 }
 
-const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
-const USDC_CAIP_ASSET =
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 
 const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
 
 /** Matches default FixtureBuilderV2 account IDs for Solana swap E2E. */
 const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
+  assetsBalance: {
+    [SOL_ACCOUNT_ID]: {
+      [SOL_CAIP_ASSET]: {
+        amount: '50',
+      },
+      [USDC_CAIP_ASSET]: {
+        amount: '8.908267',
+      },
+    },
+  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -425,10 +526,80 @@ const SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE = {
   },
 };
 
+const SOLANA_USDC_SWAP_ASSETS_FIXTURE = {
+  assetsBalance: {
+    [SOL_ACCOUNT_ID]: {
+      [SOL_CAIP_ASSET]: {
+        amount: '50',
+      },
+      [USDC_CAIP_ASSET]: {
+        amount: '8.908267',
+      },
+    },
+  },
+  assetsInfo: {
+    [SOL_CAIP_ASSET]: {
+      decimals: 9,
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+      name: 'Solana',
+      symbol: 'SOL',
+      type: 'native',
+    },
+    [USDC_CAIP_ASSET]: {
+      decimals: 6,
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      type: 'token',
+    },
+  },
+  assetsPrice: {
+    [SOL_CAIP_ASSET]: {
+      assetPriceType: 'fungible' as const,
+      id: 'solana',
+      lastUpdated: 0,
+      price: SOL_PRICE,
+      usdPrice: SOL_PRICE,
+    },
+    [USDC_CAIP_ASSET]: {
+      assetPriceType: 'fungible' as const,
+      id: 'usd-coin',
+      lastUpdated: 0,
+      price: USDC_PRICE,
+      usdPrice: USDC_PRICE,
+    },
+  },
+};
+
+const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
+  MultichainAssetsController: {
+    accountsAssets: {
+      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
+    },
+    assetsMetadata: {
+      [USDC_CAIP_ASSET]: {
+        fungible: true,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+        name: 'USD Coin',
+        symbol: 'USDC',
+        units: [{ decimals: 6, name: 'USD Coin', symbol: 'USDC' }],
+      },
+    },
+  },
+};
+
 describe('Swap on Solana', function () {
+  const solanaSwapFixtureOptions = {
+    localNodeOptions: [{ type: 'none' as const }],
+  };
+
   it('Completes a Swap between SOL and USDC', async function () {
     await withFixtures(
       {
+        ...solanaSwapFixtureOptions,
         fixtures: isUnifiedAssetsEnabled
           ? (() => {
               const fixture = new FixtureBuilderV2()
@@ -482,9 +653,9 @@ describe('Swap on Solana', function () {
         testSpecificMock: mockSwapSOLtoUSDC,
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { validateBalance: false });
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -495,7 +666,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap
         const swapPage = new SwapPage(driver);
@@ -506,6 +678,8 @@ describe('Swap on Solana', function () {
           swapFrom: 'SOL',
           network: 'Solana',
         });
+
+        await swapPage.waitForQuote();
 
         // Check quotes
         await swapPage.clickOnMoreQuotes();
@@ -533,17 +707,11 @@ describe('Swap on Solana', function () {
         });
 
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
-        if (isUnifiedAssetsEnabled) {
-          // BUG: The activity text or amount may not fully reflect the swap details
-          // under unified state (e.g. missing destination token name or incorrect fiat value).
-          await activityListPage.checkTransactionActivityByText('Swap SOL to');
-        } else {
-          await activityListPage.checkTransactionActivityByText(
-            'Swap SOL to USDC',
-          );
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        if (!isUnifiedAssetsEnabled) {
+          await activityTab.checkTransactionActivityByText('Swapped');
         }
       },
     );
@@ -551,10 +719,11 @@ describe('Swap on Solana', function () {
   it('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
+        ...solanaSwapFixtureOptions,
         fixtures: isUnifiedAssetsEnabled
           ? (() => {
               const fixture = new FixtureBuilderV2()
-                .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+                .withAssetsController(SOLANA_USDC_SWAP_ASSETS_FIXTURE)
                 .build();
               merge(fixture.data, {
                 MultichainRatesController: {
@@ -578,20 +747,7 @@ describe('Swap on Solana', function () {
                     },
                   },
                 },
-                MultichainAssetsController: {
-                  assetsMetadata: {
-                    [USDC_CAIP_ASSET]: {
-                      fungible: true,
-                      iconUrl:
-                        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-                      name: 'USD Coin',
-                      symbol: 'USDC',
-                      units: [
-                        { decimals: 6, name: 'USD Coin', symbol: 'USDC' },
-                      ],
-                    },
-                  },
-                },
+                ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
               });
               return fixture;
             })()
@@ -602,10 +758,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        const homePage = new HomePage(driver);
 
         // Switch to Solana network
         const networkManager = new NetworkManager(driver);
@@ -613,7 +766,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap USDC → SOL
         const swapPage = new SwapPage(driver);
@@ -634,12 +788,10 @@ describe('Swap on Solana', function () {
         });
 
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
-        await activityListPage.checkTransactionActivityByText(
-          'Swap USDC to SOL',
-        );
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
+        await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionActivityByText('Swapped');
       },
     );
   });
@@ -647,6 +799,7 @@ describe('Swap on Solana', function () {
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
+        ...solanaSwapFixtureOptions,
         fixtures: isUnifiedAssetsEnabled
           ? new FixtureBuilderV2()
               .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
@@ -658,7 +811,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -669,7 +822,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap and verify no quotes message
         const swapPage = new SwapPage(driver);
@@ -689,6 +843,7 @@ describe('Swap on Solana', function () {
   it('Swap transaction fails gracefully', async function () {
     await withFixtures(
       {
+        ...solanaSwapFixtureOptions,
         fixtures: isUnifiedAssetsEnabled
           ? new FixtureBuilderV2()
               .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
@@ -700,7 +855,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -711,7 +866,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap SOL → USDC
         const swapPage = new SwapPage(driver);
@@ -723,6 +879,8 @@ describe('Swap on Solana', function () {
           network: 'Solana',
         });
 
+        await swapPage.waitForQuote();
+
         // Submit the swap (will fail)
         await swapPage.reviewQuote({
           swapToAmount: '136.9',
@@ -733,8 +891,8 @@ describe('Swap on Solana', function () {
 
         // After failure, the bridge navigates to home/activity with the failed tx
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });

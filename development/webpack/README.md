@@ -18,11 +18,13 @@ yarn webpack
 
 This will create a `dist/chrome` directory containing the built extension. See usage for more options.
 
-To watch for changes and rebuild the extension automatically, run the following command:
+### Dev server
 
 ```bash
-yarn webpack --watch
+yarn start
 ```
+
+`yarn start` rebuilds on file changes and starts a [webpack dev server](https://webpack.js.org/configuration/dev-server/) on `localhost:8080` that auto-reloads the extension's UI pages (popup, home, notification, sidepanel). The service worker, background page, and content scripts are not auto-reloaded — reload the extension manually for changes to those.
 
 ### Set options using a `config.json` file
 
@@ -64,6 +66,16 @@ BUNDLE_MINIFY=true yarn webpack
 Run `yarn webpack --help` for the list of options.
 
 Note: multiple array options cannot be set this way, due to this bug in yargs: https://github.com/yargs/yargs/issues/821
+
+[`SOURCE_DATE_EPOCH`](https://reproducible-builds.org/specs/source-date-epoch/) is also supported for reproducible zip
+artifacts. It is the standard unprefixed environment variable, specified as a Unix timestamp in seconds:
+
+```bash
+SOURCE_DATE_EPOCH=1711141205 yarn webpack --zip
+```
+
+When `--zip` is used, zip entry modification times are resolved from `SOURCE_DATE_EPOCH` when set, then the latest git
+commit timestamp, then a deterministic fallback.
 
 ## CLI Arguments
 

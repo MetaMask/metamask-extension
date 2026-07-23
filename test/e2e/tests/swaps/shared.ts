@@ -5,7 +5,7 @@ import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../smart-transactions/mocks';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
@@ -106,8 +106,8 @@ export const checkActivityTransaction = async (
   driver: Driver,
   options: { index: number; swapFrom: string; swapTo: string; amount: string },
 ) => {
-  const activityListPage = new ActivityListPage(driver);
-  await activityListPage.checkSwapActivityTransaction({
+  const activityTab = new ActivityTab(driver);
+  await activityTab.checkSwapActivityTransaction({
     swapFrom: options.swapFrom,
     swapTo: options.swapTo,
     amount: options.amount,

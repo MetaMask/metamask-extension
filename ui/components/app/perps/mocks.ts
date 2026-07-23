@@ -161,7 +161,7 @@ export const mockPositions: Position[] = [
     takeProfitCount: 0,
     stopLossCount: 0,
   },
-  // HIP-3 Equity positions (stocks)
+  // HIP-3 stock positions
   {
     symbol: 'xyz:TSLA',
     size: '10.0',
@@ -363,7 +363,7 @@ export const mockOrders: Order[] = [
     timestamp: Date.now() - 10800000, // 3 hours ago
     lastUpdated: Date.now() - 10800000,
   },
-  // HIP-3 Equity orders (stocks)
+  // HIP-3 stock orders
   {
     orderId: 'order-007',
     symbol: 'xyz:AAPL',
@@ -541,10 +541,10 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
 
 /**
  * Mock HIP-3 markets data
- * Includes equity (stocks), commodity, and forex markets from HIP-3 DEXs
+ * Includes stock, commodity, and forex markets from HIP-3 DEXs
  */
 export const mockHip3Markets: PerpsMarketData[] = [
-  // Equity markets (stocks)
+  // Stock markets
   {
     symbol: 'xyz:TSLA',
     name: 'Tesla',
@@ -558,7 +558,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00015,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AAPL',
@@ -573,7 +573,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00012,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:MSFT',
@@ -588,7 +588,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.0001,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:NVDA',
@@ -603,7 +603,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00018,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AMZN',
@@ -618,7 +618,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00011,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:GOOGL',
@@ -633,7 +633,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00009,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   // Commodity markets
   {

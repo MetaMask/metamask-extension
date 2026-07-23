@@ -210,6 +210,62 @@ describe('MetaMask Reducers', () => {
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
   });
 
+  it('updates metrics participation state', () => {
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: null,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      completedMetaMetricsOnboarding: false,
+      optedIn: false,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: null,
+          completedMetaMetricsOnboarding: false,
+          optedIn: false,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: true,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: null,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          completedMetaMetricsOnboarding: false,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: false,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      completedMetaMetricsOnboarding: true,
+      optedIn: false,
+    });
+  });
+
   it('sets account label', () => {
     const state = reduceMetamask(mockState.metamask, {
       type: actionConstants.SET_ACCOUNT_LABEL,

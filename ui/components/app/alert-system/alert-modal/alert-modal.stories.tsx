@@ -6,7 +6,8 @@ import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useArgs } from '@storybook/client-api';
-import { Box, Button } from '../../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { Button } from '../../../component-library';
 
 export const baseAlertsMock: Alert[] = [
   {

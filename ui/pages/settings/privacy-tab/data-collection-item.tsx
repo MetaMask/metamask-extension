@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getCompletedMetaMetricsOnboarding,
   getDataCollectionForMarketing,
-  getParticipateInMetaMetrics,
+  getOptedIn,
 } from '../../../selectors/metametrics';
 import {
   getUseExternalServices,
@@ -16,7 +17,7 @@ import {
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -26,12 +27,15 @@ import {
 export const DataCollectionToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
 
   // Match legacy Security tab: fetch remote marketing consent when the user is in
   // a social login flow (firstTimeFlowType stays set after seedless import completes).
@@ -52,7 +56,8 @@ export const DataCollectionToggleItem = () => {
     };
   }, [socialLoginEnabled, dispatch]);
 
-  const isDisabled = !useExternalServices || !participateInMetaMetrics;
+  const isDisabled =
+    !useExternalServices || !(completedMetaMetricsOnboarding && isOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
@@ -63,17 +68,16 @@ export const DataCollectionToggleItem = () => {
 
     dispatch(setDataCollectionForMarketing(newValue));
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      properties: {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
-        /* eslint-enable @typescript-eslint/naming-convention */
-        location: 'Settings',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
+          location: 'Settings',
+        })
+        .build(),
+    );
   };
 
   const description = socialLoginEnabled

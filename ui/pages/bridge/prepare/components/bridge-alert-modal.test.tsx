@@ -5,15 +5,15 @@ import {
   formatAddressToAssetId,
   QuoteResponse,
 } from '@metamask/bridge-controller';
-import { zeroAddress } from 'ethereumjs-util';
+import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
 import { DummyQuotesNoApproval } from '../../../../../test/data/bridge/dummy-quotes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
-import * as useSubmitBridgeTransactionModule from '../../hooks/useSubmitBridgeTransaction';
+import * as useSubmitBridgeTransactionModule from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
@@ -21,7 +21,7 @@ import { BridgeAlertModal } from './bridge-alert-modal';
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
 
-jest.mock('../../hooks/useSubmitBridgeTransaction', () => ({
+jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
@@ -31,19 +31,32 @@ jest.mock('../../hooks/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  variant: 'submit-cta' | 'alert-details' | undefined = undefined,
+  quotes: QuoteResponse[],
   priceImpact: string = '0.05',
-  stateOverrides = {},
-  quotes: QuoteResponse[] = mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
-  alertId: BridgeAlert['id'] | undefined = undefined,
+  variant?: 'submit-cta' | 'alert-details',
+  stateOverrides?: Record<string, unknown>,
+  alertId?: BridgeAlert['id'],
 ) => {
   const toToken = {
     ...quotes[0].quote.destAsset,
-    assetId: formatAddressToAssetId(
-      quotes[0].quote.destAsset.address,
-      quotes[0].quote.destChainId,
-    ),
+    assetId:
+      (quotes[0].quote.destAsset.assetId as CaipAssetType) ??
+      formatAddressToAssetId(
+        quotes[0].quote.destAsset.address,
+        quotes[0].quote.destChainId,
+      ),
   };
+  const fromToken = {
+    ...quotes[0].quote.srcAsset,
+    assetId:
+      (quotes[0].quote.srcAsset.assetId as CaipAssetType) ??
+      formatAddressToAssetId(
+        quotes[0].quote.srcAsset.address,
+        quotes[0].quote.srcChainId,
+      ),
+  };
+
+  const { bridgeStateOverrides, ...overrides } = stateOverrides ?? {};
   const mockStore = configureStore(
     createBridgeMockStore({
       bridgeStateOverrides: {
@@ -51,29 +64,24 @@ const renderModal = (
           ...quote,
           quote: {
             ...quote.quote,
-            priceData: { ...quote.quote.priceData, priceImpact },
-            srcAsset: {
-              ...quote.quote.srcAsset,
-              assetId: formatAddressToAssetId(
-                quote.quote.srcAsset.address,
-                quote.quote.srcChainId,
-              ),
-            },
+            priceData: { ...(quote.quote.priceData ?? {}), priceImpact },
             destAsset: toToken,
+            srcAsset: fromToken,
           },
-        })) as unknown as QuoteResponse[],
+        })),
         quoteRequest: {
-          srcChainId: 10,
-          srcTokenAddress: zeroAddress(),
-          destChainId: 42161,
-          destTokenAddress: zeroAddress(),
+          srcChainId: parseCaipAssetType(fromToken.assetId).chainId,
+          srcTokenAddress: fromToken.assetId,
+          destChainId: parseCaipAssetType(toToken.assetId).chainId,
+          destTokenAddress: toToken.assetId,
         },
+        ...(bridgeStateOverrides ?? {}),
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
         toToken,
       },
-      ...stateOverrides,
+      ...overrides,
     }),
   );
 
@@ -92,7 +100,7 @@ const renderModal = (
 
 describe('BridgeAlertModal', () => {
   it('should not render the component when variant is undefined', () => {
-    const { baseElement } = renderModal();
+    const { baseElement } = renderModal(mockBridgeQuotesNativeErc20);
     expect(baseElement).toMatchInlineSnapshot(`
       <body>
         <div
@@ -110,8 +118,19 @@ describe('BridgeAlertModal', () => {
 
     it('should render when there is a price impact error', async () => {
       const { baseElement, getByRole, getAllByRole } = renderModal(
-        'submit-cta',
+        mockBridgeQuotesNativeErc20,
         '0.9',
+        'submit-cta',
+        {
+          bridgeStateOverrides: {
+            assetExchangeRates: {
+              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+                exchangeRate: '2524.259',
+                usdExchangeRate: '1',
+              },
+            },
+          },
+        },
       );
       expect(baseElement).toMatchSnapshot();
       expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
@@ -145,7 +164,11 @@ describe('BridgeAlertModal', () => {
     ])(
       'should not render when there is no price impact error: %s',
       async (priceImpact: string | undefined) => {
-        const { baseElement } = renderModal('submit-cta', priceImpact);
+        const { baseElement } = renderModal(
+          mockBridgeQuotesNativeErc20,
+          priceImpact,
+          'submit-cta',
+        );
         expect(baseElement).toMatchSnapshot();
       },
     );
@@ -157,9 +180,20 @@ describe('BridgeAlertModal', () => {
           submitBridgeTransaction: jest.fn(),
           isSubmitting: true,
         });
-      const { baseElement, getByRole, getAllByRole } = renderModal(
-        'submit-cta',
+      const { baseElement, getByRole, getAllByRole, getByTestId } = renderModal(
+        mockBridgeQuotesNativeErc20,
         '0.9',
+        'submit-cta',
+        {
+          bridgeStateOverrides: {
+            assetExchangeRates: {
+              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+                exchangeRate: '2524.259',
+                usdExchangeRate: '1',
+              },
+            },
+          },
+        },
       );
       expect(baseElement).toMatchSnapshot();
       expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
@@ -167,7 +201,7 @@ describe('BridgeAlertModal', () => {
         'ProceedLoading',
         'Cancel',
       ]);
-      expect(getByRole('button', { name: 'Proceed Loading' })).toBeDisabled();
+      expect(getByTestId('bridge-alert-modal-proceed-button')).toBeDisabled();
       expect(
         getByRole('button', { name: messages.cancel.message }),
       ).toBeDisabled();
@@ -187,18 +221,25 @@ describe('BridgeAlertModal', () => {
 
     // @ts-expect-error: each is a valid test function in jest
     it.each([
-      ['', 'warning', '0.07', {}, undefined],
       [
-        '',
-        'error',
+        ' warning banner (no exchange rates)',
+        'warning',
+        '0.07',
+        {},
+        mockBridgeQuotesNativeErc20,
+      ],
+      [
+        ' alert banner',
+        'error (no exchange rates)',
         '0.27',
         {
           metamaskStateOverrides: {
             currentCurrency: 'usd',
             currencyRates: {},
+            assetExchangeRates: {},
           },
         },
-        undefined,
+        mockBridgeQuotesNativeErc20,
       ],
       [
         ' alert banner',
@@ -212,10 +253,10 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       ],
       [
-        '',
+        ' warning banner',
         'warning (with exchange rates)',
         '0.07',
         {
@@ -226,23 +267,23 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
       ],
     ])(
       'should render%s when there is a price impact %s: %s',
       async (
         _: string,
         _condition: string,
-        priceImpact: string | undefined,
-        stateOverrides?: Record<string, unknown>,
-        quotes?: never[],
+        priceImpact: string,
+        stateOverrides: Record<string, unknown>,
+        quotes: QuoteResponse[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
           renderModal(
-            'alert-details',
-            priceImpact,
-            stateOverrides,
             quotes,
+            priceImpact,
+            'alert-details',
+            stateOverrides,
             'price-impact',
           );
         expect(baseElement).toMatchSnapshot();
@@ -276,7 +317,11 @@ describe('BridgeAlertModal', () => {
     it.each(['0.001', '-0.1', undefined, '0'])(
       'should not render when there is no price impact warning or error: %s',
       async (priceImpact: string | undefined) => {
-        const { baseElement } = renderModal('alert-details', priceImpact);
+        const { baseElement } = renderModal(
+          mockBridgeQuotesNativeErc20,
+          priceImpact,
+          'alert-details',
+        );
         expect(baseElement).toMatchSnapshot();
       },
     );
@@ -287,7 +332,7 @@ describe('BridgeAlertModal', () => {
       jest.clearAllMocks();
       jest
         .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
-        .mockReturnValue(undefined as never);
+        .mockReturnValue(undefined);
     });
 
     afterEach(() => {
@@ -295,7 +340,11 @@ describe('BridgeAlertModal', () => {
     });
 
     it('renders "No price information" title and "Proceed" button when activeQuotePriceData is absent', async () => {
-      const { getByTestId, getAllByRole } = renderModal('submit-cta');
+      const { getByTestId, getAllByRole } = renderModal(
+        mockBridgeQuotesNativeErc20,
+        undefined,
+        'submit-cta',
+      );
 
       expect(getAllByRole('button').map((b) => b.textContent)).toStrictEqual([
         '',
@@ -307,7 +356,11 @@ describe('BridgeAlertModal', () => {
     });
 
     it('submits the transaction when "Proceed" is clicked', async () => {
-      const { getByTestId } = renderModal('submit-cta');
+      const { getByTestId } = renderModal(
+        mockBridgeQuotesNativeErc20,
+        undefined,
+        'submit-cta',
+      );
 
       await act(async () => {
         await userEvent.click(getByTestId('bridge-alert-modal-proceed-button'));
@@ -319,7 +372,11 @@ describe('BridgeAlertModal', () => {
 
     it('does not open when activeQuotePriceData is present', () => {
       jest.restoreAllMocks(); // restore early so real selector runs for this test
-      const { baseElement } = renderModal('submit-cta', '0.05');
+      const { baseElement } = renderModal(
+        mockBridgeQuotesNativeErc20,
+        '0.05',
+        'submit-cta',
+      );
       expect(baseElement).toMatchSnapshot();
     });
   });
@@ -331,28 +388,23 @@ describe('BridgeAlertModal', () => {
 
     it('shows the fiat loss banner when isPriceImpactError is true and fiat amount is available', () => {
       const { getByTestId } = renderModal(
-        'submit-cta',
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         '0.9',
-        {
-          metamaskStateOverrides: {
-            currentCurrency: 'usd',
-            currencyRates: {
-              ETH: { conversionRate: 2524.25, usdConversionRate: 2524.25 },
-            },
-          },
-        },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
+        'submit-cta',
+        undefined,
+        'price-impact',
       );
       expect(
         getByTestId('bridge-alert-modal-banner').textContent,
-      ).toMatchInlineSnapshot(`"You will lose $0.07 on this trade"`);
+      ).toMatchInlineSnapshot(`"You will lose $0.18 on this trade"`);
       expect(getByTestId('bridge-alert-modal-proceed-button')).toBeEnabled();
     });
 
     it('does not show the fiat loss banner when isPriceImpactError is false (warning)', () => {
       const { queryByTestId } = renderModal(
-        'alert-details',
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
         '0.07',
+        'alert-details',
         {
           metamaskStateOverrides: {
             currentCurrency: 'usd',
@@ -361,7 +413,6 @@ describe('BridgeAlertModal', () => {
             },
           },
         },
-        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB as never,
       );
       expect(
         queryByTestId('bridge-alert-modal-banner'),
@@ -369,12 +420,17 @@ describe('BridgeAlertModal', () => {
     });
 
     it('does not show the fiat loss banner when fiat amount is unavailable (no exchange rates)', () => {
-      const { queryByTestId } = renderModal('submit-cta', '0.9', {
-        metamaskStateOverrides: {
-          currentCurrency: 'usd',
-          currencyRates: {},
+      const { queryByTestId } = renderModal(
+        mockBridgeQuotesNativeErc20,
+        '0.9',
+        'submit-cta',
+        {
+          metamaskStateOverrides: {
+            currentCurrency: 'usd',
+            currencyRates: {},
+          },
         },
-      });
+      );
       expect(
         queryByTestId('bridge-alert-modal-banner'),
       ).not.toBeInTheDocument();

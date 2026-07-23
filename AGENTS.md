@@ -11,7 +11,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 **UI Framework:** React with functional components + hooks
 **State Management:** Redux + BaseController architecture
 **Testing:** Jest (unit), Playwright (E2E)
-**Build System:** Browserify (production), Webpack (development)
+**Build System:** Webpack (with LavaMoat for production)
 **Security:** LavaMoat policies required for all dependency changes
 
 ### Critical Rules for Agents
@@ -30,7 +30,23 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 12. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
 13. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 14. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
-15. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+15. **WHEN using `.github/pull-request-template.md`, the manual testing section
+    should contain instructions for how to _manually_ test the changes. It must not
+    list steps for automated testing.**
+    - Good Instructions:
+      - Run extension
+      - Go to homepage, asset list
+      - Use Mainnet or Linea as the selected/enabled network.
+      - Verify mUSD is visible even with 0 balance.
+      - Enable "Hide zero-balance tokens".
+      - Verify mUSD is still visible.
+      - Ensure token sort is by descending balance and low-value assets are collapsed.
+      - Verify mUSD is not hidden inside the low-value collapsed section.
+    - Bad Instructions:
+      - `yarn lint:changed:fix`
+      - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
+
+16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
@@ -133,8 +149,8 @@ yarn download-builds --build-type test
 **Build System Notes:**
 
 - `yarn start` uses Webpack (faster, development)
-- `yarn dist` uses Browserify + LavaMoat (production)
-- `--apply-lavamoat=false` flag speeds up development builds
+- `yarn dist` uses Webpack + LavaMoat (production)
+- `yarn start` skips LavaMoat by default for speed; use `yarn start:lavamoat` to enable it
 - Test builds are required for E2E tests (not dev builds)
 
 ### Testing
@@ -161,8 +177,6 @@ yarn test:integration
 yarn test:integration:coverage
 
 # Playwright Tests
-yarn test:e2e:swap         # Swap functionality
-yarn test:e2e:global       # Global tests
 yarn test:e2e:benchmark    # Performance benchmarks
 ```
 
@@ -245,7 +259,7 @@ yarn lint:lockfile:dedupe:fix
 yarn allow-scripts auto
 
 # 4. Update LavaMoat policies
-yarn lavamoat:auto         # Updates both build system and webapp policies
+yarn lavamoat:auto         # Regenerates the webpack LavaMoat policies
 
 # 5. Update attributions
 yarn attributions:generate
@@ -331,8 +345,7 @@ yarn build:test
 # 7. Commit all changes including:
 #    - package.json
 #    - yarn.lock
-#    - lavamoat/browserify/*/policy.json
-#    - lavamoat/build-system/policy.json
+#    - lavamoat/webpack/*/policy.json
 #    - attribution.txt
 ```
 
@@ -740,8 +753,7 @@ ui/ducks/foo/foo.ts → ALSO UPDATE:
 ```
 package.json → MUST UPDATE:
 ├── yarn.lock (run yarn install)
-├── lavamoat/browserify/*/policy.json (run yarn lavamoat:auto)
-├── lavamoat/build-system/policy.json (run yarn lavamoat:auto)
+├── lavamoat/webpack/*/policy.json (run yarn lavamoat:auto)
 └── attribution.txt (run yarn attributions:generate)
 ```
 
@@ -836,7 +848,7 @@ Update policies whenever you:
 **Automated (Recommended):**
 
 ```bash
-# Update all policies (build system + webapp)
+# Regenerate the webpack LavaMoat policies
 yarn lavamoat:auto
 
 # Or use MetaMask bot (team members only):
@@ -846,37 +858,36 @@ yarn lavamoat:auto
 **Manual:**
 
 ```bash
-# Update webapp policies (app/scripts)
-yarn lavamoat:webapp:auto
+# Compile the webpack build tooling
+yarn webpack:tsc
 
-# Update build system policies
-yarn lavamoat:build:auto
+# Regenerate the webpack build tooling policy
+yarn webpack:lavamoat:policy:build
+
+# Regenerate the Firefox MV2 application policies
+yarn webpack:lavamoat:policy:mv2
+
+# Regenerate the Chrome MV3 application policies
+yarn webpack:lavamoat:policy:mv3
 
 # If policies still fail after regeneration:
-rm -rf node_modules/ && yarn && yarn lavamoat:auto
+rm -rf node_modules/ && yarn
+# Then compile the webpack build tooling and rerun the affected policy command above.
 ```
 
-### Debugging Policy Issues
-
-```bash
-# Generate debug output
-yarn lavamoat:debug:build         # Build system debug
-yarn lavamoat:debug:webapp        # Webapp debug
-```
-
-**Common Issues:**
+### Common Policy Issues
 
 - **Policy fails on macOS/Windows:** Platform-specific optional dependencies. Regenerate on the target platform.
 - **Dynamic imports fail:** LavaMoat's static analysis may miss dynamic code. May need manual policy updates.
-- **Can't build at all:** Try `--apply-lavamoat=false` for development, but fix before merging.
+- **Can't build at all:** Use `yarn start` (LavaMoat off by default) for development, but fix before merging.
 
 ### Development Without LavaMoat
 
-For faster iteration during development:
+For faster iteration during development (LavaMoat is off by default):
 
 ```bash
-yarn start --apply-lavamoat=false       # Development build
-yarn start:test --apply-lavamoat=false  # Test build
+yarn start       # Development build
+yarn start:test  # Test build
 ```
 
 **⚠️ Warning:** Always test with LavaMoat enabled before merging!
@@ -1479,7 +1490,7 @@ Before marking a component complete:
    → Check if on correct platform (macOS vs Linux)
    → Platform-specific dependencies need regeneration on that platform
 4. IF blocked during development:
-   → Temporarily use: yarn start --apply-lavamoat=false
+   → Temporarily use: yarn start (LavaMoat off by default)
    → MUST fix before merging
 ```
 
@@ -1605,8 +1616,7 @@ yarn lavamoat:auto
 yarn attributions:generate
 
 # 5. Verify all policy files are included in changes:
-# - lavamoat/browserify/*/policy.json
-# - lavamoat/build-system/policy.json
+# - lavamoat/webpack/*/policy.json
 # - attribution.txt
 ```
 
@@ -1702,6 +1712,11 @@ Performance Checks (React Components):
 - **Cursor Rule:** [`.cursor/rules/mms-add-non-evm-network/RULE.md`](./.cursor/rules/mms-add-non-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
 - **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
+
+### EVM Swaps/Bridge Agent Entrypoints
+
+- **EVM Swaps/Bridge Standard:** [`docs/add-evm-swaps-bridge-network.md`](./docs/add-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding a new EVM network to the unified swaps/bridge flow (bridge allowlist, default token pair, stablecoin slippage, and `bridgeConfigV2` rollout). Follows the MegaETH/Robinhood pattern.
+- **Cursor Skill:** [`.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/mms-add-evm-swaps-bridge-network/SKILL.md) - Local Cursor skill entrypoint for the shared standard.
 
 ### External Resources
 

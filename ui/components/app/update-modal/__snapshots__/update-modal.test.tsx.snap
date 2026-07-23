@@ -45,7 +45,7 @@ exports[`UpdateModal renders correctly with required props 1`] = `
                 data-testid="update-modal-close-button"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/close.svg');"
                 />
               </button>
@@ -55,7 +55,7 @@ exports[`UpdateModal renders correctly with required props 1`] = `
             class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-box--padding-10 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-sm"
+              class="items-center justify-center p-10 flex rounded-sm"
             >
               <img
                 height="160"

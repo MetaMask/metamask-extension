@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { createBuilderRequest } from './test-utils';
 
 describe('transaction-details builder', () => {
-  it('builds finalized sensitive details and completion metrics', async () => {
+  it('exposes migrated contract details and completion_time on properties on finalized', async () => {
     const result = await getTransactionDetailsMetricsProperties(
       createBuilderRequest({
         eventName: TransactionMetaMetricsEvent.finalized,
@@ -16,12 +15,6 @@ describe('transaction-details builder', () => {
             to: '0x2222222222222222222222222222222222222222',
           },
           submittedTime: Date.now() - 3000,
-          blockTimestamp: `0x${Math.floor(Date.now() / 1000).toString(16)}`,
-          txReceipt: {
-            gasUsed: '0x5208',
-            blockNumber: '0x10',
-            status: '0x1',
-          },
         } as never,
         context: {
           ...createBuilderRequest().context,
@@ -31,16 +24,46 @@ describe('transaction-details builder', () => {
       }),
     );
 
-    expect(
-      result.sensitiveProperties.transaction_contract_address,
-    ).toStrictEqual(['0x2222222222222222222222222222222222222222']);
-    expect(result.sensitiveProperties.transaction_contract_method_4byte).toBe(
+    expect(result.properties.transaction_contract_address).toStrictEqual([
+      '0x2222222222222222222222222222222222222222',
+    ]);
+    expect(result.properties.transaction_contract_method_4byte).toBe(
       '0xa9059cbb',
     );
-    expect(result.sensitiveProperties.gas_used).toBe('0.000021');
-    expect(result.sensitiveProperties.block_number).toBe('16');
-    expect(result.sensitiveProperties.completion_time).toEqual(
-      expect.any(String),
+    expect(result.properties.completion_time).toEqual(expect.any(String));
+    expect(result.sensitiveProperties).toStrictEqual({});
+  });
+
+  it('forwards transactionEventPayload.error to properties on finalized', async () => {
+    const result = await getTransactionDetailsMetricsProperties(
+      createBuilderRequest({
+        eventName: TransactionMetaMetricsEvent.finalized,
+        transactionEventPayload: {
+          transactionMeta: createBuilderRequest().transactionMeta,
+          error: 'user rejected the request',
+        } as never,
+      }),
     );
+
+    expect(result.properties.error).toBe('user rejected the request');
+  });
+
+  it('omits transaction_contract_address for batch transactions so batch.ts can supply it', async () => {
+    const result = await getTransactionDetailsMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          nestedTransactions: [
+            { to: '0x2222222222222222222222222222222222222222' },
+          ],
+        } as never,
+        context: {
+          ...createBuilderRequest().context,
+          isContractInteraction: true,
+        } as never,
+      }),
+    );
+
+    expect(result.properties.transaction_contract_address).toBeUndefined();
   });
 });

@@ -31,11 +31,19 @@ export type {
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
 
+export { usePerpsMaxSlippage } from './usePerpsMaxSlippage';
+export type { UsePerpsMaxSlippageReturn } from './usePerpsMaxSlippage';
+export { usePerpsEstimatedSlippage } from './usePerpsEstimatedSlippage';
+export type {
+  UsePerpsEstimatedSlippageOptions,
+  UsePerpsEstimatedSlippageReturn,
+} from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
 export type {
   PerpsTrackEventFn,
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
+export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

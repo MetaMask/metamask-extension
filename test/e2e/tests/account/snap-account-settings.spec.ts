@@ -7,6 +7,7 @@ import ExperimentalSettings from '../../page-objects/pages/settings/experimental
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
@@ -36,7 +37,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.checkPageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
         await accountListPage.addMultichainWallet();

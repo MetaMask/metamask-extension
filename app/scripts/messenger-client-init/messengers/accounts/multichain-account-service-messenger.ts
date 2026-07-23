@@ -31,8 +31,6 @@ export function getMultichainAccountServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     events: [
-      'KeyringController:stateChange',
-      'SnapController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
     ],
@@ -41,16 +39,17 @@ export function getMultichainAccountServiceMessenger(
       'AccountsController:getAccountByAddress',
       'AccountsController:getAccount',
       'AccountsController:getAccounts',
-      'SnapController:getState',
-      'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:addNewKeyring',
       'KeyringController:getKeyringsByType',
       'KeyringController:createNewVaultAndKeychain',
       'KeyringController:createNewVaultAndRestore',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
+      'SnapController:handleRequest',
+      'SnapAccountService:ensureReady',
     ],
   });
   return serviceMessenger;

@@ -5,9 +5,8 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import * as Environment from '../../../../shared/lib/environment';
 import LoginOptions from './login-options';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
+import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType } from './types';
 
 const buildStore = () =>
   configureMockStore([thunk])({
@@ -19,182 +18,122 @@ const buildStore = () =>
 
 describe('LoginOptions', () => {
   const mockHandleLogin = jest.fn();
+  type ButtonPrefix = 'create' | 'import';
+  type RenderScenario = {
+    loginOption: LoginOptionType;
+    buttonPrefix: ButtonPrefix;
+    socialLabelKey: 'onboardingContinueWith' | 'onboardingSignInWith';
+    srpLabel: string;
+  };
+
+  const renderComponent = (loginOption: LoginOptionType = LOGIN_OPTION.NEW) =>
+    renderWithProvider(
+      <LoginOptions loginOption={loginOption} handleLogin={mockHandleLogin} />,
+      buildStore(),
+    );
+
+  const socialButtons = [
+    {
+      name: 'Google',
+      loginType: LOGIN_TYPE.GOOGLE,
+      testIdSuffix: 'google',
+    },
+    {
+      name: 'Apple',
+      loginType: LOGIN_TYPE.APPLE,
+      testIdSuffix: 'apple',
+    },
+    {
+      name: 'Telegram',
+      loginType: LOGIN_TYPE.TELEGRAM,
+      testIdSuffix: 'telegram',
+    },
+  ];
 
   beforeEach(() => {
     jest.restoreAllMocks();
     mockHandleLogin.mockClear();
-    jest
-      .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
-      .mockReturnValue(false);
   });
 
-  describe('when Telegram login is enabled', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
-        .mockReturnValue(true);
+  const assertLoginActionsRendered = ({
+    loginOption,
+    buttonPrefix,
+    socialLabelKey,
+    srpLabel,
+  }: RenderScenario) => {
+    const { getByTestId, getByText } = renderComponent(loginOption);
+
+    socialButtons.forEach(({ name, testIdSuffix }) => {
+      expect(
+        getByTestId(`onboarding-${buttonPrefix}-with-${testIdSuffix}-button`),
+      ).toBeInTheDocument();
+      expect(getByText(tEn(socialLabelKey, [name]))).toBeInTheDocument();
     });
 
-    it('renders create-with buttons for Google, Apple, Telegram and an SRP button', () => {
-      const { getByTestId, getByText } = renderWithProvider(
-        <LoginOptions
-          loginOption={LOGIN_OPTION.NEW}
-          handleLogin={mockHandleLogin}
-        />,
-        buildStore(),
-      );
+    expect(
+      getByTestId(`onboarding-${buttonPrefix}-with-srp-button`),
+    ).toBeInTheDocument();
+    expect(getByText(srpLabel)).toBeInTheDocument();
+  };
 
-      expect(
-        getByTestId('onboarding-create-with-google-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-create-with-apple-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-create-with-telegram-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-create-with-srp-button'),
-      ).toBeInTheDocument();
+  const assertHandleLoginCalls = ({
+    loginOption,
+    buttonPrefix,
+  }: Pick<RenderScenario, 'loginOption' | 'buttonPrefix'>) => {
+    const { getByTestId } = renderComponent(loginOption);
 
-      expect(
-        getByText(tEn('onboardingContinueWith', ['Google'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(tEn('onboardingContinueWith', ['Apple'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(tEn('onboardingContinueWith', ['Telegram'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.onboardingSrpCreate.message),
-      ).toBeInTheDocument();
-    });
+    fireEvent.click(
+      getByTestId(`onboarding-${buttonPrefix}-with-google-button`),
+    );
+    fireEvent.click(
+      getByTestId(`onboarding-${buttonPrefix}-with-apple-button`),
+    );
+    fireEvent.click(
+      getByTestId(`onboarding-${buttonPrefix}-with-telegram-button`),
+    );
+    fireEvent.click(getByTestId(`onboarding-${buttonPrefix}-with-srp-button`));
 
-    it('renders import-with buttons for Google, Apple, Telegram and an SRP button', () => {
-      const { getByTestId, getByText } = renderWithProvider(
-        <LoginOptions
-          loginOption={LOGIN_OPTION.EXISTING}
-          handleLogin={mockHandleLogin}
-        />,
-        buildStore(),
-      );
+    expect(mockHandleLogin).toHaveBeenNthCalledWith(1, LOGIN_TYPE.GOOGLE);
+    expect(mockHandleLogin).toHaveBeenNthCalledWith(2, LOGIN_TYPE.APPLE);
+    expect(mockHandleLogin).toHaveBeenNthCalledWith(3, LOGIN_TYPE.TELEGRAM);
+    expect(mockHandleLogin).toHaveBeenNthCalledWith(4, LOGIN_TYPE.SRP);
+    expect(mockHandleLogin).toHaveBeenCalledTimes(4);
+  };
 
-      expect(
-        getByTestId('onboarding-import-with-google-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-import-with-apple-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-import-with-telegram-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-import-with-srp-button'),
-      ).toBeInTheDocument();
-
-      expect(
-        getByText(tEn('onboardingSignInWith', ['Google'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(tEn('onboardingSignInWith', ['Apple'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(tEn('onboardingSignInWith', ['Telegram'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.onboardingSrpImport.message),
-      ).toBeInTheDocument();
-    });
-
-    it('calls handleLogin with the correct LOGIN_TYPE for each button', () => {
-      const { getByTestId } = renderWithProvider(
-        <LoginOptions
-          loginOption={LOGIN_OPTION.NEW}
-          handleLogin={mockHandleLogin}
-        />,
-        buildStore(),
-      );
-
-      fireEvent.click(getByTestId('onboarding-create-with-google-button'));
-      fireEvent.click(getByTestId('onboarding-create-with-apple-button'));
-      fireEvent.click(getByTestId('onboarding-create-with-telegram-button'));
-      fireEvent.click(getByTestId('onboarding-create-with-srp-button'));
-
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(1, LOGIN_TYPE.GOOGLE);
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(2, LOGIN_TYPE.APPLE);
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(3, LOGIN_TYPE.TELEGRAM);
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(4, LOGIN_TYPE.SRP);
-      expect(mockHandleLogin).toHaveBeenCalledTimes(4);
+  it('renders all login actions for the new flow', () => {
+    assertLoginActionsRendered({
+      loginOption: LOGIN_OPTION.NEW,
+      buttonPrefix: 'create',
+      socialLabelKey: 'onboardingContinueWith',
+      srpLabel: messages.onboardingSrpCreate.message,
     });
   });
 
-  describe('when Telegram login is disabled', () => {
-    it('renders only Google, Apple, and SRP buttons', () => {
-      const { getByTestId, getByText, queryByTestId, queryByText } =
-        renderWithProvider(
-          <LoginOptions
-            loginOption={LOGIN_OPTION.NEW}
-            handleLogin={mockHandleLogin}
-          />,
-          buildStore(),
-        );
-
-      expect(
-        getByTestId('onboarding-create-with-google-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-create-with-apple-button'),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('onboarding-create-with-srp-button'),
-      ).toBeInTheDocument();
-      expect(
-        queryByTestId('onboarding-create-with-telegram-button'),
-      ).not.toBeInTheDocument();
-
-      expect(
-        getByText(tEn('onboardingContinueWith', ['Google'])),
-      ).toBeInTheDocument();
-      expect(
-        getByText(tEn('onboardingContinueWith', ['Apple'])),
-      ).toBeInTheDocument();
-      expect(
-        queryByText(tEn('onboardingContinueWith', ['Telegram'])),
-      ).not.toBeInTheDocument();
+  it('renders all login actions for the existing flow', () => {
+    assertLoginActionsRendered({
+      loginOption: LOGIN_OPTION.EXISTING,
+      buttonPrefix: 'import',
+      socialLabelKey: 'onboardingSignInWith',
+      srpLabel: messages.onboardingSrpImport.message,
     });
+  });
 
-    it('calls handleLogin for Google, Apple, and SRP only', () => {
-      const { getByTestId, queryByTestId } = renderWithProvider(
-        <LoginOptions
-          loginOption={LOGIN_OPTION.NEW}
-          handleLogin={mockHandleLogin}
-        />,
-        buildStore(),
-      );
+  it('calls handleLogin with the correct login types for the new flow', () => {
+    assertHandleLoginCalls({
+      loginOption: LOGIN_OPTION.NEW,
+      buttonPrefix: 'create',
+    });
+  });
 
-      fireEvent.click(getByTestId('onboarding-create-with-google-button'));
-      fireEvent.click(getByTestId('onboarding-create-with-apple-button'));
-      fireEvent.click(getByTestId('onboarding-create-with-srp-button'));
-
-      expect(
-        queryByTestId('onboarding-create-with-telegram-button'),
-      ).not.toBeInTheDocument();
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(1, LOGIN_TYPE.GOOGLE);
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(2, LOGIN_TYPE.APPLE);
-      expect(mockHandleLogin).toHaveBeenNthCalledWith(3, LOGIN_TYPE.SRP);
-      expect(mockHandleLogin).toHaveBeenCalledTimes(3);
+  it('calls handleLogin with the correct login types for the existing flow', () => {
+    assertHandleLoginCalls({
+      loginOption: LOGIN_OPTION.EXISTING,
+      buttonPrefix: 'import',
     });
   });
 
   it('renders Terms of Use and Privacy Notice footer links pointing to consensys.io', () => {
-    const { getByRole } = renderWithProvider(
-      <LoginOptions
-        loginOption={LOGIN_OPTION.NEW}
-        handleLogin={mockHandleLogin}
-      />,
-      buildStore(),
-    );
+    const { getByRole } = renderComponent();
 
     const termsLink = getByRole('link', {
       name: new RegExp(messages.onboardingLoginFooterTermsOfUse.message, 'iu'),

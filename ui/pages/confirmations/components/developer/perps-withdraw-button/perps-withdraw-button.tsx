@@ -13,7 +13,6 @@ import {
 export const PerpsWithdrawButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrigger = useCallback(async () => {
@@ -29,8 +28,6 @@ export const PerpsWithdrawButton = () => {
         accountAddress: selectedAccount.address as Hex,
       });
 
-      setHasTriggered(true);
-
       navigateToTransaction(transactionId, {
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -44,10 +41,7 @@ export const PerpsWithdrawButton = () => {
   return (
     <DeveloperButton
       title="Perps Withdraw"
-      description="Triggers a Perps withdraw confirmation."
-      buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
-      hasTriggered={hasTriggered}
       disabled={isLoading}
     />
   );

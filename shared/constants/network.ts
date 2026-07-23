@@ -1,6 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import {
   CaipChainId,
@@ -230,6 +230,9 @@ export const CHAIN_IDS = {
   FLUENT: '0x6313',
   FLUENT_TESTNET: '0x5202',
   FLUENT_DEVNET: '0x5201',
+  KONET: '0x4341',
+  ARC: '0x13b2',
+  ROBINHOOD_CHAIN: '0x1237',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -407,6 +410,18 @@ export const MANTLE_DISPLAY_NAME = 'Mantle';
 export const FLUENT_DISPLAY_NAME = 'Fluent';
 export const FLUENT_TESTNET_DISPLAY_NAME = 'Fluent Testnet';
 export const FLUENT_DEVNET_DISPLAY_NAME = 'Fluent Devnet';
+export const KONET_DISPLAY_NAME = 'KONET Mainnet';
+export const ARC_DISPLAY_NAME = 'Arc';
+export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
+
+/**
+ * The Arc USDC ERC20 token contract. On Arc the native gas token is USDC, so
+ * this ERC20 is a display duplicate of the native token. It is hidden across
+ * the UI (token list, aggregated balance, send asset picker) in favor of the
+ * native token, which is the source of truth for USDC on Arc.
+ */
+export const ARC_USDC_TOKEN_ADDRESS =
+  '0x3600000000000000000000000000000000000000';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -505,6 +520,8 @@ export const CURRENCY_SYMBOLS = {
   STABLE: 'USDT0',
   MANTLE: 'MNT',
   FLUENT: 'ETH',
+  KONET: 'KONET',
+  ARC: 'USDC',
 } as const;
 
 // Non-EVM currency symbols
@@ -663,6 +680,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const SEI_NATIVE_TOKEN_IMAGE_URL = './images/sei-native.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const B3_IMAGE_URL = './images/b3.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
@@ -690,6 +708,7 @@ export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
 export const TRON_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_SHASTA_IMAGE_URL = './images/tron-logo.svg';
+export const STELLAR_IMAGE_URL = './images/xlm.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm.svg';
 export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
   './images/xrplevm-native.svg';
@@ -737,14 +756,18 @@ export const MSU_IMAGE_URL = './images/msu.svg';
 export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
+export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 export const STABLE_IMAGE_URL = './images/stable.svg';
 export const STABLE_NATIVE_TOKEN_IMAGE_URL = './images/stable-native.svg';
+export const KONET_IMAGE_URL = './images/konet.svg';
 export const TEMPO_NATIVE_TOKEN_IMAGE_URL = './images/tempo-native.svg';
 export const FLUENT_IMAGE_URL = './images/fluent.svg';
+export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
+export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -934,6 +957,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.FLUENT]: FLUENT_DISPLAY_NAME,
   [CHAIN_IDS.FLUENT_TESTNET]: FLUENT_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.FLUENT_DEVNET]: FLUENT_DEVNET_DISPLAY_NAME,
+  [CHAIN_IDS.KONET]: KONET_DISPLAY_NAME,
+  [CHAIN_IDS.ARC]: ARC_DISPLAY_NAME,
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1107,6 +1133,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.FLUENT]: CURRENCY_SYMBOLS.FLUENT,
   [CHAIN_IDS.FLUENT_TESTNET]: CURRENCY_SYMBOLS.FLUENT,
   [CHAIN_IDS.FLUENT_DEVNET]: CURRENCY_SYMBOLS.FLUENT,
+  [CHAIN_IDS.KONET]: CURRENCY_SYMBOLS.KONET,
+  [CHAIN_IDS.ARC]: CURRENCY_SYMBOLS.ARC,
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
 } as const;
 
 /**
@@ -1260,6 +1289,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [MultichainNetworks.TRON]: TRON_IMAGE_URL,
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
@@ -1300,6 +1330,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.FLUENT]: FLUENT_IMAGE_URL,
   [CHAIN_IDS.FLUENT_TESTNET]: FLUENT_IMAGE_URL,
   [CHAIN_IDS.FLUENT_DEVNET]: FLUENT_IMAGE_URL,
+  [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
+  [CHAIN_IDS.ARC]: ARC_NETWORK_IMAGE_URL,
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1331,7 +1364,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.SEI]: SEI_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MONAD]: MONAD_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
@@ -1400,6 +1433,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.FLUENT]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLUENT_TESTNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLUENT_DEVNET]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ARC]: ARC_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1409,6 +1445,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [MultichainNetworks.TRON]: TRON_IMAGE_URL,
   [MultichainNetworks.TRON_NILE]: TRON_NILE_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_IMAGE_URL,
 } as const;
 
 /**
@@ -1553,6 +1590,8 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
   'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
+  'arc-mainnet': () => process.env.QUICKNODE_ARC_URL,
+  'robinhood-mainnet': () => process.env.QUICKNODE_ROBINHOOD_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1662,7 +1701,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: `https://mainnet.era.zksync.io`,
+        url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
         failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
@@ -1761,6 +1800,36 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     blockExplorerUrls: ['https://explore.tempo.xyz/'],
     defaultBlockExplorerUrlIndex: 0,
   },
+  {
+    chainId: CHAIN_IDS.ARC,
+    name: ARC_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ARC,
+    rpcEndpoints: [
+      {
+        url: `https://arc-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.arc.io'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.ROBINHOOD_CHAIN,
+    name: ROBINHOOD_CHAIN_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://robinhood-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('robinhood-mainnet'),
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://robinhoodchain.blockscout.com'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
@@ -1772,6 +1841,7 @@ export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
   BtcScope.Mainnet,
   TrxScope.Mainnet,
+  XlmScope.Pubnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

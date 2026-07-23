@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums jāatlasa konts!"
   },
-  "addAcquiredTokens": {
-    "message": "Pievienojiet marķierus, ko ieguvāt, izmantojot MetaMask"
-  },
   "addAlias": {
     "message": "Pievienot segvārdu"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Papildu"
   },
-  "customToken": {
-    "message": "Pielāgots marķieris"
-  },
   "decimal": {
     "message": "Decimāldaļu precizitāte"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
   },
   "delete": {
     "message": "Dzēst"
@@ -348,9 +339,6 @@
   "metamaskVersion": {
     "message": "MetaMask versija"
   },
-  "mustSelectOne": {
-    "message": "Jāatlasa vismaz 1 marķieris."
-  },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
@@ -360,9 +348,6 @@
   },
   "networks": {
     "message": "Tīkli"
-  },
-  "nevermind": {
-    "message": "Nav svarīgi"
   },
   "newAccountNumberName": {
     "message": "Konts $1",
@@ -382,9 +367,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Tīmekļa kamera nav atrasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepietiek Gas"
   },
   "ofTextNofM": {
     "message": "no"
@@ -523,9 +505,6 @@
   },
   "sign": {
     "message": "Parakstīt"
-  },
-  "signatureRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "signed": {
     "message": "Parakstīts"

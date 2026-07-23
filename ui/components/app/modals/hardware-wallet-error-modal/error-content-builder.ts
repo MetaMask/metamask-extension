@@ -3,6 +3,7 @@ import { IconName, IconColor } from '@metamask/design-system-react';
 import {
   getHardwareWalletErrorCode,
   HardwareWalletType,
+  isTrezorDesktopConnectionMissingError,
 } from '../../../../contexts/hardware-wallets';
 
 /** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
@@ -16,6 +17,7 @@ export const HardwareWalletErrorContentVariant = {
  */
 type ErrorContentBase = {
   title: string;
+  showRepairLink: boolean;
 };
 
 type ErrorContentWithRecovery = ErrorContentBase & {
@@ -61,6 +63,12 @@ function addRecoveryInstruction(
   return shouldAdd ? [...instructions, instruction] : instructions;
 }
 
+const REPAIR_LINK_ERROR_CODES = new Set([
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.ConnectionTransportMissing,
+]);
+
 /**
  * Build error content based on error code
  *
@@ -75,6 +83,23 @@ export function buildErrorContent(
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
   const errorCode = getHardwareWalletErrorCode(error);
+  const showRepairLink =
+    errorCode !== null && REPAIR_LINK_ERROR_CODES.has(errorCode);
+
+  if (
+    (walletType === HardwareWalletType.Trezor ||
+      walletType === HardwareWalletType.OneKey) &&
+    isTrezorDesktopConnectionMissingError(error)
+  ) {
+    return {
+      variant: HardwareWalletErrorContentVariant.Description,
+      icon: IconName.Danger,
+      iconColor: IconColor.WarningDefault,
+      title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+      showRepairLink: true,
+      description: t('trezorDesktopAppRequiredError'),
+    };
+  }
 
   switch (errorCode) {
     // Locked device errors
@@ -84,6 +109,7 @@ export function buildErrorContent(
         icon: IconName.Lock,
         iconColor: IconColor.IconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
@@ -96,6 +122,7 @@ export function buildErrorContent(
       return {
         variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletTitleEthAppNotOpen'),
+        showRepairLink,
         recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
 
@@ -103,6 +130,7 @@ export function buildErrorContent(
       return {
         variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleBlindSignNotSupported'),
+        showRepairLink,
         recoveryInstructions: [
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction2'),
@@ -111,9 +139,11 @@ export function buildErrorContent(
 
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
+    case ErrorCode.ConnectionTransportMissing:
       return {
         variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [
             t('hardwareWalletErrorRecoveryConnection1'),
@@ -130,6 +160,7 @@ export function buildErrorContent(
       return {
         variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        showRepairLink,
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
           walletType === HardwareWalletType.Ledger,
@@ -144,6 +175,7 @@ export function buildErrorContent(
         icon: IconName.Danger,
         iconColor: IconColor.WarningDefault,
         title: t('hardwareWalletErrorUnknownErrorTitle'),
+        showRepairLink,
         description: t('hardwareWalletErrorUnknownErrorDescription', [
           t(walletType),
         ]),

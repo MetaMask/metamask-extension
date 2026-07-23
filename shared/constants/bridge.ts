@@ -35,6 +35,8 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.MONAD,
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
+  CHAIN_IDS.ARC,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -115,6 +117,10 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.HYPE)]: 'HyperEVM',
   [CHAIN_IDS.MEGAETH_MAINNET]: 'MegaETH',
   [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
+  [CHAIN_IDS.ARC]: 'Arc',
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: 'Arc',
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: 'Robinhood',
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: 'Robinhood',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -126,7 +132,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
-export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
+type BridgeChainTokenMap = Partial<
   Record<
     (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
     {
@@ -137,7 +143,22 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
       assetId: CaipAssetType;
     }
   >
-> = {
+>;
+
+// We usually use the native asset as "from" token. In some chains we want to override that.
+export const BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN: BridgeChainTokenMap = {
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: {
+    // USDC on Arc
+    address: '0x3600000000000000000000000000000000000000',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USDC',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0x3600000000000000000000000000000000000000')}`,
+  },
+};
+
+// This is actually for defining a default "toToken" when opening Bridge view
+export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
   [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
     // ETH -> mUSD on mainnet
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
@@ -242,6 +263,23 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'USDT0',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)}/erc20:${toChecksumHexAddress('0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb')}`,
   },
+  // On Arc, setting EURC as "to asset", since USDC will be the default "from" asset.
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: {
+    // EURC on Arc
+    address: '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1',
+    symbol: 'EURC',
+    decimals: 6,
+    name: 'EURC',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
+    // ETH -> USDe on Robinhood
+    address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+    symbol: 'USDe',
+    decimals: 18,
+    name: 'USDe',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34')}`,
+  },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -260,3 +298,8 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
 } as const;
+
+export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
+  // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
+  'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+]);

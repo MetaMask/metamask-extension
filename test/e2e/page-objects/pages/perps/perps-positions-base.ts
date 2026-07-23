@@ -1,12 +1,10 @@
-import { Driver } from '../../../webdriver/driver';
+import HomePage from '../home/homepage';
 
 /**
  * Base class with shared position-related selectors and methods
- * used by both PerpsTabPage and PerpsHomePage.
+ * used by PerpsTab.
  */
-export class PerpsPositionsBase {
-  protected readonly driver: Driver;
-
+export class PerpsPositionsBase extends HomePage {
   protected readonly accountOverviewPerpsTab = {
     testId: 'account-overview__perps-tab',
   };
@@ -14,10 +12,6 @@ export class PerpsPositionsBase {
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',
   };
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
 
   /**
    * Clicks the position card for the given symbol (navigates to market detail).

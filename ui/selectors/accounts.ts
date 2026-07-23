@@ -90,11 +90,6 @@ export const isSelectedInternalAccountSolana = createSelector(
   (account) => isSolanaAccount(account),
 );
 
-export const hasCreatedSolanaAccount = createSelector(
-  getInternalAccounts,
-  (accounts) => accounts.some((account) => isSolanaAccount(account)),
-);
-
 /**
  * Returns all internal accounts that declare support for the provided CAIP scope.
  * The scope should be a CAIP-2 scope string (e.g., 'eip155:0', 'bip122:...').

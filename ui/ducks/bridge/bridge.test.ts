@@ -1,21 +1,16 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import {
-  BridgeBackgroundAction,
-  BridgeUserAction,
-  RequestStatus,
-} from '@metamask/bridge-controller';
+import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import * as cacheUtils from '../../pages/bridge/utils/cache';
 import * as storeActions from '../../store/actions';
 import * as sentry from '../../../shared/lib/sentry';
-import bridgeReducer, { initialState } from './bridge';
+import bridgeReducer, { bridgeSlice, initialState } from './bridge';
 import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
@@ -24,6 +19,7 @@ import {
   updateQuoteRequestParams,
   setWasTxDeclined,
   setSlippage,
+  setSlippageUserOverride,
   resetBridgeController,
   resetInputFields,
 } from './actions';
@@ -246,7 +242,7 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
+        updateBridgeQuoteRequestParams: mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -277,6 +273,8 @@ describe('Ducks - Bridge', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
         ) as never,
       );
@@ -308,6 +306,8 @@ describe('Ducks - Bridge', () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
         },
         0,
         1,
@@ -330,7 +330,7 @@ describe('Ducks - Bridge', () => {
         'clearAllBridgeCacheItems',
       );
       setBackgroundConnection({
-        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+        resetState: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -366,7 +366,8 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: SlippageValue.BridgeDefault,
+        slippage: undefined,
+        isSlippageUserOverride: false,
         isDestAssetPickerOpen: false,
         isSrcAssetPickerOpen: false,
         sortOrder: 'cost_ascending',
@@ -378,6 +379,23 @@ describe('Ducks - Bridge', () => {
         fromNativeBalance: null,
       });
     });
+  });
+
+  it('clears user slippage when an asset changes', () => {
+    let state = bridgeReducer(initialState, setSlippageUserOverride(undefined));
+
+    state = bridgeReducer(
+      state,
+      bridgeSlice.actions.setToToken({
+        assetId: 'eip155:1/erc20:0xabc',
+        symbol: 'TEST',
+        name: 'Test',
+        decimals: 18,
+      }),
+    );
+
+    expect(state.slippage).toBeUndefined();
+    expect(state.isSlippageUserOverride).toBe(false);
   });
 
   describe('setWasTxDeclined', () => {

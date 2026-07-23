@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars -- ESLint is confused here */
 /* global jest */
 import React, { useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
@@ -10,18 +9,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
-import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  MetaMetricsContext,
-  LegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics';
+import { I18nContext } from '../../ui/contexts/i18n';
+import { MetaMetricsContext } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import {
-  LegacyRouteMessengerProvider,
-  RouteMessengerContext,
-} from '../../ui/contexts/route-messenger';
+import { RouteMessengerContext } from '../../ui/contexts/route-messenger';
 import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
+import { MetaMaskTestReduxProvider } from './redux-test-provider';
 import { createMockUIMessenger } from './mock-ui-messenger';
 
 // Re-export en messages for tests that need direct access
@@ -37,18 +31,21 @@ const createMockMetaMetricsContext = (
   onboardingParentContext: { current: null },
 });
 
-export const I18nProvider = (props) => {
-  const { currentLocale, current, en: eng } = props;
-
+/**
+ * @param {object} props
+ * @param {string} [props.currentLocale]
+ * @param {object} [props.current]
+ * @param {object} [props.en]
+ * @param {import('react').ReactNode} [props.children]
+ */
+export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
       getMessage(currentLocale, eng, key, ...args);
   }, [currentLocale, current, eng]);
 
-  return (
-    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={t}>{children}</I18nContext.Provider>;
 };
 
 I18nProvider.propTypes = {
@@ -58,13 +55,17 @@ I18nProvider.propTypes = {
   children: PropTypes.node,
 };
 
-I18nProvider.defaultProps = {
-  children: undefined,
-};
-
+/**
+ * @param {object} [options]
+ * @param {string[]} [options.initialEntries]
+ * @param {import('redux').Store} [options.store]
+ * @param {string} [options.routePath]
+ * @returns {import('react').FC<{ children?: import('react').ReactNode }>}
+ */
 export function createMemoryRouterWrapper(options = {}) {
   const { initialEntries = ['/'], store, routePath = '*' } = options;
 
+  /** @param {{ children?: import('react').ReactNode }} props */
   function Wrapper({ children }) {
     const router = createMemoryRouter(
       [
@@ -83,12 +84,14 @@ export function createMemoryRouterWrapper(options = {}) {
       />
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    return store ? (
+      <MetaMaskTestReduxProvider store={store}>
+        {container}
+      </MetaMaskTestReduxProvider>
+    ) : (
+      container
+    );
   }
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
 
   return Wrapper;
 }
@@ -115,7 +118,7 @@ export function createProviderWrapper(
   function Wrapper({ children }) {
     const content = routeMessenger ? (
       <RouteMessengerContext.Provider value={routeMessenger}>
-        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
+        {children}
       </RouteMessengerContext.Provider>
     ) : (
       children
@@ -124,17 +127,13 @@ export function createProviderWrapper(
     return (
       <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <UIMessengerProvider value={uiMessenger}>
-              <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-                <LegacyMetaMetricsProvider>
-                  <QueryClientProvider client={queryClient}>
-                    {content}
-                  </QueryClientProvider>
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </UIMessengerProvider>
-          </LegacyI18nProvider>
+          <UIMessengerProvider value={uiMessenger}>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+              <QueryClientProvider client={queryClient}>
+                {content}
+              </QueryClientProvider>
+            </MetaMetricsContext.Provider>
+          </UIMessengerProvider>
         </I18nProvider>
       </MemoryRouter>
     );
@@ -175,7 +174,7 @@ export function renderHookWithProvider(
   uiMessenger = createMockUIMessenger(),
   routeMessenger = null,
 ) {
-  const store = state ? configureStore(state) : undefined;
+  const store = configureStore(state ?? {});
 
   const ProviderWrapper = createProviderWrapper(
     store,
@@ -215,7 +214,7 @@ export function renderHookWithProvider(
  * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
  * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
  * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
- * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
+ * @returns {RenderHookResult & { history: History, store: ReturnType<import('../../ui/store/store').default> }} The result of the rendered hook, the history object, and the store.
  */
 export const renderHookWithProviderTyped = (
   hook,
@@ -239,7 +238,7 @@ export const renderHookWithProviderTyped = (
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
     <I18nProvider currentLocale="en" current={en} en={en}>
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      {children}
     </I18nProvider>
   );
 

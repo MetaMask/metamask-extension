@@ -305,7 +305,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -346,7 +346,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -370,7 +370,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -412,7 +412,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -451,7 +451,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -478,7 +478,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -501,7 +501,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -531,7 +531,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -557,7 +557,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -590,7 +590,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -624,7 +624,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -653,7 +653,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -679,7 +679,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -706,7 +706,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -730,7 +730,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -780,7 +780,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -810,7 +810,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -840,7 +840,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -864,7 +864,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -903,7 +903,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -926,7 +926,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -958,7 +958,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -986,7 +986,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1011,7 +1011,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1044,7 +1044,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },

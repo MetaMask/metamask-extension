@@ -1,16 +1,12 @@
 import { type BalanceChangePeriod } from '@metamask/assets-controllers';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Skeleton } from '@metamask/design-system-react';
-import {
-  Display,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
+
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors';
-import { Box, SensitiveText } from '../../../component-library';
-import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import { SensitiveText } from '../../../component-library';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
@@ -20,24 +16,18 @@ export type AccountGroupBalanceChangeProps = {
 
 const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
-const AccountGroupBalanceChangeComponent: React.FC<
-  AccountGroupBalanceChangeProps
-> = ({ period, trailingChild }) => {
-  const { privacyMode, color, amountChange, percentChange } =
+const AccountGroupBalanceChangeComponent = ({
+  period,
+  trailingChild,
+}: AccountGroupBalanceChangeProps) => {
+  const { privacyMode, color, amountChange, percentChange, isLoading } =
     useAccountGroupBalanceDisplay(period);
   const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
   const currency = useSelector(getCurrentCurrency);
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
 
   return (
-    <Skeleton
-      hideChildren={
-        !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)
-      }
-    >
-      <Box display={Display.Flex} gap={1}>
+    <Skeleton hideChildren={isLoading}>
+      <Box flexDirection={BoxFlexDirection.Row} gap={1} className="flex">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -65,6 +55,6 @@ const AccountGroupBalanceChangeComponent: React.FC<
   );
 };
 
-export const AccountGroupBalanceChange: React.FC<
-  AccountGroupBalanceChangeProps
-> = (props) => <AccountGroupBalanceChangeComponent {...props} />;
+export const AccountGroupBalanceChange = (
+  props: AccountGroupBalanceChangeProps,
+) => <AccountGroupBalanceChangeComponent {...props} />;

@@ -18,22 +18,23 @@ import {
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
 import {
-  KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringAction,
-  KeyringControllerAddNewKeyringAction,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
+import { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
+import { SnapMessage } from '@metamask/eth-snap-keyring';
+import { SnapId } from '@metamask/snaps-sdk';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/snaps/permissions';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import {
@@ -57,9 +58,9 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerGetSnapAction
   | SnapControllerGetSnapStateAction
   | SnapControllerHandleRequestAction
-  | KeyringControllerGetKeyringsByTypeAction
+  | SnapAccountServiceHandleKeyringSnapMessageAction
   | KeyringControllerWithKeyringAction
-  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerWithKeyringV2UnsafeAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
@@ -180,27 +181,17 @@ export function getSnapPermissionSpecifications(
          */
         getClientCryptography: () => ({}),
 
-        getSnapKeyring: async () => {
-          // TODO: Use `withKeyring` instead.
-          const [snapKeyring] = messenger.call(
-            'KeyringController:getKeyringsByType',
-            KeyringType.snap,
-          );
-
-          if (!snapKeyring) {
-            await messenger.call(
-              'KeyringController:addNewKeyring',
-              KeyringType.snap,
-            );
-
+        getSnapKeyring: async () => ({
+          // We only need a subset of the Snap keyring's functionality, and this message handling is now
+          // owned by the Snap account service.
+          handleKeyringSnapMessage(snapId: string, message: SnapMessage) {
             return messenger.call(
-              'KeyringController:getKeyringsByType',
-              KeyringType.snap,
-            )[0];
-          }
-
-          return snapKeyring;
-        },
+              'SnapAccountService:handleKeyringSnapMessage',
+              snapId as SnapId,
+              message,
+            );
+          },
+        }),
       },
       messenger as RestrictedMethodMessenger,
     ),

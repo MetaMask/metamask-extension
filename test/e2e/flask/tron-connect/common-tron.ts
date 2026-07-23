@@ -9,6 +9,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { DAPP_PATH } from '../../constants';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
 import {
+  type AccountResourcesRequestOptions,
   mockExchangeRates,
   mockHistoricalPrices1d,
   mockHistoricalPrices7d,
@@ -19,9 +20,16 @@ import {
   mockAccountResourcesRequest,
   mockTokens,
   mockGetBlock,
+  mockGetNowBlock,
+  mockGetBlockByNum,
   mockScanTransaction,
   mockBroadcastTransaction,
   mockTriggerSmartContract,
+  mockTriggerConstantContract,
+  mockGetChainParameters,
+  mockGetNextMaintenanceTime,
+  mockGetContract,
+  mockGetNowBlockInfura,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -35,6 +43,8 @@ export const withTronAccountSnap = async (
     title,
     numberOfAccounts = 1,
     dappOptions,
+    tronBalance,
+    tronAccountResources,
   }: {
     title?: string;
     numberOfAccounts?: number;
@@ -42,6 +52,8 @@ export const withTronAccountSnap = async (
       numberOfTestDapps?: number;
       customDappPaths?: string[];
     };
+    tronBalance?: number;
+    tronAccountResources?: AccountResourcesRequestOptions;
   },
   test: (driver: Driver) => Promise<void>,
 ) => {
@@ -72,15 +84,22 @@ export const withTronAccountSnap = async (
         await mockExchangeRatesV1(mockServer),
         await mockHistoricalPrices1d(mockServer),
         await mockHistoricalPrices7d(mockServer),
-        await mockAccountRequest(mockServer),
+        await mockAccountRequest(mockServer, { balance: tronBalance }),
         await mockTransactionsRequest(mockServer),
         await mockTransactionsTRC20Request(mockServer),
-        await mockAccountResourcesRequest(mockServer),
+        await mockAccountResourcesRequest(mockServer, tronAccountResources),
         await mockTokens(mockServer),
         await mockGetBlock(mockServer),
+        await mockGetNowBlock(mockServer),
+        await mockGetNowBlockInfura(mockServer),
+        await mockGetBlockByNum(mockServer),
         await mockScanTransaction(mockServer),
         await mockBroadcastTransaction(mockServer),
         await mockTriggerSmartContract(mockServer),
+        await mockTriggerConstantContract(mockServer),
+        await mockGetChainParameters(mockServer),
+        await mockGetNextMaintenanceTime(mockServer),
+        await mockGetContract(mockServer),
       ],
     },
     async ({ driver }: { driver: Driver }) => {

@@ -91,11 +91,15 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAddressDisplay: React.FC<{
+const ReviewAddressDisplay = ({
+  address,
+  testId,
+  style,
+}: {
   address: string;
   testId: string;
   style?: React.CSSProperties;
-}> = ({ address, testId, style }) => {
+}) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -134,7 +138,7 @@ const ReviewAddressDisplay: React.FC<{
   );
 };
 
-const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
+const ReviewAccountRow = ({ address }: { address: string }) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -161,10 +165,13 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
   );
 };
 
-const ReviewNetworkRow: React.FC<{
+const ReviewNetworkRow = ({
+  chainId,
+  networkName,
+}: {
   chainId: Hex;
   networkName: string;
-}> = ({ chainId, networkName }) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -207,10 +214,13 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-const ReviewRuleAddressRow: React.FC<{
+const ReviewRuleAddressRow = ({
+  addresses,
+  label,
+}: {
   addresses: string[];
   label: string;
-}> = ({ addresses, label }) => {
+}) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -306,6 +316,7 @@ function renderElement({
           label={t(element.labelKey)}
           value={translateI18nValue(t, element.getValue(ctx))}
           testId={element.testId}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
         />
       );
 
@@ -540,9 +551,7 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionAccount
  * @param options0.networkName
  */
-export const ReviewPermissionRenderer: React.FC<
-  ReviewPermissionRendererProps
-> = ({
+export const ReviewPermissionRenderer = ({
   permissionType,
   permissionData,
   chainId,
@@ -553,7 +562,7 @@ export const ReviewPermissionRenderer: React.FC<
   origin,
   permissionAccount,
   networkName,
-}) => {
+}: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = getPermissionSchemaEntry(permissionType);

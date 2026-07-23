@@ -1,8 +1,6 @@
-import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   BuildTypeEnv,
-  getProfilePairingEnv,
   isDevOrTestBuild,
   isProductionBuild,
   isReleaseCandidateBuild,
@@ -111,19 +109,38 @@ describe('loadOAuthConfig', () => {
   });
 
   describe('when the build type is beta', () => {
-    const environments = [
-      ENVIRONMENT.PRODUCTION,
-      ENVIRONMENT.RELEASE_CANDIDATE,
-      ENVIRONMENT.TESTING,
-      ENVIRONMENT.STAGING,
+    const testCases: {
+      environment: string;
+      expectedBuildTypeEnv: BuildTypeEnv;
+    }[] = [
+      {
+        environment: ENVIRONMENT.PRODUCTION,
+        expectedBuildTypeEnv: BuildTypeEnv.Beta,
+      },
+      {
+        environment: ENVIRONMENT.RELEASE_CANDIDATE,
+        expectedBuildTypeEnv: BuildTypeEnv.Beta,
+      },
+      {
+        environment: ENVIRONMENT.TESTING,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
+      {
+        environment: ENVIRONMENT.STAGING,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
+      {
+        environment: ENVIRONMENT.PULL_REQUEST,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
     ];
 
-    for (const environment of environments) {
-      it(`returns Beta when environment is ${environment}`, () => {
+    for (const { environment, expectedBuildTypeEnv } of testCases) {
+      it(`returns ${expectedBuildTypeEnv} when environment is ${environment}`, () => {
         expectOAuthConfig({
           buildType: 'beta',
           environment,
-          expectedBuildTypeEnv: BuildTypeEnv.Beta,
+          expectedBuildTypeEnv,
         });
       });
     }
@@ -218,38 +235,6 @@ describe('build environment helpers', () => {
       process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.STAGING;
 
       expect(isReleaseCandidateBuild()).toBe(false);
-    });
-  });
-
-  describe('getProfilePairingEnv', () => {
-    it('returns PRD in production', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.PRD);
-    });
-
-    it('returns PRD in release candidate', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.PRD);
-    });
-
-    it('returns DEV in development', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.DEV);
-    });
-
-    it('returns DEV in testing', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.DEV);
-    });
-
-    it('returns UAT for other environments', () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.STAGING;
-
-      expect(getProfilePairingEnv()).toBe(ProfileSyncEnv.UAT);
     });
   });
 });

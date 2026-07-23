@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import type { FC } from 'react';
+import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,18 +44,16 @@ export type NotificationDetailCopyButtonProps = {
  * @param [props.color] - The color of the text.
  * @returns The rendered component.
  */
-export const NotificationDetailCopyButton: FC<
-  NotificationDetailCopyButtonProps
-> = ({
+export const NotificationDetailCopyButton = ({
   notification,
   text,
   displayText,
   color = TextColor.textAlternative,
-}): JSX.Element => {
+}: NotificationDetailCopyButtonProps): JSX.Element => {
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
@@ -66,8 +64,8 @@ export const NotificationDetailCopyButton: FC<
       const otherNotificationProperties = () => {
         if (
           'notification_type' in notification &&
-          notification.notification_type === 'on-chain' &&
-          notification.payload?.chain_id
+          isOnChainNotification(notification) &&
+          notification.payload.chain_id
         ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -77,22 +75,23 @@ export const NotificationDetailCopyButton: FC<
         return undefined;
       };
 
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationDetailClicked,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_id: notification.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_type: notification.type,
-          ...otherNotificationProperties(),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          clicked_item: 'tx_id',
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            notification_id: notification.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            notification_type: notification.type,
+            ...otherNotificationProperties(),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            clicked_item: 'tx_id',
+          })
+          .build(),
+      );
     }
   };
 

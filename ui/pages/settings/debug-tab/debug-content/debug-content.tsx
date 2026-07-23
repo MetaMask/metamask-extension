@@ -26,12 +26,9 @@ import {
   perpsToggleTestnet,
   resetOnboarding,
   resetViewedNotifications,
-  setServiceWorkerKeepAlivePreference,
 } from '../../../../store/actions';
 import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -53,8 +50,6 @@ const DebugContent = () => {
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
-  const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
-    useState(true);
 
   const handleResetAnnouncementClick = useCallback((): void => {
     resetViewedNotifications();
@@ -77,13 +72,6 @@ const DebugContent = () => {
       navigate(backUpSRPRoute);
     }
   }, [dispatch, navigate]);
-
-  const handleToggleServiceWorkerAlive = async (
-    value: boolean,
-  ): Promise<void> => {
-    await dispatch(setServiceWorkerKeepAlivePreference(value));
-    setIsServiceWorkerKeptAlive(value);
-  };
 
   const renderAnnouncementReset = () => {
     return (
@@ -154,8 +142,6 @@ const DebugContent = () => {
         <div className="settings-page__content-item-col">
           <Button
             variant={ButtonVariant.Primary}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleResetOnboardingClick}
           >
             Reset
@@ -179,20 +165,6 @@ const DebugContent = () => {
           </Box>
         </div>
       </Box>
-    );
-  };
-
-  const renderServiceWorkerKeepAliveToggle = () => {
-    return (
-      <ToggleRow
-        title="Service Worker Keep Alive"
-        description="Results in a timestamp being continuously saved to session.storage"
-        isEnabled={isServiceWorkerKeptAlive}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
-        dataTestId="developer-options-service-worker-alive-toggle"
-      />
     );
   };
 
@@ -263,7 +235,6 @@ const DebugContent = () => {
       <div className="settings-page__content-padded">
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
-        {renderServiceWorkerKeepAliveToggle()}
         {process.env.METAMASK_DEBUG && (
           <ToggleRow
             title="Perps Testnet"

@@ -4,14 +4,6 @@
 # * The environment variables used by the `run-build` step in `.github/workflows/run-build.yml`.
 # * The environment variables used by the publish workflow in
 #   `.github/workflows/publish-release-from-release-head.yml`.
-export APPLE_BETA_CLIENT_ID=""
-export APPLE_EXPERIMENTAL_CLIENT_ID=""
-export APPLE_FLASK_CLIENT_ID=""
-export APPLE_PROD_CLIENT_ID=""
-export TELEGRAM_BETA_CLIENT_ID=""
-export TELEGRAM_EXPERIMENTAL_CLIENT_ID=""
-export TELEGRAM_FLASK_CLIENT_ID=""
-export TELEGRAM_PROD_CLIENT_ID=""
 export CONTENTFUL_ACCESS_SPACE_ID=""
 export CONTENTFUL_ACCESS_TOKEN=""
 export ETHERSCAN_API_KEY=""
@@ -22,10 +14,6 @@ export FIREBASE_MEASUREMENT_ID=""
 export FIREBASE_MESSAGING_SENDER_ID=""
 export FIREBASE_PROJECT_ID=""
 export FIREBASE_STORAGE_BUCKET=""
-export GOOGLE_BETA_CLIENT_ID=""
-export GOOGLE_EXPERIMENTAL_CLIENT_ID=""
-export GOOGLE_FLASK_CLIENT_ID=""
-export GOOGLE_PROD_CLIENT_ID=""
 export INFURA_BETA_PROJECT_ID=""
 export INFURA_EXPERIMENTAL_PROJECT_ID=""
 export INFURA_FLASK_PROJECT_ID=""
@@ -40,6 +28,8 @@ export QUICKNODE_POLYGON_URL=""
 export QUICKNODE_SEI_URL=""
 export QUICKNODE_MONAD_URL=""
 export QUICKNODE_HYPEREVM_URL=""
+export QUICKNODE_ARC_URL=""
+export QUICKNODE_ROBINHOOD_URL=""
 export SEGMENT_BETA_WRITE_KEY=""
 export SEGMENT_EXPERIMENTAL_WRITE_KEY=""
 export SEGMENT_FLASK_WRITE_KEY=""
@@ -69,5 +59,17 @@ corepack enable
 # 5. Install dependencies
 yarn
 
-# 6. Run the production build command with 4GB of heap space
-NODE_OPTIONS='--max-old-space-size=4096' yarn build prod
+# 6. Compile the webpack launcher (generates development/.webpack/launch.js,
+# which the webpack:lavamoat build script loads)
+yarn webpack:tsc
+
+# 7. Set the epoch to the package.json mtime; this is used to set the mtime of the files in the generated zip.
+SOURCE_DATE_EPOCH="$(node -p "Math.floor(require('node:fs').statSync('package.json').mtimeMs / 1000)")"
+export SOURCE_DATE_EPOCH
+
+# 8. Run the production build command
+if [ "${1:-}" = "--flask" ]; then
+  yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
+else
+  yarn webpack:lavamoat:build:mv2 --zip --env production
+fi

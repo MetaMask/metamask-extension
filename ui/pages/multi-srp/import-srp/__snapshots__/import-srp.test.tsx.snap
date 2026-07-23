@@ -7,7 +7,7 @@ exports[`ImportSrp renders matches snapshot 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container import-srp__multi-srp mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box import-srp__multi-srp mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -126,7 +126,7 @@ exports[`ImportSrp renders matches snapshot 1`] = `
                 class="flex flex-row justify-end srp-input-import__actions"
               >
                 <button
-                  class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+                  class="inline-flex items-center justify-center rounded-xl px-3 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                   data-testid="srp-input-import__paste-button"
                   role="button"
                 >
@@ -145,7 +145,7 @@ exports[`ImportSrp renders matches snapshot 1`] = `
         class="w-full cta-footer"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full import-srp__continue-button"
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full import-srp__continue-button"
           data-testid="import-srp-confirm"
           disabled=""
           role="button"

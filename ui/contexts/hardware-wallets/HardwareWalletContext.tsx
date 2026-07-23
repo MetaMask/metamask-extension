@@ -26,6 +26,7 @@ import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 export type HardwareWalletConfigContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -47,6 +48,12 @@ export type HardwareWalletActionsContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /**
+   * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
+   * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
+   * for full explanation.
+   */
+  setSigningInProgress: (value: boolean) => void;
 };
 
 /**
@@ -56,6 +63,7 @@ export type HardwareWalletContextType = {
   // State (may cause rerenders)
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
+  accountAddress: string | null;
   connectionState: HardwareWalletConnectionState;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
@@ -152,9 +160,9 @@ export const useHardwareWalletActions =
  * @param options0
  * @param options0.children
  */
-export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
+export const HardwareWalletProvider = ({
   children,
-}) => {
+}: React.PropsWithChildren<{ children: ReactNode }>) => {
   const { state, refs, setters } = useHardwareWalletStateManager();
 
   const {
@@ -162,11 +170,13 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     connectionState,
     walletType,
     isHardwareWalletAccount,
+    accountAddress,
   } = state;
 
   const {
     setHardwareConnectionPermissionState,
     setConnectionState,
+    resetConnectionRefs,
     resetAutoConnectState,
     setAutoConnected,
   } = setters;
@@ -205,6 +215,10 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
+  const setSigningInProgress = useCallback((value: boolean) => {
+    refs.isSigningInProgressRef.current = value;
+  }, []);
+
   const stableActionsRef = useRef({
     connect,
     disconnect,
@@ -213,6 +227,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
+    setSigningInProgress,
   });
 
   // Update the ref when dependencies change
@@ -224,6 +239,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
+    setSigningInProgress,
   };
 
   useHardwareWalletAutoConnect({
@@ -241,7 +257,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
   // Abort controller lifecycle
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
     refs.abortControllerRef.current = new AbortController();
     return () => {
       refs.abortControllerRef.current?.abort();
@@ -258,17 +273,18 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs.adapterRef.current = null;
     }
     updateConnectionState(ConnectionState.disconnected());
-    refs.isConnectingRef.current = false;
-    refs.currentConnectionIdRef.current = null;
-    refs.hasAutoConnectedRef.current = false;
-    refs.lastConnectedAccountRef.current = null;
+    resetConnectionRefs();
+    resetAutoConnectState();
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateConnectionState]);
+  }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
 
   // Reset when leaving hardware wallet account
   useEffect(() => {
-    if (!isHardwareWalletAccount && refs.adapterRef.current) {
+    if (
+      !isHardwareWalletAccount &&
+      (refs.adapterRef.current || refs.isSigningInProgressRef.current)
+    ) {
       resetHardwareWalletConnection();
     }
     // eslint-disable-next-line react-compiler/react-compiler
@@ -303,6 +319,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       // State
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
@@ -322,6 +339,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       connectionState,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
@@ -335,6 +353,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     () => ({
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -342,6 +361,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [
       isHardwareWalletAccount,
       walletType,
+      accountAddress,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
@@ -366,6 +386,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       requestHardwareWalletPermission:
         stableActionsRef.current.requestHardwareWalletPermission,
       ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
+      setSigningInProgress: stableActionsRef.current.setSigningInProgress,
     }),
     // Actions are stable, so this memo only runs once
     [],

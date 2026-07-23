@@ -1,5 +1,6 @@
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionController } from '@metamask/permission-controller';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as permissions from '../controllers/permissions';
 import { getRootMessenger } from '../lib/messenger';
 import type {
@@ -113,10 +114,13 @@ describe('PermissionControllerInit', () => {
 
     const request = getInitRequestMock();
     const callMock = jest.spyOn(request.initMessenger, 'call');
+    const account = createMockInternalAccount({
+      address: '0xabc',
+    });
 
     callMock.mockImplementation((action: string, ...args: unknown[]) => {
       if (action === 'AccountsController:listAccounts') {
-        return [{ type: 'eip155:evm', address: '0xabc' }];
+        return [account];
       }
       if (action === 'NetworkController:findNetworkClientIdByChainId') {
         return 'mainnet-client-id';
@@ -139,7 +143,7 @@ describe('PermissionControllerInit', () => {
       >[0];
 
       expect(deps.listAccounts()).toStrictEqual([
-        { type: 'eip155:evm', address: '0xabc' },
+        { type: account.type, address: '0xabc' },
       ]);
       expect(deps.findNetworkClientIdByChainId('0x1')).toBe(
         'mainnet-client-id',

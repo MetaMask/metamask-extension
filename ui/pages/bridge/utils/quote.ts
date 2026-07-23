@@ -2,8 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { formatAmount } from '../../../../shared/lib/format-amount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
@@ -169,7 +168,7 @@ export const isQuoteExpiredOrInvalid = ({
  * @param bps - The value in basis points (e.g., "87.5" or 87.5)
  * @returns The percentage value as a string (e.g., "0.875")
  */
-const bpsToPercentage = (
+export const bpsToPercentage = (
   bps: string | number | undefined,
 ): string | undefined => {
   if (bps === undefined || bps === null) {
@@ -188,23 +187,23 @@ const bpsToPercentage = (
 
 export const readMmFee = (quote: QuoteResponse) => {
   // Get the fee percentage from the quote or fallback to default
-  // @ts-expect-error: controller types are not up to date yet
   const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
-  // @ts-expect-error: controller types are not up to date yet
   const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
+  const discountType = quote.quote.feeData?.metabridge?.discountType;
   const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
   const baseFeePercentage = bpsToPercentage(baseBpsFee);
 
   const isDiscounted = Boolean(
+    discountType &&
     quoteFeePercentage &&
     baseFeePercentage &&
-    baseFeePercentage !== quoteFeePercentage &&
-    Boolean(quoteBpsFee),
+    Number(baseBpsFee) > Number(quoteBpsFee),
   );
 
   return {
     isDiscounted,
     baseFeePercentage,
     quoteFeePercentage,
+    discountType,
   };
 };

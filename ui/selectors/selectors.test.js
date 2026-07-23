@@ -1,3 +1,5 @@
+/* eslint-disable jest/require-top-level-describe -- file-wide reselect dev mode hooks */
+import { setGlobalDevModeChecks } from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
@@ -7,6 +9,7 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -16,17 +19,13 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/lib/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
 } from '../../shared/lib/feature-flags';
 
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
@@ -34,8 +33,8 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
-jest.mock('../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../app/scripts/lib/util'),
+jest.mock('../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
@@ -62,6 +61,14 @@ jest.mock('./multichain/networks', () => ({
     return state.metamask.selectedMultichainNetworkChainId;
   }),
 }));
+
+beforeAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+});
+
+afterAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+});
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -1064,6 +1071,369 @@ describe('Selectors', () => {
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
+  describe('transaction lookup selector memoization', () => {
+    const state = {
+      confirmTransaction: {
+        txData: {
+          txParams: {
+            data: '0x',
+            value: '0x0',
+          },
+        },
+      },
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        pendingApprovals: {},
+        transactions: [
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-1',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x1' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-2',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x2' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-3',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x3' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-4',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x4' },
+          },
+        ],
+      },
+    };
+
+    beforeEach(() => {
+      selectors.getUnapprovedTransaction.clearCache();
+      selectors.getUnapprovedTransaction.resetRecomputations();
+      selectors.getTransaction.clearCache();
+      selectors.getTransaction.resetRecomputations();
+      selectors.getFullTxData.clearCache();
+      selectors.getFullTxData.resetRecomputations();
+    });
+
+    it('caches unapproved transaction lookups per transaction ID', () => {
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-4').id).toBe('tx-4');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+
+      expect(selectors.getUnapprovedTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches current-network transaction lookups per transaction ID', () => {
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectors.getTransaction(state, 'tx-2').id).toBe('tx-2');
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+
+      expect(selectors.getTransaction.recomputations()).toBe(2);
+    });
+
+    it('returns updated transaction when transaction object is replaced in state', () => {
+      const initialTx = {
+        chainId: CHAIN_IDS.MAINNET,
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        txParams: { to: '0x1' },
+      };
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [initialTx],
+        },
+      };
+
+      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
+        '0x1',
+      );
+
+      const updatedState = {
+        ...mutableState,
+        metamask: {
+          ...mutableState.metamask,
+          transactions: [
+            {
+              ...initialTx,
+              txParams: { to: '0xupdated' },
+            },
+          ],
+        },
+      };
+
+      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
+        '0xupdated',
+      );
+    });
+
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
+    it('caches full transaction data per transaction ID', () => {
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-2',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x2',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+
+    it('recomputes full transaction data when nested transaction fields mutate in place', () => {
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-1',
+              status: TransactionStatus.submitted,
+              txParams: { to: '0x1' },
+              simulationFails: { reason: 'initial' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'initial' });
+
+      mutableState.metamask.transactions[0].simulationFails.reason = 'updated';
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'updated' });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+  });
+
+  describe('parameterized asset selector memoization', () => {
+    const selectedAccountId = 'selected-account';
+    const selectedAccountAddress = '0x123';
+    const chainIdOne = CHAIN_IDS.MAINNET;
+    const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
+    const tokenAddressOne = '0xaaa';
+    const tokenAddressTwo = '0xbbb';
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          selectedAccount: selectedAccountId,
+          accounts: {
+            [selectedAccountId]: {
+              address: selectedAccountAddress,
+            },
+          },
+        },
+        allNfts: {
+          [selectedAccountAddress]: {
+            [chainIdOne]: [{ address: '0xnft-1' }],
+            [chainIdTwo]: [{ address: '0xnft-2' }],
+          },
+        },
+        tokenScanCache: {
+          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Malicious',
+          },
+          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            result_type: 'Warning',
+          },
+          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Benign',
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      selectors.selectNftsByChainId.clearCache();
+      selectors.selectNftsByChainId.resetRecomputations();
+      selectors.getTokenScanResultsForAddresses.clearCache();
+      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+    });
+
+    it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
+        { address: '0xnft-2' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+    });
+
+    it('caches token scan lookups across equivalent address arrays', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
+
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Benign',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
@@ -1122,6 +1492,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });
@@ -1134,6 +1505,76 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
   });
 
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
@@ -1969,10 +2410,6 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -1990,7 +2427,50 @@ describe('#getConnectedSitesList', () => {
       );
 
       expect(result).toStrictEqual(expectedToken);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+
+    it('returns a stable reference for identical inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(equivalentState);
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a stable reference for identical overrideChainId inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+      const equivalentState = {
+        ...mockState,
+      };
+      const secondResult = selectors.getSwapsDefaultToken(
+        equivalentState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a new reference when current chainId changes', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const stateWithDifferentChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      };
+
+      const secondResult = selectors.getSwapsDefaultToken(
+        stateWithDifferentChainId,
+      );
+
+      expect(secondResult).not.toBe(firstResult);
+      expect(secondResult.chainId).not.toBe(firstResult.chainId);
     });
   });
 
@@ -2092,14 +2572,8 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2148,15 +2622,9 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -3752,7 +4220,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -3768,7 +4236,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -4140,7 +4608,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for popup context using activeTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4151,7 +4619,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for sidepanel context using appActiveTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4163,7 +4631,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when no permissions exist for the origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutPermissions = {
@@ -4182,7 +4650,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when origin is undefined in popup context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutOrigin = {
@@ -4196,7 +4664,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when appActiveTab is undefined in sidepanel context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const stateWithoutAppActiveTab = {
@@ -4473,6 +4941,69 @@ describe('getDeferredDeepLink', () => {
   });
 });
 
+describe('getDeferredDeepLinkParameters', () => {
+  it('returns only UTM parameters from the deferred deep link', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: {
+          createdAt: 1765465337256,
+          referringLink:
+            'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
+        },
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      utm_source: 'newsletter',
+      utm_medium: 'email',
+    });
+  });
+
+  it('returns null when deferredDeepLink is not set', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
+  });
+});
+
+describe('getLastQrScanCompletedSuccessfully', () => {
+  it('returns true when last QR scan completed successfully', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: true,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+  });
+
+  it('returns false when last QR scan was cancelled', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: false,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+  });
+
+  it('returns null when no recent QR scan completion', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: null,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+  });
+
+  it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
+    const state = { metamask: {} };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+  });
+});
+
 describe('getLastVisitedPerpsRoute', () => {
   it('returns the perps lastVisitedRoute value when set', () => {
     const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
@@ -4501,5 +5032,231 @@ describe('getLastVisitedPerpsRoute', () => {
     const state = { metamask: {} };
 
     expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+});
+
+describe('snap selectors', () => {
+  const snapState = {
+    metamask: {
+      currentLocale: 'en',
+      snaps: {
+        'npm:foo': {
+          id: 'npm:foo',
+          enabled: true,
+          preinstalled: true,
+          hideSnapBranding: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Foo',
+            description: 'Foo snap',
+          },
+        },
+        'npm:bar': {
+          id: 'npm:bar',
+          enabled: true,
+          preinstalled: false,
+          hidden: false,
+          manifest: {
+            proposedName: 'Bar',
+            description: 'Bar snap',
+          },
+        },
+        'npm:baz': {
+          id: 'npm:baz',
+          enabled: false,
+          preinstalled: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Baz',
+            description: 'Baz snap',
+          },
+        },
+      },
+      subjects: {
+        'npm:foo': {
+          permissions: {
+            [SnapEndowments.SettingsPage]: {},
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+        'npm:bar': {
+          permissions: {
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+      },
+      insights: {
+        one: { value: 1 },
+        two: { value: 2 },
+      },
+    },
+  };
+
+  it('selects parameterized snap values', () => {
+    expect(selectors.getHideSnapBranding(snapState, 'npm:foo')).toBe(true);
+    expect(selectors.getSnap(snapState, 'npm:foo')).toStrictEqual(
+      snapState.metamask.snaps['npm:foo'],
+    );
+    expect(selectors.getSnapMetadata(snapState, 'npm:foo')).toStrictEqual({
+      name: 'Foo',
+      description: 'Foo snap',
+      hidden: false,
+    });
+    expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
+      value: 1,
+    });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
+  });
+
+  it('filters snap collections for snap permissions and enabled state', () => {
+    expect(
+      Object.keys(selectors.getPreinstalledSnaps(snapState)),
+    ).toStrictEqual(['npm:foo', 'npm:baz']);
+    expect(selectors.getNameLookupSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+      'npm:bar',
+    ]);
+    expect(selectors.getSettingsPageSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+    ]);
+    expect(
+      selectors.getNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:foo', 'npm:bar']);
+    expect(
+      selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:bar']);
+  });
+});
+
+describe('getUnconnectedAccounts', () => {
+  const origin = 'https://test.dapp';
+  const connectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+  const stateWithConnectedAccount = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      subjects: {
+        [origin]: {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${connectedAddress}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+              invoker: origin,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  it('returns accounts that are not connected to the active dapp', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const resultAddresses = result.map((account) => account.address);
+    expect(resultAddresses).not.toContain(connectedAddress);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('returns all accounts when no accounts are connected to the dapp', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const result = selectors.getUnconnectedAccounts(mockState, origin);
+    expect(result).toHaveLength(allAccounts.length);
+  });
+
+  it('returns an empty array when all accounts are connected', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const allAddresses = allAccounts.map((a) => a.address);
+
+    const stateWithAllConnected = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        subjects: {
+          [origin]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: allAddresses.map(
+                            (addr) => `eip155:1:${addr}`,
+                          ),
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                invoker: origin,
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const result = selectors.getUnconnectedAccounts(
+      stateWithAllConnected,
+      origin,
+    );
+    expect(result).toStrictEqual([]);
+  });
+
+  it('does not include the connected account in the result', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(
+      stateWithConnectedAccount,
+    );
+    expect(result).toHaveLength(allAccounts.length - 1);
+    expect(result.some((account) => account.address === connectedAddress)).toBe(
+      false,
+    );
   });
 });

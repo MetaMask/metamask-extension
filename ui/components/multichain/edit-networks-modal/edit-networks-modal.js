@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox, IconName } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BlockSize,
@@ -16,7 +18,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Checkbox,
   Text,
   Box,
   ModalFooter,
@@ -24,7 +25,6 @@ import {
   ButtonPrimarySize,
   ModalBody,
   Icon,
-  IconName,
   IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '../network-list-item';
@@ -33,7 +33,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const EditNetworksModal = ({
   nonTestNetworks,
@@ -43,7 +42,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(
@@ -113,10 +112,11 @@ export const EditNetworksModal = ({
           <Box padding={4}>
             <Checkbox
               label={t('selectAll')}
-              isChecked={checked}
-              gap={4}
-              onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
-              isIndeterminate={isIndeterminate}
+              isSelected={checked || isIndeterminate}
+              onChange={() => (allAreSelected() ? deselectAll() : selectAll())}
+              checkedIconProps={
+                isIndeterminate ? { name: IconName.MinusBold } : undefined
+              }
             />
           </Box>
           {nonTestNetworks.map((network) => (
@@ -129,7 +129,10 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.caipChainId)}
+                  isSelected={selectedChainIds.includes(network.caipChainId)}
+                  onChange={() => handleNetworkClick(network.caipChainId)}
+                  onClick={(event) => event.stopPropagation()}
+                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
             />
@@ -147,7 +150,10 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.caipChainId)}
+                  isSelected={selectedChainIds.includes(network.caipChainId)}
+                  onChange={() => handleNetworkClick(network.caipChainId)}
+                  onClick={(event) => event.stopPropagation()}
+                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
               showEndAccessory={false}
@@ -195,15 +201,18 @@ export const EditNetworksModal = ({
                     (chainId) => !selectedChainIdsSet.has(chainId),
                   );
 
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Permissions,
-                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
-                    properties: {
-                      addedNetworks: addedNetworks.length,
-                      removedNetworks: removedNetworks.length,
-                      location: 'Edit Networks Modal',
-                    },
-                  });
+                  trackEvent(
+                    createEventBuilder(
+                      MetaMetricsEventName.UpdatePermissionedNetworks,
+                    )
+                      .addCategory(MetaMetricsEventCategory.Permissions)
+                      .addProperties({
+                        addedNetworks: addedNetworks.length,
+                        removedNetworks: removedNetworks.length,
+                        location: 'Edit Networks Modal',
+                      })
+                      .build(),
+                  );
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}

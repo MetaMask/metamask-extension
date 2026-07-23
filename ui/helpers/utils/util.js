@@ -15,7 +15,6 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
   toChecksumHexAddress,
@@ -32,9 +31,6 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -96,28 +92,6 @@ function getOrdinalSuffix(day) {
       return 'th';
   }
 }
-/**
- * Determines if the provided chainId is a default MetaMask chain
- *
- * @param {string} chainId - chainId to check
- */
-export function isDefaultMetaMaskChain(chainId) {
-  if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
-    chainId === CHAIN_IDS.LOCALHOST
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
 export function valuesFor(obj) {
   if (!obj) {
     return [];
@@ -125,26 +99,6 @@ export function valuesFor(obj) {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
-}
-
-export function addressSummary(
-  address,
-  firstSegLength = 10,
-  lastSegLength = 4,
-  includeHex = true,
-) {
-  if (!address) {
-    return '';
-  }
-  let checked = normalizeSafeAddress(address);
-  if (!includeHex) {
-    checked = stripHexPrefix(checked);
-  }
-  return checked
-    ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
-    : '...';
 }
 
 export function isValidDomainName(address) {
@@ -234,13 +188,6 @@ export function isResolvableName(name) {
   return false;
 }
 
-export function isOriginContractAddress(to, sendTokenAddress) {
-  if (!to || !sendTokenAddress) {
-    return false;
-  }
-  return to.toLowerCase() === sendTokenAddress.toLowerCase();
-}
-
 // Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
@@ -313,20 +260,6 @@ export function getContractAtAddress(tokenAddress) {
     abi,
     new Web3Provider(global.ethereumProvider),
   );
-}
-
-export function getRandomFileName() {
-  let fileName = '';
-  const charBank = [
-    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-  ];
-  const fileNameLength = Math.floor(Math.random() * 7 + 6);
-
-  for (let i = 0; i < fileNameLength; i++) {
-    fileName += charBank[Math.floor(Math.random() * charBank.length)];
-  }
-
-  return fileName;
 }
 
 /**
@@ -474,20 +407,6 @@ export function checkExistingAddresses(address, list = []) {
   };
 
   return list.some(matchesAddress);
-}
-
-export function checkExistingAllTokens(
-  address,
-  chainId,
-  accountAddress,
-  list = {},
-) {
-  if (!address) {
-    return false;
-  }
-  return list?.[chainId]?.[accountAddress]?.some(
-    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
-  );
 }
 
 export function bnGreaterThan(a, b) {

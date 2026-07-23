@@ -19,6 +19,21 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import Welcome from './welcome';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockUseNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
@@ -42,8 +57,15 @@ jest.mock('./metamask-wordmark-animation', () => ({
   }: {
     setIsAnimationComplete: (isAnimationComplete: boolean) => void;
   }) => {
-    // Simulate animation completion immediately using setTimeout
-    setTimeout(() => setIsAnimationComplete(true), 0);
+    const reactModule = jest.requireActual('react');
+
+    reactModule.useEffect(() => {
+      // Simulate animation completion immediately while cleaning up on unmount
+      const timeoutId = setTimeout(() => setIsAnimationComplete(true), 0);
+
+      return () => clearTimeout(timeoutId);
+    }, [setIsAnimationComplete]);
+
     return <div data-testid="metamask-wordmark-animation" />;
   },
 }));
@@ -78,13 +100,12 @@ describe('Welcome Page', () => {
         accounts: {},
         selectedAccount: '',
       },
-      metaMetricsId: '0x00000000',
+      analyticsId: '0x00000000',
     },
   };
   const mockStore = configureMockStore([thunk])(mockState);
-  const mockTrackEvent = jest.fn();
   const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
+    trackEvent: jest.fn(),
     bufferedTrace: jest.fn(),
     bufferedEndTrace: jest.fn(),
     onboardingParentContext: { current: null },
@@ -210,24 +231,30 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletSetupStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletSetupStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_google`,
+          }),
+        }),
+      );
 
       // should set setParticipateInMetaMetrics to true and send the queued events to Segment
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
@@ -278,24 +305,30 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletImportStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletImportStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should set Metametrics optin status for social login import
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
@@ -350,24 +383,30 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletImportStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletImportStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       expect(getBrowserNameSpy).toHaveBeenCalled();
 
@@ -418,14 +457,17 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletSetupStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Default,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletSetupStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Default,
+          }),
+        }),
+      );
 
       // should not set Metametrics optin status for SPR user
       expect(enabledMetricsSpy).not.toHaveBeenCalledWith(true);
@@ -441,9 +483,6 @@ describe('Welcome Page', () => {
     const triggerTelegramCreateFailure = async (errorMessage: string) => {
       jest
         .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
-        .mockReturnValue(true);
-      jest
-        .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
         .mockReturnValue(true);
       const noopThunk = () => Promise.resolve();
       jest
@@ -498,20 +537,24 @@ describe('Welcome Page', () => {
     };
 
     const expectOutdatedAppEventTracked = () => {
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginFailed,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_telegram`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_rehydration: 'unknown',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          failure_type: 'outdated_app',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_category: 'telegram_app',
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginFailed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_telegram`,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rehydration: 'unknown',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_type: 'outdated_app',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_category: 'telegram_app',
+          }),
+        }),
+      );
     };
 
     it('routes to TELEGRAM_OUTDATED when verify rejects with 403', async () => {

@@ -3,10 +3,10 @@
 exports[`DefiDetailsList renders defi details list 1`] = `
 <div>
   <div
-    class="mm-box"
+    class=""
   >
     <div
-      class="mm-box"
+      class=""
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
@@ -19,7 +19,7 @@ exports[`DefiDetailsList renders defi details list 1`] = `
       />
     </div>
     <div
-      class="mm-box"
+      class=""
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"

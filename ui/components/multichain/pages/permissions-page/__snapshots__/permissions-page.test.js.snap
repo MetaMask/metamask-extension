@@ -7,7 +7,7 @@ exports[`All Connections render renders correctly 1`] = `
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="mm-box main-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
       data-testid="permissions-page"
     >
       <div
@@ -23,7 +23,7 @@ exports[`All Connections render renders correctly 1`] = `
             data-testid="permissions-page-back"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
@@ -59,12 +59,12 @@ exports[`All Connections render renders correctly 1`] = `
             style="align-self: center;"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-8 w-8"
               data-testid="connection-list-item__avatar-favicon"
             >
               <img
-                alt="avatar-favicon logo"
-                class="mm-avatar-favicon__image"
+                alt="Dapp logo"
+                class="size-full object-contain"
                 src="https://metamask.github.io/test-dapp/metamask-fox.svg"
               />
             </div>

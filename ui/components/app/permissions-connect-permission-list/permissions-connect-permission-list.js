@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { getWeightedPermissions } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapsMetadata } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
 import PermissionCell from '../permission-cell';
-import { Box } from '../../component-library';
 
 /**
  * Get one or more permission descriptions for a permission name.
@@ -53,22 +53,24 @@ export default function PermissionsConnectPermissionList({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   return (
-    <Box as="span">
-      {getWeightedPermissions({
-        t,
-        isRequestApprovalPermittedChains,
-        permissions,
-        getSubjectName: getSnapName(snapsMetadata),
-        subjectName,
-      }).map((permission, index) => {
-        return getDescriptionNode({
-          permission,
-          index,
-          accounts,
-          requestedChainIds,
-          caipChainIds,
-        });
-      })}
+    <Box asChild>
+      <span>
+        {getWeightedPermissions({
+          t,
+          isRequestApprovalPermittedChains,
+          permissions,
+          getSubjectName: getSnapName(snapsMetadata),
+          subjectName,
+        }).map((permission, index) => {
+          return getDescriptionNode({
+            permission,
+            index,
+            accounts,
+            requestedChainIds,
+            caipChainIds,
+          });
+        })}
+      </span>
     </Box>
   );
 }

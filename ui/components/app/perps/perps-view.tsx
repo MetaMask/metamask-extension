@@ -31,18 +31,22 @@ import { usePerpsEligibility } from '../../../hooks/perps';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
+import { useSelectedAccountComplianceGate } from '../compliance';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
+import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
@@ -65,16 +69,21 @@ type BatchCloseResult = {
   failureCount?: number;
 };
 
-export const PerpsView: React.FC = () => {
+export const PerpsView = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
+  const { track } = usePerpsEventTracking();
+  const { replacePerpsToastByKey } = usePerpsToast();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
+  const [isCloseAllModalOpen, setIsCloseAllModalOpen] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -137,36 +146,124 @@ export const PerpsView: React.FC = () => {
     getPerpsStreamManager().orders.pushData(next);
   }, []);
 
+  // Compliance gate wraps only the entry point: when the wallet is blocked the
+  // access-restricted modal shows and the confirmation flow never opens. When
+  // it's clear, we keep the pre-existing two-step confirmation (tap -> confirm)
+  // and its analytics. The gate is effectively instant (it reads the prefetched
+  // compliance result), so it adds no latency to opening the modal.
   const handleCloseAllPositions = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (positions.length === 0) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_TAPPED,
+        [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      });
+      setIsCloseAllModalOpen(true);
+    });
+  }, [gate, isEligible, positions.length, track]);
+
+  const handleCloseAllCancel = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_CANCELLED,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+    });
+    setIsCloseAllModalOpen(false);
+  }, [positions.length, track]);
+
+  const handleCloseAllConfirm = useCallback(async () => {
     if (positions.length === 0) {
       return;
     }
+    const positionCount = positions.length;
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_CONFIRMED,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positionCount,
+    });
+
     setBatchActionError(null);
     setIsCloseAllPending(true);
+    setIsCloseAllModalOpen(false);
+
+    replacePerpsToastByKey({
+      key: PERPS_TOAST_KEYS.CLOSE_ALL_IN_PROGRESS,
+    });
+
     try {
       const result = await submitRequestToBackground<BatchCloseResult>(
         'perpsClosePositions',
         [{ closeAll: true }],
       );
-      if (!result?.success) {
+      const successCount = result?.successCount ?? 0;
+      const failureCount = result?.failureCount ?? 0;
+
+      if (successCount > 0 && failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
+          messageParams: [successCount, positionCount],
+        });
+      } else if (!result?.success || failureCount > 0) {
+        setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
+        });
         return;
+      } else {
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            successCount || positionCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
+        });
       }
-      const fresh = await submitRequestToBackground<Position[]>(
-        'perpsGetPositions',
-        [],
-      );
-      applyPositionsSnapshot(fresh ?? []);
+
+      try {
+        const fresh = await submitRequestToBackground<Position[]>(
+          'perpsGetPositions',
+          [],
+        );
+        applyPositionsSnapshot(fresh ?? []);
+      } catch {
+        // Refresh failure is non-critical; positions were already closed.
+      }
     } catch {
       setBatchActionError(t('somethingWentWrong'));
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+      });
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
+      });
     } finally {
       setIsCloseAllPending(false);
     }
-  }, [isEligible, applyPositionsSnapshot, positions.length, t]);
+  }, [
+    applyPositionsSnapshot,
+    positions.length,
+    t,
+    track,
+    replacePerpsToastByKey,
+  ]);
 
   const handleCancelAllOrders = useCallback(async () => {
     if (!isEligible) {
@@ -222,7 +319,8 @@ export const PerpsView: React.FC = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
       [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
       [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
-      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
   });
@@ -311,6 +409,15 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      {isCloseAllModalOpen && (
+        <CloseAllPositionsModal
+          isOpen={isCloseAllModalOpen}
+          onClose={handleCloseAllCancel}
+          onConfirm={handleCloseAllConfirm}
+          positions={positions}
+          isSubmitting={isCloseAllPending}
+        />
+      )}
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}

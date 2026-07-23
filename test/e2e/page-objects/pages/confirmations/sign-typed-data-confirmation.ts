@@ -1,109 +1,204 @@
-import { strict as assert } from 'assert';
-import { DAPP_HOST_ADDRESS } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
+import {
+  SignTypedDataV1Info,
+  SignTypedDataV3Info,
+  SignTypedDataV4Info,
+} from '../../../tests/confirmations/signatures/sign-typed-data-expected';
 import Confirmation from './confirmation';
 
 export default class SignTypedData extends Confirmation {
+  private readonly contractAddress = (text: string): RawLocator => ({
+    css: '[data-testid="confirmation_request-section"]',
+    text,
+  });
+
+  private readonly dataTreeRowWithText = (
+    field: string,
+    text: string,
+  ): RawLocator => ({
+    css: `[data-testid^="confirmation_data-${field}"]`,
+    text,
+  });
+
+  private readonly networkDisplay = (network: string): RawLocator => ({
+    testId: 'confirmation__details-network-name',
+    text: network,
+  });
+
+  private readonly origin = (text: string): RawLocator => ({
+    testId: 'confirmation__details-origin',
+    text,
+  });
+
+  private readonly primaryType = (text: string): RawLocator => ({
+    testId: 'confirmation__message-primary-type',
+    text,
+  });
+
+  private readonly signatureHeadingTitle = (text: string): RawLocator => ({
+    testId: 'confirm-title-text',
+    text,
+  });
+
+  private readonly signTypedDataMessage = (text: string): RawLocator => ({
+    css: '[data-testid^="confirmation_data-Message"]',
+    text,
+  });
+
   constructor(driver: Driver) {
     super(driver);
 
     this.driver = driver;
   }
 
-  private signatureHeadingTitle = { text: 'Signature request' };
-
-  private origin = { text: DAPP_HOST_ADDRESS };
-
-  private signTypedDataMessage = { text: 'Hi, Alice!' };
-
-  private contract = { css: '.name__value', text: '0xCcCCc...ccccC' };
-
-  private primaryType = { text: 'Mail' };
-
-  private fromName = { text: 'Cow' };
-
-  private fromAddress = { css: '.name__value', text: '0xCD2a3...DD826' };
-
-  private toName = { text: 'Bob' };
-
-  private toAddress = { css: '.name__value', text: '0xbBbBB...bBBbB' };
-
-  private contents = { text: 'Hello, Bob!' };
-
-  private attachment = { text: '0x' };
-
-  private toAddressNum2 = { css: '.name__value', text: '0xB0B0b...00000' };
-
-  async verifyOrigin() {
-    const origin = await this.driver.findElement(this.origin);
-    assert.ok(origin, 'Origin element is missing or incorrect');
+  async verifyOrigin(origin: string): Promise<void> {
+    console.log(
+      `Verify origin ${origin} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.origin(origin));
   }
 
-  async verifySignTypedDataMessage() {
-    const message = this.driver.findElement(this.signTypedDataMessage);
-    assert.ok(await message);
+  async verifySignTypedDataMessage(message: string): Promise<void> {
+    console.log(
+      `Verify sign typed data message ${message} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.signTypedDataMessage(message));
   }
 
-  async verifyContractPetName() {
-    const contractPetName = await this.driver.findElement(this.contract);
-    assert.ok(
-      contractPetName,
-      'Contract pet name element is missing or incorrect',
+  async verifyContractPetName(contract: string): Promise<void> {
+    console.log(
+      `Verify contract ${contract} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.contractAddress(contract));
+  }
+
+  async verifyPrimaryType(primaryType: string): Promise<void> {
+    console.log(
+      `Verify primary type ${primaryType} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.primaryType(primaryType));
+  }
+
+  async verifyFromName(fromName: string): Promise<void> {
+    console.log(
+      `Verify from name ${fromName} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('name', fromName),
     );
   }
 
-  async verifyPrimaryType() {
-    const primaryType = await this.driver.findElement(this.primaryType);
-    assert.ok(primaryType, 'Primary type element is missing or incorrect');
+  async verifyFromAddress(fromAddress: string): Promise<void> {
+    console.log(
+      `Verify from address ${fromAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('0', fromAddress),
+    );
   }
 
-  async verifyFromName() {
-    const fromName = await this.driver.findElement(this.fromName);
-    assert.ok(fromName, 'From name element is missing or incorrect');
+  async verifyFromWalletAddress(fromAddress: string): Promise<void> {
+    console.log(
+      `Verify from wallet address ${fromAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('wallet', fromAddress),
+    );
   }
 
-  async verifyFromAddress() {
-    const fromAddress = await this.driver.findElement(this.fromAddress);
-    assert.ok(fromAddress, 'From address element is missing or incorrect');
+  async verifyToName(toName: string): Promise<void> {
+    console.log(
+      `Verify to name ${toName} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.dataTreeRowWithText('name', toName));
   }
 
-  async verifyToName() {
-    const toName = await this.driver.findElement(this.toName);
-    assert.ok(toName, 'To name element is missing or incorrect');
+  async verifyToAddress(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to address ${toAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.dataTreeRowWithText('0', toAddress));
   }
 
-  async verifyToAddress() {
-    const toAddress = await this.driver.findElement(this.toAddress);
-    assert.ok(toAddress, 'To address element is missing or incorrect');
+  async verifyToWalletAddress(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to wallet address ${toAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('wallet', toAddress),
+    );
   }
 
-  async verifyContents() {
-    const contents = await this.driver.findElement(this.contents);
-    assert.ok(contents, 'Contents element is missing or incorrect');
+  async verifyContents(contents: string): Promise<void> {
+    console.log(
+      `Verify contents ${contents} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('contents', contents),
+    );
   }
 
-  async verifyAttachment() {
-    const attachment = await this.driver.findElement(this.attachment);
-    assert.ok(attachment, 'Attachment element is missing or incorrect');
+  async verifyAttachment(attachment: string): Promise<void> {
+    console.log(
+      `Verify attachment ${attachment} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(
+      this.dataTreeRowWithText('attachment', attachment),
+    );
   }
 
-  async verifyToAddressNum2() {
-    const toAddressNum2 = await this.driver.findElement(this.toAddressNum2);
-    assert.ok(toAddressNum2, 'To Address num2 element is missing or incorrect');
+  async verifyToAddressNum2(toAddress: string): Promise<void> {
+    console.log(
+      `Verify to address num2 ${toAddress} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.dataTreeRowWithText('2', toAddress));
   }
 
-  async verifyConfirmationHeadingTitle() {
-    console.log('Verify confirmation heading title is Signature request');
-    await this.driver.waitForSelector(this.signatureHeadingTitle);
+  async verifySignTypedDataInfo(expected: SignTypedDataV1Info): Promise<void> {
+    console.log(
+      'Verify sign typed data v1 info on sign typed data confirmation page',
+    );
+    await this.verifyOrigin(expected.origin);
+    await this.verifySignTypedDataMessage(expected.message);
+  }
+
+  async verifySignTypedDataV3Info(
+    expected: SignTypedDataV3Info,
+  ): Promise<void> {
+    console.log(
+      'Verify sign typed data v3 info on sign typed data confirmation page',
+    );
+    await this.verifyOrigin(expected.origin);
+    await this.verifyFromWalletAddress(expected.fromAddress);
+    await this.verifyToWalletAddress(expected.toAddress);
+    await this.verifyContents(expected.contents);
+  }
+
+  async verifySignTypedDataV4Info(
+    expected: SignTypedDataV4Info,
+  ): Promise<void> {
+    console.log(
+      'Verify sign typed data v4 info on sign typed data confirmation page',
+    );
+    await this.verifyOrigin(expected.origin);
+    await this.verifyFromAddress(expected.fromAddress);
+    await this.verifyToAddress(expected.toAddress);
+    await this.verifyContents(expected.contents);
+    await this.verifyAttachment(expected.attachment);
+  }
+
+  async verifySignatureHeadingTitle(heading: string): Promise<void> {
+    console.log(
+      `Verify signature heading title ${heading} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector(this.signatureHeadingTitle(heading));
   }
 
   async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Check network ${network} is displayed on sign typed data confirmation page`,
     );
-    await this.driver.waitForSelector({
-      text: network,
-      tag: 'p',
-    });
+    await this.driver.waitForSelector(this.networkDisplay(network));
   }
 }

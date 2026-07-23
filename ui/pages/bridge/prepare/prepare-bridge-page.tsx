@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
+  FeatureId,
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
@@ -11,6 +12,7 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -32,6 +34,7 @@ import {
   getFromToken,
   getQuoteRequest,
   getSlippage,
+  getIsSlippageUserOverride,
   getToChain,
   getToChains,
   getToToken,
@@ -49,14 +52,12 @@ import {
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -73,7 +74,9 @@ import { getMultichainProviderConfig } from '../../../selectors/multichain';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
+import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
+import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import {
@@ -84,6 +87,7 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -108,6 +112,10 @@ const PrepareBridgePage = ({
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const selectedTokenSecurityData = useSelectedTokenSecurityData(
+    fromToken,
+    toToken,
+  );
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -123,6 +131,7 @@ const PrepareBridgePage = ({
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -157,7 +166,9 @@ const PrepareBridgePage = ({
   const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
-    fromToken && isNativeAddress(fromToken.assetId)
+    fromToken &&
+    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
+    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
       ? !isSolanaChainId(fromToken.chainId) &&
         (effectiveGasIncluded || effectiveGasIncluded7702)
       : true;
@@ -228,7 +239,7 @@ const PrepareBridgePage = ({
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
         : isQuoteRequestInsufficientBal,
-      slippage,
+      ...(slippage === undefined ? {} : { slippage }),
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
       gasIncluded: effectiveGasIncluded || effectiveGasIncluded7702,
@@ -258,12 +269,26 @@ const PrepareBridgePage = ({
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
+  const previousSlippageRef = useRef(slippage);
 
   useEffect(() => {
-    dispatch(setSelectedQuote(null));
+    const previousSlippage = previousSlippageRef.current;
+    previousSlippageRef.current = slippage;
+
     if (!quoteParams) {
       return;
     }
+
+    const isHydrationOnlySlippageChange =
+      !isSlippageUserOverride &&
+      previousSlippage === undefined &&
+      slippage !== undefined;
+
+    if (isHydrationOnlySlippageChange) {
+      return;
+    }
+
+    dispatch(setSelectedQuote(null));
     const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -283,12 +308,14 @@ const PrepareBridgePage = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
       eventProperties,
     );
-  }, [quoteParams]);
+  }, [quoteParams, isSlippageUserOverride, slippage]);
 
   // Trace swap/bridge view loaded
   useEffect(() => {
@@ -347,6 +374,11 @@ const PrepareBridgePage = ({
           }
           header={t('swapSelectToken')}
           token={fromToken}
+          tokenSecurityData={
+            selectedTokenSecurityData[
+              getTokenSecurityAssetKey(fromToken.assetId)
+            ]
+          }
           accountAddress={selectedAccount?.address}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
@@ -372,8 +404,6 @@ const PrepareBridgePage = ({
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           containerProps={{
@@ -397,9 +427,8 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
+            className="prepare-bridge-page__switch-tokens flex"
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -472,6 +501,8 @@ const PrepareBridgePage = ({
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                     },
                   ),
                 );
@@ -491,7 +522,7 @@ const PrepareBridgePage = ({
           </Box>
 
           <Box
-            paddingInline={4}
+            className="px-4"
             style={{
               borderTop: '1px solid var(--color-border-muted)',
               marginTop: '-16px',
@@ -508,6 +539,11 @@ const PrepareBridgePage = ({
               selectedDestinationAccount?.address ?? selectedAccount.address
             }
             token={toToken}
+            tokenSecurityData={
+              selectedTokenSecurityData[
+                getTokenSecurityAssetKey(toToken.assetId)
+              ]
+            }
             // If the fromChain is a bridge-only chain, disable it in the toChain picker
             disabledChainId={
               fromChain?.chainId &&
@@ -584,7 +620,10 @@ const PrepareBridgePage = ({
             height={BlockSize.Full}
             gap={3}
             paddingInline={4}
+            paddingTop={4}
             paddingBottom={4}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
@@ -615,6 +654,8 @@ const PrepareBridgePage = ({
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                 });
               }}
               needsDestinationAddress={

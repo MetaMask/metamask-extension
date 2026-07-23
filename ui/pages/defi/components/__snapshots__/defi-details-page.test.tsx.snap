@@ -3,24 +3,24 @@
 exports[`DeFiDetailsPage renders defi asset page 1`] = `
 <div>
   <div
-    class="mm-box main-container asset__container"
+    class="main-container asset__container"
   >
     <div
-      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
+      class="pb-4 pl-2 flex pt-4 sticky top-0 z-10 bg-background-default"
     >
       <button
         aria-label="Back"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-md mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="defi-details-page-back-button"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>
     </div>
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="flex-row justify-between pr-4 flex"
     >
       <h2
         class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
@@ -57,7 +57,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-bottom-4 mm-box--padding-left-4"
+      class="pb-4 pl-4"
     >
       <span
         class="mm-box mm-text mm-box--color-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -67,18 +67,18 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
       </span>
     </div>
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4"
+      class="pr-4 pb-4 pl-4"
     >
       <hr />
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      class="flex-col flex"
     >
       <div
-        class="mm-box"
+        class=""
       >
         <div
-          class="mm-box"
+          class=""
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--padding-left-4 mm-box--color-text-alternative"
@@ -87,10 +87,10 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
             Staked
           </p>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+            class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
           >
             <a
-              class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+              class="flex w-full flex-row py-2 px-4 "
               data-testid="multichain-token-list-button"
               style="height: 62px;"
             >
@@ -122,24 +122,23 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
-                style="flex-grow: 1; overflow: hidden;"
+                class="flex-col justify-center flex w-full overflow-hidden grow"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                  class="flex-row justify-between flex"
                 >
                   <div
                     class="flex flex-row gap-2 min-w-0"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                      class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                       data-testid="multichain-token-list-item-token-name"
                     >
                       Liquid staked Ether 2.0
                     </p>
                   </div>
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                    class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                     data-testid="multichain-token-list-item-secondary-value"
                     style="white-space: nowrap; padding-inline-start: 8px;"
                   >
@@ -147,7 +146,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   </p>
                 </div>
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                  class="flex-row justify-between flex"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"

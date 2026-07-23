@@ -1,6 +1,8 @@
 import * as React from 'react';
 import classnames from 'clsx';
 import {
+  AvatarBase,
+  AvatarBaseSize,
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
@@ -8,8 +10,6 @@ import {
 import { Text } from '../../component-library/text';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderColor,
   BorderRadius,
   Display,
   TextColor,
@@ -24,13 +24,9 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '../../component-library/avatar-network';
-import {
-  AvatarBase,
-  AvatarBaseSize,
-} from '../../component-library/avatar-base';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
-export const AvatarGroup: React.FC<AvatarGroupProps> = ({
+export const AvatarGroup = ({
   className = '',
   limit = 4,
   members = [],
@@ -39,7 +35,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   borderColor,
   isTagOverlay = false,
   variant = AvatarAccountVariant.Maskicon,
-}): JSX.Element => {
+}: AvatarGroupProps): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;
@@ -96,12 +92,9 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
         })}
         {showTag && isTagOverlay && (
           <AvatarBase
-            backgroundColor={BackgroundColor.overlayAlternative}
+            className="border border-background-default bg-overlay-alternative text-overlay-inverse rounded-md"
             style={{ marginLeft: marginLeftValue, fontSize: 8 }}
             size={AvatarBaseSize.Xs}
-            borderColor={BorderColor.backgroundDefault}
-            borderRadius={BorderRadius.MD}
-            color={TextColor.overlayInverse}
           >
             {tagValue}
           </AvatarBase>
