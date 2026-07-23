@@ -238,6 +238,28 @@ describe('EnforcedSimulationsRow', () => {
     );
   });
 
+  it('keeps the row available when a toggle update fails', async () => {
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockRejectedValueOnce(new Error('Toggle update failed'));
+
+    const { getByTestId } = render({
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    const input = await waitFor(() =>
+      getByTestId('enforced-simulations-toggle-input'),
+    );
+    input.click();
+
+    await waitFor(() => {
+      expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();
+      expect(
+        getByTestId('enforced-simulations-toggle-input'),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('shows a loading spinner while the container types are updating', async () => {
     const { getByTestId, queryByTestId } = render({
       containerTypes: [TransactionContainerType.EnforcedSimulations],

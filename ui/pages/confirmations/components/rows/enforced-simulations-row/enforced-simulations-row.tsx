@@ -101,7 +101,6 @@ export function EnforcedSimulationsRow() {
           isEnabled={Boolean(hasEnforcedSimulations)}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
-          onUnavailable={() => setIsUnavailable(true)}
         />
       </Box>
 
@@ -114,12 +113,10 @@ function EnforcedSimulationsCheckbox({
   isEnabled,
   containerTypes,
   transactionId,
-  onUnavailable,
 }: {
   isEnabled: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
-  onUnavailable: () => void;
 }) {
   const [pendingEnabled, setPendingEnabled] = useState<boolean | null>(null);
 
@@ -159,10 +156,9 @@ function EnforcedSimulationsCheckbox({
         newContainerTypes,
       );
     } catch {
-      onUnavailable();
       setPendingEnabled(null);
     }
-  }, [containerTypes, isEnabled, onUnavailable, transactionId]);
+  }, [containerTypes, isEnabled, transactionId]);
 
   if (isToggling) {
     return (
