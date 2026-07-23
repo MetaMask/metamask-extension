@@ -121,6 +121,29 @@ export const TransactionCard = ({
 
   const amountDisplay = getAmountDisplay();
 
+  // Construct title display based on transaction type. Deposit/withdrawal
+  // titles are rendered directly (unlike the subtitle, there's no other
+  // override downstream), so the verb and empty-state text must be
+  // translated here rather than left as the transform's deterministic
+  // English string.
+  const getTitleDisplay = (): string => {
+    if (
+      (transaction.type === 'deposit' || transaction.type === 'withdrawal') &&
+      transaction.depositWithdrawal
+    ) {
+      const isDeposit = transaction.type === 'deposit';
+      const magnitude = Math.abs(transaction.depositWithdrawal.amountNumber);
+      if (magnitude === 0) {
+        return t(
+          isDeposit ? 'perpsDepositEmptyTitle' : 'perpsWithdrawalEmptyTitle',
+        );
+      }
+      const verb = t(isDeposit ? 'perpsDepositedVerb' : 'perpsWithdrewVerb');
+      return `${verb} ${magnitude.toFixed(2)} ${transaction.depositWithdrawal.asset}`;
+    }
+    return transaction.title;
+  };
+
   // Construct subtitle display based on transaction type
   const getSubtitleDisplay = (): string => {
     if (transaction.type === 'trade' && transaction.fill) {
@@ -176,7 +199,7 @@ export const TransactionCard = ({
             fontWeight={FontWeight.Medium}
             className="text-s-body-md @compact:text-s-body-sm"
           >
-            {transaction.title}
+            {getTitleDisplay()}
           </Text>
           {!(isClickable && hasInteractiveBadge) && (
             <PerpsFillTag transaction={transaction} screenName={screenName} />
