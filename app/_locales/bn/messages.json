@@ -346,9 +346,6 @@
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
   },
-  "nevermind": {
-    "message": "কিছু মনে করবেন না"
-  },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
