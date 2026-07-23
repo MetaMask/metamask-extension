@@ -244,6 +244,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #shutdownReported: boolean = false;
 
   /**
+   * Records that a browser shutdown was signaled while shutdown suspension was
+   * not yet enabled (e.g. a buffered `runtime.onSuspend` replayed during cold
+   * start, before the feature flag has been applied). When suspension is later
+   * enabled we honor this pending signal instead of dropping it. `null` means
+   * no pending signal (or it was cancelled via {@link resumeWrites}).
+   */
+  #pendingShutdownTrigger: ShutdownTrigger | null = null;
+
+  /**
    * Pending recovery-probe timer for an inferred shutdown suspension
    * (`reactive`/`idb-close`). Non-null while a probe is scheduled; cleared once
    * writes resume, are reset, or suspension is disabled.
@@ -322,6 +331,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * disabled, `set`/`persist` behave exactly as before (a shutdown write error
    * is reported like any other failure). Disabling also clears any in-session
    * suspension so a later re-enable does not inherit a stale suspended state.
+   * Enabling honors a shutdown signal that arrived while the flag was still off
+   * (see {@link suspendWrites}).
    *
    * @param enabled - Whether shutdown write-suspension is active.
    */
@@ -330,7 +341,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     if (!enabled) {
       this.#writesSuspended = false;
       this.#shutdownReported = false;
+      this.#pendingShutdownTrigger = null;
       this.#clearShutdownRecoveryTimer();
+      return;
+    }
+    // If a shutdown was signaled before the flag was applied (e.g. a buffered
+    // `onSuspend` replayed during cold start), honor it now rather than dropping
+    // it.
+    if (this.#pendingShutdownTrigger !== null && !this.#writesSuspended) {
+      const trigger = this.#pendingShutdownTrigger;
+      this.#pendingShutdownTrigger = null;
+      this.suspendWrites(trigger);
     }
   }
 
@@ -346,8 +367,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Suspends all writes to the local store because the browser appears to be
    * shutting down. Any write queued in the state lock but not yet started is
    * aborted, and subsequent `set`/`persist` calls short-circuit until
-   * `resumeWrites()` is called (or the service worker restarts). No-op unless
-   * shutdown suspension is enabled.
+   * `resumeWrites()` is called (or the service worker restarts).
+   *
+   * If shutdown suspension is not yet enabled, the trigger is remembered and
+   * applied when {@link setShutdownSuspensionEnabled} turns the feature on.
+   * That covers a cold-start race where a buffered `runtime.onSuspend` is
+   * replayed before the persisted feature flag has been applied.
    *
    * This deliberately does NOT flush a final write (unlike `OperationSafener`'s
    * `evacuate`): a write started during shutdown is exactly what we want to
@@ -358,8 +383,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   suspendWrites(trigger: ShutdownTrigger = 'unknown') {
     if (!this.#shutdownSuspensionEnabled) {
+      this.#pendingShutdownTrigger = trigger;
       return;
     }
+    this.#pendingShutdownTrigger = null;
     this.#writesSuspended = true;
     // Drop any write that is queued in the state lock but hasn't started yet.
     this.#currentLockAbortController?.abort();
@@ -418,6 +445,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   resumeWrites() {
     this.#writesSuspended = false;
     this.#shutdownReported = false;
+    this.#pendingShutdownTrigger = null;
     this.#clearShutdownRecoveryTimer();
   }
 
@@ -1186,6 +1214,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         // config set by the background and is intentionally left intact).
         this.#writesSuspended = false;
         this.#shutdownReported = false;
+        this.#pendingShutdownTrigger = null;
         this.#clearShutdownRecoveryTimer();
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;

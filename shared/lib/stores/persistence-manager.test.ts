@@ -559,6 +559,33 @@ describe('PersistenceManager', () => {
           }),
         );
       });
+
+      it('honors a shutdown signal that arrived before the feature flag was enabled', () => {
+        manager.suspendWrites('onSuspend');
+        expect(manager.writesSuspended).toBe(false);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': 'onSuspend',
+            }),
+          }),
+        );
+      });
+
+      it('does not honor a pending shutdown signal that was cancelled before the flag was enabled', () => {
+        manager.suspendWrites('onSuspend');
+        manager.resumeWrites();
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended).toBe(false);
+        expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      });
     });
 
     describe('reactive detection (data storageKind / set)', () => {
