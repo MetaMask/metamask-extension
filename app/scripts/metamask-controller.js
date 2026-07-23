@@ -396,7 +396,6 @@ import { RatesControllerInit } from './messenger-client-init/rates-controller-in
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './messenger-client-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import {
   SubscriptionControllerInit,
@@ -643,7 +642,6 @@ export default class MetamaskController extends EventEmitter {
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
-      GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
@@ -789,7 +787,7 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController = this.wallet.getInstance(
       'RemoteFeatureFlagController',
     );
-    this.gasFeeController = messengerClientsByName.GasFeeController;
+    this.gasFeeController = this.wallet.getInstance('GasFeeController');
     this.userOperationController =
       messengerClientsByName.UserOperationController;
     this.cronjobController = messengerClientsByName.CronjobController;

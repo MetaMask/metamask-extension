@@ -5,6 +5,7 @@ import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
@@ -14,6 +15,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { createMockMessenger } from './test-utils';
@@ -32,6 +34,11 @@ jest.mock('./instance-options/approval-controller', () => ({
 jest.mock('./instance-options/connectivity-controller', () => ({
   getConnectivityControllerInstanceOptions: jest.fn(
     () => 'connectivity-options',
+  ),
+}));
+jest.mock('./instance-options/gas-fee-controller', () => ({
+  getGasFeeControllerInstanceOptions: jest.fn(
+    () => 'gas-fee-controller-options',
   ),
 }));
 jest.mock('./instance-options/keyring-controller', () => ({
@@ -60,6 +67,11 @@ jest.mock('./instance-options/transaction-controller', () => ({
 jest.mock('./messengers/transaction-controller-messenger', () => ({
   getTransactionControllerInitMessenger: jest.fn(
     () => 'transaction-controller-init-messenger',
+  ),
+}));
+jest.mock('./messengers/gas-fee-controller-messenger', () => ({
+  getGasFeeControllerInitMessenger: jest.fn(
+    () => 'gas-fee-controller-init-messenger',
   ),
 }));
 jest.mock('./messengers/seedless-onboarding-controller-messenger', () => ({
@@ -104,6 +116,7 @@ describe('initializeWallet', () => {
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
+        gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
@@ -168,6 +181,10 @@ describe('initializeWallet', () => {
     );
     expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
       connectivityAdapter,
+    });
+    expect(getGasFeeControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getGasFeeControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'gas-fee-controller-init-messenger',
     });
     expect(getKeyringControllerInstanceOptions).toHaveBeenCalledWith({
       encryptor,

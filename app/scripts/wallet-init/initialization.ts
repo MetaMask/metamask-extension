@@ -2,6 +2,7 @@ import { Wallet } from '@metamask/wallet';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
@@ -15,6 +16,7 @@ import {
 } from './instance-options/transaction-controller';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
@@ -53,6 +55,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
+      }),
+      gasFeeController: getGasFeeControllerInstanceOptions({
+        initMessenger: getGasFeeControllerInitMessenger(messenger),
       }),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,

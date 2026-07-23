@@ -124,10 +124,6 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import {
-  getGasFeeControllerInitMessenger,
-  getGasFeeControllerMessenger,
-} from './gas-fee-controller-messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 import {
   getAccountTrackerControllerInitMessenger,
@@ -243,11 +239,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { GasFeeControllerInitMessenger } from './gas-fee-controller-messenger';
-export {
-  getGasFeeControllerMessenger,
-  getGasFeeControllerInitMessenger,
-} from './gas-fee-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -455,10 +446,6 @@ export const MESSENGER_FACTORIES = {
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
-  },
-  GasFeeController: {
-    getMessenger: getGasFeeControllerMessenger,
-    getInitMessenger: getGasFeeControllerInitMessenger,
   },
   GatorPermissionsController: {
     getMessenger: getGatorPermissionsControllerMessenger,
