@@ -10,7 +10,6 @@ const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
 // observable after a microtask drain with no timers involved.
 async function flushMicrotasks(depth = 5): Promise<void> {
   for (let i = 0; i < depth; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => queueMicrotask(resolve));
   }
 }

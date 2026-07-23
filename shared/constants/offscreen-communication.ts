@@ -40,6 +40,9 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   connectivityChange = 'connectivity-change',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  switchLedgerMode = 'switch-ledger-mode',
 }
 
 /**

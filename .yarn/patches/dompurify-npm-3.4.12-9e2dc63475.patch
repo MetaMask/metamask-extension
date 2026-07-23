@@ -1,8 +1,8 @@
 diff --git a/dist/purify.cjs.js b/dist/purify.cjs.js
-index 4a2b538c73930af906908dc61c364cd97c82fcc7..5af1189ede4ad64d0b8a87e258b22dfc613990e3 100644
+index 91b993d668dd9780a88ea26ba6bf60eb17ef07bb..603ec9c2233ab857afee32fbf4af4c35895c154d 100644
 --- a/dist/purify.cjs.js
 +++ b/dist/purify.cjs.js
-@@ -1973,7 +1973,8 @@ function createDOMPurify() {
+@@ -2128,7 +2128,8 @@ function createDOMPurify() {
        the user has requested a DOM object rather than a string */
      IS_EMPTY_INPUT = !dirty;
      if (IS_EMPTY_INPUT) {
@@ -12,21 +12,21 @@ index 4a2b538c73930af906908dc61c364cd97c82fcc7..5af1189ede4ad64d0b8a87e258b22dfc
      }
      /* Stringify, in case dirty is an object */
      if (typeof dirty !== 'string' && !_isNode(dirty)) {
-@@ -2061,7 +2062,8 @@ function createDOMPurify() {
+@@ -2228,7 +2229,8 @@ function createDOMPurify() {
      } else if (_isNode(dirty)) {
        /* If dirty is a DOM element, append to an empty document to avoid
           elements being stripped by the parser */
 -      body = _initDocument('<!---->');
-+       // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
 +      body = _initDocument('<!' + '--' + '--' + '>');
        importedNode = body.ownerDocument.importNode(dirty, true);
        if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
          /* Node is already a body, use as is */
 diff --git a/dist/purify.es.mjs b/dist/purify.es.mjs
-index 5b12eee110b1a1d418c777acac4d9eb835e17396..866c66be99ead4e3c47608cf3129263862b125ce 100644
+index 3c361d7afae9348d7e12d046a598a4dabb4ba423..489289ac87b83c35f3c7981d342a71da74f5126c 100644
 --- a/dist/purify.es.mjs
 +++ b/dist/purify.es.mjs
-@@ -1971,7 +1971,8 @@ function createDOMPurify() {
+@@ -2126,7 +2126,8 @@ function createDOMPurify() {
        the user has requested a DOM object rather than a string */
      IS_EMPTY_INPUT = !dirty;
      if (IS_EMPTY_INPUT) {
@@ -36,21 +36,21 @@ index 5b12eee110b1a1d418c777acac4d9eb835e17396..866c66be99ead4e3c47608cf31292638
      }
      /* Stringify, in case dirty is an object */
      if (typeof dirty !== 'string' && !_isNode(dirty)) {
-@@ -2059,7 +2060,8 @@ function createDOMPurify() {
+@@ -2226,7 +2227,8 @@ function createDOMPurify() {
      } else if (_isNode(dirty)) {
        /* If dirty is a DOM element, append to an empty document to avoid
           elements being stripped by the parser */
 -      body = _initDocument('<!---->');
-+       // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++      // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
 +      body = _initDocument('<!' + '--' + '--' + '>');
        importedNode = body.ownerDocument.importNode(dirty, true);
        if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
          /* Node is already a body, use as is */
 diff --git a/dist/purify.js b/dist/purify.js
-index c7e4f4b040e5a76d9f08040b08ad0da698d0c3c9..f9383c536952608bfd17124670040037a69d61d3 100644
+index 0ec2e6e0158b8b535d7ab50d66104f56de748e22..e9f021c6861d2883fbb38d4953be674a8e136f6a 100644
 --- a/dist/purify.js
 +++ b/dist/purify.js
-@@ -1977,7 +1977,8 @@
+@@ -2132,7 +2132,8 @@
          the user has requested a DOM object rather than a string */
        IS_EMPTY_INPUT = !dirty;
        if (IS_EMPTY_INPUT) {
@@ -60,12 +60,12 @@ index c7e4f4b040e5a76d9f08040b08ad0da698d0c3c9..f9383c536952608bfd17124670040037
        }
        /* Stringify, in case dirty is an object */
        if (typeof dirty !== 'string' && !_isNode(dirty)) {
-@@ -2065,7 +2066,8 @@
+@@ -2232,7 +2233,8 @@
        } else if (_isNode(dirty)) {
          /* If dirty is a DOM element, append to an empty document to avoid
             elements being stripped by the parser */
 -        body = _initDocument('<!---->');
-+         // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
++        // Modifying to avoid lavamoat SES_HTML_COMMENT_REJECTED
 +        body = _initDocument('<!' + '--' + '--' + '>');
          importedNode = body.ownerDocument.importNode(dirty, true);
          if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {

@@ -2489,6 +2489,73 @@ describe('MetaMaskController', () => {
         });
       });
 
+      describe('getLedgerMode', () => {
+        let remoteFeatureFlags;
+
+        beforeEach(() => {
+          remoteFeatureFlags = {};
+          jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return { remoteFeatureFlags };
+              }
+              return {};
+            });
+        });
+
+        it('returns Legacy when the ledgerDmk flag is missing', () => {
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns Legacy when ledgerDmk is disabled', () => {
+          remoteFeatureFlags.ledgerDmk = {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns DMK when ledgerDmk is enabled', () => {
+          remoteFeatureFlags.ledgerDmk = {
+            enabled: true,
+            featureVersion: '13.36.0',
+            minimumVersion: '13.36.0',
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('dmk');
+        });
+
+        it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', () => {
+          jest
+            .spyOn(metamaskController.controllerMessenger, 'call')
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return {};
+              }
+              return {};
+            });
+
+          expect(metamaskController.getLedgerMode()).toBe('legacy');
+        });
+
+        it('returns DMK when a manifest override enables ledgerDmk', () => {
+          const { getManifestFlags } = jest.requireMock(
+            '../../shared/lib/manifestFlags',
+          );
+          getManifestFlags.mockReturnValueOnce({
+            remoteFeatureFlags: {
+              ledgerDmk: true,
+            },
+          });
+
+          expect(metamaskController.getLedgerMode()).toBe('dmk');
+        });
+      });
+
       describe('setLedgerTransportPreference', () => {
         it('returns the bridge transport update result', async () => {
           const updateTransportMethod = jest.fn().mockResolvedValue(true);
