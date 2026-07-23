@@ -7,16 +7,14 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
+  IconName,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
