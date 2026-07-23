@@ -5,6 +5,7 @@ import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
+  selectHasTransactionPayResolvedQuotesByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPayTokensByTransactionId,
   selectTransactionPaymentTokenByTransactionId,
@@ -182,6 +183,32 @@ describe('transactionPayController selectors', () => {
       );
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('selectHasTransactionPayResolvedQuotesByTransactionId', () => {
+    it('returns true when only a no-op quote exists', () => {
+      const state = createMockState({
+        quotes: [{ strategy: TransactionPayStrategy.None }],
+      });
+
+      expect(
+        selectHasTransactionPayResolvedQuotesByTransactionId(
+          state,
+          TRANSACTION_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when no quotes exist', () => {
+      const state = createMockState();
+
+      expect(
+        selectHasTransactionPayResolvedQuotesByTransactionId(
+          state,
+          TRANSACTION_ID,
+        ),
+      ).toBe(false);
     });
   });
 

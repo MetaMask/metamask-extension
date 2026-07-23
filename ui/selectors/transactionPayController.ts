@@ -50,6 +50,15 @@ export const selectTransactionPayQuotesByTransactionId = createSelector(
     transactionData.quotes.filter((quote) => !isNoOpQuote(quote)),
 );
 
+/**
+ * Whether the controller has finished quoting for this transaction,
+ * including no-op quotes that mark a direct route with no conversion.
+ */
+export const selectHasTransactionPayResolvedQuotesByTransactionId =
+  createSelector(selectTransactionDataByTransactionId, (transactionData) =>
+    Boolean(transactionData?.quotes?.length),
+  );
+
 export const selectTransactionPayTokensByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.tokens ?? [],
