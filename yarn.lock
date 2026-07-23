@@ -5953,7 +5953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/config-registry-controller@npm:^0.4.0":
+"@metamask/config-registry-controller@npm:^0.4.0, @metamask/config-registry-controller@npm:^0.4.1":
   version: 0.4.1
   resolution: "@metamask/config-registry-controller@npm:0.4.1"
   dependencies:
@@ -7290,21 +7290,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^5.5.0, @metamask/network-enablement-controller@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "@metamask/network-enablement-controller@npm:5.6.0"
+"@metamask/network-enablement-controller@npm:@metamask-previews/network-enablement-controller@5.6.0-preview-510706307":
+  version: 5.6.0-preview-510706307
+  resolution: "@metamask-previews/network-enablement-controller@npm:5.6.0-preview-510706307"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/config-registry-controller": "npm:^0.4.1"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-api": "npm:^23.5.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/multichain-network-controller": "npm:^3.2.1"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/transaction-controller": "npm:^69.2.1"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/c4fbedb43bc8331c24794c10a038809ec23b40a6042f589b3d72746a28846951c2e72c359ea6703b18840fc4fae6e5ffa7906979e58a1fb8f16f1fc735bd8514
+  checksum: 10/a0b7e1bf8596909328175ce666863b86c949365425ef2d522e9126fe34b5122863377e1ccf5198f5e3e52d8bb8a52a2dfe8eb87a126dcd8d432046f1a671c3e8
   languageName: node
   linkType: hard
 
