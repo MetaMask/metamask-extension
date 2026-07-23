@@ -253,8 +253,9 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+    expect(
+      screen.getByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).toBeInTheDocument();
   });
 
   it('does not render the tag with the snap name for preinstalled snap accounts', () => {
@@ -285,8 +286,9 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).not.toBeInTheDocument();
   });
 
   describe('Multichain Behaviour', () => {
@@ -394,8 +396,7 @@ describe('AccountListItem', () => {
         },
       );
 
-      const tag = container.querySelector('.mm-tag');
-      expect(tag.textContent).toBe('SRP #1');
+      expect(screen.getByText('SRP #1')).toBeInTheDocument();
     });
 
     it('does not render the any account label when explicitly disabled', () => {
