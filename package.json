@@ -168,6 +168,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@tanstack/query-core": "5.101.2",
+    "@tanstack/react-query": "5.101.2",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "34.0.0",
     "follow-redirects": "^1.16.0",
@@ -479,7 +481,7 @@
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",
     "@swc/core": "^1.13.2",
-    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query": "^5.62.16",
     "@tanstack/react-virtual": "^3.10.8",
     "@trezor/connect-web": "~9.6.0",
     "@zxing/browser": "^0.1.5",
@@ -554,6 +556,12 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2"
+  },
+  "previewBuilds": {
+    "@metamask/react-data-query": {
+      "type": "breaking",
+      "previewVersion": "0.2.2-preview-dc3ab8b12"
+    }
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
