@@ -1,9 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import { isIpfsURL } from '../../../helpers/utils/notification.util';
-
 import {
   AvatarIcon,
   AvatarIconSeverity,
@@ -12,6 +8,9 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
 import {
   AvatarToken,
   AvatarTokenSize,
