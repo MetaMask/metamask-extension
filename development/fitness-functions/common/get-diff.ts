@@ -28,7 +28,7 @@ async function getDiffByAutomationType(
   }
 
   if (automationType === AUTOMATION_TYPE.CI) {
-    // For non-PR triggers (e.g. `merge_queue` or `push ` to protected branch)
+    // For non-PR triggers (e.g. `merge_queue` or `push` to protected branch)
     // we can assume we're dealing with a single squashed commit.
     return await getCommitDiff();
   } else if (automationType === AUTOMATION_TYPE.PR) {
