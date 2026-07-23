@@ -462,6 +462,118 @@ export type LegacyBackgroundApiServiceAcceptPermissionsRequestAction = {
 };
 
 /**
+ * Attempts to create the Ledger transport app.
+ *
+ * @returns Whether the app was created successfully.
+ */
+export type LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction = {
+  type: `LegacyBackgroundApiService:attemptLedgerTransportCreation`;
+  handler: LegacyBackgroundApiService['attemptLedgerTransportCreation'];
+};
+
+/**
+ * Gets the app name and version from the Ledger device.
+ *
+ * @returns The app name and version.
+ */
+export type LegacyBackgroundApiServiceGetAppNameAndVersionAction = {
+  type: `LegacyBackgroundApiService:getAppNameAndVersion`;
+  handler: LegacyBackgroundApiService['getAppNameAndVersion'];
+};
+
+/**
+ * Gets the app configuration from the Ledger device.
+ *
+ * @returns The app configuration.
+ */
+export type LegacyBackgroundApiServiceGetLedgerAppConfigurationAction = {
+  type: `LegacyBackgroundApiService:getLedgerAppConfiguration`;
+  handler: LegacyBackgroundApiService['getLedgerAppConfiguration'];
+};
+
+/**
+ * Fetch account list from a hardware device.
+ *
+ * @param deviceName - The device name to connect.
+ * @param page - The page of accounts to fetch (-1 for previous, 1 for next,
+ * otherwise the first page).
+ * @param hdPath - An optional hd path to set on the device keyring.
+ * @returns The accounts.
+ */
+export type LegacyBackgroundApiServiceConnectHardwareAction = {
+  type: `LegacyBackgroundApiService:connectHardware`;
+  handler: LegacyBackgroundApiService['connectHardware'];
+};
+
+/**
+ * Check if the device is unlocked.
+ *
+ * @param deviceName - The device name to check.
+ * @param hdPath - An optional hd path to set on the device keyring.
+ * @returns Whether the device is unlocked.
+ */
+export type LegacyBackgroundApiServiceCheckHardwareStatusAction = {
+  type: `LegacyBackgroundApiService:checkHardwareStatus`;
+  handler: LegacyBackgroundApiService['checkHardwareStatus'];
+};
+
+/**
+ * Get the hd path currently configured on a Ledger hardware keyring.
+ *
+ * @returns The hd path.
+ */
+export type LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction = {
+  type: `LegacyBackgroundApiService:getHdPathForLedgerKeyring`;
+  handler: LegacyBackgroundApiService['getHdPathForLedgerKeyring'];
+};
+
+/**
+ * Gets the public key from the Ledger device.
+ *
+ * @param hdPath - The hd path to get the public key for.
+ * @returns The public key.
+ */
+export type LegacyBackgroundApiServiceGetLedgerPublicKeyAction = {
+  type: `LegacyBackgroundApiService:getLedgerPublicKey`;
+  handler: LegacyBackgroundApiService['getLedgerPublicKey'];
+};
+
+/**
+ * Gets the features from the Trezor device.
+ *
+ * @returns The features.
+ */
+export type LegacyBackgroundApiServiceGetTrezorFeaturesAction = {
+  type: `LegacyBackgroundApiService:getTrezorFeatures`;
+  handler: LegacyBackgroundApiService['getTrezorFeatures'];
+};
+
+/**
+ * Forget a hardware device.
+ *
+ * @param deviceName - The device name to forget.
+ * @returns `true` when the device has been forgotten.
+ */
+export type LegacyBackgroundApiServiceForgetDeviceAction = {
+  type: `LegacyBackgroundApiService:forgetDevice`;
+  handler: LegacyBackgroundApiService['forgetDevice'];
+};
+
+/**
+ * Imports an account from a Trezor or Ledger device.
+ *
+ * @param index - The account index to unlock.
+ * @param deviceName - The device name.
+ * @param hdPath - An optional hd path.
+ * @param hdPathDescription - An optional hd path description.
+ * @returns The unlocked account address and the current account list.
+ */
+export type LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction = {
+  type: `LegacyBackgroundApiService:unlockHardwareWalletAccount`;
+  handler: LegacyBackgroundApiService['unlockHardwareWalletAccount'];
+};
+
+/**
  * Capture an artificial error in a timeout handler for testing purposes.
  *
  * @param message - The error message.
@@ -539,6 +651,16 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
+  | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction
+  | LegacyBackgroundApiServiceGetAppNameAndVersionAction
+  | LegacyBackgroundApiServiceGetLedgerAppConfigurationAction
+  | LegacyBackgroundApiServiceConnectHardwareAction
+  | LegacyBackgroundApiServiceCheckHardwareStatusAction
+  | LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction
+  | LegacyBackgroundApiServiceGetLedgerPublicKeyAction
+  | LegacyBackgroundApiServiceGetTrezorFeaturesAction
+  | LegacyBackgroundApiServiceForgetDeviceAction
+  | LegacyBackgroundApiServiceUnlockHardwareWalletAccountAction
   | LegacyBackgroundApiServiceCaptureTestErrorAction
   | LegacyBackgroundApiServiceThrowTestErrorAction
   | LegacyBackgroundApiServiceIsRelaySupportedAction;

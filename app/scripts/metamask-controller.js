@@ -22,11 +22,7 @@ import {
 } from '@metamask/rpc-errors';
 import { Mutex } from 'async-mutex';
 import log from 'loglevel';
-import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
@@ -80,7 +76,6 @@ import {
   KnownCaipNamespace,
   createDeferredPromise,
 } from '@metamask/utils';
-import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
@@ -147,9 +142,7 @@ import {
 
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
-  LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -194,7 +187,6 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
 import {
   trace,
@@ -239,7 +231,6 @@ import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-fla
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
-import { restrictKeyringForDeviceRead } from './lib/hardware-device-read-keyring';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -499,15 +490,6 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
  * Wallet lock bypasses this grace — see {@link MetamaskController._onLock}.
  */
 const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
-
-/**
- * Upper bound (ms) on lock-free hardware device reads (address paging,
- * status/feature probes). Device reads may legitimately wait on user
- * interaction (PIN or passphrase entry), so the bound is generous; it exists
- * to fail abandoned requests with an actionable error instead of leaving the
- * UI waiting forever. See {@link MetamaskController.#withKeyringForDevice}.
- */
-export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
 
 function isKeyringV2NotSupportedError(error) {
   return error?.message?.includes(
@@ -2903,17 +2885,46 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // hardware wallets
-      connectHardware: this.connectHardware.bind(this),
-      forgetDevice: this.forgetDevice.bind(this),
-      checkHardwareStatus: this.checkHardwareStatus.bind(this),
-      getHdPathForLedgerKeyring: this.getHdPathForLedgerKeyring.bind(this),
-      unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
-      attemptLedgerTransportCreation:
-        this.attemptLedgerTransportCreation.bind(this),
-      getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
-      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
-      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
-      getTrezorFeatures: this.getTrezorFeatures.bind(this),
+      connectHardware: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:connectHardware',
+      ),
+      forgetDevice: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:forgetDevice',
+      ),
+      checkHardwareStatus: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkHardwareStatus',
+      ),
+      getHdPathForLedgerKeyring: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getHdPathForLedgerKeyring',
+      ),
+      unlockHardwareWalletAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+      ),
+      attemptLedgerTransportCreation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:attemptLedgerTransportCreation',
+      ),
+      getAppNameAndVersion: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getAppNameAndVersion',
+      ),
+      getLedgerPublicKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerPublicKey',
+      ),
+      getLedgerAppConfiguration: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerAppConfiguration',
+      ),
+      getTrezorFeatures: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTrezorFeatures',
+      ),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5358,118 +5369,6 @@ export default class MetamaskController extends EventEmitter {
   // Hardware
   //
 
-  async attemptLedgerTransportCreation() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger, deviceRead: true },
-      async (keyring) => await keyring.attemptMakeApp(),
-    );
-  }
-
-  async getAppNameAndVersion() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger, deviceRead: true },
-      async (keyring) => await keyring.getAppNameAndVersion(),
-    );
-  }
-
-  async getLedgerAppConfiguration() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger, deviceRead: true },
-      async (keyring) => await keyring.bridge.getAppConfiguration(),
-    );
-  }
-
-  /**
-   * Fetch account list from a hardware device.
-   *
-   * @param deviceName
-   * @param page
-   * @param hdPath
-   * @returns [] accounts
-   */
-  async connectHardware(deviceName, page, hdPath) {
-    // This is the first-time setup path for a hardware wallet; the keyring
-    // may not exist yet, so allow creation here. Every other caller of
-    // `#withKeyringForDevice` operates on an already-paired device.
-    //
-    // Address paging waits on the device (and on user interaction, e.g.
-    // entering a PIN), potentially forever if the device stays locked, so it
-    // runs as a `deviceRead` outside the controller lock.
-    return this.#withKeyringForDevice(
-      { name: deviceName, hdPath, create: true, deviceRead: true },
-      async (keyring) => {
-        let accounts = [];
-        switch (page) {
-          case -1:
-            accounts = await keyring.getPreviousPage();
-            break;
-          case 1:
-            accounts = await keyring.getNextPage();
-            break;
-          default:
-            accounts = await keyring.getFirstPage();
-        }
-
-        return accounts;
-      },
-    );
-  }
-
-  /**
-   * Check if the device is unlocked
-   *
-   * @param deviceName
-   * @param hdPath
-   * @returns {Promise<boolean>}
-   */
-  async checkHardwareStatus(deviceName, hdPath) {
-    return this.#withKeyringForDevice(
-      {
-        name: deviceName,
-        hdPath,
-        create: deviceName === HardwareDeviceNames.qr,
-        deviceRead: true,
-      },
-      async (keyring) => {
-        return keyring.isUnlocked();
-      },
-    );
-  }
-
-  /**
-   * Get the hd path currently configured on a hardware keyring.
-   *
-   * @returns {Promise<string>}
-   */
-  async getHdPathForLedgerKeyring() {
-    return this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger, deviceRead: true },
-      async (keyring) => {
-        return await keyring.hdPath;
-      },
-    );
-  }
-
-  async getLedgerPublicKey(hdPath) {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger, deviceRead: true },
-      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
-    );
-  }
-
-  async getTrezorFeatures() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.trezor, deviceRead: true },
-      async (keyring) => {
-        if (typeof keyring.bridge.getFeatures !== 'function') {
-          throw new Error('Trezor bridge does not support getFeatures');
-        }
-
-        return await keyring.bridge.getFeatures();
-      },
-    );
-  }
-
   /**
    * Get hardware type that will be sent for metrics logging.
    *
@@ -5488,29 +5387,6 @@ export default class MetamaskController extends EventEmitter {
       }
       throw error;
     }
-  }
-
-  /**
-   * Clear
-   *
-   * @param deviceName
-   * @returns {Promise<boolean>}
-   */
-  async forgetDevice(deviceName) {
-    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
-      // remove-handler downstream expects raw addresses.
-      for (const account of await keyring.getAccounts()) {
-        this.controllerMessenger.call(
-          'LegacyBackgroundApiService:onAccountRemoved',
-          account.address,
-        );
-      }
-
-      await keyring.forgetDevice();
-
-      return true;
-    });
   }
 
   /**
@@ -5584,134 +5460,6 @@ export default class MetamaskController extends EventEmitter {
       }
       throw error;
     }
-  }
-
-  /**
-   * get hardware account label
-   *
-   * @param name
-   * @param index
-   * @param hdPathDescription
-   * @returns string label
-   */
-  getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
-      parseInt(index, 10) + 1
-    } ${hdPathDescription || ''}`.trim();
-  }
-
-  /**
-   * Imports an account from a Trezor or Ledger device.
-   *
-   * @param index
-   * @param deviceName
-   * @param hdPath
-   * @param hdPathDescription
-   * @returns {} keyState
-   */
-  async unlockHardwareWalletAccount(
-    index,
-    deviceName,
-    hdPath,
-    hdPathDescription,
-  ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
-      async (keyring) => {
-        const { entropySource } = keyring;
-        // Callers may omit `hdPath` and rely on the keyring's currently
-        // configured base path (the legacy V1 surface implicitly did this
-        // via `keyring.setAccountToUnlock` + `addAccounts`). Fall back to
-        // the keyring's `hdPath` so V2 `createAccounts` builds a valid
-        // derivation path.
-        const effectiveHdPath = hdPath ?? keyring.hdPath;
-        let createdAccount;
-
-        switch (deviceName) {
-          case HardwareDeviceNames.ledger: {
-            // Ledger Live mode uses a per-account hardened third segment;
-            // Legacy and BIP-44 modes are `${hdPath}/${index}`.
-            const derivationPath =
-              effectiveHdPath === LEDGER_LIVE_PATH
-                ? `m/44'/60'/${index}'/0/0`
-                : `${effectiveHdPath}/${index}`;
-            [createdAccount] = await keyring.createAccounts({
-              type: 'bip44:derive-path',
-              entropySource,
-              derivationPath,
-            });
-            break;
-          }
-          case HardwareDeviceNames.trezor:
-          case HardwareDeviceNames.oneKey: {
-            [createdAccount] = await keyring.createAccounts({
-              type: 'bip44:derive-path',
-              entropySource,
-              derivationPath: `${effectiveHdPath}/${index}`,
-            });
-            break;
-          }
-          case HardwareDeviceNames.qr: {
-            // QR devices are HD or Account-mode; legacy `setAccountToUnlock +
-            // addAccounts` worked for both because the inner keyring routed
-            // by mode internally. The V2 wrapper splits the two paths.
-            const isAccountMode = keyring.getMode() === 'account';
-            [createdAccount] = isAccountMode
-              ? await keyring.createAccounts({
-                  type: 'custom',
-                  entropySource,
-                  addressIndex: index,
-                })
-              : await keyring.createAccounts({
-                  type: 'bip44:derive-index',
-                  entropySource,
-                  groupIndex: index,
-                });
-            break;
-          }
-          case HardwareDeviceNames.lattice: {
-            [createdAccount] = await keyring.createAccounts({
-              type: 'custom',
-              entropySource,
-              addressIndex: index,
-            });
-            break;
-          }
-          default:
-            throw new Error(
-              `MetamaskController:unlockHardwareWalletAccount - Unknown device: ${deviceName}`,
-            );
-        }
-
-        if (!createdAccount) {
-          throw new Error(`No account created for device: ${deviceName}`);
-        }
-
-        return {
-          address: normalize(createdAccount.address),
-          label: this.getAccountLabel(
-            deviceName === HardwareDeviceNames.qr
-              ? keyring.getName()
-              : deviceName,
-            index,
-            hdPathDescription,
-          ),
-        };
-      },
-    );
-
-    const accounts = this.accountsController.listAccounts();
-
-    const internalAccount =
-      this.accountsController.getAccountByAddress(unlockedAccount);
-
-    if (internalAccount) {
-      this.accountsController.setSelectedAccount(internalAccount.id);
-    } else {
-      throw new Error(`No account found for address: ${unlockedAccount}`);
-    }
-
-    return { unlockedAccount, accounts };
   }
 
   //
@@ -8348,36 +8096,6 @@ export default class MetamaskController extends EventEmitter {
   // CONFIG
   //=============================================================================
 
-  /**
-   * Sets the Ledger Live preference to use for Ledger hardware wallet support
-   *
-   * @param keyring
-   * @deprecated This method is deprecated and will be removed in the future.
-   * Only webhid connections are supported in chrome and u2f in firefox.
-   * @returns {Promise<boolean | undefined>} The bridge result if available,
-   * otherwise `undefined`.
-   */
-  async setLedgerTransportPreference(keyring) {
-    const transportType = window.navigator.hid
-      ? LedgerTransportTypes.webhid
-      : LedgerTransportTypes.u2f;
-
-    // TODO: Expose `updateTransportMethod` directly on the V2 `LedgerKeyring`
-    // wrapper in `@metamask/eth-ledger-bridge-keyring/v2` so callers don't
-    // need to reach through `bridge`. The V2 wrapper currently exposes the
-    // bridge instance but not this top-level method.
-    //
-    // Use `await` (not `.then`/`.catch`) so callers tolerate any bridge whose
-    // `updateTransportMethod` is synchronous (e.g. older test stubs that
-    // returned a raw value before being aligned with the real bridge's
-    // Promise contract).
-    if (keyring?.bridge?.updateTransportMethod) {
-      return await keyring.bridge.updateTransportMethod(transportType);
-    }
-
-    return undefined;
-  }
-
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /* eslint-disable accessor-pairs */
   /**
@@ -9049,184 +8767,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       metamask: this.getState(),
     };
-  }
-
-  /**
-   * Select a hardware wallet device and execute a
-   * callback with the keyring for that device.
-   *
-   * Note that KeyringController state is not updated before
-   * the end of the callback execution, and calls to KeyringController
-   * methods within the callback can lead to deadlocks.
-   *
-   * @param {object} options - The options for the device
-   * @param {string} options.name - The device name to select
-   * @param {string} options.hdPath - An optional hd path to be set on the device
-   * keyring
-   * @param {boolean} options.create - Whether to create the hardware keyring
-   * if it does not exist yet
-   * @param {boolean} options.deviceRead - Set when the callback only reads
-   * from the device (address paging, feature/status probes). Device reads can
-   * stall indefinitely on a locked or unresponsive device, so they are
-   * executed on the lock-free `withKeyringV2Unsafe` path instead of holding
-   * the controller-wide operation mutex for the whole device interaction.
-   * To enforce this, the callback does not receive the full keyring: it
-   * receives a frozen read-only facade (see `restrictKeyringForDeviceRead`)
-   * on which mutating methods do not exist. The remaining reads only touch
-   * non-load-bearing paging cursor/cache fields (`page`, `paths`, `hdk`).
-   * @param {*} callback - The callback to execute with the keyring
-   * @returns {*} The result of the callback
-   */
-  async #withKeyringForDevice(options, callback) {
-    let keyringType = null;
-    let v2KeyringType = null;
-    switch (options.name) {
-      case HardwareDeviceNames.trezor:
-        keyringType = TrezorKeyring.type;
-        v2KeyringType = KeyringType.Trezor;
-        break;
-      case HardwareDeviceNames.oneKey:
-        keyringType = OneKeyKeyring.type;
-        v2KeyringType = KeyringType.OneKey;
-        break;
-      case HardwareDeviceNames.ledger:
-        keyringType = LedgerKeyring.type;
-        v2KeyringType = KeyringType.Ledger;
-        break;
-      case HardwareDeviceNames.qr:
-        keyringType = QrKeyring.type;
-        v2KeyringType = KeyringType.Qr;
-        break;
-      case HardwareDeviceNames.lattice:
-        keyringType = LatticeKeyring.type;
-        v2KeyringType = KeyringType.Lattice;
-        break;
-      default:
-        throw new Error(
-          'MetamaskController:#withKeyringForDevice - Unknown device',
-        );
-    }
-
-    // `withKeyringV2` has no `createIfMissing` option. The connect-device
-    // flow and QR reconnect status probe may legitimately create a hardware
-    // keyring; every other caller operates on a keyring that should already
-    // exist, and should let the controller throw `KeyringNotFound` if it
-    // doesn't.
-    // `withController` runs the check-and-create as a mutually exclusive
-    // transaction so a concurrent caller can't slip in between.
-    if (options.create) {
-      await this.keyringController.withController(async (controller) => {
-        if (!controller.keyrings.some(({ type }) => type === keyringType)) {
-          await controller.addNewKeyring(keyringType);
-        }
-      });
-    }
-
-    // The prelude mutates keyring/app state (`setHdPath` resets the paging
-    // state and can clear accounts, the Lattice `network` field feeds the
-    // GridPlus session) and is fast and bounded, so it always runs under the
-    // controller lock where `persistOrRollback` can pick up the changes.
-    const prepareKeyring = async (keyring) => {
-      if (options.hdPath && keyring.setHdPath) {
-        keyring.setHdPath(options.hdPath);
-      }
-
-      if (options.name === HardwareDeviceNames.ledger) {
-        await this.setLedgerTransportPreference(keyring);
-      }
-
-      if (
-        options.name === HardwareDeviceNames.trezor ||
-        options.name === HardwareDeviceNames.oneKey
-      ) {
-        const model = keyring.getModel();
-        this.appStateController.setTrezorModel(model);
-      }
-
-      if (options.name === HardwareDeviceNames.lattice) {
-        // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
-        // runtime state, so we keep tracking it on every entry. The
-        // GridPlus SDK Client reads it on `_initSession` to target
-        // the right chain.
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
-      }
-    };
-
-    if (!options.deviceRead) {
-      return this.keyringController.withKeyringV2(
-        { type: v2KeyringType },
-        async ({ keyring }) => {
-          await prepareKeyring(keyring);
-          return await callback(keyring);
-        },
-      );
-    }
-
-    // Device-read path. The prelude still runs under the lock (short,
-    // mutating), but the device interaction itself runs on the lock-free
-    // path: a locked or unresponsive device makes calls like
-    // `getFirstPage` or `getPublicKey` hang indefinitely, and holding
-    // `#controllerOperationMutex` across that hang deadlocks every other
-    // locked keyring operation (account syncing, account creation,
-    // unlocking, ...) until the browser restarts.
-    //
-    // Trade-off: while the device read is in flight, a concurrent locked
-    // operation that fails (or a lock/unlock cycle) can rebuild the keyring
-    // instances, in which case this read fails or returns data from the
-    // replaced instance. That is intentional: the stale instance is no
-    // longer part of the controller, so its state can never be persisted,
-    // and the caller can simply retry — unlike the previous behavior, where
-    // the whole wallet wedged on the held mutex.
-    await this.keyringController.withKeyringV2(
-      { type: v2KeyringType },
-      async ({ keyring }) => prepareKeyring(keyring),
-    );
-
-    // The timeout is a UX backstop: without the lock, an abandoned device
-    // read no longer blocks anything else, but the requesting UI would
-    // still wait forever. Note that timing out abandons the in-flight
-    // device call rather than cancelling it; a retry while the device call
-    // is still pending may be rejected by the transport SDK.
-    const deviceReadOperation = this.keyringController.withKeyringV2Unsafe(
-      { type: v2KeyringType },
-      // The facade structurally prevents `deviceRead` callbacks from
-      // reaching mutating keyring methods on the lock-free path.
-      async ({ keyring }) =>
-        await callback(restrictKeyringForDeviceRead(keyring)),
-    );
-
-    let timeoutHandle;
-    let timedOut = false;
-    try {
-      return await Promise.race([
-        deviceReadOperation,
-        new Promise((_resolve, reject) => {
-          timeoutHandle = setTimeout(() => {
-            timedOut = true;
-            reject(
-              new Error(
-                `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
-              ),
-            );
-          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
-        }),
-      ]);
-    } finally {
-      clearTimeout(timeoutHandle);
-      if (timedOut) {
-        // Only for observability: `Promise.race` already subscribes to the
-        // abandoned device read, so a late rejection can never surface as an
-        // unhandled rejection — but without this it would be dropped silently.
-        deviceReadOperation.catch((error) =>
-          log.warn(
-            `Abandoned hardware device read failed after timeout for device: ${options.name}`,
-            error,
-          ),
-        );
-      }
-    }
   }
 
   #createEnsureOnboardingCompleteCallback() {
