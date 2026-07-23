@@ -1,10 +1,10 @@
+import type { EncryptionKey } from '@metamask/browser-passworder';
+import type { Encryptor } from '@metamask/keyring-controller';
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
 import type { WalletOptions } from '@metamask/wallet';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import { isDevOrTestBuild } from '../../services/oauth/config';
 import type { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding-controller-messenger';
-import { Encryptor } from '@metamask/keyring-controller';
-import { EncryptionKey } from '@metamask/browser-passworder';
 
 type SeedlessOnboardingControllerInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['seedlessOnboardingController']

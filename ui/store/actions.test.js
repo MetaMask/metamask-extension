@@ -150,6 +150,7 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
