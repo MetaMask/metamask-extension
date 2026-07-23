@@ -15,7 +15,8 @@ import { OrderContent } from './order-content';
 // contributor's local timezone (formatDate renders in the local zone).
 process.env.TZ = 'UTC';
 
-jest.mock('copy-to-clipboard', () => jest.fn());
+jest.mock('copy-to-clipboard');
+const mockCopyToClipboard = jest.mocked(copyToClipboard);
 
 const completedOrder = {
   providerOrderId: 'provider-order-1234567890',
@@ -88,7 +89,7 @@ describe('OrderContent (completed)', () => {
     const user = userEvent.setup();
     renderContent(completedOrder);
     await user.click(screen.getByTestId('ramps-order-details-order-id'));
-    expect(copyToClipboard).toHaveBeenCalledWith(
+    expect(mockCopyToClipboard).toHaveBeenCalledWith(
       'provider-order-1234567890',
       expect.anything(),
     );
