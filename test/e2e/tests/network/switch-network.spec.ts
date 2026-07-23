@@ -30,7 +30,6 @@ describe('Switch network - ', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        // To check on CI, will remove this once confirm we are good to go
         await login(driver);
         const homePage = new HomePage(driver);
 
