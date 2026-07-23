@@ -16,11 +16,6 @@
 .bridge__container {
   height: 100%;
   overflow-y: scroll;
-  max-width: clamp(var(--width-sm), 85vw, var(--width-max));
+  max-width: 100%
 }
 
-.app--sidepanel {
-  .bridge__container {
-    max-width: 100%;
-  }
-}
