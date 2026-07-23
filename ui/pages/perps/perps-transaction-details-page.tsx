@@ -32,50 +32,28 @@ import {
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { formatPnl } from '../../../shared/lib/perps-formatters';
 import type { PerpsTransaction } from '../../components/app/perps/types';
-
-type DetailRowProps = {
-  label: string;
-  value: React.ReactNode;
-  valueColor?: TextColor;
-};
+// eslint-disable-next-line import-x/no-restricted-paths
+import { Row } from '../details/components/shared';
 
 /**
- * A single label/value row within a details section. Renders nothing when
- * the value is empty, matching the collapsing behavior used by the generic
- * activity details rows elsewhere in the app.
+ * Wraps a signed value (e.g. PnL, funding amount) in the success/error text
+ * color used across the app to indicate a positive or negative amount.
  *
  * @param options0 - Component props
- * @param options0.label - Row label text
- * @param options0.value - Row value content (hidden entirely when empty)
- * @param options0.valueColor - Optional text color override for the value
+ * @param options0.value - The value to render
+ * @param options0.isPositive - Whether the value represents a gain (success color) or a loss (error color)
  */
-const DetailRow = ({ label, value, valueColor }: DetailRowProps) => {
-  if (value === undefined || value === null || value === '') {
-    return null;
-  }
-
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Center}
-      paddingTop={2}
-      paddingBottom={2}
-      data-testid="perps-transaction-details-row"
-    >
-      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-        {label}
-      </Text>
-      <Text
-        variant={TextVariant.BodySm}
-        fontWeight={FontWeight.Medium}
-        color={valueColor}
-      >
-        {value}
-      </Text>
-    </Box>
-  );
-};
+const SignedValue = ({
+  value,
+  isPositive,
+}: {
+  value: React.ReactNode;
+  isPositive: boolean;
+}) => (
+  <span className={isPositive ? 'text-success-default' : 'text-error-default'}>
+    {value}
+  </span>
+);
 
 /**
  * Renders the order-specific detail rows (status, type, limit price, order
@@ -99,25 +77,25 @@ const OrderDetailRows = ({
 
   return (
     <>
-      <DetailRow
+      <Row
         label={t('perpsOrderStatus')}
         value={order.text || t('perpsStatusOpen')}
       />
-      <DetailRow
+      <Row
         label={t('perpsOrderType')}
         value={order.type === 'limit' ? t('perpsLimit') : t('perpsMarket')}
       />
       {order.type === 'limit' && (
-        <DetailRow
+        <Row
           label={t('perpsLimitPrice')}
           value={formatPerpsFiatUniversal(order.limitPrice)}
         />
       )}
-      <DetailRow
+      <Row
         label={t('perpsOrderValue')}
         value={formatPerpsFiatMinimal(order.size)}
       />
-      <DetailRow label={t('perpsOrderFilled')} value={order.filled} />
+      <Row label={t('perpsOrderFilled')} value={order.filled} />
     </>
   );
 };
@@ -153,27 +131,20 @@ const TradeDetailRows = ({
 
   return (
     <>
-      <DetailRow
+      <Row
         label={t('perpsEntryPrice')}
         value={formatPerpsFiatUniversal(fill.entryPrice)}
       />
-      <DetailRow
-        label={t('perpsSize')}
-        value={`${fill.size} ${displaySymbol}`}
-      />
+      <Row label={t('perpsSize')} value={`${fill.size} ${displaySymbol}`} />
       {showPnl && (
-        <DetailRow
+        <Row
           label={t('perpsPnl')}
-          value={formatPnl(pnlNumber)}
-          valueColor={
-            pnlNumber >= 0 ? TextColor.SuccessDefault : TextColor.ErrorDefault
+          value={
+            <SignedValue value={formatPnl(pnlNumber)} isPositive={pnlNumber >= 0} />
           }
         />
       )}
-      <DetailRow
-        label={t('perpsFees')}
-        value={formatPerpsFiatMinimal(fill.fee)}
-      />
+      <Row label={t('perpsFees')} value={formatPerpsFiatMinimal(fill.fee)} />
     </>
   );
 };
@@ -200,14 +171,14 @@ const FundingDetailRows = ({
 
   return (
     <>
-      <DetailRow label={t('perpsFundingRate')} value={fundingAmount.rate} />
-      <DetailRow
+      <Row label={t('perpsFundingRate')} value={fundingAmount.rate} />
+      <Row
         label={t('amount')}
-        value={fundingAmount.fee}
-        valueColor={
-          fundingAmount.isPositive
-            ? TextColor.SuccessDefault
-            : TextColor.ErrorDefault
+        value={
+          <SignedValue
+            value={fundingAmount.fee}
+            isPositive={fundingAmount.isPositive}
+          />
         }
       />
     </>
@@ -327,7 +298,7 @@ const PerpsTransactionDetailsPage = () => {
           flexDirection={BoxFlexDirection.Column}
           className="divide-y divide-border-muted"
         >
-          <DetailRow
+          <Row
             label={t('perpsOrderDate')}
             value={formatDateTime(transaction.timestamp)}
           />

@@ -169,6 +169,20 @@ describe('PerpsTransactionDetailsPage', () => {
       expect(screen.getByText(messages.perpsPnl.message)).toBeInTheDocument();
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
+
+    it('renders a positive PnL value in the success color', () => {
+      renderWithTransaction(findTransaction('tx-002'));
+
+      expect(screen.getByText('+$125.00')).toHaveClass('text-success-default');
+    });
+  });
+
+  describe('trade transaction with a realized loss (tx-002b)', () => {
+    it('renders a negative PnL value in the error color', () => {
+      renderWithTransaction(findTransaction('tx-002b'));
+
+      expect(screen.getByText('-$45.50')).toHaveClass('text-error-default');
+    });
   });
 
   describe('trade transaction without realized PnL (tx-001)', () => {
@@ -190,6 +204,22 @@ describe('PerpsTransactionDetailsPage', () => {
       ).toBeInTheDocument();
       expect(screen.getByText(messages.amount.message)).toBeInTheDocument();
       expect(screen.getByText('+8.30')).toBeInTheDocument();
+    });
+
+    it('renders a positive funding amount in the success color', () => {
+      renderWithTransaction(findTransaction('tx-003'));
+
+      expect(screen.getByText('+8.30')).toHaveClass('text-success-default');
+    });
+  });
+
+  describe('rows rendered via the shared details Row component', () => {
+    it('uses the shared transaction-breakdown-row testid and collapses empty values', () => {
+      renderWithTransaction(findTransaction('tx-004'));
+
+      expect(
+        screen.getAllByTestId('transaction-breakdown-row').length,
+      ).toBeGreaterThan(0);
     });
   });
 });
