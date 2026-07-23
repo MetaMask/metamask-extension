@@ -114,6 +114,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  ledgerDmk: {
+    name: 'ledgerDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   enableMultichainAccounts: {
     name: 'enableMultichainAccounts',
     type: FeatureFlagType.Remote,
@@ -2880,18 +2892,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: false,
-    status: FeatureFlagStatus.Active,
-  },
-
-  ledgerDmk: {
-    name: 'ledgerDmk',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    },
     status: FeatureFlagStatus.Active,
   },
 
