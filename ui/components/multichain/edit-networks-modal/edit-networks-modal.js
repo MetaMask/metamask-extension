@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Checkbox,
-  IconName,
-} from '@metamask/design-system-react';
+import { Checkbox, IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -135,6 +132,7 @@ export const EditNetworksModal = ({
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
+                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
             />
@@ -155,6 +153,7 @@ export const EditNetworksModal = ({
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
+                  checkboxContainerProps={{ className: 'pointer-events-none' }}
                 />
               }
               showEndAccessory={false}
