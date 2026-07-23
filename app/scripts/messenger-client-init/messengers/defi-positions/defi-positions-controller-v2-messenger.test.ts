@@ -46,8 +46,10 @@ describe('getDeFiPositionsControllerV2InitMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: [
+          'PreferencesController:getState',
+          'OnboardingController:getState',
           'RemoteFeatureFlagController:getState',
-          'CurrencyRateController:getState',
+          'AssetsController:getState',
           'AuthenticationController:getBearerToken',
         ],
       }),

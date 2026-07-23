@@ -3,12 +3,12 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import {
-  DeFiPositionsControllerV2Messenger,
-  CurrencyRateControllerGetStateAction,
-} from '@metamask/assets-controllers';
+import { DeFiPositionsControllerV2Messenger } from '@metamask/assets-controllers';
+import type { AssetsControllerGetStateAction } from '@metamask/assets-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import { OnboardingControllerGetStateAction } from '../../../controllers/onboarding';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -38,8 +38,10 @@ export function getDeFiPositionsControllerV2Messenger(
 }
 
 type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | OnboardingControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | CurrencyRateControllerGetStateAction
+  | AssetsControllerGetStateAction
   | AuthenticationControllerGetBearerTokenAction;
 
 export type DeFiPositionsControllerV2InitMessenger = ReturnType<
@@ -61,8 +63,10 @@ export function getDeFiPositionsControllerV2InitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'PreferencesController:getState',
+      'OnboardingController:getState',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:getState',
+      'AssetsController:getState',
       'AuthenticationController:getBearerToken',
     ],
   });

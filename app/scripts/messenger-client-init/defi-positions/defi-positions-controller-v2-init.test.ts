@@ -23,7 +23,7 @@ function buildInitRequestMock(
   options: {
     useExternalServices?: boolean;
     completedOnboarding?: boolean;
-    currentCurrency?: string;
+    selectedCurrency?: string;
     defiControllerV2Enabled?: boolean;
   } = {},
 ): jest.Mocked<
@@ -35,7 +35,7 @@ function buildInitRequestMock(
   const {
     useExternalServices = true,
     completedOnboarding = true,
-    currentCurrency = 'usd',
+    selectedCurrency = 'usd',
     defiControllerV2Enabled = true,
   } = options;
 
@@ -52,6 +52,12 @@ function buildInitRequestMock(
   };
 
   requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+    if (action === 'PreferencesController:getState') {
+      return { useExternalServices };
+    }
+    if (action === 'OnboardingController:getState') {
+      return { completedOnboarding };
+    }
     if (action === 'RemoteFeatureFlagController:getState') {
       return {
         remoteFeatureFlags: {
@@ -59,21 +65,10 @@ function buildInitRequestMock(
         },
       };
     }
-    if (action === 'CurrencyRateController:getState') {
-      return { currentCurrency };
+    if (action === 'AssetsController:getState') {
+      return { selectedCurrency };
     }
     throw new Error(`Unexpected action: ${action}`);
-  });
-
-  // @ts-expect-error: Partial mock.
-  requestMock.getMessengerClient.mockImplementation((name: string) => {
-    if (name === 'PreferencesController') {
-      return { state: { useExternalServices } };
-    }
-    if (name === 'OnboardingController') {
-      return { state: { completedOnboarding } };
-    }
-    throw new Error(`Unexpected messenger client: ${name}`);
   });
 
   return requestMock;
@@ -159,8 +154,8 @@ describe('DeFiPositionsControllerV2Init', () => {
   });
 
   describe('getVsCurrency', () => {
-    it('returns the current currency from CurrencyRateController', () => {
-      const requestMock = buildInitRequestMock({ currentCurrency: 'eur' });
+    it('returns the selected currency from AssetsController', () => {
+      const requestMock = buildInitRequestMock({ selectedCurrency: 'eur' });
       DeFiPositionsControllerV2Init(requestMock);
 
       const { getVsCurrency } =
