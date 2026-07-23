@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 219,
+      "currentMigrationVersion": 220,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
