@@ -2942,17 +2942,26 @@ export default class MetamaskController extends EventEmitter {
         this.passkeyController.generateAuthenticationOptions.bind(
           this.passkeyController,
         ),
-      protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
+      protectVaultKeyWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:protectVaultKeyWithPasskey',
+      ),
       unlockWithPasskey: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:unlockWithPasskey',
       ),
-      removePasskeyWithPasskeyVerification:
-        this.removePasskeyWithPasskeyVerification.bind(this),
-      removePasskeyWithPasswordVerification:
-        this.removePasskeyWithPasswordVerification.bind(this),
-      changePasswordWithPasskeyVerification:
-        this.changePasswordWithPasskeyVerification.bind(this),
+      removePasskeyWithPasskeyVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:removePasskeyWithPasskeyVerification',
+      ),
+      removePasskeyWithPasswordVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:removePasskeyWithPasswordVerification',
+      ),
+      changePasswordWithPasskeyVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:changePasswordWithPasskeyVerification',
+      ),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -3367,7 +3376,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:exportAccount',
       ),
-      exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
+      exportAccountsWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:exportAccountsWithPasskey',
+      ),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
@@ -4366,78 +4378,6 @@ export default class MetamaskController extends EventEmitter {
         data: { success: fetchAllSeedPhrasesSuccess },
       });
     }
-  }
-
-  /**
-   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
-   * If `completedOnboarding`, `password` is required and verified first.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Post-registration `get()` response from the UI.
-   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
-   * @returns {Promise<void>}
-   */
-  async protectVaultKeyWithPasskey(
-    registrationResponse,
-    authenticationResponse,
-    password,
-  ) {
-    // Orchestration (onboarding step-up gate, password verification, and
-    // exporting the vault key) lives in `PasskeyController`.
-    await this.passkeyController.protectVaultKeyWithPasskey({
-      registrationResponse,
-      authenticationResponse,
-      password,
-    });
-  }
-
-  /**
-   * Removes the passkey from the vault using the passkey authentication response.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
-   * @returns {Promise<void>}
-   */
-  async removePasskeyWithPasskeyVerification(authenticationResponse) {
-    await this.passkeyController.removePasskeyWithPasskeyVerification(
-      authenticationResponse,
-    );
-  }
-
-  /**
-   * Verifies the wallet password and removes the passkey record (settings disable fallback).
-   *
-   * @param {string} password
-   * @returns {Promise<void>}
-   */
-  async removePasskeyWithPasswordVerification(password) {
-    await this.passkeyController.removePasskeyWithPasswordVerification(
-      password,
-    );
-  }
-
-  /**
-   * Changes the wallet password using a verified passkey assertion, then either renews
-   * vault key protection for the new encryption key or removes the passkey enrollment.
-   * Non-social-login only.
-   *
-   * @param {string} newPassword - New wallet password.
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {{ renewVaultKeyProtection: boolean }} [options] - If `false`, removes passkey after the change instead of calling `renewVaultKeyProtection`.
-   * @returns {Promise<void>}
-   */
-  async changePasswordWithPasskeyVerification(
-    newPassword,
-    authenticationResponse,
-    options,
-  ) {
-    // Orchestration (assertion verification, keyring password change, and the
-    // renew-or-remove vault-key handling) lives in `PasskeyController`, which
-    // serializes the flow with its own internal operation mutex.
-    await this.passkeyController.changePasswordWithPasskeyVerification({
-      newPassword,
-      authenticationResponse,
-      options,
-    });
   }
 
   /**
