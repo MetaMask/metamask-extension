@@ -237,7 +237,7 @@ export const MultichainBridgeQuoteCard = ({
               {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
                 locale,
                 activeQuote.quote.priceData?.swapRate,
-              )}${BRIDGE_DEBUG_ENABLED ? ` (${activeQuote.swapRate})` : ''}${activeQuote.quote.dest.asset.symbol}`}
+              )}${BRIDGE_DEBUG_ENABLED ? ` (${activeQuote.swapRate}) ` : ''}${activeQuote.quote.dest.asset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
