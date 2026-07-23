@@ -23,6 +23,9 @@ const isValidTokenSecurityData = (data: unknown): data is TokenSecurityData =>
   typeof (data as TokenSecurityData).resultType === 'string' &&
   Array.isArray((data as TokenSecurityData).features);
 
+// TODO(security-trust): Once home page Security & Trust signals land (separate PR)
+// via TanStack Query, read from the shared query cache first and fall back to REST
+// (`fetchCachedTokenAssets`) when cached data is unavailable.
 export const useTokenSecurityData = ({
   assetId,
   prefetchedData: rawPrefetchedData,
