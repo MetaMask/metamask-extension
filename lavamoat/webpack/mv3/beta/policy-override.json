@@ -231,6 +231,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "document": false,
