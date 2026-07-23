@@ -516,7 +516,7 @@ export const PerpsOrderBook = ({
           )}
         </Box>
       )}
-      {!showLoadingSkeleton && !showPlaceholder && (
+      {!showLoadingSkeleton && !showPlaceholder && grouped && (
         <Box
           flexDirection={BoxFlexDirection.Column}
           paddingLeft={4}
