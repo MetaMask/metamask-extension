@@ -12,7 +12,7 @@ import {
   simpleReloadScript,
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 /**
@@ -55,8 +55,8 @@ describe('Storage Operations Failure Recovery', function () {
           );
 
           // Phase 2: Start recovery
-          const vaultRecoveryPage = new VaultRecoveryPage(driver);
-          await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+          const criticalErrorPage = new CriticalErrorPage(driver);
+          await criticalErrorPage.clickRepairButton({ confirm: true });
 
           // Phase 3: Complete vault recovery onboarding
           await completeVaultRecoveryOnboardingFlow({

@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Instal ulang MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset State MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Masih mengalami masalah?"
   },
@@ -8792,9 +8795,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Alamat baru"
   },
-  "sendBugReport": {
-    "message": "Kirimkan laporan masalah."
-  },
   "sendBundleHwGasPayment": {
     "message": "Membayar biaya jaringan dengan $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10118,42 +10118,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Anda dapat mencoba untuk menyalin dan memulihkan fail state secara manual sebelum memutuskan untuk memulihkan brankas Anda dengan mengikuti $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Anda dapat mencoba untuk menyalin dan memulihkan fail state secara manual sebelum memutuskan untuk mereset MetaMask dengan mengikuti $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Brankas Anda tidak dapat dipulihkan secara otomatis."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Brankas Anda dapat dipulihkan dari cadangan otomatis. Pemulihan otomatis akan menghapus pengaturan dan preferensi saat ini, dan hanya memulihkan brankas Anda."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Kesalahan internal: basis data tidak dapat diakses"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset State MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Mereset basis data…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Pulihkan akun"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Memulihkan basis data…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "petunjuk berikut",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Cara memulihkan Frasa Pemulihan Rahasia"
-  },
   "stateLogError": {
     "message": "Terjadi kesalahan saat memulihkan log state, coba lagi nanti."
   },
@@ -10972,9 +10936,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Koneksi $1 tidak dapat diandalkan. Perbarui detail konektivitas jaringan sebelum melanjutkan atau coba lagi nanti.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, bahkan jika akun Anda dipulihkan."
   },
   "unexpectedError": {
     "message": "Terjadi kesalahan tidak terduga.",

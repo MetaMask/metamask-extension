@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Εγκαταστήστε ξανά το MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Επαναφορά κατάστασης του MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
   },
@@ -8784,9 +8787,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Νέα διεύθυνση"
   },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφαλμάτων."
-  },
   "sendBundleHwGasPayment": {
     "message": "Πληρωμή τέλη δικτύου με $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10110,42 +10110,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το εικονικό σας \"θησαυροφυλάκιο\", ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το MetaMask, ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Δεν είναι δυνατή η αυτόματη επαναφορά του εικονικού σας \"θησαυροφυλακίου\"."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Δεν είναι δυνατή η επαναφορά του εικονικού σας \"θησαυροφυλακίου\" από ένα αυτόματο αντίγραφο ασφαλείας. Η αυτόματη ανάκτηση θα διαγράψει τις τρέχουσες ρυθμίσεις και προτιμήσεις σας, επαναφέροντας μόνο το εικονικό σας \"θησαυροφυλάκιο\"."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Εσωτερικό σφάλμα: δεν είναι δυνατή η πρόσβαση στη βάση δεδομένων"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Επαναφορά κατάστασης του MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Επαναφορά λογαριασμών"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "αυτές τις οδηγίες",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Πώς να ανακτήσετε τη Μυστική Φράση Ανάκτησής σας"
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση των αρχείων καταγραφών κατάστασης, προσπαθήστε ξανά αργότερα."
   },
@@ -10964,9 +10928,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Η σύνδεση στο $1 δεν είναι αξιόπιστη. Ενημερώστε τα στοιχεία σύνδεσης δικτύου πριν συνεχίσετε ή προσπαθήστε ξανά αργότερα.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
   },
   "unexpectedError": {
     "message": "Παρουσιάστηκε απρόσμενο σφάλμα.",

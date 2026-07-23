@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Переустановите MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Сброс состояния MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Проблема не устранена?"
   },
@@ -8784,9 +8787,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Новый адрес"
   },
-  "sendBugReport": {
-    "message": "Отправьте нам отчет об ошибке."
-  },
   "sendBundleHwGasPayment": {
     "message": "Оплата комиссии сети с помощью $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10110,42 +10110,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Прежде чем вы решите восстановить свое хранилище, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ваше хранилище нельзя восстановить автоматически."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ваше хранилище можно восстановить из автоматизированной резервной копии. Автоматическое восстановление удалит ваши текущие настройки и предпочтения и восстановит только ваше хранилище."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Внутренняя ошибка: невозможно получить доступ к базе данных"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Сброс состояния MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Сброс базы данных…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Восстановить счета"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Восстановление базы данных…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "этим инструкциям",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Как восстановить вашу секретную фразу для восстановления"
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния, повторите попытку позже."
   },
@@ -10964,9 +10928,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Подключение к $1 ненадежно. Обновите данные о подключении к сети, прежде чем продолжить, или повторите попытку позже.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
   },
   "unexpectedError": {
     "message": "Произошла неожиданная ошибка.",

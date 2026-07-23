@@ -1,11 +1,12 @@
 import type browser from 'webextension-polyfill';
 import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
+import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   CriticalErrorType,
+  getStateCorruptionErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
 } from '../../../shared/constants/state-corruption';
-import type { ErrorLike } from '../../../shared/constants/errors';
 import {
   APP_INIT_LIVENESS_METHOD,
   BACKGROUND_LIVENESS_METHOD,
@@ -15,7 +16,6 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
-import { displayStateCorruptionError } from './state-corruption-html';
 import {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
@@ -291,8 +291,8 @@ export class CriticalStartupErrorHandler {
     }
     const { method } = data;
     // Currently, we handle APP_INIT_LIVENESS_METHOD, BACKGROUND_LIVENESS_METHOD,
-    // BACKGROUND_INITIALIZED_METHOD, RELOAD_WINDOW, the state corruption error message,
-    // and the general startup error message.
+    // BACKGROUND_INITIALIZED_METHOD, RELOAD_WINDOW, the state corruption error
+    // message, and the general startup error message.
     if (method === APP_INIT_LIVENESS_METHOD) {
       this.#receivedAppInitPing = true;
     } else if (method === BACKGROUND_LIVENESS_METHOD) {
@@ -338,19 +338,19 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, hasBackup, currentLocale } = data.params as {
+      const { error, currentLocale } = data.params as {
         error: ErrorLike;
-        hasBackup: boolean;
         currentLocale?: string;
       };
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
-        displayStateCorruptionError(
+        await displayCriticalErrorMessage(
           this.#container,
-          this.#port,
+          CriticalErrorTranslationKey.TroubleStarting,
           error,
-          hasBackup,
           currentLocale,
+          this.#port,
+          getStateCorruptionErrorType(error),
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {

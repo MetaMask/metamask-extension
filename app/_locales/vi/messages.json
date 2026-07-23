@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Cài đặt lại MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Đặt lại trạng thái MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Vẫn gặp sự cố?"
   },
@@ -8792,9 +8795,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Địa chỉ mới"
   },
-  "sendBugReport": {
-    "message": "Gửi báo cáo lỗi."
-  },
   "sendBundleHwGasPayment": {
     "message": "Thanh toán phí mạng bằng $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10118,42 +10118,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định khôi phục két an toàn bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định đặt lại MetaMask bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Không thể tự động khôi phục két an toàn."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Két an toàn có thể được khôi phục từ bản sao lưu tự động. Việc khôi phục tự động sẽ xóa chế độ cài đặt và tùy chọn hiện tại của bạn và chỉ khôi phục két an toàn."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Lỗi nội bộ: không thể truy cập cơ sở dữ liệu"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Đặt lại trạng thái MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Đang đặt lại cơ sở dữ liệu…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Khôi phục tài khoản"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Đang khôi phục cơ sở dữ liệu…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "các hướng dẫn này",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái, vui lòng thử lại sau."
   },
@@ -10972,9 +10936,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Kết nối với $1 không ổn định. Hãy cập nhật thông tin kết nối mạng trước khi tiếp tục hoặc thử lại sau.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
   "unexpectedError": {
     "message": "Đã xảy ra lỗi không mong muốn.",

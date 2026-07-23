@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Reinstalar MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Restablecer el estado de MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "¿Sigues teniendo problemas?"
   },
@@ -8792,9 +8795,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Nueva dirección"
   },
-  "sendBugReport": {
-    "message": "Envíenos un informe de error."
-  },
   "sendBundleHwGasPayment": {
     "message": "Pagando la tarifa de red con $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10118,42 +10118,6 @@
   "stateCorruptionAreYouSure": {
     "message": "¿Estás seguro de que deseas continuar?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restaurar tu bóveda siguiendo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restablecer MetaMask siguiendo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Tu bóveda no se puede recuperar automáticamente."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puedes recuperar tu bóveda desde una copia de respaldo automática. La recuperación automática eliminará tu configuración y preferencias actuales y restaurará solo tu bóveda."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Error interno: no se puede acceder a la base de datos"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Restablecer el estado de MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Restableciendo la base de datos…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurar cuentas"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restaurando la base de datos…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "estas instrucciones",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Cómo recuperar tu frase secreta de recuperación"
-  },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado, inténtalo de nuevo más tarde."
   },
@@ -10972,9 +10936,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "La conexión con $1 no es confiable. Actualiza los datos de conectividad de red antes de continuar o inténtalo de nuevo más tarde.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
   },
   "unexpectedError": {
     "message": "Ocurrió un error inesperado.",

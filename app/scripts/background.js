@@ -59,8 +59,13 @@ import { createCaipStream } from '../../shared/lib/caip-stream';
 import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import {
+  CriticalErrorRepairAction,
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+} from '../../shared/constants/state-corruption';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
@@ -68,7 +73,6 @@ import {
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
@@ -108,8 +112,8 @@ import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import {
-  readCriticalErrorRestoreSession,
-  clearCriticalErrorRestoreSession,
+  readCriticalErrorRepairSession,
+  clearCriticalErrorRepairSession,
   handoffRestoringTabToExtension,
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
@@ -158,7 +162,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = inTest
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? { recoverInProgress: false, hasVaultAtStartup: null }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -578,7 +582,6 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-const corruptionHandler = new CorruptionHandler();
 const criticalErrorHandler = new CriticalErrorHandler();
 /**
  * Handles the onConnect event.
@@ -624,8 +627,10 @@ const handleOnConnect = async (port) => {
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
       port,
-      repairCallback: () =>
-        requestRepair(() => openRestoringTabAndReload(requestSafeReload)),
+      repairCallback: (repairAction) =>
+        requestRepair(() =>
+          openRestoringTabAndReload(requestSafeReload, repairAction),
+        ),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);
@@ -647,12 +652,12 @@ const handleOnConnect = async (port) => {
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
     // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
-    // not during the initial onboarding session) and we're not in the restore
+    // not during the initial onboarding session) and we're not in the recover
     // flow (so recovery can complete).
     if (
       inTest &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestState?.restoreInProgress &&
+      !inTestState?.recoverInProgress &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
     ) {
       return;
@@ -661,6 +666,7 @@ const handleOnConnect = async (port) => {
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
+    let criticalErrorMessageSent = false;
     try {
       sentry?.captureException(error);
 
@@ -668,59 +674,23 @@ const handleOnConnect = async (port) => {
       // not for contentscripts injected into regular web pages.
       // Contentscripts can't display error screens and would create hanging promises.
       if (isMetaMaskUIPort) {
-        // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-        // restore from a backup, if we have one.
-        if (isStateCorruptionError(error)) {
-          await corruptionHandler.handleStateCorruptionError({
-            port,
-            error,
-            database: persistenceManager,
-            repairCallback: async (backup) => {
-              // we are going to reinitialize the background script, so we need to
-              // reset the initialization promises. this is gross since it is
-              // possible the original references could have been passed to other
-              // functions, and we can't update those references from here.
-              // right now, that isn't the case though.
-              setGlobalInitializers();
-
-              if (hasVault(backup)) {
-                await initBackground(backup);
-                controller.onboardingController.setFirstTimeFlowType(
-                  FirstTimeFlowType.restore,
-                );
-              } else {
-                // if we don't have a backup we need to make sure we clear the state
-                // from the database, and then reinitialize the background script
-                // with the first time state.
-                await persistenceManager.reset();
-                await initBackground(null);
-              }
-            },
-          });
-        } else {
-          // General errors
-          const errorLike = isObject(error)
-            ? {
-                message: error.message ?? 'Unknown error',
-                name: error.name ?? 'UnknownError',
-                stack: error.stack,
-                // Preserve sentryTags for searchable/filterable fields in Sentry UI
-                ...(error.sentryTags && { sentryTags: error.sentryTags }),
-              }
-            : {
-                message: String(error),
-                name: 'UnknownError',
-                stack: '',
-              };
-          tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        const errorLike = getErrorLike(error);
+        criticalErrorMessageSent = tryPostMessage(
+          port,
+          isStateCorruptionError(errorLike)
+            ? METHOD_DISPLAY_STATE_CORRUPTION_ERROR
+            : DISPLAY_GENERAL_STARTUP_ERROR,
+          {
             error: errorLike,
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
-          });
-        }
+          },
+        );
       }
     } finally {
-      removeCriticalErrorListeners?.();
+      if (!criticalErrorMessageSent) {
+        removeCriticalErrorListeners?.();
+      }
     }
   }
 };
@@ -2555,7 +2525,7 @@ async function initBackground(backup) {
     persistenceManager.cleanUpMostRecentRetrievedState();
 
     // For testing: simulate initialization hang. Only when backup exists in
-    // IndexedDB and we're not already in the restore flow (backup param is
+    // IndexedDB and we're not already in the recover flow (backup param is
     // null). Skip when backup param is non-null so vault recovery can complete.
     if (
       inTest &&
@@ -2580,22 +2550,23 @@ async function initBackground(backup) {
 }
 /**
  * Service worker entry for background startup: normal init, or critical-error
- * restore (when a session and vault backup exist).
+ * repair when a session exists.
  */
 async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
     return;
   }
 
-  const restoreSession = await readCriticalErrorRestoreSession(browser);
+  const repairSession = await readCriticalErrorRepairSession(browser);
+  const repairAction = repairSession?.repairAction;
 
-  // Fetch the backup once, shared by the restore path below and by
+  // Fetch the backup once, shared by the recover path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
   const testingFlags = inTest ? getManifestFlags().testing : undefined;
   let backup = null;
   if (
-    restoreSession ||
+    repairSession ||
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
@@ -2613,16 +2584,27 @@ async function initOrRestoreBackground() {
     }
   }
 
-  if (restoreSession) {
-    await clearCriticalErrorRestoreSession(browser);
-    if (backupHasVault) {
-      if (inTestState) {
-        inTestState.restoreInProgress = true;
+  if (repairSession) {
+    await clearCriticalErrorRepairSession(browser);
+
+    if (repairAction === CriticalErrorRepairAction.Reset) {
+      await persistenceManager.reset();
+      initBackground(null);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-reset: initialization failed', error);
+        return;
       }
-      const handoffPayload = {
-        tabId: restoreSession.tabId,
-        tabUrl: restoreSession.tabUrl,
-      };
+
+      await handoffRestoringTabToExtension(platform, repairSession);
+      return;
+    }
+
+    if (repairAction === CriticalErrorRepairAction.Recover && backupHasVault) {
+      if (inTestState) {
+        inTestState.recoverInProgress = true;
+      }
       initBackground(backup);
       try {
         await isInitialized;
@@ -2635,7 +2617,7 @@ async function initOrRestoreBackground() {
         FirstTimeFlowType.restore,
       );
 
-      await handoffRestoringTabToExtension(platform, handoffPayload);
+      await handoffRestoringTabToExtension(platform, repairSession);
       return;
     }
   }

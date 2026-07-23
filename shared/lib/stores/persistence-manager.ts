@@ -3,9 +3,12 @@ import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  INACCESSIBLE_DATABASE_ERROR,
+  MISSING_VAULT_ERROR,
+} from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
-import { VaultCorruptionType } from '../../constants/state-corruption';
+import { CriticalErrorType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -40,7 +43,7 @@ export type Backup = {
 
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
-  corruptionType: VaultCorruptionType;
+  corruptionType: CriticalErrorType;
 };
 
 export type SplitStateMigrationSucceededEvent = {
@@ -70,31 +73,18 @@ export class PersistenceError extends Error {
   getBackup: () => object | null;
 
   /**
-   * The type of vault corruption that occurred.
-   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
-   * - MissingVaultInDatabase: The database was accessible but the vault was missing
-   */
-  corruptionType: VaultCorruptionType;
-
-  /**
    * The original error that caused the persistence failure, if any.
    * This is useful for debugging as it preserves the original error message
    * (e.g., Firefox's "Error: An unexpected error occurred").
    */
   override cause?: Error;
 
-  constructor(
-    message: string,
-    backup: object | null,
-    corruptionType: VaultCorruptionType,
-    cause?: Error,
-  ) {
+  constructor(message: string, backup: object | null, cause?: Error) {
     super(message);
     this.name = 'PersistenceError';
     // closure around `backup` to prevent it from being serialized with the
     // error in debug logs, error reporting, etc.
     this.getBackup = () => backup;
-    this.corruptionType = corruptionType;
     this.cause = cause;
   }
 }
@@ -766,8 +756,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // We do this here (before throwing) because MetaMetricsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
-                ? VaultCorruptionType.InaccessibleDatabase
-                : VaultCorruptionType.MissingVaultInDatabase;
+                ? CriticalErrorType.InaccessibleDatabase
+                : CriticalErrorType.MissingVaultInDatabase;
               this.emit('vaultCorruptionDetected', {
                 backup,
                 corruptionType,
@@ -777,9 +767,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // background+UI are responsible for determining what happens now).
               // Include the original error as cause for debugging purposes.
               throw new PersistenceError(
-                MISSING_VAULT_ERROR,
+                localStoreError
+                  ? INACCESSIBLE_DATABASE_ERROR
+                  : MISSING_VAULT_ERROR,
                 backup,
-                corruptionType,
                 localStoreError,
               );
             } else if (localStoreError) {

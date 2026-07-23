@@ -1297,6 +1297,9 @@
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Athshocraigh Stádas Meitea-Masc"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -4532,9 +4535,6 @@
   "send": {
     "message": "Seol"
   },
-  "sendBugReport": {
-    "message": "Seol tuairisc fabht chugainn."
-  },
   "sendSelectReceiveAsset": {
     "message": "Roghnaigh sócmhainn le fáil"
   },
@@ -5311,42 +5311,6 @@
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh do chruinneachán a athchóiriú trí $1 a leanúint.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh MetaMask a athshocrú trí $1 a leanúint.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ní féidir do chruinneachán a aisghabháil go huathoibríoch."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Is féidir do chruinneachán a aisghabháil ó chúltaca uathoibrithe. Scriosfaidh aisghabháil uathoibríoch do shocruithe agus do chuid sainroghanna reatha, agus ní athchóireofar ach do chruinneachán."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Earráid Inmheánach: Ní féidir rochtain a fháil ar an mbunachar sonraí"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Athshocraigh Stádas Meitea-Masc"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Ag athshocrú an bhunachair shonraí…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Athchóirigh Cuntais"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Ag athchóiriú bunachar sonraí…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "na treoracha seo",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Conas do Rún Aisghabhála Frása a aisghabháil"
-  },
   "stateLogError": {
     "message": "Earráid agus logaí stádais á n-aisghabháil."
   },
@@ -5979,9 +5943,6 @@
   },
   "unapproved": {
     "message": "Gan cheadú"
-  },
-  "unexpectedBehavior": {
-    "message": "Ní raibh súil leis an iompraíocht seo agus ba chóir í a thuairisciú mar fhabht, fiú má athchóirítear do chuntais."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Ceadaigh rochtain chruinn ar $1 $2 ar $3 le haghaidh malartú"

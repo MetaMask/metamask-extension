@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask 재설치"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask 상태 초기화"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "여전히 문제가 발생하나요?"
   },
@@ -8792,9 +8795,6 @@
   "sendAlertNewAddressTitle": {
     "message": "새 주소"
   },
-  "sendBugReport": {
-    "message": "버그 리포트 전송."
-  },
   "sendBundleHwGasPayment": {
     "message": "$1(으)로 네트워크 수수료 지불",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10118,42 +10118,6 @@
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1에 따라 볼트를 복원하기로 결정하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "$1에 따라 MetaMask를 초기화하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "볼트를 자동으로 복구할 수 없습니다."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "자동 백업으로 볼트를 복구할 수 있습니다. 자동 복구는 현재 설정과 기본 설정을 삭제하고 볼트만 복원합니다."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "내부 오류: 데이터베이스에 접근할 수 없습니다"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask 상태 초기화"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "데이터베이스 초기화 중…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "계정 복원"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "데이터베이스 복원 중…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "이 지침",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "비밀복구구문 복구 방법"
-  },
   "stateLogError": {
     "message": "상태 기록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도하세요."
   },
@@ -10972,9 +10936,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1과(와)의 연결이 불안정합니다. 계속하기 전에 네트워크 연결 세부 정보를 업데이트하거나 나중에 다시 시도하세요.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
   },
   "unexpectedError": {
     "message": "예기치 않은 오류가 발생했습니다.",

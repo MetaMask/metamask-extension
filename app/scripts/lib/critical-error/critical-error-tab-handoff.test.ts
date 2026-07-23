@@ -1,12 +1,13 @@
 import browser from 'webextension-polyfill';
 import {
-  CRITICAL_ERROR_RESTORE_KEY,
+  CRITICAL_ERROR_REPAIR_KEY,
   METAMASK_RESTORING_PAGE_URL,
-} from '../../../../shared/constants/critical-error-restore-session';
+} from '../../../../shared/constants/critical-error-repair-session';
+import { CriticalErrorRepairAction } from '../../../../shared/constants/state-corruption';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
-  readCriticalErrorRestoreSession,
-  clearCriticalErrorRestoreSession,
+  readCriticalErrorRepairSession,
+  clearCriticalErrorRepairSession,
   openRestoringTabAndReload,
   handoffRestoringTabToExtension,
   type ExtensionPlatformLike,
@@ -31,49 +32,68 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-describe('critical-error-restore session', () => {
+describe('critical-error-repair session', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
-  describe('readCriticalErrorRestoreSession', () => {
+  describe('readCriticalErrorRepairSession', () => {
     it('returns null when key is not set', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({});
 
-      await expect(
-        readCriticalErrorRestoreSession(browser),
-      ).resolves.toBeNull();
+      await expect(readCriticalErrorRepairSession(browser)).resolves.toBeNull();
     });
 
     it('returns null when stored value is not an object', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_KEY]: true,
+        [CRITICAL_ERROR_REPAIR_KEY]: true,
       });
 
-      await expect(
-        readCriticalErrorRestoreSession(browser),
-      ).resolves.toBeNull();
+      await expect(readCriticalErrorRepairSession(browser)).resolves.toBeNull();
     });
 
     it('returns null when tabUrl is missing', async () => {
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_KEY]: { tabId: 42 },
+        [CRITICAL_ERROR_REPAIR_KEY]: { tabId: 42 },
       });
 
-      await expect(
-        readCriticalErrorRestoreSession(browser),
-      ).resolves.toBeNull();
+      await expect(readCriticalErrorRepairSession(browser)).resolves.toBeNull();
     });
 
-    it('returns payload when restore session data is valid', async () => {
+    for (const repairAction of [
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorRepairAction.Reset,
+    ]) {
+      it(`returns payload with stored ${repairAction} repairAction when repair session data is valid`, async () => {
+        const tabUrl = 'https://metamask.io/restoring#abc';
+        (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+          [CRITICAL_ERROR_REPAIR_KEY]: {
+            repairAction,
+            tabUrl,
+            tabId: 42,
+          },
+        });
+
+        await expect(
+          readCriticalErrorRepairSession(browser),
+        ).resolves.toStrictEqual({
+          repairAction,
+          tabId: 42,
+          tabUrl,
+        });
+      });
+    }
+
+    it('defaults to recover when repairAction is missing', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl, tabId: 42 },
+        [CRITICAL_ERROR_REPAIR_KEY]: { tabUrl, tabId: 42 },
       });
 
       await expect(
-        readCriticalErrorRestoreSession(browser),
+        readCriticalErrorRepairSession(browser),
       ).resolves.toStrictEqual({
+        repairAction: CriticalErrorRepairAction.Recover,
         tabId: 42,
         tabUrl,
       });
@@ -82,12 +102,13 @@ describe('critical-error-restore session', () => {
     it('returns undefined tabId when tabId is not a number', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
       (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
-        [CRITICAL_ERROR_RESTORE_KEY]: { tabUrl },
+        [CRITICAL_ERROR_REPAIR_KEY]: { tabUrl },
       });
 
       await expect(
-        readCriticalErrorRestoreSession(browser),
+        readCriticalErrorRepairSession(browser),
       ).resolves.toStrictEqual({
+        repairAction: CriticalErrorRepairAction.Recover,
         tabId: undefined,
         tabUrl,
       });
@@ -99,24 +120,22 @@ describe('critical-error-restore session', () => {
         storageError,
       );
 
-      await expect(
-        readCriticalErrorRestoreSession(browser),
-      ).resolves.toBeNull();
+      await expect(readCriticalErrorRepairSession(browser)).resolves.toBeNull();
 
       expect(jest.mocked(captureException)).toHaveBeenCalledWith(storageError);
     });
   });
 
-  describe('clearCriticalErrorRestoreSession', () => {
-    it('removes the restore key', async () => {
+  describe('clearCriticalErrorRepairSession', () => {
+    it('removes the repair key', async () => {
       (browser.storage.local.remove as jest.Mock).mockResolvedValueOnce(
         undefined,
       );
 
-      await clearCriticalErrorRestoreSession(browser);
+      await clearCriticalErrorRepairSession(browser);
 
       expect(browser.storage.local.remove).toHaveBeenCalledWith(
-        CRITICAL_ERROR_RESTORE_KEY,
+        CRITICAL_ERROR_REPAIR_KEY,
       );
     });
 
@@ -127,13 +146,13 @@ describe('critical-error-restore session', () => {
       );
 
       await expect(
-        clearCriticalErrorRestoreSession(browser),
+        clearCriticalErrorRepairSession(browser),
       ).resolves.toBeUndefined();
 
       expect(jest.mocked(captureException)).toHaveBeenCalledWith(
         expect.objectContaining({
           message:
-            'critical-error-restore: failed to clear restore session from storage.local',
+            'critical-error-restore: failed to clear repair session from storage.local',
           cause: removeError,
         }),
       );
@@ -150,24 +169,36 @@ describe('openRestoringTabAndReload', () => {
     (browser.storage.local.set as jest.Mock).mockResolvedValue(undefined);
   });
 
-  it('creates restoring tab, persists restore data, and calls requestSafeReload', async () => {
-    await openRestoringTabAndReload(requestSafeReload);
+  for (const { expectedRepairAction, repairAction } of [
+    {
+      expectedRepairAction: CriticalErrorRepairAction.Recover,
+      repairAction: undefined,
+    },
+    {
+      expectedRepairAction: CriticalErrorRepairAction.Reset,
+      repairAction: CriticalErrorRepairAction.Reset,
+    },
+  ]) {
+    it(`creates restoring tab, persists ${expectedRepairAction} repairAction, and calls requestSafeReload`, async () => {
+      await openRestoringTabAndReload(requestSafeReload, repairAction);
 
-    expect(browser.tabs.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        active: true,
-        url: expect.stringMatching(/^https:\/\/metamask\.io\/restoring#/u),
-      }),
-    );
+      expect(browser.tabs.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          active: true,
+          url: expect.stringMatching(/^https:\/\/metamask\.io\/restoring#/u),
+        }),
+      );
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith({
-      [CRITICAL_ERROR_RESTORE_KEY]: expect.objectContaining({
-        tabId: 101,
-        tabUrl: expect.stringContaining(METAMASK_RESTORING_PAGE_URL),
-      }),
+      expect(browser.storage.local.set).toHaveBeenCalledWith({
+        [CRITICAL_ERROR_REPAIR_KEY]: expect.objectContaining({
+          repairAction: expectedRepairAction,
+          tabId: 101,
+          tabUrl: expect.stringContaining(METAMASK_RESTORING_PAGE_URL),
+        }),
+      });
+      expect(requestSafeReload).toHaveBeenCalledTimes(1);
     });
-    expect(requestSafeReload).toHaveBeenCalledTimes(1);
-  });
+  }
 
   it('omits tabId when tabs.create fails', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
@@ -176,9 +207,13 @@ describe('openRestoringTabAndReload', () => {
     await openRestoringTabAndReload(requestSafeReload);
 
     const storedValue = (browser.storage.local.set as jest.Mock).mock
-      .calls[0][0][CRITICAL_ERROR_RESTORE_KEY];
+      .calls[0][0][CRITICAL_ERROR_REPAIR_KEY];
     expect(storedValue).not.toHaveProperty('tabId');
     expect(storedValue).toHaveProperty('tabUrl');
+    expect(storedValue).toHaveProperty(
+      'repairAction',
+      CriticalErrorRepairAction.Recover,
+    );
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
     consoleErrorSpy.mockRestore();
   });

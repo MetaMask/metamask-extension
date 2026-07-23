@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "重新安装 MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "重设 MetaMask 状态"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "仍有问题吗？"
   },
@@ -8784,9 +8787,6 @@
   "sendAlertNewAddressTitle": {
     "message": "新地址"
   },
-  "sendBugReport": {
-    "message": "向我们发送错误报告."
-  },
   "sendBundleHwGasPayment": {
     "message": "正在使用 $1 支付网络费用",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10110,42 +10110,6 @@
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "在决定恢复您的保管库之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "在决定重设 MetaMask 之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "您的保管库无法自动恢复。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "您的保管库可通过自动备份恢复。自动恢复将删除当前设置和偏好，仅恢复保管库内容。​"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部错误：无法访问数据库"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "重设 MetaMask 状态"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "正在重设数据库…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "恢复账户"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "正在恢复数据库…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "这些说明",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "如何恢复私钥助记词"
-  },
   "stateLogError": {
     "message": "获取状态记录时出错，请稍后重试。"
   },
@@ -10964,9 +10928,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "与 $1 的连接不稳定。请先更新网络连接详情再继续，或稍后重试。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
   },
   "unexpectedError": {
     "message": "发生意外错误。",

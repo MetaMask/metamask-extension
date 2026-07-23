@@ -2963,6 +2963,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask neu installieren"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask-Status zurücksetzen"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Haben Sie immer noch Probleme?"
   },
@@ -8784,9 +8787,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Neue Adresse"
   },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
   "sendBundleHwGasPayment": {
     "message": "Netzwerkgebühr mit $1 bezahlen",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10110,42 +10110,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, Ihren Tresor wiederherzustellen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, MetaMask zurückzusetzen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ihr Tresor kann nicht automatisch wiederhergestellt werden."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ihr Tresor kann aus einer automatischen Sicherung wiederhergestellt werden. Bei der automatischen Wiederherstellung werden Ihre aktuellen Einstellungen und Präferenzen gelöscht und nur Ihr Tresor wiederhergestellt."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Interner Fehler: Auf die Datenbank kann nicht zugegriffen werden"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask-Status zurücksetzen"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Datenbank wird zurückgesetzt …"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Konten wiederherstellen"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Datenbank wird wiederhergestellt …"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "diese Anweisungen",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "So stellen Sie Ihre geheime Wiederherstellungsphrase wieder her"
-  },
   "stateLogError": {
     "message": "Fehler beim Abrufen der Statusprotokolle. Bitte versuchen Sie es später erneut."
   },
@@ -10964,9 +10928,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Die Verbindung mit $1 ist unzuverlässig. Aktualisieren Sie die Details zur Netzwerkverbindung, bevor Sie fortfahren, oder versuchen Sie es später erneut.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, auch wenn Ihre Konten wiederhergestellt werden."
   },
   "unexpectedError": {
     "message": "Ein unerwarteter Fehler ist aufgetreten.",
