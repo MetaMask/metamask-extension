@@ -1002,12 +1002,10 @@
     "message": "Pertukaran gagal"
   },
   "activity_swap_pending_title": {
-    "message": "Menukar $1 menjadi $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Menukar"
   },
   "activity_swap_success_title": {
-    "message": "Menukar $1 menjadi $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Ditukar"
   },
   "activity_unwrap_failed_description": {
     "message": "Pembukaan gagal"

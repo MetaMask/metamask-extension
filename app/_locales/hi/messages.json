@@ -1002,12 +1002,10 @@
     "message": "स्वैप नहीं हो पाया"
   },
   "activity_swap_pending_title": {
-    "message": "$1 को $2 से स्वैप किया जा रहा है",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया जा रहा है"
   },
   "activity_swap_success_title": {
-    "message": "$1 को $2 से स्वैप किया गया",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया गया"
   },
   "activity_unwrap_failed_description": {
     "message": "अनरैप नहीं हो पाया"
