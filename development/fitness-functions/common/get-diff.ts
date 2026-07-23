@@ -42,9 +42,10 @@ async function getDiffByAutomationType(
     return await getPreCommitHookDiff();
   } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
     return await getPrePushHookDiff();
-  } else {
-    throw new Error(`Unknown automation type: ${automationType}`);
   }
+
+  // Check that all types were handled
+  automationType satisfies never;
 }
 
 function runGitCommand(args: string[]): string {
