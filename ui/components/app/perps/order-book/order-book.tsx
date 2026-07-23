@@ -403,8 +403,7 @@ export const PerpsOrderBook = ({
   // Automatic SDK reconnection emits `connecting` without clearing the cached
   // book. Hide those stale rows and block price selection so outdated levels
   // are not treated as live.
-  const isReconnecting =
-    connectionStatus === 'connecting' && !isInitialLoading;
+  const isReconnecting = connectionStatus === 'connecting' && !isInitialLoading;
   const isLiveConnection = connectionStatus === 'connected';
   const selectPriceHandler = isLiveConnection ? onSelectPrice : undefined;
 
