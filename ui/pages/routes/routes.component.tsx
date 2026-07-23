@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
@@ -608,7 +607,6 @@ export const routeConfig = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();

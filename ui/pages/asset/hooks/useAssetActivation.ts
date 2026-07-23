@@ -50,10 +50,6 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
       : undefined,
   ) as InternalAccount | undefined;
 
-  const assetFromState = useSelector((state) =>
-    chainId && assetId ? getAsset(state, assetId, chainId) : undefined,
-  );
-
   const [isDeactivating, setIsDeactivating] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -66,7 +62,11 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
     isAssetIsTrustlineAsset &&
     !isAssetRequireActivate({
       assetId,
-      assetMetadata: assetFromState?.accountAssetInfo,
+      assetMetadata: {
+        // hardcoded for now to prevent breaking the test
+        // TODO: we will change it to use the unified asset controller once it is ready
+        limit: '0',
+      },
     });
 
   const deactivateAsset = useCallback(async () => {

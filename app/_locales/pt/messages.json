@@ -1002,12 +1002,10 @@
     "message": "Falha na troca"
   },
   "activity_swap_pending_title": {
-    "message": "Trocando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Trocando"
   },
   "activity_swap_success_title": {
-    "message": "Trocou $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Trocou"
   },
   "activity_unwrap_failed_description": {
     "message": "Falha ao desencapsular"

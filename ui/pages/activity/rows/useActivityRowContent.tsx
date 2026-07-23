@@ -73,7 +73,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      // Source and destination in title; two tokens in avatar
+      // Title is "Swapped"; token pair in subtitle; two tokens in avatar
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
@@ -83,16 +83,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const titleKey = hasDestination
           ? labelKeys.title.key
           : `activity_swapIncomplete_${activity.status}_title`;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key);
 
         return {
           avatarTokens: hasDestination
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
-          title: t(
-            titleKey,
-            hasDestination ? [sourceSymbol, destinationSymbol] : [sourceSymbol],
-          ),
-          subtitle: t(labelKeys.description.key),
+          title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
+          subtitle,
           primaryAmount: formatTokenAmount(primaryToken),
           primaryDirection: primaryToken?.direction,
           secondaryAmount: hasDestination
