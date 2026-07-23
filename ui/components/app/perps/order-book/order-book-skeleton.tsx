@@ -37,8 +37,6 @@ const OrderBookRowSkeleton = ({
     alignItems={BoxAlignItems.Center}
     justifyContent={BoxJustifyContent.Between}
     gap={2}
-    paddingLeft={2}
-    paddingRight={4}
     className="h-8 shrink-0"
   >
     <Skeleton className={`h-3 ${priceWidth} rounded`} />
@@ -75,6 +73,8 @@ export const PerpsOrderBookSkeleton = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
+      paddingLeft={4}
+      paddingRight={4}
       className="flex-1 min-h-0 overflow-hidden"
       data-testid={dataTestId}
       aria-hidden="true"
@@ -96,8 +96,6 @@ export const PerpsOrderBookSkeleton = ({
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
         gap={2}
-        paddingLeft={2}
-        paddingRight={4}
         className="h-8 shrink-0"
       >
         <Skeleton className="h-3 w-12 rounded" />
@@ -118,8 +116,6 @@ export const PerpsOrderBookSkeleton = ({
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={1}
-        paddingLeft={2}
-        paddingRight={4}
         paddingTop={4}
         paddingBottom={3}
         className="shrink-0"

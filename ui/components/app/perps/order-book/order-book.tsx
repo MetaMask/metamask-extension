@@ -166,8 +166,6 @@ const OrderBookRow = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       gap={2}
-      paddingLeft={2}
-      paddingRight={4}
       className={
         isInteractive
           ? 'relative h-8 shrink-0 cursor-pointer hover:bg-muted'
@@ -421,12 +419,14 @@ export const PerpsOrderBook = ({
       data-testid={dataTestId}
       aria-busy={showLoadingSkeleton || undefined}
     >
-      {/* Header: view toggle (left) + settings (right) */}
+      {/* Header: view toggle (left) + settings (right). Negative margins cancel
+          the icon inset inside the 32px hit targets so the glyphs line up with
+          the ladder/column edges below. */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Between}
-        paddingLeft={2}
+        paddingLeft={4}
         paddingRight={4}
         paddingTop={2}
         paddingBottom={2}
@@ -435,7 +435,7 @@ export const PerpsOrderBook = ({
           type="button"
           onClick={handleCycleViewMode}
           aria-label={t('perpsOrderBookViewToggle')}
-          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent p-0 hover:bg-hover active:bg-pressed"
+          className="inline-flex h-8 w-8 -ml-1 cursor-pointer items-center justify-center rounded-lg bg-transparent p-0 hover:bg-hover active:bg-pressed"
           data-testid={`${dataTestId}-view-toggle`}
         >
           <OrderBookViewIcon mode={viewMode} className="h-6 w-6" />
@@ -449,6 +449,7 @@ export const PerpsOrderBook = ({
           aria-haspopup="dialog"
           aria-expanded={isConfigOpen}
           aria-controls={configModalId}
+          className="-mr-1"
           data-testid={`${dataTestId}-grouping-trigger`}
         />
       </Box>
@@ -457,7 +458,7 @@ export const PerpsOrderBook = ({
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
-        paddingLeft={2}
+        paddingLeft={4}
         paddingRight={4}
         paddingBottom={1}
       >
@@ -518,6 +519,8 @@ export const PerpsOrderBook = ({
       {!showLoadingSkeleton && !showPlaceholder && (
         <Box
           flexDirection={BoxFlexDirection.Column}
+          paddingLeft={4}
+          paddingRight={4}
           className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden"
         >
           {/* Asks (sell) — sit directly above the spread. The ladder is a
@@ -560,8 +563,6 @@ export const PerpsOrderBook = ({
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Between}
             gap={2}
-            paddingLeft={2}
-            paddingRight={4}
             className="h-8 shrink-0"
             data-testid={`${dataTestId}-spread`}
           >
@@ -620,8 +621,6 @@ export const PerpsOrderBook = ({
             <Box
               flexDirection={BoxFlexDirection.Column}
               gap={1}
-              paddingLeft={2}
-              paddingRight={4}
               paddingTop={4}
               paddingBottom={3}
               className="shrink-0"
