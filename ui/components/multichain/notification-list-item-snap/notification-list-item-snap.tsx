@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { Icon, IconColor, IconName, IconSize } from '@metamask/design-system-react';
+import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import { Box, Text } from '../../component-library';
 import {
   AlignItems,
