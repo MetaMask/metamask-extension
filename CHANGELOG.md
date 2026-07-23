@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.42.0]
+
+### Uncategorized
+
+- Removes page border styles to make page UI consistent across app (#44721)
+- Updated Activity swap rows labels (#44637)
+- Updated the dapp connection bar styling to match the latest design spec (#44539)
+- N/A (#44656)
+- Changed sidepanel max-width (#44647)
+- Adds Robinhood chain metadata to EIP-7715 Advanced Permissions (#44499)
+- Raise legacy toasts over footers when applicable (#44654)
+- Patch @metamask/assets-controller for suggested occurrence floors (#44525)
+- Upgrades Sentry SDK from v8 to v10, improving telemetry and enabling full incorporation of backend instrumentation (API, RPC, (#42867)
+  DB, Cache, CDN domains) into Sentry distributed tracing.
+- Deleted token cache (#44522)
+- chore: Revert "chore(6926): migrate ReactDOM.render to createRoot (#43872)" (#43872)
+
+### Added
+
+- Added skeleton for balance overview (#44703)
+- Update `@metamask/seedless-onboarding-controller` to `v10.1.0`. (#44771)
+- Add new dmk feature flag (#43488)
+- Added verified badges to selected Swaps tokens (#44623)
+- Added skeleton for token loading (#44705)
+- Navigate users to batch sell through deeplink (#44671)
+- Added a high-rate alert warning when reviewing a batch sell with only one asset still selected to sell. (#44646)
+- Fixed bridge smart transactions that could remain stuck as pending after being cancelled by the relay (#44372)
+- Add tab hover and page transitions to bottom nav bar (#44641)
+- Added limit orders when closing all or part of a perpetual position. (#44466)
+- Updated Swap/Bridge to use suggested slippage from quote responses (#44537)
+- Added a provider selection screen in ramps so users can compare quotes and change their buy provider. (#44553)
+- Adds conditional Swap page header when bottom nav experiment is on (#44233)
+- Added transitions (#44481)
+- Toggle update for manage tokens (#44434)
+
+### Fixed
+
+- Change the default bridge network list to remove Stellar and Arc to hide them when remote feature flag API down (#44787)
+- Fixed an issue where connecting a Trezor hardware wallet could hang indefinitely by adding a response timeout, and (#44626)
+  corrected the timeout error message so Trezor no longer shows a
+  Ledger-specific message.
+- Fixed CAIP-19 asset deep links so they show the phishing interstitial when Skip Interstitial is disabled (#44639)
+- Non EVM activity labels (#44751)
+- Fixed transactions being underpriced by a stale saved advanced gas fee, by clearing the orphaned `advancedGasFee` preference (#44205)
+  (migration 216).
+- Update slider step to one in batch sell (#44648)
+- Do not render assets without quotes in review modal (#44650)
+- Fixed a bug that caused notification Home links to open in a new tab (#43419)
+- Various fixes and improvements on batch sell select page. (#44603)
+- Fixed custom tokens on niche EVM networks losing their name, symbol, and icon by restoring the wiped metadata on startup. (#44303)
+- Fixed a bug where attempting to connect a hardware wallet without going through could lock the user out of accounts (#44483)
+  operations on Firefox
+- Restore enabled networks via controller (#44371)
+
 ## [13.41.0]
 
 ### Added
@@ -2785,7 +2839,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...HEAD
+[13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0
 [13.41.0]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...v13.41.0
 [13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
 [13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
