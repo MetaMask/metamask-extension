@@ -44,7 +44,6 @@ const NETWORK_BADGE_STYLE_MAP: Record<TokenIconSize, React.CSSProperties> = {
   md: {},
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TokenIcon({
   chainId,
   tokenAddress,
