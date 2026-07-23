@@ -7481,11 +7481,17 @@
   "perpsStatusCompleted": {
     "message": "Completed"
   },
+  "perpsStatusFailed": {
+    "message": "Failed"
+  },
   "perpsStatusFilled": {
     "message": "Filled"
   },
   "perpsStatusOpen": {
     "message": "Open"
+  },
+  "perpsStatusPending": {
+    "message": "Pending"
   },
   "perpsStatusQueued": {
     "message": "Queued"

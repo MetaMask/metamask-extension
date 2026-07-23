@@ -35,6 +35,16 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
   triggered: 'perpsStatusTriggered',
 };
 
+// `bridging` is treated the same as `pending` for display purposes — the
+// wallet doesn't currently emit a distinct in-progress-bridge state, but the
+// depositWithdrawal.status type supports it for other request-based sources.
+const DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY: Record<string, string> = {
+  completed: 'perpsStatusCompleted',
+  pending: 'perpsStatusPending',
+  bridging: 'perpsStatusPending',
+  failed: 'perpsStatusFailed',
+};
+
 /**
  * TransactionCard component displays individual transaction information
  * Two rows: logo + title/subtitle on left, amount + time on right
@@ -127,9 +137,14 @@ export const TransactionCard = ({
     if (transaction.type === 'funding') {
       return displayName;
     }
-    // For deposits/withdrawals, show status
+    // For deposits/withdrawals, show the transaction's real status (e.g. a
+    // wallet-tracked deposit/withdrawal may still be pending or have failed)
+    // instead of always displaying "Completed".
     if (transaction.type === 'deposit' || transaction.type === 'withdrawal') {
-      return t('perpsStatusCompleted');
+      const status = transaction.depositWithdrawal?.status ?? 'completed';
+      const i18nKey =
+        DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY[status] ?? 'perpsStatusCompleted';
+      return t(i18nKey);
     }
     return transaction.subtitle;
   };

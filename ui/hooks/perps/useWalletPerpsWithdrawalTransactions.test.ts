@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
-import { useWalletPerpsDepositTransactions } from './useWalletPerpsDepositTransactions';
+import { useWalletPerpsWithdrawalTransactions } from './useWalletPerpsWithdrawalTransactions';
 
 const mockUseSelector = jest.fn();
 jest.mock('react-redux', () => ({
@@ -22,7 +22,7 @@ const createMockTx = (
     chainId: '0xa4b1',
     time: Date.now(),
     status: TransactionStatus.confirmed,
-    type: TransactionType.perpsDeposit,
+    type: TransactionType.perpsWithdraw,
     hash: '0xabc',
     txParams: {
       from: SELECTED_ADDRESS,
@@ -43,7 +43,7 @@ function setSelectors({
     if (selector === getSelectedInternalAccount) {
       return address ? { address } : undefined;
     }
-    // useWalletPerpsDepositTransactions calls useSelector with an inline
+    // useWalletPerpsWithdrawalTransactions calls useSelector with an inline
     // arrow that internally invokes selectTransactions(state) — simulate
     // that by invoking the passed selector against a fake state.
     return (selector as (state: unknown) => unknown)({
@@ -52,7 +52,7 @@ function setSelectors({
   });
 }
 
-describe('useWalletPerpsDepositTransactions', () => {
+describe('useWalletPerpsWithdrawalTransactions', () => {
   beforeEach(() => {
     mockUseSelector.mockReset();
   });
@@ -60,40 +60,34 @@ describe('useWalletPerpsDepositTransactions', () => {
   it('returns an empty array when no account is selected', () => {
     setSelectors({ transactions: [createMockTx()], address: '' });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toEqual([]);
   });
 
-  it('returns a PerpsTransaction for a confirmed perpsDeposit from the selected account', () => {
+  it('returns a PerpsTransaction for a confirmed perpsWithdraw from the selected account', () => {
     setSelectors({ transactions: [createMockTx()] });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toHaveLength(1);
-    expect(result.current[0].type).toBe('deposit');
+    expect(result.current[0].type).toBe('withdrawal');
   });
 
-  it('includes perpsDepositAndOrder transactions', () => {
-    setSelectors({
-      transactions: [
-        createMockTx({ type: TransactionType.perpsDepositAndOrder }),
-      ],
-    });
-
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
-
-    expect(result.current).toHaveLength(1);
-  });
-
-  it('includes a submitted perpsDeposit transaction with a pending status', () => {
+  it('includes a submitted perpsWithdraw transaction with a pending status', () => {
     setSelectors({
       transactions: [
         createMockTx({ status: TransactionStatus.submitted }),
       ],
     });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].depositWithdrawal?.status).toBe('pending');
@@ -112,7 +106,9 @@ describe('useWalletPerpsDepositTransactions', () => {
       ],
     });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toHaveLength(0);
   });
@@ -130,7 +126,9 @@ describe('useWalletPerpsDepositTransactions', () => {
       ],
     });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toHaveLength(1);
   });
@@ -140,7 +138,21 @@ describe('useWalletPerpsDepositTransactions', () => {
       transactions: [createMockTx({ type: TransactionType.simpleSend })],
     });
 
-    const { result } = renderHook(() => useWalletPerpsDepositTransactions());
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
+
+    expect(result.current).toHaveLength(0);
+  });
+
+  it('excludes wallet deposit transactions', () => {
+    setSelectors({
+      transactions: [createMockTx({ type: TransactionType.perpsDeposit })],
+    });
+
+    const { result } = renderHook(() =>
+      useWalletPerpsWithdrawalTransactions(),
+    );
 
     expect(result.current).toHaveLength(0);
   });

@@ -84,11 +84,22 @@ jest.mock('./useWalletPerpsDepositTransactions', () => ({
     mockUseWalletPerpsDepositTransactions(),
 }));
 
+const mockUseWalletPerpsWithdrawalTransactions = jest.fn().mockReturnValue([]);
+
+// Mock useWalletPerpsWithdrawalTransactions — same rationale as the deposit
+// hook mock above. Individual tests can override the return value to
+// exercise the wallet-withdrawal merge/dedup behavior.
+jest.mock('./useWalletPerpsWithdrawalTransactions', () => ({
+  useWalletPerpsWithdrawalTransactions: () =>
+    mockUseWalletPerpsWithdrawalTransactions(),
+}));
+
 describe('usePerpsTransactionHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     resetCoalesceCacheForTests();
     mockUseWalletPerpsDepositTransactions.mockReturnValue([]);
+    mockUseWalletPerpsWithdrawalTransactions.mockReturnValue([]);
     // Default: return appropriate data per method
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsGetOrderFills') {
@@ -372,6 +383,145 @@ describe('usePerpsTransactionHistory', () => {
       });
 
       expect(result.current.transactions[0].id).toBe('wallet-deposit-tx-1');
+    });
+  });
+
+  describe('wallet-sourced withdrawals', () => {
+    it('includes a wallet withdrawal not yet reflected in user history', async () => {
+      mockUseWalletPerpsWithdrawalTransactions.mockReturnValue([
+        {
+          id: 'wallet-withdrawal-tx-1',
+          type: 'withdrawal',
+          category: 'withdrawal',
+          title: 'Withdrew 50.00 USDC',
+          subtitle: 'Pending',
+          timestamp: Date.now(),
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '-$50.00',
+            amountNumber: -50,
+            isPositive: false,
+            asset: 'USDC',
+            txHash: '0xdef',
+            status: 'pending',
+            type: 'withdrawal',
+          },
+        },
+      ]);
+
+      const { result } = renderHook(() =>
+        usePerpsTransactionHistory({ skipInitialFetch: true }),
+      );
+
+      await act(async () => {
+        await result.current.refetch();
+      });
+
+      expect(
+        result.current.transactions.some(
+          (tx) => tx.id === 'wallet-withdrawal-tx-1',
+        ),
+      ).toBe(true);
+    });
+
+    it('sorts a wallet withdrawal into the merged, timestamp-descending list', async () => {
+      const newestTimestamp = Date.now() + 10_000;
+      mockUseWalletPerpsWithdrawalTransactions.mockReturnValue([
+        {
+          id: 'wallet-withdrawal-tx-1',
+          type: 'withdrawal',
+          category: 'withdrawal',
+          title: 'Withdrew 50.00 USDC',
+          subtitle: 'Completed',
+          timestamp: newestTimestamp,
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '-$50.00',
+            amountNumber: -50,
+            isPositive: false,
+            asset: 'USDC',
+            txHash: '0xdef',
+            status: 'completed',
+            type: 'withdrawal',
+          },
+        },
+      ]);
+
+      const { result } = renderHook(() =>
+        usePerpsTransactionHistory({ skipInitialFetch: true }),
+      );
+
+      await act(async () => {
+        await result.current.refetch();
+      });
+
+      expect(result.current.transactions[0].id).toBe(
+        'wallet-withdrawal-tx-1',
+      );
+    });
+
+    it('merges wallet deposits and withdrawals together without cross-deduping', async () => {
+      mockUseWalletPerpsDepositTransactions.mockReturnValue([
+        {
+          id: 'wallet-deposit-tx-3',
+          type: 'deposit',
+          category: 'deposit',
+          title: 'Deposited 100.00 USDC',
+          subtitle: 'Completed',
+          timestamp: Date.now(),
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '+$100.00',
+            amountNumber: 100,
+            isPositive: true,
+            asset: 'USDC',
+            txHash: '0xaaa',
+            status: 'completed',
+            type: 'deposit',
+          },
+        },
+      ]);
+      mockUseWalletPerpsWithdrawalTransactions.mockReturnValue([
+        {
+          id: 'wallet-withdrawal-tx-3',
+          type: 'withdrawal',
+          category: 'withdrawal',
+          title: 'Withdrew 50.00 USDC',
+          subtitle: 'Completed',
+          timestamp: Date.now(),
+          symbol: 'USDC',
+          depositWithdrawal: {
+            amount: '-$50.00',
+            amountNumber: -50,
+            isPositive: false,
+            asset: 'USDC',
+            // Same txHash as the deposit above — must not be deduped since
+            // dedupe is scoped per transaction type.
+            txHash: '0xaaa',
+            status: 'completed',
+            type: 'withdrawal',
+          },
+        },
+      ]);
+
+      const { result } = renderHook(() =>
+        usePerpsTransactionHistory({ skipInitialFetch: true }),
+      );
+
+      await act(async () => {
+        await result.current.refetch();
+      });
+
+      expect(
+        result.current.transactions.some(
+          (tx) => tx.id === 'wallet-deposit-tx-3',
+        ),
+      ).toBe(true);
+      expect(
+        result.current.transactions.some(
+          (tx) => tx.id === 'wallet-withdrawal-tx-3',
+        ),
+      ).toBe(true);
     });
   });
 });

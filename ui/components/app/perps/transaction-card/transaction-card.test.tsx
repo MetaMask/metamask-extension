@@ -323,6 +323,87 @@ describe('TransactionCard', () => {
         screen.getByText(messages.perpsStatusCompleted.message),
       ).toBeInTheDocument();
     });
+
+    it('shows "Pending" status for a pending wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'pending',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Failed" status for a failed wallet-tracked deposit', () => {
+      const transaction = createMockTransaction({
+        type: 'deposit',
+        category: 'deposit',
+        symbol: 'USDC',
+        title: 'Deposited 100.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '+$100.00',
+          amountNumber: 100,
+          isPositive: true,
+          asset: 'USDC',
+          txHash: '0x1234567890abcdef',
+          status: 'failed',
+          type: 'deposit',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusFailed.message),
+      ).toBeInTheDocument();
+    });
+
+    it('shows "Pending" status for a pending wallet-tracked withdrawal', () => {
+      const transaction = createMockTransaction({
+        type: 'withdrawal',
+        category: 'withdrawal',
+        symbol: 'USDC',
+        title: 'Withdrew 50.00 USDC',
+        fill: undefined,
+        depositWithdrawal: {
+          amount: '-$50.00',
+          amountNumber: 50,
+          isPositive: false,
+          asset: 'USDC',
+          txHash: '0xabcdef1234567890',
+          status: 'pending',
+          type: 'withdrawal',
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByText(messages.perpsStatusPending.message),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Order transactions', () => {
