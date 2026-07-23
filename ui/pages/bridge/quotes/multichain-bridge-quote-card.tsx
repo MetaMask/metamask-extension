@@ -229,10 +229,11 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.srcAsset.symbol} = ${
-                activeQuote.swapRate &&
-                formatTokenAmount(locale, activeQuote.swapRate)
-              } ${activeQuote.quote.destAsset.symbol}`}
+              {activeQuote.swapRate &&
+                `1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                  locale,
+                  activeQuote.swapRate,
+                )} ${activeQuote.quote.destAsset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
