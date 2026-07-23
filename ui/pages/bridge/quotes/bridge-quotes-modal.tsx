@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   FeatureId,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
@@ -57,14 +57,14 @@ export const BridgeQuotesModal = ({
   const locale = useSelector(getIntlLocale);
 
   const isRecommendedQuote = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteMetadata & QuoteResponseV1) => {
       return quote.quote.requestId === recommendedQuote?.quote.requestId;
     },
     [recommendedQuote],
   );
 
   const handleQuoteSelected = useCallback(
-    (quote: QuoteMetadata & QuoteResponse) => {
+    (quote: QuoteMetadata & QuoteResponseV1) => {
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -82,13 +82,13 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.effective?.usd ?? 0),
+              usd_quoted_gas: Number(quote.gasFee?.total?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount.usd),
+              usd_quoted_return: Number(quote.toTokenAmount?.usd ?? 0),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -133,7 +133,7 @@ export const BridgeQuotesModal = ({
         {/* QUOTE LIST */}
         <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
-            (quote: QuoteMetadata & QuoteResponse, index: number) => {
+            (quote: QuoteMetadata & QuoteResponseV1, index: number) => {
               const {
                 totalNetworkFee,
                 toTokenAmount,
@@ -193,7 +193,7 @@ export const BridgeQuotesModal = ({
                     >
                       {formatTokenAmount(
                         locale,
-                        toTokenAmount.amount,
+                        toTokenAmount?.amount ?? '0',
                         destAsset.symbol,
                       )}
                     </Text>
@@ -212,16 +212,16 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          cost.valueInCurrency === null
-                            ? formatTokenAmount(
-                                locale,
-                                totalNetworkFee.amount,
-                                nativeCurrency,
-                              )
-                            : formatCurrencyAmount(
+                          cost?.valueInCurrency
+                            ? formatCurrencyAmount(
                                 cost.valueInCurrency,
                                 currency,
                                 2,
+                              )
+                            : formatTokenAmount(
+                                locale,
+                                totalNetworkFee?.amount ?? '0',
+                                nativeCurrency,
                               ),
                         ])}
                       </Text>
@@ -248,11 +248,13 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {formatCurrencyAmount(
-                        toTokenAmount.valueInCurrency,
-                        currency,
-                        2,
-                      ) ?? ''}
+                      {toTokenAmount?.valueInCurrency
+                        ? formatCurrencyAmount(
+                            toTokenAmount.valueInCurrency,
+                            currency,
+                            2,
+                          )
+                        : ''}
                     </Text>
                   </Row>
                 </Column>

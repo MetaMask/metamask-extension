@@ -2,7 +2,6 @@ import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
-  QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
 } from '@metamask/bridge-controller';

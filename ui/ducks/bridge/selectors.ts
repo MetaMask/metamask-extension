@@ -15,7 +15,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
@@ -821,11 +821,12 @@ export const getFormattedPriceImpactPercentage = createSelector(
 
 export const getFormattedPriceImpactFiat = createSelector(
   [
-    (state: BridgeAppState) => getBridgeQuotes(state).activeQuote,
+    (state: BridgeAppState) =>
+      getBridgeQuotes(state).activeQuote?.priceImpact?.valueInCurrency,
     getCurrentCurrency,
   ],
-  (activeQuote, currentCurrency) =>
-    formatPriceImpactFiat(activeQuote, currentCurrency),
+  (priceImpact, currentCurrency) =>
+    formatPriceImpactFiat(priceImpact, currentCurrency),
 );
 
 // Native reserve balances are used for gas-sponsored networks like Monad,
@@ -973,18 +974,22 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
 export const isNativeBalanceInsufficientForQuote = (
-  quote: QuoteResponse & QuoteMetadata,
+  quote: QuoteResponseV1 & QuoteMetadata,
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
-): boolean =>
-  isNativeAddress(fromToken.assetId)
+): boolean => {
+  if (!quote.sentAmount?.amount || !quote.totalNetworkFee?.amount) {
+    return false;
+  }
+  return isNativeAddress(fromToken.assetId)
     ? new BigNumber(nativeBalance)
         .sub(quote.totalNetworkFee.amount)
         .sub(quote.sentAmount.amount)
         .sub(minimumBalanceToKeep)
         .lte(0)
     : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+};
 
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
@@ -1002,7 +1007,7 @@ export const resolveMinimumBalanceToKeep = (
     : '0';
 
 export const computeQuoteValidationErrors = (
-  quote: (QuoteMetadata & QuoteResponse) | undefined | null,
+  quote: (QuoteMetadata & QuoteResponseV1) | undefined | null,
   {
     priceImpactThresholds: { warning, error },
     isHardwareWalletAccount,

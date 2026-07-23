@@ -229,10 +229,11 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
-                locale,
-                activeQuote.swapRate,
-              )} ${activeQuote.quote.destAsset.symbol}`}
+              {activeQuote.swapRate &&
+                `1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                  locale,
+                  activeQuote.swapRate,
+                )} ${activeQuote.quote.destAsset.symbol}`}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}
@@ -325,7 +326,7 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.gasFee.effective?.valueInCurrency,
+                        activeQuote.gasFee?.total?.valueInCurrency,
                         currency,
                       )}
                 </Text>
@@ -352,7 +353,7 @@ export const MultichainBridgeQuoteCard = ({
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.gasFee.effective?.valueInCurrency,
+                  activeQuote.gasFee?.total?.valueInCurrency,
                   currency,
                 )}
               </Text>
@@ -400,7 +401,7 @@ export const MultichainBridgeQuoteCard = ({
         />
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.amount && (
+        {activeQuote.minToTokenAmount?.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text

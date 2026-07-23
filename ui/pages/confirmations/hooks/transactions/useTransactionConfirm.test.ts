@@ -1,4 +1,4 @@
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 import {
   GasFeeToken,
   TransactionMeta,
@@ -446,7 +446,7 @@ describe('useTransactionConfirm', () => {
   it('updates swap with MM quote if available', async () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);

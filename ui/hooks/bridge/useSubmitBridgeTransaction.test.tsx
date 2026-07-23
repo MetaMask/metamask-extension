@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type {
+  QuoteMetadata,
+  QuoteResponseV1,
+} from '@metamask/bridge-controller';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -216,7 +219,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
         ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
         ...ETH_11_USDC_TO_ARB_METADATA,
       };
@@ -246,13 +249,13 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it.only('executes EVM bridge transaction with no approval', async () => {
+    it('executes EVM bridge transaction with no approval', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
 
-      const quoteWithMetadata: QuoteResponse & QuoteMetadata = {
+      const quoteWithMetadata: QuoteResponseV1 & QuoteMetadata = {
         ...DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0],
         ...OP_0_005_ETH_TO_ARB_METADATA,
       };

@@ -6,15 +6,15 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 
 export type DappSwapContextType = {
   isQuotedSwapDisplayedInInfo: boolean;
   isQuotedSwapPresent: boolean;
-  selectedQuote: QuoteResponse | undefined;
-  setSelectedQuote: (selectedQuote: QuoteResponse | undefined) => void;
+  selectedQuote: QuoteResponseV1 | undefined;
+  setSelectedQuote: (selectedQuote: QuoteResponseV1 | undefined) => void;
   setQuotedSwapDisplayedInInfo: (isQuotedSwapDisplayedInInfo: boolean) => void;
 };
 
@@ -28,9 +28,9 @@ export const DappSwapContextProvider = ({
   children: ReactElement;
 }>) => {
   const { currentConfirmation } = useCurrentConfirmation();
-  const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | undefined>(
-    undefined,
-  );
+  const [selectedQuote, setSelectedQuote] = useState<
+    QuoteResponseV1 | undefined
+  >(undefined);
   const [isQuotedSwapDisplayedInInfo, setQuotedSwapDisplayedInInfo] =
     useState(false);
 
