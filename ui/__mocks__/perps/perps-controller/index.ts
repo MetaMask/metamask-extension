@@ -564,9 +564,6 @@ export const PERPS_TRANSACTIONS_HISTORY_CONSTANTS = {
   DefaultFundingHistoryDays: 365,
 } as const;
 
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-// ESLint override: BaseController requires 'type' for Json compatibility, not 'interface'
-
 /**
  * Market data with prices for UI display
  * Protocol-agnostic interface for market information with formatted values

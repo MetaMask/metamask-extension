@@ -1002,12 +1002,10 @@
     "message": "交换失败"
   },
   "activity_swap_pending_title": {
-    "message": "正在将 $1 兑换为 $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "正在兑换"
   },
   "activity_swap_success_title": {
-    "message": "已将 $1 兑换为 $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "已兑换"
   },
   "activity_unwrap_failed_description": {
     "message": "解除封装失败"
@@ -2449,7 +2447,7 @@
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
-    "message": "流通量"
+    "message": "流通供应量"
   },
   "clear": {
     "message": "清除"

@@ -5,8 +5,9 @@ import React from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../shared/constants/metametrics';
-import { useActivityScreenOpened } from './useActivityScreenOpened';
+import { useActivityScreenViewed } from './useActivityScreenViewed';
 import type { ActivityListFilter } from './helpers';
 
 const mockTrackEvent = jest.fn();
@@ -46,14 +47,14 @@ const defaultProps = {
   pendingLength: 0,
 };
 
-describe('useActivityScreenOpened', () => {
+describe('useActivityScreenViewed', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('does not fire when isSettled is false', () => {
     renderHook(
-      () => useActivityScreenOpened({ ...defaultProps, isSettled: false }),
+      () => useActivityScreenViewed({ ...defaultProps, isSettled: false }),
       { wrapper: makeWrapper() },
     );
 
@@ -61,13 +62,13 @@ describe('useActivityScreenOpened', () => {
   });
 
   it('fires once with is_empty: true when the list has no items', () => {
-    renderHook(() => useActivityScreenOpened(defaultProps), {
+    renderHook(() => useActivityScreenViewed(defaultProps), {
       wrapper: makeWrapper(),
     });
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: MetaMetricsEventName.ActivityScreenOpened,
+      name: MetaMetricsEventName.ActivityScreenViewed,
       properties: {
         category: MetaMetricsEventCategory.Home,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -84,7 +85,7 @@ describe('useActivityScreenOpened', () => {
   it('fires with correct properties when items are present', () => {
     renderHook(
       () =>
-        useActivityScreenOpened({
+        useActivityScreenViewed({
           ...defaultProps,
           isEmpty: false,
           pendingLength: 3,
@@ -108,7 +109,7 @@ describe('useActivityScreenOpened', () => {
     let isSettled = true;
 
     const { rerender } = renderHook(
-      () => useActivityScreenOpened({ ...defaultProps, isSettled }),
+      () => useActivityScreenViewed({ ...defaultProps, isSettled }),
       { wrapper: makeWrapper() },
     );
 
@@ -123,7 +124,7 @@ describe('useActivityScreenOpened', () => {
   it('does not fire when a filter prop is provided (embedded view)', () => {
     renderHook(
       () =>
-        useActivityScreenOpened({
+        useActivityScreenViewed({
           ...defaultProps,
           filter: { networks: ['eip155:1'] },
         }),
@@ -131,5 +132,34 @@ describe('useActivityScreenOpened', () => {
     );
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('includes entry_point in properties when entryPoint is provided', () => {
+    renderHook(
+      () =>
+        useActivityScreenViewed({
+          ...defaultProps,
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+        }),
+      { wrapper: makeWrapper() },
+    );
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          entry_point: ScreenViewedEntryPoint.BottomNavClick,
+        }),
+      }),
+    );
+  });
+
+  it('does not include entry_point in properties when entryPoint is omitted', () => {
+    renderHook(() => useActivityScreenViewed(defaultProps), {
+      wrapper: makeWrapper(),
+    });
+
+    const [{ properties }] = mockTrackEvent.mock.calls[0];
+    expect(properties).not.toHaveProperty('entry_point');
   });
 });
