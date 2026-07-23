@@ -62,6 +62,8 @@ export function getAssetsControllerMessenger(
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
       'PhishingController:bulkScanTokens',
+      // AccountsApiDataSource reads remote feature flags to gate behavior
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
       // core#9388: RPC balance refresh on account-group switch / tree updates
@@ -91,6 +93,8 @@ export function getAssetsControllerMessenger(
       'TransactionController:unapprovedTransactionAdded',
       // Real-time post-tx balances (AccountActivityService WS path)
       'AccountActivityService:balanceUpdated',
+      // AccountsApiDataSource re-evaluates when remote feature flags change
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
 
