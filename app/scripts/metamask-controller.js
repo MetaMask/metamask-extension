@@ -11,7 +11,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, uniq } from 'lodash';
+import { debounce, merge, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
@@ -151,6 +151,10 @@ import {
   KEYRING_DEVICE_PROPERTY_MAP,
   LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -2920,6 +2924,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getLedgerMode: this.getLedgerMode.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -5388,6 +5393,29 @@ export default class MetamaskController extends EventEmitter {
       { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.bridge.getAppConfiguration(),
     );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns {LedgerHandlerMode}
+   */
+  getLedgerMode() {
+    const state = this.controllerMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   }
 
   /**
