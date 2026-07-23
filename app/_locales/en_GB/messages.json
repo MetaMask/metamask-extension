@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Account options"
   },
-  "accountPermissionToast": {
-    "message": "Account permissions updated"
-  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -1050,15 +1047,13 @@
     "message": ""
   },
   "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapping"
   },
   "activity_swap_success_description": {
     "message": ""
   },
   "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapped"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"
@@ -2087,10 +2082,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Bridge details",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2099,9 +2090,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Select amount"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "View on $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "This transaction lives on two networks. One link shows the source, the other shows the destination once confirmed."
@@ -2386,42 +2374,11 @@
   "bridgeSendLoading": {
     "message": "Sending from source chain"
   },
-  "bridgeStatusComplete": {
-    "message": "Complete",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Failed",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "In progress",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 received on $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Receiving $1 on $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Swapped $1 for $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Swapping $1 for $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspicious"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Suspicious token"
-  },
-  "bridgeTo": {
-    "message": "Bridge to"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 is a malicious token."
@@ -2437,56 +2394,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transaction $1 of 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Bridged"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Bridging"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Reach out to"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask Support"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Has it been longer than 3 hours?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Status"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Swapped"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Swapping"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Time stamp"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 at $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 on",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Total gas fee"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "You received"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "You sent"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use max allowed"
@@ -2504,12 +2411,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Minimum $1 reserve balance is required",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Bridged"
-  },
-  "bridgedToChain": {
-    "message": "Bridged to $1"
   },
   "bridging": {
     "message": "Bridging"
@@ -3277,9 +3178,6 @@
   "decimal": {
     "message": "Token decimal"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
-  },
   "decrypt": {
     "message": "Decrypt"
   },
@@ -3412,6 +3310,9 @@
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "the Follow Trading page"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
   },
@@ -3536,10 +3437,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Receiving address"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "Destination Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Details"
@@ -5599,10 +5496,6 @@
     "message": "Claimable bonus details",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Convert $1 to mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Bonus details",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5860,6 +5753,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Not supported by this account."
+  },
   "networkOptions": {
     "message": "Network options"
   },
@@ -5985,14 +5881,8 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
-  "nftBought": {
-    "message": "Bought $1"
-  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
-  },
-  "nftMinted": {
-    "message": "Minted $1"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -7132,6 +7022,12 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Price can't be more than 95% away from the market price"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Enter a valid limit price to continue."
+  },
   "perpsCloseLong": {
     "message": "Close long"
   },
@@ -7140,6 +7036,9 @@
   },
   "perpsClosePosition": {
     "message": "Close position"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Current price is unavailable. Try again in a moment."
   },
   "perpsCloseShort": {
     "message": "Close short"
@@ -7170,9 +7069,6 @@
   },
   "perpsDateYesterday": {
     "message": "Yesterday"
-  },
-  "perpsDepositActivityTitle": {
-    "message": "Funded Perps"
   },
   "perpsDepositErrorBridgeFailed": {
     "message": "Bridge failed"
@@ -7673,6 +7569,10 @@
     "message": "Your PnL is $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Failed to place close order",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 margin to $2 position",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7724,6 +7624,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Position partially closed",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Failed to place partial close order",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
@@ -7835,10 +7739,6 @@
   },
   "perpsWithdraw": {
     "message": "Withdraw"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Perps withdraw",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
@@ -8294,13 +8194,19 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBestRate": {
+    "message": "Best rate"
+  },
   "rampsBuyToken": {
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
   },
   "rampsBuyingViaProvider": {
-    "message": "Buying via $1",
+    "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Change provider."
   },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
@@ -8308,8 +8214,28 @@
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
   },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Error loading payment methods"
+  },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maximum purchase is $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Minimum purchase is $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Most reliable"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "No payment methods are available."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "No providers available."
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
@@ -8318,8 +8244,60 @@
     "message": "on $1",
     "description": "$1 is the network name"
   },
+  "rampsOtherOptions": {
+    "message": "Other options"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "business day"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "business days"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "hour"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "hours"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instant"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Less than"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "mins"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Max $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Min $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Previously used"
+  },
+  "rampsProviders": {
+    "message": "Providers"
+  },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Quote unavailable."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Quotes displayed for $1.",
+    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
@@ -8604,10 +8582,6 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
-  },
-  "revokePermissionTitle": {
-    "message": "Remove $1 permission",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
@@ -9079,14 +9053,6 @@
   "sent": {
     "message": "Sent"
   },
-  "sentSpecifiedTokens": {
-    "message": "Sent $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Sent $1 as $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -9095,10 +9061,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Withdrawal request"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Approve $1 with no spend limit",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Set up",
@@ -9801,9 +9763,6 @@
   },
   "sign": {
     "message": "Sign"
-  },
-  "signatureRequest": {
-    "message": "Signature request"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "The NFT will be reflected in your wallet, when the bid is accepted."
@@ -10615,10 +10574,6 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDetailsTitle": {
-    "message": "Swap details",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Direct contract"
   },
@@ -10823,10 +10778,6 @@
   "swapTokenNotAvailable": {
     "message": "Token is not available to swap in this region"
   },
-  "swapTokenToToken": {
-    "message": "Swap $1 to $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Swap tokens"
   },
@@ -10977,6 +10928,9 @@
   "tokenDecimal": {
     "message": "Token decimal"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Enter a whole number between 0 and 36."
+  },
   "tokenDetails": {
     "message": "Token details"
   },
@@ -11101,10 +11055,6 @@
   "transactionIncludesTypes": {
     "message": "This transaction includes: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "This transaction was protected. We canceled it to prevent unexpected fund loss.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Transaction settings"
   },
@@ -11113,10 +11063,6 @@
   },
   "transactionSubmitted": {
     "message": "Transaction submitted"
-  },
-  "transactionTotalGasFee": {
-    "message": "Total gas fee",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transactions"
@@ -11442,9 +11388,6 @@
   "viewAddressOnExplorer": {
     "message": "View on $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "View details"
   },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"

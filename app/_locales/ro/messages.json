@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Zecimale de precizie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
-  },
   "delete": {
     "message": "Șterge"
   },
@@ -502,9 +499,6 @@
   },
   "sign": {
     "message": "Semnați"
-  },
-  "signatureRequest": {
-    "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"

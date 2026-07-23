@@ -9,7 +9,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -25,7 +25,7 @@ setBackgroundConnection({
 const createDiscountedQuotes = (
   discountType?: string | null,
 ): QuoteResponse[] =>
-  (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map((quote) => ({
+  mockBridgeQuotesErc20Erc20.map((quote) => ({
     ...quote,
     quote: {
       ...quote.quote,
@@ -123,11 +123,7 @@ describe('BridgeDiscountFeeMessage', () => {
   it('renders null when the active quote is not discounted', () => {
     const { container } = renderWithProvider(
       <BridgeDiscountFeeMessage />,
-      configureStore(
-        createBridgeStoreWithQuotes(
-          mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
-        ),
-      ),
+      configureStore(createBridgeStoreWithQuotes(mockBridgeQuotesErc20Erc20)),
     );
 
     expect(container).toBeEmptyDOMElement();

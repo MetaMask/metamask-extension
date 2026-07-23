@@ -178,9 +178,6 @@
   "decimal": {
     "message": "Decimale preciznosti"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
-  },
   "delete": {
     "message": "Избриши"
   },
@@ -502,9 +499,6 @@
   },
   "sign": {
     "message": "Potpišite"
-  },
-  "signatureRequest": {
-    "message": "Zahtev za potpis"
   },
   "signed": {
     "message": "Potpisan"

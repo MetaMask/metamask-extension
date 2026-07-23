@@ -1043,7 +1043,6 @@ class Driver {
     const endTime = startTime + timeout;
 
     // Loop indefinitely until condition met or timeout
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const result = await condition();
       if (result === true) {
@@ -1350,7 +1349,7 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
@@ -1719,6 +1718,26 @@ class Driver {
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
+  }
+
+  /**
+   * Wait for a browser alert, validate its text, then click OK (accept).
+   * Call this while focused on a live window (not a closed dialog).
+   *
+   * @param {string} expectedText - Expected alert message.
+   * @param {number} [timeout]
+   * @returns {Promise<void>}
+   */
+  async validateAlertTextAndClose(expectedText, timeout = this.timeout) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const text = await alert.getText();
+    if (text !== expectedText) {
+      throw new Error(
+        `Expected alert text to be "${expectedText}", but got "${text}".`,
+      );
+    }
+    await alert.accept();
   }
 
   // Error handling

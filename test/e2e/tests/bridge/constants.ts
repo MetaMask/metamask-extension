@@ -2739,9 +2739,6 @@ export const EXPECTED_INPUT_CHANGES = {
         'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
     },
     {
-      slippage: 2,
-    },
-    {
       chain_source: 'eip155:1',
     },
     {

@@ -73,19 +73,32 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      // Source and destination in title; two tokens in avatar
+      // Title is "Swapped"; token pair in subtitle; two tokens in avatar
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
-        const destinationSymbol = destinationToken?.symbol ?? '';
+        const destinationSymbol = destinationToken?.symbol;
+        const hasDestination = Boolean(destinationSymbol);
+        const primaryToken = hasDestination ? destinationToken : sourceToken;
+        const titleKey = hasDestination
+          ? labelKeys.title.key
+          : `activity_swapIncomplete_${activity.status}_title`;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key);
 
         return {
-          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
-          title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
-          subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(destinationToken),
-          primaryDirection: destinationToken?.direction,
-          secondaryAmount: formatTokenAmount(sourceToken),
+          avatarTokens: hasDestination
+            ? [sourceToken?.assetId, destinationToken?.assetId]
+            : [sourceToken?.assetId],
+          title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
+          subtitle,
+          primaryAmount: formatTokenAmount(primaryToken),
+          primaryDirection: primaryToken?.direction,
+          secondaryAmount: hasDestination
+            ? formatTokenAmount(sourceToken)
+            : formatAsFiat(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
@@ -158,18 +171,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
                 secondaryAmount: formatTokenAmount(sourceToken),
               }
             : { secondaryAmount: formatAsFiat(sourceToken) }),
-        };
-      }
-      case 'swapIncomplete': {
-        const { sourceToken } = activity.data;
-
-        return {
-          avatarTokens: [sourceToken?.assetId],
-          title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
-          subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(sourceToken),
-          primaryDirection: sourceToken?.direction,
-          secondaryAmount: formatAsFiat(sourceToken),
         };
       }
       case 'buy':

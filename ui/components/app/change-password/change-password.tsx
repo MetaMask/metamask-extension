@@ -169,7 +169,6 @@ const ChangePassword = ({
       createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           status: 'started',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
@@ -192,7 +191,6 @@ const ChangePassword = ({
         createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
@@ -208,7 +206,6 @@ const ChangePassword = ({
         createEventBuilder(MetaMetricsEventName.PasswordChangeWithPasskey)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             status: 'failed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             passkey_renewal_enabled: isPasskeyRenewalEnabled,
