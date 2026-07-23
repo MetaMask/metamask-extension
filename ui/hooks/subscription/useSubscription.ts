@@ -29,6 +29,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  getCustomerServiceToken,
   getRewardsHasAccountOptedIn,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -42,10 +43,7 @@ import {
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
@@ -69,7 +67,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getAnalyticsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -83,6 +80,7 @@ import {
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
+import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
@@ -733,28 +731,21 @@ export const useHandleSubscription = ({
 
 export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
-    const url = new URL(SUPPORT_LINK as string);
-    url.searchParams.append('metamask_version', version);
-    if (profileId) {
-      url.searchParams.append('metamask_profile_id', profileId);
-    }
-    if (analyticsId) {
-      url.searchParams.append('metamask_metametrics_id', analyticsId);
-    }
-    if (shieldCustomerId) {
-      url.searchParams.append('shield_id', shieldCustomerId);
-    }
-
-    const supportLinkWithUserId = url.toString();
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
+    const supportLinkWithUserId = buildSupportLinkWithUserData(
+      SUPPORT_LINK as string,
+      {
+        version,
+        customerServiceToken,
+        shieldCustomerId,
+      },
+    );
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, analyticsId, shieldCustomerId]);
+  }, [version, shieldCustomerId]);
 
   return {
     handleClickContactSupport,

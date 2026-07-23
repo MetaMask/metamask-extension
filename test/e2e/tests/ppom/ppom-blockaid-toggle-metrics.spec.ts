@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
 import { withFixtures, getEventPayloads } from '../../helpers';
-import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID, NETWORK_CLIENT_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -71,8 +71,9 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             chainIds: [1],
           })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -112,7 +113,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: true,
             category: 'Settings',
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
         const matchToggleOnEvent = {
@@ -134,7 +135,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: false,
             category: 'Settings',
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
         const matchToggleOffEvent = {

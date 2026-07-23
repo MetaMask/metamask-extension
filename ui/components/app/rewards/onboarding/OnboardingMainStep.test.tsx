@@ -11,6 +11,7 @@ import {
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
+  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import OnboardingMainStep from './OnboardingMainStep';
 import {
@@ -127,11 +128,13 @@ type SelectorState = {
   optinAllowedForGeoError?: boolean;
   optinAllowedForGeoLoading?: boolean;
   rewardsActiveAccountSubscriptionId?: string | null;
+  vipProgramEnabled?: boolean;
 };
 
 function setup({
   referralCode = '',
   isValid = false,
+  isVipCode = false,
   isValidating = false,
   isUnknownError = false,
   optinLoading = false,
@@ -147,6 +150,7 @@ function setup({
     setReferralCode,
     isValidating,
     isValid,
+    isVipCode,
     isUnknownError,
   });
 
@@ -165,12 +169,16 @@ function setup({
     optinAllowedForGeoError: false,
     optinAllowedForGeoLoading: false,
     rewardsActiveAccountSubscriptionId: null,
+    vipProgramEnabled: false,
     ...state,
   };
 
   mockedUseSelector.mockImplementation((selector: unknown) => {
     if (selector === selectCandidateSubscriptionId) {
       return fullState.candidateSubscriptionId;
+    }
+    if (selector === selectVipProgramEnabled) {
+      return fullState.vipProgramEnabled;
     }
     if (selector === selectOnboardingReferralCode) {
       return fullState.onboardingReferralCode;
@@ -316,6 +324,32 @@ describe('OnboardingMainStep', () => {
     expect(
       screen.getByPlaceholderText('rewardsOnboardingReferralCodePlaceholder'),
     ).toBeInTheDocument();
+  });
+
+  it('shows the VIP referral tag for a valid VIP code when the VIP program is enabled', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: true },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(screen.getByTestId('rewards-vip-referral-tag')).toBeInTheDocument();
+  });
+
+  it('does not show the VIP referral tag when the VIP program flag is off', () => {
+    setup({
+      state: { onboardingReferralCode: 'vipcode', vipProgramEnabled: false },
+      referralCode: 'VIPCODE',
+      isValid: true,
+      isVipCode: true,
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.queryByTestId('rewards-vip-referral-tag'),
+    ).not.toBeInTheDocument();
   });
 
   it('seeds validation with the trimmed + uppercased referral from the store', () => {

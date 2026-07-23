@@ -7,6 +7,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import ReactDOM from 'react-dom';
 import { Box } from '@metamask/design-system-react';
 import { Toast } from '../../../multichain/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -170,22 +171,25 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
-      {activeToast ? (
-        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
-          <Toast
-            key={activeToast.id}
-            startAdornment={getPerpsToastIcon(activeToast.presentation)}
-            text={activeToast.message}
-            description={activeToast.description}
-            className="perps-toast"
-            contentProps={{ className: 'items-center' }}
-            autoHideTime={activeToast.autoHideTime}
-            onClose={hidePerpsToast}
-            onAutoHideToast={hidePerpsToast}
-            dataTestId={activeToast.dataTestId ?? 'perps-toast'}
-          />
-        </Box>
-      ) : null}
+      {activeToast
+        ? ReactDOM.createPortal(
+            <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
+              <Toast
+                key={activeToast.id}
+                startAdornment={getPerpsToastIcon(activeToast.presentation)}
+                text={activeToast.message}
+                description={activeToast.description}
+                className="perps-toast"
+                contentProps={{ className: 'items-center' }}
+                autoHideTime={activeToast.autoHideTime}
+                onClose={hidePerpsToast}
+                onAutoHideToast={hidePerpsToast}
+                dataTestId={activeToast.dataTestId ?? 'perps-toast'}
+              />
+            </Box>,
+            document.body,
+          )
+        : null}
     </PerpsToastContext.Provider>
   );
 };

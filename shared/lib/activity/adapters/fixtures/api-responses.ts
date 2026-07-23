@@ -215,4 +215,73 @@ export const apiResponses = {
     ],
     logs: [],
   },
+  // OpenSea NFT sale: ERC-721 sent out, WETH received as payment.
+  // transactionCategory: NFT_EXCHANGE — should map to 'sell'.
+  openseaNftSaleWeth: {
+    hash: '0x0e7f29fa4af73f3708a7383a2fa8d0e09f6c6bf8a176bccf3a6b3259e2886bae',
+    timestamp: '2026-01-14T21:50:29.000Z',
+    chainId: 8453,
+    accountId: 'eip155:8453:0xe321bd63cde8ea046b382f82964575f2a5586474',
+    blockNumber: 40819041,
+    blockHash:
+      '0xb01189d473edf852620d176a4abe46a999a3ce58d3e4ea3dca0125811421b8cf',
+    gas: 287257,
+    gasUsed: 180293,
+    gasPrice: '2878406',
+    effectiveGasPrice: '2878406',
+    nonce: 731,
+    cumulativeGasUsed: 7133440,
+    methodId: '0xe7acab24',
+    value: '0',
+    to: '0x0000000000000068f116a894984e2db1123eb395',
+    from: '0xe321bd63cde8ea046b382f82964575f2a5586474',
+    isError: false,
+    valueTransfers: [
+      {
+        // WETH payment received from buyer
+        from: '0xbaf3ad6542f932cc0e0b54983e82e0cfb7c5a5a1',
+        to: '0xe321bd63cde8ea046b382f82964575f2a5586474',
+        amount: '1600000000000000',
+        decimal: 18,
+        contractAddress: '0x4200000000000000000000000000000000000006',
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        transferType: 'erc20',
+        iconUrl:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/8453/0x4200000000000000000000000000000000000006.png',
+      },
+      {
+        // ERC-721 sent to buyer
+        from: '0xe321bd63cde8ea046b382f82964575f2a5586474',
+        to: '0xbaf3ad6542f932cc0e0b54983e82e0cfb7c5a5a1',
+        tokenId: '327437',
+        symbol: 'WPLT',
+        name: 'The Warplets',
+        contractAddress: '0x699727f9e01a822efdcf7333073f0461e5914b4e',
+        transferType: 'erc721',
+        iconUrl:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/8453/0x699727f9e01a822efdcf7333073f0461e5914b4e.png',
+      },
+      {
+        // OpenSea fee
+        from: '0xe321bd63cde8ea046b382f82964575f2a5586474',
+        to: '0x0000a26b00c1f0df003000390027140000faa719',
+        amount: '16000000000000',
+        decimal: 18,
+        contractAddress: '0x4200000000000000000000000000000000000006',
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        transferType: 'erc20',
+        iconUrl:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/8453/0x4200000000000000000000000000000000000006.png',
+      },
+    ],
+    logs: [],
+    toAddressName: 'OPENSEA_SEAPORT',
+    transactionProtocol: 'OPENSEA',
+    transactionCategory: 'NFT_EXCHANGE',
+    transactionType: 'OPENSEA_V1.6_NFT_EXCHANGE',
+    readable: 'Exchanged NFT',
+    readableExtended: 'Exchanged NFT',
+  },
 };

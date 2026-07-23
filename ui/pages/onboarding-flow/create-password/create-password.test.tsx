@@ -8,6 +8,8 @@ import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -18,6 +20,27 @@ import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import CreatePassword from './create-password';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../hooks/useIsFirefox', () => ({
+  useIsFirefox: jest.fn().mockReturnValue(false),
+}));
+
+const { useIsFirefox } = jest.requireMock('../../../hooks/useIsFirefox');
 
 jest.mock('../../../../shared/lib/passkey', () => ({
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
@@ -37,9 +60,9 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const getWalletSetupCompletedEvent = (mockTrackEvent: jest.Mock) => {
+const getWalletSetupCompletedEvent = () => {
   return mockTrackEvent.mock.calls.find(
-    (args) => args[0]?.event === MetaMetricsEventName.WalletSetupCompleted,
+    (args) => args[0]?.name === MetaMetricsEventName.WalletSetupCompleted,
   )?.[0];
 };
 
@@ -52,6 +75,9 @@ const backgroundConnectionMock = new Proxy(
 
 describe('Onboarding Create Password', () => {
   const mockState = {
+    confirmTransaction: {
+      txData: {},
+    },
     metamask: {
       internalAccounts: {
         accounts: {},
@@ -365,7 +391,7 @@ describe('Onboarding Create Password', () => {
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
-    it('should create new wallet without marketing checked when its social login flow', () => {
+    it('should create new wallet without marketing checked when its social login flow', async () => {
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -414,7 +440,9 @@ describe('Onboarding Create Password', () => {
 
       fireEvent.click(createNewWalletButton as HTMLElement);
 
-      expect(mockCreateNewAccount).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockCreateNewAccount).toHaveBeenCalled();
+      });
     });
   });
 
@@ -528,7 +556,6 @@ describe('Onboarding Create Password', () => {
     });
 
     it('includes deferred deep link UTM params in the wallet setup completed event for new wallets', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -548,9 +575,6 @@ describe('Onboarding Create Password', () => {
           secretRecoveryPhrase="SRP"
         />,
         mockStore,
-        '/',
-        undefined,
-        () => mockTrackEvent,
       );
 
       const password = '12345678';
@@ -570,11 +594,10 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
-        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+        expect(getWalletSetupCompletedEvent()).toBeDefined();
       });
 
-      const walletSetupCompletedEvent =
-        getWalletSetupCompletedEvent(mockTrackEvent);
+      const walletSetupCompletedEvent = getWalletSetupCompletedEvent();
 
       expect(walletSetupCompletedEvent).toMatchObject({
         properties: {
@@ -697,7 +720,6 @@ describe('Onboarding Create Password', () => {
     });
 
     it('includes deferred deep link UTM params in the wallet setup completed event for imported wallets', async () => {
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const mockStore = configureMockStore([thunk])({
         ...importMockState,
         metamask: {
@@ -719,9 +741,6 @@ describe('Onboarding Create Password', () => {
       const { queryByTestId } = renderWithProvider(
         <CreatePassword {...props} />,
         mockStore,
-        '/',
-        undefined,
-        () => mockTrackEvent,
       );
 
       const password = '12345678';
@@ -741,11 +760,10 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
-        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+        expect(getWalletSetupCompletedEvent()).toBeDefined();
       });
 
-      const walletSetupCompletedEvent =
-        getWalletSetupCompletedEvent(mockTrackEvent);
+      const walletSetupCompletedEvent = getWalletSetupCompletedEvent();
 
       expect(walletSetupCompletedEvent).toMatchObject({
         properties: {
@@ -802,6 +820,264 @@ describe('Onboarding Create Password', () => {
         mockStore,
       );
       expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Uncovered routing branches', () => {
+    it('routes to completion when keyring present and flow is socialImport (non-Firefox, no passkey)', () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const store = configureMockStore([thunk])({
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialImport,
+        },
+      });
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
+    });
+
+    it('routes to completion when keyring present and flow is socialCreate', () => {
+      const store = configureMockStore([thunk])({
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
+    });
+
+    it('routes to import-with-srp when flow is import and no secretRecoveryPhrase', () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+        },
+      });
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase=""
+        />,
+        store,
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+        { replace: true },
+      );
+    });
+  });
+
+  describe('Back button', () => {
+    it('routes to import-with-srp when back is clicked in import flow', async () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      fireEvent.click(getByTestId('create-password-back-button'));
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+          { replace: true },
+        );
+      });
+    });
+
+    it('resets onboarding and navigates to welcome when back is clicked in non-import flow', async () => {
+      const resetOnboardingSpy = jest
+        .spyOn(Actions, 'resetOnboarding')
+        .mockReturnValue(jest.fn().mockResolvedValue(null));
+      jest
+        .spyOn(Actions, 'forceUpdateMetamaskState')
+        .mockResolvedValue(undefined);
+
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase=""
+        />,
+        store,
+      );
+
+      fireEvent.click(getByTestId('create-password-back-button'));
+
+      await waitFor(() => {
+        expect(resetOnboardingSpy).toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+          replace: true,
+        });
+      });
+    });
+  });
+
+  describe('handleWalletImport Firefox / social login path', () => {
+    it('routes to completion after import when running on Firefox', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(useIsFirefox).mockReturnValue(true);
+
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={jest.fn().mockResolvedValue(undefined)}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_COMPLETION_ROUTE,
+          { replace: true },
+        );
+      });
+    });
+  });
+
+  describe('handleCreateNewWallet social login path', () => {
+    const socialLoginState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        isSeedlessOnboardingUserAuthenticated: true,
+        authConnection: 'google',
+        socialLoginEmail: 'user@example.com',
+      },
+    };
+
+    it('routes to download-app route after wallet creation in social login flow', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const store = configureMockStore([thunk])(socialLoginState);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_DOWNLOAD_APP_ROUTE,
+          { replace: true },
+        );
+      });
+    });
+  });
+
+  describe('handleCreatePassword error path', () => {
+    it('tracks WalletSetupFailure event when wallet creation throws', async () => {
+      const store = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={jest.fn().mockRejectedValue(new Error('fail'))}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        store,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: password } },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.WalletSetupFailure,
+          }),
+        );
+      });
     });
   });
 

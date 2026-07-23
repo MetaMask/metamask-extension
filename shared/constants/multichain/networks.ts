@@ -6,6 +6,8 @@ import {
   SolScope,
   TrxScope,
   TrxAccountType,
+  XlmScope,
+  XlmAccountType,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
@@ -13,6 +15,7 @@ import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
+  isStellarAddress,
   isTronAddress,
 } from '../../lib/multichain/accounts';
 import { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
@@ -60,8 +63,6 @@ export enum MultichainNetworks {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   TRON = TrxScope.Mainnet,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -69,6 +70,8 @@ export enum MultichainNetworks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   TRON_SHASTA = TrxScope.Shasta,
+
+  STELLAR = XlmScope.Pubnet,
 }
 
 // TODO: This data should be provided by the snap
@@ -87,6 +90,7 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   [TrxScope.Mainnet]: 'Tron',
   [TrxScope.Nile]: 'Tron',
   [TrxScope.Shasta]: 'Tron',
+  [XlmScope.Pubnet]: 'Stellar',
 } as const;
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
@@ -96,6 +100,7 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
   [BtcAccountType.P2tr]: MultichainNetworks.BITCOIN,
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
   [TrxAccountType.Eoa]: MultichainNetworks.TRON,
+  [XlmAccountType.Account]: MultichainNetworks.STELLAR,
 } as const;
 
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
@@ -108,6 +113,7 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.TRON]: 'Tron',
   [MultichainNetworks.TRON_NILE]: 'Tron Nile Testnet',
   [MultichainNetworks.TRON_SHASTA]: 'Tron Shasta Testnet',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 } as const;
 
 // TODO: This data should be provided by the snap
@@ -125,6 +131,8 @@ export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 
+export const STELLAR_TOKEN_IMAGE_URL = './images/xlm.svg';
+
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
 export const BITCOIN_BLOCK_EXPLORER_NAME = 'Mempool';
 export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
@@ -135,6 +143,8 @@ export const TRON_BLOCK_EXPLORER_URL = 'https://tronscan.org';
 export const TRON_BLOCK_EXPLORER_NAME = 'Tronscan';
 export const TRON_NILE_BLOCK_EXPLORER_URL = 'https://nile.tronscan.org';
 export const TRON_SHASTA_BLOCK_EXPLORER_URL = 'https://shasta.tronscan.org';
+export const STELLAR_BLOCK_EXPLORER_URL = 'https://stellar.expert';
+export const STELLAR_BLOCK_EXPLORER_NAME = 'Stellar Expert';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   CaipChainId,
@@ -195,6 +205,13 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     address: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/address/{address}`,
     transaction: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
   },
+  [MultichainNetworks.STELLAR]: {
+    name: STELLAR_BLOCK_EXPLORER_NAME,
+    url: STELLAR_BLOCK_EXPLORER_URL,
+    address: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/account/{address}`,
+    asset: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/asset/{asset}`,
+    transaction: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/tx/{txId}`,
+  },
 } as const;
 
 export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
@@ -207,6 +224,7 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.TRON]: TRON_TOKEN_IMAGE_URL,
   [MultichainNetworks.TRON_NILE]: TRON_NILE_TOKEN_IMAGE_URL,
   [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_TOKEN_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -416,6 +434,30 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
       ],
     isAddressCompatible: isTronAddress,
   },
+  /**
+   * Stellar
+   */
+  [MultichainNetworks.STELLAR]: {
+    chainId: MultichainNetworks.STELLAR,
+    rpcUrl: '', // not used
+    ticker: 'XLM',
+    nickname: 'Stellar',
+    id: 'stellar-mainnet',
+    type: 'rpc',
+    decimals: 7,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.STELLAR
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.STELLAR
+      ],
+    isAddressCompatible: isStellarAddress,
+  },
 };
 
 export const SOLANA_TEST_CHAINS: CaipChainId[] = [
@@ -435,6 +477,10 @@ export const TRON_CHAINS: CaipChainId[] = [
   MultichainNetworks.TRON_SHASTA,
 ];
 
+export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
+
+export const STELLAR_CHAINS: CaipChainId[] = [MultichainNetworks.STELLAR];
+
 type NonEvmAccountChangedConfig = {
   network: MultichainNetworks;
   chains: CaipChainId[];
@@ -450,6 +496,7 @@ export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
       KnownSessionProperties.SolanaAccountChangedNotifications,
     accountType: SolAccountType.DataAccount,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   {
     network: MultichainNetworks.TRON,
     chains: TRON_CHAINS,
@@ -457,4 +504,14 @@ export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
       KnownSessionProperties.TronAccountChangedNotifications,
     accountType: TrxAccountType.Eoa,
   },
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    network: MultichainNetworks.BITCOIN,
+    chains: BTC_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.Bip122AccountChangedNotifications,
+    accountType: BtcAccountType.P2wpkh,
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

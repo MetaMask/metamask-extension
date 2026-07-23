@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -14,7 +15,13 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
+import { transitionForward } from '../../ui/transition';
 import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
+
+const getRouteState = (state?: object) => ({
+  ...state,
+  globalMenuTransition: 'forward',
+});
 
 /**
  * Renders menu item content with badge and chevron
@@ -66,6 +73,8 @@ export const GlobalMenuList = ({
   sections,
   className = '',
 }: GlobalMenuListProps) => {
+  const navigate = useNavigate();
+
   return (
     <Box
       className={`global-menu-list ${className}`}
@@ -101,6 +110,10 @@ export const GlobalMenuList = ({
           {section.items.map((item) => {
             // Show chevron for route items or when explicitly requested (e.g. notifications)
             const showChevron = isRouteItem(item) || item.showChevron === true;
+            const routeState = isRouteItem(item)
+              ? getRouteState(item.state)
+              : undefined;
+
             return (
               <MenuItem
                 key={item.id}
@@ -111,12 +124,27 @@ export const GlobalMenuList = ({
                 fontWeight={FontWeight.Medium}
                 textColor={item.textColor}
                 to={isRouteItem(item) ? item.to : undefined}
-                state={isRouteItem(item) ? item.state : undefined}
-                onClick={item.onClick}
+                state={routeState}
+                onClick={(event) => {
+                  if (!isRouteItem(item)) {
+                    item.onClick();
+                    return;
+                  }
+
+                  event.preventDefault();
+                  item.onClick?.();
+                  transitionForward(() =>
+                    navigate(item.to, {
+                      state: routeState,
+                    }),
+                  );
+                }}
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}
                 subtitle={item.subtitle}
-                className="first:rounded-t-none last:rounded-b-none"
+                className={`first:rounded-t-none last:rounded-b-none ${
+                  item.className ?? ''
+                }`}
                 data-testid={item.id}
               >
                 {renderMenuItemContent(item.label, item.badge, showChevron)}

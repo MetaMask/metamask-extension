@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useContext } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
@@ -33,11 +33,12 @@ import {
   BannerAlert,
   BannerAlertSeverity,
 } from '../../components/component-library';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
@@ -47,10 +48,12 @@ const TOAST_AUTO_HIDE_MS = 2500;
 export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const fromPath = searchParams.get('from') ?? undefined;
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const lastTrackedContactCountRef = useRef<number | null>(null);
   const completeAddressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const [showDeletedToast, setShowDeletedToast] = useState(false);
@@ -86,15 +89,21 @@ export function ContactsListPage() {
   );
 
   useEffect(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Contacts,
-      event: MetaMetricsEventName.ContactsPageViewed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        number_of_contacts: contacts.length,
-      },
-    });
-  }, [trackEvent, contacts.length]);
+    if (lastTrackedContactCountRef.current === contacts.length) {
+      return;
+    }
+
+    lastTrackedContactCountRef.current = contacts.length;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ContactsPageViewed)
+        .addCategory(MetaMetricsEventCategory.Contacts)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_contacts: contacts.length,
+        })
+        .build(),
+    );
+  }, [contacts.length, createEventBuilder, trackEvent]);
 
   useEffect(() => {
     if (location.state?.showContactDeletedToast) {
@@ -130,7 +139,7 @@ export function ContactsListPage() {
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }
@@ -256,11 +265,12 @@ export function ContactsListPage() {
             >
               <ContactsEmptyState
                 onAddContact={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Contacts,
-                    event: MetaMetricsEventName.AddContactClicked,
-                    properties: { location: 'contacts_list' },
-                  });
+                  trackEvent(
+                    createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                      .addCategory(MetaMetricsEventCategory.Contacts)
+                      .addProperties({ location: 'contacts_list' })
+                      .build(),
+                  );
                   navigate(CONTACTS_ADD_ROUTE);
                 }}
               />
@@ -283,11 +293,12 @@ export function ContactsListPage() {
               size={ButtonSize.Lg}
               isFullWidth
               onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Contacts,
-                  event: MetaMetricsEventName.AddContactClicked,
-                  properties: { location: 'contacts_list' },
-                });
+                trackEvent(
+                  createEventBuilder(MetaMetricsEventName.AddContactClicked)
+                    .addCategory(MetaMetricsEventCategory.Contacts)
+                    .addProperties({ location: 'contacts_list' })
+                    .build(),
+                );
                 navigate(CONTACTS_ADD_ROUTE);
               }}
               data-testid="contacts-add-contact-button"

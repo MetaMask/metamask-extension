@@ -1,35 +1,10 @@
 import React from 'react';
-import { Text } from '@metamask/design-system-react';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
-import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTokensData } from '../../../hooks/useTokensData';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection } from '../components/sections';
-
-const ApprovalTokenSection = ({ token }: { token?: TokenAmount }) => {
-  const t = useI18nContext();
-  const tokenAssetId = token?.assetId;
-  const tokensByAssetId = useTokensData(tokenAssetId ? [tokenAssetId] : []);
-  const tokenMetadata = tokenAssetId
-    ? tokensByAssetId[tokenAssetId.toLowerCase()]
-    : undefined;
-  const tokenLabel =
-    token?.symbol ?? tokenMetadata?.symbol ?? tokenMetadata?.name ?? t('token');
-
-  return (
-    <div className="flex items-center gap-2 py-4">
-      <ActivityAvatar tokens={[token?.assetId]} />
-
-      <Text variant="heading-lg">{tokenLabel}</Text>
-    </div>
-  );
-};
+import { TokenHeader } from '../components/token-header';
 
 export function ApprovalDetails({
   item,
@@ -44,7 +19,7 @@ export function ApprovalDetails({
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        <ApprovalTokenSection token={item.data.token} />
+        <TokenHeader token={item.data.token} />
         <MetadataSection item={item} />
         <Section>
           <FeesRows item={item} />
@@ -52,7 +27,7 @@ export function ApprovalDetails({
         </Section>
       </div>
       <Footer>
-        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
       </Footer>
     </div>
   );

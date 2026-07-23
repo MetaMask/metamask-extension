@@ -81,7 +81,7 @@ The sidepanel is configured in the Chrome Manifest V3 (`app/manifest/v3/chrome.j
 
 ### Sidepanel HTML Entry Point
 
-The sidepanel HTML file (`app/html/pages/sidepanel.html`) is minimal and uses the same structure as other MetaMask pages, including standard head and body partials.
+The sidepanel HTML file (`app/html/ui/sidepanel.html`) is minimal and uses the same structure as other MetaMask pages, including standard head and body partials.
 
 ---
 
@@ -245,14 +245,14 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 
 ### Core Implementation Files
 
-| File                            | Purpose                                                  |
-| ------------------------------- | -------------------------------------------------------- |
-| `app/manifest/v3/chrome.json`   | Manifest configuration for sidepanel                     |
-| `app/html/pages/sidepanel.html` | Sidepanel HTML entry point                               |
-| `app/scripts/background.js`     | Background script initialization and preference handling |
-| `shared/lib/environment.ts`     | Browser support detection                                |
-| `shared/types/sidepanel.ts`     | TypeScript type definitions                              |
-| `app/scripts/lib/util.ts`       | Environment type detection                               |
+| File                          | Purpose                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `app/manifest/v3/chrome.json` | Manifest configuration for sidepanel                     |
+| `app/html/ui/sidepanel.html`  | Sidepanel HTML entry point                               |
+| `app/scripts/background.js`   | Background script initialization and preference handling |
+| `shared/lib/environment.ts`   | Browser support detection                                |
+| `shared/types/sidepanel.ts`   | TypeScript type definitions                              |
+| `app/scripts/lib/util.ts`     | Environment type detection                               |
 
 ### UI Components
 

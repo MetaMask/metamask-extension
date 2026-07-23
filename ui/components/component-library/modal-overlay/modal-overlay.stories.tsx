@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import README from './README.mdx';
 import { ModalOverlay } from './modal-overlay';
 
 export default {
-  title: 'Components/ComponentLibrary/ModalOverlay',
+  title: 'Components/ComponentLibrary/ModalOverlay (deprecated)',
   component: ModalOverlay,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the ModalOverlay from @metamask/design-system-react instead.',
+      },
     },
   },
   argTypes: {
@@ -28,16 +30,3 @@ const Template: StoryFn<typeof ModalOverlay> = (args) => (
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const OnClick: StoryFn<typeof ModalOverlay> = (args) => {
-  const [open, setOpen] = useState(false);
-  const handleOnClick = () => {
-    setOpen(!open);
-  };
-  return (
-    <>
-      <button onClick={handleOnClick}>Show modal overlay</button>
-      {open && <ModalOverlay {...args} onClick={handleOnClick} />}
-    </>
-  );
-};

@@ -270,17 +270,62 @@ const assertDataStateStorage = (storage: DataStorage) => {
 };
 
 /**
+ * Polls extension storage until the provided assertion passes, then returns it.
+ *
+ * State persistence to `storage.local` is asynchronous and debounced, so reading
+ * storage immediately after a UI action can observe a partially written snapshot
+ * (for example an empty `KeyringController`). Polling avoids relying on fixed
+ * delays, while a final assertion ensures the descriptive error still surfaces
+ * if the expected shape is never reached.
+ *
+ * @param driver - WebDriver instance.
+ * @param assertStorage - Assertion to run against each storage snapshot.
+ * @param logLabel - Label used when logging the resulting storage keys.
+ * @param timeout - Max time (ms) to wait for the assertion to pass.
+ * @returns Parsed storage snapshot once the assertion passes.
+ */
+const waitForStorage = async <Storage extends StoredState>(
+  driver: Driver,
+  assertStorage: (storage: Storage) => void,
+  logLabel: string,
+  timeout = 30000,
+): Promise<Storage> => {
+  let storage = (await readStorage(driver)) as Storage;
+  try {
+    await driver.waitUntil(
+      async () => {
+        storage = (await readStorage(driver)) as Storage;
+        try {
+          assertStorage(storage);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { interval: 1000, timeout },
+    );
+  } catch {
+    // Re-read and assert once more so the descriptive AssertionError surfaces
+    // instead of the generic "Condition not met" timeout error.
+    storage = (await readStorage(driver)) as Storage;
+    assertStorage(storage);
+  }
+  console.log(`${logLabel}:`, Object.keys(storage));
+  return storage;
+};
+
+/**
  * Ensures the split state storage is present and valid.
  *
  * @param driver - WebDriver instance.
  * @returns Parsed split state storage snapshot.
  */
-const expectSplitStateStorage = async (driver: Driver) => {
-  const storage = await readStorage(driver);
-  console.log('split storage:', Object.keys(storage));
-  assertSplitStateStorage(storage as SplitStateStorage);
-  return storage;
-};
+const expectSplitStateStorage = async (driver: Driver) =>
+  waitForStorage<SplitStateStorage>(
+    driver,
+    assertSplitStateStorage,
+    'split storage',
+  );
 
 /**
  * Ensures the data state storage is present and valid.
@@ -288,12 +333,8 @@ const expectSplitStateStorage = async (driver: Driver) => {
  * @param driver - WebDriver instance.
  * @returns Parsed data state storage snapshot.
  */
-const expectDataStateStorage = async (driver: Driver) => {
-  const storage = await readStorage(driver);
-  console.log('data storage:', Object.keys(storage));
-  assertDataStateStorage(storage as DataStorage);
-  return storage;
-};
+const expectDataStateStorage = async (driver: Driver) =>
+  waitForStorage<DataStorage>(driver, assertDataStateStorage, 'data storage');
 
 /**
  * Waits for the extension to reload and the home screen to appear.
@@ -410,7 +451,11 @@ const assertAccountVisible = async (
 };
 
 describe('State Persistence', function () {
-  this.timeout(120000);
+  // Generous timeout: this flow onboards, adds an account, and reloads/unlocks
+  // the extension twice while waiting for the split-state migration. On slower
+  // CI (notably Firefox) the condition-based storage waits need headroom so the
+  // suite-level timeout does not kill a run that is still making progress.
+  this.timeout(180000);
 
   describe('split state', function () {
     it('should default to the split state storage', async function () {
@@ -452,7 +497,8 @@ describe('State Persistence', function () {
             accountName,
           );
 
-          await driver.delay(5000); // wait for any background migrations to finish
+          // No fixed delay needed: expectDataStateStorage polls storage until
+          // the data-state shape (incl. a populated KeyringController) is written.
           console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
@@ -469,7 +515,8 @@ describe('State Persistence', function () {
             accountListPage,
             accountName,
           );
-          await driver.delay(5000); // wait for any background migrations to finish
+          // No fixed delay needed: expectSplitStateStorage polls storage until
+          // the split-state migration has fully written the split-state shape.
           console.log('expectSplitStateStorage');
           await expectSplitStateStorage(driver);
 

@@ -15,11 +15,6 @@ jest.mock('../../ui/survey-toast', () => ({
   SurveyToast: () => null,
 }));
 
-jest.mock('../musd', () => ({
-  MerklClaimToast: () => null,
-  MusdConversionToast: () => null,
-}));
-
 function createStore() {
   return configureStore({
     metamask: {

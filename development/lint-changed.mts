@@ -13,7 +13,7 @@ type LintChangedOptions = {
   fix: boolean;
 };
 
-const JS_TS_TSX_SNAP_FILE_REGEX = /\.(js|ts|tsx|snap)$/u;
+const JS_TS_TSX_MTS_SNAP_FILE_REGEX = /\.(js|ts|tsx|mts|snap)$/u;
 
 function runGit(args: string[]): string {
   const result = spawnSync('git', args, {
@@ -101,11 +101,11 @@ function main(): void {
   const options = parseArgs(process.argv.slice(2));
 
   const changedFiles = getChangedFileNames().filter((file) =>
-    JS_TS_TSX_SNAP_FILE_REGEX.test(file),
+    JS_TS_TSX_MTS_SNAP_FILE_REGEX.test(file),
   );
 
   if (changedFiles.length === 0) {
-    process.stdout.write('No changed JS/TS/TSX/SNAP files to lint.\n');
+    process.stdout.write('No changed JS/TS/TSX/MTS/SNAP files to lint.\n');
     return;
   }
 

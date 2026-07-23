@@ -38,7 +38,8 @@ describe('Wallet Created Events - Imported Account', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -63,8 +64,6 @@ describe('Wallet Created Events - Imported Account', function () {
         const appInstallBackground = [
           [
             (req: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               properties: {
                 category: string;
                 locale: string;
@@ -87,8 +86,6 @@ describe('Wallet Created Events - Imported Account', function () {
         const appInstallFullscreen = [
           [
             (req: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               properties: {
                 category: string;
                 locale: string;

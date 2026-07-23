@@ -34,7 +34,7 @@ export type BundleSizeAssetStat = {
 };
 
 export type BundleSizeDebugEntrypoint = {
-  category: BundleSizeCategory;
+  categories: BundleSizeCategory[];
   initialFiles: BundleSizeAssetStat[];
   asyncFiles: BundleSizeAssetStat[];
 };

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du må velge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
-  },
   "addAlias": {
     "message": "Legg til alias "
   },
@@ -178,14 +175,8 @@
   "custom": {
     "message": "Avansert"
   },
-  "customToken": {
-    "message": "Egendefinert token "
-  },
   "decimal": {
     "message": "Presisjonsdesimaler"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "delete": {
     "message": "Slett"
@@ -339,9 +330,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versjon "
   },
-  "mustSelectOne": {
-    "message": "Må velge minst 1 token. "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -373,9 +361,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webkamera ikke funnet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok bensin"
   },
   "ofTextNofM": {
     "message": "av"
@@ -511,9 +496,6 @@
   },
   "sign": {
     "message": "Undertegn"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørsel"
   },
   "signed": {
     "message": "Signert"

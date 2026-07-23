@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
@@ -30,14 +30,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ClearMetaMetricsData({
   onDeletionSuccess,
 }: {
@@ -45,7 +43,7 @@ export default function ClearMetaMetricsData({
 }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const closeModal = () => {
     dispatch(hideDeleteMetaMetricsDataModal());
@@ -55,25 +53,17 @@ export default function ClearMetaMetricsData({
     try {
       await createMetaMetricsDataDeletionTask();
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.MetricsDataDeletionRequest,
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
+        createEventBuilder(MetaMetricsEventName.MetricsDataDeletionRequest)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .build({ excludeMetaMetricsId: true }),
       );
       onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.ErrorOccured,
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
+        createEventBuilder(MetaMetricsEventName.ErrorOccured)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .build({ excludeMetaMetricsId: true }),
       );
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
@@ -129,8 +119,6 @@ export default function ClearMetaMetricsData({
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={deleteMetaMetricsData}
               danger
             >

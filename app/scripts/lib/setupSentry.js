@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -9,6 +9,10 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
+import {
+  BACKEND_TRACE_PROPAGATION_TARGETS,
+  consensysTracePropagationIntegration,
+} from './sentry-trace-propagation';
 import {
   getAnalyticsState,
   getAnalyticsStateFromAppState,
@@ -31,6 +35,8 @@ const RELEASE = getSentryRelease(
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const SENTRY_DSN_PERFORMANCE = process.env.SENTRY_DSN_PERFORMANCE;
+const SENTRY_DISTRIBUTED_TRACING_ENABLED =
+  !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -95,8 +101,11 @@ function getClientOptions() {
     // which would otherwise make the next error look like a different stack (background timers
     // usually run after beforeSend finished; rapid UI captures often dedupe first).
     beforeSend: (report) => rewriteReport(safeCloneReport(report)),
-    beforeSendTransaction: (report) =>
-      rewriteTransactionReport(safeCloneReport(report)),
+    beforeSendTransaction: (report) => {
+      const transaction = rewriteTransactionReport(safeCloneReport(report));
+      dropLowValueMarkSpans(transaction);
+      return transaction;
+    },
     debug: METAMASK_DEBUG,
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -114,8 +123,21 @@ function getClientOptions() {
         getAnalyticsState,
         log,
       }),
+      // Must register after `browserTracingIntegration`.
+      ...(SENTRY_DISTRIBUTED_TRACING_ENABLED
+        ? [consensysTracePropagationIntegration({ log })]
+        : []),
     ],
     release: RELEASE,
+    // Must be a top-level init option.
+    ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
+      tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      // Gated here so the kill switch also disables native `traceparent`
+      // injection; when enabled the SDK attaches it to the backend targets
+      // above. `consensysTracePropagationIntegration` appends the Consensys
+      // `baggage` segment (`consensys-request-id`).
+      propagateTraceparent: true,
+    }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
@@ -162,7 +184,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.0075;
+  return 0.005;
 }
 
 /**
@@ -226,14 +248,6 @@ function getSentryTarget() {
 function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
-
-  /**
-   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
-   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
-   * This emulates NW.js which disables these validations.
-   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
-   */
-  globalThis.nw = {};
 
   /**
    * Sentry checks session tracking support by looking for global history object and functions inside it.
@@ -305,6 +319,11 @@ export function beforeBreadcrumb() {
  * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
  * extension reads (snap manifests / locale files, and content-hashed
  * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
+ *
+ * Never filter a URL matching
+ * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
+ * id as the W3C `traceparent` parent, so dropping that span client-side
+ * orphans the backend's subtree of the trace.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
@@ -381,6 +400,28 @@ export function sanitizeBreadcrumbsInReport(report) {
   for (let i = 0; i < report.breadcrumbs.length; i++) {
     removeUrlsFromBreadCrumb(report.breadcrumbs[i]);
   }
+}
+
+// `op: 'mark'` span names with no Sentry-side consumer, dropped from transactions.
+const LOW_VALUE_TRACE_MARKS = new Set([
+  'sentry-tracing-init',
+  'mm-hero-painted',
+]);
+
+/**
+ * Removes the {@link LOW_VALUE_TRACE_MARKS} `op: 'mark'` child spans from a
+ * transaction event in place. Measures and all other spans are kept.
+ *
+ * @param {object} report - A Sentry transaction event object.
+ */
+export function dropLowValueMarkSpans(report) {
+  if (!Array.isArray(report.spans)) {
+    return;
+  }
+  report.spans = report.spans.filter((span) => {
+    const markName = span?.description ?? span?.name;
+    return !(span?.op === 'mark' && LOW_VALUE_TRACE_MARKS.has(markName));
+  });
 }
 
 /**
@@ -664,8 +705,12 @@ function integrateLogging() {
     return;
   }
 
+  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
+  // override its methods so SDK-internal logs flow through our module logger.
+  const sentrySdkLogger = logger;
+
   for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
+    sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
       internalLog(message, ...args.slice(1));
     };

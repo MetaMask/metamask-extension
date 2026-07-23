@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
-  },
   "addAlias": {
     "message": "Tilføj alias"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Avanceret"
   },
-  "customToken": {
-    "message": "Brugerdefineret Token"
-  },
   "decimal": {
     "message": "Decimalpræcision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
   },
   "delete": {
     "message": "Slet"
@@ -339,9 +330,6 @@
   "message": {
     "message": "Besked"
   },
-  "mustSelectOne": {
-    "message": "Skal vælge mindst 1 token."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
@@ -373,9 +361,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam ikke fundet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok gas"
   },
   "ofTextNofM": {
     "message": "af"
@@ -508,9 +493,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
   },
   "signed": {
     "message": "Underskrevet"

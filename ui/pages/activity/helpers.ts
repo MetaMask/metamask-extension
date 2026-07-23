@@ -13,6 +13,7 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import type { LocalActivityListItem } from './types';
 
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
@@ -36,7 +37,7 @@ export function activityMatchesAssetId(
 }
 
 function getActivityCellStatus(
-  data: ActivityListItem,
+  data: LocalActivityListItem,
   transactionGroup?: TransactionGroup,
 ): {
   txStatus: string;
@@ -76,14 +77,14 @@ function getActivityCellStatus(
   return { txStatus };
 }
 
-export function useActivityCellStatus(data: ActivityListItem): {
+export function useActivityCellStatus(data: LocalActivityListItem): {
   txStatus: string;
   pendingSubtitleKey?: string;
   transactionGroup?: TransactionGroup;
 } {
   const localTransactionsByHash = useSelector(selectLocalTransactionsByHash);
-  const transactionGroup = data.data.hash
-    ? localTransactionsByHash.get(data.data.hash.toLowerCase())
+  const transactionGroup = data.hash
+    ? localTransactionsByHash.get(data.hash.toLowerCase())
     : undefined;
 
   return {
@@ -98,7 +99,7 @@ export type GroupedItem =
   | { type: 'item'; item: ActivityListItem };
 
 function getItemHash(item: ActivityListItem) {
-  return item.data.hash?.toLowerCase();
+  return item.hash?.toLowerCase();
 }
 
 function parseDate(timestamp: number) {
@@ -129,7 +130,10 @@ export function dedupeItems(...sources: ActivityListItem[][]) {
 
     // More categorized items take precedence, unless it's a generic interaction
     const existingItem = dedupedItems[existingIndex];
-    if (existingItem.type !== 'contractInteraction') {
+    const hasMatchingActivityType = existingItem.type === item.type;
+    const isLocalUncategorized = existingItem.type === 'contractInteraction';
+
+    if (!hasMatchingActivityType && !isLocalUncategorized) {
       continue;
     }
 

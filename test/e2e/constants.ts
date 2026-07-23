@@ -90,6 +90,12 @@ export const HARDWARE_WALLET_ACCOUNT_ID =
 /** Trezor hardware wallet address (lowercase) */
 export const TREZOR_ADDRESS = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
+/**
+ * Human-readable localhost native ETH balance seeded by hardware wallet E2E
+ * tests via `0x100000000000000000000` wei (`setAccountBalance`).
+ */
+export const HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN = '1208925';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 
@@ -121,6 +127,9 @@ export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
 /* Default local node USD balance in format for when first login */
 export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
+
+/** Max ms to wait for asynchronously-loaded homepage balances (Snap non-EVM, Anvil local node, etc.). */
+export const HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS = 30_000;
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -155,6 +164,7 @@ export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
     'test-dapp-mm-connect': mm('browser-playground', 'build'),
     'test-dapp-solana': mm('test-dapp-solana', 'dist'),
     'test-dapp-tron': mm('test-dapp-tron', 'dist'),
+    'test-dapp-bitcoin': mm('test-dapp-bitcoin', 'dist'),
     'test-snaps': mm('test-snaps', 'dist'),
   });
 
@@ -165,6 +175,7 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP_MM_CONNECT: 'test-dapp-mm-connect',
   TEST_DAPP_SOLANA: 'test-dapp-solana',
   TEST_DAPP_TRON: 'test-dapp-tron',
+  TEST_DAPP_BITCOIN: 'test-dapp-bitcoin',
   TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
@@ -172,6 +183,10 @@ export const DAPP_PATH = Object.freeze({
 
 /* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
+
+/* Second BTC address created using test SRP */
+export const SECONDARY_BTC_ADDRESS =
+  'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
 
 /* Default BTC Account name */
 export const DEFAULT_BTC_ACCOUNT_NAME = 'Bitcoin Account 1';
@@ -240,14 +255,46 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address created using test SRP (Account 1) */
 export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 
-/* Second TRON address created using test SRP */
+/* Arbitrary Tron recipient address used in send-flow tests
+ * (signAndSendTrx, signAndSendUsdt). NOT a snap-derived HD account. */
 export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
 
-/* Default TRON address created using test SRP */
+/* Default TRON address shortened display (Account 1) */
 export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
+
+/**
+ * Tron addresses derived from `E2E_SRP` for HD accounts 1-8 (BIP44 path
+ * `m/44'/195'/0'/0/i`). Used by `account-derivation.spec.ts` to verify
+ * derivation across the first 8 accounts. Re-derive with the script in
+ * `docs/superpowers/plans/2026-04-30-tron-account-derivation.md` Task 1
+ * if the SRP or derivation path ever changes.
+ *
+ * Note: index 0 matches `DEFAULT_TRON_ADDRESS`. `DEFAULT_TRON_ADDRESS_2` is
+ * an unrelated recipient address used in send-flow tests — it is not a
+ * snap-derived account and does not appear in this array.
+ */
+export const EXPECTED_TRON_ADDRESSES_BY_INDEX = [
+  DEFAULT_TRON_ADDRESS,
+  'TQMPuQSHEiUevynTJSCDeh3QSBwJeFKC6W',
+  'TRQwNiQKov6hQ3pEKVGj2t8ge8YM9vu8ZY',
+  'TR5uG9oGNSr5hKcCLdN5zF498BTij5Yz1x',
+  'THbDj5zszwXFqBuzexjXF71uEU58BVcp3A',
+  'TBfAcJpbucUvLashnYvQ3uQyeLuD2vAs5J',
+  'TFcoStNDSQZLadR2MasxMo7E3c19hwvw63',
+  'TRnntwBfRqh4aXZVaZuLT9Htk1r9JBU4WY',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
 
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -262,8 +309,30 @@ export enum ACCOUNT_TYPE {
 export const MOCK_ANALYTICS_ID =
   '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
 
-/** @deprecated Use `MOCK_ANALYTICS_ID` instead. */
-export const MOCK_META_METRICS_ID = MOCK_ANALYTICS_ID;
+/** Profile ID assigned to the first SRP in E2E identity auth mocks. */
+export const MOCK_PROFILE_ID = 'MOCK_SRP_IDENTIFIER_1';
+
+/** Canonical profile ID assigned to the first SRP in E2E identity auth mocks. */
+export const MOCK_CANONICAL_PROFILE_ID = 'MOCK_SRP_IDENTIFIER_1';
+
+/** Profile identity properties injected into linkable MetaMetrics events in E2E. */
+export const MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  profile_id: MOCK_PROFILE_ID,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  canonical_profile_id: MOCK_CANONICAL_PROFILE_ID,
+} as const;
+
+/** Universal event properties added downstream by the platform adapter in E2E. */
+export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
+  locale: 'en',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  chain_id: '0x539',
+  ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
+} as const;
 
 /* Mock remote feature flags response */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
@@ -285,6 +354,9 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
+
+/** Default OTP for QrSync E2E scenarios (matches mobile simulator). */
+export const QR_SYNC_E2E_OTP = '123456';
 
 export const MOCK_AUTH_CONNECTION_ID = 'torus-test-health';
 export const MOCK_GROUPED_AUTH_CONNECTION_ID = 'torus-test-health-aggregate';
@@ -329,6 +401,7 @@ export const WINDOW_TITLES = Object.freeze({
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
+  BitcoinTestDApp: 'Bitcoin Test Dapp',
   TronTestDApp: 'Tron Test Dapp',
   TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',

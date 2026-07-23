@@ -590,10 +590,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                   style="border-width: 0px;"
                 >
-                  <img
-                    alt="Goerli logo"
-                    class="mm-avatar-network__network-image"
-                  />
+                  G
                 </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -1017,10 +1014,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                   style="border-width: 0px;"
                 >
-                  <img
-                    alt="Goerli logo"
-                    class="mm-avatar-network__network-image"
-                  />
+                  G
                 </div>
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -3199,31 +3193,68 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              aria-hidden="true"
+              class="relative overflow-hidden rounded"
+              data-testid="confirm-title-skeleton"
               style="height: 24px; width: 200px;"
+            >
+              <div
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+              />
+            </div>
+          </div>
+          <div
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 60px; width: 60px; margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
             />
           </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-top: 32px; margin-bottom: 10px; border-radius: 50%; justify-self: center; align-self: center; height: 60px; width: 60px;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 32px; width: 200px; margin-bottom: 20px; justify-self: center; align-self: center;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 20px; justify-self: center; align-self: center; height: 32px; width: 200px;"
-          />
-          <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
             data-testid="confirmation__info_skeleton"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
           <div
-            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-            style="margin-bottom: 12px; height: 72px; width: 100%;"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden rounded"
+            style="height: 72px; width: 100%; margin-bottom: 12px;"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
         </div>
       </div>
     </div>
