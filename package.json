@@ -312,8 +312,6 @@
     "@metamask/multichain-account-service": "^11.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/assets-controller@npm:^10.2.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch",
-    "@metamask/assets-controller@npm:^11.0.0": "patch:@metamask/assets-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-assets-controller-npm-11.0.0-401c665ed9.patch",
     "@metamask/bridge-controller@npm:^77.5.0": "patch:@metamask/bridge-controller@npm%3A77.5.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch"
   },
   "dependencies": {
