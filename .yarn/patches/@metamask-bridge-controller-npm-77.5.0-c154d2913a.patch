@@ -1,8 +1,13 @@
 diff --git a/dist/constants/bridge.cjs b/dist/constants/bridge.cjs
-index 4d169e95dc5df859b7cd14235231c8ebf054071e..063e016199a2e6fea244fc2e42c8c3c0cb3d1bc5 100644
+index 4d169e95dc5df859b7cd14235231c8ebf054071e..f6315b39b5f36f3ecd37152896ded0b8918d4d5d 100644
 --- a/dist/constants/bridge.cjs
 +++ b/dist/constants/bridge.cjs
-@@ -23,7 +23,6 @@ exports.ALLOWED_BRIDGE_CHAIN_IDS = [
+@@ -18,12 +18,10 @@ exports.ALLOWED_BRIDGE_CHAIN_IDS = [
+     chains_1.CHAIN_IDS.MONAD,
+     chains_1.CHAIN_IDS.HYPEREVM,
+     chains_1.CHAIN_IDS.MEGAETH,
+-    chains_1.CHAIN_IDS.ARC,
+     chains_1.CHAIN_IDS.ROBINHOOD,
      keyring_api_1.SolScope.Mainnet,
      keyring_api_1.BtcScope.Mainnet,
      keyring_api_1.TrxScope.Mainnet,
@@ -10,7 +15,7 @@ index 4d169e95dc5df859b7cd14235231c8ebf054071e..063e016199a2e6fea244fc2e42c8c3c0
  ];
  exports.BRIDGE_DEV_API_BASE_URL = 'https://bridge.dev-api.cx.metamask.io';
  exports.BRIDGE_PROD_API_BASE_URL = 'https://bridge.api.cx.metamask.io';
-@@ -47,7 +46,6 @@ exports.DEFAULT_CHAIN_RANKING = [
+@@ -47,7 +45,6 @@ exports.DEFAULT_CHAIN_RANKING = [
      { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
      { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
      { chainId: 'tron:728126428', name: 'Tron' },
@@ -18,8 +23,16 @@ index 4d169e95dc5df859b7cd14235231c8ebf054071e..063e016199a2e6fea244fc2e42c8c3c0
      { chainId: 'eip155:8453', name: 'Base' },
      { chainId: 'eip155:42161', name: 'Arbitrum' },
      { chainId: 'eip155:59144', name: 'Linea' },
+@@ -58,7 +55,6 @@ exports.DEFAULT_CHAIN_RANKING = [
+     { chainId: 'eip155:1329', name: 'Sei' },
+     { chainId: 'eip155:999', name: 'HyperEVM' },
+     { chainId: 'eip155:4326', name: 'MegaETH' },
+-    { chainId: 'eip155:5042', name: 'Arc' },
+     { chainId: 'eip155:4663', name: 'Robinhood Chain' },
+     { chainId: 'eip155:324', name: 'zkSync' },
+ ];
 diff --git a/dist/constants/bridge.d.cts b/dist/constants/bridge.d.cts
-index 681da522ddf1e2d06aebb8d6a770e3cd2cd441ce..f42154b6b75db74b7c84e9e3a32bfe7a9f905dbb 100644
+index 681da522ddf1e2d06aebb8d6a770e3cd2cd441ce..fb40057799b678608aac584e1e6db11526bdf786 100644
 --- a/dist/constants/bridge.d.cts
 +++ b/dist/constants/bridge.d.cts
 @@ -1,7 +1,7 @@
@@ -28,7 +41,7 @@ index 681da522ddf1e2d06aebb8d6a770e3cd2cd441ce..f42154b6b75db74b7c84e9e3a32bfe7a
  import type { Hex } from "@metamask/utils";
  import type { BridgeControllerState, FeatureFlagsPlatformConfig } from "../types.cjs";
 -export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x13b2", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet, XlmScope.Pubnet];
-+export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x13b2", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet];
++export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet];
  export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
  export declare const BRIDGE_DEV_API_BASE_URL = "https://bridge.dev-api.cx.metamask.io";
  export declare const BRIDGE_PROD_API_BASE_URL = "https://bridge.api.cx.metamask.io";
@@ -41,8 +54,17 @@ index 681da522ddf1e2d06aebb8d6a770e3cd2cd441ce..f42154b6b75db74b7c84e9e3a32bfe7a
  }, {
      readonly chainId: "eip155:8453";
      readonly name: "Base";
+@@ -67,8 +65,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "eip155:4326";
+     readonly name: "MegaETH";
+ }, {
+-    readonly chainId: "eip155:5042";
+-    readonly name: "Arc";
+ }, {
+     readonly chainId: "eip155:4663";
+     readonly name: "Robinhood Chain";
 diff --git a/dist/constants/bridge.d.mts b/dist/constants/bridge.d.mts
-index 81663828b77d36b5bfc015be95eb208de6d61d8e..d356c392e249950bd2874316bf2573b3dba23c07 100644
+index 81663828b77d36b5bfc015be95eb208de6d61d8e..e7260f46155e25dd6d58a1099d589ac8d737b54c 100644
 --- a/dist/constants/bridge.d.mts
 +++ b/dist/constants/bridge.d.mts
 @@ -1,7 +1,7 @@
@@ -51,7 +73,7 @@ index 81663828b77d36b5bfc015be95eb208de6d61d8e..d356c392e249950bd2874316bf2573b3
  import type { Hex } from "@metamask/utils";
  import type { BridgeControllerState, FeatureFlagsPlatformConfig } from "../types.mjs";
 -export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x13b2", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet, XlmScope.Pubnet];
-+export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x13b2", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet];
++export declare const ALLOWED_BRIDGE_CHAIN_IDS: readonly ["0x1", "0x38", "0x89", "0x144", "0xa86a", "0xa", "0xa4b1", "0xe708", "0x2105", "0x531", "0x8f", "0x3e7", "0x10e6", "0x1237", SolScope.Mainnet, BtcScope.Mainnet, TrxScope.Mainnet];
  export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
  export declare const BRIDGE_DEV_API_BASE_URL = "https://bridge.dev-api.cx.metamask.io";
  export declare const BRIDGE_PROD_API_BASE_URL = "https://bridge.api.cx.metamask.io";
@@ -64,8 +86,17 @@ index 81663828b77d36b5bfc015be95eb208de6d61d8e..d356c392e249950bd2874316bf2573b3
  }, {
      readonly chainId: "eip155:8453";
      readonly name: "Base";
+@@ -67,8 +65,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "eip155:4326";
+     readonly name: "MegaETH";
+ }, {
+-    readonly chainId: "eip155:5042";
+-    readonly name: "Arc";
+ }, {
+     readonly chainId: "eip155:4663";
+     readonly name: "Robinhood Chain";
 diff --git a/dist/constants/bridge.mjs b/dist/constants/bridge.mjs
-index 01da97226b25daaeee44ff79572cb58e8cf1c788..3987cd0ed09e0ead84bea1c08293637b6352d53f 100644
+index 01da97226b25daaeee44ff79572cb58e8cf1c788..ea310d0091c06fb5c8013602c6c963388aa95ea9 100644
 --- a/dist/constants/bridge.mjs
 +++ b/dist/constants/bridge.mjs
 @@ -1,5 +1,5 @@
@@ -75,7 +106,12 @@ index 01da97226b25daaeee44ff79572cb58e8cf1c788..3987cd0ed09e0ead84bea1c08293637b
  import { CHAIN_IDS } from "./chains.mjs";
  export const ALLOWED_BRIDGE_CHAIN_IDS = [
      CHAIN_IDS.MAINNET,
-@@ -20,7 +20,6 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
+@@ -15,12 +15,10 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
+     CHAIN_IDS.MONAD,
+     CHAIN_IDS.HYPEREVM,
+     CHAIN_IDS.MEGAETH,
+-    CHAIN_IDS.ARC,
+     CHAIN_IDS.ROBINHOOD,
      SolScope.Mainnet,
      BtcScope.Mainnet,
      TrxScope.Mainnet,
@@ -83,7 +119,7 @@ index 01da97226b25daaeee44ff79572cb58e8cf1c788..3987cd0ed09e0ead84bea1c08293637b
  ];
  export const BRIDGE_DEV_API_BASE_URL = 'https://bridge.dev-api.cx.metamask.io';
  export const BRIDGE_PROD_API_BASE_URL = 'https://bridge.api.cx.metamask.io';
-@@ -44,7 +43,6 @@ export const DEFAULT_CHAIN_RANKING = [
+@@ -44,7 +42,6 @@ export const DEFAULT_CHAIN_RANKING = [
      { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
      { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
      { chainId: 'tron:728126428', name: 'Tron' },
@@ -91,3 +127,11 @@ index 01da97226b25daaeee44ff79572cb58e8cf1c788..3987cd0ed09e0ead84bea1c08293637b
      { chainId: 'eip155:8453', name: 'Base' },
      { chainId: 'eip155:42161', name: 'Arbitrum' },
      { chainId: 'eip155:59144', name: 'Linea' },
+@@ -55,7 +52,6 @@ export const DEFAULT_CHAIN_RANKING = [
+     { chainId: 'eip155:1329', name: 'Sei' },
+     { chainId: 'eip155:999', name: 'HyperEVM' },
+     { chainId: 'eip155:4326', name: 'MegaETH' },
+-    { chainId: 'eip155:5042', name: 'Arc' },
+     { chainId: 'eip155:4663', name: 'Robinhood Chain' },
+     { chainId: 'eip155:324', name: 'zkSync' },
+ ];
