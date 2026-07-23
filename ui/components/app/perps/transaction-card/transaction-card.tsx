@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { PerpsFillTag } from '../perps-fill-tag';
 import { getDisplaySymbol } from '../utils';
+import { getOrderStatusI18nKey } from '../utils/orderUtils';
 import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
@@ -24,15 +25,6 @@ export type TransactionCardProps = {
   variant?: 'default' | 'muted';
   showTopBorder?: boolean;
   screenName?: string;
-};
-
-const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
-  open: 'perpsStatusOpen',
-  filled: 'perpsStatusFilled',
-  canceled: 'perpsStatusCanceled',
-  queued: 'perpsStatusQueued',
-  rejected: 'perpsStatusRejected',
-  triggered: 'perpsStatusTriggered',
 };
 
 /**
@@ -99,11 +91,9 @@ export const TransactionCard = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const { text: statusText } = transaction.order;
-      const statusKey = statusText?.toLowerCase() ?? '';
-      const translatedStatus = ORDER_STATUS_TO_I18N_KEY[statusKey]
-        ? t(ORDER_STATUS_TO_I18N_KEY[statusKey])
-        : '';
+      const translatedStatus = t(
+        getOrderStatusI18nKey(transaction.order.text),
+      );
       return { text: translatedStatus, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };

@@ -7,6 +7,7 @@ import {
   derivePositionTpslPricesFromOrders,
   willFlipPosition,
   formatOrderLabel,
+  getOrderStatusI18nKey,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -669,6 +670,34 @@ describe('orderUtils', () => {
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop market close long');
+    });
+  });
+
+  describe('getOrderStatusI18nKey', () => {
+    // @ts-expect-error: each is a valid test function in jest
+    it.each([
+      ['Open', 'perpsStatusOpen'],
+      ['open', 'perpsStatusOpen'],
+      ['Filled', 'perpsStatusFilled'],
+      ['Canceled', 'perpsStatusCanceled'],
+      ['Queued', 'perpsStatusQueued'],
+      ['Rejected', 'perpsStatusRejected'],
+      ['Triggered', 'perpsStatusTriggered'],
+    ])(
+      'maps status text "%s" to i18n key "%s"',
+      (statusText: string, expectedKey: string) => {
+        expect(getOrderStatusI18nKey(statusText)).toBe(expectedKey);
+      },
+    );
+
+    it('defaults to the "open" i18n key for an unrecognized status', () => {
+      expect(getOrderStatusI18nKey('SomeUnknownStatus')).toBe(
+        'perpsStatusOpen',
+      );
+    });
+
+    it('defaults to the "open" i18n key when status text is undefined', () => {
+      expect(getOrderStatusI18nKey(undefined)).toBe('perpsStatusOpen');
     });
   });
 });

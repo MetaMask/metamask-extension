@@ -8,6 +8,34 @@ const SYNTHETIC_TP_ID_SUFFIX = '-synthetic-tp';
 const SYNTHETIC_SL_ID_SUFFIX = '-synthetic-sl';
 
 /**
+ * Maps a lowercased `PerpsOrderTransactionStatus` string (e.g. `'filled'`,
+ * `'canceled'`) to the i18n key used to render its translated label.
+ */
+const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
+  open: 'perpsStatusOpen',
+  filled: 'perpsStatusFilled',
+  canceled: 'perpsStatusCanceled',
+  queued: 'perpsStatusQueued',
+  rejected: 'perpsStatusRejected',
+  triggered: 'perpsStatusTriggered',
+};
+
+/**
+ * Resolves the i18n key for a Perps order's status text.
+ *
+ * `order.text` is the raw `PerpsOrderTransactionStatus` enum value from the
+ * provider (e.g. `'Filled'`, `'Canceled'`, title-cased), which must not be
+ * rendered directly since it's unlocalized English. This looks up the
+ * matching translated i18n key, defaulting to the "open" status when the
+ * status text is missing or unrecognized.
+ *
+ * @param statusText - The raw order status text (e.g. `order.text`)
+ * @returns The i18n key to pass to `t()`
+ */
+export const getOrderStatusI18nKey = (statusText: string | undefined) =>
+  ORDER_STATUS_TO_I18N_KEY[statusText?.toLowerCase() ?? ''] ?? 'perpsStatusOpen';
+
+/**
  * Safely creates a BigNumber, returning null for empty/invalid values.
  * bignumber.js v4.x throws on empty strings and non-numeric values.
  *
