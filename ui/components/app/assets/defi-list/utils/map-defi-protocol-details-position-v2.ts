@@ -38,7 +38,7 @@ function toTokenCellAddress(
 /**
  * Returns the human-readable balance for a DeFi underlying position.
  *
- * @param position - Underlying position from `DeFiPositionsControllerV2` state.
+ * @param position - Underlying DeFi position from the v6 grouped response.
  * @returns Parsed balance amount, or 0 when invalid.
  */
 function getNormalizedBalance(position: DeFiUnderlyingPosition): number {
@@ -48,7 +48,7 @@ function getNormalizedBalance(position: DeFiUnderlyingPosition): number {
 }
 
 /**
- * Maps a DeFi underlying position (from `DeFiPositionsControllerV2` state) to
+ * Maps a DeFi underlying position (from the v6 grouped response) to
  * the token cell shape.
  *
  * @param position - Underlying position from the details-page section.

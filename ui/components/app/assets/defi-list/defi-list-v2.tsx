@@ -35,8 +35,7 @@ export default function DefiListV2({ onClick }: DefiListV2Props) {
   const selectedCurrency = useSelector(getSelectedCurrency);
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
 
-  // Dispatches the fetch when the user enters the DeFi tab and reads the
-  // resulting positions straight from the controller state.
+  // Fetches via the UI apiClient / query client (no background controller).
   const { positions, isLoading, isError } = useDeFiPositionsV2();
 
   const sortedFilteredDefi = useMemo(():

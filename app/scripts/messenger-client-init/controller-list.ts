@@ -19,7 +19,6 @@ import {
   AssetsContractController,
   CurrencyRateController,
   DeFiPositionsController,
-  DeFiPositionsControllerV2,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
@@ -160,7 +159,6 @@ export type MessengerClient =
   | DecryptMessageManager
   | DelegationController
   | DeFiPositionsController
-  | DeFiPositionsControllerV2
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
@@ -277,7 +275,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
-  DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
