@@ -23972,12 +23972,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dummy-package@file:test/fakes/dummy-package::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "dummy-package@file:test/fakes/dummy-package#test/fakes/dummy-package::hash=c05169&locator=metamask-crx%40workspace%3A."
-  checksum: 10/48e482b5bbd561d425b648a96bf33a0a33b8a0482a5ef44f6d248559adfd6f4b4f1f7ced4bdda5c727348530e6f4bcbc0898da9e75ad97d710381386042f9772
-  languageName: node
-  linkType: hard
+"dummy-package@workspace:*, dummy-package@workspace:test/fakes/dummy-package":
+  version: 0.0.0-use.local
+  resolution: "dummy-package@workspace:test/fakes/dummy-package"
+  languageName: unknown
+  linkType: soft
 
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
@@ -33206,7 +33205,7 @@ __metadata:
     detect-port: "npm:^1.5.1"
     dompurify: "patch:dompurify@npm%3A3.4.12#~/.yarn/patches/dompurify-npm-3.4.12-9e2dc63475.patch"
     dotenv: "npm:^16.4.5"
-    dummy-package: "file:test/fakes/dummy-package"
+    dummy-package: "workspace:*"
     duplexify: "npm:^4.1.1"
     eciesjs: "npm:^0.5.0"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"
