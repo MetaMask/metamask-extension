@@ -70,18 +70,18 @@ jobs:
             echo "No PR with base stable for head $BRANCH — skipping Slack."
             exit 0
           fi
-          # Same signal as PR "Builds ready"
+          # Same signal as PR "Builds ready" (inner job — not "… / Generate AI test plan")
           PUBLISH_CONCLUSION="$(
             gh run view "$WORKFLOW_RUN_ID" --repo "$GH_REPO" --json jobs --jq '
               [
                 .jobs[]
-                | select(.name == "Publish prerelease" or (.name | startswith("Publish prerelease /")))
+                | select(.name == "Publish prerelease / Publish prerelease")
               ]
               | .[0].conclusion // empty
             '
           )"
           if [[ "$PUBLISH_CONCLUSION" != "success" ]]; then
-            echo "Publish prerelease conclusion=${PUBLISH_CONCLUSION:-missing} on run ${WORKFLOW_RUN_ID} — skipping Slack (no Builds ready)."
+            echo "Publish prerelease / Publish prerelease conclusion=${PUBLISH_CONCLUSION:-missing} on run ${WORKFLOW_RUN_ID} — skipping Slack (no Builds ready)."
             exit 0
           fi
           PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
@@ -90,7 +90,7 @@ jobs:
             echo "semver=${BRANCH#release/}"
             echo "pr_number=${PR_NUMBER}"
           } >> "$GITHUB_OUTPUT"
-          echo "Proceeding: found release PR #${PR_NUMBER}; Publish prerelease succeeded."
+          echo "Proceeding: found release PR #${PR_NUMBER}; Publish prerelease / Publish prerelease succeeded."
 
       - name: Set notification variables
         id: notif
