@@ -3,7 +3,6 @@ import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  type MetaMetricsEventPayload,
 } from '../../constants/metametrics';
 import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
 import { SignatureStatus } from './verify';
