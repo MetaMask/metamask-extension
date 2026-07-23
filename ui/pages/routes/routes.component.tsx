@@ -606,6 +606,10 @@ export const routeConfig = [
       },
     ],
   },
+  {
+    path: '*',
+    element: <Navigate to={DEFAULT_ROUTE} replace />,
+  },
 ];
 
 export default function Routes() {
