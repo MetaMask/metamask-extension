@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
-
 import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';

@@ -52,6 +52,38 @@ describe('SelectedAssetButton', () => {
     expect(badgeWrapper).toBeInTheDocument();
   });
 
+  it('renders the verified badge for a verified asset', () => {
+    const { getByTestId } = renderButton({
+      ...toBridgeToken(getNativeAssetForChainId('0x1')),
+      isVerified: true,
+    });
+
+    expect(
+      getByTestId('bridge-selected-asset-verified-badge'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the verified badge for an unverified asset', () => {
+    const { queryByTestId } = renderButton({
+      ...toBridgeToken(getNativeAssetForChainId('0x1')),
+      isVerified: false,
+    });
+
+    expect(
+      queryByTestId('bridge-selected-asset-verified-badge'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render the verified badge when verification is absent', () => {
+    const { queryByTestId } = renderButton(
+      toBridgeToken(getNativeAssetForChainId('0x1')),
+    );
+
+    expect(
+      queryByTestId('bridge-selected-asset-verified-badge'),
+    ).not.toBeInTheDocument();
+  });
+
   it('applies the bridge-selected-asset-button class', () => {
     const { container } = renderButton(
       toBridgeToken(getNativeAssetForChainId('0x1')),
