@@ -45,9 +45,6 @@ describe('QrSync', function () {
     );
   });
 
-  // Exercises private-key import under multi-SRP load before QR sync. Keep this
-  // case in CI (do not skip) — import confirm can take longer than the default
-  // 3s staleness wait when Solana/account-tree work is busy.
   it('syncs two HD wallets and one imported account to mobile', async function () {
     await withFixtures(
       {
