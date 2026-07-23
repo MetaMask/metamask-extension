@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import type { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -62,8 +62,13 @@ function useNativeTokenData(
   chainId: Hex,
   resolution: TokenResolution,
 ): PermissionRenderContext['tokenInfo'] {
-  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
-    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
+  const { symbol, decimals } = useSelector(
+    (state: MetaMaskReduxState) =>
+      getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        chainId,
+      ),
+    shallowEqual,
   );
   const imageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
 

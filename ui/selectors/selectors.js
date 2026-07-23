@@ -762,22 +762,28 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
-export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId =
-    getAccountTrackerControllerAccountsByChainId(state);
-  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
-    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
-      (innerAcc, address) => {
-        innerAcc[address.toLowerCase()] =
-          allAccountsByChainId[chainId][address].balance;
-        return innerAcc;
-      },
-      {},
-    );
+export const getCrossChainMetaMaskCachedBalances = createSelector(
+  getAccountTrackerControllerAccountsByChainId,
+  (allAccountsByChainId) => {
+    const chainIds = Object.keys(allAccountsByChainId);
+    if (chainIds.length === 0) {
+      return EMPTY_OBJECT;
+    }
 
-    return acc;
-  }, {});
-}
+    return chainIds.reduce((acc, chainId) => {
+      acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+        (innerAcc, address) => {
+          innerAcc[address.toLowerCase()] =
+            allAccountsByChainId[chainId][address].balance;
+          return innerAcc;
+        },
+        {},
+      );
+
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
@@ -1142,13 +1148,16 @@ export const getTokensMarketData = (state) => {
 
 export { getTokenRatesControllerMarketData as getMarketData };
 
-export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
-    return [];
-  }
-  return Object.values(state.metamask.addressBook[chainId]);
-}
+export const getAddressBook = createSelector(
+  getCurrentChainId,
+  (state) => state.metamask.addressBook,
+  (chainId, addressBook) => {
+    if (!addressBook[chainId]) {
+      return EMPTY_ARRAY;
+    }
+    return Object.values(addressBook[chainId]);
+  },
+);
 
 export function getCompleteAddressBook(state) {
   const addresses = state.metamask.addressBook;
@@ -1328,23 +1337,30 @@ export const selectNetworkIdentifierByChainId = createSelector(
   },
 );
 
-export function getRequestingNetworkInfo(state, chainIds) {
-  // If chainIds is undefined, set it to an empty array
-  let processedChainIds = chainIds === undefined ? [] : chainIds;
+export const getRequestingNetworkInfo = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state, chainIds) => chainIds,
+  (networkConfigurationsByChainId, chainIds) => {
+    // If chainIds is undefined, set it to an empty array
+    let processedChainIds = chainIds === undefined ? EMPTY_ARRAY : chainIds;
 
-  // If chainIds is a string, convert it to an array
-  if (typeof processedChainIds === 'string') {
-    processedChainIds = [processedChainIds];
-  }
+    // If chainIds is a string, convert it to an array
+    if (typeof processedChainIds === 'string') {
+      processedChainIds = [processedChainIds];
+    }
 
-  // Ensure chainIds is flattened if it contains nested arrays
-  const flattenedChainIds = processedChainIds.flat();
+    // Ensure chainIds is flattened if it contains nested arrays
+    const flattenedChainIds = processedChainIds.flat();
+    if (flattenedChainIds.length === 0) {
+      return EMPTY_ARRAY;
+    }
 
-  // Filter the networks to include only those with chainId in flattenedChainIds
-  return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) => flattenedChainIds.includes(network.chainId),
-  );
-}
+    // Filter the networks to include only those with chainId in flattenedChainIds
+    return Object.values(networkConfigurationsByChainId).filter((network) =>
+      flattenedChainIds.includes(network.chainId),
+    );
+  },
+);
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
@@ -1383,16 +1399,16 @@ export function getSuggestedTokens(state) {
   );
 }
 
-export function getSuggestedNfts(state) {
-  return (
-    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+export const getSuggestedNfts = createSelector(
+  getUnapprovedConfirmations,
+  (unapprovedConfirmations) =>
+    unapprovedConfirmations.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
         requestData?.asset?.tokenId !== undefined
       );
-    }) || []
-  );
-}
+    }),
+);
 
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
@@ -3143,39 +3159,39 @@ export function getGasFeesSponsoredNetworkEnabled(state) {
   return gasFeesSponsoredNetwork;
 }
 
-export function getBlockExplorerLinkText(
-  state,
-  accountDetailsModalComponent = false,
-) {
-  const isCustomNetwork = getIsCustomNetwork(state);
-  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+export const getBlockExplorerLinkText = createSelector(
+  getIsCustomNetwork,
+  getRpcPrefsForCurrentProvider,
+  (_state, accountDetailsModalComponent = false) =>
+    accountDetailsModalComponent,
+  (isCustomNetwork, rpcPrefs, accountDetailsModalComponent) => {
+    let blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
 
-  let blockExplorerLinkText = {
-    firstPart: 'addBlockExplorer',
-    secondPart: '',
-  };
+    if (rpcPrefs.blockExplorerUrl) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? {
+            firstPart: 'blockExplorerView',
+            secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+          }
+        : {
+            firstPart: 'viewinExplorer',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    } else if (isCustomNetwork === false) {
+      blockExplorerLinkText = accountDetailsModalComponent
+        ? { firstPart: 'etherscanViewOn', secondPart: '' }
+        : {
+            firstPart: 'viewOnEtherscan',
+            secondPart: 'blockExplorerAccountAction',
+          };
+    }
 
-  if (rpcPrefs.blockExplorerUrl) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? {
-          firstPart: 'blockExplorerView',
-          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
-        }
-      : {
-          firstPart: 'viewinExplorer',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  } else if (isCustomNetwork === false) {
-    blockExplorerLinkText = accountDetailsModalComponent
-      ? { firstPart: 'etherscanViewOn', secondPart: '' }
-      : {
-          firstPart: 'viewOnEtherscan',
-          secondPart: 'blockExplorerAccountAction',
-        };
-  }
-
-  return blockExplorerLinkText;
-}
+    return blockExplorerLinkText;
+  },
+);
 export const getUnconnectedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForConnectedDapp,
