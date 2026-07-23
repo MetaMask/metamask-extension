@@ -8,6 +8,8 @@ import { ExtensionPortStream } from 'extension-port-stream';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
+  APP_INIT_LIVENESS_STREAM,
+  BACKGROUND_LIVENESS_STREAM,
   CONTENT_SCRIPT,
   LEGACY_PROVIDER,
   LEGACY_PUBLIC_CONFIG,
@@ -165,6 +167,8 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
   phishingExtMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   phishingExtMux.ignoreStream(PHISHING_STREAM);
+  phishingExtMux.ignoreStream(APP_INIT_LIVENESS_STREAM);
+  phishingExtMux.ignoreStream(BACKGROUND_LIVENESS_STREAM);
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);

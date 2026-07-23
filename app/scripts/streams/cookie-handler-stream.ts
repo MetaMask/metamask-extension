@@ -9,6 +9,8 @@ import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import {
+  APP_INIT_LIVENESS_STREAM,
+  BACKGROUND_LIVENESS_STREAM,
   METAMASK_COOKIE_HANDLER,
   CONTENT_SCRIPT,
   LEGACY_PUBLIC_CONFIG,
@@ -153,6 +155,8 @@ export const setupCookieHandlerExtStreams = (): void => {
   cookieHandlerMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   cookieHandlerMux.ignoreStream(PHISHING_SAFELIST);
   cookieHandlerMux.ignoreStream(PHISHING_STREAM);
+  cookieHandlerMux.ignoreStream(APP_INIT_LIVENESS_STREAM);
+  cookieHandlerMux.ignoreStream(BACKGROUND_LIVENESS_STREAM);
   pipeline(
     cookieHandlerPageChannel,
     cookieHandlerExtChannel,
