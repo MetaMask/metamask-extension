@@ -96,9 +96,7 @@ describe('OrderContent (completed)', () => {
     renderContent(completedOrder);
     expect(
       screen.getByRole('button', { name: messages.copyToClipboard.message }),
-    ).toBe(
-      screen.getByTestId('ramps-order-details-order-id'),
-    );
+    ).toBe(screen.getByTestId('ramps-order-details-order-id'));
   });
 
   it('matches the completed snapshot', () => {
