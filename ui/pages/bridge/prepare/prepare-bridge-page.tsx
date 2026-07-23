@@ -13,7 +13,10 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_DEBUG_ENABLED,
+  BRIDGE_ONLY_CHAINS,
+} from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -453,7 +456,7 @@ const PrepareBridgePage = ({
               }
               onClick={() => {
                 const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                  unvalidatedQuote?.quote.dest.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -541,20 +544,23 @@ const PrepareBridgePage = ({
             }}
             networks={toChains}
             amountInFiat={
-              unvalidatedQuote?.toTokenAmount?.valueInCurrency ?? undefined
+              (unvalidatedQuote?.quote.dest.valueInCurrency ?? '') +
+                (BRIDGE_DEBUG_ENABLED
+                  ? `(${unvalidatedQuote?.toTokenAmount?.valueInCurrency?.slice(0, 8) ?? '0'})`
+                  : '') || undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: unvalidatedQuote?.toTokenAmount?.amount
+              value: unvalidatedQuote?.quote.dest.normalizedAmount
                 ? formatTokenAmount(
                     locale,
-                    unvalidatedQuote.toTokenAmount.amount,
+                    unvalidatedQuote.quote.dest.normalizedAmount,
                   )
                 : '0',
               autoFocus: false,
-              className: unvalidatedQuote?.toTokenAmount?.amount
+              className: unvalidatedQuote?.quote.dest.normalizedAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}

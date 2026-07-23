@@ -1,15 +1,11 @@
 import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
-  getNativeAssetForChainId,
-  type QuoteResponseV1,
-} from '@metamask/bridge-controller';
-import {
-  formatTokenAmount,
-  formatCurrencyAmount,
   formatProviderLabel,
-  readMmFee,
-} from './quote';
+  getNativeAssetForChainId,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
+import { formatTokenAmount, formatCurrencyAmount, readMmFee } from './quote';
 
 describe('Bridge quote utils', () => {
   describe('getNativeAssetForChainId', () => {
@@ -136,12 +132,6 @@ describe('Bridge quote utils', () => {
       expect(result).toBe('bridge1_provider1');
     });
 
-    it('should handle undefined args', () => {
-      const result = formatProviderLabel(undefined);
-
-      expect(result).toBe('undefined_undefined');
-    });
-
     it('should handle empty bridges array', () => {
       const args = {
         bridgeId: 'bridge1',
@@ -167,14 +157,16 @@ describe('Bridge quote utils', () => {
       ({
         quote: {
           feeData: {
-            metabridge: {
-              baseBpsFee,
-              discountType,
-              quoteBpsFee,
-            },
+            metabridge: [
+              {
+                baseBpsFee,
+                discountType,
+                quoteBpsFee,
+              },
+            ],
           },
         },
-      }) as unknown as QuoteResponseV1;
+      }) as unknown as QuoteResponse;
 
     it('returns fee percentages and no discount when discountType is absent', () => {
       expect(

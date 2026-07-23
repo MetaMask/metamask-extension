@@ -196,11 +196,11 @@ describe('MultichainBridgeQuoteCard', () => {
             ...quote.quote,
             feeData: {
               ...quote.quote.feeData,
-              metabridge: {
-                ...quote.quote.feeData.metabridge,
+              metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+                ...fee,
                 amount: '1',
                 quoteBpsFee: 87.5,
-              },
+              })),
             },
           },
         })),
@@ -507,13 +507,23 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
         bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 10,
+            destChainId: 137,
+            srcTokenAddress: '0x0000000000000000000000000000000000000000',
+            destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            srcTokenAmount: '14000000',
+          },
           quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
             ...quote,
             quote: {
               ...quote.quote,
               priceData: {
                 ...quote.quote.priceData,
-                priceImpact,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
               },
             },
           })),

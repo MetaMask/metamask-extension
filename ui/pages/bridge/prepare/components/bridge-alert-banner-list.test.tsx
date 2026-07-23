@@ -4,9 +4,9 @@ import {
   formatChainIdToCaip,
   QuoteStreamCompleteReason,
   RequestStatus,
+  BridgeAssetSecurityDataType,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
-import { BridgeAssetSecurityDataType } from '../../utils/tokens';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';

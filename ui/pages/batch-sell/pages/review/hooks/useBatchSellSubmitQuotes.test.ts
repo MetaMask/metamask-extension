@@ -7,6 +7,7 @@ import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
+import { DeepPartial, QuoteResponse } from '@metamask/bridge-controller';
 
 const mockNavigate = jest.fn();
 
@@ -58,7 +59,10 @@ const mockSubmitBatchSellTrade = jest.mocked(submitBatchSellTrade);
 
 const MOCK_ACCOUNT = { address: '0xdeadbeef', type: 'eip155:eoa' };
 
-const MOCK_QUOTE_RESPONSE = { quote: { requestId: 'req-1' } } as never;
+const MOCK_QUOTE_RESPONSE: DeepPartial<QuoteResponse> = {
+  chainId: 'eip155:1',
+  quote: { requestId: 'req-1' },
+};
 
 const MOCK_RECEIVED_ASSET_NO_SECURITY: BatchSellAsset = {
   assetId: 'eip155:1/erc20:0xusdc' as never,
@@ -83,7 +87,10 @@ function renderDefault(
     receivedAsset = MOCK_RECEIVED_ASSET_NO_SECURITY,
   } = overrides;
   return renderHook(() =>
-    useBatchSellSubmitQuotes({ quoteResponses, receivedAsset }),
+    useBatchSellSubmitQuotes({
+      quoteResponses: quoteResponses as unknown as QuoteResponse[],
+      receivedAsset,
+    }),
   );
 }
 
@@ -209,15 +216,16 @@ describe('useBatchSellSubmitQuotes', () => {
     });
 
     it('converts numeric srcChainId to hex before querying STX enablement', async () => {
-      const quoteWithNumericChainId = {
-        quote: { requestId: 'req-chain', srcChainId: 1 },
-      } as never;
+      const quoteWithNumericChainId: DeepPartial<QuoteResponse> = {
+        chainId: 'eip155:1',
+        quote: { requestId: 'req-chain' },
+      };
 
       mockGetMaybeHexChainId.mockReturnValue('0x1');
 
       renderDefault({ quoteResponses: [quoteWithNumericChainId] });
 
-      expect(mockGetMaybeHexChainId).toHaveBeenCalledWith('1');
+      expect(mockGetMaybeHexChainId).toHaveBeenCalledWith('eip155:1');
       expect(mockGetIsSmartTransaction).toHaveBeenCalledWith(
         expect.anything(),
         '0x1',

@@ -1,9 +1,9 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import {
-  QuoteResponseV1,
   RequestStatus,
   formatChainIdToCaip,
+  QuoteResponse,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -24,26 +24,26 @@ setBackgroundConnection({
 
 const createDiscountedQuotes = (
   discountType?: string | null,
-): QuoteResponseV1[] =>
+): QuoteResponse[] =>
   mockBridgeQuotesErc20Erc20.map((quote) => ({
     ...quote,
     quote: {
       ...quote.quote,
       feeData: {
         ...quote.quote.feeData,
-        metabridge: {
-          ...quote.quote.feeData.metabridge,
+        metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+          ...fee,
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
           ...(discountType !== undefined && { discountType }),
-        },
+        })),
       },
     },
   }));
 
 const createBridgeStoreWithQuotes = (
-  quotes: QuoteResponseV1[],
+  quotes: QuoteResponse[],
   bridgeStateOverrides: Record<string, unknown> = {},
 ) =>
   createBridgeMockStore({

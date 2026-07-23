@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { type AccountGroupId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
+import { type BridgeAssetV2 } from '@metamask/bridge-controller';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 import { useAsyncResult } from '../useAsync';
 
 /**

@@ -4,10 +4,9 @@ import {
   calcLatestSrcBalance,
   isNonEvmChainId,
   formatChainIdToHex,
-  type QuoteResponseV1,
   isNativeAddress,
   RequestStatus,
-  type QuoteMetadata,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -213,20 +212,18 @@ const bridgeSlice = createSlice({
     },
     restoreQuoteRequestFromState: (
       state,
-      {
-        payload: { sentAmount, quote },
-      }: { payload: QuoteResponseV1 & QuoteMetadata },
+      { payload: { quote } }: { payload: QuoteResponse },
     ) => {
       const pairChanged = didAssetPairChange(
         state.fromToken?.assetId,
         state.toToken?.assetId,
-        quote.srcAsset.assetId,
-        quote.destAsset.assetId,
+        quote.src.asset.assetId,
+        quote.dest.asset.assetId,
       );
 
-      state.fromToken = toBridgeToken(quote.srcAsset);
-      state.toToken = toBridgeToken(quote.destAsset);
-      state.fromTokenInputValue = sentAmount?.amount ?? null;
+      state.fromToken = toBridgeToken(quote.src.asset);
+      state.toToken = toBridgeToken(quote.dest.asset);
+      state.fromTokenInputValue = quote.src.normalizedAmount ?? null;
       if (pairChanged || !state.isSlippageUserOverride) {
         clearSlippageState(state);
         state.slippage = quote.slippage ?? undefined;

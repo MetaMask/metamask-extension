@@ -2,11 +2,12 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
-  type QuoteMetadata,
-  type QuoteResponseV1,
+  type QuoteResponse,
   FeatureId,
+  QuoteMetadata,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
+  sumAmounts,
 } from '@metamask/bridge-controller';
 import {
   Modal,
@@ -16,6 +17,7 @@ import {
   Tag,
   Text,
 } from '../../../components/component-library';
+import { BRIDGE_DEBUG_ENABLED } from '../../../../shared/constants/bridge';
 import {
   AlignItems,
   BackgroundColor,
@@ -57,14 +59,15 @@ export const BridgeQuotesModal = ({
   const locale = useSelector(getIntlLocale);
 
   const isRecommendedQuote = useCallback(
-    (quote: QuoteMetadata & QuoteResponseV1) => {
+    (quote: QuoteResponse) => {
       return quote.quote.requestId === recommendedQuote?.quote.requestId;
     },
     [recommendedQuote],
   );
 
   const handleQuoteSelected = useCallback(
-    (quote: QuoteMetadata & QuoteResponseV1) => {
+    (quote: QuoteResponse) => {
+      const networkFee = sumAmounts(quote.quote.feeData.network);
       dispatch(setSelectedQuote(quote));
       recommendedQuote &&
         dispatch(
@@ -82,17 +85,19 @@ export const BridgeQuotesModal = ({
               best_quote_provider: formatProviderLabel(recommendedQuote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_gas: Number(quote.gasFee?.total?.usd ?? 0),
+              usd_quoted_gas: Number(networkFee?.usd ?? 0),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               quoted_time_minutes: quote.estimatedProcessingTimeInSeconds / 60,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_quoted_return: Number(quote.toTokenAmount?.usd ?? 0),
+              usd_quoted_return: Number(quote.quote.dest.usd),
               provider: formatProviderLabel(quote.quote),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              price_impact: Number(quote.quote?.priceData?.priceImpact ?? '0'),
+              price_impact: Number(
+                quote.quote?.priceData?.priceImpact?.amount ?? '0',
+              ),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               gas_included: Boolean(quote.quote?.gasIncluded),
@@ -133,12 +138,10 @@ export const BridgeQuotesModal = ({
         {/* QUOTE LIST */}
         <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
-            (quote: QuoteMetadata & QuoteResponseV1, index: number) => {
+            (quote: QuoteResponse & QuoteMetadata, index: number) => {
               const {
-                totalNetworkFee,
                 toTokenAmount,
-                cost,
-                quote: { destAsset, bridges, requestId },
+                quote: { dest, protocols, requestId },
               } = quote;
               const isQuoteActive = requestId === activeQuote?.quote.requestId;
               const isRecommended = isRecommendedQuote(quote);
@@ -183,7 +186,7 @@ export const BridgeQuotesModal = ({
                         textOverflow: 'ellipsis',
                       }}
                     >
-                      {startCase(bridges[0])}
+                      {startCase(protocols[0])}
                     </Text>
                     {/* DEST AMOUNT */}
                     <Text
@@ -193,9 +196,12 @@ export const BridgeQuotesModal = ({
                     >
                       {formatTokenAmount(
                         locale,
-                        toTokenAmount?.amount ?? '0',
-                        destAsset.symbol,
+                        dest.normalizedAmount ?? '0',
+                        dest.asset.symbol,
                       )}
+                      {BRIDGE_DEBUG_ENABLED
+                        ? ` (${toTokenAmount?.amount ?? '0'})`
+                        : ''}
                     </Text>
                   </Row>
 
@@ -212,17 +218,32 @@ export const BridgeQuotesModal = ({
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          !cost?.valueInCurrency && totalNetworkFee?.amount
+                          !quote.quote.priceData?.priceImpact
+                            ?.valueInCurrency &&
+                          sumAmounts(
+                            quote.quote.feeData.network,
+                            quote.quote.feeData.relayer,
+                          )?.normalizedAmount
                             ? formatTokenAmount(
                                 locale,
-                                totalNetworkFee?.amount,
+                                sumAmounts(
+                                  quote.quote.feeData.network,
+                                  quote.quote.feeData.relayer,
+                                )?.normalizedAmount,
                                 nativeCurrency,
-                              )
+                              ) +
+                              (BRIDGE_DEBUG_ENABLED
+                                ? ` (${quote.totalNetworkFee?.amount?.slice(0, 10) ?? '0'})`
+                                : '')
                             : formatCurrencyAmount(
-                                cost?.valueInCurrency ?? '0',
+                                quote.quote.priceData?.priceImpact
+                                  ?.valueInCurrency ?? '0',
                                 currency,
                                 2,
-                              ),
+                              ) +
+                              (BRIDGE_DEBUG_ENABLED
+                                ? ` (${quote.cost?.valueInCurrency?.slice(0, 6) ?? '0'})`
+                                : ''),
                         ])}
                       </Text>
                       {isRecommended && (
@@ -248,13 +269,14 @@ export const BridgeQuotesModal = ({
                       color={TextColor.textAlternative}
                       style={{ whiteSpace: 'nowrap' }}
                     >
-                      {toTokenAmount?.valueInCurrency
-                        ? formatCurrencyAmount(
-                            toTokenAmount.valueInCurrency,
-                            currency,
-                            2,
-                          )
-                        : ''}
+                      {(formatCurrencyAmount(
+                        quote.quote.dest.valueInCurrency,
+                        currency,
+                        2,
+                      ) ?? '') +
+                        (BRIDGE_DEBUG_ENABLED
+                          ? ` (${quote.toTokenAmount?.valueInCurrency?.slice(0, 10) ?? '0'})`
+                          : '')}
                     </Text>
                   </Row>
                 </Column>

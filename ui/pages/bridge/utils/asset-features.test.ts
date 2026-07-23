@@ -1,5 +1,5 @@
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { mapAssetSecurityDataFeatureToLocalizedFormat } from './asset-features';
-import { BridgeAssetSecurityDataType } from './tokens';
 
 const mockT = (key: string, args?: string[]) =>
   args ? `${key}:${args.join(',')}` : key;

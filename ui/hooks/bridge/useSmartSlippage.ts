@@ -24,8 +24,8 @@ export function useSmartSlippage(): void {
       isUserOverride ||
       slippage !== undefined ||
       quote?.slippage === undefined ||
-      !assetIdsMatch(quote.srcAsset.assetId, fromToken?.assetId) ||
-      !assetIdsMatch(quote.destAsset.assetId, toToken?.assetId)
+      !assetIdsMatch(quote.src.asset.assetId, fromToken?.assetId) ||
+      !assetIdsMatch(quote.dest.asset.assetId, toToken?.assetId)
     ) {
       return;
     }

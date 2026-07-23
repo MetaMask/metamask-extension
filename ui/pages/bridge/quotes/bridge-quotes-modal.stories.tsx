@@ -15,13 +15,16 @@ const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
   ...quote,
   quote: {
     ...quote.quote,
-    bridges: ['across (via Socket)'],
-    destAsset: {
-      ...quote.quote.destAsset,
-      decimals: 7,
-      symbol: 'USDC.E',
+    protocols: ['across (via Socket)'],
+    dest: {
+      ...quote.quote.dest,
+      amount: '1',
+      asset: {
+        ...quote.quote.dest.asset,
+        decimals: 7,
+        symbol: 'USDC.E',
+      },
     },
-    destTokenAmount: '1',
   },
 }));
 

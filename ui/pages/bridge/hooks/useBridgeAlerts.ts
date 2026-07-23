@@ -1,6 +1,7 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
+import { parseCaipAssetType } from '@metamask/utils';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
@@ -23,6 +24,11 @@ import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
+import {
+  formatPriceImpactFiat,
+  formatPriceImpactPercentage,
+} from '../utils/price-impact';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -32,10 +38,6 @@ export const useBridgeAlerts = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const formattedPriceImpactPercentage = useSelector(
-    getFormattedPriceImpactPercentage,
-  );
-  const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
   const insufficientNativeReserveError = useSelector(
     getActiveQuoteInsufficientNativeReserveError,
   );
@@ -81,8 +83,21 @@ export const useBridgeAlerts = () => {
   })
     ? undefined
     : unvalidatedQuote;
-  const isSwap =
-    activeQuote?.quote.srcChainId === activeQuote?.quote.destChainId;
+
+  const isSwap = activeQuote
+    ? activeQuote.chainId ===
+      parseCaipAssetType(activeQuote.quote.dest.asset.assetId).chainId
+    : false;
+
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const formattedPriceImpactPercentage = formatPriceImpactPercentage(
+    activeQuote?.quote.priceData?.priceImpact?.amount,
+  );
+  const formattedPriceImpactFiat = formatPriceImpactFiat(
+    activeQuote?.quote.priceData?.priceImpact?.valueInCurrency ??
+      activeQuote?.priceImpact?.valueInCurrency,
+    currentCurrency,
+  );
 
   return useMemo(() => {
     const alertsById: Partial<Record<BridgeAlert['id'], BridgeAlert>> = {};

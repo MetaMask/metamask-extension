@@ -87,8 +87,13 @@ describe('buildResults', () => {
     it('populates receivedAmount, receivedAmountFiat, and minimumReceivedAmount from the quote', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const quote = buildRecommendedQuote({
-        toTokenAmount: { amount: 42, valueInCurrency: 420 },
-        minToTokenAmount: { amount: 38 },
+        dest: {
+          amount: '42000000',
+          normalizedAmount: '42',
+          valueInCurrency: '420',
+          minAmount: '38000000',
+          minAmountNormalized: '38',
+        },
       });
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([quote]),
@@ -106,8 +111,7 @@ describe('buildResults', () => {
     it('treats missing token amounts as 0 via toFinite', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const quote = buildRecommendedQuote({
-        toTokenAmount: undefined,
-        minToTokenAmount: undefined,
+        dest: {},
       });
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([quote]),
@@ -214,12 +218,22 @@ describe('buildResults', () => {
       ];
       const quotes = [
         buildRecommendedQuote({
-          toTokenAmount: { amount: 10, valueInCurrency: 100 },
-          minToTokenAmount: { amount: 9 },
+          dest: {
+            amount: '10000000',
+            normalizedAmount: '10',
+            valueInCurrency: '100',
+            minAmountNormalized: '9',
+            minAmount: '9000000',
+          },
         }),
         buildRecommendedQuote({
-          toTokenAmount: { amount: 5, valueInCurrency: 50 },
-          minToTokenAmount: { amount: 4 },
+          dest: {
+            amount: '5000000',
+            normalizedAmount: '5',
+            valueInCurrency: '50',
+            minAmountNormalized: '4',
+            minAmount: '4000000',
+          },
         }),
       ];
       const result = buildResults({
@@ -244,8 +258,13 @@ describe('buildResults', () => {
         buildSendAssetEntry({ assetId: ASSET_ID_B, enabled: false }),
       ];
       const enabledQuote = buildRecommendedQuote({
-        toTokenAmount: { amount: 10, valueInCurrency: 100 },
-        minToTokenAmount: { amount: 9 },
+        dest: {
+          amount: '10000000',
+          normalizedAmount: '10',
+          valueInCurrency: '100',
+          minAmountNormalized: '9',
+          minAmount: '9000000',
+        },
       });
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([enabledQuote]),
@@ -255,6 +274,7 @@ describe('buildResults', () => {
         isLoading: false,
       });
 
+      console.log(result);
       expect(result.quotes[ASSET_ID_B].hasQuote).toBe(false);
       expect(result.totalReceivedAmount).toBe(10);
       expect(result.totalReceivedAmountFiat).toBe(100);
@@ -266,9 +286,25 @@ describe('buildResults', () => {
       const result = buildResults({
         controllerResult: {
           recommendedQuotes: [buildRecommendedQuote()],
-          totalReceived: { amount: '42', valueInCurrency: '420', usd: null },
-          minimumReceived: { amount: '38', valueInCurrency: null, usd: null },
-        } as never,
+          totalReceived: {
+            amount: '42000000',
+            normalizedAmount: '42',
+            valueInCurrency: '420',
+            usd: '0',
+          },
+          minimumReceived: {
+            amount: '38000000',
+            normalizedAmount: '38',
+            valueInCurrency: '0',
+            usd: '0',
+          },
+          quotesLastFetchedMs: 0,
+          isLoading: false,
+          quoteFetchError: null,
+          quotesRefreshCount: 0,
+          quotesInitialLoadTimeMs: 0,
+          isQuoteGoingToRefresh: false,
+        },
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],

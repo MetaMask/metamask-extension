@@ -5,8 +5,8 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  type QuoteResponseV1,
   QuoteStreamCompleteReason,
+  toQuoteResponseV2,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
@@ -458,7 +458,7 @@ describe('PrepareBridgePage', () => {
     const ethAsset = getNativeAssetForChainId(ChainId.ETH);
     const btcToken = toBridgeToken(btcAsset);
     const ethToken = toBridgeToken(ethAsset);
-    const btcQuote = {
+    const btcQuote = toQuoteResponseV2({
       quote: {
         requestId: 'btc-quote',
         bridgeId: 'rango',
@@ -486,7 +486,7 @@ describe('PrepareBridgePage', () => {
       },
       estimatedProcessingTimeInSeconds: 600,
       nonEvmFeesInNative: '0.00000001',
-    } as unknown as QuoteResponseV1;
+    });
 
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {

@@ -6,27 +6,30 @@ import type {
   BatchSellQuotesResults,
 } from '../../../ui/pages/batch-sell/pages/review/types';
 import { BATCH_SELL_ASSET_IDS, BATCH_SELL_CHAIN_ID } from './constants';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyOverrides = Record<string, any>;
+import {
+  sumAmounts,
+  type DeepPartial,
+  type QuoteResponse,
+  type selectBatchSellQuotes,
+} from '@metamask/bridge-controller';
 
 export function buildBatchSellAsset(
-  overrides: AnyOverrides = {},
+  overrides: Partial<BatchSellAsset> = {},
 ): BatchSellAsset {
   return {
     assetId: BATCH_SELL_ASSET_IDS.USDC,
-    symbol: 'USDC',
     name: 'USD Coin',
     decimals: 6,
     chainId: BATCH_SELL_CHAIN_ID,
     balance: '100',
     iconUrl: 'https://example.com/usdc.png',
     ...overrides,
-  } as unknown as BatchSellAsset;
+    symbol: overrides.symbol ?? 'USDC',
+  };
 }
 
 export function buildSendAssetEntry(
-  overrides: AnyOverrides = {},
+  overrides: DeepPartial<SendAssetEntry> = {},
 ): SendAssetEntry {
   return {
     assetId: BATCH_SELL_ASSET_IDS.USDC,
@@ -35,7 +38,7 @@ export function buildSendAssetEntry(
     slippagePercent: 0.5,
     enabled: true,
     ...overrides,
-  } as SendAssetEntry;
+  } as never;
 }
 
 /**
@@ -45,7 +48,7 @@ export function buildSendAssetEntry(
  * @param overrides - Fields to override on the default asset.
  */
 export function buildReceivedAsset(
-  overrides: AnyOverrides = {},
+  overrides: Partial<BatchSellAsset> = {},
 ): BatchSellAsset {
   return buildBatchSellAsset({
     assetId: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
@@ -54,13 +57,24 @@ export function buildReceivedAsset(
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function buildRecommendedQuote(overrides: AnyOverrides = {}): any {
+export function buildRecommendedQuote(
+  overrides: DeepPartial<QuoteResponse['quote']> = {},
+) {
   return {
-    toTokenAmount: { amount: 10, valueInCurrency: 100 },
-    minToTokenAmount: { amount: 9 },
-    ...overrides,
-  };
+    quote: {
+      dest: {
+        asset: {
+          decimals: 6,
+        },
+        normalizedAmount: overrides.dest?.normalizedAmount,
+        minAmount: overrides.dest?.minAmount,
+        minAmountNormalized: overrides.dest?.minAmountNormalized,
+        valueInCurrency: overrides.dest?.valueInCurrency,
+        minAmountValueInCurrency: overrides.dest?.minAmountValueInCurrency,
+        amount: overrides.dest?.amount,
+      },
+    },
+  } as QuoteResponse;
 }
 
 /**
@@ -72,31 +86,27 @@ export function buildRecommendedQuote(overrides: AnyOverrides = {}): any {
  * @param recommendedQuotes - Array of recommended quote objects.
  */
 export function buildBatchSellControllerResult(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  recommendedQuotes: any[] = [],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any {
-  const sum = (key: string, field: string): string =>
-    String(
-      recommendedQuotes.reduce(
-        (acc, quote) => acc + (Number(quote?.[key]?.[field]) || 0),
-        0,
-      ),
-    );
+  recommendedQuotes: QuoteResponse[] = [],
+): ReturnType<typeof selectBatchSellQuotes> {
+  const destAmountSum = sumAmounts(recommendedQuotes.map((q) => q.quote?.dest));
+  console.log(
+    'buildBatchSellControllerResult',
+    recommendedQuotes.map((q) => ({
+      dest: q.quote?.dest,
+    })),
+  );
 
   return {
     recommendedQuotes,
-    totalReceived: {
-      amount: sum('toTokenAmount', 'amount'),
-      valueInCurrency: sum('toTokenAmount', 'valueInCurrency'),
-      usd: null,
-    },
+    totalReceived: destAmountSum,
     minimumReceived: {
-      amount: sum('minToTokenAmount', 'amount'),
-      valueInCurrency: sum('minToTokenAmount', 'valueInCurrency'),
-      usd: null,
+      asset: destAmountSum?.asset,
+      amount: destAmountSum?.minAmount,
+      normalizedAmount: destAmountSum?.minAmountNormalized,
+      valueInCurrency: destAmountSum?.minAmountValueInCurrency ?? '0',
+      usd: destAmountSum?.minAmountValueInCurrency ?? '0',
     },
-  } as never;
+  } as unknown as ReturnType<typeof selectBatchSellQuotes>;
 }
 
 /**
@@ -109,10 +119,12 @@ export function buildBatchSellControllerResult(
  */
 export function buildSendAssetConfigEntry(
   enabled: boolean,
-  overrides: AnyOverrides = {},
+  overrides: Partial<
+    BatchSellQuotesConfig['sendAssetsConfig'][CaipAssetType]
+  > = {},
 ): BatchSellQuotesConfig['sendAssetsConfig'][CaipAssetType] {
   return {
-    asset: buildBatchSellAsset() as never,
+    asset: buildBatchSellAsset(),
     sendAmountPercent: 100,
     slippagePercent: 0.5,
     enabled,
@@ -129,7 +141,7 @@ export function buildSendAssetConfigEntry(
  */
 export function buildQuoteEntry(
   hasQuote: boolean,
-  overrides: AnyOverrides = {},
+  overrides: Partial<BatchSellQuotesResults['quotes'][CaipAssetType]> = {},
 ): BatchSellQuotesResults['quotes'][CaipAssetType] {
   return {
     asset: {} as never,

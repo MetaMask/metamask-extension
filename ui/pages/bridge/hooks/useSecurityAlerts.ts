@@ -4,8 +4,6 @@ import { getTxAlerts } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MinimalBridgeAlert } from '../prepare/types';
 import { BridgeToken } from '../../../ducks/bridge/types';
-import { BridgeAssetSecurityDataType } from '../utils/tokens';
-import { useAssetSecurityData } from './useAssetSecurityData';
 
 /**
  * Translates base tx and token alerts into {@link MinimalBridgeAlert} objects for display

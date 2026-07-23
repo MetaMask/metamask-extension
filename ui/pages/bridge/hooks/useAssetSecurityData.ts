@@ -1,7 +1,7 @@
+import { BridgeAssetSecurityDataType } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 import { BridgeToken } from '../../../ducks/bridge/types';
 import { mapAssetSecurityDataFeatureToLocalizedFormat } from '../utils/asset-features';
-import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const useAssetSecurityData = (asset: BridgeToken) => {

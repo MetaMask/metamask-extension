@@ -8,10 +8,7 @@ import {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type {
-  QuoteMetadata,
-  QuoteResponseV1,
-} from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useAppSelector } from '../../../../store/store';
 
@@ -238,7 +235,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
    * submission started).
    */
   const submitBridgeTransaction = useCallback(
-    async (quoteResponse: QuoteResponseV1 & QuoteMetadata) => {
+    async (quoteResponse: QuoteResponse & QuoteMetadata) => {
       const submissionGeneration = retryGenerationRef.current;
 
       try {
