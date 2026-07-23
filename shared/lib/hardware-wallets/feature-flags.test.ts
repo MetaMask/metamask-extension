@@ -1,7 +1,4 @@
-import {
-  ENABLE_DMK_FEATURE_FLAG,
-  isDmkFeatureEnabled,
-} from './feature-flags';
+import { ENABLE_DMK_FEATURE_FLAG, isDmkFeatureEnabled } from './feature-flags';
 
 describe('hardware-wallets/feature-flags', () => {
   describe('ENABLE_DMK_FEATURE_FLAG', () => {

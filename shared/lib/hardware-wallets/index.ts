@@ -14,7 +14,4 @@ export {
   hasUserRejectedMessage,
   isTrezorDesktopConnectionMissingError,
 } from './rpc-error-utils';
-export {
-  ENABLE_DMK_FEATURE_FLAG,
-  isDmkFeatureEnabled,
-} from './feature-flags';
+export { ENABLE_DMK_FEATURE_FLAG, isDmkFeatureEnabled } from './feature-flags';

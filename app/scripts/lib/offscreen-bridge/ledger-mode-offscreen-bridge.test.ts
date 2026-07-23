@@ -76,10 +76,13 @@ describe('ledger-mode-offscreen-bridge', () => {
       const getLedgerMode = jest.fn();
       const subscribe = jest.fn();
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
-      }, null);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe },
+        },
+        null,
+      );
 
       expect(getLedgerMode).not.toHaveBeenCalled();
       expect(subscribe).not.toHaveBeenCalled();
@@ -95,10 +98,13 @@ describe('ledger-mode-offscreen-bridge', () => {
         markOffscreenReady = resolve;
       });
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
-      }, offscreenReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe },
+        },
+        offscreenReady,
+      );
 
       expect(getLedgerMode).not.toHaveBeenCalled();
       expect(sendMessageMock).not.toHaveBeenCalled();
@@ -123,10 +129,13 @@ describe('ledger-mode-offscreen-bridge', () => {
     it('resends the current mode when the offscreen router reports ready', () => {
       const getLedgerMode = jest.fn().mockReturnValue(LedgerHandlerMode.DMK);
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe: jest.fn() },
-      }, neverReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe: jest.fn() },
+        },
+        neverReady,
+      );
 
       const listener = addListenerMock.mock.calls[0][0];
       listener({
@@ -157,10 +166,13 @@ describe('ledger-mode-offscreen-bridge', () => {
         },
       );
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
-      }, neverReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
 
       sendMessageMock.mockClear();
       handler?.(false);
@@ -187,10 +199,13 @@ describe('ledger-mode-offscreen-bridge', () => {
         },
       );
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode,
-        controllerMessenger: { subscribe },
-      }, neverReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode,
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
 
       sendMessageMock.mockClear();
       handler?.(true);
@@ -218,10 +233,13 @@ describe('ledger-mode-offscreen-bridge', () => {
         },
       );
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
-        controllerMessenger: { subscribe },
-      }, neverReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
 
       expect(
         selector?.({
@@ -248,10 +266,13 @@ describe('ledger-mode-offscreen-bridge', () => {
         },
       );
 
-      setupLedgerModeOffscreenBridge({
-        getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
-        controllerMessenger: { subscribe },
-      }, neverReady);
+      setupLedgerModeOffscreenBridge(
+        {
+          getLedgerMode: jest.fn().mockReturnValue(LedgerHandlerMode.Legacy),
+          controllerMessenger: { subscribe },
+        },
+        neverReady,
+      );
 
       expect(selector?.({ remoteFeatureFlags: {} })).toBe(false);
       expect(selector?.({})).toBe(false);

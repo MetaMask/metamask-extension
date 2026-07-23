@@ -4,9 +4,7 @@ import {
   LedgerSignTypedDataParams,
 } from '@metamask/eth-ledger-bridge-keyring';
 
-import {
-  DeviceManagementKit,
-} from '@ledgerhq/device-management-kit';
+import { DeviceManagementKit } from '@ledgerhq/device-management-kit';
 import { webHidTransportFactory } from '@ledgerhq/device-transport-kit-web-hid';
 import {
   Category,
@@ -65,7 +63,9 @@ function createOffscreenTransportFactory(
   return ((deps: Parameters<typeof originalFactory>[0]) => {
     const transport = originalFactory(deps);
     transport.startDiscovering = () =>
-      transport.listenToAvailableDevices().pipe(mergeMap((devices) => from(devices)));
+      transport
+        .listenToAvailableDevices()
+        .pipe(mergeMap((devices) => from(devices)));
     return transport;
   }) as typeof webHidTransportFactory;
 }
@@ -278,10 +278,9 @@ export class LedgerDmkBridgeHandler {
       // members make the duplicate declaration types nominally incompatible.
       // The factory is wrapped so `startDiscovering` uses `getDevices()` (no
       // user gesture needed) instead of `requestDevice()` (fails offscreen).
-      transportFactory:
-        offscreenTransportFactory as unknown as NonNullable<
-          ConstructorParameters<typeof LedgerDmkBridge>[0]['transportFactory']
-        >,
+      transportFactory: offscreenTransportFactory as unknown as NonNullable<
+        ConstructorParameters<typeof LedgerDmkBridge>[0]['transportFactory']
+      >,
     });
 
     console.log('[LedgerDMK] constructBridge: finding permitted device');

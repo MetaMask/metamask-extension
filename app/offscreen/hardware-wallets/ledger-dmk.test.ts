@@ -95,7 +95,9 @@ describe('LedgerDmkBridgeHandler', () => {
     jest.clearAllMocks();
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
-    mockBridgeStartDiscovering.mockReturnValue(of({ name: 'MockLedgerDevice' }));
+    mockBridgeStartDiscovering.mockReturnValue(
+      of({ name: 'MockLedgerDevice' }),
+    );
     mockBridgeConnect.mockResolvedValue('test-session-id');
     mockBridgeGetAppNameAndVersion.mockResolvedValue({
       appName: 'Ethereum',
@@ -184,9 +186,7 @@ describe('LedgerDmkBridgeHandler', () => {
         category: Category.Connection,
         userMessage: 'already structured',
       });
-      mockBridgeStartDiscovering.mockReturnValue(
-        throwError(() => hwError),
-      );
+      mockBridgeStartDiscovering.mockReturnValue(throwError(() => hwError));
 
       await expect(
         handler.handleAction(LedgerAction.updateTransport),
