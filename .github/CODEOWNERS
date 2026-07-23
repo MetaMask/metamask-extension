@@ -273,6 +273,13 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 /.gitignore                                           @MetaMask/extension-platform
 /.husky/                                              @MetaMask/extension-platform
 /.yarn/                                               @MetaMask/extension-platform
+# Yarn patches – no code owners assigned
+# This allows any org developer to approve routine dependency patch updates.
+# ⚠️ Note: Leaving this rule unassigned disables Code Owner review enforcement for patch files.
+# ⚠️ Important: This rule must appear after the `/.yarn/` rule; last matching pattern wins.
+/.yarn/patches/
+/.yarn/releases/                                      @MetaMask/extension-platform
+/.yarn/plugins/                                       @MetaMask/extension-platform
 /.env.yarn                                            @MetaMask/extension-platform
 /.yarnrc.yml                                          @MetaMask/extension-platform
 
