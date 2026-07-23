@@ -477,12 +477,33 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Resumes writes previously suspended by {@link suspendWrites}. Called when a
    * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`) or when a
    * recovery probe confirms the browser is still responsive.
+   *
+   * For split storage, also best-effort flushes any `#pendingPairs` queued while
+   * writes were suspended. Without that, those updates would wait for the next
+   * controller `stateChange` and could be lost if the service worker stops first.
    */
   resumeWrites() {
     this.#shutdownTrigger = null;
     this.#shutdownReported = false;
     this.#pendingShutdownTrigger = null;
     this.#clearShutdownRecoveryTimer();
+    this.#flushPendingPairsAfterResume();
+  }
+
+  /**
+   * Persists any split-storage pairs that accumulated during suspension.
+   * No-op for data storage (there is no pending queue) or when nothing is queued.
+   * Errors are reported but not rethrown: resume must stay synchronous and
+   * non-fatal for lifecycle listeners.
+   */
+  #flushPendingPairsAfterResume() {
+    if (this.storageKind !== 'split' || this.#pendingPairs.size === 0) {
+      return;
+    }
+    this.persist().catch((error: unknown) => {
+      log.error('Error persisting after writes resumed:', error);
+      captureException(error);
+    });
   }
 
   /**

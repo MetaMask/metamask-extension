@@ -513,6 +513,37 @@ describe('PersistenceManager', () => {
         expect(manager.writesSuspended()).toBe(false);
       });
 
+      it('flushes pending split-storage pairs when writes resume', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.storageKind = 'split';
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        // Short-circuit leaves the pending pair queued.
+        const [shortCircuitResult, shortCircuitError] = await manager.persist();
+        expect(shortCircuitResult).toBe(false);
+        expect(shortCircuitError).toBeUndefined();
+        expect(mockStoreSetKeyValues).not.toHaveBeenCalled();
+
+        mockStoreSetKeyValues.mockResolvedValue(undefined);
+        manager.resumeWrites();
+
+        // resumeWrites kicks off a fire-and-forget persist; wait for it.
+        await new Promise<void>((resolve) => {
+          setImmediate(resolve);
+        });
+
+        expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+        const passedMap = mockStoreSetKeyValues.mock.calls[0][0] as Map<
+          string,
+          unknown
+        >;
+        /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
+        expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+        /* eslint-enable jest/prefer-strict-equal */
+      });
+
       it('clears suspended state when the feature flag is disabled', () => {
         manager.setShutdownSuspensionEnabled(true);
         manager.suspendWrites(ShutdownTrigger.OnSuspend);
