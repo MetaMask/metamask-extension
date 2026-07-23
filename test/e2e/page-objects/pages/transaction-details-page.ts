@@ -1,21 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 
 class TransactionDetailsPage {
-  private readonly driver: Driver;
-
-  private readonly explorerTestId = 'transaction-details-block-explorer';
-
-  private readonly backButton = { testId: 'transaction-details-back-button' };
-
-  private readonly dateRow = {
-    testId: 'transaction-breakdown-row-title',
-    text: 'Date',
-  };
-
-  private readonly hashId = { testId: 'transaction-id' };
-
-  private readonly viewDetailsLink = { testId: this.explorerTestId };
-
   private readonly addressInLog = (address: string) => ({
     testId: 'transaction-details-address',
     text: `${address.slice(0, 7)}...${address.slice(-5)}`,
@@ -29,10 +14,23 @@ class TransactionDetailsPage {
     text: amount,
   });
 
+  private readonly backButton = { testId: 'transaction-details-back-button' };
+
   private readonly baseFee = (fee: string) => ({
     testId: 'transaction-base-fee',
     text: fee,
   });
+
+  private readonly dateRow = {
+    testId: 'transaction-breakdown-row-title',
+    text: 'Date',
+  };
+
+  private readonly driver: Driver;
+
+  private readonly explorerTestId = 'transaction-details-block-explorer';
+
+  private readonly hashId = { testId: 'transaction-id' };
 
   // Verifies the block explorer link points at the given explorer, e.g.
   // `https://solscan.io` for Solana or `https://etherscan.io` for Ethereum.
@@ -49,6 +47,8 @@ class TransactionDetailsPage {
   });
 
   private readonly title = (text: string) => ({ tag: 'h4', text });
+
+  private readonly viewDetailsLink = { testId: this.explorerTestId };
 
   constructor(driver: Driver) {
     this.driver = driver;
