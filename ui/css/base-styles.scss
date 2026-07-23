@@ -33,6 +33,11 @@ html[data-theme] {
   background-color: var(--color-background-alternative);
 }
 
+// TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+html[data-theme='dark'][data-pure-black='true'] {
+  background-color: var(--color-background-default);
+}
+
 /* Border for pinned bars (bottom nav bar, dapp connection control bar) */
 html[data-theme='light'] {
   --bar-border-color: rgba(183, 187, 200, 0.2);
