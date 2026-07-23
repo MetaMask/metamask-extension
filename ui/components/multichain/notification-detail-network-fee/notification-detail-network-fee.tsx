@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   getNotificationSubtype,
   type OnChainRawNotificationsWithNetworkFields,
 } from '@metamask/notification-services-controller/notification-services';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getNetworkDetailsFromNotifPayload,
   getNetworkFees,
@@ -91,7 +91,7 @@ const NotificationDetailNetworkFee_ = ({
   notification,
 }: NotificationDetailNetworkFeeProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isOpen, toggle } = useBoolean();
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
@@ -126,19 +126,20 @@ const NotificationDetailNetworkFee_ = ({
 
   const handleClick = () => {
     if (!isOpen) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationDetailClicked,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          notification_subtype: getNotificationSubtype(notification),
-          chain_id: notification.payload.chain_id,
-          clicked_item: 'fee_details',
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.id,
+            notification_type: notification.type,
+            notification_subtype: getNotificationSubtype(notification),
+            chain_id: notification.payload.chain_id,
+            clicked_item: 'fee_details',
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
     }
     toggle();
   };

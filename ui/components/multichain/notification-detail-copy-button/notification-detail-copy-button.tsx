@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -56,7 +56,7 @@ export const NotificationDetailCopyButton: FC<
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
@@ -78,19 +78,20 @@ export const NotificationDetailCopyButton: FC<
         return undefined;
       };
 
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationDetailClicked,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          notification_subtype: notification.notification_subtype,
-          ...otherNotificationProperties(),
-          clicked_item: 'tx_id',
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.id,
+            notification_type: notification.type,
+            notification_subtype: notification.notification_subtype,
+            ...otherNotificationProperties(),
+            clicked_item: 'tx_id',
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
     }
   };
 

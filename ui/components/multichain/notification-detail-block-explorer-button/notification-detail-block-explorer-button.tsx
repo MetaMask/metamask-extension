@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getNotificationSubtype,
@@ -9,7 +9,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NotificationDetailButton } from '../notification-detail-button';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,7 +28,7 @@ export const NotificationDetailBlockExplorerButton = ({
   txHash,
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const chainIdHex = toHex(chainId);
   const { network } = notification.payload;
@@ -58,20 +58,21 @@ export const NotificationDetailBlockExplorerButton = ({
   }, [notificationBlockExplorerName, configuredBlockExplorer, t]);
 
   const analyticsEvent = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
-      properties: {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        notification_id: notification.id,
-        notification_type: notification.type,
-        notification_subtype: getNotificationSubtype(notification),
-        chain_id: chainId,
-        clicked_item: 'block_explorer',
-        /* eslint-enable @typescript-eslint/naming-convention */
-      },
-    });
-  }, [chainId, notification, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
+          /* eslint-disable @typescript-eslint/naming-convention */
+          notification_id: notification.id,
+          notification_type: notification.type,
+          notification_subtype: getNotificationSubtype(notification),
+          chain_id: chainId,
+          clicked_item: 'block_explorer',
+          /* eslint-enable @typescript-eslint/naming-convention */
+        })
+        .build(),
+    );
+  }, [chainId, createEventBuilder, notification, trackEvent]);
 
   if (!blockExplorerUrl) {
     return null;
