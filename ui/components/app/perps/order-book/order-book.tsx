@@ -604,67 +604,68 @@ export const PerpsOrderBook = ({
               ))}
             </Box>
           )}
-        </Box>
-      )}
 
-      {/* Buy/Sell depth ratio */}
-      {depthRatio && (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={1}
-          paddingLeft={2}
-          paddingRight={4}
-          paddingTop={2}
-          paddingBottom={3}
-          className="shrink-0"
-          data-testid={`${dataTestId}-ratio`}
-        >
-          <Box
-            role="img"
-            aria-label={t('perpsOrderBookDepthRatio', [
-              String(depthRatio.buyPercent),
-              String(depthRatio.sellPercent),
-            ])}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
-            className="w-full"
-          >
+          {/* Buy/Sell depth ratio — keep with the ladder so it sits under the
+              last row instead of being pushed to the panel bottom by flex-1. */}
+          {depthRatio && (
             <Box
-              className="h-1 rounded-full"
-              style={{
-                width: `${depthRatio.buyPercent}%`,
-                backgroundColor: 'var(--color-success-default)',
-              }}
-            />
-            <Box
-              className="h-1 rounded-full"
-              style={{
-                width: `${depthRatio.sellPercent}%`,
-                backgroundColor: 'var(--color-error-default)',
-              }}
-            />
-          </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            className="w-full"
-          >
-            <Text
-              variant={TextVariant.BodyXs}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
+              flexDirection={BoxFlexDirection.Column}
+              gap={1}
+              paddingLeft={2}
+              paddingRight={4}
+              paddingTop={4}
+              paddingBottom={3}
+              className="shrink-0"
+              data-testid={`${dataTestId}-ratio`}
             >
-              {t('perpsOrderBookBuy', [String(depthRatio.buyPercent)])}
-            </Text>
-            <Text
-              variant={TextVariant.BodyXs}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.ErrorDefault}
-            >
-              {t('perpsOrderBookSell', [String(depthRatio.sellPercent)])}
-            </Text>
-          </Box>
+              <Box
+                role="img"
+                aria-label={t('perpsOrderBookDepthRatio', [
+                  String(depthRatio.buyPercent),
+                  String(depthRatio.sellPercent),
+                ])}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={1}
+                className="w-full"
+              >
+                <Box
+                  className="h-1 rounded-full"
+                  style={{
+                    width: `${depthRatio.buyPercent}%`,
+                    backgroundColor: 'var(--color-success-default)',
+                  }}
+                />
+                <Box
+                  className="h-1 rounded-full"
+                  style={{
+                    width: `${depthRatio.sellPercent}%`,
+                    backgroundColor: 'var(--color-error-default)',
+                  }}
+                />
+              </Box>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                className="w-full"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.SuccessDefault}
+                >
+                  {t('perpsOrderBookBuy', [String(depthRatio.buyPercent)])}
+                </Text>
+                <Text
+                  variant={TextVariant.BodyXs}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.ErrorDefault}
+                >
+                  {t('perpsOrderBookSell', [String(depthRatio.sellPercent)])}
+                </Text>
+              </Box>
+            </Box>
+          )}
         </Box>
       )}
 
