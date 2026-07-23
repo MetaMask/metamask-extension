@@ -277,9 +277,9 @@ export const CoinOverview = ({
     () =>
       isEvm &&
       Boolean(selectedAccountGroup) &&
-        !isTestnet &&
-        !balanceIsCached &&
-        !hasBalance &&
+      !isTestnet &&
+      !balanceIsCached &&
+      !hasBalance &&
       !shouldShowBalanceLoadingState,
     [
       isEvm,
