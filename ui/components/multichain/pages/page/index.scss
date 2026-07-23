@@ -11,9 +11,11 @@
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 
   // The inner container is the single direct child of the page wrapper.
-  &--has-app-header > .mm-box {
-    // Matches the box-shadow of the .main-container
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  @media screen and (min-width: $fullscreen-max-width-with-side-shadow) {
+    &--has-app-header > .mm-box {
+      // Matches the box-shadow of the .main-container
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    }
   }
 }
 
