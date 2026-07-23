@@ -125,7 +125,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     sendBundleState?.approvalRequestId,
   );
   const isHardwareWalletAccount = useSelector(isHardwareWallet);
-  const isStxEnabledForChain = useSelector(getIsStxEnabled);
+  const isStxEnabled = useSelector(getIsStxEnabled);
   // Wallet-safety: capture the pending approval (if any) for the id we expect
   // to sign. `null` here means the approval is no longer pending — the submit
   // guard refuses to call `updateAndApproveTx` in that case to prevent
@@ -140,13 +140,6 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   const needsTwoConfirmations = isSendBundleFlow
     ? Boolean(sendBundleState?.needsTwoConfirmations)
     : Boolean(lockedQuote?.approval);
-  // Match submitBridgeTx: HW swaps that need an approval use sequential
-  // signing/publish so rejecting the trade cannot fail the approval via the
-  // STX CollectPublishHook cascade. Send-bundle keeps chain STX settings.
-  const isStxEnabled =
-    isSendBundleFlow || !needsTwoConfirmations
-      ? isStxEnabledForChain
-      : false;
   const fromAmount = lockedQuote?.sentAmount?.amount;
   const activeSigningRequestId =
     lockedQuote?.quote.requestId ?? sendBundleTxMeta?.id ?? '';
