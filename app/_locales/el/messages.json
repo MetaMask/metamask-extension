@@ -1997,12 +1997,6 @@
     "message": "Έγκριση $1 για διασύνδεση",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Επιτρέπετε την πρόσβαση σε $1 $2. Το συμβόλαιο δεν θα έχει πρόσβαση σε επιπλέον κεφάλαια."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Θα χρειαστεί να επιτρέψετε την πρόσβαση σε $1 $2 για μεταφορά και στη συνέχεια να εγκρίνετε την μεταφορά προς $3. Αυτό θα απαιτήσει δύο ξεχωριστές επιβεβαιώσεις."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ο σύνδεσμος από το Block explorer αντιγράφηκε"
   },
@@ -4162,9 +4156,6 @@
   },
   "gotIt": {
     "message": "Το κατάλαβα"
-  },
-  "grantExactAccess": {
-    "message": "Χορήγηση ακριβούς πρόσβασης"
   },
   "gwei": {
     "message": "GWEI"

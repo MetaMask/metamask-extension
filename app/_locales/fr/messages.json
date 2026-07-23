@@ -1997,12 +1997,6 @@
     "message": "Approuver $1 pour la passerelle",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Vous autorisez l’accès à $1 $2. Le contrat n’aura pas accès à d’autres fonds."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Vous devrez autoriser l’accès à $1 $2 pour l’établissement d’une passerelle, puis approuver l’établissement d’une passerelle vers $3, ce qui nécessitera deux confirmations distinctes."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Le lien de l’explorateur de blocs a été copié"
   },
@@ -4162,9 +4156,6 @@
   },
   "gotIt": {
     "message": "D’accord"
-  },
-  "grantExactAccess": {
-    "message": "Accorder un accès exact"
   },
   "gwei": {
     "message": "GWEI"

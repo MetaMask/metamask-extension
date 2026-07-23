@@ -1997,12 +1997,6 @@
     "message": "Setujui bridge $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Anda mengizinkan akses ke $1 $2. Kontrak ini tidak akan mengakses dana tambahan."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Anda perlu mengizinkan akses ke $1 $2 untuk bridge, lalu menyetujui bridge ke $3. Ini akan membutuhkan dua konfirmasi terpisah."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Tautan block explorer disalin"
   },
@@ -4166,9 +4160,6 @@
   },
   "gotIt": {
     "message": "Mengerti"
-  },
-  "grantExactAccess": {
-    "message": "Berikan akses yang tepat"
   },
   "gwei": {
     "message": "GWEI"

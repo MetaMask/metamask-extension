@@ -1997,12 +1997,6 @@
     "message": "Köprü için şunu onayla: $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2 için erişim izni veriyorsunuz. Sözleşme başka hiçbir fona erişim sağlamayacak."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Köprü amacıyla $1 $2 için erişim izni vermeniz ve ardından $3 alanı için köprüyü onaylamanız gerekecek. Bu işlem için iki ayrı onay gerekecek."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Blok gezgini bağlantısı kopyalandı"
   },
@@ -4166,9 +4160,6 @@
   },
   "gotIt": {
     "message": "Anladım"
-  },
-  "grantExactAccess": {
-    "message": "Tam erişim ver"
   },
   "gwei": {
     "message": "GWEI"

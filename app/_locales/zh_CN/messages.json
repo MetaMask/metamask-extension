@@ -1997,12 +1997,6 @@
     "message": "批准 $1 进行桥接",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "您正在授权访问 $1 $2。该合约不会动用任何其他资金。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "要进行桥接操作，您需要先授权访问 $1 $2，再批准将其桥接到 $3。此操作需进行两次独立的确认。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "区块浏览器链接已复制"
   },
@@ -4162,9 +4156,6 @@
   },
   "gotIt": {
     "message": "知道了"
-  },
-  "grantExactAccess": {
-    "message": "授予精确获取权限"
   },
   "gwei": {
     "message": "GWEI"
