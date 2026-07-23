@@ -1202,7 +1202,7 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
-    "networkConnectionBannerNetwork": null,
+    "networkConnectionBannerNetwork": "null",
     "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
