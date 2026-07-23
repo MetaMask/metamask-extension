@@ -4,6 +4,8 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+// TODO: Fix environment or rename
+// eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');

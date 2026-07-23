@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opsi akun"
   },
-  "accountPermissionToast": {
-    "message": "Izin akun diperbarui"
-  },
   "accountSelectionRequired": {
     "message": "Anda harus memilih satu akun!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Pertukaran gagal"
   },
   "activity_swap_pending_title": {
-    "message": "Menukar $1 menjadi $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Menukar"
   },
   "activity_swap_success_title": {
-    "message": "Menukar $1 menjadi $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Ditukar"
   },
   "activity_unwrap_failed_description": {
     "message": "Pembukaan gagal"
@@ -3109,9 +3104,6 @@
   },
   "decimal": {
     "message": "Desimal token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal minimal 0, dan tidak lebih dari 36."
   },
   "decrypt": {
     "message": "Dekripsikan"

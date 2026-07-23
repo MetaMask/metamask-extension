@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opciones de la cuenta"
   },
-  "accountPermissionToast": {
-    "message": "Se actualizaron los permisos de la cuenta"
-  },
   "accountSelectionRequired": {
     "message": "¡Debe seleccionar una cuenta!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Error al canjear"
   },
   "activity_swap_pending_title": {
-    "message": "Canjeando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Canjeando"
   },
   "activity_swap_success_title": {
-    "message": "Se canjeó $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Se canjeó"
   },
   "activity_unwrap_failed_description": {
     "message": "Error al desenvolver"
@@ -3109,9 +3104,6 @@
   },
   "decimal": {
     "message": "Decimales del token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Los decimales deben ser al menos 0 y no más de 36."
   },
   "decrypt": {
     "message": "Descifrar"

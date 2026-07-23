@@ -2,6 +2,7 @@ import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
 import { BridgeDetails } from './bridge-details/bridge-details';
+import { ConvertDetails } from './convert-details';
 import { DefaultDetails } from './default-details';
 import { NftDetails } from './nft-details';
 import { PerpsDepositDetails } from './perps-deposit-details';
@@ -29,8 +30,9 @@ export function TemplateLoader({ item }: Props) {
       return <SendDetails item={item} />;
     case 'bridge':
       return <BridgeDetails item={item} />;
-    case 'swap':
     case 'convert':
+      return <ConvertDetails item={item} />;
+    case 'swap':
     case 'lendingDeposit':
     case 'lendingWithdrawal':
     case 'wrap':

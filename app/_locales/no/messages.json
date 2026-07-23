@@ -178,9 +178,6 @@
   "decimal": {
     "message": "Presisjonsdesimaler"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaler må være minst 0, og ikke flere enn 36."
-  },
   "delete": {
     "message": "Slett"
   },

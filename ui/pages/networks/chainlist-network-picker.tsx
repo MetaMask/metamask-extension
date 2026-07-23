@@ -136,24 +136,25 @@ export const ChainlistNetworkPicker = ({
 
   return (
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
+      <Box className="px-4 pb-4">
+        <TextFieldSearch
+          clearButtonOnClick={() => setSearchValue('')}
+          clearButtonProps={{ ariaLabel: t('clear') }}
+          className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
+          data-testid="networks-page-chainlist-search"
+          onChange={(event) => setSearchValue(event.target.value)}
+          placeholder={t('searchNetworkNameOrChainId')}
+          size={TextFieldSize.Lg}
+          value={searchValue}
+        />
+      </Box>
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
         <Box className="px-4 pb-4">
-          <TextFieldSearch
-            clearButtonOnClick={() => setSearchValue('')}
-            clearButtonProps={{ ariaLabel: t('clear') }}
-            className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
-            data-testid="networks-page-chainlist-search"
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder={t('searchNetworkNameOrChainId')}
-            size={TextFieldSize.Lg}
-            value={searchValue}
-          />
           <BannerAlert
-            className="mt-4"
             severity={BannerAlertSeverity.Info}
             data-testid="networks-page-chainlist-source-banner"
             description={t('chainlistNetworkDataSourceBanner', [

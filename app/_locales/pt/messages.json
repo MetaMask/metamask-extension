@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opções da conta"
   },
-  "accountPermissionToast": {
-    "message": "Permissões de conta atualizadas"
-  },
   "accountSelectionRequired": {
     "message": "Você precisa selecionar uma conta!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Falha na troca"
   },
   "activity_swap_pending_title": {
-    "message": "Trocando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Trocando"
   },
   "activity_swap_success_title": {
-    "message": "Trocou $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Trocou"
   },
   "activity_unwrap_failed_description": {
     "message": "Falha ao desencapsular"
@@ -3109,9 +3104,6 @@
   },
   "decimal": {
     "message": "Decimal do token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
   },
   "decrypt": {
     "message": "Descriptografar"

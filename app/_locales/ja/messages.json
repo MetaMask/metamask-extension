@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "アカウントのオプション"
   },
-  "accountPermissionToast": {
-    "message": "アカウントのアクセス許可が更新されました"
-  },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
@@ -1005,12 +1002,10 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしています"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしました"
   },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"
@@ -3109,9 +3104,6 @@
   },
   "decimal": {
     "message": "トークンの小数桁数"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "小数桁数は0以上、36以下の範囲で使用する必要があります。"
   },
   "decrypt": {
     "message": "復号化"

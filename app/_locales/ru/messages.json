@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Параметры счета"
   },
-  "accountPermissionToast": {
-    "message": "Разрешения счета обновлены"
-  },
   "accountSelectionRequired": {
     "message": "Вам необходимо выбрать счет!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Своп не удался"
   },
   "activity_swap_pending_title": {
-    "message": "Своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп"
   },
   "activity_swap_success_title": {
-    "message": "Выполнен своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп выполнен"
   },
   "activity_unwrap_failed_description": {
     "message": "Ошибка развертывания"
@@ -3109,9 +3104,6 @@
   },
   "decimal": {
     "message": "Число десятичных знаков токена"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Число десятичных знаков должно быть не менее 0, но не более 36."
   },
   "decrypt": {
     "message": "Расшифровать"

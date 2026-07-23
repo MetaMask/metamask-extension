@@ -520,6 +520,40 @@ describe('OrderEntry', () => {
   });
 
   describe('limit order mode', () => {
+    it('uses the shared order type toggle to select Limit', () => {
+      const onOrderTypeChange = jest.fn();
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="market"
+          onOrderTypeChange={onOrderTypeChange}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+
+      expect(onOrderTypeChange).toHaveBeenCalledWith('limit');
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+    });
+
+    it('hides the order type toggle in close mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={{
+            size: '2.5',
+            leverage: 3,
+            entryPrice: '2850.00',
+          }}
+        />,
+        mockStore,
+      );
+
+      expect(screen.queryByTestId('order-type-toggle')).not.toBeInTheDocument();
+    });
+
     it('shows limit price input when orderType is limit', () => {
       renderWithProvider(
         <OrderEntry {...defaultProps} orderType="limit" />,
