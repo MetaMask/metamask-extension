@@ -149,21 +149,23 @@ export function hasVault(state?: MetaMaskStateType | Backup | null): state is {
 const STATE_LOCK = 'state-lock';
 
 /**
- * What detected a suspected browser shutdown. `onSuspend` is the proactive MV3
- * lifecycle signal (paired with `onSuspendCanceled`); `reactive` and
- * `idb-close` are inferred heuristics that can be false positives, so they are
- * recoverable (see {@link SHUTDOWN_RECOVERY_RETRY_MS}). `unknown` is the
- * default when a caller omits the trigger.
+ * What detected a suspected browser shutdown. {@link ShutdownTrigger.OnSuspend}
+ * is the proactive MV3 lifecycle signal (paired with `onSuspendCanceled`);
+ * {@link ShutdownTrigger.Reactive} and {@link ShutdownTrigger.IdbClose} are
+ * inferred heuristics that can be false positives, so they are recoverable
+ * (see {@link SHUTDOWN_RECOVERY_RETRY_MS}). {@link ShutdownTrigger.Unknown} is
+ * the default when a caller omits the trigger.
  */
-export type ShutdownTrigger =
-  | 'reactive'
-  | 'onSuspend'
-  | 'idb-close'
-  | 'unknown';
-
+export enum ShutdownTrigger {
+  Reactive = 'reactive',
+  OnSuspend = 'onSuspend',
+  IdbClose = 'idb-close',
+  Unknown = 'unknown',
+}
 /**
  * How often to re-probe storage after suspending writes due to an inferred
- * shutdown signal (`reactive`/`idb-close`). Set to a quarter of the 1000ms
+ * shutdown signal ({@link ShutdownTrigger.Reactive} /
+ * {@link ShutdownTrigger.IdbClose}). Set to a quarter of the 1000ms
  * persist debounce (`wait` in `safe-reload.ts`) so a false positive recovers
  * quickly. A genuine shutdown tears down the service worker, so probing stops
  * on its own.
@@ -219,15 +221,19 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #dataPersistenceFailing: boolean = false;
 
   /**
-   * writesSuspended is set to true once we detect (reactively via a shutdown
-   * write error, or proactively via lifecycle/IndexedDB signals) that the
-   * browser is shutting down. While true, `set`/`persist` short-circuit without
-   * touching storage, so we never start a `storage.local` write the browser
-   * could interrupt mid-flight (a cause of on-disk LevelDB corruption). It is
-   * cleared by `resumeWrites()` (e.g. `runtime.onSuspendCanceled`) and by
-   * `reset()`; a fresh service-worker start also clears it (new instance).
+   * Why writes are currently suspended, or `null` when writes are allowed.
+   * Set by {@link suspendWrites} from reactive write errors, lifecycle
+   * signals (`onSuspend`), or IndexedDB force-close. While non-null,
+   * `set`/`persist` short-circuit without touching storage, so we never start
+   * a `storage.local` write the browser could interrupt mid-flight (a cause of
+   * on-disk LevelDB corruption). Cleared by {@link resumeWrites} (e.g.
+   * `runtime.onSuspendCanceled`) and by {@link reset}; a fresh service-worker
+   * start also clears it (new instance).
+   *
+   * `OnSuspend` is authoritative: inferred triggers (`Reactive`/`IdbClose`)
+   * must not overwrite it or schedule recovery while it is set.
    */
-  #writesSuspended: boolean = false;
+  #shutdownTrigger: ShutdownTrigger | null = null;
 
   /**
    * When false (the default), all shutdown write-suspension behavior is disabled
@@ -339,7 +345,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   setShutdownSuspensionEnabled(enabled: boolean) {
     this.#shutdownSuspensionEnabled = enabled;
     if (!enabled) {
-      this.#writesSuspended = false;
+      this.#shutdownTrigger = null;
       this.#shutdownReported = false;
       this.#pendingShutdownTrigger = null;
       this.#clearShutdownRecoveryTimer();
@@ -348,7 +354,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     // If a shutdown was signaled before the flag was applied (e.g. a buffered
     // `onSuspend` replayed during cold start), honor it now rather than dropping
     // it.
-    if (this.#pendingShutdownTrigger !== null && !this.#writesSuspended) {
+    if (this.#pendingShutdownTrigger !== null && !this.writesSuspended()) {
       const trigger = this.#pendingShutdownTrigger;
       this.#pendingShutdownTrigger = null;
       this.suspendWrites(trigger);
@@ -359,8 +365,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Whether writes are currently suspended because a browser shutdown was
    * detected.
    */
-  get writesSuspended(): boolean {
-    return this.#writesSuspended;
+  writesSuspended(): boolean {
+    return this.#shutdownTrigger !== null;
   }
 
   /**
@@ -379,15 +385,25 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * avoid, since it can be interrupted mid-flight and corrupt the database.
    *
    * @param trigger - What detected the shutdown, for telemetry only. Defaults
-   * to `'unknown'` when the caller does not specify one.
+   * to {@link ShutdownTrigger.Unknown} when the caller does not specify one.
    */
-  suspendWrites(trigger: ShutdownTrigger = 'unknown') {
+  suspendWrites(trigger: ShutdownTrigger = ShutdownTrigger.Unknown) {
     if (!this.#shutdownSuspensionEnabled) {
       this.#pendingShutdownTrigger = trigger;
       return;
     }
     this.#pendingShutdownTrigger = null;
-    this.#writesSuspended = true;
+
+    // `OnSuspend` is authoritative: inferred triggers must not demote it.
+    // Otherwise record the latest trigger so recovery knows which path owns
+    // the suspension.
+    if (trigger === ShutdownTrigger.OnSuspend) {
+      this.#shutdownTrigger = ShutdownTrigger.OnSuspend;
+      this.#clearShutdownRecoveryTimer();
+    } else if (this.#shutdownTrigger !== ShutdownTrigger.OnSuspend) {
+      this.#shutdownTrigger = trigger;
+    }
+
     // Drop any write that is queued in the state lock but hasn't started yet.
     this.#currentLockAbortController?.abort();
 
@@ -405,13 +421,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       });
     }
 
-    // `reactive` and `idb-close` are inferred heuristics that can misfire (e.g.
+    // `Reactive` and `IdbClose` are inferred heuristics that can misfire (e.g.
     // a transient write error or a spurious IndexedDB `versionchange`). If they
     // do, nothing would ever resume writes, leaving the extension stuck. So we
     // periodically probe storage and resume once the browser proves responsive.
-    // `onSuspend` is the authoritative lifecycle signal and recovers via its
-    // own `onSuspendCanceled` pairing, so it is left alone.
-    if (trigger === 'reactive' || trigger === 'idb-close') {
+    // Skip while `OnSuspend` owns the suspension: that path recovers via
+    // `onSuspendCanceled` only.
+    if (
+      (trigger === ShutdownTrigger.Reactive ||
+        trigger === ShutdownTrigger.IdbClose) &&
+      this.#shutdownTrigger !== ShutdownTrigger.OnSuspend
+    ) {
       this.#scheduleShutdownRecovery(trigger);
     }
   }
@@ -443,7 +463,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * recovery probe confirms the browser is still responsive.
    */
   resumeWrites() {
-    this.#writesSuspended = false;
+    this.#shutdownTrigger = null;
     this.#shutdownReported = false;
     this.#pendingShutdownTrigger = null;
     this.#clearShutdownRecoveryTimer();
@@ -457,7 +477,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * @param trigger - The inferred trigger that suspended writes, for telemetry.
    */
   #scheduleShutdownRecovery(trigger: ShutdownTrigger) {
-    if (this.#shutdownRecoveryTimer !== null) {
+    if (
+      this.#shutdownTrigger === ShutdownTrigger.OnSuspend ||
+      this.#shutdownRecoveryTimer !== null
+    ) {
       return;
     }
     this.#shutdownRecoveryTimer = setTimeout(() => {
@@ -478,7 +501,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   async #attemptShutdownRecovery(trigger: ShutdownTrigger) {
     // Writes were already resumed, reset, or suspension disabled; nothing to do.
-    if (!this.#writesSuspended || !this.#shutdownSuspensionEnabled) {
+    // Also bail if `onSuspend` took ownership after this probe was scheduled:
+    // that lifecycle signal recovers only via `onSuspendCanceled`.
+    if (
+      !this.writesSuspended() ||
+      !this.#shutdownSuspensionEnabled ||
+      this.#shutdownTrigger === ShutdownTrigger.OnSuspend
+    ) {
       return;
     }
 
@@ -487,6 +516,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     } catch {
       // Still failing: keep suspended and try again later.
       this.#scheduleShutdownRecovery(trigger);
+      return;
+    }
+
+    // Re-check after the async probe: `onSuspend` may have taken ownership
+    // while we were waiting on storage.
+    if (
+      !this.writesSuspended() ||
+      this.#shutdownTrigger === ShutdownTrigger.OnSuspend
+    ) {
       return;
     }
 
@@ -609,7 +647,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // don't start a write we can't finish.
       db.onForcedClose = (reason) => {
         this.#reportBackupDbForcedClose(reason);
-        this.suspendWrites('idb-close');
+        this.suspendWrites(ShutdownTrigger.IdbClose);
       };
       this.#backupDb = db;
     } catch (error) {
@@ -770,7 +808,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
-    if (this.#shutdownSuspensionEnabled && this.#writesSuspended) {
+    if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
       // The browser is shutting down; do not start a write we may not finish.
       return [false, undefined];
     }
@@ -858,7 +896,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               !backupFailed &&
               this.#isShutdownError(normalizedError.message)
             ) {
-              this.suspendWrites('reactive');
+              this.suspendWrites(ShutdownTrigger.Reactive);
               return [false, undefined];
             }
 
@@ -920,7 +958,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
-    if (this.#shutdownSuspensionEnabled && this.#writesSuspended) {
+    if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
       // The browser is shutting down; do not start a write we may not finish.
       // The pending pairs are left untouched so they can be written by a later
       // session if the shutdown is cancelled.
@@ -1022,7 +1060,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               !backupFailed &&
               this.#isShutdownError(normalizedError.message)
             ) {
-              this.suspendWrites('reactive');
+              this.suspendWrites(ShutdownTrigger.Reactive);
               return [false, undefined];
             }
 
@@ -1212,7 +1250,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#dataPersistenceFailing = false;
         // Clear per-session shutdown-suspension state (the enablement flag is
         // config set by the background and is intentionally left intact).
-        this.#writesSuspended = false;
+        this.#shutdownTrigger = null;
         this.#shutdownReported = false;
         this.#pendingShutdownTrigger = null;
         this.#clearShutdownRecoveryTimer();

@@ -67,6 +67,7 @@ import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
+  ShutdownTrigger,
 } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
@@ -749,7 +750,7 @@ if (
 // shutdown suspension. `onSuspendCanceled` resumes writes if the shutdown was a
 // false alarm (e.g. an idle eviction that got cancelled).
 lazyListener.addListener('runtime', 'onSuspend', () => {
-  persistenceManager.suspendWrites('onSuspend');
+  persistenceManager.suspendWrites(ShutdownTrigger.OnSuspend);
 });
 lazyListener.addListener('runtime', 'onSuspendCanceled', () => {
   persistenceManager.resumeWrites();
