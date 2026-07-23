@@ -19,25 +19,7 @@ async function getDiffByAutomationType(
     process.exit(1);
   }
 
-  let diff;
-  if (automationType === AUTOMATION_TYPE.CI) {
-    const optionalArguments = process.argv.slice(3);
-    if (optionalArguments.length > 1) {
-      console.error('Invalid number of arguments.');
-      process.exit(1);
-    }
-
-    diff = await getCIDiff(optionalArguments[0]);
-  } else if (automationType === AUTOMATION_TYPE.PRE_COMMIT_HOOK) {
-    diff = getPreCommitHookDiff();
-  } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
-    diff = getPrePushHookDiff();
-  }
-
-  return diff;
-}
-
-async function getCIDiff(path?: string): Promise<string> {
+  const [path] = process.argv.slice(3);
   if (path) {
     return fs.readFileSync(path, {
       encoding: 'utf8',
@@ -45,16 +27,37 @@ async function getCIDiff(path?: string): Promise<string> {
     });
   }
 
-  // No file argument — fetch diff directly (requires CI environment variables).
-  // Lazy dynamic import to avoid pulling @actions/github into local dev hooks
-  // (and because @actions/github is now ESM-only).
-  const { getPrDiff } =
-    await import('../../../.github/scripts/shared/get-pr-diff.mts');
-  return getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
+  if (automationType === AUTOMATION_TYPE.CI) {
+    // For non-PR triggers (e.g. `merge_queue` or `push ` to protected branch)
+    // we can assume we're dealing with a single squashed commit.
+    return await getCommitDiff();
+  } else if (automationType === AUTOMATION_TYPE.PR) {
+    // Fetch diff directly (requires CI environment variables).
+    // Lazy dynamic import to avoid pulling @actions/github into local dev hooks
+    // (and because @actions/github is now ESM-only).
+    const { getPrDiff } =
+      await import('../../../.github/scripts/shared/get-pr-diff.mts');
+    return await getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
+  } else if (automationType === AUTOMATION_TYPE.PRE_COMMIT_HOOK) {
+    return await getPreCommitHookDiff();
+  } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
+    return await getPrePushHookDiff();
+  } else {
+    throw new Error(`Unknown automation type: ${automationType}`);
+  }
 }
 
 function runGitCommand(args: string[]): string {
   return execFileSync('git', args, GIT_EXEC_FILE_OPTIONS).trim();
+}
+
+/**
+ * Get the diff for the HEAD commit.
+ *
+ * @returns The diff for the HEAD commit
+ */
+async function getCommitDiff(): Promise<string> {
+  return runGitCommand(['diff', 'HEAD^']);
 }
 
 function getPreCommitHookDiff(): string {
