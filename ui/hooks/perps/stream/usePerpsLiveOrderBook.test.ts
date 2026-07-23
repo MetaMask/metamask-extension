@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLiveOrderBook } from './usePerpsLiveOrderBook';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
@@ -11,8 +12,14 @@ jest.mock('./usePerpsChannel', () => ({
   usePerpsChannel: jest.fn(),
 }));
 
+jest.mock('./usePerpsStreamManager', () => ({
+  usePerpsStreamManager: jest.fn(),
+}));
+
 const mockUsePerpsChannel = jest.mocked(usePerpsChannel);
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockUsePerpsStreamManager = jest.mocked(usePerpsStreamManager);
+const mockSetActiveOrderBookAggregatedSubscriptionId = jest.fn();
 
 describe('usePerpsLiveOrderBook', () => {
   beforeEach(() => {
@@ -21,6 +28,15 @@ describe('usePerpsLiveOrderBook', () => {
     mockUsePerpsChannel.mockReturnValue({
       data: null,
       isInitialLoading: false,
+    });
+    mockUsePerpsStreamManager.mockReturnValue({
+      streamManager: {
+        setActiveOrderBookAggregatedSubscriptionId:
+          mockSetActiveOrderBookAggregatedSubscriptionId,
+      } as never,
+      isInitializing: false,
+      error: null,
+      selectedAddress: '0xabc',
     });
   });
 
@@ -88,8 +104,19 @@ describe('usePerpsLiveOrderBook', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivateOrderBookAggregatedStream',
-        [{ symbol: 'BTC', levels: 20, nSigFigs: 3, mantissa: 5 }],
+        [
+          {
+            symbol: 'BTC',
+            levels: 20,
+            nSigFigs: 3,
+            mantissa: 5,
+            subscriptionId: 'BTC:3:5:0',
+          },
+        ],
       );
+      expect(
+        mockSetActiveOrderBookAggregatedSubscriptionId,
+      ).toHaveBeenCalledWith('BTC:3:5:0');
 
       unmount();
 
@@ -187,9 +214,13 @@ describe('usePerpsLiveOrderBook', () => {
             levels: undefined,
             nSigFigs: 3,
             mantissa: undefined,
+            subscriptionId: 'BTC:3::1',
           },
         ],
       );
+      expect(
+        mockSetActiveOrderBookAggregatedSubscriptionId,
+      ).toHaveBeenCalledWith('BTC:3::1');
     });
   });
 });

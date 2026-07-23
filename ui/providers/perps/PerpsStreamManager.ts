@@ -136,6 +136,14 @@ class PerpsStreamManager {
   // Timestamp of the most recent background stream update (any channel).
   private _lastStreamUpdateAt = 0;
 
+  /**
+   * UI-owned identity for the active aggregated order-book subscription.
+   * Background emissions whose `subscriptionId` does not match are discarded so
+   * a stale packet from a prior grouping cannot repopulate the cleared channel
+   * during the async deactivate/activate IPC gap.
+   */
+  private activeOrderBookAggregatedSubscriptionId: string | null = null;
+
   // Deduplicates concurrent initForAddress calls
   private pendingInit: { address: string; promise: Promise<void> } | null =
     null;
@@ -327,6 +335,20 @@ class PerpsStreamManager {
    */
   getLastStreamUpdateAt(): number {
     return this._lastStreamUpdateAt;
+  }
+
+  /**
+   * Register the UI identity for the active aggregated order-book stream.
+   * Call synchronously when the grouping/symbol/reconnect identity changes so
+   * packets tagged with a prior identity are dropped before they hit the cache.
+   *
+   * @param subscriptionId - Active identity, or `null` to accept untagged
+   * packets (e.g. when the aggregated panel is closed).
+   */
+  setActiveOrderBookAggregatedSubscriptionId(
+    subscriptionId: string | null,
+  ): void {
+    this.activeOrderBookAggregatedSubscriptionId = subscriptionId;
   }
 
   /**
@@ -581,12 +603,14 @@ class PerpsStreamManager {
    * @param payload.data - The raw data payload
    * @param payload.symbol - For candles: the asset symbol
    * @param payload.interval - For candles: the candle period
+   * @param payload.subscriptionId - For aggregated order book: UI identity
    */
   handleBackgroundUpdate(payload: {
     channel: string;
     data: unknown;
     symbol?: string;
     interval?: CandlePeriod;
+    subscriptionId?: string;
   }): void {
     this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
@@ -621,9 +645,19 @@ class PerpsStreamManager {
         this.orderBook.pushData(data as OrderBookData);
         break;
       case 'orderBookAggregated':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
         this.orderBookAggregated.pushData(data as OrderBookData);
         break;
       case 'orderBookAggregatedStatus':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
         this.orderBookAggregatedStatus.pushData(
           data as OrderBookConnectionStatus,
         );
@@ -647,6 +681,25 @@ class PerpsStreamManager {
       default:
         console.warn('[PerpsStreamManager] Unknown channel:', channel);
     }
+  }
+
+  /**
+   * Whether an aggregated order-book emission matches the UI's active identity.
+   * When no active identity is registered, untagged packets are accepted so
+   * legacy/test callers keep working; once the UI registers an identity,
+   * every emission must carry a matching `subscriptionId`.
+   *
+   * @param subscriptionId - Identity tagged on the background emission.
+   * @returns True when the packet may update the aggregated channels.
+   */
+  private isActiveOrderBookAggregatedSubscription(
+    subscriptionId: string | undefined,
+  ): boolean {
+    const activeId = this.activeOrderBookAggregatedSubscriptionId;
+    if (activeId === null) {
+      return true;
+    }
+    return subscriptionId === activeId;
   }
 
   /**
@@ -723,6 +776,7 @@ class PerpsStreamManager {
     this.orderBook.clearCache();
     this.orderBookAggregated.clearCache();
     this.orderBookAggregatedStatus.clearCache();
+    this.activeOrderBookAggregatedSubscriptionId = null;
     this.candles.clearAll();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();

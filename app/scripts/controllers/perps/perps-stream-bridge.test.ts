@@ -860,11 +860,13 @@ describe('PerpsStreamBridge', () => {
           levels?: number;
           nSigFigs?: 2 | 3 | 4 | 5;
           mantissa?: 2 | 5;
+          subscriptionId?: string;
         }) => Promise<void>
       )({
         symbol: 'ETH',
         levels: 20,
         nSigFigs: 3,
+        subscriptionId: 'ETH:3::0',
       });
 
       // The aggregated stream uses the dedicated connection, never the shared
@@ -881,10 +883,14 @@ describe('PerpsStreamBridge', () => {
       const callback = subscribeAggregatedOrderBook.mock.calls[0][0]
         .callback as (data: unknown) => void;
       callback({ bids: [], asks: [] });
-      expect(emit).toHaveBeenCalledWith('orderBookAggregated', {
-        bids: [],
-        asks: [],
-      });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        {
+          bids: [],
+          asks: [],
+        },
+        { subscriptionId: 'ETH:3::0' },
+      );
     });
 
     it('emits connection status on the orderBookAggregatedStatus channel', async () => {
@@ -900,12 +906,61 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateOrderBookAggregatedStream as (p: {
           symbol: string;
           nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
         }) => Promise<void>
-      )({ symbol: 'ETH', nSigFigs: 3 });
+      )({ symbol: 'ETH', nSigFigs: 3, subscriptionId: 'ETH:3::0' });
 
       const { onStatusChange } = subscribeAggregatedOrderBook.mock.calls[0][0];
       onStatusChange('error');
-      expect(emit).toHaveBeenCalledWith('orderBookAggregatedStatus', 'error');
+      expect(emit).toHaveBeenCalledWith('orderBookAggregatedStatus', 'error', {
+        subscriptionId: 'ETH:3::0',
+      });
+    });
+
+    it('tags emissions with the subscription identity captured at activate time', async () => {
+      const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({ symbol: 'BTC', nSigFigs: 4, subscriptionId: 'BTC:4::0' });
+
+      const firstCallback = subscribeAggregatedOrderBook.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({ symbol: 'BTC', nSigFigs: 5, subscriptionId: 'BTC:5::0' });
+
+      // Late packet from the first subscription still carries the old identity.
+      firstCallback({ bids: [{ price: '1' }], asks: [] });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        { bids: [{ price: '1' }], asks: [] },
+        { subscriptionId: 'BTC:4::0' },
+      );
+
+      const secondCallback = subscribeAggregatedOrderBook.mock.calls[1][0]
+        .callback as (data: unknown) => void;
+      secondCallback({ bids: [{ price: '2' }], asks: [] });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        { bids: [{ price: '2' }], asks: [] },
+        { subscriptionId: 'BTC:5::0' },
+      );
     });
 
     it('runs independently of the raw order book stream', async () => {

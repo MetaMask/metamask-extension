@@ -288,11 +288,18 @@ export class PerpsStreamBridge {
         levels,
         nSigFigs,
         mantissa,
+        subscriptionId,
       }: {
         symbol: string;
         levels?: number;
         nSigFigs?: 2 | 3 | 4 | 5;
         mantissa?: 2 | 5;
+        /**
+         * UI-generated identity for this activate request. Echoed on every
+         * data/status emission so the UI can discard packets from a prior
+         * grouping that arrive during the async deactivate/activate IPC gap.
+         */
+        subscriptionId?: string;
       }) =>
         this.#activateDynamicWhenReady('orderBookAggregated', () =>
           this.#activateOrderBookAggregatedStream({
@@ -300,6 +307,7 @@ export class PerpsStreamBridge {
             levels,
             nSigFigs,
             mantissa,
+            subscriptionId,
           }),
         ),
       perpsDeactivateOrderBookAggregatedStream: () => {
@@ -840,22 +848,33 @@ export class PerpsStreamBridge {
    * @param params.levels - Number of levels per side to request.
    * @param params.nSigFigs - Server-side aggregation significant figures.
    * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+   * @param params.subscriptionId - UI identity echoed on every emission.
    */
   #activateOrderBookAggregatedStream(params: {
     symbol: string;
     levels?: number;
     nSigFigs?: 2 | 3 | 4 | 5;
     mantissa?: 2 | 5;
+    subscriptionId?: string;
   }): void {
-    const { symbol } = params;
+    const { symbol, subscriptionId, levels, nSigFigs, mantissa } = params;
     this.#tearDownChannel('orderBookAggregated');
     if (symbol) {
+      // Capture the UI identity in this subscription's closures so emissions
+      // from a prior grouping keep their old id after the UI has already
+      // switched — the StreamManager then discards the mismatch.
+      const emitExtra =
+        subscriptionId === undefined ? undefined : { subscriptionId };
       this.#addDynamicSubscription('orderBookAggregated', () =>
         this.#subscribeAggregatedOrderBook({
-          ...params,
-          callback: (data: unknown) => this.#emit('orderBookAggregated', data),
+          symbol,
+          levels,
+          nSigFigs,
+          mantissa,
+          callback: (data: unknown) =>
+            this.#emit('orderBookAggregated', data, emitExtra),
           onStatusChange: (status) =>
-            this.#emit('orderBookAggregatedStatus', status),
+            this.#emit('orderBookAggregatedStatus', status, emitExtra),
         }),
       );
     }

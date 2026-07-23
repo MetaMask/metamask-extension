@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
 import type {
   OrderBookConnectionStatus,
@@ -6,6 +6,7 @@ import type {
 } from '../../../providers/perps';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -66,6 +67,32 @@ const getOrderBookAggregatedStatusChannel = (sm: PerpsStreamManager) =>
   sm.orderBookAggregatedStatus;
 
 /**
+ * Build the UI-owned identity for an aggregated order-book subscription.
+ * Must stay in sync with the hook's `resetKey` so channel clears and packet
+ * filtering share the same generation.
+ *
+ * @param params - Identity components.
+ * @param params.symbol - Market symbol.
+ * @param params.nSigFigs - Server aggregation significant figures.
+ * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+ * @param params.reconnectNonce - Bumped by `reconnect()` to force a new socket.
+ * @returns Stable identity string carried through activate + emissions.
+ */
+export function buildOrderBookAggregatedSubscriptionId({
+  symbol,
+  nSigFigs,
+  mantissa,
+  reconnectNonce,
+}: {
+  symbol: string;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+  reconnectNonce: number;
+}): string {
+  return `${symbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${reconnectNonce}`;
+}
+
+/**
  * Hook for real-time order book data via background stream notifications.
  *
  * Activates the background order-book stream for `symbol` (mirrors
@@ -89,6 +116,7 @@ export function usePerpsLiveOrderBook(
   } = options;
   const activeSymbol = enabled ? symbol : undefined;
   const isAggregated = channel === 'orderBookAggregated';
+  const { streamManager } = usePerpsStreamManager();
 
   // Bumped by reconnect() to force the activate effect to tear down and
   // re-subscribe (which rebuilds the aggregated channel's dedicated socket).
@@ -102,12 +130,34 @@ export function usePerpsLiveOrderBook(
   // drop the prior grouping's rows the instant the grouping changes. The
   // reconnect nonce is also folded in so a manual reconnect clears the stale
   // book (and resets the status channel to `connecting`) while re-subscribing.
+  // This same string is the subscription identity tagged on activate + every
+  // background emission so late packets from the prior grouping are discarded.
+  let subscriptionId: string | undefined;
   let resetKey: string | undefined;
   if (activeSymbol) {
-    resetKey = isAggregated
-      ? `${activeSymbol}:${nSigFigs ?? ''}:${mantissa ?? ''}:${reconnectNonce}`
-      : activeSymbol;
+    if (isAggregated) {
+      subscriptionId = buildOrderBookAggregatedSubscriptionId({
+        symbol: activeSymbol,
+        nSigFigs,
+        mantissa,
+        reconnectNonce,
+      });
+      resetKey = subscriptionId;
+    } else {
+      resetKey = activeSymbol;
+    }
   }
+
+  // Register the active identity before paint so a late IPC packet from the
+  // prior grouping cannot land between clearCache and the next stream update.
+  useLayoutEffect(() => {
+    if (!isAggregated || !streamManager) {
+      return;
+    }
+    streamManager.setActiveOrderBookAggregatedSubscriptionId(
+      subscriptionId ?? null,
+    );
+  }, [isAggregated, streamManager, subscriptionId]);
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     isAggregated ? getOrderBookAggregatedChannel : getOrderBookChannel,
@@ -132,7 +182,13 @@ export function usePerpsLiveOrderBook(
       ? 'perpsDeactivateOrderBookAggregatedStream'
       : 'perpsDeactivateOrderBookStream';
     submitRequestToBackground(activateAction, [
-      { symbol, levels, nSigFigs, mantissa },
+      {
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+        ...(isAggregated ? { subscriptionId } : {}),
+      },
     ]).catch(() => {
       // Controller not ready yet — stream will activate on retry when symbol changes.
     });
@@ -150,6 +206,7 @@ export function usePerpsLiveOrderBook(
     mantissa,
     isAggregated,
     reconnectNonce,
+    subscriptionId,
   ]);
 
   return {

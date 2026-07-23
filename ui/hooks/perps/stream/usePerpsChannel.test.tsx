@@ -205,4 +205,89 @@ describe('usePerpsChannel', () => {
     expect(result.current.data).toBeNull();
     expect(result.current.isInitialLoading).toBe(true);
   });
+
+  it('keeps the channel empty when a prior-identity packet arrives after reset, even if the new subscription reports connected', () => {
+    const manager = new PerpsStreamManager();
+    manager.init('0xacc');
+
+    const oldBook: OrderBookData = {
+      bids: [
+        {
+          price: '73775',
+          size: '0.04',
+          total: '0.04',
+          notional: '2967',
+          totalNotional: '2967',
+        },
+      ],
+      asks: [],
+      spread: '2',
+      spreadPercentage: '0.0027',
+      midPrice: '73776',
+      lastUpdated: 1,
+      maxTotal: '0.04',
+    };
+
+    const oldIdentity = 'BTC:4::0';
+    const newIdentity = 'BTC:5::0';
+
+    manager.setActiveOrderBookAggregatedSubscriptionId(oldIdentity);
+    manager.handleBackgroundUpdate({
+      channel: 'orderBookAggregated',
+      data: oldBook,
+      subscriptionId: oldIdentity,
+    });
+
+    mockUsePerpsStreamManager.mockReturnValue({
+      streamManager: manager,
+      isInitializing: false,
+      error: null,
+      selectedAddress: '0xacc',
+    });
+
+    const { result, rerender } = renderHook(
+      ({ key }: { key: string }) =>
+        usePerpsChannel((sm) => sm.orderBookAggregated, EMPTY_ORDER_BOOK, key),
+      { initialProps: { key: oldIdentity } },
+    );
+
+    expect(result.current.data).toStrictEqual(oldBook);
+    expect(result.current.isInitialLoading).toBe(false);
+
+    // Grouping change: UI switches identity and clears the channel before the
+    // background finishes tearing down the old socket.
+    act(() => {
+      manager.setActiveOrderBookAggregatedSubscriptionId(newIdentity);
+    });
+    rerender({ key: newIdentity });
+
+    expect(result.current.data).toBeNull();
+    expect(result.current.isInitialLoading).toBe(true);
+
+    // Late packet from the prior grouping arrives during the IPC gap.
+    act(() => {
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: oldBook,
+        subscriptionId: oldIdentity,
+      });
+    });
+
+    expect(result.current.data).toBeNull();
+    expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+
+    // New subscription reports connected before its first snapshot — an
+    // ordering the controller permits. Old rows must still not render.
+    act(() => {
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: newIdentity,
+      });
+    });
+
+    expect(result.current.data).toBeNull();
+    expect(result.current.isInitialLoading).toBe(true);
+    expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+  });
 });
