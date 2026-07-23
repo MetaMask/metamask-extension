@@ -184,6 +184,7 @@ export function OrderContent({ order }: { order: RampsOrder }) {
         className="py-6"
       >
         <BadgeWrapper
+          className="self-center"
           badge={
             <AvatarNetwork
               src={networkImage}

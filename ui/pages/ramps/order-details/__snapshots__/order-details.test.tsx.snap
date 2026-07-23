@@ -40,7 +40,7 @@ exports[`RampsOrderDetailsScreen renders order content and the completed snapsho
         class="flex flex-col gap-3 items-center py-6"
       >
         <div
-          class="relative inline-flex self-start"
+          class="relative inline-flex self-center"
         >
           <div
             class="inline-flex"

@@ -10,7 +10,7 @@ exports[`OrderContent (completed) matches the completed snapshot 1`] = `
       class="flex flex-col gap-3 items-center py-6"
     >
       <div
-        class="relative inline-flex self-start"
+        class="relative inline-flex self-center"
       >
         <div
           class="inline-flex"
@@ -169,7 +169,7 @@ exports[`OrderContent (pending) matches the pending snapshot 1`] = `
       class="flex flex-col gap-3 items-center py-6"
     >
       <div
-        class="relative inline-flex self-start"
+        class="relative inline-flex self-center"
       >
         <div
           class="inline-flex"
