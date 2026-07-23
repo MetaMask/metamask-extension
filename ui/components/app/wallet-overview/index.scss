@@ -1,5 +1,15 @@
 @use "design-system";
 
+$wallet-overview-sidepanel-max-width: 490px;
+
+@mixin sidepanel-left-align-before-max-width {
+  .wallet-overview-sidepanel & {
+    @media (max-width: $wallet-overview-sidepanel-max-width) {
+      align-items: start;
+    }
+  }
+}
+
 .wallet-overview {
   display: flex;
   justify-content: space-between;
@@ -14,12 +24,6 @@
     align-items: center;
   }
 
-  &-sidepanel {
-    @media (max-width: 490px) {
-      align-items: start;
-    }
-  }
-
   &__balance {
     flex: 1;
     display: flex;
@@ -32,11 +36,7 @@
       align-items: center;
     }
 
-    .wallet-overview-sidepanel > & {
-      @media (max-width: 490px) {
-        align-items: start;
-      }
-    }
+    @include sidepanel-left-align-before-max-width;
   }
 
   &__buttons {
@@ -44,7 +44,7 @@
     flex-direction: row;
     height: 100%;
     width: 100%;
-    max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
+    max-width: calc(#{$wallet-overview-sidepanel-max-width} - 32px);
 
     .wallet-overview-fullscreen > & {
       align-self: center;
@@ -94,11 +94,7 @@
       align-items: center;
     }
 
-    .wallet-overview-sidepanel & {
-      @media (max-width: 490px) {
-        align-items: start;
-      }
-    }
+    @include sidepanel-left-align-before-max-width;
   }
 
   &__primary-container {
