@@ -43,12 +43,23 @@ function aggregateGroupBalance(
   const placeholderAccount = accountsById[accountIds[0]] ?? {
     id: accountIds[0],
   };
+  // Strip asset metadata before aggregating. Amounts in `assetsBalance` are
+  // always human-readable (data sources convert raw base units on write), but
+  // when `decimals` metadata is present the selector applies a
+  // `scaleToHumanIfRaw` heuristic that re-divides any amount >= 10^decimals,
+  // zeroing out legitimately large balances (e.g. 54B tokens with 9 decimals,
+  // #44786). Metadata is otherwise only copied into the returned `entries`,
+  // which are discarded here, so removing it only disables the rescaling.
+  const stateWithoutAssetMetadata = {
+    ...assetsControllerState,
+    assetsInfo: {},
+  };
   // Do not pass the optional `trace` callback. This runs inside a Redux
   // selector that recomputes per account group on every state change, so
   // tracing it emits an unbounded number of transaction roots (#44447).
   const { totalBalanceInFiat = 0, pricePercentChange1d = 0 } =
     getAggregatedBalanceForAccount(
-      assetsControllerState,
+      stateWithoutAssetMetadata,
       placeholderAccount,
       enabledNetworkMap,
       undefined,

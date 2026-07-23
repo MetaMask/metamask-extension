@@ -7,6 +7,9 @@
  * a 54.06B TangYuan balance with 9 decimals) must not be re-scaled as if the
  * amount were raw base units, which made them drop out of the aggregated
  * total while individual token rows displayed the correct fiat value.
+ * `aggregateGroupBalance` guards against this by stripping `assetsInfo`
+ * (decimals metadata) from the state passed to the package selector, which
+ * disables its `scaleToHumanIfRaw` heuristic.
  */
 import { calculateBalanceForAllWallets } from './assets.balance-utils';
 

@@ -5529,7 +5529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:11.1.1":
+"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.1.1":
   version: 11.1.1
   resolution: "@metamask/assets-controller@npm:11.1.1"
   dependencies:
@@ -5564,44 +5564,6 @@ __metadata:
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
   checksum: 10/7bf0f6cd21e5aecc1b6760937a3c4a6e140d9f323b681b0639ab26a09abdc1626367c90f32ab5bf840a37b21f1a0f53de075a0563d2543fb22ab0b6d80a35a56
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A11.1.1#~/.yarn/patches/@metamask-assets-controller-npm-11.1.1-1babe33d46.patch":
-  version: 11.1.1
-  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A11.1.1#~/.yarn/patches/@metamask-assets-controller-npm-11.1.1-1babe33d46.patch::version=11.1.1&hash=94309a"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/account-tree-controller": "npm:^7.5.5"
-    "@metamask/accounts-controller": "npm:^39.0.5"
-    "@metamask/assets-controllers": "npm:^110.0.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/client-controller": "npm:^1.0.1"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^7.0.0"
-    "@metamask/keyring-api": "npm:^23.5.0"
-    "@metamask/keyring-controller": "npm:^27.1.0"
-    "@metamask/keyring-internal-api": "npm:^11.0.1"
-    "@metamask/keyring-snap-client": "npm:^9.2.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/network-enablement-controller": "npm:^5.6.0"
-    "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/phishing-controller": "npm:^17.3.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
-    "@metamask/preferences-controller": "npm:^23.1.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^69.2.1"
-    "@metamask/utils": "npm:^11.11.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    lodash: "npm:^4.17.21"
-    p-limit: "npm:^3.1.0"
-  checksum: 10/7276d17dcab2fe75ec3c1b8be163c358b99504e790e12b978cc9dfa8a418442c046c7d6600980f2504d5b04235bf3839cd5c0c13405410f65448b37cc8fda126
   languageName: node
   linkType: hard
 
@@ -32844,7 +32806,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A11.1.1#~/.yarn/patches/@metamask-assets-controller-npm-11.1.1-1babe33d46.patch"
+    "@metamask/assets-controller": "npm:^11.1.1"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
