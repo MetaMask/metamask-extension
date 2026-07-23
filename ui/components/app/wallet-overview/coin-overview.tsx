@@ -246,10 +246,11 @@ export const CoinOverview = ({
     selectedGroupBalance?.totalBalanceInUserCurrency ?? 0,
   );
 
+  const shouldCheckBalanceState =
+    Boolean(selectedAccountGroup) && !isTestnet && !balanceIsCached;
+
   const shouldDelayZeroFiatBalance =
-    Boolean(selectedAccountGroup) &&
-    !isTestnet &&
-    !balanceIsCached &&
+    shouldCheckBalanceState &&
     !showNativeTokenAsMain &&
     hasBalance &&
     aggregateFiatBalanceIsZero;
@@ -258,17 +259,13 @@ export const CoinOverview = ({
     () =>
       isEvm &&
       (shouldDelayZeroFiatBalance ||
-        (Boolean(selectedAccountGroup) &&
-          !isTestnet &&
-          !balanceIsCached &&
+        (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
-      selectedAccountGroup,
-      isTestnet,
-      balanceIsCached,
+      shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
@@ -278,19 +275,10 @@ export const CoinOverview = ({
   const shouldShowBalanceEmptyState = useMemo(
     () =>
       isEvm &&
-      Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
+      shouldCheckBalanceState &&
       !hasBalance &&
       !shouldShowBalanceLoadingState,
-    [
-      isEvm,
-      selectedAccountGroup,
-      isTestnet,
-      balanceIsCached,
-      hasBalance,
-      shouldShowBalanceLoadingState,
-    ],
+    [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
 
   const handleSensitiveToggle = useCallback(() => {
