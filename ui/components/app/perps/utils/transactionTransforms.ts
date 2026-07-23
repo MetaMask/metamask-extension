@@ -601,6 +601,65 @@ export function transformUserHistoryToTransactions(
 }
 
 /**
+ * Shared logic behind `transformWalletPerpsDepositsToTransactions` and
+ * `transformWalletPerpsWithdrawalsToTransactions`: decodes the USDC amount
+ * from the wallet transaction's ERC20-transfer calldata and maps its wallet
+ * status to a Perps deposit/withdrawal row, differing only in sign, title
+ * wording, and the deposit/withdrawal type.
+ *
+ * @param transactions - Array of TransactionMeta already scoped to the
+ * active account and the relevant deposit/withdrawal tx type(s).
+ * @param direction - Whether these are deposit or withdrawal transactions.
+ * @returns Array of PerpsTransaction objects with the given direction's type.
+ */
+function transformWalletPerpsTransactions(
+  transactions: TransactionMeta[],
+  direction: 'deposit' | 'withdrawal',
+): PerpsTransaction[] {
+  const isDeposit = direction === 'deposit';
+  const sign = isDeposit ? '+' : '-';
+  const verb = isDeposit ? 'Deposited' : 'Withdrew';
+  const emptyTitle = isDeposit ? 'Deposit' : 'Withdrawal';
+
+  return transactions.map((tx) => {
+    const tokenTransfer = getTokenTransferData(tx);
+    const decoded = tokenTransfer
+      ? parseStandardTokenTransactionData(tokenTransfer.data)
+      : undefined;
+    const rawAmount = decoded?.args?._value?.toString?.();
+    const amountBN =
+      rawAmount === undefined
+        ? new BigNumber(0)
+        : calcTokenAmount(rawAmount, ARBITRUM_USDC.decimals);
+
+    const displayAmount = `${sign}$${amountBN.toFixed(2)}`;
+    const status = WALLET_TX_STATUS_TO_PERPS_STATUS[tx.status] ?? 'pending';
+    const title = amountBN.isZero()
+      ? emptyTitle
+      : `${verb} ${amountBN.toFixed(2)} ${ARBITRUM_USDC.symbol}`;
+
+    return {
+      id: `wallet-${direction}-${tx.id}`,
+      type: direction,
+      category: direction,
+      title,
+      subtitle: getDepositWithdrawalStatusText(status),
+      timestamp: tx.time ?? 0,
+      symbol: ARBITRUM_USDC.symbol,
+      depositWithdrawal: {
+        amount: displayAmount,
+        amountNumber: isDeposit ? amountBN.toNumber() : -amountBN.toNumber(),
+        isPositive: isDeposit,
+        asset: ARBITRUM_USDC.symbol,
+        txHash: tx.hash ?? '',
+        status,
+        type: direction,
+      },
+    };
+  });
+}
+
+/**
  * Transform wallet-tracked Perps deposit transactions (`perpsDeposit` /
  * `perpsDepositAndOrder`) into `PerpsTransaction` rows.
  *
@@ -625,42 +684,7 @@ export function transformUserHistoryToTransactions(
 export function transformWalletPerpsDepositsToTransactions(
   transactions: TransactionMeta[],
 ): PerpsTransaction[] {
-  return transactions.map((tx) => {
-    const tokenTransfer = getTokenTransferData(tx);
-    const decoded = tokenTransfer
-      ? parseStandardTokenTransactionData(tokenTransfer.data)
-      : undefined;
-    const rawAmount = decoded?.args?._value?.toString?.();
-    const amountBN =
-      rawAmount === undefined
-        ? new BigNumber(0)
-        : calcTokenAmount(rawAmount, ARBITRUM_USDC.decimals);
-
-    const displayAmount = `+$${amountBN.toFixed(2)}`;
-    const status = WALLET_TX_STATUS_TO_PERPS_STATUS[tx.status] ?? 'pending';
-    const title = amountBN.isZero()
-      ? 'Deposit'
-      : `Deposited ${amountBN.toFixed(2)} ${ARBITRUM_USDC.symbol}`;
-
-    return {
-      id: `wallet-deposit-${tx.id}`,
-      type: 'deposit' as const,
-      category: 'deposit' as const,
-      title,
-      subtitle: getDepositWithdrawalStatusText(status),
-      timestamp: tx.time ?? 0,
-      symbol: ARBITRUM_USDC.symbol,
-      depositWithdrawal: {
-        amount: displayAmount,
-        amountNumber: amountBN.toNumber(),
-        isPositive: true,
-        asset: ARBITRUM_USDC.symbol,
-        txHash: tx.hash ?? '',
-        status,
-        type: 'deposit' as const,
-      },
-    };
-  });
+  return transformWalletPerpsTransactions(transactions, 'deposit');
 }
 
 /**
@@ -681,42 +705,7 @@ export function transformWalletPerpsDepositsToTransactions(
 export function transformWalletPerpsWithdrawalsToTransactions(
   transactions: TransactionMeta[],
 ): PerpsTransaction[] {
-  return transactions.map((tx) => {
-    const tokenTransfer = getTokenTransferData(tx);
-    const decoded = tokenTransfer
-      ? parseStandardTokenTransactionData(tokenTransfer.data)
-      : undefined;
-    const rawAmount = decoded?.args?._value?.toString?.();
-    const amountBN =
-      rawAmount === undefined
-        ? new BigNumber(0)
-        : calcTokenAmount(rawAmount, ARBITRUM_USDC.decimals);
-
-    const displayAmount = `-$${amountBN.toFixed(2)}`;
-    const status = WALLET_TX_STATUS_TO_PERPS_STATUS[tx.status] ?? 'pending';
-    const title = amountBN.isZero()
-      ? 'Withdrawal'
-      : `Withdrew ${amountBN.toFixed(2)} ${ARBITRUM_USDC.symbol}`;
-
-    return {
-      id: `wallet-withdrawal-${tx.id}`,
-      type: 'withdrawal' as const,
-      category: 'withdrawal' as const,
-      title,
-      subtitle: getDepositWithdrawalStatusText(status),
-      timestamp: tx.time ?? 0,
-      symbol: ARBITRUM_USDC.symbol,
-      depositWithdrawal: {
-        amount: displayAmount,
-        amountNumber: -amountBN.toNumber(),
-        isPositive: false,
-        asset: ARBITRUM_USDC.symbol,
-        txHash: tx.hash ?? '',
-        status,
-        type: 'withdrawal' as const,
-      },
-    };
-  });
+  return transformWalletPerpsTransactions(transactions, 'withdrawal');
 }
 
 /**
