@@ -218,14 +218,20 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   // that gap needs closing — see docs/superpowers/specs for the write-up.
   const watchForRedirectCallback = useCallback(
     (openedTabId: number, providerCode: string) => {
+      // Tear down any watch still active from a prior Continue click before
+      // registering a new one, so listeners never accumulate.
+      cleanupRedirectWatchRef.current?.();
+
       const onTabUpdated = (
         tabId: number,
         changeInfo: { url?: string; pendingUrl?: string },
+        tab?: { url?: string },
       ) => {
         if (tabId !== openedTabId) {
           return;
         }
-        const candidateUrl = changeInfo.url ?? changeInfo.pendingUrl;
+        const candidateUrl =
+          changeInfo.url ?? changeInfo.pendingUrl ?? tab?.url;
         if (!candidateUrl?.startsWith(getRampCallbackBaseUrl())) {
           return;
         }
