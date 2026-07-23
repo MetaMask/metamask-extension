@@ -11,6 +11,8 @@ import {
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
+import type { PerpsTransaction } from '../../components/app/perps/types';
+import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -30,12 +32,12 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
 
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
-  usePerpsTransactionHistory: () => ({
+  usePerpsTransactionHistory: jest.fn(() => ({
     transactions: mockTransactions,
     isLoading: false,
     error: null,
     refetch: jest.fn(),
-  }),
+  })),
 }));
 
 const mockGetIsPerpsExperienceAvailable =
@@ -240,6 +242,77 @@ describe('PerpsActivityPage', () => {
         `${TX_DETAILS_ROUTE}/eip155:42161/${depositTransaction?.depositWithdrawal?.txHash}`,
         { state: undefined },
       );
+    });
+
+    it('does not render a deposit row without a destination as clickable', () => {
+      const baseDeposit = mockTransactions.find((tx) => tx.id === 'tx-005');
+      if (!baseDeposit) {
+        throw new Error('tx-005 fixture not found in mockTransactions');
+      }
+      const depositWithoutTxHash: PerpsTransaction = {
+        ...baseDeposit,
+        depositWithdrawal: undefined,
+      };
+      jest.mocked(usePerpsTransactionHistory).mockReturnValue({
+        transactions: [depositWithoutTxHash],
+        isLoading: false,
+        error: null,
+        refetch: jest.fn(),
+      });
+
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(
+        screen.getByTestId('perps-activity-filter-option-deposit'),
+      );
+
+      const depositCard = screen.getByTestId('transaction-card-tx-005');
+      expect(depositCard).not.toHaveClass('cursor-pointer');
+
+      fireEvent.click(depositCard);
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('filter persistence via URL search params', () => {
+    it('reads the initial filter from the "filter" query param', () => {
+      renderWithProvider(
+        <PerpsActivityPage />,
+        createMockStore(),
+        '/perps/activity?filter=order',
+      );
+
+      expect(
+        screen.getByTestId('perps-activity-filter-button'),
+      ).toHaveTextContent(messages.perpsOrders.message);
+    });
+
+    it('falls back to the "trade" filter for an invalid query param', () => {
+      renderWithProvider(
+        <PerpsActivityPage />,
+        createMockStore(),
+        '/perps/activity?filter=not-a-real-filter',
+      );
+
+      expect(
+        screen.getByTestId('perps-activity-filter-button'),
+      ).toHaveTextContent(messages.perpsTrades.message);
+    });
+
+    it('updates the "filter" query param in the URL when a new filter is selected', () => {
+      renderWithProvider(
+        <PerpsActivityPage />,
+        createMockStore(),
+        '/perps/activity',
+      );
+
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
+
+      expect(
+        screen.getByTestId('perps-activity-filter-button'),
+      ).toHaveTextContent(messages.perpsOrders.message);
     });
   });
 });

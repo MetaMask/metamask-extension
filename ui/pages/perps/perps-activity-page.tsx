@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -43,6 +43,19 @@ import {
   type DropdownOption,
 } from './market-list/components/dropdown';
 
+const ACTIVITY_FILTERS: PerpsTransactionFilter[] = [
+  'trade',
+  'order',
+  'funding',
+  'deposit',
+];
+const DEFAULT_ACTIVITY_FILTER: PerpsTransactionFilter = 'trade';
+
+const isValidActivityFilter = (
+  value: string | null,
+): value is PerpsTransactionFilter =>
+  ACTIVITY_FILTERS.includes(value as PerpsTransactionFilter);
+
 /**
  * PerpsActivityPage component
  * Displays the full transaction history with filter tabs
@@ -52,8 +65,32 @@ const PerpsActivityPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const [activeFilter, setActiveFilter] =
-    useState<PerpsTransactionFilter>('trade');
+  // The active filter is stored in the URL (rather than local state) so it
+  // survives navigating to a transaction's details page and back: `navigate(-1)`
+  // pops the history entry, and the query param travels with it, whereas local
+  // state would reset on remount.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get('filter');
+  const activeFilter: PerpsTransactionFilter = isValidActivityFilter(
+    filterParam,
+  )
+    ? filterParam
+    : DEFAULT_ACTIVITY_FILTER;
+
+  const handleFilterChange = useCallback(
+    (filter: PerpsTransactionFilter) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('filter', filter);
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
   // Fetch real transaction data from the Perps controller.
   // forceFreshOnMount: user opening the Activity page must see the latest
   // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
@@ -107,7 +144,9 @@ const PerpsActivityPage = () => {
 
   // Navigate to the transaction's details view. Orders/trades/funding open
   // the dedicated Perps transaction details page; deposits/withdrawals open
-  // the existing generic on-chain transaction details route.
+  // the existing generic on-chain transaction details route. Kept as a
+  // defensive no-op guard even though rows without a destination don't get
+  // this handler wired up (see `hasDestination` below).
   const handleTransactionClick = useCallback(
     (transaction: PerpsTransaction) => {
       const destination = getPerpsTransactionDestination(transaction);
@@ -144,7 +183,7 @@ const PerpsActivityPage = () => {
           <Dropdown
             options={filterOptions}
             selectedId={activeFilter}
-            onChange={setActiveFilter}
+            onChange={handleFilterChange}
             testId="perps-activity-filter"
           />
         </Box>
@@ -218,16 +257,25 @@ const PerpsActivityPage = () => {
 
                 {/* Transactions */}
                 <Box flexDirection={BoxFlexDirection.Column}>
-                  {group.transactions.map((transaction) => (
-                    <TransactionCard
-                      key={transaction.id}
-                      transaction={transaction}
-                      onClick={handleTransactionClick}
-                      screenName={
-                        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
-                      }
-                    />
-                  ))}
+                  {group.transactions.map((transaction) => {
+                    // Only render the row as clickable when it actually has
+                    // somewhere to navigate to (e.g. a deposit/withdrawal
+                    // missing a tx hash has no destination) — otherwise the
+                    // row would look interactive but silently no-op on click.
+                    const hasDestination = Boolean(
+                      getPerpsTransactionDestination(transaction),
+                    );
+                    return (
+                      <TransactionCard
+                        key={transaction.id}
+                        transaction={transaction}
+                        onClick={hasDestination ? handleTransactionClick : undefined}
+                        screenName={
+                          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
+                        }
+                      />
+                    );
+                  })}
                 </Box>
               </Box>
             ))}
