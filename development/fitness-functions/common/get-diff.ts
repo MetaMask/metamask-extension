@@ -57,7 +57,7 @@ function runGitCommand(args: string[]): string {
  * @returns The diff for the HEAD commit
  */
 async function getCommitDiff(): Promise<string> {
-  return runGitCommand(['diff', 'HEAD^']);
+  return runGitCommand(['diff', 'HEAD^', 'HEAD']);
 }
 
 function getPreCommitHookDiff(): string {
