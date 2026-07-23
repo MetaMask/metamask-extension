@@ -23,12 +23,15 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsFillTag } from '../../components/app/perps/perps-fill-tag';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
+import { getOrderStatusI18nKey } from '../../components/app/perps/utils/orderUtils';
 import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { formatPnl } from '../../../shared/lib/perps-formatters';
+import { PerpsOrderTransactionStatus } from '../../components/app/perps/types';
 import type { PerpsTransaction } from '../../components/app/perps/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Row } from '../details/components/shared';
@@ -69,15 +72,33 @@ const OrderDetailRows = ({
   t: ReturnType<typeof useI18nContext>;
 }) => {
   const { order } = transaction;
+
+  // Hooks must run unconditionally, so fall back to safe inputs when there's
+  // no order to render (the early return below handles that case) — mirrors
+  // mobile's usePerpsOrderFees({ orderType: transaction.order.type, amount:
+  // transaction.order.size }) call in PerpsOrderTransactionView.
+  const { feeResult } = usePerpsOrderFees({
+    symbol: transaction.symbol,
+    orderType: order?.type ?? 'market',
+    amount: order?.size ?? '0',
+  });
+
   if (!order) {
     return null;
   }
+
+  // Mobile only shows non-zero fee amounts once the order has actually
+  // filled (unfilled/canceled/queued orders never incurred a fee) — zero the
+  // rows out rather than hiding them so the breakdown's shape stays constant.
+  const isFilled = order.text === PerpsOrderTransactionStatus.Filled;
+  const getFeeDisplay = (amount: number | undefined) =>
+    formatPerpsFiatUniversal(isFilled ? (amount ?? 0) : 0);
 
   return (
     <>
       <Row
         label={t('perpsOrderStatus')}
-        value={order.text || t('perpsStatusOpen')}
+        value={t(getOrderStatusI18nKey(order.text)) || t('perpsStatusOpen')}
       />
       <Row
         label={t('perpsOrderType')}
@@ -94,6 +115,18 @@ const OrderDetailRows = ({
         value={formatPerpsFiatMinimal(order.size)}
       />
       <Row label={t('perpsOrderFilled')} value={order.filled} />
+      <Row
+        label={t('perpsOrderMetamaskFee')}
+        value={getFeeDisplay(feeResult?.metamaskFeeAmount)}
+      />
+      <Row
+        label={t('perpsOrderHyperliquidFee')}
+        value={getFeeDisplay(feeResult?.protocolFeeAmount)}
+      />
+      <Row
+        label={t('perpsOrderTotalFee')}
+        value={getFeeDisplay(feeResult?.feeAmount)}
+      />
     </>
   );
 };
@@ -121,7 +154,11 @@ const TradeDetailRows = ({
     return null;
   }
 
-  const pnlNumber = parseFloat(fill.pnl);
+  // Use the already net-of-fees amount (`pnl - fee`, computed in
+  // `transformFillsToTransactions`) rather than the raw gross `fill.pnl`
+  // field from the provider — this matches what's shown as the colored
+  // amount in the activity list row and what mobile renders as "Net P&L".
+  const pnlNumber = fill.amountNumber;
   const showPnl =
     transaction.category === 'position_close' &&
     !isNaN(pnlNumber) &&
@@ -130,7 +167,9 @@ const TradeDetailRows = ({
   return (
     <>
       <Row
-        label={t('perpsEntryPrice')}
+        label={
+          fill.action === 'Closed' ? t('perpsClosePrice') : t('perpsEntryPrice')
+        }
         value={formatPerpsFiatUniversal(fill.entryPrice)}
       />
       <Row label={t('perpsSize')} value={`${fill.size} ${displaySymbol}`} />
@@ -280,6 +319,13 @@ const PerpsTransactionDetailsPage = () => {
             symbol={transaction.symbol}
             size={AvatarTokenSize.Lg}
           />
+          <Text
+            variant={TextVariant.HeadingLg}
+            fontWeight={FontWeight.Medium}
+            data-testid="perps-transaction-details-hero-amount"
+          >
+            {transaction.subtitle}
+          </Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}

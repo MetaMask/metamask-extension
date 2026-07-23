@@ -11,6 +11,7 @@ import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-fla
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import type { PerpsTransaction } from '../../components/app/perps/types';
+import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import PerpsTransactionDetailsPage from './perps-transaction-details-page';
 
 const mockNavigate = jest.fn();
@@ -27,6 +28,14 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
+jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: jest.fn(() => ({
+    feeResult: undefined,
+    isLoading: false,
+    hasError: false,
+  })),
+}));
+
 const mockGetIsPerpsExperienceAvailable =
   getIsPerpsExperienceAvailable as jest.MockedFunction<
     typeof getIsPerpsExperienceAvailable
@@ -38,6 +47,23 @@ const findTransaction = (id: string): PerpsTransaction => {
     throw new Error(`Missing mock transaction with id ${id}`);
   }
   return transaction;
+};
+
+// Finds the value rendered for a given row label, scoping the query to a
+// single `transaction-breakdown-row` so labels/values that happen to share
+// text with another row (e.g. "Status" showing "Filled" and the "Filled"
+// row both rendering the word "Filled") don't collide.
+const getRowValueByLabel = (label: string): string | null => {
+  const row = screen
+    .getAllByTestId('transaction-breakdown-row')
+    .find((rowElement) =>
+      rowElement.querySelector('[data-testid="transaction-breakdown-row-title"]')
+        ?.textContent === label,
+    );
+  return (
+    row?.querySelector('[data-testid="transaction-breakdown-row-value"]')
+      ?.textContent ?? null
+  );
 };
 
 const createMockStore = () =>
@@ -155,14 +181,112 @@ describe('PerpsTransactionDetailsPage', () => {
         screen.queryByText(messages.perpsLimitPrice.message),
       ).not.toBeInTheDocument();
     });
+
+    it('renders the localized status via the i18n lookup, not the raw order.text field directly', () => {
+      const transaction = findTransaction('tx-004b');
+      renderWithTransaction(transaction);
+
+      expect(transaction.order?.text).toBe('Filled');
+      expect(getRowValueByLabel(messages.perpsOrderStatus.message)).toBe(
+        messages.perpsStatusFilled.message,
+      );
+    });
+  });
+
+  describe('canceled order transaction (tx-004c)', () => {
+    it('renders the localized status via the i18n lookup, not the raw order.text field directly', () => {
+      const transaction = findTransaction('tx-004c');
+      renderWithTransaction(transaction);
+
+      expect(transaction.order?.text).toBe('Canceled');
+      expect(getRowValueByLabel(messages.perpsOrderStatus.message)).toBe(
+        messages.perpsStatusCanceled.message,
+      );
+    });
+  });
+
+  describe('order fee breakdown', () => {
+    it('renders MetaMask fee, Hyperliquid fee, and Total fee rows for a filled order', () => {
+      jest.mocked(usePerpsOrderFees).mockReturnValue({
+        feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
+        metamaskFeeRateDiscountPercentage: undefined,
+        feeResult: {
+          feeRate: 0.00145,
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.001,
+          feeAmount: 6.525,
+          protocolFeeAmount: 2.025,
+          metamaskFeeAmount: 4.5,
+        },
+        isLoading: false,
+        hasError: false,
+      });
+
+      // tx-004b is a market order with order.text === 'Filled'
+      renderWithTransaction(findTransaction('tx-004b'));
+
+      expect(
+        screen.getByText(messages.perpsOrderMetamaskFee.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderHyperliquidFee.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderTotalFee.message),
+      ).toBeInTheDocument();
+
+      expect(
+        getRowValueByLabel(messages.perpsOrderMetamaskFee.message),
+      ).toBe('$4.5');
+      expect(
+        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
+      ).toBe('$2.025');
+      expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
+        '$6.525',
+      );
+    });
+
+    it('zeroes out the fee rows for an unfilled order', () => {
+      jest.mocked(usePerpsOrderFees).mockReturnValue({
+        feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
+        metamaskFeeRateDiscountPercentage: undefined,
+        feeResult: {
+          feeRate: 0.00145,
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.001,
+          feeAmount: 6.525,
+          protocolFeeAmount: 2.025,
+          metamaskFeeAmount: 4.5,
+        },
+        isLoading: false,
+        hasError: false,
+      });
+
+      // tx-004 is an open (unfilled) limit order
+      renderWithTransaction(findTransaction('tx-004'));
+
+      expect(
+        getRowValueByLabel(messages.perpsOrderMetamaskFee.message),
+      ).toBe('$0');
+      expect(
+        getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
+      ).toBe('$0');
+      expect(getRowValueByLabel(messages.perpsOrderTotalFee.message)).toBe(
+        '$0',
+      );
+    });
   });
 
   describe('trade transaction with realized PnL (tx-002)', () => {
-    it('renders entry price, size, PnL, and fees rows', () => {
+    it('renders close price, size, PnL, and fees rows', () => {
       renderWithTransaction(findTransaction('tx-002'));
 
+      // tx-002 is a closed position (fill.action === 'Closed'), so the price
+      // row is labeled "Close price" rather than "Entry price".
       expect(
-        screen.getByText(messages.perpsEntryPrice.message),
+        screen.getByText(messages.perpsClosePrice.message),
       ).toBeInTheDocument();
       expect(screen.getByText(messages.perpsSize.message)).toBeInTheDocument();
       expect(screen.getByText('0.5 BTC')).toBeInTheDocument();
@@ -182,6 +306,47 @@ describe('PerpsTransactionDetailsPage', () => {
       renderWithTransaction(findTransaction('tx-002b'));
 
       expect(screen.getByText('-$45.50')).toHaveClass('text-error-default');
+    });
+  });
+
+  describe('trade transaction PnL uses the net-of-fees amount', () => {
+    it('renders fill.amountNumber (pnl - fee) rather than the raw gross fill.pnl', () => {
+      const baseTransaction = findTransaction('tx-002');
+      const baseFill = baseTransaction.fill;
+      if (!baseFill) {
+        throw new Error('tx-002 fixture is missing a fill');
+      }
+      const grossPnlTransaction: PerpsTransaction = {
+        ...baseTransaction,
+        fill: {
+          ...baseFill,
+          pnl: '150.00',
+          fee: '25.00',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+        },
+      };
+
+      renderWithTransaction(grossPnlTransaction);
+
+      // The net-of-fees value (150 - 25 = 125) is shown, not the gross $150.
+      expect(screen.getByText('+$125.00')).toBeInTheDocument();
+      expect(screen.queryByText('+$150.00')).not.toBeInTheDocument();
+    });
+
+    it('labels the price row "Close price" for a closed position fill', () => {
+      const transaction = findTransaction('tx-002');
+      expect(transaction.fill?.action).toBe('Closed');
+
+      renderWithTransaction(transaction);
+
+      expect(
+        screen.getByText(messages.perpsClosePrice.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.perpsEntryPrice.message),
+      ).not.toBeInTheDocument();
     });
   });
 

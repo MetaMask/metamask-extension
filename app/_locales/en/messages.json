@@ -7027,6 +7027,9 @@
   "perpsClosePosition": {
     "message": "Close position"
   },
+  "perpsClosePrice": {
+    "message": "Close price"
+  },
   "perpsCloseShort": {
     "message": "Close short"
   },
@@ -7315,6 +7318,12 @@
   "perpsOrderFilled": {
     "message": "Filled"
   },
+  "perpsOrderHyperliquidFee": {
+    "message": "Hyperliquid fee"
+  },
+  "perpsOrderMetamaskFee": {
+    "message": "MetaMask fee"
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
@@ -7323,6 +7332,9 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Total fee"
   },
   "perpsOrderType": {
     "message": "Order type"
