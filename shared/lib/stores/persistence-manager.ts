@@ -365,6 +365,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     supersedable,
   }: WriteRetryOptions): Promise<boolean> {
     if (!supersedable) {
+      // Backup retries intentionally hold the write lock until they finish.
+      // Primary storage has already been updated at this point, and aborting
+      // the backup retry could leave the recovery backup stale. This is
+      // especially risky for split state because the next write may not include
+      // backed-up keys such as KeyringController.
       return await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
     }
 
