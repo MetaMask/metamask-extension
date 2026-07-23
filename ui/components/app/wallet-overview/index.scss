@@ -14,6 +14,12 @@
     align-items: center;
   }
 
+  &-sidepanel {
+    @media (max-width: 490px) {
+      align-items: start;
+    }
+  }
+
   &__balance {
     flex: 1;
     display: flex;
@@ -24,6 +30,12 @@
 
     .wallet-overview-fullscreen > & {
       align-items: center;
+    }
+
+    .wallet-overview-sidepanel > & {
+      @media (max-width: 490px) {
+        align-items: start;
+      }
     }
   }
 
@@ -77,6 +89,16 @@
     min-width: 0;
     position: relative;
     align-items: start;
+
+    .wallet-overview-fullscreen & {
+      align-items: center;
+    }
+
+    .wallet-overview-sidepanel & {
+      @media (max-width: 490px) {
+        align-items: start;
+      }
+    }
   }
 
   &__primary-container {

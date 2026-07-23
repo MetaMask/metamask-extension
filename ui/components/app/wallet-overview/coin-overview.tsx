@@ -375,9 +375,7 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div
-        className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
-      >
+      <div className={`${classPrefix}-overview__balance`}>
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (
