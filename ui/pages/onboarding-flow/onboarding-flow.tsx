@@ -115,7 +115,6 @@ const ExperimentalArea = mmLazy(
 const toRelativePath = (path: string) =>
   toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
