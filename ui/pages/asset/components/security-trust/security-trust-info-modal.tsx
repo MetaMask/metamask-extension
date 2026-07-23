@@ -126,7 +126,9 @@ export const SecurityTrustInfoModal = ({
     tokenSymbol,
   } = sheetParams;
 
-  const alertIconProps = getSecurityAlertIconProps(securityConfig.alertSeverity);
+  const alertIconProps = getSecurityAlertIconProps(
+    securityConfig.alertSeverity,
+  );
   const isMalicious = severity === 'Malicious';
   const showProceedActions = Boolean(onProceed);
 
@@ -232,7 +234,10 @@ export const SecurityTrustInfoModal = ({
                         color={alertIconProps.color}
                       />
                     ) : null}
-                    <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      color={TextColor.TextDefault}
+                    >
                       {tag.label}
                     </Text>
                   </Box>
@@ -241,7 +246,11 @@ export const SecurityTrustInfoModal = ({
             ) : null}
 
             {showProceedActions ? (
-              <Box flexDirection={BoxFlexDirection.Column} gap={3} className="w-full">
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                gap={3}
+                className="w-full"
+              >
                 <Button
                   variant={ButtonVariant.Secondary}
                   size={ButtonSize.Lg}

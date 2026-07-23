@@ -14,6 +14,12 @@ export const shouldGateSecurityTrustCta = (
 
 /**
  * Builds modal params for Buy/Swap CTA gating (Continue anyway / Cancel).
+ *
+ * @param securityData - Token security data from the assets API.
+ * @param securityConfig - Result-type display configuration.
+ * @param tokenSymbol - Token symbol for sheet copy.
+ * @param onProceed - Callback when the user chooses Continue anyway.
+ * @param source - CTA source (`buy` or `swap`).
  */
 export const getSecurityTrustCtaSheetParams = (
   securityData: TokenSecurityData,

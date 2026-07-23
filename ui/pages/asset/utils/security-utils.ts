@@ -1,8 +1,4 @@
-import {
-  IconColor,
-  IconName,
-  TextColor,
-} from '@metamask/design-system-react';
+import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
 import type {
   FeatureTag,
   TokenSecurityData,
@@ -372,7 +368,7 @@ export const getFeatureTags = (
     for (const feature of features) {
       const def = negativeLabels[feature.featureId];
       if (def?.type === 'Malicious') {
-        totalMatching++;
+        totalMatching += 1;
         if (showAll || tags.length < FEATURE_TAG_DISPLAY_MAX) {
           tags.push({ label: def.label });
         }
@@ -383,7 +379,7 @@ export const getFeatureTags = (
     for (const feature of features) {
       const def = negativeLabels[feature.featureId];
       if (def?.type === 'Warning' || def?.type === 'Spam') {
-        totalMatching++;
+        totalMatching += 1;
         if (showAll || tags.length < FEATURE_TAG_DISPLAY_MAX) {
           tags.push({ label: def.label });
         }
@@ -438,7 +434,9 @@ export const formatCompactSupply = (
     return 'N/A';
   }
   const adjusted =
-    decimals != null && decimals > 0 ? supply / 10 ** decimals : supply;
+    decimals !== null && decimals !== undefined && decimals > 0
+      ? supply / 10 ** decimals
+      : supply;
   const units: [number, string][] = [
     [1e15, 'Q'],
     [1e12, 'T'],

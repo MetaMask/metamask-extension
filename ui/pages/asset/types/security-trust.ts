@@ -13,7 +13,9 @@ export type FeatureTag = {
 };
 
 export type SecurityTrustLocationState = {
-  securityData?: import('@metamask/assets-controllers').TokenSecurityData | null;
+  securityData?:
+    | import('@metamask/assets-controllers').TokenSecurityData
+    | null;
   symbol?: string;
   name?: string;
   decimals?: number;

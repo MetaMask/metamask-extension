@@ -64,11 +64,7 @@ describe('SecurityTrustEntryCard', () => {
 
   it('renders loading skeleton', () => {
     const { getByTestId } = renderWithProvider(
-      <SecurityTrustEntryCard
-        securityData={null}
-        isLoading
-        token={token}
-      />,
+      <SecurityTrustEntryCard securityData={null} isLoading token={token} />,
     );
 
     expect(getByTestId('security-trust-entry-card')).toBeInTheDocument();

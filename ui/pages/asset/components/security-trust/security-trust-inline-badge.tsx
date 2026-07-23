@@ -7,9 +7,7 @@ import {
   IconSize,
   TextColor,
 } from '@metamask/design-system-react';
-import {
-  Tag,
-} from '../../../../components/component-library';
+import { Tag } from '../../../../components/component-library';
 import { IconSize as LegacyIconSize } from '../../../../components/component-library/icon/icon.types';
 import {
   BackgroundColor,

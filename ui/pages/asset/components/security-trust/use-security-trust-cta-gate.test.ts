@@ -1,5 +1,8 @@
 import { getResultTypeConfig } from '../../utils/security-utils';
-import { getSecurityTrustCtaSheetParams, shouldGateSecurityTrustCta } from './use-security-trust-cta-gate';
+import {
+  getSecurityTrustCtaSheetParams,
+  shouldGateSecurityTrustCta,
+} from './use-security-trust-cta-gate';
 import { getSecurityTrustInfoSheetParams } from './use-security-trust-info-sheet';
 
 const t = (key: string, substitutions?: string[]) =>
@@ -7,7 +10,13 @@ const t = (key: string, substitutions?: string[]) =>
 
 const mockSecurityData = {
   resultType: 'Malicious' as const,
-  features: [{ featureId: 'KNOWN_MALICIOUS', type: 'Malicious' as const, description: '' }],
+  features: [
+    {
+      featureId: 'KNOWN_MALICIOUS',
+      type: 'Malicious' as const,
+      description: '',
+    },
+  ],
   fees: null,
   financialStats: null,
   metadata: null,

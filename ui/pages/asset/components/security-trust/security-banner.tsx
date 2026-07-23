@@ -1,5 +1,8 @@
 import React from 'react';
-import { BannerAlert, BannerAlertSeverity } from '@metamask/design-system-react';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+} from '@metamask/design-system-react';
 import type { ResultTypeConfig } from '../../utils/security-utils';
 
 export type SecurityBannerProps = {

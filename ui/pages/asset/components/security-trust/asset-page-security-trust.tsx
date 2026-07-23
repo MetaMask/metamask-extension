@@ -1,7 +1,4 @@
-import {
-  BannerAlertSeverity,
-  Box,
-} from '@metamask/design-system-react';
+import { BannerAlertSeverity, Box } from '@metamask/design-system-react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import React, {
@@ -84,6 +81,11 @@ export const useAssetPageSecurityTrustCtaGate = () => {
 /**
  * Provides Security & Trust data and visibility for the Token Details Page.
  * Wrap TDP content once, then place slot components where needed.
+ *
+ * @param options - Provider options.
+ * @param options.assetId - CAIP-19 asset ID for security data fetch.
+ * @param options.token - Token metadata for display and analytics context.
+ * @param options.children - TDP content to wrap.
  */
 export const AssetPageSecurityTrustProvider = ({
   assetId,
@@ -163,7 +165,10 @@ export const AssetPageSecurityTrustProvider = ({
 
   const gateCtaAction = useCallback(
     (action: () => void, source: SecurityTrustCtaSource) => {
-      if (!securityData || !shouldGateSecurityTrustCta(securityData.resultType)) {
+      if (
+        !securityData ||
+        !shouldGateSecurityTrustCta(securityData.resultType)
+      ) {
         action();
         return;
       }
@@ -199,18 +204,17 @@ export const AssetPageSecurityTrustProvider = ({
       securityData,
       isLoading: isSecurityDataLoading,
       entryCardToken,
-      showVerifiedBadge:
-        isEnabled && securityData?.resultType === 'Verified',
+      showVerifiedBadge: isEnabled && securityData?.resultType === 'Verified',
       showSecurityBanner:
         isEnabled &&
-        !!securityData &&
+        Boolean(securityData) &&
         (securityData.resultType === 'Malicious' ||
           securityData.resultType === 'Warning' ||
           securityData.resultType === 'Spam'),
       showSecurityTrustSection:
         isEnabled &&
         !securityDataError &&
-        (isSecurityDataLoading || !!securityData?.resultType),
+        (isSecurityDataLoading || Boolean(securityData?.resultType)),
       securityBannerDescription,
       openInfoSheet,
       gateCtaAction,
@@ -245,10 +249,7 @@ export const AssetPageSecurityTrustProvider = ({
 export const AssetPageSecurityTrustHeaderBadge = () => {
   const context = useAssetPageSecurityTrustContext();
 
-  if (
-    !context?.showVerifiedBadge ||
-    !context.securityConfig.badge
-  ) {
+  if (!context?.showVerifiedBadge || !context.securityConfig.badge) {
     return null;
   }
 
@@ -269,8 +270,12 @@ export const AssetPageSecurityTrustBanner = () => {
     return null;
   }
 
-  const { securityData, securityConfig, securityBannerDescription, openInfoSheet } =
-    context;
+  const {
+    securityData,
+    securityConfig,
+    securityBannerDescription,
+    openInfoSheet,
+  } = context;
   const isMalicious = securityData.resultType === 'Malicious';
 
   return (
@@ -278,16 +283,12 @@ export const AssetPageSecurityTrustBanner = () => {
       <SecurityBanner
         securityConfig={securityConfig}
         severity={
-          isMalicious
-            ? BannerAlertSeverity.Danger
-            : BannerAlertSeverity.Warning
+          isMalicious ? BannerAlertSeverity.Danger : BannerAlertSeverity.Warning
         }
         testId={
           isMalicious ? 'security-banner-malicious' : 'security-banner-warning'
         }
-        title={
-          isMalicious ? t('securityTrustMaliciousTokenTitle') : undefined
-        }
+        title={isMalicious ? t('securityTrustMaliciousTokenTitle') : undefined}
         description={securityBannerDescription}
         onClick={openInfoSheet}
       />
@@ -299,10 +300,7 @@ export const AssetPageSecurityTrustBanner = () => {
 export const AssetPageSecurityTrustSection = () => {
   const context = useAssetPageSecurityTrustContext();
 
-  if (
-    !context?.showSecurityTrustSection ||
-    !context.entryCardToken
-  ) {
+  if (!context?.showSecurityTrustSection || !context.entryCardToken) {
     return null;
   }
 

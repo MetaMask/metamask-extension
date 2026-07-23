@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { SecurityTrustInfoModal } from './security-trust-info-modal';
+import { IconColor, IconName } from '@metamask/design-system-react';
 import { getResultTypeConfig } from '../../utils/security-utils';
+import { SecurityTrustInfoModal } from './security-trust-info-modal';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -26,8 +27,8 @@ describe('SecurityTrustInfoModal', () => {
           securityConfig: config,
           title: config.sheetTitle ?? '',
           description: config.getSheetDescription?.('USDC') ?? '',
-          displayIcon: config.badge?.icon ?? config.icon!,
-          displayIconColor: config.badge?.iconColor ?? config.iconColor!,
+          displayIcon: config.badge?.icon ?? IconName.SecurityTick,
+          displayIconColor: config.badge?.iconColor ?? IconColor.SuccessDefault,
           tokenSymbol: 'USDC',
           source: 'badge',
         }}
@@ -52,8 +53,8 @@ describe('SecurityTrustInfoModal', () => {
           securityConfig: config,
           title: config.sheetTitle ?? '',
           description: config.getSheetDescription?.('SWOL') ?? '',
-          displayIcon: config.icon!,
-          displayIconColor: config.iconColor!,
+          displayIcon: config.icon ?? IconName.Danger,
+          displayIconColor: config.iconColor ?? IconColor.ErrorDefault,
           tokenSymbol: 'SWOL',
           features: [
             {
@@ -70,7 +71,9 @@ describe('SecurityTrustInfoModal', () => {
     expect(
       getByTestId('security-trust-info-modal-malicious-banner'),
     ).toBeInTheDocument();
-    expect(getByTestId('security-trust-info-modal-feature-tags')).toBeInTheDocument();
+    expect(
+      getByTestId('security-trust-info-modal-feature-tags'),
+    ).toBeInTheDocument();
 
     fireEvent.click(getByTestId('security-trust-info-modal-continue'));
     expect(onProceed).toHaveBeenCalledTimes(1);

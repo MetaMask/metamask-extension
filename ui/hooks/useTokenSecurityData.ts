@@ -17,7 +17,8 @@ type UseTokenSecurityDataResult = {
 };
 
 const isValidTokenSecurityData = (data: unknown): data is TokenSecurityData =>
-  data != null &&
+  data !== null &&
+  data !== undefined &&
   typeof data === 'object' &&
   typeof (data as TokenSecurityData).resultType === 'string' &&
   Array.isArray((data as TokenSecurityData).features);
@@ -33,7 +34,9 @@ export const useTokenSecurityData = ({
   const [securityData, setSecurityData] = useState<TokenSecurityData | null>(
     prefetchedData ?? null,
   );
-  const [isLoading, setIsLoading] = useState(!prefetchedData && !!assetId);
+  const [isLoading, setIsLoading] = useState(
+    !prefetchedData && Boolean(assetId),
+  );
   const [error, setError] = useState<Error | null>(null);
   const isMountedRef = useRef(true);
 

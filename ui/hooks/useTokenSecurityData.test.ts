@@ -2,8 +2,8 @@ import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
-import { useTokenSecurityData } from './useTokenSecurityData';
 import { fetchCachedTokenAssets } from '../pages/bridge/utils/token-security';
+import { useTokenSecurityData } from './useTokenSecurityData';
 
 jest.mock('../pages/bridge/utils/token-security', () => ({
   fetchCachedTokenAssets: jest.fn(),

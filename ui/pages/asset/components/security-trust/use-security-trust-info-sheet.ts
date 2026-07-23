@@ -10,15 +10,19 @@ const isSheetSeverity = (
 ): resultType is SheetSeverity =>
   Boolean(
     resultType &&
-      resultType !== 'Benign' &&
-      securityConfig.icon &&
-      securityConfig.iconColor &&
-      securityConfig.sheetTitle &&
-      securityConfig.getSheetDescription,
+    resultType !== 'Benign' &&
+    securityConfig.icon &&
+    securityConfig.iconColor &&
+    securityConfig.sheetTitle &&
+    securityConfig.getSheetDescription,
   );
 
 /**
  * Builds modal params for badge/banner informational taps (Got it only).
+ *
+ * @param securityData - Token security data from the assets API.
+ * @param securityConfig - Result-type display configuration.
+ * @param tokenSymbol - Token symbol for sheet copy.
  */
 export const getSecurityTrustInfoSheetParams = (
   securityData: TokenSecurityData,

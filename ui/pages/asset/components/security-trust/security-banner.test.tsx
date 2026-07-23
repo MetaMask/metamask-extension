@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { SecurityBanner } from './security-banner';
 import { BannerAlertSeverity } from '@metamask/design-system-react';
 import { getResultTypeConfig } from '../../utils/security-utils';
+import { SecurityBanner } from './security-banner';
 
 const t = (key: string) => key;
 

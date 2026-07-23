@@ -1,8 +1,4 @@
-import {
-  IconColor,
-  IconName,
-  TextColor,
-} from '@metamask/design-system-react';
+import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
 import type {
   TokenSecurityFeature,
   TokenSecurityFinancialStats,
@@ -70,9 +66,7 @@ describe('security-utils', () => {
 
       const { tags } = getFeatureTags(features, 'Warning', t);
 
-      expect(tags).toEqual([
-        { label: 'securityTrustFeatureHoneypot' },
-      ]);
+      expect(tags).toEqual([{ label: 'securityTrustFeatureHoneypot' }]);
     });
   });
 

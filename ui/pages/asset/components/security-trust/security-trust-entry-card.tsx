@@ -104,6 +104,67 @@ export const SecurityTrustEntryCard = ({
     );
   }
 
+  const renderDetailsSection = () => {
+    if (!hasDetails) {
+      if (!config.subtitle) {
+        return null;
+      }
+
+      return (
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+          {config.subtitle}
+        </Text>
+      );
+    }
+
+    if (featureTags.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box flexDirection={BoxFlexDirection.Row} className="flex-wrap" gap={2}>
+        {featureTags.map((tag) => (
+          <Box
+            key={tag.label}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            className="rounded bg-muted self-start min-w-[22px] px-1.5 py-0.5"
+            gap={1}
+          >
+            {alertIconProps ? (
+              <Icon
+                name={alertIconProps.name}
+                size={IconSize.Sm}
+                color={alertIconProps.color}
+              />
+            ) : null}
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              fontWeight={FontWeight.Medium}
+            >
+              {tag.label}
+            </Text>
+          </Box>
+        ))}
+        {remainingCount > 0 ? (
+          <Box
+            alignItems={BoxAlignItems.Center}
+            className="rounded self-start px-1.5 py-0.5"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              fontWeight={FontWeight.Medium}
+            >
+              +{remainingCount} {t('securityTrustMore')}
+            </Text>
+          </Box>
+        ) : null}
+      </Box>
+    );
+  };
+
   const content = (
     <Box gap={3}>
       <Box
@@ -129,61 +190,12 @@ export const SecurityTrustEntryCard = ({
       >
         {config.label}
       </Text>
-      {hasDetails ? (
-        featureTags.length > 0 && (
-          <Box flexDirection={BoxFlexDirection.Row} className="flex-wrap" gap={2}>
-            {featureTags.map((tag) => (
-              <Box
-                key={tag.label}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                className="rounded bg-muted self-start min-w-[22px] px-1.5 py-0.5"
-                gap={1}
-              >
-                {alertIconProps ? (
-                  <Icon
-                    name={alertIconProps.name}
-                    size={IconSize.Sm}
-                    color={alertIconProps.color}
-                  />
-                ) : null}
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {tag.label}
-                </Text>
-              </Box>
-            ))}
-            {remainingCount > 0 ? (
-              <Box
-                alignItems={BoxAlignItems.Center}
-                className="rounded self-start px-1.5 py-0.5"
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
-                  fontWeight={FontWeight.Medium}
-                >
-                  +{remainingCount} {t('securityTrustMore')}
-                </Text>
-              </Box>
-            ) : null}
-          </Box>
-        )
-      ) : config.subtitle ? (
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {config.subtitle}
-        </Text>
-      ) : null}
+      {renderDetailsSection()}
     </Box>
   );
 
   if (!hasDetails) {
-    return (
-      <Box data-testid="security-trust-entry-card">{content}</Box>
-    );
+    return <Box data-testid="security-trust-entry-card">{content}</Box>;
   }
 
   return (
