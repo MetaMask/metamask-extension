@@ -10,8 +10,6 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
 import { useAccountStatusContext } from '../hooks/useAccountStatusContext';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountNotFound() {
   const navigate = useNavigate();
   const {

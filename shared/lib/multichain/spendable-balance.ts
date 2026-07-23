@@ -10,12 +10,6 @@ export const NATIVE_RESERVE_SLIP44_IDS: Set<string> = new Set([
 ]);
 
 /**
- * Account-scoped metadata for a multichain asset, when provided by the
- * account asset controller.
- */
-export type AssetMetadata = { baseReserve?: string } | undefined;
-
-/**
  * Validates if a string is a valid number string.
  *
  * @param value - Numeric string to validate.
@@ -31,32 +25,6 @@ function isValidNumberString(value?: string): boolean {
   } catch {
     return false;
   }
-}
-
-/**
- * Resolves the base reserve amount for a native asset that supports reserve
- * balance display.
- *
- * @param params - Parameters for computing the base reserve.
- * @param params.assetId - CAIP asset ID for the native asset.
- * @param params.assetMetadata - Optional asset metadata.
- * @returns The base reserve amount as a string, `'0'` when supported but
- * missing, or `undefined` when the asset does not support reserve balance.
- */
-export function computeBaseReserve({
-  assetId,
-  assetMetadata,
-}: {
-  assetId: string;
-  assetMetadata?: AssetMetadata;
-}): string | undefined {
-  if (!isSupportBaseReserve(assetId)) {
-    return undefined;
-  }
-
-  return isValidNumberString(assetMetadata?.baseReserve)
-    ? assetMetadata?.baseReserve
-    : '0';
 }
 
 /**

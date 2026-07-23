@@ -164,6 +164,7 @@ export const AccountGroupBalance = ({
   return (
     <Skeleton
       hideChildren={
+        isEvm &&
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }

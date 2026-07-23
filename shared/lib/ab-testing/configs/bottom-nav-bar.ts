@@ -5,7 +5,7 @@ import { ABTestVariant, type ABTestVariantName } from '../variants';
 export const BOTTOM_NAV_AB_TEST_KEY = 'coreExtensionUxCeux1141AbtestBottomNav';
 
 type BottomNavVariantConfig = {
-  isRedesignEnabled: boolean;
+  withBottomNavBar: boolean;
 };
 
 export const BOTTOM_NAV_AB_TEST_VARIANTS: Record<
@@ -13,10 +13,10 @@ export const BOTTOM_NAV_AB_TEST_VARIANTS: Record<
   BottomNavVariantConfig
 > = {
   [ABTestVariant.Control]: {
-    isRedesignEnabled: false,
+    withBottomNavBar: false,
   },
   [ABTestVariant.Treatment]: {
-    isRedesignEnabled: true,
+    withBottomNavBar: true,
   },
 };
 
@@ -32,8 +32,9 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
   flagKey: BOTTOM_NAV_AB_TEST_KEY,
   validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
   eventNames: [
-    MetaMetricsEventName.TokenScreenOpened,
+    MetaMetricsEventName.TokenScreenViewed,
     MetaMetricsEventName.PerpsScreenViewed,
-    MetaMetricsEventName.ActivityScreenOpened,
+    MetaMetricsEventName.ActivityScreenViewed,
+    'Unified SwapBridge Page Viewed',
   ],
 };

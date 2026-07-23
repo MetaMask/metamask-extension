@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Hesap Seçenekleri"
   },
-  "accountPermissionToast": {
-    "message": "Hesap izinleri güncellendi"
-  },
   "accountSelectionRequired": {
     "message": "Bir hesap seçmeniz gerekiyor!"
   },
@@ -209,7 +206,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_pending_title": {
-    "message": "Trustline aktivasyonu yapıldı $1",
+    "message": "Trustline aktivasyonu yapılıyor $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_success_description": {
@@ -1005,12 +1002,10 @@
     "message": "Takas başarısız oldu"
   },
   "activity_swap_pending_title": {
-    "message": "$1 ile $2 takas ediliyor",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas ediliyor"
   },
   "activity_swap_success_title": {
-    "message": "$1 ile $2 takas edildi",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas edildi"
   },
   "activity_unwrap_failed_description": {
     "message": "Çözme başarısız oldu"
@@ -2456,9 +2451,6 @@
   },
   "clear": {
     "message": "Temizle"
-  },
-  "clearActivity": {
-    "message": "Aktiviteyi ve nonce verilerini temizle"
   },
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
@@ -5707,9 +5699,6 @@
   },
   "networksSmallCase": {
     "message": "ağ"
-  },
-  "nevermind": {
-    "message": "Boş ver"
   },
   "new": {
     "message": "Yeni!"

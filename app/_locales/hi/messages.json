@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "अकाउंट विकल्प"
   },
-  "accountPermissionToast": {
-    "message": "अकाउंट अनुमतियां अपडेट की गईं"
-  },
   "accountSelectionRequired": {
     "message": "आपको एक अकाउंट चुनना होगा!"
   },
@@ -1005,12 +1002,10 @@
     "message": "स्वैप नहीं हो पाया"
   },
   "activity_swap_pending_title": {
-    "message": "$1 को $2 से स्वैप किया जा रहा है",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया जा रहा है"
   },
   "activity_swap_success_title": {
-    "message": "$1 को $2 से स्वैप किया गया",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया गया"
   },
   "activity_unwrap_failed_description": {
     "message": "अनरैप नहीं हो पाया"
@@ -2456,9 +2451,6 @@
   },
   "clear": {
     "message": "हटाएं"
-  },
-  "clearActivity": {
-    "message": "एक्टिविटी और nonce डेटा हटाएं"
   },
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
@@ -5703,9 +5695,6 @@
   },
   "networksSmallCase": {
     "message": "नेटवर्क"
-  },
-  "nevermind": {
-    "message": "कोई बात नहीं"
   },
   "new": {
     "message": "नया!"

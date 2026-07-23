@@ -1,8 +1,12 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  BATCH_SELL_SELECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { selectIsNetworkMenuOpen } from '../../selectors';
+import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
 import {
@@ -39,7 +43,9 @@ export const useHomeDeepLinkEffects = () => {
   const isHomeRoute = pathname === DEFAULT_ROUTE;
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
+  const batchSellEnabled = useSelector(getIsBatchSellEnabled);
   const dispatch = useDispatch();
 
   const openNetworkSelectorModal = useCallback(() => {
@@ -48,8 +54,13 @@ export const useHomeDeepLinkEffects = () => {
     }
   }, [dispatch, isNetworkMenuOpen]);
 
-  const openBatchSellQrCodeModal = useCallback(
+  const handleBatchSellDeepLink = useCallback(
     (deeplinkUrl: string) => {
+      if (batchSellEnabled) {
+        navigate(BATCH_SELL_SELECT_ROUTE);
+        return;
+      }
+
       dispatch(
         setHomeDeepLinkQrCode({
           deeplinkUrl,
@@ -58,7 +69,7 @@ export const useHomeDeepLinkEffects = () => {
         }),
       );
     },
-    [dispatch],
+    [batchSellEnabled, navigate, dispatch],
   );
 
   const openPredictQrCodeModal = useCallback(
@@ -98,7 +109,7 @@ export const useHomeDeepLinkEffects = () => {
       [HomeQueryParams.BatchSellDeeplinkUrl]: {
         isValidParam: (param?: string) =>
           isDeepLinkUrlForPath(param, '/batch-sell'),
-        action: openBatchSellQrCodeModal,
+        action: handleBatchSellDeepLink,
       },
       [HomeQueryParams.OpenNetworkSelector]: {
         isValidParam: (param?: string) => param?.toLowerCase() === 'true',
@@ -116,7 +127,7 @@ export const useHomeDeepLinkEffects = () => {
       },
     }),
     [
-      openBatchSellQrCodeModal,
+      handleBatchSellDeepLink,
       openNetworkSelectorModal,
       openPredictQrCodeModal,
       openTrendingQrCodeModal,
