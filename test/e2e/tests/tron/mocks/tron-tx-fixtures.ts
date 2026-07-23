@@ -1,50 +1,50 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { sha256 } from 'ethereum-cryptography/sha256';
-import { bytesToHex } from 'ethereum-cryptography/utils';
-import { base58AddressToHex } from '../../../seeder/tron/assets';
-import { TRON_ACCOUNT_ADDRESS } from './common-tron';
+import { sha256 } from "ethereum-cryptography/sha256";
+import { bytesToHex } from "ethereum-cryptography/utils";
+import { base58AddressToHex } from "../../../seeder/tron/assets";
+import { TRON_ACCOUNT_ADDRESS } from "./common-tron";
 
-export type TronTxStatus = 'Confirmed' | 'Pending' | 'Failed';
+export type TronTxStatus = "Confirmed" | "Pending" | "Failed";
 
 const STATUS_TO_CONTRACT_RET: Record<TronTxStatus, string> = {
-  Confirmed: 'SUCCESS',
-  Pending: '',
-  Failed: 'OUT_OF_ENERGY',
+  Confirmed: "SUCCESS",
+  Pending: "",
+  Failed: "OUT_OF_ENERGY",
 };
 
 // SunSwap router is a real, checksum-valid Tron address used as a stand-in for
 // any DEX/bridge contract. Tron seeder asserts base58 checksums when converting
 // to hex (see seeder/tron/assets.ts:base58AddressToHex), so fixtures cannot use
 // arbitrary placeholder strings here.
-const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
-const USDT_CONTRACT_ADDRESS = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+const SUNSWAP_ROUTER_ADDRESS = "TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax";
+const USDT_CONTRACT_ADDRESS = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
 
 const TRC20_INFO = {
   USDT: {
     address: USDT_CONTRACT_ADDRESS,
     decimals: 6,
-    name: 'Tether USD',
+    name: "Tether USD",
   },
   USDD: {
-    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    address: "TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz",
     decimals: 18,
-    name: 'Decentralized USD',
+    name: "Decentralized USD",
   },
   HTX: {
-    address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+    address: "TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6",
     decimals: 18,
-    name: 'HTX',
+    name: "HTX",
   },
 } as const;
 
 export type Trc20Symbol = keyof typeof TRC20_INFO;
 
 function deterministicTxId(seed: string): string {
-  return bytesToHex(sha256(Buffer.from(seed, 'utf8')));
+  return bytesToHex(sha256(Buffer.from(seed, "utf8")));
 }
 
 function ret(status: TronTxStatus, fee = 2_799_500) {
-  if (status === 'Pending') {
+  if (status === "Pending") {
     return [];
   }
   return [{ contractRet: STATUS_TO_CONTRACT_RET[status], fee }];
@@ -63,8 +63,8 @@ function ownerHex(address: string): string {
 // response throws and the snap stores zero transactions.
 function rawDataMeta(timestamp: number) {
   return {
-    ref_block_bytes: '0000',
-    ref_block_hash: '0000000000000000',
+    ref_block_bytes: "0000",
+    ref_block_hash: "0000000000000000",
     expiration: timestamp + 60_000,
     timestamp,
   };
@@ -81,7 +81,7 @@ export function trxSendTx(opts: {
   return {
     ret: ret(opts.status),
     txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === "Pending" ? undefined : 77_000_000,
     block_timestamp: blockTimestamp,
     raw_data: {
       contract: [
@@ -92,9 +92,9 @@ export function trxSendTx(opts: {
               owner_address: ownerHex(TRON_ACCOUNT_ADDRESS),
               to_address: ownerHex(opts.to),
             },
-            type_url: 'type.googleapis.com/protocol.TransferContract',
+            type_url: "type.googleapis.com/protocol.TransferContract",
           },
-          type: 'TransferContract',
+          type: "TransferContract",
         },
       ],
       ...rawDataMeta(blockTimestamp),
@@ -113,7 +113,7 @@ export function trxReceiveTx(opts: {
   return {
     ret: ret(opts.status),
     txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === "Pending" ? undefined : 77_000_000,
     block_timestamp: blockTimestamp,
     raw_data: {
       contract: [
@@ -124,9 +124,9 @@ export function trxReceiveTx(opts: {
               owner_address: ownerHex(opts.from),
               to_address: ownerHex(TRON_ACCOUNT_ADDRESS),
             },
-            type_url: 'type.googleapis.com/protocol.TransferContract',
+            type_url: "type.googleapis.com/protocol.TransferContract",
           },
-          type: 'TransferContract',
+          type: "TransferContract",
         },
       ],
       ...rawDataMeta(blockTimestamp),
@@ -142,16 +142,14 @@ export function trc20TransferTx(opts: {
   status: TronTxStatus;
   timestamp?: number;
 }) {
-  const txId = deterministicTxId(
-    `trc20:${opts.symbol}:${opts.amount}:${opts.from}:${opts.to}`,
-  );
+  const txId = deterministicTxId(`trc20:${opts.symbol}:${opts.amount}:${opts.from}:${opts.to}`);
   return {
     transaction_id: txId,
     token_info: { symbol: opts.symbol, ...TRC20_INFO[opts.symbol] },
     block_timestamp: ts(opts.timestamp),
     from: opts.from,
     to: opts.to,
-    type: 'Transfer',
+    type: "Transfer",
     value: opts.amount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
   };
@@ -181,9 +179,7 @@ export function trc20ApproveTx(opts: {
   raw: ReturnType<typeof buildApproveRawTx>;
   trc20: ReturnType<typeof buildApproveTrc20>;
 } {
-  const txID = deterministicTxId(
-    `approve:${opts.symbol}:${opts.amount}:${opts.spender}`,
-  );
+  const txID = deterministicTxId(`approve:${opts.symbol}:${opts.amount}:${opts.spender}`);
   const blockTimestamp = ts(opts.timestamp);
   return {
     raw: buildApproveRawTx({ ...opts, txID, blockTimestamp }),
@@ -200,7 +196,7 @@ function buildApproveRawTx(opts: {
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === "Pending" ? undefined : 77_000_000,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
@@ -210,9 +206,9 @@ function buildApproveRawTx(opts: {
               owner_address: ownerHex(TRON_ACCOUNT_ADDRESS),
               contract_address: ownerHex(TRC20_INFO[opts.symbol].address),
             },
-            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+            type_url: "type.googleapis.com/protocol.TriggerSmartContract",
           },
-          type: 'TriggerSmartContract',
+          type: "TriggerSmartContract",
         },
       ],
       ...rawDataMeta(opts.blockTimestamp),
@@ -234,7 +230,7 @@ function buildApproveTrc20(opts: {
     block_timestamp: opts.blockTimestamp,
     from: TRON_ACCOUNT_ADDRESS,
     to: opts.spender,
-    type: 'Approval',
+    type: "Approval",
     value: opts.amount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
   };
@@ -255,9 +251,9 @@ function buildApproveTrc20(opts: {
  * @param opts.timestamp
  */
 export function swapTx(opts: {
-  srcSymbol: 'TRX' | Trc20Symbol;
+  srcSymbol: "TRX" | Trc20Symbol;
   srcAmount: string;
-  destSymbol: 'TRX' | Trc20Symbol;
+  destSymbol: "TRX" | Trc20Symbol;
   destAmount: string;
   status: TronTxStatus;
   timestamp?: number;
@@ -276,18 +272,17 @@ export function swapTx(opts: {
 }
 
 function buildSwapRawTx(opts: {
-  srcSymbol: 'TRX' | Trc20Symbol;
+  srcSymbol: "TRX" | Trc20Symbol;
   srcAmount: string;
   status: TronTxStatus;
   txID: string;
   blockTimestamp: number;
 }) {
-  const callValue =
-    opts.srcSymbol === 'TRX' ? Number(opts.srcAmount) * 1_000_000 : undefined;
+  const callValue = opts.srcSymbol === "TRX" ? Number(opts.srcAmount) * 1_000_000 : undefined;
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === "Pending" ? undefined : 77_000_000,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
@@ -298,9 +293,9 @@ function buildSwapRawTx(opts: {
               contract_address: ownerHex(SUNSWAP_ROUTER_ADDRESS),
               ...(callValue ? { call_value: callValue } : {}),
             },
-            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+            type_url: "type.googleapis.com/protocol.TriggerSmartContract",
           },
-          type: 'TriggerSmartContract',
+          type: "TriggerSmartContract",
         },
       ],
       ...rawDataMeta(opts.blockTimestamp),
@@ -309,7 +304,7 @@ function buildSwapRawTx(opts: {
 }
 
 function buildSwapTrc20(opts: {
-  destSymbol: 'TRX' | Trc20Symbol;
+  destSymbol: "TRX" | Trc20Symbol;
   destAmount: string;
   status: TronTxStatus;
   txID: string;
@@ -317,15 +312,14 @@ function buildSwapTrc20(opts: {
 }) {
   // For TRX-out swaps the dest is a TRC20; for TRC20-out swaps both halves
   // would be TRC20 (currently only TRX→TRC20 is exercised by tests).
-  const symbol =
-    opts.destSymbol === 'TRX' ? ('USDT' as Trc20Symbol) : opts.destSymbol;
+  const symbol = opts.destSymbol === "TRX" ? ("USDT" as Trc20Symbol) : opts.destSymbol;
   return {
     transaction_id: opts.txID,
     token_info: { symbol, ...TRC20_INFO[symbol] },
     block_timestamp: opts.blockTimestamp,
     from: SUNSWAP_ROUTER_ADDRESS,
     to: TRON_ACCOUNT_ADDRESS,
-    type: 'Transfer',
+    type: "Transfer",
     value: opts.destAmount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
   };
@@ -344,7 +338,7 @@ function buildSwapTrc20(opts: {
  * @param opts.timestamp
  */
 export function bridgeTx(opts: {
-  srcSymbol: 'TRX' | Trc20Symbol;
+  srcSymbol: "TRX" | Trc20Symbol;
   srcAmount: string;
   destChain: string;
   status: TronTxStatus;
@@ -353,9 +347,7 @@ export function bridgeTx(opts: {
   raw: ReturnType<typeof buildBridgeRawTx>;
   trc20: ReturnType<typeof buildBridgeTrc20>;
 } {
-  const txID = deterministicTxId(
-    `bridge:${opts.srcSymbol}:${opts.srcAmount}:${opts.destChain}`,
-  );
+  const txID = deterministicTxId(`bridge:${opts.srcSymbol}:${opts.srcAmount}:${opts.destChain}`);
   const blockTimestamp = ts(opts.timestamp);
   return {
     raw: buildBridgeRawTx({ ...opts, txID, blockTimestamp }),
@@ -363,15 +355,11 @@ export function bridgeTx(opts: {
   };
 }
 
-function buildBridgeRawTx(opts: {
-  status: TronTxStatus;
-  txID: string;
-  blockTimestamp: number;
-}) {
+function buildBridgeRawTx(opts: { status: TronTxStatus; txID: string; blockTimestamp: number }) {
   return {
     ret: ret(opts.status),
     txID: opts.txID,
-    blockNumber: opts.status === 'Pending' ? undefined : 77_000_000,
+    blockNumber: opts.status === "Pending" ? undefined : 77_000_000,
     block_timestamp: opts.blockTimestamp,
     raw_data: {
       contract: [
@@ -381,9 +369,9 @@ function buildBridgeRawTx(opts: {
               owner_address: ownerHex(TRON_ACCOUNT_ADDRESS),
               contract_address: ownerHex(SUNSWAP_ROUTER_ADDRESS),
             },
-            type_url: 'type.googleapis.com/protocol.TriggerSmartContract',
+            type_url: "type.googleapis.com/protocol.TriggerSmartContract",
           },
-          type: 'TriggerSmartContract',
+          type: "TriggerSmartContract",
         },
       ],
       ...rawDataMeta(opts.blockTimestamp),
@@ -392,21 +380,20 @@ function buildBridgeRawTx(opts: {
 }
 
 function buildBridgeTrc20(opts: {
-  srcSymbol: 'TRX' | Trc20Symbol;
+  srcSymbol: "TRX" | Trc20Symbol;
   srcAmount: string;
   status: TronTxStatus;
   txID: string;
   blockTimestamp: number;
 }) {
-  const symbol =
-    opts.srcSymbol === 'TRX' ? ('USDT' as Trc20Symbol) : opts.srcSymbol;
+  const symbol = opts.srcSymbol === "TRX" ? ("USDT" as Trc20Symbol) : opts.srcSymbol;
   return {
     transaction_id: opts.txID,
     token_info: { symbol, ...TRC20_INFO[symbol] },
     block_timestamp: opts.blockTimestamp,
     from: TRON_ACCOUNT_ADDRESS,
     to: SUNSWAP_ROUTER_ADDRESS,
-    type: 'Approval',
+    type: "Approval",
     value: opts.srcAmount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
   };

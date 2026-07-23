@@ -79,6 +79,7 @@ export type WithTronFixturesOptions = Omit<
     localNodes: unknown[];
   }) => Promise<void> | void;
   fixtures?: unknown;
+  ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
