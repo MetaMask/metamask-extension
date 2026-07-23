@@ -13,6 +13,7 @@ import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mockEmptyPrices } from '../../tokens/utils/mocks';
 
 describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -25,6 +26,7 @@ describe('Trezor Hardware', function (this: Suite) {
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
+        testSpecificMock: mockEmptyPrices,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -77,6 +79,7 @@ describe('Trezor Hardware', function (this: Suite) {
           })
 
           .build(),
+        testSpecificMock: mockEmptyPrices,
         title: this.test?.fullTitle(),
         smartContract: [
           {
@@ -140,6 +143,7 @@ describe('Trezor Hardware', function (this: Suite) {
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
+        testSpecificMock: mockEmptyPrices,
         title: this.test?.fullTitle(),
         smartContract: [
           {
@@ -196,6 +200,7 @@ describe('Trezor Hardware', function (this: Suite) {
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
+        testSpecificMock: mockEmptyPrices,
         title: this.test?.fullTitle(),
         smartContract: [
           {
