@@ -261,7 +261,7 @@ export const selectNonEvmActivityItems = createSelector(
             ...tokens,
             ...(fees === undefined ? {} : { fees }),
           },
-        };
+        } as ActivityListItem;
       }
 
       return activity;

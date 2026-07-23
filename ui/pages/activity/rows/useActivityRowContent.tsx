@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import cn from 'clsx';
-import type { CaipAssetType } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
@@ -29,7 +29,7 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
-function getChainDisplay(caipChainId: string) {
+function getChainDisplay(caipChainId: CaipChainId) {
   const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
