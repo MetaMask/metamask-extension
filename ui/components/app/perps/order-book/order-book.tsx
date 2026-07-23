@@ -91,6 +91,12 @@ const VIEW_TOGGLE_BAR_PATHS = [
   'M3 19h6v2H3z',
 ] as const;
 
+const VIEW_MODE_ARIA_LABEL_KEY: Record<OrderBookViewMode, string> = {
+  default: 'perpsOrderBookViewModeBoth',
+  buy: 'perpsOrderBookViewModeBuy',
+  sell: 'perpsOrderBookViewModeSell',
+};
+
 /**
  * View-toggle glyph: four left-aligned descending bars, styled like the design
  * system `Sort` icon but with four rows. Each bar is colored per the active
@@ -336,16 +342,12 @@ export const PerpsOrderBook = ({
     mantissa: aggregationParams.mantissa,
   });
 
-  // The stream already aggregated server-side, so pass grouping=null (no
-  // client-side re-bucketing); just trim to the display depth and rescale bars.
+  // The stream is already aggregated server-side; just trim to the display
+  // depth and rescale depth bars.
   const grouped = useMemo(
     () =>
       aggregatedOrderBook
-        ? groupOrderBook(
-            aggregatedOrderBook,
-            null,
-            ORDER_BOOK_AGGREGATED_LEVELS,
-          )
+        ? groupOrderBook(aggregatedOrderBook, ORDER_BOOK_AGGREGATED_LEVELS)
         : null,
     [aggregatedOrderBook],
   );
@@ -398,6 +400,14 @@ export const PerpsOrderBook = ({
   // than an indefinite "Loading…" or a misleading "No data".
   const hasConnectionError = connectionStatus === 'error';
 
+  // Automatic SDK reconnection emits `connecting` without clearing the cached
+  // book. Hide those stale rows and block price selection so outdated levels
+  // are not treated as live.
+  const isReconnecting =
+    connectionStatus === 'connecting' && !isInitialLoading;
+  const isLiveConnection = connectionStatus === 'connected';
+  const selectPriceHandler = isLiveConnection ? onSelectPrice : undefined;
+
   // Prefer a ladder-shaped skeleton over a centered "Loading…" label so the
   // panel keeps the same top-anchored structure (and the depth ratio does not
   // jump) when the first book update arrives.
@@ -406,11 +416,21 @@ export const PerpsOrderBook = ({
 
   const showPlaceholder =
     !showLoadingSkeleton &&
-    (hasConnectionError || !aggregatedOrderBook || !grouped || !hasLadder);
+    (hasConnectionError ||
+      isReconnecting ||
+      !aggregatedOrderBook ||
+      !grouped ||
+      !hasLadder);
 
-  const placeholderMessage = hasConnectionError
-    ? t('perpsOrderBookConnectionError')
-    : t('perpsOrderBookNoData');
+  let placeholderMessage = t('perpsOrderBookNoData');
+  let placeholderTestId: string | undefined;
+  if (hasConnectionError) {
+    placeholderMessage = t('perpsOrderBookConnectionError');
+    placeholderTestId = `${dataTestId}-connection-error`;
+  } else if (isReconnecting) {
+    placeholderMessage = t('perpsOrderBookReconnecting');
+    placeholderTestId = `${dataTestId}-reconnecting`;
+  }
 
   return (
     <Box
@@ -434,7 +454,7 @@ export const PerpsOrderBook = ({
         <button
           type="button"
           onClick={handleCycleViewMode}
-          aria-label={t('perpsOrderBookViewToggle')}
+          aria-label={t(VIEW_MODE_ARIA_LABEL_KEY[viewMode])}
           className="inline-flex h-8 w-8 -ml-1 cursor-pointer items-center justify-center rounded-lg bg-transparent p-0 hover:bg-hover active:bg-pressed"
           data-testid={`${dataTestId}-view-toggle`}
         >
@@ -493,9 +513,7 @@ export const PerpsOrderBook = ({
           gap={3}
           className="flex-1"
           padding={4}
-          data-testid={
-            hasConnectionError ? `${dataTestId}-connection-error` : undefined
-          }
+          data-testid={placeholderTestId}
         >
           <Text
             variant={TextVariant.BodySm}
@@ -541,9 +559,9 @@ export const PerpsOrderBook = ({
                   metric={metric}
                   maxTotal={grouped.maxTotal}
                   szDecimals={szDecimals}
-                  onSelectPrice={onSelectPrice}
+                  onSelectPrice={selectPriceHandler}
                   selectPriceLabel={
-                    onSelectPrice
+                    selectPriceHandler
                       ? t('perpsOrderBookUsePrice', [
                           formatPerpsFiat(level.price, {
                             ranges: PRICE_RANGES_UNIVERSAL,
@@ -599,9 +617,9 @@ export const PerpsOrderBook = ({
                   metric={metric}
                   maxTotal={grouped.maxTotal}
                   szDecimals={szDecimals}
-                  onSelectPrice={onSelectPrice}
+                  onSelectPrice={selectPriceHandler}
                   selectPriceLabel={
-                    onSelectPrice
+                    selectPriceHandler
                       ? t('perpsOrderBookUsePrice', [
                           formatPerpsFiat(level.price, {
                             ranges: PRICE_RANGES_UNIVERSAL,

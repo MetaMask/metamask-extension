@@ -3,7 +3,6 @@ import {
   ORDER_BOOK_DEFAULT_WIDTH_PCT,
   ORDER_BOOK_MAX_WIDTH_PCT,
   ORDER_BOOK_MIN_WIDTH_PCT,
-  aggregateOrderBookLevels,
   calculateAggregationParams,
   calculateGroupingOptions,
   clampOrderBookWidthPct,
@@ -13,6 +12,7 @@ import {
   formatSpreadPercent,
   getDepthRatio,
   getDepthWidth,
+  getOrderBookMaxWidthPct,
   groupOrderBook,
   selectDefaultGrouping,
 } from './order-book.utils';
@@ -125,82 +125,6 @@ describe('order-book.utils', () => {
     });
   });
 
-  describe('aggregateOrderBookLevels', () => {
-    it('floors bid prices into buckets and accumulates size/notional', () => {
-      const result = aggregateOrderBookLevels(
-        [
-          level('105', '1', '105'),
-          level('104', '2', '208'),
-          level('96', '3', '288'),
-        ],
-        10,
-        'bid',
-      );
-
-      expect(result).toStrictEqual([
-        {
-          price: '100',
-          size: '3',
-          total: '3',
-          notional: '313',
-          totalNotional: '313',
-        },
-        {
-          price: '90',
-          size: '3',
-          total: '6',
-          notional: '288',
-          totalNotional: '601',
-        },
-      ]);
-    });
-
-    it('ceils ask prices into buckets sorted ascending', () => {
-      const result = aggregateOrderBookLevels(
-        [
-          level('101', '1', '101'),
-          level('109', '1', '109'),
-          level('111', '2', '222'),
-        ],
-        10,
-        'ask',
-      );
-
-      expect(result.map((entry) => entry.price)).toStrictEqual(['110', '120']);
-      expect(result[0].size).toBe('2');
-      expect(result[1].total).toBe('4');
-    });
-
-    it('skips levels with non-finite size/notional or price instead of adding phantom zero-depth buckets', () => {
-      const result = aggregateOrderBookLevels(
-        [
-          // Distinct price bucket (200) but malformed size/notional: must be
-          // dropped entirely, not surface as an empty bucket.
-          level('205', 'not-a-number', 'nope'),
-          level('bad-price', '5', '500'),
-          level('104', '2', '208'),
-        ],
-        10,
-        'bid',
-      );
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toStrictEqual({
-        price: '100',
-        size: '2',
-        total: '2',
-        notional: '208',
-        totalNotional: '208',
-      });
-    });
-
-    it('does not aggregate when grouping size is invalid', () => {
-      const levels = [level('105', '1', '105')];
-      expect(aggregateOrderBookLevels(levels, 0, 'bid')).toBe(levels);
-      expect(aggregateOrderBookLevels(levels, Number.NaN, 'bid')).toBe(levels);
-    });
-  });
-
   describe('groupOrderBook', () => {
     it('trims to the display depth and reports the deepest cumulative total', () => {
       const bids = Array.from({ length: 15 }, (_, index) =>
@@ -222,18 +146,15 @@ describe('order-book.utils', () => {
         ),
       );
 
-      const grouped = groupOrderBook(
-        {
-          bids,
-          asks,
-          spread: '1',
-          spreadPercentage: '0.01',
-          midPrice: '100.5',
-          lastUpdated: 1,
-          maxTotal: '15',
-        },
-        null,
-      );
+      const grouped = groupOrderBook({
+        bids,
+        asks,
+        spread: '1',
+        spreadPercentage: '0.01',
+        midPrice: '100.5',
+        lastUpdated: 1,
+        maxTotal: '15',
+      });
 
       expect(grouped.bids).toHaveLength(10);
       expect(grouped.asks).toHaveLength(10);
@@ -344,6 +265,21 @@ describe('order-book.utils', () => {
 
     it('leaves the percentage max intact on a wide body', () => {
       expect(clampOrderBookWidthPct(80, 2000)).toBe(ORDER_BOOK_MAX_WIDTH_PCT);
+    });
+  });
+
+  describe('getOrderBookMaxWidthPct', () => {
+    it('returns the constant percentage max without a container width', () => {
+      expect(getOrderBookMaxWidthPct()).toBe(ORDER_BOOK_MAX_WIDTH_PCT);
+    });
+
+    it('returns the pixel-aware ceiling on a narrow popup body', () => {
+      // Body 360px: (360 - 224 form - 2 divider) / 360 ≈ 37.22%.
+      expect(getOrderBookMaxWidthPct(360)).toBeCloseTo(37.222, 2);
+    });
+
+    it('does not drop below the percentage floor on a very narrow body', () => {
+      expect(getOrderBookMaxWidthPct(280)).toBe(ORDER_BOOK_MIN_WIDTH_PCT);
     });
   });
 

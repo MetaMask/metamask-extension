@@ -147,6 +147,7 @@ import {
   ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  getOrderBookMaxWidthPct,
 } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
@@ -284,6 +285,12 @@ const PerpsOrderEntryPage = () => {
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
   const [orderBookWidthPct, setOrderBookWidthPct] = useState(
     ORDER_BOOK_DEFAULT_WIDTH_PCT,
+  );
+  // Pixel-aware ceiling for the current body width. Updated by the body
+  // ResizeObserver so clamping and aria-valuemax stay in sync (a 360px popup
+  // can only reach ~37%, not the constant 60% percentage max).
+  const [orderBookMaxWidthPct, setOrderBookMaxWidthPct] = useState(
+    ORDER_BOOK_MAX_WIDTH_PCT,
   );
   const [isResizingOrderBook, setIsResizingOrderBook] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -1052,6 +1059,9 @@ const PerpsOrderEntryPage = () => {
         return;
       }
       const rect = container.getBoundingClientRect();
+      // Keep the announced max aligned with the live clamp ceiling while
+      // dragging (ResizeObserver also refreshes this on container resize).
+      setOrderBookMaxWidthPct(getOrderBookMaxWidthPct(rect.width));
       setOrderBookWidthPct(
         computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
       );
@@ -1068,6 +1078,8 @@ const PerpsOrderEntryPage = () => {
   // Re-clamp the stored width when the body resizes (popup resize / expand to
   // fullscreen). Without this, a width set on a wide body would exceed the
   // pixel-aware maximum on a narrower body and spill the panel off-screen.
+  // Persist that same effective maximum for aria-valuemax so assistive tech
+  // announces the reachable ceiling, not the constant percentage max.
   useEffect(() => {
     const container = bodyRef.current;
     if (!container || typeof ResizeObserver === 'undefined') {
@@ -1075,6 +1087,8 @@ const PerpsOrderEntryPage = () => {
     }
     const observer = new ResizeObserver(() => {
       const { width } = container.getBoundingClientRect();
+      const maxPct = getOrderBookMaxWidthPct(width);
+      setOrderBookMaxWidthPct(maxPct);
       setOrderBookWidthPct((pct) => clampOrderBookWidthPct(pct, width));
     });
     observer.observe(container);
@@ -1086,6 +1100,8 @@ const PerpsOrderEntryPage = () => {
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const containerWidth = bodyRef.current?.getBoundingClientRect().width;
+      const maxPct = getOrderBookMaxWidthPct(containerWidth);
+      setOrderBookMaxWidthPct(maxPct);
       switch (event.key) {
         case 'ArrowLeft':
           event.preventDefault();
@@ -1107,9 +1123,7 @@ const PerpsOrderEntryPage = () => {
           break;
         case 'Home':
           event.preventDefault();
-          setOrderBookWidthPct(
-            clampOrderBookWidthPct(ORDER_BOOK_MAX_WIDTH_PCT, containerWidth),
-          );
+          setOrderBookWidthPct(maxPct);
           break;
         case 'End':
           event.preventDefault();
@@ -1955,7 +1969,7 @@ const PerpsOrderEntryPage = () => {
             aria-label={t('perpsOrderBookResize')}
             aria-valuenow={Math.round(orderBookWidthPct)}
             aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
-            aria-valuemax={ORDER_BOOK_MAX_WIDTH_PCT}
+            aria-valuemax={Math.round(orderBookMaxWidthPct)}
             tabIndex={0}
             onMouseDown={handleOrderBookResizeStart}
             onKeyDown={handleOrderBookResizeKeyDown}

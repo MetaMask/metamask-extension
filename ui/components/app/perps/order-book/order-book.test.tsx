@@ -179,6 +179,34 @@ describe('PerpsOrderBook', () => {
         screen.queryByTestId('perps-order-book-ask-row-0'),
       ).not.toBeInTheDocument();
     });
+
+    it('hides a cached ladder and blocks price selection while reconnecting', () => {
+      // Automatic SDK reconnect emits `connecting` without clearing the book.
+      // Stale pre-disconnect rows must not stay visible or clickable.
+      const onSelectPrice = jest.fn();
+      mockUsePerpsLiveOrderBook.mockReturnValue({
+        orderBook: mockOrderBook,
+        isInitialLoading: false,
+        connectionStatus: 'connecting',
+        reconnect: jest.fn(),
+      });
+
+      renderOrderBook({ marketPrice: 73776, onSelectPrice });
+
+      expect(
+        screen.getByTestId('perps-order-book-reconnecting'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderBookReconnecting.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-ask-row-0'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-bid-row-0'),
+      ).not.toBeInTheDocument();
+      expect(onSelectPrice).not.toHaveBeenCalled();
+    });
   });
 
   describe('rendering', () => {
@@ -324,6 +352,9 @@ describe('PerpsOrderBook', () => {
       ).toBeInTheDocument();
 
       const toggle = screen.getByTestId('perps-order-book-view-toggle');
+      expect(toggle).toHaveAccessibleName(
+        messages.perpsOrderBookViewModeBoth.message,
+      );
 
       // First click: buy side only (bids, no asks).
       fireEvent.click(toggle);
@@ -333,6 +364,9 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByTestId('perps-order-book-bid-row-0'),
       ).toBeInTheDocument();
+      expect(toggle).toHaveAccessibleName(
+        messages.perpsOrderBookViewModeBuy.message,
+      );
 
       // Second click: sell side only (asks, no bids).
       fireEvent.click(toggle);
@@ -342,6 +376,9 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.queryByTestId('perps-order-book-bid-row-0'),
       ).not.toBeInTheDocument();
+      expect(toggle).toHaveAccessibleName(
+        messages.perpsOrderBookViewModeSell.message,
+      );
 
       // Third click: back to both sides.
       fireEvent.click(toggle);
@@ -351,6 +388,9 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.getByTestId('perps-order-book-bid-row-0'),
       ).toBeInTheDocument();
+      expect(toggle).toHaveAccessibleName(
+        messages.perpsOrderBookViewModeBoth.message,
+      );
     });
   });
 
@@ -418,7 +458,7 @@ describe('PerpsOrderBook', () => {
           symbol: 'BTC',
           channel: 'orderBookAggregated',
           enabled: true,
-          levels: 20,
+          levels: 5,
           nSigFigs: 4,
         }),
       );

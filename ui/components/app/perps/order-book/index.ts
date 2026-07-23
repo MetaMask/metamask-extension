@@ -8,6 +8,7 @@ export {
   ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  getOrderBookMaxWidthPct,
 } from './order-book.utils';
 export type {
   OrderBookListCurrency,

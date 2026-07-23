@@ -7356,6 +7356,9 @@
   "perpsOrderBookReconnect": {
     "message": "Reconnect"
   },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconnecting to order book"
+  },
   "perpsOrderBookResize": {
     "message": "Resize order book"
   },
@@ -7379,9 +7382,17 @@
   "perpsOrderBookValueType": {
     "message": "Value type"
   },
-  "perpsOrderBookViewToggle": {
-    "message": "Toggle order book view",
-    "description": "Accessible label for the order book view toggle, which cycles between showing both sides, only the buy side, and only the sell side."
+  "perpsOrderBookViewModeBoth": {
+    "message": "Order book showing bids and asks",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Order book showing bids only",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Order book showing asks only",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Date"

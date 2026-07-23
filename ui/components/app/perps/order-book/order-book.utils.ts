@@ -23,10 +23,11 @@ export const ORDER_BOOK_DISPLAY_LEVELS =
 
 /**
  * Levels requested from (and rendered for) the server-aggregated order-book
- * stream. Hyperliquid returns at most ~20 levels per side when aggregating with
- * `nSigFigs`, so we request and display that depth to fill the panel.
+ * stream. Controller v10's `AggregatedOrderBookConnection` always subscribes
+ * with `fast: true`, which streams five levels per side — keep this in sync so
+ * we never request or display more depth than the socket can deliver.
  */
-export const ORDER_BOOK_AGGREGATED_LEVELS = 20;
+export const ORDER_BOOK_AGGREGATED_LEVELS = 5;
 
 /** Server-side aggregation parameters for the Hyperliquid L2Book stream. */
 export type OrderBookAggregationParams = {
@@ -187,118 +188,20 @@ export function selectDefaultGrouping(options: number[]): number {
 }
 
 /**
- * Number of decimal places implied by a grouping increment, capped at the
- * Hyperliquid price-precision limit. Used to build stable (non-floating-point)
- * bucket keys so equivalent buckets never split due to binary rounding drift.
+ * Trim an order book to the display depth and recompute `maxTotal` used to
+ * scale the depth bars. Aggregation is performed server-side (via `nSigFigs` /
+ * `mantissa`); this helper only prepares the already-bucketed stream for render.
  *
- * @param groupingSize - Price bucket size.
- * @returns Decimal places to normalize bucket prices to.
- */
-function getGroupingDecimals(groupingSize: number): number {
-  if (!Number.isFinite(groupingSize) || groupingSize >= 1) {
-    return 0;
-  }
-  return Math.min(MAX_PRICE_DECIMALS, Math.ceil(-Math.log10(groupingSize)));
-}
-
-/**
- * Aggregate raw order book levels into price buckets of `groupingSize`,
- * summing size/notional and recomputing cumulative totals. Full numeric
- * precision is preserved through aggregation; rounding happens only at display
- * time via the formatters below.
- *
- * @param levels - Raw order book levels from the stream.
- * @param groupingSize - Price bucket size (e.g. 10 groups into $10 increments).
- * @param side - 'bid' rounds price down to the bucket, 'ask' rounds up.
- * @returns Aggregated levels sorted best-price-first.
- */
-export function aggregateOrderBookLevels(
-  levels: OrderBookLevel[],
-  groupingSize: number,
-  side: 'bid' | 'ask',
-): OrderBookLevel[] {
-  if (!levels.length || !Number.isFinite(groupingSize) || groupingSize <= 0) {
-    return levels;
-  }
-
-  const priceDecimals = getGroupingDecimals(groupingSize);
-  const buckets = new Map<
-    string,
-    { size: number; notional: number; price: number }
-  >();
-
-  for (const level of levels) {
-    const price = Number.parseFloat(level.price);
-    if (!Number.isFinite(price)) {
-      continue;
-    }
-    const size = Number.parseFloat(level.size);
-    const notional = Number.parseFloat(level.notional);
-    // Skip malformed levels entirely rather than coercing to 0, so a bad row
-    // never contributes phantom zero depth to a bucket / cumulative total.
-    if (!Number.isFinite(size) || !Number.isFinite(notional)) {
-      continue;
-    }
-
-    const bucketPrice =
-      side === 'bid'
-        ? Math.floor(price / groupingSize) * groupingSize
-        : Math.ceil(price / groupingSize) * groupingSize;
-    const key = bucketPrice.toFixed(priceDecimals);
-
-    const existing = buckets.get(key);
-    if (existing) {
-      existing.size += size;
-      existing.notional += notional;
-    } else {
-      buckets.set(key, { size, notional, price: Number.parseFloat(key) });
-    }
-  }
-
-  const sortedBuckets = Array.from(buckets.values()).sort((a, b) =>
-    side === 'bid' ? b.price - a.price : a.price - b.price,
-  );
-
-  let cumulativeSize = 0;
-  let cumulativeNotional = 0;
-
-  return sortedBuckets.map((bucket) => {
-    cumulativeSize += bucket.size;
-    cumulativeNotional += bucket.notional;
-    return {
-      price: bucket.price.toString(),
-      size: bucket.size.toString(),
-      total: cumulativeSize.toString(),
-      notional: bucket.notional.toString(),
-      totalNotional: cumulativeNotional.toString(),
-    };
-  });
-}
-
-/**
- * Apply price grouping to an order book, returning trimmed bid/ask ladders and
- * a recomputed `maxTotal` used to scale the depth bars.
- *
- * @param orderBook - Raw order book data.
- * @param grouping - Selected price grouping increment (null = no aggregation,
- * e.g. when the stream is already server-aggregated).
+ * @param orderBook - Order book data (typically server-aggregated).
  * @param maxLevels - Max rows to render per side (defaults to the raw display depth).
- * @returns Grouped bids/asks (already limited to the display depth) and maxTotal.
+ * @returns Trimmed bids/asks and maxTotal.
  */
 export function groupOrderBook(
   orderBook: OrderBookData,
-  grouping: number | null,
   maxLevels: number = ORDER_BOOK_DISPLAY_LEVELS,
 ): { bids: OrderBookLevel[]; asks: OrderBookLevel[]; maxTotal: number } {
-  const bids = grouping
-    ? aggregateOrderBookLevels(orderBook.bids, grouping, 'bid')
-    : orderBook.bids;
-  const asks = grouping
-    ? aggregateOrderBookLevels(orderBook.asks, grouping, 'ask')
-    : orderBook.asks;
-
-  const trimmedBids = bids.slice(0, maxLevels);
-  const trimmedAsks = asks.slice(0, maxLevels);
+  const trimmedBids = orderBook.bids.slice(0, maxLevels);
+  const trimmedAsks = orderBook.asks.slice(0, maxLevels);
 
   const maxTotal = [...trimmedBids, ...trimmedAsks].reduce((max, level) => {
     const total = Number.parseFloat(level.total);
@@ -434,6 +337,31 @@ export function getDepthRatio(
 }
 
 /**
+ * Effective maximum order-book width percentage for a given body width.
+ *
+ * Without a container width this is the constant percentage ceiling. With one,
+ * the ceiling is additionally capped so the form keeps its pixel floor (plus
+ * the divider). On a very narrow body the pixel-derived ceiling can fall below
+ * the percentage floor; the floor wins and the body's overflow-x fallback
+ * handles the rest.
+ *
+ * @param containerWidth - Optional body width (px).
+ * @returns Effective maximum width percentage.
+ */
+export function getOrderBookMaxWidthPct(containerWidth?: number): number {
+  let maxPct = ORDER_BOOK_MAX_WIDTH_PCT;
+  if (Number.isFinite(containerWidth) && (containerWidth as number) > 0) {
+    const width = containerWidth as number;
+    const pixelMaxPct =
+      ((width - ORDER_BOOK_FORM_MIN_WIDTH_PX - ORDER_BOOK_DIVIDER_WIDTH_PX) /
+        width) *
+      100;
+    maxPct = Math.max(ORDER_BOOK_MIN_WIDTH_PCT, Math.min(maxPct, pixelMaxPct));
+  }
+  return maxPct;
+}
+
+/**
  * Clamp an order-book panel width (as a percentage of the body) to the allowed
  * range so neither the form nor the order book collapses.
  *
@@ -455,18 +383,7 @@ export function clampOrderBookWidthPct(
   if (!Number.isFinite(pct)) {
     return ORDER_BOOK_DEFAULT_WIDTH_PCT;
   }
-  let maxPct = ORDER_BOOK_MAX_WIDTH_PCT;
-  if (Number.isFinite(containerWidth) && (containerWidth as number) > 0) {
-    const width = containerWidth as number;
-    const pixelMaxPct =
-      ((width - ORDER_BOOK_FORM_MIN_WIDTH_PX - ORDER_BOOK_DIVIDER_WIDTH_PX) /
-        width) *
-      100;
-    // Never let the pixel-derived ceiling drop below the percentage floor; on a
-    // very narrow body the pixel floors cannot both fit and the body's
-    // overflow-x fallback handles it (documented narrow-popup behavior).
-    maxPct = Math.max(ORDER_BOOK_MIN_WIDTH_PCT, Math.min(maxPct, pixelMaxPct));
-  }
+  const maxPct = getOrderBookMaxWidthPct(containerWidth);
   return Math.min(maxPct, Math.max(ORDER_BOOK_MIN_WIDTH_PCT, pct));
 }
 

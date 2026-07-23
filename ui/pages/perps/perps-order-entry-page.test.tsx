@@ -661,7 +661,75 @@ describe('PerpsOrderEntryPage', () => {
         // Drag all the way to the left edge (would be 100% without the cap).
         fireEvent.mouseMove(window, { clientX: 0 });
         expect(divider).toHaveAttribute('aria-valuenow', '44');
+        // Assistive tech must announce the same pixel-aware ceiling used by the
+        // clamp (~43.5%), not the constant 60% percentage max.
+        expect(divider).toHaveAttribute('aria-valuemax', '44');
       } finally {
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('exposes the pixel-aware width ceiling on aria-valuemax for a 360px popup', () => {
+      // Regression (a11y): at 360px the reachable max is ~(360-224-2)/360 ≈ 37%,
+      // but aria-valuemax previously always announced the constant 60%.
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 360,
+          width: 360,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        #callback: ResizeObserverCallback;
+
+        constructor(callback: ResizeObserverCallback) {
+          this.#callback = callback;
+        }
+
+        observe(target: Element) {
+          this.#callback(
+            [
+              {
+                target,
+                contentRect: target.getBoundingClientRect(),
+                borderBoxSize: [],
+                contentBoxSize: [],
+                devicePixelContentBoxSize: [],
+              },
+            ],
+            this,
+          );
+        }
+
+        unobserve() {
+          // no-op
+        }
+
+        disconnect() {
+          // no-op
+        }
+      } as typeof ResizeObserver;
+
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+        expect(divider).toHaveAttribute('aria-valuemax', '37');
+        fireEvent.keyDown(divider, { key: 'Home' });
+        expect(divider).toHaveAttribute('aria-valuenow', '37');
+      } finally {
+        window.ResizeObserver = OriginalResizeObserver;
         rectSpy.mockRestore();
       }
     });
