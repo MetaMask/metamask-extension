@@ -15,7 +15,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { decodeDefiRouteParam } from '../../../../shared/lib/defi-route';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -42,13 +41,9 @@ export default function DeFiDetailsPageV2() {
       return undefined;
     }
 
-    const decodedChainId = decodeDefiRouteParam(chainId);
-    const decodedProtocolId = decodeDefiRouteParam(protocolId);
-
     return positions.find(
       (position) =>
-        position.chainId === decodedChainId &&
-        position.protocolId === decodedProtocolId,
+        position.chainId === chainId && position.protocolId === protocolId,
     );
   }, [chainId, positions, protocolId]);
 
