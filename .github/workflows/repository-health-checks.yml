@@ -201,7 +201,7 @@ jobs:
           fi
 
       - name: Run fitness functions
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && contains(fromJSON('["merge_group", "pull_request"]'), github.event_name)}}
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
