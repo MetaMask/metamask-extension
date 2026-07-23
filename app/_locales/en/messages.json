@@ -8946,6 +8946,303 @@
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
   },
+  "securityTrustTitle": {
+    "message": "Security and trust"
+  },
+  "securityTrustMalicious": {
+    "message": "Malicious"
+  },
+  "securityTrustRisky": {
+    "message": "Risky"
+  },
+  "securityTrustMaliciousTokenTitle": {
+    "message": "Malicious token"
+  },
+  "securityTrustMaliciousTokenDescription": {
+    "message": "$1 is a malicious token. Avoid interacting with it or trading it."
+  },
+  "securityTrustMaliciousTokenDescriptionNoSymbol": {
+    "message": "This is a malicious token. Avoid interacting with it or trading it."
+  },
+  "securityTrustMaliciousTokenBannerDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
+    "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "securityTrustSuspiciousTokenDescription": {
+    "message": "$1 is a suspicious token."
+  },
+  "securityTrustSuspiciousTokenDescriptionNoSymbol": {
+    "message": "This is a suspicious token."
+  },
+  "securityTrustVerifiedTokenTitle": {
+    "message": "Verified token"
+  },
+  "securityTrustVerifiedTokenDescription": {
+    "message": "$1 is actively traded and is widely recognized. Verification is not an endorsement by MetaMask."
+  },
+  "securityTrustRiskyTokenTitle": {
+    "message": "Suspicious token"
+  },
+  "securityTrustRiskyTokenDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
+  },
+  "securityTrustRiskyTokenDescriptionNoSymbol": {
+    "message": "This token is flagged as suspicious. Take a look at the risks before you continue."
+  },
+  "securityTrustMaliciousTokenSheetDescription": {
+    "message": "Serious risk signals detected on $1. We recommend not trading this token."
+  },
+  "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
+    "message": "Serious risk signals detected on this token. We recommend not trading this token."
+  },
+  "securityTrustDataUnavailable": {
+    "message": "Security data unavailable"
+  },
+  "securityTrustSubtitleKnown": {
+    "message": "No risk signals detected. Always research any asset before trading."
+  },
+  "securityTrustSubtitleNoIssues": {
+    "message": "No risk signals detected. Always research any asset before trading."
+  },
+  "securityTrustSubtitleSuspicious": {
+    "message": "Cautionary signals detected. Review the flagged issues carefully before trading this asset."
+  },
+  "securityTrustSubtitleMalicious": {
+    "message": "Serious risk signals detected. We recommend avoiding this asset."
+  },
+  "securityTrustSubtitleUnavailable": {
+    "message": "Security analysis could not be loaded for this token."
+  },
+  "securityTrustTokenDistribution": {
+    "message": "Token distribution"
+  },
+  "securityTrustTotalSupply": {
+    "message": "Total supply"
+  },
+  "securityTrustTop10Holders": {
+    "message": "Top 10 holders"
+  },
+  "securityTrustOther": {
+    "message": "Other"
+  },
+  "securityTrustNoHiddenFeesDetected": {
+    "message": "No hidden fees detected"
+  },
+  "securityTrustBuySellTax": {
+    "message": "Buy/Sell Tax"
+  },
+  "securityTrustBuyTax": {
+    "message": "Buy tax"
+  },
+  "securityTrustSellTax": {
+    "message": "Sell tax"
+  },
+  "securityTrustTransfer": {
+    "message": "Transfer"
+  },
+  "securityTrustTokenInfo": {
+    "message": "Token Info"
+  },
+  "securityTrustCreated": {
+    "message": "Created"
+  },
+  "securityTrustTokenAge": {
+    "message": "Token age"
+  },
+  "securityTrustNetwork": {
+    "message": "Network"
+  },
+  "securityTrustType": {
+    "message": "Type"
+  },
+  "securityTrustOfficialLinks": {
+    "message": "Official Links"
+  },
+  "securityTrustWebsite": {
+    "message": "Website"
+  },
+  "securityTrustTelegram": {
+    "message": "Telegram"
+  },
+  "securityTrustEtherscan": {
+    "message": "Etherscan"
+  },
+  "securityTrustNa": {
+    "message": "N/A"
+  },
+  "securityTrustVerified": {
+    "message": "Verified"
+  },
+  "securityTrustNoIssues": {
+    "message": "No issues"
+  },
+  "securityTrustSuspicious": {
+    "message": "Suspicious"
+  },
+  "securityTrustMaliciousLabel": {
+    "message": "Malicious"
+  },
+  "securityTrustMore": {
+    "message": "more"
+  },
+  "securityTrustEvaluationDisclaimer": {
+    "message": "This security review is for evaluation only and does not constitute an endorsement or recommendation to trade."
+  },
+  "securityTrustFeatureHighReputationToken": {
+    "message": "Established reputation"
+  },
+  "securityTrustFeatureListedOnCentralizedExchange": {
+    "message": "Listed on exchange"
+  },
+  "securityTrustFeatureVerifiedContract": {
+    "message": "Published contract"
+  },
+  "securityTrustFeatureHighTradeVolume": {
+    "message": "High trading volume"
+  },
+  "securityTrustFeatureKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "securityTrustFeatureMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "securityTrustFeatureImpersonatorSensitiveAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "securityTrustFeatureStaticCodeSignature": {
+    "message": "Suspicious code"
+  },
+  "securityTrustFeatureRugpull": {
+    "message": "Rugpull risk"
+  },
+  "securityTrustFeatureHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "securityTrustFeatureHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "securityTrustFeatureHighSellFee": {
+    "message": "High sell fee"
+  },
+  "securityTrustFeatureUnsellableToken": {
+    "message": "Unsellable token"
+  },
+  "securityTrustFeatureSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "securityTrustFeatureSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "securityTrustFeatureTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "securityTrustFeaturePostDump": {
+    "message": "Possible price manipulation"
+  },
+  "securityTrustFeatureImpersonatorHighConfidence": {
+    "message": "Likely impersonator"
+  },
+  "securityTrustFeatureImpersonatorMediumConfidence": {
+    "message": "Possible impersonator"
+  },
+  "securityTrustFeatureAirdropPattern": {
+    "message": "Suspicious airdrop"
+  },
+  "securityTrustFeatureImpersonator": {
+    "message": "Impersonator"
+  },
+  "securityTrustFeatureInorganicVolume": {
+    "message": "Artificial volume"
+  },
+  "securityTrustFeatureDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "securityTrustFeatureUnstableTokenPrice": {
+    "message": "Unstable price"
+  },
+  "securityTrustFeatureInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "securityTrustFeatureHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "securityTrustFeatureSpamText": {
+    "message": "Spam text"
+  },
+  "securityTrustFeatureInsufficientLockedLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "securityTrustFeatureConcentratedSupplyDistribution": {
+    "message": "Concentrated supply"
+  },
+  "securityTrustFeatureWashTrading": {
+    "message": "Wash trading"
+  },
+  "securityTrustFeatureFakeVolume": {
+    "message": "Fake volume"
+  },
+  "securityTrustFeatureHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "securityTrustFeatureHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "securityTrustFeatureFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "securityTrustFeatureLowReputationCreator": {
+    "message": "Creator has low reputation"
+  },
+  "securityTrustFeatureSnipeAtMint": {
+    "message": "Bot activity at launch"
+  },
+  "securityTrustFeatureImpersonatorLowConfidence": {
+    "message": "Unconfirmed impersonator"
+  },
+  "securityTrustFeatureIsMintable": {
+    "message": "Mintable"
+  },
+  "securityTrustFeatureCanBlacklist": {
+    "message": "Can blacklist"
+  },
+  "securityTrustFeatureCanWhitelist": {
+    "message": "Can whitelist"
+  },
+  "securityTrustFeatureHasTradingCooldown": {
+    "message": "Trading cooldown"
+  },
+  "securityTrustFeatureExternalFunctions": {
+    "message": "External calls"
+  },
+  "securityTrustFeatureHiddenOwner": {
+    "message": "Hidden owner"
+  },
+  "securityTrustFeatureTransferPauseable": {
+    "message": "Transfers pauseable"
+  },
+  "securityTrustFeatureProxyContract": {
+    "message": "Proxy contract"
+  },
+  "securityTrustFeatureModifiableTaxes": {
+    "message": "Modifiable taxes"
+  },
+  "securityTrustFeatureOwnerCanChangeBalance": {
+    "message": "Owner can change balance"
+  },
+  "securityTrustFeatureTransferFromReverts": {
+    "message": "Transfer reversals enabled"
+  },
+  "securityTrustFeatureTransferHookEnabled": {
+    "message": "Transfer hook enabled"
+  },
+  "securityTrustFeatureConfidentialTransfersEnabled": {
+    "message": "Confidential transfers"
+  },
+  "securityTrustFeatureNonTranserable": {
+    "message": "Non-transferable"
+  },
   "seeAllPermissions": {
     "message": "See all permissions",
     "description": "Used for revealing more content (e.g. permission list, etc.)"

@@ -103,6 +103,12 @@ import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
 import { MusdPositionSection } from './musd-position-section';
+import {
+  AssetPageSecurityTrustBanner,
+  AssetPageSecurityTrustHeaderBadge,
+  AssetPageSecurityTrustProvider,
+  AssetPageSecurityTrustSection,
+} from './security-trust';
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -229,6 +235,20 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+
+  const securityTrustToken = useMemo(
+    () => ({
+      symbol,
+      name,
+      chainId: String(chainId),
+      address,
+      decimals: asset.decimals,
+      isNative: type === AssetType.native,
+      image,
+    }),
+    [address, asset.decimals, chainId, image, name, symbol, type],
+  );
+
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
@@ -272,14 +292,17 @@ const AssetPage = ({
       ? `${name} (${symbol})`
       : (name ?? symbol);
   const assetNameElement = (
-    <Text
-      variant={TextVariant.BodyMd}
-      fontWeight={FontWeight.Medium}
-      color={TextColor.TextAlternative}
-      data-testid="asset-name"
-    >
-      {assetDisplayName}
-    </Text>
+    <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={2}>
+      <Text
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
+        data-testid="asset-name"
+      >
+        {assetDisplayName}
+      </Text>
+      <AssetPageSecurityTrustHeaderBadge />
+    </Box>
   );
 
   // Check if we should show Tron resources
@@ -305,7 +328,11 @@ const AssetPage = ({
   };
 
   return (
-    <Box className="asset__content">
+    <AssetPageSecurityTrustProvider
+      assetId={caipAssetId as CaipAssetType}
+      token={securityTrustToken}
+    >
+      <Box className="asset__content">
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -336,6 +363,7 @@ const AssetPage = ({
           assetNameElement
         )}
       </Box>
+      <AssetPageSecurityTrustBanner />
       <AssetChart
         chainId={chainId}
         address={address}
@@ -469,6 +497,7 @@ const AssetPage = ({
             </Box>
           )}
         <Box marginTop={6} flexDirection={BoxFlexDirection.Column} gap={4}>
+          <AssetPageSecurityTrustSection />
           {[AssetType.token, AssetType.native].includes(type) && (
             <Box
               flexDirection={BoxFlexDirection.Column}
@@ -595,7 +624,8 @@ const AssetPage = ({
         isOpen={isMarketClosedModalOpen}
         onClose={() => setIsMarketClosedModalOpen(false)}
       />
-    </Box>
+      </Box>
+    </AssetPageSecurityTrustProvider>
   );
 };
 
