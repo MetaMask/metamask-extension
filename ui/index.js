@@ -398,6 +398,12 @@ function setupStateHooks(store) {
     ) {
       await actions.captureTestBackgroundError(msg);
     };
+    /**
+     * The following stateHook is a method intended to verify that LavaMoat is
+     * applied correctly. If this throws, the protection is working as expected.
+     * If it does not throw, it indicates that LavaMoat is not protecting the
+     * app as expected.
+     */
     window.stateHooks.throwLavamoatError = () => runDummyPackage();
   }
 
