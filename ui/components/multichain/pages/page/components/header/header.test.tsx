@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { ButtonIcon, IconName } from '../../../../../component-library';
+import { ButtonIcon } from '../../../../../component-library';
 import { Header } from '.';
 
 const HEADER_TEXT = 'Connections';
@@ -15,9 +15,7 @@ describe('Header', () => {
   it('renders the startAccessory when provided', () => {
     const { container } = render(
       <Header
-        startAccessory={
-          <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" />
-        }
+        startAccessory={<ButtonIcon iconName="arrow-left" ariaLabel="Back" />}
       >
         {HEADER_TEXT}
       </Header>,
@@ -30,9 +28,7 @@ describe('Header', () => {
     const headerText = 'Connections';
 
     const { container } = render(
-      <Header
-        endAccessory={<ButtonIcon iconName={IconName.Close} ariaLabel="Back" />}
-      >
+      <Header endAccessory={<ButtonIcon iconName="close" ariaLabel="Back" />}>
         {headerText}
       </Header>,
     );
@@ -45,12 +41,8 @@ describe('Header', () => {
 
     const { container } = render(
       <Header
-        startAccessory={
-          <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" />
-        }
-        endAccessory={
-          <ButtonIcon iconName={IconName.Close} ariaLabel="Close" />
-        }
+        startAccessory={<ButtonIcon iconName="arrow-left" ariaLabel="Back" />}
+        endAccessory={<ButtonIcon iconName="close" ariaLabel="Close" />}
       >
         {headerText}
       </Header>,

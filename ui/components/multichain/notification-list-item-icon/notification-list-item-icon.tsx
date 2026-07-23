@@ -6,22 +6,24 @@ import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
 import {
   AvatarIcon,
+  AvatarIconSeverity,
   AvatarIconSize,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   AvatarToken,
   AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  IconName,
-  IconSize,
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
   BorderStyle,
   Display,
-  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
@@ -107,12 +109,10 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
         <AvatarIcon
           iconName={badge.icon}
           size={AvatarIconSize.Sm}
-          backgroundColor={BackgroundColor.infoDefault}
-          borderColor={BorderColor.backgroundDefault}
-          borderWidth={2}
+          severity={AvatarIconSeverity.Info}
+          className="border-2 border-background-default"
           iconProps={{
-            name: badge.icon,
-            color: IconColor.infoInverse,
+            color: IconColor.InfoInverse,
             size: IconSize.Xs,
           }}
         />
