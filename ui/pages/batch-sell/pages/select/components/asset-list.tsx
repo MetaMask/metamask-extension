@@ -18,7 +18,10 @@ export const AssetList = ({
   onDeselect,
 }: AssetListProps) => {
   return (
-    <Box className="flex-1" data-testid="batch-sell-select-asset-list">
+    <Box
+      className="flex-1 min-h-0 overflow-y-auto"
+      data-testid="batch-sell-select-asset-list"
+    >
       {assets.map((asset) => (
         <AssetListItem
           key={asset.assetId}

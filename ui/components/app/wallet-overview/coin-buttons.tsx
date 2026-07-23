@@ -5,6 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import {
   isCaipChainId,
   CaipChainId,
+  CaipAssetType,
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
@@ -62,10 +63,10 @@ import {
   TagProps,
 } from '../../component-library';
 import IconButton from '../../ui/icon-button';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { Toast, ToastContainer } from '../../multichain/toast';
+import { toast, ToastContent } from '../../ui/toast/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -195,25 +196,6 @@ const MoreButtonsGroup = ({
   );
 };
 
-const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
-  const t = useContext(I18nContext);
-
-  return (
-    <ToastContainer>
-      <Toast
-        startAdornment={
-          <Icon name={IconName.Export} color={IconColor.IconDefault} />
-        }
-        text={t('buyTabOpenedToastText')}
-        description={t('buyTabOpenedToastDescription')}
-        onClose={onClose}
-        autoHideTime={3000}
-        onAutoHideToast={onClose}
-      />
-    </ToastContainer>
-  );
-};
-
 type CoinButtonsProps = {
   account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
@@ -223,6 +205,11 @@ type CoinButtonsProps = {
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
+  /**
+   * CAIP-19 asset to pre-select when buying (asset-page native tokens). When
+   * omitted (e.g. wallet overview), Buy opens the token-selection page instead.
+   */
+  buyAssetId?: CaipAssetType;
 };
 
 const CoinButtons = ({
@@ -233,13 +220,13 @@ const CoinButtons = ({
   isSigningEnabled,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
+  buyAssetId,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
-  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -355,7 +342,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy, isRampsEnabled } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -411,9 +398,29 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    setShowTabOpenedToast(true);
-    openBuyCryptoInPdapp(getChainId());
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy({
+      assetId: buyAssetId,
+      chainId: getChainId(),
+    });
+    if (!opened) {
+      return;
+    }
+    // Only the flag-off path opens a Portfolio browser tab; with the ramps
+    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
+    // be misleading.
+    if (!isRampsEnabled) {
+      toast.success(
+        <ToastContent
+          title={t('buyTabOpenedToastText')}
+          description={t('buyTabOpenedToastDescription')}
+        />,
+        {
+          id: 'buy-tab-opened-toast',
+          icon: <Icon name={IconName.Export} color={IconColor.IconDefault} />,
+        },
+      );
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -433,7 +440,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -605,10 +612,6 @@ const CoinButtons = ({
           },
         ]}
       />
-
-      {showTabOpenedToast && (
-        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
-      )}
     </Box>
   );
 };

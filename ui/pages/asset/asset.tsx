@@ -1,6 +1,6 @@
 import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -13,20 +13,13 @@ import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 import {
   getRouteAssetChainId,
+  LocationStateToken,
   useRouteAssetToken,
 } from './hooks/useRouteAssetToken';
 import { resolveAssetRouteLookup } from './util';
 
 type LocationState = {
-  token?: {
-    address: string;
-    symbol: string;
-    name: string;
-    chainId: string;
-    image?: string;
-    isNative?: boolean;
-    decimals: number;
-  };
+  token?: LocationStateToken;
 };
 
 const Asset = () => {
@@ -65,7 +58,7 @@ const Asset = () => {
     el?.scroll(0, 0);
   }, []);
 
-  const content = (() => {
+  const renderContent = useCallback(() => {
     if (nft) {
       return <NftDetails nft={nft} nftChainId={chainId} />;
     }
@@ -81,17 +74,16 @@ const Asset = () => {
 
     const displayChainId = getRouteAssetChainId(token, chainId) as Hex;
 
-    const shouldShowToken = !token.isNative && token.address;
-    if (shouldShowToken) {
-      return <TokenAsset chainId={displayChainId} token={token} />;
+    if (token.isNative) {
+      return <NativeAsset chainId={displayChainId} token={token} />;
     }
 
-    return <NativeAsset chainId={displayChainId} token={token} />;
-  })();
+    return <TokenAsset chainId={displayChainId} token={token} />;
+  }, [chainId, hasError, isLoading, nft, token]);
 
   return (
     <ScrollContainer className="main-container asset__container">
-      {content}
+      {renderContent()}
     </ScrollContainer>
   );
 };

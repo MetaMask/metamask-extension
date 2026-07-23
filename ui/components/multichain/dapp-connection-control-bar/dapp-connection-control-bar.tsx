@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
@@ -67,7 +67,7 @@ import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-po
  * Not-connected layout (active account is not among permitted accounts):
  * [Favicon+grey dot] [Origin / Account · Not connected] ... [Connect]
  */
-export const DappConnectionControlBar = () => {
+export const DappConnectionControlBar = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -338,7 +338,7 @@ export const DappConnectionControlBar = () => {
                   <Icon
                     name={IconName.ArrowDown}
                     size={IconSize.Xs}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
               )}
@@ -360,7 +360,7 @@ export const DappConnectionControlBar = () => {
                   <Icon
                     name={IconName.Setting}
                     size={IconSize.Sm}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
 
@@ -405,4 +405,4 @@ export const DappConnectionControlBar = () => {
       )}
     </>
   );
-};
+});

@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Decimāldaļu precizitāte"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
   "delete": {
     "message": "Dzēst"
   },
@@ -511,9 +508,6 @@
   },
   "sign": {
     "message": "Parakstīt"
-  },
-  "signatureRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "signed": {
     "message": "Parakstīts"
