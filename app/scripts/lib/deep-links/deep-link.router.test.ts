@@ -55,6 +55,30 @@ const getState = jest.fn(() => ({
   preferences: { skipDeepLinkInterstitial: false },
 })) as unknown as jest.MockedFunction<MetaMaskController['getState']>;
 
+const routesProtectedByInterstitial = [
+  '/buy',
+  '/sell',
+  '/batch-sell',
+  '/card-onboarding',
+  '/swap',
+  '/money',
+  '/earn-musd',
+  '/perps',
+  '/perps-markets',
+  '/perps-asset',
+  '/rewards',
+  '/predict',
+  '/trending',
+  '/shield',
+] as const;
+
+const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
+  (['missing', 'invalid'] as const).map((signature) => ({
+    route,
+    signature,
+  })),
+);
+
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
@@ -144,19 +168,19 @@ describe('DeepLinkRouter', () => {
       },
     );
 
-    it.each(['missing', 'invalid'] as const)(
-      'should skip the interstitial for whitelisted routes when signature is %s',
-      async (signature) => {
+    it.each(protectedRouteTestCases)(
+      'shows the interstitial for $route when the signature is $signature',
+      async ({ route, signature }) => {
         const tabId = 1;
-        const url = `https://example.com/swap?amount=100`;
+        const url = `https://example.com${route}`;
         parseMock.mockResolvedValue({
           signature,
           route: {
-            pathname: '/swap',
+            pathname: route,
           },
           destination: {
             path: 'internal-route',
-            query: new URLSearchParams([['amount', '100']]),
+            query: new URLSearchParams(),
           },
         } as ParsedDeepLink);
 
@@ -166,34 +190,12 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#internal-route?amount=100',
+          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams(
+            { u: route },
+          ).toString()}`,
         });
       },
     );
-
-    it('should show the interstitial for non-whitelisted routes with missing signature', async () => {
-      const tabId = 1;
-      const url = `https://example.com/home?openNetworkSelector=true`;
-      parseMock.mockResolvedValue({
-        signature: 'missing',
-        route: {
-          pathname: '/home',
-        },
-        destination: {
-          path: 'home-route',
-          query: new URLSearchParams([['openNetworkSelector', 'true']]),
-        },
-      } as ParsedDeepLink);
-
-      await onBeforeRequest?.({
-        tabId,
-        url,
-      } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fhome%3FopenNetworkSelector%3Dtrue',
-      });
-    });
 
     describe('trusted origin (metamask.io)', () => {
       const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
@@ -390,20 +392,6 @@ describe('DeepLinkRouter', () => {
             canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(true);
           },
         },
-        {
-          description:
-            'redirects unsigned swap links directly without interstitial',
-          url: 'https://link.metamask.io/swap?amount=50',
-          parsed: {
-            signature: 'missing',
-            destination: {
-              path: 'cross-chain/swaps/prepare-swap-page',
-              query: new URLSearchParams([['amount', '50']]),
-            },
-            route: { pathname: '/swap' },
-          } as ParsedDeepLink,
-          expectedUrl: `${EXTENSION_HOME}#cross-chain/swaps/prepare-swap-page?amount=50`,
-        },
       ];
 
       it.each(skipInterstitialRouteCases)(
@@ -486,7 +474,7 @@ describe('DeepLinkRouter', () => {
       expect(mockErrorCallback).toHaveBeenCalledWith(error);
     });
 
-    it('should handle whitelisted redirecting routes', async function () {
+    it('handles redirecting routes from trusted origins', async function () {
       const tabId = 1;
       const url = `https://example.com/buy`;
       parseMock.mockResolvedValue({
@@ -501,19 +489,20 @@ describe('DeepLinkRouter', () => {
       await onBeforeRequest?.({
         tabId,
         url,
+        initiator: 'https://metamask.io',
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'https://example.com/internal-route',
       });
     });
 
-    it('should show the interstitial for non-whitelisted redirecting routes with missing signature', async function () {
+    it('shows the interstitial for unsigned redirecting routes from third-party origins', async function () {
       const tabId = 1;
-      const url = `https://example.com/onboarding`;
+      const url = `https://example.com/buy`;
       parseMock.mockResolvedValue({
         signature: 'missing',
         route: {
-          pathname: '/onboarding',
+          pathname: '/buy',
         },
         destination: {
           redirectTo: new URL('https://example.com/internal-route'),
@@ -526,7 +515,7 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fonboarding',
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
       });
     });
 

@@ -18,7 +18,6 @@ import {
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from '../../../../shared/lib/deep-links/routes/interstitial-bypass';
 import { canBypassDeepLinkInterstitialAsync } from '../../../../shared/lib/deep-links/routes/interstitial-bypass-async';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
@@ -269,11 +268,9 @@ export class DeepLinkRouter extends EventEmitter<{
    *
    * Deep links originating from a trusted MetaMask domain (e.g.
    * metamask.io, app.metamask.io) always skip the interstitial regardless of
-   * signature status — the website is treated as a trusted origin. Deep links
-   * matching Extension's mobile-aligned bypass route list also skip the
-   * interstitial regardless of signature status. For links from other origins,
-   * the interstitial is skipped only when the link is signed and the user has
-   * opted in via their preferences.
+   * signature status — the website is treated as a trusted origin. For links
+   * from other origins, the interstitial is skipped only when the link is
+   * signed and the user has opted in via their preferences.
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
@@ -286,10 +283,6 @@ export class DeepLinkRouter extends EventEmitter<{
     route?: ParsedDeepLink['route'],
     deepLinkUrl?: URL,
   ): Promise<boolean> {
-    if (isDeepLinkRouteAllowedToBypassInterstitial(route)) {
-      return true;
-    }
-
     if (await canBypassDeepLinkInterstitialAsync(route, deepLinkUrl)) {
       return true;
     }

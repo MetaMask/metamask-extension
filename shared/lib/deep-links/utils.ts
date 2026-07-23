@@ -7,7 +7,6 @@ import {
 import { parse } from './parse';
 import { VALID } from './verify';
 import { DEEP_LINK_ROUTE } from './routes/route';
-import { isDeepLinkRouteAllowedToBypassInterstitial } from './routes/interstitial-bypass';
 
 /**
  * Builds the interstitial page route with the given URL path and query.
@@ -25,17 +24,15 @@ export function buildInterstitialRoute(urlPathAndQuery: string): string {
 /**
  * Extracts the route from a deferred deep link.
  * This function parses the referring link URL and extracts the destination.
- * If the destination is an external URL (redirectTo) with a valid signature or
- * interstitial-bypass route, it returns the full URL. If the destination is an
- * internal route with a valid signature or is allowed to bypass the interstitial,
- * it returns the path with query parameters. If the signature is missing or
- * invalid for a non-bypass route, it returns an interstitial route to show a
- * warning page.
+ * If the destination is an external URL (redirectTo) with a valid signature,
+ * it returns the full URL.
+ * If the destination is an internal route with a valid signature, it returns the path with query parameters.
+ * If the signature is missing or invalid, it returns an interstitial route to show a warning page.
  *
  * @param deferredDeepLink - The deferred deep link data, or null if none is stored.
  * @returns A DeferredDeepLinkRoute with either:
- * - `type: DeferredDeepLinkRouteType.Redirect` and `url: string` for external URLs with valid signature or interstitial bypass.
- * - `type: DeferredDeepLinkRouteType.Navigate` and `route: string` for internal routes with valid signature or interstitial bypass.
+ * - `type: DeferredDeepLinkRouteType.Redirect` and `url: string` for external URLs with a valid signature.
+ * - `type: DeferredDeepLinkRouteType.Navigate` and `route: string` for internal routes with valid signature.
  * - `type: DeferredDeepLinkRouteType.Interstitial` and `urlPathAndQuery: string` for unsigned/invalid signature links.
  * - `null` if the input is null, parsing fails, the link is invalid, or the link is older than two hours.
  */
@@ -66,13 +63,11 @@ export async function getDeferredDeepLinkRoute(
       return null;
     }
 
-    const { destination, route, signature } = parsed;
-    const canBypassInterstitial =
-      isDeepLinkRouteAllowedToBypassInterstitial(route);
+    const { destination, signature } = parsed;
 
     // If the destination has a redirectTo property, it's an external URL redirect.
     if ('redirectTo' in destination) {
-      if (signature !== VALID && !canBypassInterstitial) {
+      if (signature !== VALID) {
         return {
           type: DeferredDeepLinkRouteType.Interstitial,
           urlPathAndQuery: url.pathname + url.search,
@@ -85,16 +80,16 @@ export async function getDeferredDeepLinkRoute(
       };
     }
 
-    // For internal routes, check the signature unless the route is allowed to
-    // bypass the interstitial.
-    if (signature !== VALID && !canBypassInterstitial) {
+    // For internal routes, check the signature
+    // If signature is not valid (missing or invalid), route to the interstitial page
+    if (signature !== VALID) {
       return {
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery: url.pathname + url.search,
       };
     }
 
-    // Construct the internal route from path and query parameters.
+    // Signature is valid - construct the internal route from path and query parameters
     const { path, query } = destination;
     const queryString = query.toString();
 

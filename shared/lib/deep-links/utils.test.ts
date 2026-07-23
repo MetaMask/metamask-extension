@@ -2,8 +2,6 @@ import { getDeferredDeepLinkRoute, buildInterstitialRoute } from './utils';
 import { DeferredDeepLinkRouteType } from './types';
 import * as parseModule from './parse';
 import { VALID, MISSING, INVALID } from './verify';
-import { BridgeQueryParams } from './routes/swap';
-import { SWAP_ROUTE } from './routes/route';
 
 jest.mock('./parse');
 
@@ -15,31 +13,30 @@ const mockBuyLink =
   'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
 const mockSwapLink =
   'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=KYoYO9beWAlLIT6GUATcHj98hoDiO9h3UZC76ZcMfreKsJcFtCp_vJCWqa9s8-6aO4FLPgoMI02k03t2WcL5bA';
-const mockUnsignedSwapLink =
-  'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff';
-const mockInvalidSwapLink =
-  'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=aW52YWxpZC1zaWduYXR1cmU=';
-const mockFreshSwapLink = 'https://link.metamask.io/swap?amount=50';
-const mockHomeLink = 'https://link.metamask.io/home?openNetworkSelector=true';
 
-function getMockSwapDestination() {
-  return {
-    path: SWAP_ROUTE,
-    query: new URLSearchParams([
-      [BridgeQueryParams.From, 'eip155:1/slip44:60'],
-      [
-        BridgeQueryParams.To,
-        'eip155:59144/erc20:0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-      ],
-      [BridgeQueryParams.Amount, '22000000000000000'],
-    ]),
-  };
-}
+const routesProtectedByInterstitial = [
+  '/buy',
+  '/sell',
+  '/batch-sell',
+  '/card-onboarding',
+  '/swap',
+  '/money',
+  '/earn-musd',
+  '/perps',
+  '/perps-markets',
+  '/perps-asset',
+  '/rewards',
+  '/predict',
+  '/trending',
+  '/shield',
+] as const;
 
-function getMockSwapDestinationRoute() {
-  const { path, query } = getMockSwapDestination();
-  return `${path}?${query.toString()}`;
-}
+const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
+  ([MISSING, INVALID] as const).map((signature) => ({
+    route,
+    signature,
+  })),
+);
 
 describe('Deep link utils', () => {
   describe('buildInterstitialRoute', () => {
@@ -80,7 +77,7 @@ describe('Deep link utils', () => {
         mockParse.mockResolvedValue({
           destination: { redirectTo: new URL('https://app.metamask.io/buy') },
           signature: VALID,
-          route: { pathname: '/buy' } as never,
+          route: {} as never,
         });
 
         const result = await getDeferredDeepLinkRoute({
@@ -99,9 +96,12 @@ describe('Deep link utils', () => {
         jest.setSystemTime(createdAt + 60 * 1000);
 
         mockParse.mockResolvedValue({
-          destination: getMockSwapDestination(),
+          destination: {
+            path: '/swap',
+            query: new URLSearchParams('amount=100'),
+          },
           signature: VALID,
-          route: { pathname: '/swap' } as never,
+          route: {} as never,
         });
 
         const result = await getDeferredDeepLinkRoute({
@@ -111,7 +111,7 @@ describe('Deep link utils', () => {
 
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Navigate,
-          route: getMockSwapDestinationRoute(),
+          route: '/swap?amount=100',
           signature: VALID,
         });
       });
@@ -124,7 +124,7 @@ describe('Deep link utils', () => {
         mockParse.mockResolvedValue({
           destination: { redirectTo: new URL('https://app.metamask.io/buy') },
           signature: VALID,
-          route: { pathname: '/buy' } as never,
+          route: {} as never,
         });
 
         const result = await getDeferredDeepLinkRoute({
@@ -147,12 +147,12 @@ describe('Deep link utils', () => {
             query: new URLSearchParams('amount=50'),
           },
           signature: VALID,
-          route: { pathname: '/swap' } as never,
+          route: {} as never,
         });
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockFreshSwapLink,
+          referringLink: mockSwapLink,
         });
 
         expect(result).toStrictEqual({
@@ -164,75 +164,34 @@ describe('Deep link utils', () => {
     });
 
     describe('when signature is missing or invalid', () => {
-      it('returns navigate route for unsigned whitelisted link', async () => {
-        const createdAt = 1000000;
-        jest.setSystemTime(createdAt + 60 * 1000);
+      it.each(protectedRouteTestCases)(
+        'returns interstitial route for $route when the signature is $signature',
+        async ({ route, signature }) => {
+          const createdAt = 1000000;
+          jest.setSystemTime(createdAt + 60 * 1000);
 
-        mockParse.mockResolvedValue({
-          destination: getMockSwapDestination(),
-          signature: MISSING,
-          route: { pathname: '/swap' } as never,
-        });
+          mockParse.mockResolvedValue({
+            destination: {
+              path: route,
+              query: new URLSearchParams(),
+            },
+            signature,
+            route: { pathname: route } as never,
+          });
 
-        const result = await getDeferredDeepLinkRoute({
-          createdAt,
-          referringLink: mockUnsignedSwapLink,
-        });
+          const result = await getDeferredDeepLinkRoute({
+            createdAt,
+            referringLink: `https://link.metamask.io${route}`,
+          });
 
-        expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Navigate,
-          route: getMockSwapDestinationRoute(),
-          signature: MISSING,
-        });
-      });
+          expect(result).toStrictEqual({
+            type: DeferredDeepLinkRouteType.Interstitial,
+            urlPathAndQuery: route,
+          });
+        },
+      );
 
-      it('returns navigate route for whitelisted link with invalid signature', async () => {
-        const createdAt = 1000000;
-        jest.setSystemTime(createdAt + 60 * 1000);
-
-        mockParse.mockResolvedValue({
-          destination: getMockSwapDestination(),
-          signature: INVALID,
-          route: { pathname: '/swap' } as never,
-        });
-
-        const result = await getDeferredDeepLinkRoute({
-          createdAt,
-          referringLink: mockInvalidSwapLink,
-        });
-
-        expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Navigate,
-          route: getMockSwapDestinationRoute(),
-          signature: INVALID,
-        });
-      });
-
-      it('returns interstitial route for unsigned non-whitelisted link', async () => {
-        const createdAt = 1000000;
-        jest.setSystemTime(createdAt + 60 * 1000);
-
-        mockParse.mockResolvedValue({
-          destination: {
-            path: '/',
-            query: new URLSearchParams('openNetworkSelector=true'),
-          },
-          signature: MISSING,
-          route: { pathname: '/home' } as never,
-        });
-
-        const result = await getDeferredDeepLinkRoute({
-          createdAt,
-          referringLink: mockHomeLink,
-        });
-
-        expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Interstitial,
-          urlPathAndQuery: '/home?openNetworkSelector=true',
-        });
-      });
-
-      it('still returns redirect for whitelisted external URLs regardless of signature', async () => {
+      it('returns interstitial route for unsigned external URL redirect', async () => {
         const createdAt = 1000000;
         jest.setSystemTime(createdAt + 60 * 1000);
 
@@ -244,35 +203,12 @@ describe('Deep link utils', () => {
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: mockBuyLink,
-        });
-
-        expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Redirect,
-          url: 'https://app.metamask.io/buy',
-        });
-      });
-
-      it('returns interstitial route for unsigned non-whitelisted external URL redirect', async () => {
-        const createdAt = 1000000;
-        jest.setSystemTime(createdAt + 60 * 1000);
-
-        mockParse.mockResolvedValue({
-          destination: {
-            redirectTo: new URL('https://support.metamask.io/onboarding'),
-          },
-          signature: MISSING,
-          route: { pathname: '/onboarding' } as never,
-        });
-
-        const result = await getDeferredDeepLinkRoute({
-          createdAt,
-          referringLink: 'https://link.metamask.io/onboarding',
+          referringLink: 'https://link.metamask.io/buy',
         });
 
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Interstitial,
-          urlPathAndQuery: '/onboarding',
+          urlPathAndQuery: '/buy',
         });
       });
 
