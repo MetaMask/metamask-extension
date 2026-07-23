@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -36,6 +36,7 @@ export function EnforcedSimulationsRow() {
 
   const isEligible = useIsEnforcedSimulationsEligible();
   const [isUnavailable, setIsUnavailable] = useState(false);
+  const autoEnableRequestId = useRef(0);
 
   const hasAutoEnabled = containerTypes !== undefined;
 
@@ -48,6 +49,8 @@ export function EnforcedSimulationsRow() {
   }, [transactionId]);
 
   useEffect(() => {
+    const requestId = ++autoEnableRequestId.current;
+
     if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
       return;
     }
@@ -56,6 +59,10 @@ export function EnforcedSimulationsRow() {
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
     ]).catch((error) => {
+      if (requestId !== autoEnableRequestId.current) {
+        return;
+      }
+
       setIsUnavailable(true);
       if (!process.env.IN_TEST) {
         console.error(error);

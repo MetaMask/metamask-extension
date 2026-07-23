@@ -30,11 +30,13 @@ function render({
   containerTypes,
   origin,
   delegationAddress,
+  component = <EnforcedSimulationsRow />,
 }: {
   isEligible?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
+  component?: React.ReactElement;
 } = {}) {
   useIsEnforcedSimulationsEligibleMock.mockReturnValue(isEligible);
 
@@ -62,7 +64,7 @@ function render({
   });
 
   return renderWithConfirmContextProvider(
-    <EnforcedSimulationsRow />,
+    component,
     mockStore(state),
   );
 }
@@ -103,6 +105,53 @@ describe('EnforcedSimulationsRow', () => {
     await waitFor(() => {
       expect(container).toBeEmptyDOMElement();
     });
+  });
+
+  it('ignores stale auto-enable failures', async () => {
+    let rejectFirstRequest: (error: Error) => void;
+    const firstRequest = new Promise<void>((_, reject) => {
+      rejectFirstRequest = reject;
+    });
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    let triggerRerender: () => void = () => undefined;
+    function RerenderableRow() {
+      const [, setRenderCount] = React.useState(0);
+      triggerRerender = () => setRenderCount((count) => count + 1);
+      return <EnforcedSimulationsRow />;
+    }
+
+    useIsEnforcedSimulationsEligibleMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValue(true);
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockImplementationOnce(() => firstRequest)
+      .mockResolvedValueOnce(undefined);
+
+    render({
+      containerTypes: undefined,
+      component: <RerenderableRow />,
+    });
+    await act(async () => {
+      triggerRerender();
+    });
+    await act(async () => {
+      triggerRerender();
+    });
+
+    await waitFor(() => {
+      expect(applyTransactionContainersExisting).toHaveBeenCalledTimes(2);
+    });
+
+    await act(async () => {
+      rejectFirstRequest(new Error('Stale request failed'));
+    });
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it('renders the optional badge', async () => {
