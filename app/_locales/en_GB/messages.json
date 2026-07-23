@@ -7322,6 +7322,9 @@
   "perpsOrderFailed": {
     "message": "Order could not be placed. Try again."
   },
+  "perpsOrderFilled": {
+    "message": "Filled"
+  },
   "perpsOrderOriginalSize": {
     "message": "Original size"
   },
@@ -7330,6 +7333,9 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderType": {
+    "message": "Order type"
   },
   "perpsOrderValue": {
     "message": "Order value"

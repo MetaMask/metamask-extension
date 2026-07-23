@@ -5,7 +5,8 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import {
   DEFAULT_ROUTE,
-  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -183,8 +184,8 @@ describe('PerpsActivityPage', () => {
     ).toHaveTextContent('Deposits');
   });
 
-  describe('order transaction navigation', () => {
-    it('navigates to market detail page when an order transaction is clicked', () => {
+  describe('transaction navigation', () => {
+    it('navigates to the Perps transaction details page when an order is clicked', () => {
       renderWithProvider(<PerpsActivityPage />, createMockStore());
 
       // Switch to the Orders filter to reveal order transactions
@@ -195,35 +196,50 @@ describe('PerpsActivityPage', () => {
       const orderCard = screen.getByTestId('transaction-card-tx-004');
       fireEvent.click(orderCard);
 
+      const orderTransaction = mockTransactions.find(
+        (transaction) => transaction.id === 'tx-004',
+      );
       expect(mockNavigate).toHaveBeenCalledWith(
-        `${PERPS_MARKET_DETAIL_ROUTE}/SOL`,
+        PERPS_TRANSACTION_DETAILS_ROUTE,
+        { state: { transaction: orderTransaction } },
       );
     });
 
-    it('encodes the symbol in the navigation URL', () => {
-      renderWithProvider(<PerpsActivityPage />, createMockStore());
-
-      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
-      fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
-
-      // tx-004 has symbol 'SOL' — encodeURIComponent('SOL') === 'SOL'
-      const orderCard = screen.getByTestId('transaction-card-tx-004');
-      fireEvent.click(orderCard);
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        expect.stringContaining(PERPS_MARKET_DETAIL_ROUTE),
-      );
-    });
-
-    it('does not navigate when a trade transaction is clicked', () => {
+    it('navigates to the Perps transaction details page when a trade is clicked', () => {
       renderWithProvider(<PerpsActivityPage />, createMockStore());
 
       // Default filter is 'trade' — tx-001 has type 'trade'
-      const tradeCard = screen.queryByTestId('transaction-card-tx-001');
-      if (tradeCard) {
-        fireEvent.click(tradeCard);
-        expect(mockNavigate).not.toHaveBeenCalled();
-      }
+      const tradeCard = screen.getByTestId('transaction-card-tx-001');
+      fireEvent.click(tradeCard);
+
+      const tradeTransaction = mockTransactions.find(
+        (transaction) => transaction.id === 'tx-001',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        PERPS_TRANSACTION_DETAILS_ROUTE,
+        { state: { transaction: tradeTransaction } },
+      );
+    });
+
+    it('navigates to the generic tx details route when a deposit is clicked', () => {
+      renderWithProvider(<PerpsActivityPage />, createMockStore());
+
+      fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+      fireEvent.click(
+        screen.getByTestId('perps-activity-filter-option-deposit'),
+      );
+
+      // tx-005 is a completed deposit with a tx hash
+      const depositCard = screen.getByTestId('transaction-card-tx-005');
+      fireEvent.click(depositCard);
+
+      const depositTransaction = mockTransactions.find(
+        (transaction) => transaction.id === 'tx-005',
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${TX_DETAILS_ROUTE}/eip155:42161/${depositTransaction?.depositWithdrawal?.txHash}`,
+        { state: undefined },
+      );
     });
   });
 });
