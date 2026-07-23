@@ -8,10 +8,10 @@ import {
   syncRampsOrdersWithUserStorage,
 } from '../../../store/controller-actions/ramps-controller';
 
-// v12: re-run after message-signing-snap salted localhost Portfolio auth
-// (origin not allowlisted → different profileId than Extension).
+// Bump when migrate must re-run after fixing Portfolio Profile Sync session
+// handling (stale auth could mark migrate done without a successful upload).
 export const PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY =
-  'portfolio-buy-orders-migration-v12';
+  'portfolio-buy-orders-migration-v13';
 
 export const EXT_MIGRATE_ORDERS_ENTRY = 'ext_migrate_orders';
 export const MIGRATE_STATUS_QUERY_PARAM = 'migrateStatus';
@@ -163,8 +163,8 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
 
   let syncSucceeded = false;
   try {
-    // Drop any stale PRD/UAT bearer left from before local DEV Profile Sync, then
-    // mint a fresh DEV session so User Storage get does not 401 as invalid token.
+    // Drop any stale DEV/UAT bearer, then mint a fresh session for the
+    // configured Profile Sync env (local yarn start → PRD, for UAT on-ramp).
     try {
       await submitRequestToBackground('performSignOut');
     } catch (signOutError) {
