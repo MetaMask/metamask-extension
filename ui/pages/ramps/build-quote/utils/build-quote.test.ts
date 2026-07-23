@@ -1,3 +1,4 @@
+import type { Quote } from '@metamask/ramps-controller';
 import {
   findSelectedQuote,
   isTokenStateSettled,
@@ -96,7 +97,10 @@ describe('build-quote utils', () => {
   describe('findSelectedQuote', () => {
     it('matches snapshot for quote selection cases', () => {
       const quotesResponse = {
-        success: [{ provider: 'transak' }, { provider: 'moonpay' }],
+        success: [
+          { provider: 'transak' },
+          { provider: 'moonpay' },
+        ] as unknown as Quote[],
         error: [],
       };
 
@@ -176,7 +180,7 @@ describe('build-quote utils', () => {
           selectedQuoteLoading: false,
           hasQuoteFetchError: false,
           quotesResponse: {
-            success: [{ provider: 'transak' }],
+            success: [{ provider: 'transak' }] as unknown as Quote[],
             error: [],
           },
           selectedQuote: { provider: 'transak' },

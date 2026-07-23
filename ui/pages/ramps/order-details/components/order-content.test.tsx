@@ -7,6 +7,7 @@ import { RampsOrderStatus, type RampsOrder } from '@metamask/ramps-controller';
 import copyToClipboard from 'copy-to-clipboard';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderContent } from './order-content';
 
 // Pin the timezone so date snapshots are deterministic regardless of the
@@ -93,7 +94,9 @@ describe('OrderContent (completed)', () => {
 
   it('has an accessible name on the copy-order-id button', () => {
     renderContent(completedOrder);
-    expect(screen.getByRole('button', { name: 'Copy to clipboard' })).toBe(
+    expect(
+      screen.getByRole('button', { name: messages.copyToClipboard.message }),
+    ).toBe(
       screen.getByTestId('ramps-order-details-order-id'),
     );
   });
