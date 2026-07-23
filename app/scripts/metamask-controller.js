@@ -5133,10 +5133,7 @@ export default class MetamaskController extends EventEmitter {
         const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
         log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
         this.controllerMessenger?.captureException?.(
-          createSentryError(
-            errorMessage,
-            error,
-          ),
+          createSentryError(errorMessage, error),
         );
         throw error;
       }
