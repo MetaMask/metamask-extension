@@ -455,9 +455,7 @@ describe('usePerpsTransactionHistory', () => {
         await result.current.refetch();
       });
 
-      expect(result.current.transactions[0].id).toBe(
-        'wallet-withdrawal-tx-1',
-      );
+      expect(result.current.transactions[0].id).toBe('wallet-withdrawal-tx-1');
     });
 
     it('merges wallet deposits and withdrawals together without cross-deduping', async () => {

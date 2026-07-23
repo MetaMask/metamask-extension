@@ -60,9 +60,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
   it('returns an empty array when no account is selected', () => {
     setSelectors({ transactions: [createMockTx()], address: '' });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toEqual([]);
   });
@@ -70,9 +68,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
   it('returns a PerpsTransaction for a confirmed perpsWithdraw from the selected account', () => {
     setSelectors({ transactions: [createMockTx()] });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].type).toBe('withdrawal');
@@ -80,14 +76,10 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
 
   it('includes a submitted perpsWithdraw transaction with a pending status', () => {
     setSelectors({
-      transactions: [
-        createMockTx({ status: TransactionStatus.submitted }),
-      ],
+      transactions: [createMockTx({ status: TransactionStatus.submitted })],
     });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].depositWithdrawal?.status).toBe('pending');
@@ -106,9 +98,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
       ],
     });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(0);
   });
@@ -126,9 +116,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
       ],
     });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(1);
   });
@@ -138,9 +126,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
       transactions: [createMockTx({ type: TransactionType.simpleSend })],
     });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(0);
   });
@@ -150,9 +136,7 @@ describe('useWalletPerpsWithdrawalTransactions', () => {
       transactions: [createMockTx({ type: TransactionType.perpsDeposit })],
     });
 
-    const { result } = renderHook(() =>
-      useWalletPerpsWithdrawalTransactions(),
-    );
+    const { result } = renderHook(() => useWalletPerpsWithdrawalTransactions());
 
     expect(result.current).toHaveLength(0);
   });

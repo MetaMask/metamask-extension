@@ -88,9 +88,7 @@ describe('useWalletPerpsDepositTransactions', () => {
 
   it('includes a submitted perpsDeposit transaction with a pending status', () => {
     setSelectors({
-      transactions: [
-        createMockTx({ status: TransactionStatus.submitted }),
-      ],
+      transactions: [createMockTx({ status: TransactionStatus.submitted })],
     });
 
     const { result } = renderHook(() => useWalletPerpsDepositTransactions());
