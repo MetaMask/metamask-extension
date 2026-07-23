@@ -817,6 +817,38 @@ describe('PersistenceManager', () => {
         // Clear the recovery timer scheduled by the idb-close suspension.
         manager.resumeWrites();
       });
+
+      it('reconnects the backup database after a force-close so later opens are not no-ops', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const backupStore = await openAndCaptureBackupStore();
+
+        // OnSuspend owns the suspension; a later force-close must still clear
+        // `#open` so resume + the next write can reconnect the backup handle.
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        backupStore.onForcedClose?.('close');
+        manager.resumeWrites();
+
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const setSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockResolvedValue(undefined);
+        mockStoreSet.mockResolvedValue(undefined);
+
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+        const [ok, error] = await manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+
+        expect(ok).toBe(true);
+        expect(error).toBeUndefined();
+        expect(openSpy).toHaveBeenCalledTimes(1);
+        expect(setSpy).toHaveBeenCalled();
+        openSpy.mockRestore();
+        setSpy.mockRestore();
+      });
     });
 
     describe('recovery for inferred triggers', () => {

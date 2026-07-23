@@ -656,13 +656,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #openBackupDatabase(): Promise<void> {
     try {
-      const db = new IndexedDBStore();
+      // Reuse the existing store after a forced close so we reconnect the same
+      // handle instead of orphaning it. IndexedDBStore.open() is a no-op when
+      // already connected.
+      const db = this.#backupDb ?? new IndexedDBStore();
       await db.open('metamask-backup', 1);
       // If the browser force-closes the backup DB (e.g. during shutdown),
       // report it (for baseline telemetry) and proactively suspend writes so we
-      // don't start a write we can't finish.
+      // don't start a write we can't finish. Clear `#open` so a later `open()`
+      // reconnects instead of no-oping against a dead handle.
       db.onForcedClose = (reason) => {
         this.#reportBackupDbForcedClose(reason);
+        this.#open = false;
         this.suspendWrites(ShutdownTrigger.IdbClose);
       };
       this.#backupDb = db;
