@@ -231,6 +231,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwLavamoatError',
   'throwTestError',
   'toggleExternalServices',
   'unMarkPasswordForgotten',
@@ -1737,6 +1738,17 @@ export class LegacyBackgroundApiService {
       error.name = 'TestError';
       throw error;
     });
+  }
+
+  /**
+   * Trigger a LavaMoat error in the background for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this in production.
+   */
+  throwLavamoatError(message: string): void {
+    globalThis.stateHooks.throwLavamoatError?.();
   }
 
   /**

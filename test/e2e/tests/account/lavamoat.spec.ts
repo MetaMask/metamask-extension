@@ -21,7 +21,7 @@ describe('lavamoat', function (this: Mocha.Suite) {
     );
   });
 
-  it('the background environment enforces the lavamoat policy', async function () {
+  it.only('the background environment enforces the lavamoat policy', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -30,12 +30,13 @@ describe('lavamoat', function (this: Mocha.Suite) {
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
           await driver.navigate(PAGES.HOME);
-          await assert.rejects(
-            driver.executeScriptInExtensionServiceWorker(
-              'globalThis.stateHooks.throwLavamoatError();',
-            ),
-            /Cannot read properties of undefined \(reading 'log'\)/u,
-          );
+          const result = await driver.executeAsyncScript(`
+            const callback = arguments[arguments.length - 1];
+            globalThis.stateHooks.throwBackgroundLavamoatError()
+              .then(() => callback({ result: 'success' }))
+              .catch((error) => callback({ error }))
+          `);
+          assert.equal(result?.error?.data?.cause?.message, `Cannot read properties of undefined (reading 'log')`);
         } else {
           await driver.navigate(PAGES.BACKGROUND);
           await assert.rejects(

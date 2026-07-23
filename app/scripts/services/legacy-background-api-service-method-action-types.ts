@@ -486,6 +486,18 @@ export type LegacyBackgroundApiServiceThrowTestErrorAction = {
 };
 
 /**
+ * Trigger a LavaMoat error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+ * use this in production.
+ */
+export type LegacyBackgroundApiServiceThrowLavamoatErrorAction = {
+  type: `LegacyBackgroundApiService:throwLavamoatError`;
+  handler: LegacyBackgroundApiService['throwLavamoatError'];
+};
+
+/**
  * Determines if the transaction relay supports the given chain.
  *
  * @param chainId - The chain ID to check for relay support.
@@ -541,4 +553,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceCaptureTestErrorAction
   | LegacyBackgroundApiServiceThrowTestErrorAction
+  | LegacyBackgroundApiServiceThrowLavamoatErrorAction
   | LegacyBackgroundApiServiceIsRelaySupportedAction;

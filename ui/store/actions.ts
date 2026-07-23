@@ -7220,6 +7220,17 @@ export async function captureTestBackgroundError(
 }
 
 /**
+ * Trigger a LavaMoat error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not use
+ * this in production.
+ */
+export async function throwBackgroundLavamoatError(message: string): Promise<void> {
+  await submitRequestToBackground('throwLavamoatError', [message]);
+}
+
+/**
  * Set status of popover warning for the first snap installation.
  *
  * @param shown - True if popover has been shown.

@@ -3907,6 +3907,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:captureTestError',
       ),
+      throwLavamoatError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:throwLavamoatError',
+      ),
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
