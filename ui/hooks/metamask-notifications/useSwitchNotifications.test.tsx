@@ -56,7 +56,11 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
         () => useSwitchAccountNotificationsChange(),
         {},
       );
-      await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      try {
+        await hook.result.current.onChange(['0x1'], testEnableOrDisable);
+      } catch {
+        // onChange rethrows after setting error state — expected here
+      }
       return hook.result.current.error;
     };
 

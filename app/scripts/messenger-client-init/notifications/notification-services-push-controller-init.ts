@@ -7,8 +7,6 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import { hasProperty } from '@metamask/utils';
-import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
 import { MessengerClientInitFunction } from '../types';
 import type {
   NotificationServicesPushControllerMessenger,
@@ -114,52 +112,18 @@ export const NotificationServicesPushControllerInit: MessengerClientInitFunction
   });
 
   initMessenger.subscribe(
-    'NotificationServicesPushController:onNewNotifications',
-    (notification) => {
-      const chainId = hasProperty(notification, 'chain_id')
-        ? (notification.chain_id as number)
-        : null;
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PushNotificationReceived)
-          .addCategory(MetaMetricsEventCategory.PushNotifications)
-          .addProperties({
-            /* eslint-disable @typescript-eslint/naming-convention */
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: chainId,
-            /* eslint-enable @typescript-eslint/naming-convention */
-          })
-          .build(),
-      );
-    },
-  );
-
-  initMessenger.subscribe(
     'NotificationServicesPushController:pushNotificationClicked',
     (notification) => {
-      const otherNotificationProperties = () => {
-        if (
-          'notification_type' in notification &&
-          isOnChainNotification(notification)
-        ) {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          return { chain_id: notification.payload.chain_id };
-        }
-
-        return undefined;
-      };
-
       trackEvent(
         createEventBuilder(MetaMetricsEventName.PushNotificationClicked)
           .addCategory(MetaMetricsEventCategory.PushNotifications)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */
-            notification_id: notification.id,
-            notification_type: notification.type,
-            ...otherNotificationProperties(),
-            data: notification, // data blob for feature teams to analyse their notification shapes
+            notification_id: notification.notification_id,
+            notification_type: notification.notification_type,
+            notification_subtype: notification.notification_subtype,
+            deeplink: `#notifications/${notification.notification_id}`,
+            ...(notification.chain_id && { chain_id: notification.chain_id }),
             /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),

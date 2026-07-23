@@ -38,8 +38,10 @@ export function useSwitchAccountNotificationsChange(): {
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
         setError(errorMessage);
+        throw e;
+      } finally {
+        dispatch(hideLoadingIndication());
       }
-      dispatch(hideLoadingIndication());
     },
     [dispatch],
   );

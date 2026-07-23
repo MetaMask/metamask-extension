@@ -33,6 +33,7 @@ import type { NotificationsSettingsSectionConfig } from './notifications-setting
 
 type WalletActivityAccount =
   NotificationPreferences['walletActivity']['accounts'][number];
+type SectionType = NotificationsSettingsSectionConfig['type'];
 
 type AccountSettingsProps = {
   data?: Record<string, boolean>;
@@ -73,6 +74,13 @@ const getWalletActivityAccountsByAddress = (
     ),
   );
 
+const SETTINGS_TYPE_BY_SECTION: Record<SectionType, string> = {
+  walletActivity: 'wallet_activity',
+  perps: 'perps',
+  marketing: 'marketing',
+  agenticCli: 'agentic_cli',
+};
+
 type PendingAccountToggle = {
   value: boolean;
   generation: number;
@@ -86,6 +94,7 @@ const WalletActivitySectionContent = ({
 }: SectionContentProps) => {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
@@ -139,6 +148,24 @@ const WalletActivitySectionContent = ({
     [accountAddresses, getAccountEnabledValue],
   );
 
+  const trackWalletActivityAggregateToggle = useCallback(
+    (enabled: boolean) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'wallet_activity',
+            notification_channel: 'all',
+            enabled,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
+
   const toggleAllAccounts = useCallback(async () => {
     if (accountAddresses.length === 0) {
       return;
@@ -146,9 +173,17 @@ const WalletActivitySectionContent = ({
 
     setUpdatingAllAccounts(true);
     try {
-      await switchAccountNotifications(accountAddresses, !hasEnabledAccount);
+      const newState = !hasEnabledAccount;
+      try {
+        await switchAccountNotifications(accountAddresses, newState);
+      } catch {
+        // Failed enable/disable already surfaced via accountToggleError; avoid
+        // leaving a rejected promise from the onClick handler.
+        return;
+      }
       await refetchAccountSettings();
       await refetchNotificationPreferences();
+      trackWalletActivityAggregateToggle(newState);
       listNotifications();
     } finally {
       setUpdatingAllAccounts(false);
@@ -161,11 +196,29 @@ const WalletActivitySectionContent = ({
     refetchNotificationPreferences,
     setUpdatingAllAccounts,
     switchAccountNotifications,
+    trackWalletActivityAggregateToggle,
   ]);
 
   const handleToggleAccountNotifications = useCallback(
     async (address: string, nextValue: boolean) => {
       const lowerAddress = address.toLowerCase();
+
+      // Aggregate events track user-facing intention (optimistic UI), not BE lag.
+      // Capture the boundary *before* this click's pending override is applied.
+      const optimisticEnabledCount = accountAddresses.filter(
+        getAccountEnabledValue,
+      ).length;
+      let aggregateTransition: boolean | null = null;
+      if (nextValue && optimisticEnabledCount === 0) {
+        aggregateTransition = true;
+      } else if (
+        !nextValue &&
+        optimisticEnabledCount === 1 &&
+        getAccountEnabledValue(address)
+      ) {
+        aggregateTransition = false;
+      }
+
       const generation =
         (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
       accountToggleGenerationRef.current[lowerAddress] = generation;
@@ -175,12 +228,19 @@ const WalletActivitySectionContent = ({
       }));
 
       const persistWrite = accountToggleWriteChainRef.current.then(async () => {
-        await switchAccountNotifications([address], nextValue);
-        await refetchAccountSettings();
-        await refetchNotificationPreferences();
-        listNotifications();
+        try {
+          await switchAccountNotifications([address], nextValue);
+          await refetchAccountSettings();
+          await refetchNotificationPreferences();
+          listNotifications();
+          if (aggregateTransition !== null) {
+            trackWalletActivityAggregateToggle(aggregateTransition);
+          }
+        } catch {
+          // write failed; chain resolves so subsequent toggles can still run
+        }
       });
-      accountToggleWriteChainRef.current = persistWrite.catch(() => undefined);
+      accountToggleWriteChainRef.current = persistWrite;
 
       try {
         await persistWrite;
@@ -197,10 +257,13 @@ const WalletActivitySectionContent = ({
       }
     },
     [
+      accountAddresses,
+      getAccountEnabledValue,
       listNotifications,
       refetchAccountSettings,
       refetchNotificationPreferences,
       switchAccountNotifications,
+      trackWalletActivityAggregateToggle,
     ],
   );
 
@@ -378,14 +441,12 @@ export function NotificationSettingsSection({
             .addCategory(MetaMetricsEventCategory.NotificationSettings)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              settings_type: `${section.type}_${key}`,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              old_value: oldValue,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              new_value: newValue,
+              /* eslint-disable @typescript-eslint/naming-convention */
+              settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+              notification_channel:
+                key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+              enabled: newValue,
+              /* eslint-enable @typescript-eslint/naming-convention */
             })
             .build(),
         );

@@ -905,7 +905,7 @@ export enum MetaMetricsEventName {
   KeyGlobalSecurityToggleSelected = 'Key Global Security/Privacy Settings',
   KeyBalanceTokenPriceChecker = 'Key Show Balance and Token Price Checker Settings',
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
-  MarkAllNotificationsRead = 'Notifications Marked All as Read',
+  MarkAllNotificationsRead = 'InApp Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
@@ -1144,12 +1144,10 @@ export enum MetaMetricsEventName {
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  NotificationClicked = 'Notification Clicked',
-  NotificationDetailClicked = 'Notification Detail Clicked',
-  NotificationsMenuOpened = 'Notifications Menu Opened',
+  NotificationClicked = 'InApp Notification Clicked',
+  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
-  NotificationsActivated = 'Notifications Activated',
-  PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
   // Send
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -1309,7 +1307,6 @@ export enum MetaMetricsEventCategory {
   Network = 'Network',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
-  NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   // eslint-disable-next-line @typescript-eslint/no-shadow

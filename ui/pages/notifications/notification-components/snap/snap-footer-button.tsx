@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,7 +11,7 @@ import {
 import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { handleSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
@@ -24,22 +24,18 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const onClick = useCallback(
     (href: string, isExternal: boolean) => {
       // Analytics
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
-          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
-          .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_id: props.notification.id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_type: props.notification.type,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            clicked_item: isExternal ? 'external_link' : 'internal_link',
-          })
-          .build(),
-      );
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationDetailClicked,
+        properties: {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          notification_id: props.notification.id,
+          notification_type: props.notification.type,
+          notification_subtype: props.notification.notification_subtype,
+          clicked_item: isExternal ? 'external_link' : 'internal_link',
+          /* eslint-enable @typescript-eslint/naming-convention */
+        },
+      });
 
       // Warning / Navigation
       if (isExternal) {
@@ -48,13 +44,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         handleSnapNavigate(href);
       }
     },
-    [
-      createEventBuilder,
-      handleSnapNavigate,
-      props.notification.id,
-      props.notification.type,
-      trackEvent,
-    ],
+    [handleSnapNavigate, props.notification, trackEvent],
   );
 
   if (!footer) {

@@ -1,6 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { OnChainRawNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  getNotificationSubtype,
+  type OnChainRawNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { ButtonVariant } from '../../component-library';
@@ -59,28 +62,17 @@ export const NotificationDetailBlockExplorerButton = ({
       createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
         .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: notification.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: notification.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          notification_subtype: getNotificationSubtype(notification),
           chain_id: chainId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: 'block_explorer',
+          /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
-  }, [
-    chainId,
-    createEventBuilder,
-    notification.id,
-    notification.type,
-    trackEvent,
-  ]);
+  }, [chainId, createEventBuilder, notification, trackEvent]);
 
   if (!blockExplorerUrl) {
     return null;
