@@ -92,46 +92,46 @@ export default function LoginOptions({
     icon: React.ReactNode;
     btnClass: string;
   }[] = [
-      {
-        name: 'Google',
-        loginType: LOGIN_TYPE.GOOGLE,
-        testIdSuffix: 'google',
-        icon: (
-          <img
-            src="images/google.svg"
-            className="options-modal__social-icon"
-            alt=""
-          />
-        ),
-        btnClass: 'mb-4',
-      },
-      {
-        name: 'Apple',
-        loginType: LOGIN_TYPE.APPLE,
-        testIdSuffix: 'apple',
-        icon: (
-          <Icon
-            name={IconName.AppleLogo}
-            color={IconColor.InfoInverse}
-            size={IconSize.Lg}
-          />
-        ),
-        btnClass: 'mb-4',
-      },
-      {
-        name: 'Telegram',
-        loginType: LOGIN_TYPE.TELEGRAM,
-        testIdSuffix: 'telegram',
-        icon: (
-          <Icon
-            name={IconName.Telegram}
-            style={{ color: 'var(--color-telegram-blue)' }}
-            size={IconSize.Lg}
-          />
-        ),
-        btnClass: 'mb-2',
-      },
-    ];
+    {
+      name: 'Google',
+      loginType: LOGIN_TYPE.GOOGLE,
+      testIdSuffix: 'google',
+      icon: (
+        <img
+          src="images/google.svg"
+          className="options-modal__social-icon"
+          alt=""
+        />
+      ),
+      btnClass: 'mb-4',
+    },
+    {
+      name: 'Apple',
+      loginType: LOGIN_TYPE.APPLE,
+      testIdSuffix: 'apple',
+      icon: (
+        <Icon
+          name={IconName.AppleLogo}
+          color={IconColor.InfoInverse}
+          size={IconSize.Lg}
+        />
+      ),
+      btnClass: 'mb-4',
+    },
+    {
+      name: 'Telegram',
+      loginType: LOGIN_TYPE.TELEGRAM,
+      testIdSuffix: 'telegram',
+      icon: (
+        <Icon
+          name={IconName.Telegram}
+          style={{ color: 'var(--color-telegram-blue)' }}
+          size={IconSize.Lg}
+        />
+      ),
+      btnClass: 'mb-2',
+    },
+  ];
 
   return (
     <Box>
@@ -139,8 +139,9 @@ export default function LoginOptions({
         ({ name, loginType, testIdSuffix, icon, btnClass }) => (
           <SocialButton
             key={loginType}
-            data-testid={`onboarding-${isExisting ? 'import' : 'create'
-              }-with-${testIdSuffix}-button`}
+            data-testid={`onboarding-${
+              isExisting ? 'import' : 'create'
+            }-with-${testIdSuffix}-button`}
             icon={icon}
             label={t(
               isExisting ? 'onboardingSignInWith' : 'onboardingContinueWith',
@@ -174,8 +175,9 @@ export default function LoginOptions({
       </Box>
       <Button
         data-theme={theme === ThemeType.dark ? ThemeType.light : ThemeType.dark}
-        data-testid={`onboarding-${isExisting ? 'import' : 'create'
-          }-with-srp-button`}
+        data-testid={`onboarding-${
+          isExisting ? 'import' : 'create'
+        }-with-srp-button`}
         variant={ButtonVariant.Primary}
         className="w-full"
         size={ButtonSize.Lg}
