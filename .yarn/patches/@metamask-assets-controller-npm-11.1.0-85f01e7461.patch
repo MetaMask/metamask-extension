@@ -1,0 +1,170 @@
+diff --git a/dist/data-sources/TokenDataSource.cjs b/dist/data-sources/TokenDataSource.cjs
+index b8c88223c26a3ae09afa9469a34ec11bef85c6c8..453ed897c344d17e5850060f9328ec2b4cc985e4 100644
+--- a/dist/data-sources/TokenDataSource.cjs
++++ b/dist/data-sources/TokenDataSource.cjs
+@@ -107,10 +107,11 @@ function getOccurrenceFloorForAsset(assetId, floors) {
+  *
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+- * - Also checks `assetsBalance` entries missing metadata/images
++ * - Also checks `assetsBalance` entries missing metadata/images (heal path)
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
+  * - Filters EVM ERC-20 spam using per-chain floors from Token API
+- *   `/v1/suggestedOccurrenceFloors` (default floor 3)
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3) for newly detected
++ *   assets only; balance-only heals are enriched without spam-filtering
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+@@ -147,6 +148,11 @@ class TokenDataSource {
+      * 3. Enriches the response with fetched metadata
+      * 4. Calls next() at the end to continue the middleware chain
+      *
++     * Spam filtering (EVM occurrence floors / non-EVM Blockaid) applies only to
++     * newly `detectedAssets`. Balance-only heals — assets already present in
++     * `assetsBalance` but missing `assetsInfo`, which DetectionMiddleware skips —
++     * are enriched without being filtered out of balances.
++     *
+      * @returns The middleware function for the assets pipeline.
+      */
+     get assetsMiddleware() {
+@@ -155,6 +161,11 @@ class TokenDataSource {
+             const { response } = ctx;
+             const { assetsInfo: stateMetadata, customAssets } = ctx.getAssetsState();
+             const assetIdsNeedingMetadata = new Set();
++            // Newly detected asset IDs (lowercase) — subject to spam filtering.
++            const detectedAssetIds = new Set();
++            // Balance-only heals (in assetsBalance, not newly detected) — enrich
++            // metadata but do not spam-filter / delete holdings.
++            const balanceHealAssetIds = new Set();
+             // Custom assets are user-imported — exempt from spam filtering.
+             // State stores asset IDs in their normalized (checksummed) form, but the
+             // V3 Tokens API can return them lower-cased. Lowercase both sides so the
+@@ -186,6 +197,7 @@ class TokenDataSource {
+                         if ((0, evm_rpc_services_1.isStakingContractAssetId)(assetId)) {
+                             continue;
+                         }
++                        detectedAssetIds.add(assetId.toLowerCase());
+                         assetIdsNeedingMetadata.add(assetId);
+                     }
+                 }
+@@ -204,6 +216,11 @@ class TokenDataSource {
+                             continue;
+                         }
+                         assetIdsNeedingMetadata.add(assetId);
++                        // Only treat as a heal when DetectionMiddleware did not queue it
++                        // as newly detected — those remain subject to spam filtering.
++                        if (!detectedAssetIds.has(assetId.toLowerCase())) {
++                            balanceHealAssetIds.add(assetId.toLowerCase());
++                        }
+                     }
+                 }
+             }
+@@ -265,15 +282,19 @@ class TokenDataSource {
+                 // Custom assets (user-imported) bypass the occurrence filter — users
+                 // can import whatever they want and we must keep their metadata even
+                 // if the API has fewer aggregator hits than the floor.
++                // Balance-only heals also bypass — see `balanceHealAssetIds` below.
+                 const allowedEvmIds = new Set(evmErc20Ids.filter((id) => customAssetIds.has(id.toLowerCase()) ||
++                    balanceHealAssetIds.has(id.toLowerCase()) ||
+                     (occurrencesByAssetId.get(id) ?? 0) >=
+                         getOccurrenceFloorForAsset(id, suggestedOccurrenceFloors) ||
+                     id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
+                 // Non-EVM: Blockaid bulk scan.
+-                // Custom assets (user-imported) bypass Blockaid filtering.
+-                const nonEvmToScan = nonEvmTokenIds.filter((id) => !customAssetIds.has(id.toLowerCase()));
++                // Custom assets and balance-only heals bypass Blockaid filtering.
++                const nonEvmToScan = nonEvmTokenIds.filter((id) => !customAssetIds.has(id.toLowerCase()) &&
++                    !balanceHealAssetIds.has(id.toLowerCase()));
+                 const allowedNonEvmIds = new Set([
+-                    ...nonEvmTokenIds.filter((id) => customAssetIds.has(id.toLowerCase())),
++                    ...nonEvmTokenIds.filter((id) => customAssetIds.has(id.toLowerCase()) ||
++                        balanceHealAssetIds.has(id.toLowerCase())),
+                     ...(await __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterBlockaidSpamTokens).call(this, nonEvmToScan)),
+                 ]);
+                 // Start with every asset the API returned; only remove those that
+diff --git a/dist/data-sources/TokenDataSource.mjs b/dist/data-sources/TokenDataSource.mjs
+index 9fc69342d413aa717178e4ae6ffcd6c50b9f7372..31db74548b361c38d51a4ef6bdbb5f4cac0bd439 100644
+--- a/dist/data-sources/TokenDataSource.mjs
++++ b/dist/data-sources/TokenDataSource.mjs
+@@ -104,10 +104,11 @@ function getOccurrenceFloorForAsset(assetId, floors) {
+  *
+  * This middleware-based data source:
+  * - Checks detected assets for missing metadata/images
+- * - Also checks `assetsBalance` entries missing metadata/images
++ * - Also checks `assetsBalance` entries missing metadata/images (heal path)
+  * - Fetches metadata from Tokens API v3 for assets needing enrichment
+  * - Filters EVM ERC-20 spam using per-chain floors from Token API
+- *   `/v1/suggestedOccurrenceFloors` (default floor 3)
++ *   `/v1/suggestedOccurrenceFloors` (default floor 3) for newly detected
++ *   assets only; balance-only heals are enriched without spam-filtering
+  * - Merges fetched metadata into the response
+  *
+  * Pass the same {@link AssetsControllerMessenger} as other data sources for Blockaid
+@@ -144,6 +145,11 @@ export class TokenDataSource {
+      * 3. Enriches the response with fetched metadata
+      * 4. Calls next() at the end to continue the middleware chain
+      *
++     * Spam filtering (EVM occurrence floors / non-EVM Blockaid) applies only to
++     * newly `detectedAssets`. Balance-only heals — assets already present in
++     * `assetsBalance` but missing `assetsInfo`, which DetectionMiddleware skips —
++     * are enriched without being filtered out of balances.
++     *
+      * @returns The middleware function for the assets pipeline.
+      */
+     get assetsMiddleware() {
+@@ -152,6 +158,11 @@ export class TokenDataSource {
+             const { response } = ctx;
+             const { assetsInfo: stateMetadata, customAssets } = ctx.getAssetsState();
+             const assetIdsNeedingMetadata = new Set();
++            // Newly detected asset IDs (lowercase) — subject to spam filtering.
++            const detectedAssetIds = new Set();
++            // Balance-only heals (in assetsBalance, not newly detected) — enrich
++            // metadata but do not spam-filter / delete holdings.
++            const balanceHealAssetIds = new Set();
+             // Custom assets are user-imported — exempt from spam filtering.
+             // State stores asset IDs in their normalized (checksummed) form, but the
+             // V3 Tokens API can return them lower-cased. Lowercase both sides so the
+@@ -183,6 +194,7 @@ export class TokenDataSource {
+                         if (isStakingContractAssetId(assetId)) {
+                             continue;
+                         }
++                        detectedAssetIds.add(assetId.toLowerCase());
+                         assetIdsNeedingMetadata.add(assetId);
+                     }
+                 }
+@@ -201,6 +213,11 @@ export class TokenDataSource {
+                             continue;
+                         }
+                         assetIdsNeedingMetadata.add(assetId);
++                        // Only treat as a heal when DetectionMiddleware did not queue it
++                        // as newly detected — those remain subject to spam filtering.
++                        if (!detectedAssetIds.has(assetId.toLowerCase())) {
++                            balanceHealAssetIds.add(assetId.toLowerCase());
++                        }
+                     }
+                 }
+             }
+@@ -262,15 +279,19 @@ export class TokenDataSource {
+                 // Custom assets (user-imported) bypass the occurrence filter — users
+                 // can import whatever they want and we must keep their metadata even
+                 // if the API has fewer aggregator hits than the floor.
++                // Balance-only heals also bypass — see `balanceHealAssetIds` below.
+                 const allowedEvmIds = new Set(evmErc20Ids.filter((id) => customAssetIds.has(id.toLowerCase()) ||
++                    balanceHealAssetIds.has(id.toLowerCase()) ||
+                     (occurrencesByAssetId.get(id) ?? 0) >=
+                         getOccurrenceFloorForAsset(id, suggestedOccurrenceFloors) ||
+                     id.includes(`/erc20:${MUSD_ADDRESS_LOWERCASE}`)));
+                 // Non-EVM: Blockaid bulk scan.
+-                // Custom assets (user-imported) bypass Blockaid filtering.
+-                const nonEvmToScan = nonEvmTokenIds.filter((id) => !customAssetIds.has(id.toLowerCase()));
++                // Custom assets and balance-only heals bypass Blockaid filtering.
++                const nonEvmToScan = nonEvmTokenIds.filter((id) => !customAssetIds.has(id.toLowerCase()) &&
++                    !balanceHealAssetIds.has(id.toLowerCase()));
+                 const allowedNonEvmIds = new Set([
+-                    ...nonEvmTokenIds.filter((id) => customAssetIds.has(id.toLowerCase())),
++                    ...nonEvmTokenIds.filter((id) => customAssetIds.has(id.toLowerCase()) ||
++                        balanceHealAssetIds.has(id.toLowerCase())),
+                     ...(await __classPrivateFieldGet(this, _TokenDataSource_instances, "m", _TokenDataSource_filterBlockaidSpamTokens).call(this, nonEvmToScan)),
+                 ]);
+                 // Start with every asset the API returned; only remove those that
