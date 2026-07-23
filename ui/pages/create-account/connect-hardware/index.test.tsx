@@ -533,6 +533,23 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
+    it('displays the generic timeout error for non-Ledger timeout errors', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error('Trezor getPublicKey timed out after 120000 ms'),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('hardwareWalletConnectionTimeout')),
+        ).toBeInTheDocument();
+      });
+      expect(screen.queryByText(tEn('ledgerTimeout'))).not.toBeInTheDocument();
+    });
+
     it('displays U2F error message for non-Firefox browser', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStore = configureMockStore([thunk])(createMockState());
