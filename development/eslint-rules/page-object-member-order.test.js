@@ -57,6 +57,21 @@ class Page {
   private readonly bButton = '[data-testid="b"]';
 }`,
     },
+    {
+      name: 'handles private-identifier and string-literal keys and ignores members without a resolvable name (static blocks, computed keys)',
+      code: `
+class Page {
+  static {}
+
+  readonly #secret = '[data-testid="s"]';
+
+  private readonly 'data-role' = '[data-testid="r"]';
+
+  [computed.key]() {}
+
+  async doThing(): Promise<void> {}
+}`,
+    },
   ],
   invalid: [
     {

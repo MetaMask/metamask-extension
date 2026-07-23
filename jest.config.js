@@ -7,6 +7,7 @@ module.exports = {
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/development/eslint-rules/**/*.js',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
