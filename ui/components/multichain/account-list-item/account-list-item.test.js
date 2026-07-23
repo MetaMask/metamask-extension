@@ -226,7 +226,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders the tag with the snap name for named snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -259,7 +259,7 @@ describe('AccountListItem', () => {
   });
 
   it('does not render the tag with the snap name for preinstalled snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -356,7 +356,7 @@ describe('AccountListItem', () => {
   });
   describe('Account labels', () => {
     it('renders the SRP pill for account when multi SRP are present in state', () => {
-      const { container } = render(
+      render(
         {
           account: {
             ...mockAccount,
