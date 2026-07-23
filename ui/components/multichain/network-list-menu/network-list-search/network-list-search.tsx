@@ -22,10 +22,8 @@ const NetworkListSearch = ({
         clearButtonOnClick={() => setSearchQuery('')}
         clearButtonProps={{ ariaLabel: t('clear') }}
         data-testid="search-list"
-        inputProps={{
-          onBlur: () => setFocusSearch(false),
-          onFocus: () => setFocusSearch(true),
-        }}
+        onBlur={() => setFocusSearch(false)}
+        onFocus={() => setFocusSearch(true)}
         onChange={(event) => setSearchQuery(event.target.value)}
         placeholder={t('search')}
         size={TextFieldSize.Lg}
