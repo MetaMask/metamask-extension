@@ -259,7 +259,7 @@ export const selectNonEvmActivityItems = createSelector(
           data: {
             from: subjectAddress,
             ...tokens,
-            ...(fees !== undefined ? { fees } : {}),
+            ...(fees === undefined ? {} : { fees }),
           },
         };
       }
