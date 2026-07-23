@@ -480,10 +480,8 @@ const CoinButtons = ({
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      transitionForward(() =>
-        navigate(
-          getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
-        ),
+      navigate(
+        getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
       );
     } else {
       // Show the traditional receive modal
@@ -506,7 +504,7 @@ const CoinButtons = ({
         .build(),
     );
 
-    transitionForward(() => openBatchSellExperience());
+    openBatchSellExperience();
   }, [trackEvent, trackingLocation, chainId, openBatchSellExperience]);
 
   useOnClickOutside({
