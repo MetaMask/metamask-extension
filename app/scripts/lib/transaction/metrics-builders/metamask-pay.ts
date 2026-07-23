@@ -97,7 +97,9 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
     const txPayData = transactionMetricsRequest.getTransactionPayData(
       parentTransaction.id,
     );
-    const quotes = getExecutableQuotes(txPayData?.quotes);
+    // Keep original quote order so quoteIndex stays aligned with bridge/swap
+    // child steps. Filtering None here would shift dust onto the wrong step.
+    const quotes: TransactionPayQuote<Json>[] = txPayData?.quotes ?? [];
 
     const quoteTransactionIds = relatedTransactionIds.filter((id: string) =>
       allTransactions.some(
@@ -114,6 +116,7 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
 
     if (
       quote &&
+      quote.strategy !== TransactionPayStrategy.None &&
       quote.request?.targetTokenAddress !==
         '0x0000000000000000000000000000000000000000'
     ) {
