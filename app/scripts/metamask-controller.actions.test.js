@@ -719,45 +719,46 @@ describe('MetaMaskController', function () {
     });
 
     describe('#protectVaultKeyWithPasskey', function () {
-      it('delegates to the passkey controller with reshaped params', async function () {
-        const protectVaultKeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'protectVaultKeyWithPasskey',
-          )
-          .mockResolvedValue();
+      it('delegates to the passkey controller action with reshaped params', async function () {
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.protectVaultKeyWithPasskey(
-          registrationResponse,
-          authenticationResponse,
-          'password',
-        );
-
-        expect(protectVaultKeySpy).toHaveBeenCalledWith({
+        await metamaskController.getApi().protectVaultKeyWithPasskey({
           registrationResponse,
           authenticationResponse,
           password: 'password',
         });
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:protectVaultKeyWithPasskey',
+          {
+            registrationResponse,
+            authenticationResponse,
+            password: 'password',
+          },
+        );
       });
 
       it('forwards an undefined password before onboarding completion', async function () {
-        const protectVaultKeySpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'protectVaultKeyWithPasskey',
-          )
-          .mockResolvedValue();
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.protectVaultKeyWithPasskey(
-          registrationResponse,
-          authenticationResponse,
-        );
-
-        expect(protectVaultKeySpy).toHaveBeenCalledWith({
+        await metamaskController.getApi().protectVaultKeyWithPasskey({
           registrationResponse,
           authenticationResponse,
           password: undefined,
         });
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:protectVaultKeyWithPasskey',
+          {
+            registrationResponse,
+            authenticationResponse,
+            password: undefined,
+          },
+        );
       });
     });
 
@@ -780,78 +781,83 @@ describe('MetaMaskController', function () {
 
     describe('#removePasskeyWithPasskeyVerification', function () {
       it('delegates to the passkey controller', async function () {
-        const removeSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'removePasskeyWithPasskeyVerification',
-          )
-          .mockResolvedValue();
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.removePasskeyWithPasskeyVerification(
+        await metamaskController
+          .getApi()
+          .removePasskeyWithPasskeyVerification(authenticationResponse);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:removePasskeyWithPasskeyVerification',
           authenticationResponse,
         );
-
-        expect(removeSpy).toHaveBeenCalledWith(authenticationResponse);
       });
     });
 
     describe('#removePasskeyWithPasswordVerification', function () {
       it('delegates to the passkey controller', async function () {
-        const removeSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'removePasskeyWithPasswordVerification',
-          )
-          .mockResolvedValue();
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.removePasskeyWithPasswordVerification(
+        await metamaskController
+          .getApi()
+          .removePasskeyWithPasswordVerification('password');
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:removePasskeyWithPasswordVerification',
           'password',
         );
-
-        expect(removeSpy).toHaveBeenCalledWith('password');
       });
     });
 
     describe('#changePasswordWithPasskeyVerification', function () {
-      it('delegates to the passkey controller with reshaped params', async function () {
-        const changeSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'changePasswordWithPasskeyVerification',
-          )
-          .mockResolvedValue();
+      it('delegates to the passkey controller action with reshaped params', async function () {
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.changePasswordWithPasskeyVerification(
-          'new-password',
-          authenticationResponse,
+        await metamaskController
+          .getApi()
+          .changePasswordWithPasskeyVerification({
+            newPassword: 'new-password',
+            authenticationResponse,
+            options: undefined,
+          });
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          {
+            newPassword: 'new-password',
+            authenticationResponse,
+            options: undefined,
+          },
         );
-
-        expect(changeSpy).toHaveBeenCalledWith({
-          newPassword: 'new-password',
-          authenticationResponse,
-          options: undefined,
-        });
       });
 
       it('forwards the renewVaultKeyProtection option', async function () {
-        const changeSpy = jest
-          .spyOn(
-            metamaskController.passkeyController,
-            'changePasswordWithPasskeyVerification',
-          )
-          .mockResolvedValue();
+        const callSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue(undefined);
 
-        await metamaskController.changePasswordWithPasskeyVerification(
-          'new-password',
-          authenticationResponse,
-          { renewVaultKeyProtection: false },
+        await metamaskController
+          .getApi()
+          .changePasswordWithPasskeyVerification({
+            newPassword: 'new-password',
+            authenticationResponse,
+            options: { renewVaultKeyProtection: false },
+          });
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          {
+            newPassword: 'new-password',
+            authenticationResponse,
+            options: { renewVaultKeyProtection: false },
+          },
         );
-
-        expect(changeSpy).toHaveBeenCalledWith({
-          newPassword: 'new-password',
-          authenticationResponse,
-          options: { renewVaultKeyProtection: false },
-        });
       });
     });
 
