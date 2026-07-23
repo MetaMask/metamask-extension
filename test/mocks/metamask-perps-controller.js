@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* eslint-disable import-x/unambiguous -- Jest manual mock uses `module.exports`; ESLint parses this glob as `sourceType: 'module'`. */
 /**
  * Jest stub for `@metamask/perps-controller`.

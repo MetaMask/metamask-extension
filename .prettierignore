@@ -14,6 +14,7 @@ __snapshots__/**/*
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**
 /dist/**/*
+/eslint-suppressions.json
 /lavamoat/**/policy.json
 /lavamoat/**/policy-override.json
 /storybook-build/**/*
