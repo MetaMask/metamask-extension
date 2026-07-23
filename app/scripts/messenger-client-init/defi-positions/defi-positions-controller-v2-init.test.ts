@@ -97,9 +97,9 @@ describe('DeFiPositionsControllerV2Init', () => {
 
   it('returns null persistedStateKey', () => {
     const requestMock = buildInitRequestMock();
-    expect(DeFiPositionsControllerV2Init(requestMock).persistedStateKey).toBe(
-      null,
-    );
+    expect(
+      DeFiPositionsControllerV2Init(requestMock).persistedStateKey,
+    ).toBeNull();
   });
 
   it('initializes with messenger, apiClient, isEnabled, and getVsCurrency', () => {
