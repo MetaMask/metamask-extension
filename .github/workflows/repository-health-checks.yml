@@ -201,9 +201,10 @@ jobs:
           fi
 
       - name: Run fitness functions
-        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
+        if: ${{ !cancelled() }}
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn fitness-functions ci
+          FITNESS_FUNCTION_AUTOMATION_TYPE: ${{  github.event_name == 'pull_request' && 'pr' || 'ci' }}
+        run: yarn fitness-functions "${FITNESS_FUNCTION_AUTOMATION_TYPE}"
