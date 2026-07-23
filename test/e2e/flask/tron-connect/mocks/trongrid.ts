@@ -8,6 +8,7 @@ const TRON_API_URL =
 const TRON_WALLET_API_URL =
   /(?:https:\/\/api\.trongrid\.io\/wallet|https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet)/u;
 const DEFAULT_TRX_BALANCE_IN_SUN = 45811016;
+const DEFAULT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 
 /**
  * Builds an exact Tron endpoint matcher from a shared TronGrid/Infura base URL.
@@ -36,7 +37,7 @@ const accountsResponse = {
       owner_permission: {
         keys: [
           {
-            address: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+            address: DEFAULT_ADDRESS,
             weight: 1,
           },
         ],
@@ -55,7 +56,7 @@ const accountsResponse = {
             '7fff000000000000000000000000000000000000000000000000000000000000',
           keys: [
             {
-              address: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+              address: DEFAULT_ADDRESS,
               weight: 1,
             },
           ],
@@ -142,7 +143,7 @@ const transactionsResponse = {
     at: 1765994884399,
     fingerprint: 'xxxxxxxxxx',
     links: {
-      next: 'https://api.trongrid.io/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+      next: `https://api.trongrid.io/v1/accounts/${DEFAULT_ADDRESS}`,
     },
     page_size: 3,
   },
@@ -159,8 +160,8 @@ const transactionsTRC20Response = {
         name: 'Tether USD',
       },
       block_timestamp: 1765994163000,
-      from: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
-      to: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
+      from: DEFAULT_ADDRESS,
+      to: DEFAULT_ADDRESS,
       type: 'Transfer',
       value: '70270000',
     },
@@ -409,10 +410,7 @@ export const mockAccountRequest = (
 ) =>
   mockServer
     .forGet(
-      buildTronEndpointRegExp(
-        TRON_API_URL,
-        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
-      ),
+      buildTronEndpointRegExp(TRON_API_URL, `/v1/accounts/${DEFAULT_ADDRESS}`),
     )
     .always()
     .thenCallback(() => ({
@@ -433,7 +431,7 @@ export const mockTransactionsRequest = (mockServer: Mockttp) =>
     .forGet(
       buildTronEndpointRegExp(
         TRON_API_URL,
-        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions',
+        `/v1/accounts/${DEFAULT_ADDRESS}/transactions`,
       ),
     )
     .always()
@@ -444,7 +442,7 @@ export const mockTransactionsTRC20Request = (mockServer: Mockttp) =>
     .forGet(
       buildTronEndpointRegExp(
         TRON_API_URL,
-        '/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20',
+        `/v1/accounts/${DEFAULT_ADDRESS}/transactions/trc20`,
       ),
     )
     .always()
