@@ -49,7 +49,7 @@ class TokensTab extends HomePage {
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
 
-  private readonly importTokensButton = '[data-testid="importTokens"]';
+  private readonly importTokensButton = '[data-testid="importTokens-button"]';
 
   private readonly importTokensLoading = {
     testId: 'import-tokens-loading',
