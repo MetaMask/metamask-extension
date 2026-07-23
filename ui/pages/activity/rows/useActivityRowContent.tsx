@@ -1,8 +1,10 @@
 import React, { type ReactNode } from 'react';
 import cn from 'clsx';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
@@ -27,18 +29,18 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
-function getChainDisplay(activity: ActivityRowProps['data']) {
-  const { namespace } = parseCaipChainId(activity.chainId);
+function getChainDisplay(caipChainId: CaipChainId) {
+  const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
-      ? convertCaipToHexChainId(activity.chainId)
-      : activity.chainId;
+      ? convertCaipToHexChainId(caipChainId)
+      : caipChainId;
   const networkName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
     MULTICHAIN_NETWORK_TO_NICKNAME[
-      activity.chainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
+      caipChainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
     ] ??
-    activity.chainId;
+    caipChainId;
 
   return { chainId, networkName };
 }
@@ -47,7 +49,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId } = getChainDisplay(activity);
+  const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatFiatAmount(chainId);
   const labelKeys = getLabelKeys({
     type: activity.type,
@@ -73,7 +75,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      // Source and destination in title; two tokens in avatar
+      // Title is "Swapped"; token pair in subtitle; two tokens in avatar
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
@@ -83,16 +85,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const titleKey = hasDestination
           ? labelKeys.title.key
           : `activity_swapIncomplete_${activity.status}_title`;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key);
 
         return {
           avatarTokens: hasDestination
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
-          title: t(
-            titleKey,
-            hasDestination ? [sourceSymbol, destinationSymbol] : [sourceSymbol],
-          ),
-          subtitle: t(labelKeys.description.key),
+          title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
+          subtitle,
           primaryAmount: formatTokenAmount(primaryToken),
           primaryDirection: primaryToken?.direction,
           secondaryAmount: hasDestination
@@ -157,12 +160,23 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
         const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
+        const sourceChainId = getChainIdFromAssetId(
+          sourceToken?.assetId as CaipAssetType,
+        );
+        const destinationChainId = getChainIdFromAssetId(
+          destinationToken?.assetId as CaipAssetType,
+        );
+        const subtitle =
+          sourceChainId && destinationChainId
+            ? `${getChainDisplay(sourceChainId).networkName} → ${getChainDisplay(destinationChainId).networkName}`
+            : undefined;
 
         return {
           avatarTokens: destinationToken
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
+          subtitle,
           primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
           primaryDirection: (destinationToken ?? sourceToken)?.direction,
           ...(destinationToken

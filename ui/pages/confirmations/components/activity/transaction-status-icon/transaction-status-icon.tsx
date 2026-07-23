@@ -35,7 +35,6 @@ function getStatusIconColor(status: TransactionStatus): IconColor {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionStatusIcon({ status }: TransactionStatusIconProps) {
   return (
     <Icon

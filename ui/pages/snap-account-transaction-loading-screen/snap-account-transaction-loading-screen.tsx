@@ -41,7 +41,8 @@ const SnapAccountTransactionLoadingScreen = ({
         })
         .build(),
     );
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only track on initial render
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only track on initial render
   }, []);
 
   return <span>{t('loadingScreenSnapMessage')}</span>;
