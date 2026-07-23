@@ -5529,7 +5529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.1.1, @metamask/assets-controller@npm:^11.2.0":
+"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.2.0":
   version: 11.2.0
   resolution: "@metamask/assets-controller@npm:11.2.0"
   dependencies:
@@ -6712,7 +6712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^26.1.0, @metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4, @metamask/gas-fee-controller@npm:^26.3.0":
+"@metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4, @metamask/gas-fee-controller@npm:^26.3.0":
   version: 26.3.0
   resolution: "@metamask/gas-fee-controller@npm:26.3.0"
   dependencies:
@@ -32821,7 +32821,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.1.1"
+    "@metamask/assets-controller": "npm:^11.2.0"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -32874,7 +32874,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
-    "@metamask/gas-fee-controller": "npm:^26.1.0"
+    "@metamask/gas-fee-controller": "npm:^26.3.0"
     "@metamask/gator-permissions-controller": "npm:^4.2.1"
     "@metamask/gator-permissions-snap": "npm:^2.4.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
