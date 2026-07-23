@@ -165,6 +165,11 @@ export function getFees(
 export function getLocalTransactionFees(
   transactionGroup: Pick<TransactionGroup, 'primaryTransaction'> &
     Partial<Pick<TransactionGroup, 'initialTransaction'>>,
+  {
+    isHardwareWalletAccount = false,
+  }: {
+    isHardwareWalletAccount?: boolean;
+  } = {},
 ): ActivityFee[] | undefined {
   const { initialTransaction, primaryTransaction } = transactionGroup;
   const transaction =
@@ -172,7 +177,12 @@ export function getLocalTransactionFees(
       ? primaryTransaction
       : initialTransaction;
 
-  if (isTransactionGasFeeSponsored({ transaction })) {
+  if (
+    isTransactionGasFeeSponsored({
+      transaction,
+      isHardwareWalletAccount,
+    })
+  ) {
     return [buildSponsoredNetworkFee()];
   }
 

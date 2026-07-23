@@ -58,6 +58,22 @@ describe('getLocalTransactionFees', () => {
     ]);
   });
 
+  it('returns the calculated network fee for hardware wallet transactions even when gas-sponsored', () => {
+    expect(
+      getLocalTransactionFees(
+        buildTransactionGroup({
+          isGasFeeSponsored: true,
+        }),
+        { isHardwareWalletAccount: true },
+      ),
+    ).toStrictEqual([
+      expect.objectContaining({
+        amount: '6',
+        type: 'base',
+      }),
+    ]);
+  });
+
   it('does not return a sponsored marker for failed sponsored transactions without a receipt', () => {
     expect(
       getLocalTransactionFees(

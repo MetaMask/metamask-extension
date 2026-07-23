@@ -29,6 +29,7 @@ import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network'
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
@@ -69,6 +70,9 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+const selectIsHardwareWallet = (state: MetaMaskReduxState) =>
+  isHardwareWallet(state as never);
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -406,6 +410,7 @@ export const selectLocalActivityItems = createSelector(
   getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getTokensControllerAllTokens,
+  selectIsHardwareWallet,
   (
     transactionGroups,
     bridgeHistory,
@@ -413,6 +418,7 @@ export const selectLocalActivityItems = createSelector(
     networkConfigurationsByChainId,
     selectedAccount,
     allTokens,
+    isHardwareWalletAccount,
   ) => {
     const selectedAddress = selectedAccount?.address?.toLowerCase();
 
@@ -512,7 +518,9 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
-        const fees = getLocalTransactionFees(transactionGroup);
+        const fees = getLocalTransactionFees(transactionGroup, {
+          isHardwareWalletAccount,
+        });
 
         const prepared = {
           ...transactionGroup,
