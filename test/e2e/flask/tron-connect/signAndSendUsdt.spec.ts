@@ -33,11 +33,53 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
           driver,
         );
         await signTransacitonConfiramtion.checkPageIsLoaded();
+        await signTransacitonConfiramtion.checkFeeAssetIsDisplayed('ENERGY');
+        await signTransacitonConfiramtion.checkFeeAssetIsDisplayed('BANDWIDTH');
         await signTransacitonConfiramtion.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
         await testDappTron.findSignedUSDTTransaction();
+      },
+    );
+  });
+
+  it('Disables confirmation when TRX balance cannot cover USDT transaction fees', async function () {
+    await withTronAccountSnap(
+      {
+        ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
+        title: this.test?.fullTitle(),
+        tronBalance: 100000,
+        tronAccountResources: {
+          freeNetLimit: 0,
+          freeNetUsed: 0,
+          EnergyLimit: 0,
+          EnergyUsed: 0,
+        },
+      },
+      async (driver) => {
+        const testDappTron = new TestDappTron(driver);
+
+        await testDappTron.openTestDappPage();
+
+        // 1. Connect
+        await connectTronTestDapp(driver, testDappTron);
+
+        // 2. Set recipient and amount
+        await testDappTron.setUSDTRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setUSDTAmount('123');
+
+        // 3. Sign transaction
+        await testDappTron.signUSDTTransaction();
+
+        // 4. Verify confirmation is blocked by insufficient TRX for fees
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const signTransacitonConfiramtion = new SnapSignTransactionConfirmation(
+          driver,
+        );
+        await signTransacitonConfiramtion.checkPageIsLoaded();
+        await signTransacitonConfiramtion.checkInsufficientFundsBannerIsDisplayed();
+        await signTransacitonConfiramtion.checkConfirmButtonIsDisabled();
       },
     );
   });
@@ -69,6 +111,8 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
           driver,
         );
         await signTransacitonConfiramtion.checkPageIsLoaded();
+        await signTransacitonConfiramtion.checkFeeAssetIsDisplayed('ENERGY');
+        await signTransacitonConfiramtion.checkFeeAssetIsDisplayed('BANDWIDTH');
         await signTransacitonConfiramtion.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);

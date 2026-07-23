@@ -237,11 +237,11 @@ describe('Send ERC20 - Max Balance Validation', function () {
 
         await sendPage.clickMaxButton();
         await sendPage.checkAmountInputValue('5');
-        await sendPage.checkContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
 
         await sendPage.fillAmount('10');
         await sendPage.checkInsufficientFundsError();
-        await sendPage.checkContinueButtonDisabled();
+        await sendPage.checkContinueButton({ state: 'disabled' });
       },
     );
   });

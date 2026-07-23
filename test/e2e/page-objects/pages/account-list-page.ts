@@ -300,8 +300,12 @@ class AccountListPage {
         text: expectedErrorMessage,
       });
     } else {
+      // Import + forceUpdateMetamaskState can outlive the default 3s staleness
+      // wait under multi-SRP / Solana load on CI before the Add Wallet page
+      // navigates away.
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
+        10000,
       );
       await this.closeChooseWalletTypePage();
     }

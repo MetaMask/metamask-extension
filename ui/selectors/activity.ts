@@ -35,6 +35,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
@@ -59,7 +60,7 @@ import {
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 // @deprecated - Migrate to selectBridgeHistoryItem
-const selectBridgeHistory = (state: MetaMaskReduxState) =>
+const selectBridgeHistoryDeprecated = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
     string,
     BridgeHistoryItem
@@ -220,20 +221,51 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
+const selectBridgeHistory = createSelector(
+  [(state: MetaMaskReduxState) => state],
+  (state) => (txHash?: string) =>
+    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+);
+
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
+    selectBridgeHistory,
   ],
-  (transactions, assetsMetadata, internalAccountsById) =>
-    transactions.map((transaction) =>
-      mapKeyringTransaction({
+  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
+    transactions.map((transaction) => {
+      const subjectAddress =
+        internalAccountsById?.[transaction.account]?.address;
+      const activity = mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress: internalAccountsById?.[transaction.account]?.address,
-      }),
-    ),
+        subjectAddress,
+      });
+
+      const bridgeHistoryEntry = getBridgeHistory(transaction.id);
+      const { quote } = bridgeHistoryEntry ?? {};
+
+      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+        const tokens = getSwapTokens(bridgeHistoryEntry);
+        const status = getBridgeActivityStatus(bridgeHistoryEntry);
+        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+
+        return {
+          ...activity,
+          type: 'bridge',
+          ...(status ? { status } : {}),
+          data: {
+            from: subjectAddress,
+            ...tokens,
+            ...(fees === undefined ? {} : { fees }),
+          },
+        } as ActivityListItem;
+      }
+
+      return activity;
+    }),
 );
 
 export const selectNonEvmActivityItemsById = createSelector(
@@ -401,7 +433,7 @@ function getBridgeActivityStatus(
 
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
-  selectBridgeHistory,
+  selectBridgeHistoryDeprecated,
   selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
