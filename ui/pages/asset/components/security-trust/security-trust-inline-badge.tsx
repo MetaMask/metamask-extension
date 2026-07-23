@@ -3,17 +3,12 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  FontWeight,
   Icon,
   IconSize,
-  TextColor,
+  Text,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { Tag } from '../../../../components/component-library';
-import { IconSize as LegacyIconSize } from '../../../../components/component-library/icon/icon.types';
-import {
-  BackgroundColor,
-  FontWeight,
-  TextColor as LegacyTextColor,
-} from '../../../../helpers/constants/design-system';
 import type { ResultTypeConfig } from '../../utils/security-utils';
 
 export type SecurityTrustInlineBadgeConfig = NonNullable<
@@ -58,31 +53,27 @@ export const SecurityTrustInlineBadge = ({
     return verifiedIcon;
   }
 
-  const backgroundColor =
+  const tagBackgroundClass =
     badge.backgroundColor === 'warning-muted'
-      ? BackgroundColor.warningMuted
-      : BackgroundColor.errorMuted;
+      ? 'bg-warning-muted'
+      : 'bg-error-muted';
 
   const tag = (
-    <Tag
-      label={badge.label}
-      iconName={badge.icon}
-      backgroundColor={backgroundColor}
-      labelProps={{
-        color:
-          badge.textColor === TextColor.WarningDefault
-            ? LegacyTextColor.warningDefault
-            : LegacyTextColor.errorDefault,
-        fontWeight: FontWeight.Medium,
-      }}
-      startIconProps={{
-        className:
-          badge.textColor === TextColor.WarningDefault
-            ? 'text-warning-default'
-            : 'text-error-default',
-        size: LegacyIconSize.Sm,
-      }}
-    />
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      className={`inline-flex self-start items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
+      data-testid={onClick ? undefined : testId}
+    >
+      <Icon name={badge.icon} size={IconSize.Sm} color={badge.iconColor} />
+      <Text
+        variant={TextVariant.BodyXs}
+        color={badge.textColor}
+        fontWeight={FontWeight.Medium}
+      >
+        {badge.label}
+      </Text>
+    </Box>
   );
 
   if (!onClick) {
