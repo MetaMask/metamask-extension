@@ -11267,12 +11267,6 @@
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Aprueba token para puentear."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprueba token para canjear."
-  },
   "withdrawTo": {
     "message": "Recibir",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

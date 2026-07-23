@@ -11267,12 +11267,6 @@
   "whatsThis": {
     "message": "이것은 무엇인가요?"
   },
-  "willApproveAmountForBridging": {
-    "message": "브릿지를 위한 토큰 승인."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "스왑을 위한 토큰 승인."
-  },
   "withdrawTo": {
     "message": "받기",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

@@ -11259,12 +11259,6 @@
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Approuve le jeton pour l’établissement d’une passerelle."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Approuve le jeton pour le swap."
-  },
   "withdrawTo": {
     "message": "Recevoir",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

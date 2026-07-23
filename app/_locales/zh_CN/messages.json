@@ -11259,12 +11259,6 @@
   "whatsThis": {
     "message": "这是什么？"
   },
-  "willApproveAmountForBridging": {
-    "message": "批准代币进行桥接。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "批准代币进行兑换。"
-  },
   "withdrawTo": {
     "message": "收款",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

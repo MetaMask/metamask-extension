@@ -11267,12 +11267,6 @@
   "whatsThis": {
     "message": "Đây là gì?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Phê duyệt token cho cầu nối."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Phê duyệt token cho hoán đổi."
-  },
   "withdrawTo": {
     "message": "Nhận",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

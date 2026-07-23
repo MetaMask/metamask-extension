@@ -11263,12 +11263,6 @@
   "whatsThis": {
     "message": "これは何ですか？"
   },
-  "willApproveAmountForBridging": {
-    "message": "ブリッジ用にトークンを承認します。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "トークンのスワップを承認"
-  },
   "withdrawTo": {
     "message": "受取",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

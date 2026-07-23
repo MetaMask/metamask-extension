@@ -11267,12 +11267,6 @@
   "whatsThis": {
     "message": "Apa ini?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Menyetujui token untuk bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Menyetujui token untuk swap."
-  },
   "withdrawTo": {
     "message": "Terima",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

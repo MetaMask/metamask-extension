@@ -11259,12 +11259,6 @@
   "whatsThis": {
     "message": "Что это?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Утверждает токен для моста."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Утверждает токен для свопа."
-  },
   "withdrawTo": {
     "message": "Получить",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

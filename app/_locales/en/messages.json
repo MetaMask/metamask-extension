@@ -11505,12 +11505,6 @@
   "whatsThis": {
     "message": "What's this?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Approves token for bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Approves token for swap."
-  },
   "withdrawTo": {
     "message": "Receive",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

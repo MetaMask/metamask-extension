@@ -11259,12 +11259,6 @@
   "whatsThis": {
     "message": "O que é isso?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Aprova o token para realização de ponte."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprova o token para realização de troca."
-  },
   "withdrawTo": {
     "message": "Receber",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

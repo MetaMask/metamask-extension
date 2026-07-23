@@ -11267,12 +11267,6 @@
   "whatsThis": {
     "message": "Bu nedir?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Köprü işlemi için token'i onaylar."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Takas işlemi için token'i onaylar."
-  },
   "withdrawTo": {
     "message": "Al",
     "description": "Label for pay with row in withdrawal flows showing the destination token"

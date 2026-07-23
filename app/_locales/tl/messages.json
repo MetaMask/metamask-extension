@@ -11259,12 +11259,6 @@
   "whatsThis": {
     "message": "Ano ito?"
   },
-  "willApproveAmountForBridging": {
-    "message": "Aprubahan ang token para sa bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprubahan ang token para sa swap."
-  },
   "withdrawTo": {
     "message": "Tumanggap",
     "description": "Label for pay with row in withdrawal flows showing the destination token"
