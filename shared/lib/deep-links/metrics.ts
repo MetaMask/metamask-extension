@@ -1,14 +1,11 @@
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
-import type { AnalyticsEvent } from '../../../../shared/lib/analytics/create-event-builder';
+import { createEventBuilder } from '../analytics/create-event-builder';
+import type { AnalyticsEvent } from '../analytics/create-event-builder';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
-import {
-  type UTMParameter,
-  UTM_PARAMETERS,
-} from '../../../../shared/types/metametrics';
+} from '../../constants/metametrics';
+import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
+import { SignatureStatus } from './verify';
 
 export type Properties = {
   route: string;

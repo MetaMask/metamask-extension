@@ -6,16 +6,23 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
+import { INVALID, VALID } from '../../../../shared/lib/deep-links/verify';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import CreationSuccessful from './creation-successful';
+
+const mockTrackEvent = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -24,7 +31,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
@@ -144,6 +151,7 @@ describe('Wallet Ready Page', () => {
       false,
     );
     mockUseNavigate.mockClear();
+    mockTrackEvent.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
@@ -312,6 +320,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const mockAssign = jest.fn();
@@ -362,6 +371,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const browserMock = jest.requireMock('webextension-polyfill');
@@ -441,6 +451,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -499,6 +510,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const windowOpenSpy = jest
@@ -537,6 +549,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const mockStore = configureMockStore([thunk])({
@@ -624,6 +637,7 @@ describe('Wallet Ready Page', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -656,6 +670,158 @@ describe('Wallet Ready Page', () => {
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
         );
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+
+    describe('Deep Link Used metrics', () => {
+      it('tracks the event for deferred Redirect links', async () => {
+        const externalUrl = 'https://external-app.com/callback';
+        const referringLink =
+          'https://link.metamask.io/buy?utm_source=onboarding&redirectTo=https%3A%2F%2Fexternal-app.com%2Fcallback';
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Redirect,
+            url: externalUrl,
+            signature: VALID,
+          },
+        );
+
+        const windowOpenSpy = jest
+          .spyOn(window, 'open')
+          .mockImplementation(() => null);
+
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          },
+        });
+
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenCalledWith({
+            name: MetaMetricsEventName.DeepLinkUsed,
+            properties: {
+              category: MetaMetricsEventCategory.DeepLink,
+              route: '/buy',
+              signature: VALID,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_source: 'onboarding',
+            },
+            sensitiveProperties: {
+              redirectTo: externalUrl,
+            },
+          });
+        });
+
+        windowOpenSpy.mockRestore();
+      });
+
+      it('tracks the event for deferred Navigate links', async () => {
+        const referringLink =
+          'https://link.metamask.io/swap?utm_campaign=onboarding&sig=fake-signature';
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Navigate,
+            route: '/swap',
+            signature: VALID,
+          },
+        );
+
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          },
+        });
+
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenCalledWith({
+            name: MetaMetricsEventName.DeepLinkUsed,
+            properties: {
+              category: MetaMetricsEventCategory.DeepLink,
+              route: '/swap',
+              signature: VALID,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_campaign: 'onboarding',
+            },
+            sensitiveProperties: {},
+          });
+        });
+      });
+
+      it('tracks the event for deferred Interstitial links', async () => {
+        const referringLink =
+          'https://link.metamask.io/swap?amount=100&utm_medium=email';
+        const urlPathAndQuery = '/swap?amount=100&utm_medium=email';
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Interstitial,
+            urlPathAndQuery,
+            signature: INVALID,
+          },
+        );
+        (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
+          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100%26utm_medium%3Demail`,
+        );
+
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          },
+        });
+
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenCalledWith({
+            name: MetaMetricsEventName.DeepLinkUsed,
+            properties: {
+              category: MetaMetricsEventCategory.DeepLink,
+              route: '/swap',
+              signature: INVALID,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              utm_medium: 'email',
+            },
+            sensitiveProperties: {
+              amount: '100',
+            },
+          });
+        });
       });
     });
   });

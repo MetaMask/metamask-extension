@@ -1,12 +1,8 @@
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  MISSING,
-  VALID,
-  INVALID,
-} from '../../../../shared/lib/deep-links/verify';
+} from '../../constants/metametrics';
+import { MISSING, VALID, INVALID } from './verify';
 import { createEvent } from './metrics';
 
 describe('createEvent', () => {
@@ -17,7 +13,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         name: MetaMetricsEventName.DeepLinkUsed,
         properties: {
           category: MetaMetricsEventCategory.DeepLink,
@@ -119,7 +115,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.sensitiveProperties).toEqual({
+      expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
         userToken: 'abc123',
         sessionId: 'xyz789',
@@ -141,7 +137,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties).toEqual({
+      expect(result.properties).toStrictEqual({
         category: MetaMetricsEventCategory.DeepLink,
         route: '/deep-link',
         signature: VALID,
@@ -159,7 +155,7 @@ describe('createEvent', () => {
         utm_medium: 'cpc',
       });
 
-      expect(result.sensitiveProperties).toEqual({
+      expect(result.sensitiveProperties).toStrictEqual({
         privateData: 'sensitive',
         userId: 'user123',
       });
@@ -185,12 +181,12 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties).toEqual({
+      expect(result.properties).toStrictEqual({
         category: MetaMetricsEventCategory.DeepLink,
         route: '/test',
         signature: VALID,
       });
-      expect(result.sensitiveProperties).toEqual({});
+      expect(result.sensitiveProperties).toStrictEqual({});
     });
 
     it('should handle URL with encoded parameters', () => {

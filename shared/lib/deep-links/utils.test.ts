@@ -91,6 +91,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Redirect,
           url: 'https://app.metamask.io/buy',
+          signature: VALID,
         });
       });
 
@@ -135,6 +136,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Redirect,
           url: 'https://app.metamask.io/buy',
+          signature: VALID,
         });
       });
 
@@ -229,6 +231,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Interstitial,
           urlPathAndQuery: '/home?openNetworkSelector=true',
+          signature: MISSING,
         });
       });
 
@@ -250,6 +253,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Redirect,
           url: 'https://app.metamask.io/buy',
+          signature: MISSING,
         });
       });
 
@@ -273,6 +277,7 @@ describe('Deep link utils', () => {
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Interstitial,
           urlPathAndQuery: '/onboarding',
+          signature: MISSING,
         });
       });
 

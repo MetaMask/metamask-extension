@@ -27,6 +27,7 @@ const mockStore = configureMockStore([]);
 const renderHookConsumer = ({
   eventName,
   state,
+  onTrack,
 }: {
   eventName: MetaMetricsEventName;
   state: {
@@ -36,6 +37,7 @@ const renderHookConsumer = ({
       optedIn: boolean;
     };
   };
+  onTrack?: (trackEventPromise: Promise<void>) => void;
 }) => {
   const store = mockStore(state);
 
@@ -43,11 +45,12 @@ const renderHookConsumer = ({
     const { trackEvent, createEventBuilder } = useAnalytics();
 
     useEffect(() => {
-      trackEvent(
+      const trackEventPromise = trackEvent(
         createEventBuilder(eventName)
           .addCategory(MetaMetricsEventCategory.Onboarding)
           .build(),
       );
+      onTrack?.(trackEventPromise);
     }, [createEventBuilder, trackEvent]);
 
     return null;
@@ -72,6 +75,8 @@ describe('useAnalytics', () => {
 
   describe('trackEvent', () => {
     it('buffers events when participation is enabled but analyticsId is missing', async () => {
+      const onTrack = jest.fn();
+
       renderHookConsumer({
         eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
         state: {
@@ -81,6 +86,7 @@ describe('useAnalytics', () => {
             optedIn: true,
           },
         },
+        onTrack,
       });
 
       await waitFor(() => {
@@ -98,9 +104,12 @@ describe('useAnalytics', () => {
       });
 
       expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
 
     it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
+      const onTrack = jest.fn();
+
       renderHookConsumer({
         eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
         state: {
@@ -110,6 +119,7 @@ describe('useAnalytics', () => {
             optedIn: true,
           },
         },
+        onTrack,
       });
 
       await waitFor(() => {
@@ -127,6 +137,7 @@ describe('useAnalytics', () => {
       });
 
       expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
 
     it('tracks metrics opt out immediately', async () => {
@@ -159,23 +170,24 @@ describe('useAnalytics', () => {
       mockedTrackAnalyticsEvent.mockRejectedValueOnce(
         new Error('background unavailable'),
       );
+      const onTrack = jest.fn();
 
-      expect(() =>
-        renderHookConsumer({
-          eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          state: {
-            metamask: {
-              analyticsId: '0x123',
-              completedMetaMetricsOnboarding: true,
-              optedIn: true,
-            },
+      renderHookConsumer({
+        eventName: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        state: {
+          metamask: {
+            analyticsId: '0x123',
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           },
-        }),
-      ).not.toThrow();
+        },
+        onTrack,
+      });
 
       await waitFor(() => {
         expect(mockedTrackAnalyticsEvent).toHaveBeenCalled();
       });
+      await expect(onTrack.mock.calls[0][0]).resolves.toBeUndefined();
     });
   });
 });

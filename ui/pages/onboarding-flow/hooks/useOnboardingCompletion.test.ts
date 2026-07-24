@@ -6,10 +6,13 @@ import {
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
+import { MISSING } from '../../../../shared/lib/deep-links/verify';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useOnboardingCompletion } from './useOnboardingCompletion';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -18,7 +21,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
   return {
     useAnalytics: () => ({
-      trackEvent: jest.fn(),
+      trackEvent: mockTrackEvent,
       createEventBuilder,
     }),
   };
@@ -688,6 +691,52 @@ describe('useOnboardingCompletion', () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
+    });
+
+    it('waits for deep link tracking before navigating', async () => {
+      let resolveTrackEvent: () => void = () => undefined;
+      mockTrackEvent.mockReturnValueOnce(
+        new Promise<void>((resolve) => {
+          resolveTrackEvent = resolve;
+        }),
+      );
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: '/swap',
+        signature: MISSING,
+      });
+
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            completedOnboarding: true,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/swap',
+            },
+          },
+        },
+      );
+
+      let completionPromise!: Promise<void>;
+      act(() => {
+        completionPromise = result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      });
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      await act(async () => {
+        resolveTrackEvent();
+        await completionPromise;
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/swap');
     });
 
     it('navigates to DEFAULT_ROUTE when deferred deep link result is null and side panel is disabled', async () => {

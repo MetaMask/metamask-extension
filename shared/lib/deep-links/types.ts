@@ -47,6 +47,7 @@ export type DeferredDeepLinkRoute =
        */
       type: DeferredDeepLinkRouteType.Redirect;
       url: string;
+      signature: SignatureStatus;
     }
   | {
       /**
@@ -65,5 +66,6 @@ export type DeferredDeepLinkRoute =
        * Format: /path?query (e.g., /buy?address=0x...)
        */
       urlPathAndQuery: string;
+      signature: SignatureStatus;
     }
   | null;
