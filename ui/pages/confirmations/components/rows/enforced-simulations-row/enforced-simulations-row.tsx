@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   TransactionContainerType,
   TransactionMeta,
@@ -35,6 +35,8 @@ export function EnforcedSimulationsRow() {
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
   const isEligible = useIsEnforcedSimulationsEligible();
+  const [isUnavailable, setIsUnavailable] = useState(false);
+  const autoEnableRequestId = useRef(0);
 
   const hasAutoEnabled = containerTypes !== undefined;
 
@@ -43,17 +45,40 @@ export function EnforcedSimulationsRow() {
   );
 
   useEffect(() => {
-    if (!isEligible || hasAutoEnabled || !transactionId) {
+    setIsUnavailable(false);
+  }, [transactionId]);
+
+  useEffect(() => {
+    const requestId = autoEnableRequestId.current + 1;
+    autoEnableRequestId.current = requestId;
+
+    if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
       return;
     }
 
     applyTransactionContainersExisting(transactionId, [
       ...(containerTypes ?? []),
       TransactionContainerType.EnforcedSimulations,
-    ]).catch(console.error);
-  }, [isEligible, hasAutoEnabled, transactionId, containerTypes]);
+    ]).catch((error) => {
+      if (requestId !== autoEnableRequestId.current) {
+        return;
+      }
 
-  if (!isEligible && !hasAutoEnabled) {
+      setIsUnavailable(true);
+      if (!process.env.IN_TEST) {
+        console.error(error);
+      }
+    });
+  }, [
+    currentConfirmation,
+    isEligible,
+    hasAutoEnabled,
+    transactionId,
+    containerTypes,
+    isUnavailable,
+  ]);
+
+  if (isUnavailable || !hasAutoEnabled) {
     return null;
   }
 
@@ -75,7 +100,6 @@ export function EnforcedSimulationsRow() {
 
         <EnforcedSimulationsCheckbox
           isEnabled={Boolean(hasEnforcedSimulations)}
-          isInitializing={!hasAutoEnabled}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
         />
@@ -88,12 +112,10 @@ export function EnforcedSimulationsRow() {
 
 function EnforcedSimulationsCheckbox({
   isEnabled,
-  isInitializing,
   containerTypes,
   transactionId,
 }: {
   isEnabled: boolean;
-  isInitializing: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
 }) {
@@ -139,7 +161,7 @@ function EnforcedSimulationsCheckbox({
     }
   }, [containerTypes, isEnabled, transactionId]);
 
-  if (isInitializing || isToggling) {
+  if (isToggling) {
     return (
       <Icon
         name={IconName.Loading}
