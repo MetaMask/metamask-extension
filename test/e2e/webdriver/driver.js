@@ -205,7 +205,6 @@ class Driver {
 
   async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
     const cdpConnection = await this.driver.createCDPConnection('browser');
-    const pollInterval = 250;
     let targetInfo;
     let attachedSessionId = null;
 
@@ -239,7 +238,7 @@ class Driver {
 
     try {
       await this.waitUntil(getServiceWorkerTargetInfo, {
-        interval: pollInterval,
+        interval: 250,
         timeout: timeout ?? this.timeout,
       });
     } catch (error) {
