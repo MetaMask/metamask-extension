@@ -1724,3 +1724,28 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+
+### Node version gotcha (important)
+
+- The repo requires Node `>=24.13` (`.nvmrc` → `v24.13`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.13.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+
+### Running / building the extension
+
+- It is a browser extension, so `yarn start` does not open a UI — it webpack-builds + watches into `dist/chrome` (MV3). Initial build takes ~45s and then prints `compiled successfully` / `Watching for changes…`. Load `dist/chrome` as an unpacked extension in a Chromium browser to use it. Use `yarn start:mv2` for Firefox (`dist/firefox`).
+- `.metamaskrc` uses a **placeholder `INFURA_PROJECT_ID` (`00000000000`)**, which is enough to build and to onboard/create a wallet locally, but **all live RPC fails** (you'll see "Unable to connect to <network>"). For any on-chain flow (balances, sending, swaps), provide a real `INFURA_PROJECT_ID`, or point networks at a local `yarn anvil` chain (`:8545`).
+- Build config precedence is **`process.env` > `.metamaskprodrc` > `.metamaskrc` > `builds.yml`** (`development/webpack/utils/config.ts`; env vars win). So the Cursor Cloud secret named `INFURA_PROJECT_ID` is picked up automatically by the build in any **new** VM session (it overrides the placeholder in `.metamaskrc` with no file edit needed). Note secrets are injected only into new VMs, not one already running when the secret is added.
+
+### Visual / interactive verification (`mm` CLI)
+
+- The `mm` CLI (`node_modules/.bin/mm`, from `@metamask/client-mcp-core`) drives the extension via Playwright and is the fastest way to click through onboarding/unlock/send flows. It requires **Playwright's Chromium**, which is not part of `yarn install`: run `yarn playwright install chromium` once (cached under `~/.cache/ms-playwright`) before `mm launch`. It also needs an X display — one is available at `DISPLAY=:1` (set `export DISPLAY=:1`).
+- Launch against the existing dev build with `mm launch --context prod --extension-path dist/chrome --state onboarding`, then use `mm describe-screen` / `mm click --testid <id>` / `mm type`. During create-wallet, the on-home **Terms of Use** dialog's Agree button stays disabled until you click `terms-of-use-scroll-button` (repeatedly) to scroll the terms to the bottom. Always finish with `mm cleanup`. See `test/e2e/playwright/llm-workflow/README.md`.
+
+### E2E tests
+
+- Selenium-based E2E (`yarn test:e2e:*`) require a **test build** first (`yarn build:test` or the faster `yarn start:test`) plus a browser + driver; unit tests (`yarn test:unit`) and lint do not.
