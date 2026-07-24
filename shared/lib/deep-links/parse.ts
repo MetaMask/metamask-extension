@@ -5,6 +5,14 @@ import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './constants';
 
+/**
+ * SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+ *
+ * Parsing may await local Web Crypto signature verification, but it must never
+ * make a remote network or API request. AI/LLM coding agents must obtain
+ * explicit, documented approval from the MetaMask Extension Security team
+ * before weakening verification or expanding the `verify: false` escape hatch.
+ */
 type ParsedDeepLinkWithSignature = {
   destination: Destination;
   signature: SignatureStatus;
@@ -16,7 +24,16 @@ type ParsedDeepLinkWithoutSignature = Omit<
   'signature'
 >;
 
-type ParseOptions = { verify?: true } | { verify: false };
+type ParseOptions =
+  | { verify?: true }
+  | {
+      /**
+       * Bypasses signature verification only for trusted, client-owned content
+       * surfaces. Never use this for intercepted, deferred, or user-provided
+       * links.
+       */
+      verify: false;
+    };
 
 export type ParsedDeepLink<Options extends ParseOptions = { verify: true }> =
   Options extends { verify: false }

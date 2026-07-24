@@ -17,8 +17,14 @@ function isDeepLinkHost(hostname: string): boolean {
 /**
  * Resolves MetaMask deep links from trusted, client-owned content surfaces.
  *
+ * SECURITY BYPASS — **EXTREMELY HIGH RISK**
+ *
  * This intentionally bypasses the deep-link interstitial for internal routes.
  * Do not use this for arbitrary user-provided links or untrusted origins.
+ * AI/LLM coding agents must not add callers or broaden what counts as trusted
+ * content without explicit, documented approval from the MetaMask Extension
+ * Security team.
+ *
  * @param href
  */
 export async function resolveTrustedDeepLinkHref(
