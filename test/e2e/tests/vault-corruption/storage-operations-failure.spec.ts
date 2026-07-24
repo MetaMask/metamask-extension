@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
-import { WALLET_PASSWORD } from '../../constants';
-import { withFixtures } from '../../helpers';
+import { Mockttp } from 'mockttp';
+import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -14,6 +16,42 @@ import {
 import HomePage from '../../page-objects/pages/home/homepage';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
+
+/**
+ * Mocks the Segment event sent after a persistence write succeeds on retry.
+ * The literal event and property names intentionally make schema changes fail
+ * this test instead of changing alongside a shared constant.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked Segment endpoint.
+ */
+async function mockWriteRetryRecoveredEvent(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [
+          {
+            type: 'track',
+            event: 'Data Persistence Write Retry Recovered',
+            properties: {
+              category: 'Error',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              persistence_event: 'persist-retry-recovered',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              first_error_message:
+                'Simulated storage.local.set failure for testing',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              first_error_name: 'Error',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              retry_delay_ms: 500,
+            },
+          },
+        ],
+      })
+      .thenCallback(() => ({ statusCode: 200 })),
+  ];
+}
 
 /**
  * Tests for storage operations failure recovery.
@@ -85,6 +123,46 @@ describe('Storage Operations Failure Recovery', function () {
   });
 
   describe('storage.local.set() failure with simulateStorageSetFailure flag', function () {
+    it('tracks recovery when a persistence write succeeds on retry', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
+            })
+            .build(),
+          manifestFlags: {
+            testing: {
+              simulateStorageSetFailure: 'once',
+            },
+          },
+          testSpecificMock: mockWriteRetryRecoveredEvent,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          const events = await getEventPayloads(driver, mockedEndpoints);
+          assert.equal(events.length, 1);
+          assert.equal(
+            events[0].event,
+            'Data Persistence Write Retry Recovered',
+          );
+          assert.equal(events[0].properties.category, 'Error');
+          assert.equal(
+            events[0].properties.persistence_event,
+            'persist-retry-recovered',
+          );
+          assert.equal(
+            events[0].properties.first_error_message,
+            'Simulated storage.local.set failure for testing',
+          );
+          assert.equal(events[0].properties.first_error_name, 'Error');
+          assert.equal(events[0].properties.retry_delay_ms, 500);
+        },
+      );
+    });
+
     it('shows storage error toast when set() fails after onboarding', async function () {
       await withFixtures(
         getConfig(this.test?.title, {

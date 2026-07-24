@@ -936,6 +936,7 @@ export enum MetaMetricsEventName {
   StorageErrorToastViewed = 'Storage Error Toast Viewed',
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',
   VaultCorruptionDetected = 'Vault Corruption Detected',
