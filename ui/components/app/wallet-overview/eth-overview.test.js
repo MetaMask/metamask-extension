@@ -316,6 +316,33 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('should show a balance skeleton when funded account aggregate fiat balance is still zero', async () => {
+      const mockedStoreWithStartupZeroBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          preferences: {
+            ...mockStore.metamask.preferences,
+            showNativeTokenAsMainBalance: false,
+          },
+          currencyRates: {},
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithStartupZeroBalance,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
     it('should show the empty state when mainnet balance records loaded and confirm zero balance', async () => {
       const mockedStoreWithZeroBalance = {
         ...mockStore,

@@ -245,12 +245,10 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await bridgePage.submitQuote();
 
         // Navigate to activity list and verify the pending row.
-        // After @metamask/client-utils mapper migration (#44366), keyring txs are
-        // no longer reclassified via bridgeHistory — BTC bridges show as send.
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAction({
-          action: 'Sending BTC',
+          action: 'Bridging BTC',
           confirmedTx: 0,
         });
       },
@@ -302,7 +300,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAction({
-          action: 'Sending BTC',
+          action: 'Bridging BTC',
           confirmedTx: 0,
         });
       },
