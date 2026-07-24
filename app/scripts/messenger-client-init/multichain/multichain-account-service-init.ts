@@ -37,7 +37,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     createAccounts: {
       timeoutMs: 3000,
-      batched: true,
     },
     resyncAccounts: {
       autoRemoveExtraSnapAccounts: false,
