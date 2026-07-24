@@ -206,80 +206,80 @@ class Driver {
   async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
     const cdpConnection = await this.driver.createCDPConnection('browser');
     const pollInterval = 250;
-    const deadline = Date.now() + (timeout ?? this.timeout);
-
+    let targetInfo;
     let attachedSessionId = null;
 
-    try {
-      while (Date.now() <= deadline) {
-        const { result } = await cdpConnection.send('Target.getTargets');
-        const targetInfos = result?.targetInfos ?? [];
-        const targetInfo = targetInfos.find(
-          (info) =>
-            info.type === 'service_worker' &&
-            typeof info.url === 'string' &&
-            info.url.startsWith(this.extensionUrl),
-        );
-
-        if (targetInfo) {
-          const { result: attachResult } = await cdpConnection.send(
-            'Target.attachToTarget',
-            {
-              targetId: targetInfo.targetId,
-              flatten: true,
-            },
-          );
-
-          attachedSessionId = attachResult?.sessionId ?? null;
-          if (!attachedSessionId) {
-            throw new Error(
-              `Failed to attach to extension service worker target ${targetInfo.targetId}`,
-            );
-          }
-
-          cdpConnection.sessionId = attachedSessionId;
-
-          await cdpConnection.send('Runtime.enable');
-
-          const evaluationResponse = await cdpConnection.send(
-            'Runtime.evaluate',
-            {
-              expression: `(async () => {\n${script}\n})()`,
-              awaitPromise: true,
-              returnByValue: true,
-            },
-          );
-
-          const evaluationResult = evaluationResponse?.result ?? {};
-          if (evaluationResult.exceptionDetails) {
-            throw new Error(
-              evaluationResult.exceptionDetails.text ??
-                'Runtime evaluation failed in extension service worker',
-            );
-          }
-
-          return evaluationResult.result?.value;
-        }
-
-        await this.delay(pollInterval);
-      }
-
+    const getServiceWorkerTargetInfo = async () => {
       const { result } = await cdpConnection.send('Target.getTargets');
       const targetInfos = result?.targetInfos ?? [];
-      const targetDump = JSON.stringify(
-        targetInfos.map(({ targetId, type, title, url }) => ({
-          targetId,
-          type,
-          title,
-          url,
-        })),
-        null,
-        2,
+      targetInfo = targetInfos.find(
+        (info) =>
+          info.type === 'service_worker' &&
+          typeof info.url === 'string' &&
+          info.url.startsWith(this.extensionUrl),
+      );
+      return Boolean(targetInfo);
+    };
+
+    try {
+      await this.waitUntil(getServiceWorkerTargetInfo, {
+        interval: pollInterval,
+        timeout: timeout ?? this.timeout,
+      });
+
+      if (!targetInfo) {
+        const { result } = await cdpConnection.send('Target.getTargets');
+        const targetInfos = result?.targetInfos ?? [];
+        const targetDump = JSON.stringify(
+          targetInfos.map(({ targetId, type, title, url }) => ({
+            targetId,
+            type,
+            title,
+            url,
+          })),
+          null,
+          2,
+        );
+
+        throw new Error(
+          `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
+        );
+      }
+
+      const { result: attachResult } = await cdpConnection.send(
+        'Target.attachToTarget',
+        {
+          targetId: targetInfo.targetId,
+          flatten: true,
+        },
       );
 
-      throw new Error(
-        `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
-      );
+      attachedSessionId = attachResult?.sessionId ?? null;
+      if (!attachedSessionId) {
+        throw new Error(
+          `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+        );
+      }
+
+      cdpConnection.sessionId = attachedSessionId;
+
+      await cdpConnection.send('Runtime.enable');
+
+      const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+        expression: `(async () => {\n${script}\n})()`,
+        awaitPromise: true,
+        returnByValue: true,
+      });
+
+      const evaluationResult = evaluationResponse?.result ?? {};
+      if (evaluationResult.exceptionDetails) {
+        throw new Error(
+          evaluationResult.exceptionDetails.text ??
+            'Runtime evaluation failed in extension service worker',
+        );
+      }
+
+      return evaluationResult.result?.value;
     } finally {
       if (attachedSessionId) {
         cdpConnection.sessionId = null;

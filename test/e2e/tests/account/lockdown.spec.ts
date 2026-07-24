@@ -1,8 +1,13 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+const lockdownTarget = isFirefox ? 'window' : 'globalThis';
 
 // Detect scuttling by prodding globals until found
 // This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
@@ -27,15 +32,15 @@ function assertScuttling() {
 }
 
 // This is enough of a proof that lockdown is in effect and the shared prototypes are also hardened.
-function assertLockdown() {
+function assertLockdown(target: typeof globalThis) {
   if (
     !(
       (
-        Object.isFrozen(globalThis.Object) &&
-        Object.isFrozen(globalThis.Object.prototype) &&
-        Object.isFrozen(globalThis.Function) &&
-        Object.isFrozen(globalThis.Function.prototype) &&
-        Function.prototype.constructor !== globalThis.Function
+        Object.isFrozen(target.Object) &&
+        Object.isFrozen(target.Object.prototype) &&
+        Object.isFrozen(target.Function) &&
+        Object.isFrozen(target.Function.prototype) &&
+        target.Function.prototype.constructor !== target.Function
       ) // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
@@ -45,7 +50,7 @@ function assertLockdown() {
 
 const testCode = `
 ${assertLockdown.toString()};
-assertLockdown();
+assertLockdown(${lockdownTarget});
 ${assertScuttling.toString()};
 assertScuttling();
 return true;
