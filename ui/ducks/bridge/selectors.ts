@@ -605,6 +605,9 @@ export const getFromTokenBalance = createSelector(
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
+export const getIsSlippageUserOverride = (state: BridgeAppState) =>
+  state.bridge.isSlippageUserOverride;
+
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
   return quoteRequest[0];

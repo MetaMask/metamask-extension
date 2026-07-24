@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Decimalpræcision"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
-  },
   "delete": {
     "message": "Slet"
   },
@@ -342,9 +339,6 @@
   },
   "networks": {
     "message": "Netværk"
-  },
-  "nevermind": {
-    "message": "Lige meget"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

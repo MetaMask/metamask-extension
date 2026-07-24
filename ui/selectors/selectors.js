@@ -3747,7 +3747,6 @@ function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
   } = state;
 
   const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getPermittedEVMAccountsForSelectedTab(

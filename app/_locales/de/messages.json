@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Kontooptionen"
   },
-  "accountPermissionToast": {
-    "message": "Kontogenehmigungen aktualisiert"
-  },
   "accountSelectionRequired": {
     "message": "Sie müssen ein Konto auswählen!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Swap fehlgeschlagen"
   },
   "activity_swap_pending_title": {
-    "message": "$1 gegen $2 swappen",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swappen"
   },
   "activity_swap_success_title": {
-    "message": "$1 gegen $2 geswappt",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Geswappt"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrapping fehlgeschlagen"
@@ -2457,9 +2452,6 @@
   "clear": {
     "message": "Löschen"
   },
-  "clearActivity": {
-    "message": "Aktivitäten und Nonce-Daten löschen"
-  },
   "clearActivityDescription": {
     "message": "Setzt die Nonce des Kontos zurück und löscht Daten aus dem Aktivitäten-Tab in Ihrer Wallet. Nur das aktuelle Konto und Netzwerk sind betroffen. Ihr Guthaben und Ihre eingehenden Transaktionen bleiben unverändert."
   },
@@ -3109,9 +3101,6 @@
   },
   "decimal": {
     "message": "Dezimalangabe der Präzision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Dezimalzahlen müssen mindestens 0 und dürfen höchstens 36 betragen."
   },
   "decrypt": {
     "message": "Entschlüsseln"
@@ -5706,9 +5695,6 @@
   },
   "networksSmallCase": {
     "message": "Netzwerke"
-  },
-  "nevermind": {
-    "message": "Schon gut"
   },
   "new": {
     "message": "Neu!"

@@ -13,6 +13,17 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { toast, ToastContent } from '../../../../ui/toast/toast';
 import NftsTab from '.';
 
+jest.mock('../../../../../hooks/useAnalytics', () => ({
+  useAnalytics: () => ({
+    trackEvent: jest.fn(),
+    createEventBuilder: jest.fn(() => ({
+      addCategory: jest.fn().mockReturnThis(),
+      addProperties: jest.fn().mockReturnThis(),
+      build: jest.fn().mockReturnValue({}),
+    })),
+  }),
+}));
+
 jest.mock('../../../../ui/toast/toast', () => ({
   toast: {
     success: jest.fn(),

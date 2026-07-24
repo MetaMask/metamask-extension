@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "账户选项"
   },
-  "accountPermissionToast": {
-    "message": "账户许可已更新"
-  },
   "accountSelectionRequired": {
     "message": "您需要选择一个账户！"
   },
@@ -1005,12 +1002,10 @@
     "message": "交换失败"
   },
   "activity_swap_pending_title": {
-    "message": "正在将 $1 兑换为 $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "正在兑换"
   },
   "activity_swap_success_title": {
-    "message": "已将 $1 兑换为 $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "已兑换"
   },
   "activity_unwrap_failed_description": {
     "message": "解除封装失败"
@@ -2452,13 +2447,10 @@
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
-    "message": "流通量"
+    "message": "流通供应量"
   },
   "clear": {
     "message": "清除"
-  },
-  "clearActivity": {
-    "message": "清除活动和 nonce 数据"
   },
   "clearActivityDescription": {
     "message": "重设账户的 nonce，并删除钱包中的活动选项卡数据。只有当前账户和网络会受到影响。您的余额和待入账的交易不会改变。"
@@ -3109,9 +3101,6 @@
   },
   "decimal": {
     "message": "小数精度"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "小数位至少为0，且不得超过36。"
   },
   "decrypt": {
     "message": "解密"
@@ -5706,9 +5695,6 @@
   },
   "networksSmallCase": {
     "message": "网络"
-  },
-  "nevermind": {
-    "message": "没关系"
   },
   "new": {
     "message": "新增!"

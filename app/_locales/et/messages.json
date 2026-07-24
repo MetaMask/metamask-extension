@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Täpsuse kümnendkohad"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
-  },
   "delete": {
     "message": "Kustuta"
   },
@@ -345,9 +342,6 @@
   },
   "networks": {
     "message": "Võrgud"
-  },
-  "nevermind": {
-    "message": "Unusta"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

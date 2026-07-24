@@ -178,9 +178,6 @@
   "decimal": {
     "message": "Decimals de precisió"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
-  },
   "delete": {
     "message": "Suprimeix"
   },
@@ -339,9 +336,6 @@
   },
   "networks": {
     "message": "Xarxes"
-  },
-  "nevermind": {
-    "message": "No importa"
   },
   "newAccountNumberName": {
     "message": "Compte $1",

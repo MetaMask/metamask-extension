@@ -6,6 +6,9 @@ name: Upload extension to Chrome Web Store
 # flask: cws-flask environment + prod WIF vars + EXTENSION_ID_FLASK (INFRA-3734).
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
+# Idempotent re-run: after WIF auth, :fetchStatus skips upload when a draft for
+# CWS_EXPECTED_VERSION already exists (VERSION for production/dev; VERSION-flask.0 for flask)
+# or a prior async upload is still IN_PROGRESS (poll to terminal first).
 
 on:
   workflow_dispatch:
@@ -28,6 +31,21 @@ on:
         required: false
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'Chrome manifest version — must match GitHub Release tag v{version}'
+      target:
+        required: true
+        type: string
+        description: 'CWS target — production or flask (orchestrator); dev allowed for manual workflow_call'
+      dry-run:
+        required: false
+        type: boolean
+        default: false
+        description: 'Verify sender and WIF without uploading'
 
 permissions:
   contents: read
@@ -90,6 +108,7 @@ jobs:
               exit 1
             fi
           done
+          CWS_EXPECTED_VERSION="${VERSION}"
           if [[ "${TARGET}" == "dev" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
@@ -111,6 +130,7 @@ jobs:
             PUBLISHER_ID="${PUBLISHER_ID_PROD}"
             PUBLISHER_EMAIL="${PUBLISHER_EMAIL_PROD}"
             ZIP_NAME="metamask-chrome-${VERSION}-flask.0.zip"
+            CWS_EXPECTED_VERSION="${VERSION}-flask.0"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
@@ -166,6 +186,7 @@ jobs:
             echo "PUBLISHER_ID=${PUBLISHER_ID}"
             echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
             echo "ZIP_NAME=${ZIP_NAME}"
+            echo "CWS_EXPECTED_VERSION=${CWS_EXPECTED_VERSION}"
           } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
@@ -218,8 +239,94 @@ jobs:
           } >> "${GITHUB_STEP_SUMMARY}"
           echo "Dry-run mode: skipping download, GCP auth, and CWS upload."
 
-      - name: Download release asset
+      - name: Authenticate to Google Cloud
         if: ${{ !inputs.dry-run }}
+        id: auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+
+      - name: Check CWS upload state (idempotent pre-flight)
+        if: ${{ !inputs.dry-run }}
+        id: cws-precheck
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+
+          FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
+          max_polls=6
+          poll_interval_seconds=10
+
+          fetch_status() {
+            local http_code
+            http_code=$(curl -sS \
+              -o /tmp/fetch-status.json -w "%{http_code}" \
+              -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+              "${FETCH_STATUS_URL}")
+            if [[ "${http_code}" != "200" ]]; then
+              echo "::error::fetchStatus failed with HTTP ${http_code}"
+              cat /tmp/fetch-status.json
+              exit 1
+            fi
+          }
+
+          draft_crx_version() {
+            jq -r '
+              [
+                .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
+              ] | map(select(length > 0)) | first // empty
+            ' /tmp/fetch-status.json
+          }
+
+          poll_async_upload() {
+            local upload_state
+            upload_state=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
+            local poll=0
+            while [[ "${upload_state}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
+              poll=$((poll + 1))
+              echo "Prior upload IN_PROGRESS; polling :fetchStatus (${poll}/${max_polls})..."
+              sleep "${poll_interval_seconds}"
+              fetch_status
+              upload_state=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
+              echo "Poll ${poll}/${max_polls}: lastAsyncUploadState=${upload_state:-<unset>}"
+            done
+            if [[ "${upload_state}" == "IN_PROGRESS" ]]; then
+              echo "::error::CWS upload still IN_PROGRESS after ${max_polls} polls (${poll_interval_seconds}s apart); check CWS console or re-run"
+              cat /tmp/fetch-status.json
+              exit 1
+            fi
+            echo "${upload_state}"
+          }
+
+          echo "Checking CWS :fetchStatus before download/upload..."
+          fetch_status
+
+          async_state=$(poll_async_upload)
+          draft_version=$(draft_crx_version)
+
+          if [[ -n "${draft_version}" && "${draft_version}" == "${CWS_EXPECTED_VERSION}" ]]; then
+            echo "Draft for version ${CWS_EXPECTED_VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
+            {
+              echo "skip_upload=true"
+              echo "upload_state=SKIPPED_ALREADY_EXISTS"
+              echo "draft_version=${draft_version}"
+            } >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          echo "No matching draft for version ${CWS_EXPECTED_VERSION} (draft=${draft_version:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Proceeding with upload."
+          {
+            echo "skip_upload=false"
+            echo "upload_state="
+            echo "draft_version="
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Download release asset
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -231,7 +338,7 @@ jobs:
           ls -lh "${ZIP_NAME}"
 
       - name: Verify artifact attestation
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
         id: verify-attestation
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -246,7 +353,7 @@ jobs:
           echo "Attestation verified for ${ZIP_NAME}"
 
       - name: Verify SHA256SUMS
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
         id: verify-sha256sums
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -271,7 +378,7 @@ jobs:
 
       # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (dev only)
-        if: inputs.target == 'dev' && !inputs.dry-run
+        if: inputs.target == 'dev' && !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true'
         run: |
           set -euo pipefail
           mkdir -p /tmp/extension
@@ -282,18 +389,8 @@ jobs:
           zip -r -q "${GITHUB_WORKSPACE}/${ZIP_NAME}" .
           echo "Stripped manifest key and set version in manifest.json"
 
-      - name: Authenticate to Google Cloud
-        if: ${{ !inputs.dry-run }}
-        id: auth
-        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
-        with:
-          workload_identity_provider: ${{ env.WIF_PROVIDER }}
-          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
-
       - name: Upload to Chrome Web Store
-        if: ${{ !inputs.dry-run }}
+        if: ${{ !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true' }}
         id: cws-upload
         env:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
@@ -335,7 +432,7 @@ jobs:
             poll_interval_seconds=10
             echo "Upload in progress; polling :fetchStatus (up to ${max_polls}×${poll_interval_seconds}s)..."
             poll=0
-            while [[ "${UPLOAD_STATE}" == "IN_PROGRESS" && poll -lt ${max_polls} ]]; do
+            while [[ "${UPLOAD_STATE}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
               poll=$((poll + 1))
               sleep "${poll_interval_seconds}"
               FETCH_HTTP_CODE=$(curl -sS \
@@ -371,17 +468,39 @@ jobs:
 
       - name: Summary
         if: ${{ always() && !inputs.dry-run }}
+        env:
+          SKIP_UPLOAD: ${{ steps.cws-precheck.outputs.skip_upload }}
+          PRECHECK_STATE: ${{ steps.cws-precheck.outputs.upload_state }}
+          DRAFT_VERSION: ${{ steps.cws-precheck.outputs.draft_version }}
+          HTTP_CODE: ${{ steps.cws-upload.outputs.http_code }}
+          UPLOAD_STATE: ${{ steps.cws-upload.outputs.upload_state }}
+          ATTEST_OUTCOME: ${{ steps.verify-attestation.outcome }}
+          SHA_OUTCOME: ${{ steps.verify-sha256sums.outcome }}
         run: |
+          if [[ "${SKIP_UPLOAD}" == "true" ]]; then
+            result_state="${PRECHECK_STATE:-SKIPPED_ALREADY_EXISTS}"
+            http_display="skipped (pre-flight)"
+            attest_display="skipped (pre-flight)"
+            sha_display="skipped (pre-flight)"
+          else
+            result_state="${UPLOAD_STATE:-n/a}"
+            http_display="${HTTP_CODE:-n/a}"
+            [[ "${ATTEST_OUTCOME}" == "success" ]] && attest_display="✅" || attest_display="❌"
+            [[ "${SHA_OUTCOME}" == "success" ]] && sha_display="✅" || sha_display="❌"
+          fi
           {
             echo ""
             echo "### Result"
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
-            echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
-            echo "| Attestation verified | ${{ steps.verify-attestation.outcome == 'success' && '✅' || '❌' }} |"
-            echo "| SHA256SUMS verified | ${{ steps.verify-sha256sums.outcome == 'success' && '✅' || '❌' }} |"
+            echo "| HTTP status | \`${http_display}\` |"
+            echo "| CWS uploadState | \`${result_state}\` |"
+            if [[ "${SKIP_UPLOAD}" == "true" && -n "${DRAFT_VERSION}" ]]; then
+              echo "| Draft crxVersion | \`${DRAFT_VERSION}\` |"
+            fi
+            echo "| Attestation verified | ${attest_display} |"
+            echo "| SHA256SUMS verified | ${sha_display} |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"

@@ -187,7 +187,6 @@ describe('EnforcedSimulationsRow', () => {
       'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
 
-    // eslint-disable-next-line @typescript-eslint/require-await
     await act(async () => {
       input?.click();
     });

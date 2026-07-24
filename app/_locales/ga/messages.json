@@ -112,9 +112,6 @@
   "accountOptions": {
     "message": "Roghanna cuntais"
   },
-  "accountPermissionToast": {
-    "message": "Ceadanna cuntais nuashonraithe"
-  },
   "accountSelectionRequired": {
     "message": "Ní mór duit cuntas a roghnú!"
   },
@@ -892,9 +889,6 @@
   "clear": {
     "message": "Glan"
   },
-  "clearActivity": {
-    "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
-  },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
   },
@@ -1393,9 +1387,6 @@
   },
   "decimal": {
     "message": "Deicheamhach comhartha"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Ní mór deachúlacha a bheith ar a laghad 0, agus ní mó ná 36."
   },
   "decrypt": {
     "message": "Díchriptigh"
@@ -3105,9 +3096,6 @@
   },
   "networksSmallCase": {
     "message": "líonraí"
-  },
-  "nevermind": {
-    "message": "Ná miste"
   },
   "new": {
     "message": "Nua!"

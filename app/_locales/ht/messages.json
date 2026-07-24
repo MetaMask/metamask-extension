@@ -108,9 +108,6 @@
   "decimal": {
     "message": "Presizyon desimal la"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
-  },
   "details": {
     "message": "Detay yo"
   },
@@ -245,9 +242,6 @@
   },
   "networks": {
     "message": "Rezo"
-  },
-  "nevermind": {
-    "message": "Pa pwoblèm"
   },
   "newAccountNumberName": {
     "message": "Kont $1",

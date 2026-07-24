@@ -349,6 +349,10 @@ export const isTronSpecialAsset = (
 export function getChainIdFromAssetId(
   assetId: CaipAssetType,
 ): CaipChainId | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+
   return CaipAssetTypeStruct.is(assetId)
     ? parseCaipAssetType(assetId).chainId
     : undefined;

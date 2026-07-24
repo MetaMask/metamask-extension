@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Tùy chọn tài khoản"
   },
-  "accountPermissionToast": {
-    "message": "Đã cập nhật quyền đối với tài khoản"
-  },
   "accountSelectionRequired": {
     "message": "Bạn cần chọn một tài khoản!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Hoán đổi không thành công"
   },
   "activity_swap_pending_title": {
-    "message": "Đang hoán đổi $1 sang $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Đang hoán đổi"
   },
   "activity_swap_success_title": {
-    "message": "Đã hoán đổi $1 sang $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Đã hoán đổi"
   },
   "activity_unwrap_failed_description": {
     "message": "Hủy bọc thất bại"
@@ -2457,9 +2452,6 @@
   "clear": {
     "message": "Xóa"
   },
-  "clearActivity": {
-    "message": "Xóa dữ liệu hoạt động và số nonce"
-  },
   "clearActivityDescription": {
     "message": "Đặt lại số nonce của tài khoản và xóa dữ liệu trong tab hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại sẽ bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
   },
@@ -3109,9 +3101,6 @@
   },
   "decimal": {
     "message": "Số thập phân của token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Số thập phân ít nhất phải bằng 0 và không được quá 36."
   },
   "decrypt": {
     "message": "Giải mã"
@@ -5710,9 +5699,6 @@
   },
   "networksSmallCase": {
     "message": "mạng"
-  },
-  "nevermind": {
-    "message": "Bỏ qua"
   },
   "new": {
     "message": "Mới!"

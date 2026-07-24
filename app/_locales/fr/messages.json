@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Options du compte"
   },
-  "accountPermissionToast": {
-    "message": "Les autorisations accordées au compte ont été mises à jour"
-  },
   "accountSelectionRequired": {
     "message": "Vous devez sélectionner un compte !"
   },
@@ -1005,12 +1002,10 @@
     "message": "Échec du swap"
   },
   "activity_swap_pending_title": {
-    "message": "Échanger des $1 contre des $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Échange"
   },
   "activity_swap_success_title": {
-    "message": "$1 contre des $2 échangé",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Échangé"
   },
   "activity_unwrap_failed_description": {
     "message": "Le déballage a échoué"
@@ -2457,9 +2452,6 @@
   "clear": {
     "message": "Effacer"
   },
-  "clearActivity": {
-    "message": "Effacer les données d’activité et de nonce"
-  },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
@@ -3109,9 +3101,6 @@
   },
   "decimal": {
     "message": "Nombre de décimales du jeton"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
   },
   "decrypt": {
     "message": "Décrypter"
@@ -5706,9 +5695,6 @@
   },
   "networksSmallCase": {
     "message": "réseaux"
-  },
-  "nevermind": {
-    "message": "J’ai changé d’avis"
   },
   "new": {
     "message": "Nouveau!"

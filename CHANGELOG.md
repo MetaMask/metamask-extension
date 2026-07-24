@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.40.0]
+
+### Added
+
+- Added Robinhood Chain as a featured network (#44310)
+- Added trustline support in transaction history v3 (#44200)
+- Added transition to settings page (#44074)
+- Added a security check that warns users before confirming a send flagged as malicious (#43822)
+- Added a controller to sync extension wallets to MetaMask mobile via QR code pairing (#43711)
+- Added Stellar chain utilities (#44192)
+
+### Changed
+
+- Updated transaction id copied text on activity details (#44313)
+- Bumped `@metamask/notification-services-controller` to support the v4 notifications API (#44263)
+- Updated min-height for login-option (#44265)
+- Changed the native asset icon (RBTC) for Rootstock (#44115)
+- Warning banner for add from chainlist (#44309)
+- Certain deeplink paths open directly without an interstitial (#43639)
+- Disabled CTA swap button for Tron when no network fees retrieved (#44107)
+- Consolidated Privacy toggles in BFT for new users (#43935)
+- Disabled gas sponsorship for hw wallets (#44144)
+- Defer global spinners (#44120)
+- Bignumber incident 1752 (#44097)
+- Updated transaction id copied text on activity details (#44313)
+- Bumped `@metamask/notification-services-controller` to support the v4 notifications API (#44263)
+- Updated min-height for login-option (#44265)
+- Changed the native asset icon (RBTC) for Rootstock (#44115)
+
+### Removed
+
+- Removed old token import flow (#43712)
+
+### Fixed
+
+- Fixed an issue where users who closed the extension on the wallet-ready screen without tapping Done were shown the celebration screen again on reopen (#44232)
+- Fixed a bug where the Perps balance, P&L, and position details remained visible when the wallet balance privacy mode was enabled (#44262)
+- Fixed missing prices in Arc Swap asset picker (#44073)
+- Rejected tx showing transaction id link (#44188)
+- Fixed Buy being disabled on unsupported networks; Buy is now always available and network selection is handled in the buy flow (#44069)
+- Fixed long asset names wrapping to two lines in the perps market list; they now truncate with an ellipsis on a single line (#44214)
+- Fixed MM Pay initial page to show the "Pay with" row at the bottom from the start instead of a centered pill (#44190)
+- Fixed bridge asset picker search not updating after changing the network filter while a search query is active (#44194)
+
 ## [13.39.2]
 
 ### Fixed
@@ -2698,6 +2742,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.38.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.40.0...HEAD
+[13.40.0]: https://github.com/MetaMask/metamask-extension/compare/v13.39.2...v13.40.0
 [13.39.2]: https://github.com/MetaMask/metamask-extension/compare/v13.39.1...v13.39.2
 [13.39.1]: https://github.com/MetaMask/metamask-extension/compare/v13.39.0...v13.39.1
 [13.39.0]: https://github.com/MetaMask/metamask-extension/compare/v13.38.2...v13.39.0
