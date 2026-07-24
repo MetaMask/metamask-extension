@@ -1002,12 +1002,10 @@
     "message": "Error al canjear"
   },
   "activity_swap_pending_title": {
-    "message": "Canjeando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Canjeando"
   },
   "activity_swap_success_title": {
-    "message": "Se canjeó $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Se canjeó"
   },
   "activity_unwrap_failed_description": {
     "message": "Error al desenvolver"
@@ -1999,12 +1997,6 @@
     "message": "Aprobar $1 para puentear",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Estás permitiendo el acceso a $1 y $2. El contrato no accederá a fondos adicionales."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Deberás permitir el acceso a $1 $2 para puentear y luego aprobar el puente a $3. Esto requerirá dos confirmaciones por separado."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Se copió el enlace del explorador de bloques"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "Borrar"
-  },
-  "clearActivity": {
-    "message": "Borrar datos de actividad y nonce"
   },
   "clearActivityDescription": {
     "message": "Restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo la cuenta actual y la red se verán afectadas. Tus saldos y transacciones entrantes no cambiarán."
@@ -4169,9 +4158,6 @@
   "gotIt": {
     "message": "Entendido"
   },
-  "grantExactAccess": {
-    "message": "Otorgar acceso exacto"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5704,9 +5690,6 @@
   },
   "networksSmallCase": {
     "message": "redes"
-  },
-  "nevermind": {
-    "message": "No importa"
   },
   "new": {
     "message": "Nuevo!"
@@ -11268,12 +11251,6 @@
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprueba token para puentear."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprueba token para canjear."
   },
   "withdrawTo": {
     "message": "Recibir",

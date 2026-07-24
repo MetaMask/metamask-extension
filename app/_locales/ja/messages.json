@@ -1002,12 +1002,10 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしています"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしました"
   },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"
@@ -1999,12 +1997,6 @@
     "message": "$1のブリッジを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2へのアクセスを許可しようとしています。このコントラクトが他の資金にアクセスすることはありません。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$3へのブリッジを承認する必要があります。これには2回の承認が必要です。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "消去"
-  },
-  "clearActivity": {
-    "message": "アクティビティとナンスデータを消去"
   },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
@@ -4169,9 +4158,6 @@
   "gotIt": {
     "message": "了解"
   },
-  "grantExactAccess": {
-    "message": "正確なアクセスを許可する"
-  },
   "gwei": {
     "message": "gwei"
   },
@@ -5704,9 +5690,6 @@
   },
   "networksSmallCase": {
     "message": "ネットワーク"
-  },
-  "nevermind": {
-    "message": "取り消し"
   },
   "new": {
     "message": "新登場!"
@@ -11264,12 +11247,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ブリッジ用にトークンを承認します。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "トークンのスワップを承認"
   },
   "withdrawTo": {
     "message": "受取",

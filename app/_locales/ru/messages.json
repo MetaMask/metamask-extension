@@ -1002,12 +1002,10 @@
     "message": "Своп не удался"
   },
   "activity_swap_pending_title": {
-    "message": "Своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп"
   },
   "activity_swap_success_title": {
-    "message": "Выполнен своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп выполнен"
   },
   "activity_unwrap_failed_description": {
     "message": "Ошибка развертывания"
@@ -1999,12 +1997,6 @@
     "message": "Одобрить использование $1 для моста",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Вы даете доступ к $1 $2. Контракт не будет использовать дополнительные средства."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Вам нужно будет дать доступ к $1 $2 для создания моста, а затем утвердить создание моста к $3. Для этого потребуется два отдельных подтверждения."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ссылка обозревателя блоков скопирована"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "Очистить"
-  },
-  "clearActivity": {
-    "message": "Очистить данные о действиях и одноразовых номерах"
   },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -4165,9 +4154,6 @@
   "gotIt": {
     "message": "Понятно"
   },
-  "grantExactAccess": {
-    "message": "Предоставить точный доступ"
-  },
   "gwei": {
     "message": "Гвей"
   },
@@ -5700,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "сети"
-  },
-  "nevermind": {
-    "message": "Неважно"
   },
   "new": {
     "message": "Новые!"
@@ -11260,12 +11243,6 @@
   },
   "whatsThis": {
     "message": "Что это?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Утверждает токен для моста."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Утверждает токен для свопа."
   },
   "withdrawTo": {
     "message": "Получить",

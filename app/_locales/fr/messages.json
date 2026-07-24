@@ -1002,12 +1002,10 @@
     "message": "Échec du swap"
   },
   "activity_swap_pending_title": {
-    "message": "Échanger des $1 contre des $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Échange"
   },
   "activity_swap_success_title": {
-    "message": "$1 contre des $2 échangé",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Échangé"
   },
   "activity_unwrap_failed_description": {
     "message": "Le déballage a échoué"
@@ -1999,12 +1997,6 @@
     "message": "Approuver $1 pour la passerelle",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Vous autorisez l’accès à $1 $2. Le contrat n’aura pas accès à d’autres fonds."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Vous devrez autoriser l’accès à $1 $2 pour l’établissement d’une passerelle, puis approuver l’établissement d’une passerelle vers $3, ce qui nécessitera deux confirmations distinctes."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Le lien de l’explorateur de blocs a été copié"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "Effacer"
-  },
-  "clearActivity": {
-    "message": "Effacer les données d’activité et de nonce"
   },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
@@ -4165,9 +4154,6 @@
   "gotIt": {
     "message": "D’accord"
   },
-  "grantExactAccess": {
-    "message": "Accorder un accès exact"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5700,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "réseaux"
-  },
-  "nevermind": {
-    "message": "J’ai changé d’avis"
   },
   "new": {
     "message": "Nouveau!"
@@ -11260,12 +11243,6 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Approuve le jeton pour l’établissement d’une passerelle."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Approuve le jeton pour le swap."
   },
   "withdrawTo": {
     "message": "Recevoir",

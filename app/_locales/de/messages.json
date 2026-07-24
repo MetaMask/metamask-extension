@@ -1002,12 +1002,10 @@
     "message": "Swap fehlgeschlagen"
   },
   "activity_swap_pending_title": {
-    "message": "$1 gegen $2 swappen",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swappen"
   },
   "activity_swap_success_title": {
-    "message": "$1 gegen $2 geswappt",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Geswappt"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrapping fehlgeschlagen"
@@ -1999,12 +1997,6 @@
     "message": "$1 für Bridge genehmigen",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Sie genehmigen den Zugriff auf $1 $2. Der Kontrakt hat keinen Zugriff auf weitere Gelder."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Sie müssen für das Bridging den Zugriff auf $1 $2 und dann das Bridging auf $3 genehmigen. Dies bedarf zweier separater Bestätigungen."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block-Explorer-Link kopiert"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "Löschen"
-  },
-  "clearActivity": {
-    "message": "Aktivitäten und Nonce-Daten löschen"
   },
   "clearActivityDescription": {
     "message": "Setzt die Nonce des Kontos zurück und löscht Daten aus dem Aktivitäten-Tab in Ihrer Wallet. Nur das aktuelle Konto und Netzwerk sind betroffen. Ihr Guthaben und Ihre eingehenden Transaktionen bleiben unverändert."
@@ -4165,9 +4154,6 @@
   "gotIt": {
     "message": "Alles klar"
   },
-  "grantExactAccess": {
-    "message": "Exakten Zugriff genehmigen"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5700,9 +5686,6 @@
   },
   "networksSmallCase": {
     "message": "Netzwerke"
-  },
-  "nevermind": {
-    "message": "Schon gut"
   },
   "new": {
     "message": "Neu!"
@@ -11260,12 +11243,6 @@
   },
   "whatsThis": {
     "message": "Was ist das?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Genehmigt Token für Bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Genehmigt Token für Swap."
   },
   "withdrawTo": {
     "message": "Empfangen",

@@ -206,7 +206,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_pending_title": {
-    "message": "Trustline aktivasyonu yapıldı $1",
+    "message": "Trustline aktivasyonu yapılıyor $1",
     "description": "$1 is the token symbol"
   },
   "activity_assetActivation_success_description": {
@@ -1002,12 +1002,10 @@
     "message": "Takas başarısız oldu"
   },
   "activity_swap_pending_title": {
-    "message": "$1 ile $2 takas ediliyor",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas ediliyor"
   },
   "activity_swap_success_title": {
-    "message": "$1 ile $2 takas edildi",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Takas edildi"
   },
   "activity_unwrap_failed_description": {
     "message": "Çözme başarısız oldu"
@@ -1999,12 +1997,6 @@
     "message": "Köprü için şunu onayla: $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2 için erişim izni veriyorsunuz. Sözleşme başka hiçbir fona erişim sağlamayacak."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Köprü amacıyla $1 $2 için erişim izni vermeniz ve ardından $3 alanı için köprüyü onaylamanız gerekecek. Bu işlem için iki ayrı onay gerekecek."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Blok gezgini bağlantısı kopyalandı"
   },
@@ -2453,9 +2445,6 @@
   },
   "clear": {
     "message": "Temizle"
-  },
-  "clearActivity": {
-    "message": "Aktiviteyi ve nonce verilerini temizle"
   },
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
@@ -4169,9 +4158,6 @@
   "gotIt": {
     "message": "Anladım"
   },
-  "grantExactAccess": {
-    "message": "Tam erişim ver"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5704,9 +5690,6 @@
   },
   "networksSmallCase": {
     "message": "ağ"
-  },
-  "nevermind": {
-    "message": "Boş ver"
   },
   "new": {
     "message": "Yeni!"
@@ -11268,12 +11251,6 @@
   },
   "whatsThis": {
     "message": "Bu nedir?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Köprü işlemi için token'i onaylar."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Takas işlemi için token'i onaylar."
   },
   "withdrawTo": {
     "message": "Al",
