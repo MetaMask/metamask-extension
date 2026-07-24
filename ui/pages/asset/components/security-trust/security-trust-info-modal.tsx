@@ -92,7 +92,6 @@ export const SecurityTrustInfoModal = ({
   );
 
   const severity = sheetParams?.severity;
-  const features = sheetParams?.features ?? [];
 
   const featureTags = useMemo(() => {
     if (
@@ -105,13 +104,13 @@ export const SecurityTrustInfoModal = ({
     }
 
     const { tags } = getFeatureTags(
-      features,
+      sheetParams?.features ?? [],
       severity,
       t as (key: string, substitutions?: string[]) => string,
       true,
     );
     return tags.slice(0, FEATURE_TAG_MAX);
-  }, [features, severity, t]);
+  }, [sheetParams?.features, severity, t]);
 
   if (!isOpen || !sheetParams) {
     return null;
