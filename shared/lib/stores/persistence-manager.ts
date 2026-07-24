@@ -540,10 +540,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     // Writes were already resumed, reset, or suspension disabled; nothing to do.
     // Also bail if `onSuspend` took ownership after this probe was scheduled:
     // that lifecycle signal recovers only via `onSuspendCanceled`.
+    // Read `#shutdownTrigger` into a local so TypeScript does not narrow the
+    // field across the await below (OnSuspend can still take ownership then).
+    const triggerBeforeProbe = this.#shutdownTrigger;
     if (
-      !this.writesSuspended() ||
+      triggerBeforeProbe === null ||
       !this.#shutdownSuspensionEnabled ||
-      this.#shutdownTrigger === ShutdownTrigger.OnSuspend
+      triggerBeforeProbe === ShutdownTrigger.OnSuspend
     ) {
       return;
     }
@@ -558,9 +561,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
     // Re-check after the async probe: `onSuspend` may have taken ownership
     // while we were waiting on storage.
+    const triggerAfterProbe = this.#shutdownTrigger;
     if (
-      !this.writesSuspended() ||
-      this.#shutdownTrigger === ShutdownTrigger.OnSuspend
+      triggerAfterProbe === null ||
+      triggerAfterProbe === ShutdownTrigger.OnSuspend
     ) {
       return;
     }
