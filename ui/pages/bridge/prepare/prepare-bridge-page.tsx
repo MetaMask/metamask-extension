@@ -112,8 +112,6 @@ const PrepareBridgePage = ({
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
 
-  const isSwap = fromToken.chainId === toToken.chainId;
-
   const fromAmount = useSelector(getFromAmount);
   const validatedFromValue = useSelector(getValidatedFromValue);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
