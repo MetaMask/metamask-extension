@@ -1,3 +1,4 @@
+import type { TokenSecurityData } from '@metamask/assets-controllers';
 import { getResultTypeConfig } from '../../utils/security-utils';
 import {
   getSecurityTrustCtaSheetParams,
@@ -8,18 +9,37 @@ import { getSecurityTrustInfoSheetParams } from './use-security-trust-info-sheet
 const t = (key: string, substitutions?: string[]) =>
   substitutions?.length ? `${key}:${substitutions.join(',')}` : key;
 
-const mockSecurityData = {
-  resultType: 'Malicious' as const,
+const mockSecurityData: TokenSecurityData = {
+  resultType: 'Malicious',
+  maliciousScore: '0',
   features: [
     {
       featureId: 'KNOWN_MALICIOUS',
-      type: 'Malicious' as const,
+      type: 'Malicious',
       description: '',
     },
   ],
-  fees: null,
-  financialStats: null,
-  metadata: null,
+  fees: {
+    transfer: 0,
+    transferFeeMaxAmount: null,
+    buy: 0,
+    sell: null,
+  },
+  financialStats: {
+    supply: 1000000,
+    topHolders: [],
+    holdersCount: 100,
+    tradeVolume24h: null,
+    lockedLiquidityPct: null,
+    markets: [],
+  },
+  metadata: {
+    externalLinks: {
+      homepage: null,
+      twitterPage: null,
+      telegramChannelId: null,
+    },
+  },
   created: '2020-01-01T00:00:00.000Z',
 };
 

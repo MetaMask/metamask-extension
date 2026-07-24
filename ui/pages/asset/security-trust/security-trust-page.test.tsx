@@ -58,7 +58,14 @@ const baseSecurityData: TokenSecurityData = {
   },
   financialStats: {
     supply: 1000000000,
-    topHolders: [{ holdingPercentage: 35 }],
+    topHolders: [
+      {
+        label: 'Top holder',
+        name: 'Example',
+        address: '0x1234567890123456789012345678901234567890',
+        holdingPercentage: 35,
+      },
+    ],
     holdersCount: 1000,
     tradeVolume24h: null,
     lockedLiquidityPct: null,

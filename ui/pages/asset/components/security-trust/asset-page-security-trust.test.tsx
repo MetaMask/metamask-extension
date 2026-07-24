@@ -32,10 +32,35 @@ const token = {
 
 const mockSecurityData: TokenSecurityData = {
   resultType: 'Verified',
-  features: [{ name: 'HIGH_REPUTATION_TOKEN' }],
-  fees: null,
-  financialStats: null,
-  metadata: null,
+  maliciousScore: '0',
+  features: [
+    {
+      featureId: 'VERIFIED_CONTRACT',
+      type: 'Info',
+      description: 'Verified contract',
+    },
+  ],
+  fees: {
+    transfer: 0,
+    transferFeeMaxAmount: null,
+    buy: 0,
+    sell: null,
+  },
+  financialStats: {
+    supply: 1000000,
+    topHolders: [],
+    holdersCount: 100,
+    tradeVolume24h: null,
+    lockedLiquidityPct: null,
+    markets: [],
+  },
+  metadata: {
+    externalLinks: {
+      homepage: null,
+      twitterPage: null,
+      telegramChannelId: null,
+    },
+  },
   created: '2020-01-01T00:00:00.000Z',
 };
 

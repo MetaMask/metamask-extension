@@ -207,10 +207,9 @@ export const AssetPageSecurityTrustProvider = ({
       showVerifiedBadge: isEnabled && securityData?.resultType === 'Verified',
       showSecurityBanner:
         isEnabled &&
-        Boolean(securityData) &&
-        (securityData.resultType === 'Malicious' ||
-          securityData.resultType === 'Warning' ||
-          securityData.resultType === 'Spam'),
+        (securityData?.resultType === 'Malicious' ||
+          securityData?.resultType === 'Warning' ||
+          securityData?.resultType === 'Spam'),
       showSecurityTrustSection:
         isEnabled &&
         !securityDataError &&
