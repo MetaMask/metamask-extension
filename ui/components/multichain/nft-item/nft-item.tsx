@@ -1,10 +1,12 @@
 import React from 'react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+} from '@metamask/design-system-react';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -14,7 +16,6 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
@@ -24,7 +25,6 @@ import {
 import {
   getIpfsGateway,
   getOpenSeaEnabled,
-  getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
@@ -58,7 +58,6 @@ export const NftItem = ({
   isIpfsURL,
   name,
 }: NftItemProps) => {
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
@@ -140,15 +139,11 @@ export const NftItem = ({
           display={Display.Block}
           badge={
             <AvatarNetwork
-              className="nft-item__network-badge"
-              backgroundColor={testNetworkBackgroundColor}
+              className="nft-item__network-badge border-2 border-background-default"
               data-testid="nft-network-badge"
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkSrc}
-              borderWidth={2}
-              // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
-              borderColor={BackgroundColor.backgroundDefault}
             />
           }
         >
