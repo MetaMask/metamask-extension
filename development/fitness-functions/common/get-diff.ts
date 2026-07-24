@@ -58,6 +58,7 @@ function runGitCommand(args: string[]): string {
  * @returns The diff for the HEAD commit
  */
 async function getCommitDiff(): Promise<string> {
+  runGitCommand(['fetch', '--deepen=1']);
   return runGitCommand(['diff', 'HEAD^', 'HEAD']);
 }
 
