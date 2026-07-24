@@ -10,6 +10,38 @@ import type {
 const { sentry } = globalThis;
 
 /**
+ * TEMPORARY storage-corruption investigation hook (do not ship).
+ *
+ * `setKeyValues` performs a write in two separate, individually-atomic browser
+ * operations: `local.set(toSet)` (new/updated keys + manifest) followed by
+ * `local.remove(toRemove)` (keys marked for deletion). These are NOT atomic
+ * with respect to each other. If the service worker is suspended, or the write
+ * process is interrupted, in the window between them, the on-disk database can
+ * end up inconsistent (e.g. a manifest that no longer references a key that
+ * still physically exists, or an old monolithic `data` key surviving a split
+ * migration).
+ *
+ * When `globalThis.__DEBUG_STORAGE_FAULT_GAP_MS__` is set to a positive number,
+ * this hook pauses for that many ms between the `set` and the `remove`, giving a
+ * human (or an automated kill) a reliable window to interrupt the process at the
+ * exact non-atomic boundary. Inert unless the global is explicitly set from a
+ * console, so it is a no-op in production.
+ */
+async function maybeDebugFaultGap(label: string): Promise<void> {
+  const gapMs = (
+    globalThis as typeof globalThis & {
+      __DEBUG_STORAGE_FAULT_GAP_MS__?: number;
+    }
+  ).__DEBUG_STORAGE_FAULT_GAP_MS__;
+  if (typeof gapMs === 'number' && gapMs > 0) {
+    console.warn(
+      `[ExtensionStore][DEBUG_FAULT] pausing ${gapMs}ms at "${label}" — interrupt now to test the non-atomic write boundary`,
+    );
+    await new Promise((resolve) => setTimeout(resolve, gapMs));
+  }
+}
+
+/**
  * An implementation of the MetaMask Extension BaseStore system that uses the
  * browser.storage.local API to persist and retrieve state.
  */
@@ -129,6 +161,13 @@ export default class ExtensionStore implements BaseStore {
         // once we know the set was successful, update our in-memory manifest
         this.#manifest = newManifest;
       }
+
+      // TEMPORARY: non-atomic-write fault window (see maybeDebugFaultGap). At
+      // this point the manifest already reflects the deletions (it was written
+      // as part of `toSet`), but the keys in `toRemove` still physically exist.
+      // Interrupting here reproduces a manifest/data mismatch on disk.
+      await maybeDebugFaultGap('between set and remove');
+
       log.info(
         `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
       );
