@@ -4169,9 +4169,13 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>b4a": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>bare-fs>bare-events": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "queueMicrotask": true
       }
     },
     "@ensdomains/content-hash>multihashes>multibase>base-x": {
@@ -5062,6 +5066,11 @@
         "browserify>buffer": true,
         "eth-ens-namehash>js-sha3": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>events-universal": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>bare-fs>bare-events": true
       }
     },
     "webpack>events": {
@@ -5983,11 +5992,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
-      "globals": {
-        "queueMicrotask": true
-      }
-    },
     "@hello-pangea/dnd>raf-schd": {
       "globals": {
         "cancelAnimationFrame": true,
@@ -6766,10 +6770,14 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
+      "globals": {
+        "process.nextTick": true,
+        "queueMicrotask": true
+      },
       "packages": {
-        "webpack>events": true,
+        "@metamask/snaps-controllers>tar-stream>streamx>events-universal": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true
+        "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": true
       }
     },
     "browserify>string_decoder": {
@@ -6803,6 +6811,11 @@
         "browserify>browser-resolve": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
     "browserify>timers-browserify": {
