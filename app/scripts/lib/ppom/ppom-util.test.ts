@@ -830,6 +830,67 @@ describe('PPOM Utils', () => {
         );
       });
     });
+
+    describe('originPath handling', () => {
+      const DAPP_ORIGIN = 'https://ipfs.io';
+      const DAPP_FULL_URL =
+        'https://ipfs.io/ipfs/bafkreifmjawtugkhf7b4ellqrh6uk72ky7d2ev7q7ucdpvlryrzf2xuysi';
+
+      it('sends the full sender URL as origin when originPath is set', async () => {
+        const request = {
+          ...REQUEST_MOCK,
+          origin: DAPP_ORIGIN,
+          originPath: DAPP_FULL_URL,
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({ origin: DAPP_FULL_URL }),
+        );
+      });
+
+      it('falls back to origin when originPath is unset', async () => {
+        const request = {
+          ...REQUEST_MOCK,
+          origin: DAPP_ORIGIN,
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({ origin: DAPP_ORIGIN }),
+        );
+      });
+
+      it('does not forward the originPath field itself to the outbound payload', async () => {
+        const request = {
+          ...REQUEST_MOCK,
+          origin: DAPP_ORIGIN,
+          originPath: DAPP_FULL_URL,
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.not.objectContaining({ originPath: expect.anything() }),
+        );
+      });
+    });
   });
 
   describe('generateSecurityAlertId', () => {

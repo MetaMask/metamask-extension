@@ -60,6 +60,8 @@ export type PPOMMiddlewareRequest<
  * @param accountsController - Instance of AccountsController.
  * @param updateSecurityAlertResponse
  * @param getSecurityAlertsConfig - Optional method to get transaction security alerts parameters.
+ * @param originPath - Optional full sender URL (including path) forwarded as
+ * `origin` to the Security Alerts API. Falls back to `req.origin` when absent.
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware<
@@ -73,6 +75,7 @@ export function createPPOMMiddleware<
   accountsController: AccountsController,
   updateSecurityAlertResponse: UpdateSecurityAlertResponse,
   getSecurityAlertsConfig?: GetSecurityAlertsConfig,
+  originPath?: string,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,
@@ -122,7 +125,7 @@ export function createPPOMMiddleware<
         () =>
           validateRequestWithPPOM({
             ppomController,
-            request: req,
+            request: { ...req, originPath },
             securityAlertId,
             chainId: chainId as Hex,
             updateSecurityAlertResponse,
