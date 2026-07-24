@@ -13,6 +13,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
+import { rootTrace } from '../../../../shared/lib/trace';
 import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 
 jest.mock('@metamask/core-backend');
@@ -71,7 +72,7 @@ describe('BackendWebSocketServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       url: 'wss://gateway.api.cx.metamask.io/v1',
-      traceFn: expect.any(Function),
+      traceFn: rootTrace,
       isEnabled: expect.any(Function),
     });
   });

@@ -19,6 +19,7 @@ import type {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { traceBackgroundPoll } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 
 const CONTROLLER = 'StaticAssetsController' as const;
@@ -218,20 +219,22 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     selectedAccountAddress: string;
     selectedAccountId: string;
   }): Promise<void> {
-    if (!selectedAccountAddress || !selectedAccountId) {
-      return;
-    }
-    // Use Promise.allSettled to wait for all the promises to settle,
-    // even if some of chains are rejected.
-    await Promise.allSettled(
-      chainIds.map((chainId) =>
-        this.#addTokensByChainId(
-          chainId,
-          selectedAccountAddress,
-          selectedAccountId,
+    await traceBackgroundPoll(CONTROLLER, async () => {
+      if (!selectedAccountAddress || !selectedAccountId) {
+        return;
+      }
+      // Use Promise.allSettled to wait for all the promises to settle,
+      // even if some of chains are rejected.
+      await Promise.allSettled(
+        chainIds.map((chainId) =>
+          this.#addTokensByChainId(
+            chainId,
+            selectedAccountAddress,
+            selectedAccountId,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   /**

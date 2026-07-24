@@ -20,6 +20,7 @@ export enum TraceName {
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
   ConnectPage = 'Connect Page',
@@ -200,6 +201,12 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * When true, do not inherit from the currently active span when no
+   * explicit parent context is provided.
+   */
+  isRoot?: boolean;
 };
 
 /**
@@ -257,6 +264,42 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+export function rootTrace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
+
+export function rootTrace(request: TraceRequest): TraceContext;
+
+export function rootTrace<ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext {
+  const rootRequest = { ...request, isRoot: true };
+
+  if (!fn) {
+    return trace(rootRequest);
+  }
+
+  return trace(rootRequest, fn);
+}
+
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return rootTrace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      tags: {
+        controller: controllerName,
+      },
+    },
+    fn,
+  );
 }
 
 /**
@@ -526,7 +569,14 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    isRoot,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
@@ -535,7 +585,7 @@ function startSpan<T>(
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!parentSpan && !parentContext && !isRoot) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -564,10 +614,21 @@ function startSpan<T>(
     );
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
-    initScope(scope, request);
-    return callback(spanOptions);
-  });
+  const runInIsolationScope = () =>
+    sentryWithIsolationScope((scope: Sentry.Scope) => {
+      initScope(scope, request);
+      return callback(spanOptions);
+    });
+
+  // `isRoot` severs the active-span parent (above), but `withIsolationScope`
+  // alone only clones the propagation context, so the span keeps the ambient
+  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
+  // accumulates into the mega-trace, which is grouped by trace id — not by
+  // parent span. `startNewTrace` resets the propagation context to a fresh trace
+  // id, so the op peels off at the trace level, not merely the span level.
+  return isRoot
+    ? sentryStartNewTrace(runInIsolationScope)
+    : runInIsolationScope();
 }
 
 function logTrace(
@@ -708,6 +769,18 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     } as unknown as Sentry.Scope;
 
     return callback(scope);
+  }
+
+  return actual(callback);
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryStartNewTrace<T>(callback: () => T): T {
+  const actual = globalThis.sentry?.startNewTrace;
+
+  if (!actual) {
+    return callback();
   }
 
   return actual(callback);
