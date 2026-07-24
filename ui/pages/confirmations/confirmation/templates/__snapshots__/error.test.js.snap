@@ -30,7 +30,7 @@ exports[`error template matches the snapshot 1`] = `
             />
           </div>
           <h3
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+            class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
           >
             Error
           </h3>

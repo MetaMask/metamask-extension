@@ -11,7 +11,7 @@ import {
   AlignItems,
   FlexDirection,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
   TextAlign,
   IconColor,
   BackgroundColor,
@@ -120,9 +120,9 @@ export class ResultTemplate {
                 ? undefined
                 : {
                     key: 'title',
-                    element: 'Typography',
+                    element: 'Text',
                     props: {
-                      variant: TypographyVariant.H3,
+                      variant: TextVariant.headingMd,
                       fontWeight: FontWeight.Bold,
                     },
                     children:
