@@ -209,6 +209,22 @@ class Driver {
     let targetInfo;
     let attachedSessionId = null;
 
+    const getKnownTargetsDump = async () => {
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const targetInfos = result?.targetInfos ?? [];
+
+      return JSON.stringify(
+        targetInfos.map(({ targetId, type, title, url }) => ({
+          targetId,
+          type,
+          title,
+          url,
+        })),
+        null,
+        2,
+      );
+    };
+
     const getServiceWorkerTargetInfo = async () => {
       const { result } = await cdpConnection.send('Target.getTargets');
       const targetInfos = result?.targetInfos ?? [];
@@ -222,25 +238,27 @@ class Driver {
     };
 
     try {
-      await this.waitUntil(getServiceWorkerTargetInfo, {
-        interval: pollInterval,
-        timeout: timeout ?? this.timeout,
-      });
+      try {
+        await this.waitUntil(getServiceWorkerTargetInfo, {
+          interval: pollInterval,
+          timeout: timeout ?? this.timeout,
+        });
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          /^Condition not met within \d+ms\.$/u.test(error.message)
+        ) {
+          const targetDump = await getKnownTargetsDump();
+          throw new Error(
+            `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
+          );
+        }
+
+        throw error;
+      }
 
       if (!targetInfo) {
-        const { result } = await cdpConnection.send('Target.getTargets');
-        const targetInfos = result?.targetInfos ?? [];
-        const targetDump = JSON.stringify(
-          targetInfos.map(({ targetId, type, title, url }) => ({
-            targetId,
-            type,
-            title,
-            url,
-          })),
-          null,
-          2,
-        );
-
+        const targetDump = await getKnownTargetsDump();
         throw new Error(
           `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
         );
