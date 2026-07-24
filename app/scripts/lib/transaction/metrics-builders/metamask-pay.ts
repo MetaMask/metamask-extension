@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import type {
-  TransactionPayBridgeQuote,
   TransactionPayControllerState,
   TransactionPayQuote,
   TransactionPayRequiredToken,
@@ -105,15 +103,6 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
 
     const quoteIndex = quoteTransactionIds.indexOf(transactionMeta.id);
     const quote = quotes[quoteIndex];
-
-    if (quote?.strategy === TransactionPayStrategy.Bridge) {
-      const bridgeQuote = quote.original as TransactionPayBridgeQuote;
-      const metrics = bridgeQuote?.metrics;
-      properties.mm_pay_quotes_attempts = metrics?.attempts;
-      properties.mm_pay_quotes_buffer_size = metrics?.buffer;
-      properties.mm_pay_quotes_latency = metrics?.latency;
-      properties.mm_pay_bridge_provider = bridgeQuote?.quote?.bridgeId;
-    }
 
     if (
       quote &&
@@ -268,9 +257,7 @@ function addPayTypeProperties(
 
   const strategy = quotes?.[0]?.strategy;
 
-  if (strategy === TransactionPayStrategy.Bridge) {
-    properties.mm_pay_strategy = 'mm_swaps_bridge';
-  } else if (strategy === TransactionPayStrategy.Relay) {
+  if (strategy === TransactionPayStrategy.Relay) {
     properties.mm_pay_strategy = 'relay';
   }
 

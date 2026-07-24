@@ -48,7 +48,7 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
-import { getDisplayName } from '../utils';
+import { getDisplaySymbol } from '../utils';
 import {
   formatPerpsLiquidationPrice,
   isPerpsLiquidationPriceValid,
@@ -324,7 +324,7 @@ export const EditMarginModalContent = ({
           [{ skipCache: true }],
         );
         streamManager.pushPositionsWithOverrides(freshPositions);
-        const displaySymbol = getDisplayName(position.symbol);
+        const displaySymbol = getDisplaySymbol(position.symbol);
 
         replacePerpsToastByKey({
           key:

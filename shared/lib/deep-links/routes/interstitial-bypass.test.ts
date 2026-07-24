@@ -32,7 +32,7 @@ describe('deep link interstitial bypass routes', () => {
     }
   });
 
-  it('does not include supported routes that are not whitelisted on mobile', () => {
+  it('does not include supported routes that are not whitelisted for bypass', () => {
     expect(
       isDeepLinkRouteAllowedToBypassInterstitial(routes.get('/home')),
     ).toBe(false);

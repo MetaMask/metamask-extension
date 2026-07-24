@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Decimāldaļu precizitāte"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
   "delete": {
     "message": "Dzēst"
   },
@@ -352,9 +349,6 @@
   "networks": {
     "message": "Tīkli"
   },
-  "nevermind": {
-    "message": "Nav svarīgi"
-  },
   "newAccountNumberName": {
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
@@ -511,9 +505,6 @@
   },
   "sign": {
     "message": "Parakstīt"
-  },
-  "signatureRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "signed": {
     "message": "Parakstīts"

@@ -1,5 +1,5 @@
 # Posts a Slack Block Kit message after a successful Main workflow run on release/X.Y.Z,
-# when the release PR (into stable) has the `auto-rc-builds` label — parity with Mobile RC Slack.
+# when there is a release PR into stable for the release branch.
 # See .github/scripts/slack-rc-notification.mts
 #
 # Test without waiting for Main:
@@ -52,7 +52,7 @@ jobs:
           startsWith(github.event.workflow_run.head_branch, 'release/'))
       }}
     steps:
-      - name: Gate — release PR must have auto-rc-builds (workflow_run only)
+      - name: Find release PR (workflow_run only)
         id: gate
         if: github.event_name == 'workflow_run'
         env:
@@ -66,13 +66,9 @@ jobs:
             echo "Not release/x.y.z: $BRANCH — skipping Slack."
             exit 0
           fi
-          PR_JSON="$(gh pr list --repo "$GH_REPO" --head "$BRANCH" --base stable --json number,labels --jq '.[0]' 2>/dev/null || true)"
+          PR_JSON="$(gh pr list --repo "$GH_REPO" --head "$BRANCH" --base stable --json number --jq '.[0]' 2>/dev/null || true)"
           if [[ -z "$PR_JSON" || "$PR_JSON" == "null" ]]; then
             echo "No PR with base stable for head $BRANCH — skipping Slack."
-            exit 0
-          fi
-          if ! echo "$PR_JSON" | jq -r '.labels[].name' | grep -qx 'auto-rc-builds'; then
-            echo "PR exists but missing auto-rc-builds label — skipping Slack."
             exit 0
           fi
           PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
@@ -81,7 +77,7 @@ jobs:
             echo "semver=${BRANCH#release/}"
             echo "pr_number=${PR_NUMBER}"
           } >> "$GITHUB_OUTPUT"
-          echo "Proceeding: release PR has auto-rc-builds."
+          echo "Proceeding: found release PR #${PR_NUMBER}."
 
       - name: Set notification variables
         id: notif

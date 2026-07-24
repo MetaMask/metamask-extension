@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opciones de la cuenta"
   },
-  "accountPermissionToast": {
-    "message": "Se actualizaron los permisos de la cuenta"
-  },
   "accountSelectionRequired": {
     "message": "¡Debe seleccionar una cuenta!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Error al canjear"
   },
   "activity_swap_pending_title": {
-    "message": "Canjeando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Canjeando"
   },
   "activity_swap_success_title": {
-    "message": "Se canjeó $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Se canjeó"
   },
   "activity_unwrap_failed_description": {
     "message": "Error al desenvolver"
@@ -1094,9 +1089,6 @@
   },
   "addCustomToken": {
     "message": "Añadir un token personalizado"
-  },
-  "addDevice": {
-    "message": "Sincronizar con dispositivo móvil"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Agregue este proveedor de RPC solo si está seguro de que puede confiar en él. $1",
@@ -1224,6 +1216,9 @@
   },
   "add_device_syncing_title": {
     "message": "Importando cuentas"
+  },
+  "add_device_try_again": {
+    "message": "Inténtalo de nuevo"
   },
   "add_device_validating_desc": {
     "message": "Estableciendo una conexión segura y cifrada con tu teléfono."
@@ -2014,10 +2009,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Deberá confirmar 2 transacciones en su monedero físico:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Detalles del puenteo",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2017,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Seleccione el monto"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Ver en $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Esta transacción se realiza en dos redes. Un enlace muestra el origen y el otro muestra el destino una vez confirmado."
@@ -2313,42 +2301,11 @@
   "bridgeSendLoading": {
     "message": "Enviando desde la cadena de origen"
   },
-  "bridgeStatusComplete": {
-    "message": "Completada",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Fallida",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "En curso",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 recibido en $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Recibiendo $1 en $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Se intercambió $1 por $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Intercambiando $1 por $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Sospechoso"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Token sospechoso"
-  },
-  "bridgeTo": {
-    "message": "Puentear a"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 es un token malicioso."
@@ -2364,56 +2321,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Ningún token coincide con \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transacción $1 de 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Puenteado"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Puentear"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Comuníquese con"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Soporte de MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "¿Han pasado más de 3 horas?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Estado"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Canjeado"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Canjeando"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Marca de tiempo"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 a $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 en",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Tarifa total de gas"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Recibió"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Envió"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Usar el máximo permitido"
@@ -2431,12 +2338,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Se requiere un saldo mínimo de reserva de $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Puenteado"
-  },
-  "bridgedToChain": {
-    "message": "Puenteado hacia $1"
   },
   "bridging": {
     "message": "Puentear"
@@ -2550,9 +2451,6 @@
   },
   "clear": {
     "message": "Borrar"
-  },
-  "clearActivity": {
-    "message": "Borrar datos de actividad y nonce"
   },
   "clearActivityDescription": {
     "message": "Restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo la cuenta actual y la red se verán afectadas. Tus saldos y transacciones entrantes no cambiarán."
@@ -3204,9 +3102,6 @@
   "decimal": {
     "message": "Decimales del token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Los decimales deben ser al menos 0 y no más de 36."
-  },
   "decrypt": {
     "message": "Descifrar"
   },
@@ -3463,10 +3358,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Dirección receptora"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID de transacción de destino",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Detalles"
@@ -5507,10 +5398,6 @@
     "message": "Detalles del bono reclamable",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Convertir $1 a mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Detalles del bono",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5813,9 +5700,6 @@
   "networksSmallCase": {
     "message": "redes"
   },
-  "nevermind": {
-    "message": "No importa"
-  },
   "new": {
     "message": "Nuevo!"
   },
@@ -5893,14 +5777,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Autodetección de NFT habilitada"
   },
-  "nftBought": {
-    "message": "Compraste $1"
-  },
   "nftEmptyDescription": {
     "message": "Hay un mundo de NFT disponible. Empieza tu colección hoy mismo."
-  },
-  "nftMinted": {
-    "message": "Acuñaste $1"
   },
   "nftOptions": {
     "message": "Opciones de NFT"
@@ -7079,9 +6957,6 @@
   "perpsDateYesterday": {
     "message": "Ayer"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Contratos perpetuos financiados"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Puente fallido"
   },
@@ -7744,10 +7619,6 @@
   "perpsWithdraw": {
     "message": "Retirar"
   },
-  "perpsWithdrawActivityTitle": {
-    "message": "Retiro de contratos perpetuos",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Hora estimada"
   },
@@ -8137,9 +8008,6 @@
     "message": "Expira en $1 s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Se produjo un error al escanear el código QR. Genera uno nuevo para volver a intentarlo."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR corresponde a otra transacción. Cancélala e inténtalo de nuevo, asegurándote de escanear primero el código QR que aparece en MetaMask con tu billetera física.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8204,6 +8072,9 @@
   },
   "quotedTotalCost": {
     "message": "Costo total: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "No hay tokens disponibles"
   },
   "rank": {
     "message": "Rango"
@@ -8417,9 +8288,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "La operación se completó con éxito."
   },
-  "retryTransaction": {
-    "message": "Reintentar transacción"
-  },
   "reusedTokenNameWarning": {
     "message": "Un token reutiliza un símbolo de otro token que se le muestra. Esto puede ser confuso o engañoso."
   },
@@ -8473,10 +8341,6 @@
   },
   "revokePermission": {
     "message": "Revocar permiso"
-  },
-  "revokePermissionTitle": {
-    "message": "Eliminar permiso de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vas a eliminar el permiso de alguien para gastar tokens de tu cuenta."
@@ -8948,14 +8812,6 @@
   "sent": {
     "message": "Enviado"
   },
-  "sentSpecifiedTokens": {
-    "message": "$1 enviado",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "$1 enviado como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Red de prueba Sepolia"
   },
@@ -8964,10 +8820,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Solicitud de retiro"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Aprobar $1 sin límite preestablecido",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configuración",
@@ -9670,9 +9522,6 @@
   },
   "sign": {
     "message": "Firmar"
-  },
-  "signatureRequest": {
-    "message": "Solicitud de firma"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Una vez aceptada la oferta, el NFT se reflejará en su monedero."
@@ -10484,10 +10333,6 @@
   "swapDecentralizedExchange": {
     "message": "Cambio descentralizado"
   },
-  "swapDetailsTitle": {
-    "message": "Detalles del canje",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Contrato directo"
   },
@@ -10692,10 +10537,6 @@
   "swapTokenNotAvailable": {
     "message": "El token no está disponible para intercambiar en esta región"
   },
-  "swapTokenToToken": {
-    "message": "Intercambiar $1 por $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Canjear tokens"
   },
@@ -10759,6 +10600,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "El símbolo debe tener 11 caracteres o menos."
+  },
+  "syncAccounts": {
+    "message": "Sincronizar con dispositivo móvil"
   },
   "syncing": {
     "message": "Sincronizando..."
@@ -10967,10 +10811,6 @@
   "transactionIncludesTypes": {
     "message": "Esta transacción incluye: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Esta transacción estaba protegida. La cancelamos para evitar una pérdida inesperada de fondos.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Configuración de la transacción"
   },
@@ -10979,10 +10819,6 @@
   },
   "transactionSubmitted": {
     "message": "Transacción enviada"
-  },
-  "transactionTotalGasFee": {
-    "message": "Tarifa de gas total",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transacciones"
@@ -11308,9 +11144,6 @@
   "viewAddressOnExplorer": {
     "message": "Ver en $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Ver detalles"
   },
   "viewOnBlockExplorer": {
     "message": "Ver en el explorador de bloques"

@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Параметры счета"
   },
-  "accountPermissionToast": {
-    "message": "Разрешения счета обновлены"
-  },
   "accountSelectionRequired": {
     "message": "Вам необходимо выбрать счет!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Своп не удался"
   },
   "activity_swap_pending_title": {
-    "message": "Своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп"
   },
   "activity_swap_success_title": {
-    "message": "Выполнен своп $1 на $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Своп выполнен"
   },
   "activity_unwrap_failed_description": {
     "message": "Ошибка развертывания"
@@ -1094,9 +1089,6 @@
   },
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
-  },
-  "addDevice": {
-    "message": "Синхронизировать с мобильным устройством"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
@@ -1224,6 +1216,9 @@
   },
   "add_device_syncing_title": {
     "message": "Выполняется импорт счетов"
+  },
+  "add_device_try_again": {
+    "message": "Повторить попытку"
   },
   "add_device_validating_desc": {
     "message": "Установление безопасного зашифрованного соединения с вашим телефоном."
@@ -2014,10 +2009,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Сведения о мосте",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "ДАО"
   },
@@ -2026,9 +2017,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Выберите сумму"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Смотреть на $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Эта транзакция существует в двух сетях. Одна ссылка показывает источник, а другая — пункт назначения после подтверждения транзакции."
@@ -2313,42 +2301,11 @@
   "bridgeSendLoading": {
     "message": "Отправка из исходного блокчейна"
   },
-  "bridgeStatusComplete": {
-    "message": "Завершено",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Не удалось",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "В процессе",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 получено в $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Получение $1 в $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Обменяно $1 на $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Обменивается $1 на $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Подозрительный"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Подозрительный токен"
-  },
-  "bridgeTo": {
-    "message": "Мост к"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 — вредоносный токен."
@@ -2364,56 +2321,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Нет токенов, соответствующих «$1»"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Транзакция $1 из 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Передано через мост"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Создание моста"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Обратитесь в"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Поддержка MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Прошло больше 3 часов?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Одноразовый код"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Статус"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Обмен выполнен"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Обменивается"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Отметка времени"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 в $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 на",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Итого платы за газ"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Вы получили"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Вы отправили"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Использовать разрешенный максимум"
@@ -2431,12 +2338,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Требуется минимальный резервный баланс в размере $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Передано через мост"
-  },
-  "bridgedToChain": {
-    "message": "Передано через мост в $1"
   },
   "bridging": {
     "message": "Создание моста"
@@ -2550,9 +2451,6 @@
   },
   "clear": {
     "message": "Очистить"
-  },
-  "clearActivity": {
-    "message": "Очистить данные о действиях и одноразовых номерах"
   },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -3204,9 +3102,6 @@
   "decimal": {
     "message": "Число десятичных знаков токена"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Число десятичных знаков должно быть не менее 0, но не более 36."
-  },
   "decrypt": {
     "message": "Расшифровать"
   },
@@ -3463,10 +3358,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Адрес получения"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "Направление Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Подробности"
@@ -5503,10 +5394,6 @@
     "message": "Детали доступного для получения бонуса",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Конвертировать $1 в mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Детали бонуса",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5809,9 +5696,6 @@
   "networksSmallCase": {
     "message": "сети"
   },
-  "nevermind": {
-    "message": "Неважно"
-  },
   "new": {
     "message": "Новые!"
   },
@@ -5889,14 +5773,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Автоопределение NFT включено"
   },
-  "nftBought": {
-    "message": "Куплено $1"
-  },
   "nftEmptyDescription": {
     "message": "Существует целый мир NFT. Начните собирать свою коллекцию уже сегодня."
-  },
-  "nftMinted": {
-    "message": "Сминчено $1"
   },
   "nftOptions": {
     "message": "Опционы NFT"
@@ -7075,9 +6953,6 @@
   "perpsDateYesterday": {
     "message": "Вчера"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Оплаченные перпы"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Сбой моста"
   },
@@ -7736,10 +7611,6 @@
   "perpsWithdraw": {
     "message": "Вывести средства"
   },
-  "perpsWithdrawActivityTitle": {
-    "message": "Вывод из перпов",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
-  },
   "perpsWithdrawEstimatedTime": {
     "message": "Предполагаемое время"
   },
@@ -8129,9 +8000,6 @@
     "message": "Истекает через $1 с",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Что-то пошло не так при сканировании QR-кода. Сгенерируйте новый, чтобы попробовать еще раз."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Этот QR-код предназначен для другой транзакции. Отмените и повторите попытку, предварительно отсканировав QR-код, показанный в MetaMask, с помощью своего аппаратного кошелька.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8196,6 +8064,9 @@
   },
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Нет доступных токенов"
   },
   "rank": {
     "message": "Рейтинг"
@@ -8409,9 +8280,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Операция выполнена."
   },
-  "retryTransaction": {
-    "message": "Повторить транзакцию"
-  },
   "reusedTokenNameWarning": {
     "message": "В токене здесь используется символ другого токена, который вы отслеживаете. Это может запутать или ввести в заблуждение."
   },
@@ -8465,10 +8333,6 @@
   },
   "revokePermission": {
     "message": "Отозвать разрешение"
-  },
-  "revokePermissionTitle": {
-    "message": "Удалить разрешение для $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Вы отзываете у кого-то разрешение тратить токены с вашего счета."
@@ -8940,14 +8804,6 @@
   "sent": {
     "message": "Отправлено"
   },
-  "sentSpecifiedTokens": {
-    "message": "Отправлено $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Отправлено $1 как $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
@@ -8956,10 +8812,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Запрос на вывод средств"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Одобрить $1 без ограничений по расходам",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Настроить",
@@ -9662,9 +9514,6 @@
   },
   "sign": {
     "message": "Подписать"
-  },
-  "signatureRequest": {
-    "message": "Запрос подписи"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "NFT отобразится в Вашем кошельке, когда ставка будет принята."
@@ -10476,10 +10325,6 @@
   "swapDecentralizedExchange": {
     "message": "Децентрализованная биржа"
   },
-  "swapDetailsTitle": {
-    "message": "Сведения о свопе",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "Прямой контракт"
   },
@@ -10684,10 +10529,6 @@
   "swapTokenNotAvailable": {
     "message": "Своп токена в этом регионе недоступен"
   },
-  "swapTokenToToken": {
-    "message": "Выполнить своп $1 на $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Обменять токены"
   },
@@ -10751,6 +10592,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
+  },
+  "syncAccounts": {
+    "message": "Синхронизировать с мобильным устройством"
   },
   "syncing": {
     "message": "Синхронизируется..."
@@ -10959,10 +10803,6 @@
   "transactionIncludesTypes": {
     "message": "Эта транзакция включает: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Эта транзакция была защищена. Мы отменили ее, чтобы предотвратить непредвиденную потерю средств.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Настройки транзакции"
   },
@@ -10971,10 +10811,6 @@
   },
   "transactionSubmitted": {
     "message": "Транзакция отправлена"
-  },
-  "transactionTotalGasFee": {
-    "message": "Итого платы за газ",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Транзакции"
@@ -11300,9 +11136,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Просмотр сведений"
   },
   "viewOnBlockExplorer": {
     "message": "Просмотр в проводнике блоков"

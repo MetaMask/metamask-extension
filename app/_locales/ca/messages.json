@@ -178,9 +178,6 @@
   "decimal": {
     "message": "Decimals de precisió"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
-  },
   "delete": {
     "message": "Suprimeix"
   },
@@ -340,9 +337,6 @@
   "networks": {
     "message": "Xarxes"
   },
-  "nevermind": {
-    "message": "No importa"
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
@@ -496,9 +490,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signatureRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "signed": {
     "message": "Signat"

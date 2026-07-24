@@ -80,10 +80,8 @@ export const MetametricsToggleItem = () => {
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            /* eslint-disable @typescript-eslint/naming-convention */
             [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
             [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            /* eslint-enable @typescript-eslint/naming-convention */
             location: 'Settings',
           })
           .build(),

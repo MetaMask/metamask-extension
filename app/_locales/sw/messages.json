@@ -175,9 +175,6 @@
   "decimal": {
     "message": "Desimali za Usahihi"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
-  },
   "delete": {
     "message": "Futa"
   },
@@ -333,9 +330,6 @@
   },
   "networks": {
     "message": "Mitandao"
-  },
-  "nevermind": {
-    "message": "Usijali"
   },
   "newAccountNumberName": {
     "message": "Akaunti $1",
@@ -493,9 +487,6 @@
   },
   "sign": {
     "message": "Ingia kwenye akaunti"
-  },
-  "signatureRequest": {
-    "message": "Ombi la Saini"
   },
   "signed": {
     "message": "Imesainiwa"

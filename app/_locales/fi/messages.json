@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Tarkkuusdesimaalit"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
   "delete": {
     "message": "Poista"
   },
@@ -352,9 +349,6 @@
   "networks": {
     "message": "Verkot"
   },
-  "nevermind": {
-    "message": "Antaa olla"
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
@@ -508,9 +502,6 @@
   },
   "sign": {
     "message": "Allekirjoita"
-  },
-  "signatureRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "signed": {
     "message": "Allekirjoitettu"

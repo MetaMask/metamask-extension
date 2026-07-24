@@ -33,7 +33,7 @@ export function getSmartTransactionsControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'TransactionController:getNonceLock',
       'TransactionController:getTransactions',
-      'TransactionController:updateTransaction',
+      'TransactionController:failTransaction',
     ],
     events: [
       'NetworkController:stateChange',

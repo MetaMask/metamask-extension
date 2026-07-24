@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -13,6 +13,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import RevealSeedPage from './reveal-seed';
 
@@ -597,7 +598,6 @@ describe('Reveal Seed Page', () => {
           category: MetaMetricsEventCategory.Keys,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           screen: 'QUIZ_INTRODUCTION_SCREEN',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
@@ -721,6 +721,10 @@ describe('Reveal Seed Page', () => {
       });
 
       renderWithProvider(<RevealSeedPage />, mockStore);
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith({

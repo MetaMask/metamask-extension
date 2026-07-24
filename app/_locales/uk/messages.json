@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Знаків після коми"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Кількість розрядів після коми: від 0 до 36."
-  },
   "delete": {
     "message": "Видалити"
   },
@@ -352,9 +349,6 @@
   "networks": {
     "message": "Мережі"
   },
-  "nevermind": {
-    "message": "Не зважати"
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"
@@ -511,9 +505,6 @@
   },
   "sign": {
     "message": "Підписати"
-  },
-  "signatureRequest": {
-    "message": "Запит підпису"
   },
   "signed": {
     "message": "Підписано"

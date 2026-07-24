@@ -185,9 +185,6 @@
   "decimal": {
     "message": "دقة بالكسور العشرية"
   },
-  "decimalsMustZerotoTen": {
-    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -353,9 +350,6 @@
   "networks": {
     "message": "الشبكات"
   },
-  "nevermind": {
-    "message": "لا يهم"
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
@@ -512,9 +506,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"

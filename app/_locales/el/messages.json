@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Επιλογές λογαριασμού"
   },
-  "accountPermissionToast": {
-    "message": "Ενημέρωση αδειών λογαριασμού"
-  },
   "accountSelectionRequired": {
     "message": "Πρέπει να επιλέξετε έναν λογαριασμό!"
   },
@@ -1005,12 +1002,10 @@
     "message": "Η ανταλλαγή απέτυχε"
   },
   "activity_swap_pending_title": {
-    "message": "Ανταλλαγή $1 με $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Ανταλλαγή"
   },
   "activity_swap_success_title": {
-    "message": "Ανταλλάχθηκε $1 με $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Ανταλλάχθηκε"
   },
   "activity_unwrap_failed_description": {
     "message": "Η αποδέσμευση απέτυχε"
@@ -1094,9 +1089,6 @@
   },
   "addCustomToken": {
     "message": "Προσθήκη προσαρμοσμένου token"
-  },
-  "addDevice": {
-    "message": "Συγχρονισμός με κινητό"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
@@ -1224,6 +1216,9 @@
   },
   "add_device_syncing_title": {
     "message": "Εισαγωγή λογαριασμών"
+  },
+  "add_device_try_again": {
+    "message": "Προσπαθήστε ξανά"
   },
   "add_device_validating_desc": {
     "message": "Δημιουργία ασφαλούς, κρυπτογραφημένης σύνδεσης με το τηλέφωνό σας."
@@ -1529,7 +1524,7 @@
     "message": "Όλα τα δίκτυα"
   },
   "allPermissions": {
-    "message": "Συνδέσεις με αποκεντρωμένες εφαρμογές (Dapps)"
+    "message": "Συνδέσεις με Dapp"
   },
   "allPopularNetworks": {
     "message": "Όλα τα δημοφιλή δίκτυα"
@@ -2014,10 +2009,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Θα πρέπει να επιβεβαιώσετε 2 συναλλαγές στο πορτοφόλι υλικού σας:"
   },
-  "bridgeDetailsTitle": {
-    "message": "Λεπτομέρειες διασύνδεσης",
-    "description": "Title for the modal showing details about a bridge transaction."
-  },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
   },
@@ -2026,9 +2017,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Πληκτρολογήστε το ποσό"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Προβολή σε $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Αυτή η συναλλαγή πραγματοποιείται σε δύο δίκτυα. Ένας σύνδεσμος εμφανίζει το δίκτυο προέλευσης και ο άλλος το δίκτυο προορισμού μετά την επιβεβαίωση."
@@ -2313,42 +2301,11 @@
   "bridgeSendLoading": {
     "message": "Αποστολή από το δίκτυο προέλευσης"
   },
-  "bridgeStatusComplete": {
-    "message": "Ολοκληρώθηκε",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Απέτυχε",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Σε εξέλιξη",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "Λάβατε $1 στο $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Λήψη $1 στο $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Ανταλλάξατε $1 για $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Ανταλλαγή $1 για $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Ύποπτο"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Ύποπτο token"
-  },
-  "bridgeTo": {
-    "message": "Διασύνδεση προς"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "Το $1 είναι κακόβουλο token."
@@ -2364,56 +2321,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Κανένα token δεν ταιριάζει με το “$1”"
-  },
-  "bridgeTransactionProgress": {
-    "message": "Συναλλαγή $1 από 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Έγινε διασύνδεση"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Διασύνδεση"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Επικοινωνήστε με την"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Υποστήριξη του MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Έχουν περάσει πάνω από 3 ώρες;"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Κατάσταση"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Έγινε ανταλλαγή"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Ανταλλαγή"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Χρονοσφραγίδα"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 στις $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 στο",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Σύνολο τέλους συναλλαγής"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Λάβατε"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Στείλατε"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Χρήση μέγιστου επιτρεπόμενου"
@@ -2431,12 +2338,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Απαιτείται ελάχιστο υπόλοιπο ασφαλείας $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Έγινε διασύνδεση"
-  },
-  "bridgedToChain": {
-    "message": "Έγινε διασύνδεση με το $1"
   },
   "bridging": {
     "message": "Διασύνδεση"
@@ -2550,9 +2451,6 @@
   },
   "clear": {
     "message": "Διαγραφή"
-  },
-  "clearActivity": {
-    "message": "Εκκαθάριση δραστηριότητας και «nonce» δεδομένων"
   },
   "clearActivityDescription": {
     "message": "Επαναφέρει το nonce του λογαριασμού και διαγράφει τα δεδομένα από την καρτέλα δραστηριότητας στο πορτοφόλι σας. Μόνο ο τρέχων λογαριασμός και το δίκτυο θα επηρεαστούν. Δεν θα υπάρξει καμία αλλαγή στα υπόλοιπα ή στις εισερχόμενες συναλλαγές σας."
@@ -3141,7 +3039,7 @@
     "message": "υποστήριξη πελατών"
   },
   "dappConnections": {
-    "message": "Συνδέσεις με Αποκεντρωμένες Εφαρμογές (Dapps)"
+    "message": "Συνδέσεις με Dapp"
   },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"
@@ -3203,9 +3101,6 @@
   },
   "decimal": {
     "message": "Δεκαδικά Ψηφία Ακριβείας"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Τα δεκαδικά ψηφία πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "decrypt": {
     "message": "Αποκρυπτογράφηση"
@@ -3464,10 +3359,6 @@
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Διεύθυνση λήψης"
   },
-  "destinationTransactionIdLabel": {
-    "message": "Αναγνωριστικό συναλλαγής προορισμού Tx",
-    "description": "Label for the destination transaction ID field."
-  },
   "details": {
     "message": "Λεπτομέρειες"
   },
@@ -3653,7 +3544,7 @@
     "message": "Άγνωστος χρόνος επεξεργασίας"
   },
   "editInPortfolio": {
-    "message": "Επεξεργασία στο Portfolio"
+    "message": "Επεξεργασία στο Χαρτοφυλάκιο"
   },
   "editNetwork": {
     "message": "Επεξεργασία δικτύου"
@@ -5123,7 +5014,7 @@
     "message": "Διαχείριση θεσμικών πορτοφολιών"
   },
   "manageInstitutionalWalletsDescription": {
-    "message": "Ενεργοποιήστε το για τη χρήση συστημικών πορτοφολιών."
+    "message": "Ενεργοποιήστε το για τη χρήση θεσμικών πορτοφολιών."
   },
   "manageNetworksMenuHeading": {
     "message": "Διαχείριση δικτύων"
@@ -5153,7 +5044,7 @@
     "message": "Polycons"
   },
   "max": {
-    "message": "Μεγ"
+    "message": "Μέγ."
   },
   "maxBaseFee": {
     "message": "Μέγιστο βασικό τέλος"
@@ -5503,10 +5394,6 @@
     "message": "Πληροφορίες για το μπόνους προς εξαργύρωση",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Μετατρέψτε $1 σε mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Πληροφορίες για το μπόνους",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5809,9 +5696,6 @@
   "networksSmallCase": {
     "message": "δίκτυα"
   },
-  "nevermind": {
-    "message": "Δεν πειράζει"
-  },
   "new": {
     "message": "Νέα!"
   },
@@ -5889,14 +5773,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Ενεργοποιήθηκε η αυτόματη ανίχνευση NFT"
   },
-  "nftBought": {
-    "message": "Αγοράσατε $1"
-  },
   "nftEmptyDescription": {
     "message": "Υπάρχει ένας ολόκληρος κόσμος NFT εκεί έξω. Ξεκινήστε τη συλλογή σας σήμερα."
-  },
-  "nftMinted": {
-    "message": "Δημιουργήσατε $1"
   },
   "nftOptions": {
     "message": "Επιλογές για NFT"
@@ -6067,7 +5945,7 @@
     "message": "Ελήφθη"
   },
   "notificationItemReceivedFrom": {
-    "message": "Ελήφθη από"
+    "message": "Λάβατε από"
   },
   "notificationItemSent": {
     "message": "Εστάλη"
@@ -6306,7 +6184,7 @@
     "message": "Έχω ήδη ένα πορτοφόλι"
   },
   "onboardingLoginFooter": {
-    "message": "Συνεχίζοντας, αποδέχομαι την $1 και τους $2 του MetaMask"
+    "message": "Συνεχίζοντας, αποδέχομαι τους $1 και τη $2 του MetaMask"
   },
   "onboardingLoginFooterPrivacyNotice": {
     "message": "Δήλωση απορρήτου"
@@ -6343,7 +6221,7 @@
     "message": "Χρησιμοποιήστε την Μυστική Φράση Ανάκτησης"
   },
   "onboardingSrpImport": {
-    "message": "Εισαγωγή με τη Μυστική Φράση Ανάκτησης"
+    "message": "Εισαγωγή με χρήση της Μυστικής Φράσης Ανάκτησης"
   },
   "onboardingSrpImportError": {
     "message": "Χρησιμοποιήστε μόνο πεζά γράμματα, ελέγξτε την ορθογραφία σας και τοποθετήστε τις λέξεις με τη σωστή σειρά."
@@ -6652,7 +6530,7 @@
     "message": "Άδεια πρόσβασης από"
   },
   "permissionRequested": {
-    "message": "Αιτείται τώρα"
+    "message": "Υποβλήθηκε αίτημα τώρα"
   },
   "permissionRequestedForAccounts": {
     "message": "Ζητήθηκε τώρα για $1",
@@ -6722,7 +6600,7 @@
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
-    "message": "Δημιουργία τυχαίων κλειδιών μοναδικών σε αυτό το $1.",
+    "message": "Παραγωγή τυχαίων κλειδιών μοναδικών στο $1.",
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
@@ -7075,9 +6953,6 @@
   "perpsDateYesterday": {
     "message": "Χθες"
   },
-  "perpsDepositActivityTitle": {
-    "message": "Χρηματοδοτούμενα perpetual συμβόλαια"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Η μεταφορά απέτυχε"
   },
@@ -7216,7 +7091,7 @@
     "message": "Διατήρηση θέσεων"
   },
   "perpsLearnBasics": {
-    "message": "Μάθετε τα βασικά για τα perpetual συμβόλαια"
+    "message": "Μάθετε τα βασικά για τα συμβόλαια αορίστου διάρκειας"
   },
   "perpsLearnMore": {
     "message": "Μάθε περισσότερα"
@@ -7725,7 +7600,7 @@
     "message": "Να πώς λειτουργούν."
   },
   "perpsTutorialWhatArePerpsTitle": {
-    "message": "Τι είναι τα perps;"
+    "message": "Τι σημαίνει «perp»;"
   },
   "perpsUnrealizedPnl": {
     "message": "Μη οριστικοποιημένα κέρδη & ζημίες"
@@ -7735,10 +7610,6 @@
   },
   "perpsWithdraw": {
     "message": "Ανάληψη"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Ανάληψη από Perps",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Εκτιμώμενος χρόνος"
@@ -8129,9 +8000,6 @@
     "message": "Λήγει σε $1δ",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Κάτι πήγε στραβά κατά τη σάρωση του κωδικού QR. Δημιουργήστε έναν νέο και προσπαθήστε ξανά."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Αυτός ο κωδικός QR αφορά διαφορετική συναλλαγή. Ακυρώστε και προσπαθήστε ξανά, διασφαλίζοντας ότι πρώτα θα σαρώσετε τον κωδικό QR στο MetaMask με το πορτοφόλι υλικού σας.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8197,6 +8065,9 @@
   "quotedTotalCost": {
     "message": "Συνολικό κόστος: $1"
   },
+  "rampsNoTokensAvailable": {
+    "message": "Δεν υπάρχουν διαθέσιμα tokens"
+  },
   "rank": {
     "message": "Κατάταξη"
   },
@@ -8237,7 +8108,7 @@
     "message": "Επεξεργασία παραλήπτη"
   },
   "recipientPlaceholderText": {
-    "message": "Πληκτρολογήστε ή επικολλήστε μια διεύθυνση ή ένα όνομα"
+    "message": "Εισαγάγετε διεύθυνση ή όνομα"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"
@@ -8409,9 +8280,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Η λειτουργία ολοκληρώθηκε με επιτυχία."
   },
-  "retryTransaction": {
-    "message": "Επανάληψη συναλλαγής"
-  },
   "reusedTokenNameWarning": {
     "message": "Ένα token εδώ επαναχρησιμοποιεί ένα σύμβολο από ένα άλλο token που παρακολουθείτε, αυτό μπορεί να προκαλέσει σύγχυση ή να είναι παραπλανητικό."
   },
@@ -8466,10 +8334,6 @@
   "revokePermission": {
     "message": "Ανάκληση άδειας"
   },
-  "revokePermissionTitle": {
-    "message": "Κατάργηση $1 άδειας",
-    "description": "The token symbol that is being revoked"
-  },
   "revokeSimulationDetailsDesc": {
     "message": "Καταργείτε την άδεια πρόσβασης κάποιου ατόμου να χρησιμοποιεί tokens από τον λογαριασμό σας."
   },
@@ -8477,7 +8341,7 @@
     "message": "Ανάκληση εγκρίσεων token"
   },
   "reward": {
-    "message": "Επιβράβευση"
+    "message": "Ανταμοιβές"
   },
   "rewardsAuthFailDescription": {
     "message": "Παρουσιάστηκε άγνωστο σφάλμα κατά την ταυτοποίηση του λογαριασμού με το πρόγραμμα ανταμοιβών. Προσπαθήστε ξανά αργότερα."
@@ -8940,14 +8804,6 @@
   "sent": {
     "message": "Εστάλη"
   },
-  "sentSpecifiedTokens": {
-    "message": "Εστάλη $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Εστάλη $1 ως $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
   },
@@ -8956,10 +8812,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Αίτημα ανάληψης"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Έγκριση $1 χωρίς όριο δαπανών",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Διαμόρφωση",
@@ -9663,9 +9515,6 @@
   "sign": {
     "message": "Υπογραφή"
   },
-  "signatureRequest": {
-    "message": "Αίτημα υπογραφής"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "Το NFT θα εμφανιστεί στο πορτοφόλι σας, όταν η προσφορά γίνει αποδεκτή."
   },
@@ -10090,7 +9939,7 @@
     "message": "Όριο δαπανών"
   },
   "spendingCaps": {
-    "message": "Ανώτατα όριο δαπανών"
+    "message": "Ανώτατο όριο δαπανών"
   },
   "srpAlreadyImportedError": {
     "message": "Έχει ήδη γίνει εισαγωγή αυτής της Μυστικής Φράσης Ανάκτησης."
@@ -10202,7 +10051,7 @@
     "message": "Όποιος ισχυριστεί ότι χρειάζεται τη Μυστική Φράση Ανάκτησης, σας λέει ψέματα. Αν την μοιραστείτε μαζί του, θα κλέψει τα περιουσιακά σας στοιχεία."
   },
   "srpSecurityQuizQuestionTwoRightAnswerTitle": {
-    "message": "Σωστά! Το να μοιράζεστε τη Μυστική Φράση Ανάκτησης δεν είναι καλή ιδέα"
+    "message": "Η Μυστική Φράση Ανάκτησης σάς δίνει πλήρη πρόσβαση στο πορτοφόλι, τα κεφάλαια και τους λογαριασμούς σας."
   },
   "srpSecurityQuizQuestionTwoWrongAnswer": {
     "message": "Πρέπει να τους την δώσετε"
@@ -10414,7 +10263,7 @@
     "message": "Παρέχεται"
   },
   "support": {
-    "message": "την Υποστήριξη"
+    "message": "Υποστήριξη"
   },
   "supportCenter": {
     "message": "Επισκεφθείτε το Κέντρο Υποστήριξής μας"
@@ -10475,10 +10324,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "Αποκεντρωμένη ανταλλαγή"
-  },
-  "swapDetailsTitle": {
-    "message": "Λεπτομέρειες ανταλλαγής",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Άμεσο συμβόλαιο"
@@ -10684,10 +10529,6 @@
   "swapTokenNotAvailable": {
     "message": "Το token δεν είναι διαθέσιμο για ανταλλαγή σε αυτή την περιοχή"
   },
-  "swapTokenToToken": {
-    "message": "Ανταλλαγή $1 έως $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Ανταλλαγή tokens"
   },
@@ -10751,6 +10592,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Το σύμβολο πρέπει να αποτελείται από 11 ή λιγότερους χαρακτήρες."
+  },
+  "syncAccounts": {
+    "message": "Συγχρονισμός με κινητό"
   },
   "syncing": {
     "message": "Γίνεται συγχρονισμός..."
@@ -10959,10 +10803,6 @@
   "transactionIncludesTypes": {
     "message": "Αυτή η συναλλαγή περιλαμβάνει: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Αυτή η συναλλαγή ήταν προστατευμένη. Την ακυρώσαμε για να αποτρέψουμε απώλεια κεφαλαίων.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
@@ -10971,10 +10811,6 @@
   },
   "transactionSubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε"
-  },
-  "transactionTotalGasFee": {
-    "message": "Σύνολο τελών συναλλαγών",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Συναλλαγές"
@@ -11173,7 +11009,7 @@
     "message": "Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά σε "
   },
   "unlockToReveal": {
-    "message": "Ξεκλειδώστε για να εμφανιστεί",
+    "message": "Ξεκλειδώστε για εμφάνιση",
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
@@ -11246,7 +11082,7 @@
     "message": "Χρησιμοποιήστε διαφορετικό τρόπο σύνδεσης"
   },
   "useMultiAccountBalanceChecker": {
-    "message": "Αιτήματα υπολοίπου μαζικών λογαριασμών"
+    "message": "Ομαδοποιημένα αιτήματα υπολοίπου λογαριασμών"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "Γρηγορότερες ενημερώσεις υπολοίπου με ομαδοποίηση αιτημάτων υπολοίπου λογαριασμού. Αυτό μας επιτρέπει να συγκεντρώνουμε τα υπόλοιπα των λογαριασμών σας μαζί, ώστε να λαμβάνετε ταχύτερες ενημερώσεις για βελτιωμένη εμπειρία. Όταν αυτή η λειτουργία είναι απενεργοποιημένη, τα τρίτα μέρη ενδέχεται να είναι λιγότερο πιθανό να συσχετίσουν τους λογαριασμούς σας μεταξύ τους."
@@ -11300,9 +11136,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewDetails": {
-    "message": "Προβολή λεπτομερειών"
   },
   "viewOnBlockExplorer": {
     "message": "Προβολή στο block explorer"
