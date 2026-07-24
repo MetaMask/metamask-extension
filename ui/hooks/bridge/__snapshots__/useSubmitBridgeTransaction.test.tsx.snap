@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction 1`] = `
+exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction 1`] = `
 [
   [
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -23,9 +23,21 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
       "estimatedProcessingTimeInSeconds": 15,
       "gasFee": {
-        "amount": "12",
-        "usd": "12",
-        "valueInCurrency": "12",
+        "effective": {
+          "amount": "12",
+          "usd": "12",
+          "valueInCurrency": "12",
+        },
+        "max": {
+          "amount": "12",
+          "usd": "12",
+          "valueInCurrency": "12",
+        },
+        "total": {
+          "amount": "12",
+          "usd": "12",
+          "valueInCurrency": "12",
+        },
       },
       "quote": {
         "bridgeId": "lifi",
@@ -129,11 +141,6 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
         "usd": "12",
         "valueInCurrency": "12",
       },
-      "totalMaxNetworkFee": {
-        "amount": "12",
-        "usd": "12",
-        "valueInCurrency": "12",
-      },
       "totalNetworkFee": {
         "amount": "12",
         "usd": "12",
@@ -162,7 +169,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       "token_symbol_destination": "USDC",
       "token_symbol_source": "USDC",
       "usd_balance_source": 0,
-      "usd_quoted_gas": 0,
+      "usd_quoted_gas": 12,
       "usd_quoted_return": 12,
       "warnings": [],
     },
@@ -174,7 +181,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
 ]
 `;
 
-exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction with no approval 1`] = `
+exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction executes EVM bridge transaction with no approval 1`] = `
 [
   [
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",

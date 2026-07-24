@@ -13,8 +13,8 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import * as environmentTypeUtils from '../../../shared/lib/environment-type';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import {
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -26,7 +26,7 @@ const mockUseLocation = jest.fn();
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
 
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-const AWAITING_SIGNATURES_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+const HARDWARE_WALLET_SIGNATURES_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
 
 const locationToken = {
   symbol: 'USDC',
@@ -312,19 +312,22 @@ describe('useBridgeNavigation', () => {
   });
 
   describe('navigateToHwSigningPage', () => {
-    it('navigates to the awaiting signatures route', () => {
+    it('navigates to the hardware wallet signatures route', () => {
       const { result } = renderUseBridgeNavigation();
 
       act(() => {
         result.current.navigateToHwSigningPage();
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(AWAITING_SIGNATURES_PATH, {
-        state: {
-          token: locationToken,
-          bridgeState: locationBridgeState,
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        HARDWARE_WALLET_SIGNATURES_PATH,
+        {
+          state: {
+            token: locationToken,
+            bridgeState: locationBridgeState,
+          },
         },
-      });
+      );
     });
   });
 

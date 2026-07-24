@@ -20,12 +20,13 @@ import {
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -62,8 +63,66 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
      * page after transaction submission.
      */
     stayOnHomePage?: boolean;
+    /**
+     * Prepared sendBundle transaction metadata for hardware-wallet signing on
+     * the shared signing page.
+     */
+    sendBundle?: {
+      txMeta: TransactionMeta;
+      needsTwoConfirmations: boolean;
+      returnRoute?: string;
+      /**
+       * The pending approval id captured at navigation time. The signing page
+       * refuses to submit unless this id is still present in
+       * `state.metamask.pendingApprovals` — prevents signing a stale txMeta
+       * after back/forward navigation or stale nav state. Wallet-safety guard
+       * ported from mobile's `useHardwareWalletSubmit.submitSendFlow`.
+       */
+      approvalRequestId: string;
+      /**
+       * The display amount being sent (e.g. "1.5"), used to label the send
+       * step. Derived in the confirmations flow from the same source the send
+       * screen uses, so the HW signing label matches what the user saw.
+       */
+      sendAmount?: string;
+      /**
+       * The symbol of the token being sent (e.g. "ETH" or "USDC"), used to
+       * label the send step.
+       */
+      sendSymbol?: string;
+      /**
+       * The symbol of the token used to pay the network fee (always the
+       * chain's native currency, e.g. "ETH"). Used to label the gas-payment
+       * step. Distinct from `sendSymbol` for ERC20 sends (send USDC, pay gas
+       * in ETH).
+       */
+      gasSymbol?: string;
+    } | null;
   };
 };
+
+const clearSendBundleIfPresent = (state: BridgeNavigationOptions['state']) =>
+  Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {};
+
+/**
+ * Builds a "cleared" bridge navigation state: preserves any extra props from
+ * `baseState` while resetting `bridgeState`, `token`, and any existing
+ * `sendBundle` to null and setting `stayOnHomePage` to the given value.
+ *
+ * @param baseState - The base navigation state to spread (extra props pass through).
+ * @param stayOnHomePage - Whether the user should be kept on the home page.
+ * @returns The cleared navigation state.
+ */
+const clearedBridgeState = (
+  baseState: BridgeNavigationOptions['state'],
+  stayOnHomePage: boolean,
+): BridgeNavigationOptions['state'] => ({
+  ...baseState,
+  bridgeState: null,
+  token: null,
+  ...clearSendBundleIfPresent(baseState),
+  stayOnHomePage,
+});
 
 /**
  * Handles navigation between bridge-related pages, and enforces a single source of truth
@@ -90,15 +149,10 @@ export const useBridgeNavigation = () => {
   const resetLocationState = useCallback(
     (to: To = { pathname }, stayOnHomePage = false) => {
       navigate(to, {
-        state: {
-          ...state,
-          bridgeState: null,
-          token: null,
-          stayOnHomePage,
-        },
+        state: clearedBridgeState(state, stayOnHomePage),
       });
     },
-    [state, pathname],
+    [navigate, state, pathname],
   );
 
   /**
@@ -124,7 +178,7 @@ export const useBridgeNavigation = () => {
         },
       );
     },
-    [search, pathname, state],
+    [navigate, search, pathname, state],
   );
 
   /**
@@ -153,8 +207,7 @@ export const useBridgeNavigation = () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
             // @ts-expect-error once @metamask/bridge-controller is updated
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: getEnvironmentType(),
+            environment_type: getEnvironmentType(), // eslint-disable-line @typescript-eslint/naming-convention
           }),
         );
       navigate(
@@ -166,12 +219,13 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
+            ...clearSendBundleIfPresent(state),
           },
           replace: !isEntrypoint,
         },
       );
     },
-    [state],
+    [dispatch, navigate, state],
   );
 
   /**
@@ -219,26 +273,34 @@ export const useBridgeNavigation = () => {
   /**
    * Navigates to the hw transaction signing page.
    */
-  const navigateToHwSigningPage = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
-      state,
-    });
-  }, [state]);
+  const navigateToHwSigningPage = useCallback(
+    (nextState: Partial<BridgeNavigationOptions['state']> = {}) => {
+      const hasSendBundleState = Object.hasOwn(nextState, 'sendBundle');
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
+        // For the sendBundle (send) flow, the signing page replaces the
+        // /confirm-transaction entry so that cancelling returns the user
+        // cleanly to the send flow (and back-button -> home) instead of
+        // leaving a stale confirmation entry in the history stack.
+        ...(hasSendBundleState ? { replace: true } : {}),
+        state: {
+          ...state,
+          ...clearSendBundleIfPresent(state),
+          ...nextState,
+        },
+      });
+    },
+    [navigate, state],
+  );
 
   /**
    * Navigates to the activity page and clears the navigation state.
    */
   const navigateToActivityPage = useCallback(() => {
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: {
-        ...state,
-        bridgeState: null,
-        token: null,
-        stayOnHomePage: true,
-      },
+      state: clearedBridgeState(state, true),
       replace: true,
     });
-  }, [state]);
+  }, [navigate, state]);
 
   const navigateToDefaultRoute = useCallback(async () => {
     dispatch(resetBridgeController());
@@ -250,7 +312,7 @@ export const useBridgeNavigation = () => {
     } else {
       resetLocationState(DEFAULT_ROUTE, true);
     }
-  }, [search, resetLocationState]);
+  }, [dispatch, search, resetLocationState]);
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(
