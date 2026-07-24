@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Takas başarısız oldu"
   },
-  "activity_swap_pending_title": {
-    "message": "Takas ediliyor"
-  },
-  "activity_swap_success_title": {
-    "message": "Takas edildi"
-  },
   "activity_unwrap_failed_description": {
     "message": "Çözme başarısız oldu"
   },
@@ -8073,8 +8067,69 @@
   "quotedTotalCost": {
     "message": "Toplam maliyet: $1"
   },
+  "rampsBestRate": {
+    "message": "En iyi oran"
+  },
+  "rampsBuyToken": {
+    "message": "$1 Al",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Sağlayıcı değiştirin."
+  },
+  "rampsMostReliable": {
+    "message": "En güvenilir"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Kullanılabilir ödeme yöntemi yok."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Sağlayıcı mevcut değil."
+  },
   "rampsNoTokensAvailable": {
     "message": "tokenlar yok"
+  },
+  "rampsOtherOptions": {
+    "message": "Diğer seçenekler"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "iş günü"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "iş günü"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "saat"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "saat"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Anında"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "En fazla"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "dk."
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "dk."
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Daha önce kullanılan"
+  },
+  "rampsProviders": {
+    "message": "Sağlayıcılar"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Teklif alınamadı."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Teklif kullanılamıyor."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Ödeme yöntemi seç"
   },
   "rank": {
     "message": "Sıralama"

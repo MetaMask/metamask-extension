@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Hoán đổi không thành công"
   },
-  "activity_swap_pending_title": {
-    "message": "Đang hoán đổi"
-  },
-  "activity_swap_success_title": {
-    "message": "Đã hoán đổi"
-  },
   "activity_unwrap_failed_description": {
     "message": "Hủy bọc thất bại"
   },
@@ -8073,8 +8067,69 @@
   "quotedTotalCost": {
     "message": "Tổng chi phí: $1"
   },
+  "rampsBestRate": {
+    "message": "Tỷ giá tốt nhất"
+  },
+  "rampsBuyToken": {
+    "message": "Mua $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Thay đổi nhà cung cấp."
+  },
+  "rampsMostReliable": {
+    "message": "Đáng tin cậy nhất"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Không có phương thức thanh toán khả dụng."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Hiện không có nhà cung cấp nào."
+  },
   "rampsNoTokensAvailable": {
     "message": "Không có token khả dụng"
+  },
+  "rampsOtherOptions": {
+    "message": "Tùy chọn khác"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Ngay lập tức"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Ít hơn"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "phút"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "phút"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Đã sử dụng trước đây"
+  },
+  "rampsProviders": {
+    "message": "Nhà cung cấp"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Tìm nạp báo giá không thành công."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Không có báo giá."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Chọn phương thức thanh toán"
   },
   "rank": {
     "message": "Xếp hạng"

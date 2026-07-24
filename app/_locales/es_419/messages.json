@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Error al canjear"
   },
-  "activity_swap_pending_title": {
-    "message": "Canjeando"
-  },
-  "activity_swap_success_title": {
-    "message": "Se canjeó"
-  },
   "activity_unwrap_failed_description": {
     "message": "Error al desenvolver"
   },
@@ -8073,8 +8067,69 @@
   "quotedTotalCost": {
     "message": "Costo total: $1"
   },
+  "rampsBestRate": {
+    "message": "Mejor tarifa"
+  },
+  "rampsBuyToken": {
+    "message": "Comprar $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Cambiar de proveedor."
+  },
+  "rampsMostReliable": {
+    "message": "Más confiable"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "No hay métodos de pago disponibles."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "No hay proveedores disponibles."
+  },
   "rampsNoTokensAvailable": {
     "message": "No hay tokens disponibles"
+  },
+  "rampsOtherOptions": {
+    "message": "Otras opciones"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "día hábil"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "días hábiles"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "hora"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "horas"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instantáneo"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Menos de"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "min"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Usado anteriormente"
+  },
+  "rampsProviders": {
+    "message": "Proveedores"
+  },
+  "rampsQuoteFetchError": {
+    "message": "No se pudo obtener la cotización."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Cotización no disponible."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Seleccionar método de pago"
   },
   "rank": {
     "message": "Rango"
