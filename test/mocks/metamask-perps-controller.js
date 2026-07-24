@@ -189,6 +189,25 @@ function mockGetMaxAllowedAmount({
   return Math.max(0, Math.floor(spendableBalance * leverage * 0.99));
 }
 
+/**
+ * Stub for the dedicated aggregated order-book socket used by
+ * `metamask-controller` when wiring `PerpsStreamBridge`. Avoids constructing
+ * the real Hyperliquid transport under Jest.
+ */
+class MockAggregatedOrderBookConnection {
+  constructor(options) {
+    this.options = options;
+  }
+
+  subscribe(_params) {
+    return () => undefined;
+  }
+
+  close() {
+    return undefined;
+  }
+}
+
 module.exports = {
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
@@ -204,4 +223,5 @@ module.exports = {
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
+  AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };

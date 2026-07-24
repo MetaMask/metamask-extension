@@ -2311,6 +2311,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  perpsOrderBookEnabled: {
+    name: 'perpsOrderBookEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Dark-launched: default OFF in production until rollout.
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.30.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   perpsSlippageConfig2: {
     name: 'perpsSlippageConfig2',
     type: FeatureFlagType.Remote,

@@ -73,6 +73,7 @@ type BridgeOverrides = {
   onConnectivityChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
   isTerminalBackendEnabled?: () => boolean;
+  subscribeAggregatedOrderBook?: jest.Mock;
   emit?: jest.Mock;
 };
 
@@ -89,6 +90,9 @@ function createBridge(overrides: BridgeOverrides = {}) {
   const isConnectionAlive = overrides.isConnectionAlive ?? (() => true);
   const isTerminalBackendEnabled =
     overrides.isTerminalBackendEnabled ?? (() => false);
+  const subscribeAggregatedOrderBook =
+    overrides.subscribeAggregatedOrderBook ??
+    jest.fn().mockReturnValue(jest.fn());
 
   const bridge = new PerpsStreamBridge({
     controller,
@@ -99,6 +103,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
     isConnectionAlive,
     isTerminalBackendEnabled,
+    subscribeAggregatedOrderBook,
     emit,
   });
 
@@ -109,6 +114,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     controllerApi,
     onControllerStateChange,
     onConnectivityChange,
+    subscribeAggregatedOrderBook,
   };
 }
 
@@ -771,6 +777,263 @@ describe('PerpsStreamBridge', () => {
 
       expect(unsub).toHaveBeenCalledTimes(1);
     });
+
+    it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      // Activation starts but blocks on the still-pending init promise.
+      const activation = (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH' });
+
+      // The panel is closed (deactivated) before init resolves.
+      (api.perpsDeactivateOrderBookStream as () => void)();
+
+      // Init finally resolves; the stale continuation must abort instead of
+      // resurrecting the subscription after teardown.
+      resolveInit();
+      await activation;
+
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+    });
+
+    it('still subscribes for a deferred activation that is not deactivated', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      const api = bridge.bridgeApi();
+
+      const activation = (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH' });
+
+      // No deactivation this time — the guard must not suppress a legitimate
+      // activation once init resolves.
+      resolveInit();
+      await activation;
+
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        callback: expect.any(Function),
+      });
+    });
+  });
+
+  describe('perpsActivateOrderBookAggregatedStream / perpsDeactivateOrderBookAggregatedStream', () => {
+    it('subscribes on the dedicated connection and emits on orderBookAggregated channel', async () => {
+      const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          levels?: number;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          mantissa?: 2 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({
+        symbol: 'ETH',
+        levels: 20,
+        nSigFigs: 3,
+        subscriptionId: 'ETH:3::0',
+      });
+
+      // The aggregated stream uses the dedicated connection, never the shared
+      // controller socket.
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+      expect(subscribeAggregatedOrderBook).toHaveBeenCalledWith({
+        symbol: 'ETH',
+        levels: 20,
+        nSigFigs: 3,
+        mantissa: undefined,
+        callback: expect.any(Function),
+        onStatusChange: expect.any(Function),
+      });
+      const callback = subscribeAggregatedOrderBook.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+      callback({ bids: [], asks: [] });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        {
+          bids: [],
+          asks: [],
+        },
+        { subscriptionId: 'ETH:3::0' },
+      );
+    });
+
+    it('emits connection status on the orderBookAggregatedStatus channel', async () => {
+      const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3, subscriptionId: 'ETH:3::0' });
+
+      const { onStatusChange } = subscribeAggregatedOrderBook.mock.calls[0][0];
+      onStatusChange('error');
+      expect(emit).toHaveBeenCalledWith('orderBookAggregatedStatus', 'error', {
+        subscriptionId: 'ETH:3::0',
+      });
+    });
+
+    it('tags emissions with the subscription identity captured at activate time', async () => {
+      const controller = createMockController();
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
+      const { bridge, emit } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({ symbol: 'BTC', nSigFigs: 4, subscriptionId: 'BTC:4::0' });
+
+      const firstCallback = subscribeAggregatedOrderBook.mock.calls[0][0]
+        .callback as (data: unknown) => void;
+
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+          subscriptionId?: string;
+        }) => Promise<void>
+      )({ symbol: 'BTC', nSigFigs: 5, subscriptionId: 'BTC:5::0' });
+
+      // Late packet from the first subscription still carries the old identity.
+      firstCallback({ bids: [{ price: '1' }], asks: [] });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        { bids: [{ price: '1' }], asks: [] },
+        { subscriptionId: 'BTC:4::0' },
+      );
+
+      const secondCallback = subscribeAggregatedOrderBook.mock.calls[1][0]
+        .callback as (data: unknown) => void;
+      secondCallback({ bids: [{ price: '2' }], asks: [] });
+      expect(emit).toHaveBeenCalledWith(
+        'orderBookAggregated',
+        { bids: [{ price: '2' }], asks: [] },
+        { subscriptionId: 'BTC:5::0' },
+      );
+    });
+
+    it('runs independently of the raw order book stream', async () => {
+      const controller = createMockController();
+      const rawUnsub = jest.fn();
+      const aggregatedUnsub = jest.fn();
+      controller.subscribeToOrderBook.mockReturnValue(rawUnsub);
+      const subscribeAggregatedOrderBook = jest
+        .fn()
+        .mockReturnValue(aggregatedUnsub);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      await (
+        api.perpsActivateOrderBookStream as (p: {
+          symbol: string;
+        }) => Promise<void>
+      )({
+        symbol: 'ETH',
+      });
+      await (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3 });
+
+      // Raw stream on the shared socket, aggregated on the dedicated connection.
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(1);
+      expect(subscribeAggregatedOrderBook).toHaveBeenCalledTimes(1);
+      expect(rawUnsub).not.toHaveBeenCalled();
+      expect(aggregatedUnsub).not.toHaveBeenCalled();
+
+      // Tearing down the aggregated stream leaves the raw stream intact.
+      (api.perpsDeactivateOrderBookAggregatedStream as () => void)();
+      expect(aggregatedUnsub).toHaveBeenCalledTimes(1);
+      expect(rawUnsub).not.toHaveBeenCalled();
+    });
+
+    it('does not subscribe when deactivated before init resolves (deferred-init guard)', async () => {
+      const controller = createMockController();
+      const controllerApi = createMockControllerApi();
+      const subscribeAggregatedOrderBook = jest.fn().mockReturnValue(jest.fn());
+      let resolveInit: () => void = () => undefined;
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
+      );
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+        subscribeAggregatedOrderBook,
+      });
+      const api = bridge.bridgeApi();
+
+      const activation = (
+        api.perpsActivateOrderBookAggregatedStream as (p: {
+          symbol: string;
+          nSigFigs?: 2 | 3 | 4 | 5;
+        }) => Promise<void>
+      )({ symbol: 'ETH', nSigFigs: 3 });
+
+      (api.perpsDeactivateOrderBookAggregatedStream as () => void)();
+
+      resolveInit();
+      await activation;
+
+      expect(subscribeAggregatedOrderBook).not.toHaveBeenCalled();
+    });
   });
 
   describe('perpsActivateCandleStream / perpsDeactivateCandleStream', () => {
@@ -785,7 +1048,11 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '1h', duration: '1d' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+        duration: '1d',
+      });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledWith({
         symbol: 'ETH',
@@ -817,13 +1084,19 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '1h' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+      });
       (
         api.perpsDeactivateCandleStream as (p: {
           symbol: string;
           interval: string;
         }) => void
-      )({ symbol: 'ETH', interval: '1h' });
+      )({
+        symbol: 'ETH',
+        interval: '1h',
+      });
 
       jest.advanceTimersByTime(150);
 
@@ -852,12 +1125,18 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'BTC', interval: '1h' });
+      )({
+        symbol: 'BTC',
+        interval: '1h',
+      });
       await (
         api.perpsActivateCandleStream as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ symbol: 'ETH', interval: '4h' });
+      )({
+        symbol: 'ETH',
+        interval: '4h',
+      });
 
       expect(controller.subscribeToCandles).toHaveBeenCalledTimes(2);
 
@@ -1113,7 +1392,9 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ priceSymbols: ['ETH'] });
+      )({
+        priceSymbols: ['ETH'],
+      });
 
       expect(() => bridge.destroy()).not.toThrow();
     });
@@ -1157,7 +1438,9 @@ describe('PerpsStreamBridge', () => {
         api.perpsActivateStreaming as (
           p: Record<string, unknown>,
         ) => Promise<void>
-      )({ priceSymbols: ['ETH'] });
+      )({
+        priceSymbols: ['ETH'],
+      });
 
       expect(() => {
         bridge.destroy();

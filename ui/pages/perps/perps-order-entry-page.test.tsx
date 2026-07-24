@@ -189,7 +189,16 @@ const mockStreamManagerBase = {
   account: { getCachedData: () => null, pushData: jest.fn() },
   markets: { getCachedData: () => [], pushData: jest.fn() },
   prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
-  orderBook: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => null },
+  orderBook: {
+    subscribe: jest.fn(() => jest.fn()),
+    getCachedData: () => null,
+    clearCache: jest.fn(),
+  },
+  orderBookAggregated: {
+    subscribe: jest.fn(() => jest.fn()),
+    getCachedData: () => null,
+    clearCache: jest.fn(),
+  },
   setOptimisticTPSL: jest.fn(),
   clearOptimisticTPSL: jest.fn(),
   pushPositionsWithOverrides: jest.fn(),
@@ -284,6 +293,10 @@ jest.mock('../../hooks/perps/stream', () => ({
     error: null,
     fetchMoreHistory: jest.fn(),
   }),
+  usePerpsLiveOrderBook: () => ({
+    orderBook: null,
+    isInitialLoading: false,
+  }),
 }));
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
@@ -344,6 +357,7 @@ describe('PerpsOrderEntryPage', () => {
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
         perpsSlippageConfig2: { enabled: true, minimumVersion: '0.0.0' },
+        perpsOrderBookEnabled: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
@@ -515,6 +529,252 @@ describe('PerpsOrderEntryPage', () => {
       expect(submitButton).toHaveTextContent(
         tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
       );
+    });
+  });
+
+  describe('order book toggle', () => {
+    it('does not render the order book toggle when the feature flag is off', () => {
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsOrderBookEnabled = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.queryByTestId('perps-order-book-toggle'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('mounts the order book and resize divider only after the toggle is pressed', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-book-toggle');
+      expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.queryByTestId('perps-order-book')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-book-resize-handle'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(toggle);
+
+      expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
+
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+      expect(divider).toHaveAttribute('role', 'separator');
+      expect(divider).toHaveAttribute('aria-valuemin', '22');
+      expect(divider).toHaveAttribute('aria-valuemax', '60');
+      expect(divider).toHaveAttribute('aria-valuenow', '33');
+    });
+
+    it('resizes the split within bounds using the keyboard', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+      fireEvent.keyDown(divider, { key: 'ArrowLeft' });
+      expect(divider).toHaveAttribute('aria-valuenow', '35');
+
+      fireEvent.keyDown(divider, { key: 'Home' });
+      expect(divider).toHaveAttribute('aria-valuenow', '60');
+
+      fireEvent.keyDown(divider, { key: 'End' });
+      expect(divider).toHaveAttribute('aria-valuenow', '22');
+    });
+
+    it('resizes the split within bounds by dragging the divider with the mouse', () => {
+      // JSDOM reports a zero-sized rect by default; stub a real body geometry so
+      // the pointer math produces a meaningful width percentage.
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 1000,
+          width: 1000,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+        expect(divider).toHaveAttribute('aria-valuenow', '33');
+
+        fireEvent.mouseDown(divider);
+        // Pointer at body midpoint: (1000 - 500) / 1000 = 50%.
+        fireEvent.mouseMove(window, { clientX: 500 });
+        expect(divider).toHaveAttribute('aria-valuenow', '50');
+
+        // Dragging past the max clamps to the upper bound.
+        fireEvent.mouseMove(window, { clientX: 100 });
+        expect(divider).toHaveAttribute('aria-valuenow', '60');
+
+        // After releasing, further movement no longer resizes the split.
+        fireEvent.mouseUp(window);
+        fireEvent.mouseMove(window, { clientX: 900 });
+        expect(divider).toHaveAttribute('aria-valuenow', '60');
+      } finally {
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('caps the order book width on a narrow body so it cannot overflow off-screen', () => {
+      // Regression: dragging the divider far left on a narrow popup previously
+      // let the order book reach 60%, which (with the form's 224px pixel floor)
+      // pushed the panel past the viewport. The width is now capped so the form
+      // keeps its floor: (400 - 224 form - 2 divider) / 400 = 43.5% (rounds to
+      // 44 for the aria value).
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 400,
+          width: 400,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+        fireEvent.mouseDown(divider);
+        // Drag all the way to the left edge (would be 100% without the cap).
+        fireEvent.mouseMove(window, { clientX: 0 });
+        expect(divider).toHaveAttribute('aria-valuenow', '44');
+        // Assistive tech must announce the same pixel-aware ceiling used by the
+        // clamp (~43.5%), not the constant 60% percentage max.
+        expect(divider).toHaveAttribute('aria-valuemax', '44');
+      } finally {
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('exposes the pixel-aware width ceiling on aria-valuemax for a 360px popup', () => {
+      // Regression (a11y): at 360px the reachable max is ~(360-224-2)/360 ≈ 37%,
+      // but aria-valuemax previously always announced the constant 60%.
+      const rectSpy = jest
+        .spyOn(Element.prototype, 'getBoundingClientRect')
+        .mockReturnValue({
+          right: 360,
+          width: 360,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        } as DOMRect);
+
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        #callback: ResizeObserverCallback;
+
+        constructor(callback: ResizeObserverCallback) {
+          this.#callback = callback;
+        }
+
+        observe(target: Element) {
+          this.#callback(
+            [
+              {
+                target,
+                contentRect: target.getBoundingClientRect(),
+                borderBoxSize: [],
+                contentBoxSize: [],
+                devicePixelContentBoxSize: [],
+              },
+            ],
+            this,
+          );
+        }
+
+        unobserve() {
+          // no-op
+        }
+
+        disconnect() {
+          // no-op
+        }
+      } as typeof ResizeObserver;
+
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+        const divider = screen.getByTestId('perps-order-book-resize-handle');
+
+        expect(divider).toHaveAttribute('aria-valuemax', '37');
+        fireEvent.keyDown(divider, { key: 'Home' });
+        expect(divider).toHaveAttribute('aria-valuenow', '37');
+      } finally {
+        window.ResizeObserver = OriginalResizeObserver;
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('clears the shared order book cache when the market symbol changes', () => {
+      mockStreamManagerBase.orderBook.clearCache.mockClear();
+
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockStreamManagerBase.orderBook.clearCache).toHaveBeenCalledTimes(
+        1,
+      );
+
+      mockUseParams.mockReturnValue({ symbol: 'ETH' });
+      rerender(<PerpsOrderEntryPage />);
+
+      // Switching markets must drop the previous symbol's cached book so the
+      // panel and top-of-book never replay a stale ladder before ETH streams in.
+      expect(mockStreamManagerBase.orderBook.clearCache).toHaveBeenCalledTimes(
+        2,
+      );
+    });
+
+    it('clears the aggregated order book cache when the market symbol changes', () => {
+      // Regression: the panel unmounts while closed, so on reopen its aggregated
+      // hook remounts fresh and (without this clear) would render the previous
+      // market's cached aggregated ladder until the new symbol streams in.
+      mockStreamManagerBase.orderBookAggregated.clearCache.mockClear();
+
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).toHaveBeenCalledTimes(1);
+
+      mockUseParams.mockReturnValue({ symbol: 'ETH' });
+      rerender(<PerpsOrderEntryPage />);
+
+      expect(
+        mockStreamManagerBase.orderBookAggregated.clearCache,
+      ).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -1919,6 +2179,7 @@ describe('PerpsOrderEntryPage', () => {
             return jest.fn();
           }) as jest.Mock,
           getCachedData: () => null,
+          clearCache: jest.fn(),
         },
       });
     });

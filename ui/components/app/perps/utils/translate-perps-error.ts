@@ -14,6 +14,7 @@ export const ERROR_CODE_TO_I18N_KEY: Record<PerpsErrorCode, string> = {
   // Provider / token
   [PERPS_ERROR_CODES.PROVIDER_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.UNSUPPORTED_COLLATERAL]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
 
   // Data fetch failures

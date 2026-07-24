@@ -38,6 +38,21 @@ type ConnectivityChangeListener = (
   callback: (state: { connectivityStatus: string }) => void,
 ) => () => void;
 
+/**
+ * Opens the server-aggregated order-book subscription on a dedicated
+ * Hyperliquid WebSocket connection (separate from the controller's shared
+ * socket) and returns an unsubscribe function. Injected so this file never
+ * value-imports the ESM-only Hyperliquid SDK, keeping the bridge Jest-friendly.
+ */
+type SubscribeAggregatedOrderBook = (params: {
+  symbol: string;
+  levels?: number;
+  nSigFigs?: 2 | 3 | 4 | 5;
+  mantissa?: 2 | 5;
+  callback: (data: unknown) => void;
+  onStatusChange?: (status: 'connecting' | 'connected' | 'error') => void;
+}) => () => void;
+
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
   onControllerStateChange: StateChangeListener;
@@ -47,6 +62,7 @@ type PerpsStreamBridgeOptions = {
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   isTerminalBackendEnabled: () => boolean;
+  subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
   emit: EmitFn;
 };
 
@@ -99,11 +115,27 @@ export class PerpsStreamBridge {
 
   readonly #isTerminalBackendEnabled: () => boolean;
 
+  readonly #subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
+
   readonly #emit: EmitFn;
 
   readonly #staticUnsubs: (() => void)[] = [];
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
+
+  /**
+   * Per-channel activation generation for the deferred dynamic subscriptions
+   * (prices / orderBook / orderBookAggregated). Each `perpsDeactivate*Stream`
+   * bumps its channel's counter, so an activation whose `#initAndActivate()`
+   * only resolves *after* that deactivation ran will see the mismatch and
+   * refuse to subscribe. Without this, opening and quickly closing a panel
+   * during cold init would let the activation continuation resurrect the
+   * subscription after teardown, leaking a hidden stream that survives until
+   * the next (de)activation or bridge destruction. Mirrors the candle path's
+   * `#destroyGeneration` guard, but scoped per channel so an unrelated
+   * channel's teardown never cancels this activation.
+   */
+  readonly #dynamicActivationGeneration: Record<string, number> = {};
 
   readonly #pendingCandleTeardowns = new Map<
     string,
@@ -166,6 +198,7 @@ export class PerpsStreamBridge {
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
     this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
+    this.#subscribeAggregatedOrderBook = options.subscribeAggregatedOrderBook;
     this.#emit = options.emit;
   }
 
@@ -220,22 +253,20 @@ export class PerpsStreamBridge {
           this.#activateStreaming(params);
         }
       },
-      perpsActivatePriceStream: async ({
+      perpsActivatePriceStream: ({
         symbols,
         includeMarketData,
       }: {
         symbols: string[];
         includeMarketData?: boolean;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activatePriceStream(symbols, includeMarketData);
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('prices', () =>
+          this.#activatePriceStream(symbols, includeMarketData),
+        ),
       perpsDeactivatePriceStream: () => {
-        this.#tearDownChannel('prices');
+        this.#deactivateDynamicChannel('prices');
       },
-      perpsActivateOrderBookStream: async ({
+      perpsActivateOrderBookStream: ({
         symbol,
         levels,
         nSigFigs,
@@ -245,14 +276,42 @@ export class PerpsStreamBridge {
         levels?: number;
         nSigFigs?: 2 | 3 | 4 | 5;
         mantissa?: 2 | 5;
-      }) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
-          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa });
-        }
-      },
+      }) =>
+        this.#activateDynamicWhenReady('orderBook', () =>
+          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa }),
+        ),
       perpsDeactivateOrderBookStream: () => {
-        this.#tearDownChannel('orderBook');
+        this.#deactivateDynamicChannel('orderBook');
+      },
+      perpsActivateOrderBookAggregatedStream: ({
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+        subscriptionId,
+      }: {
+        symbol: string;
+        levels?: number;
+        nSigFigs?: 2 | 3 | 4 | 5;
+        mantissa?: 2 | 5;
+        /**
+         * UI-generated identity for this activate request. Echoed on every
+         * data/status emission so the UI can discard packets from a prior
+         * grouping that arrive during the async deactivate/activate IPC gap.
+         */
+        subscriptionId?: string;
+      }) =>
+        this.#activateDynamicWhenReady('orderBookAggregated', () =>
+          this.#activateOrderBookAggregatedStream({
+            symbol,
+            levels,
+            nSigFigs,
+            mantissa,
+            subscriptionId,
+          }),
+        ),
+      perpsDeactivateOrderBookAggregatedStream: () => {
+        this.#deactivateDynamicChannel('orderBookAggregated');
       },
       perpsActivateCandleStream: async ({
         symbol,
@@ -382,6 +441,55 @@ export class PerpsStreamBridge {
     if (!this.#activated && this.#isConnectionAlive()) {
       this.#activate();
     }
+  }
+
+  /**
+   * Runs a deferred dynamic-channel activation behind a per-channel generation
+   * guard. If a `perpsDeactivate*Stream` for the same channel — or a full
+   * `destroy()` — fires while `#initAndActivate()` is still pending, the
+   * captured generation no longer matches on resume and the subscription is
+   * skipped, so a quick open→close during cold init cannot leak a hidden
+   * subscription created after teardown.
+   *
+   * @param channel - The dynamic channel being (re)activated.
+   * @param activate - Subscribe callback, invoked only if still current.
+   */
+  async #activateDynamicWhenReady(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+    activate: () => void,
+  ): Promise<void> {
+    const activationGenerationAtStart =
+      this.#dynamicActivationGeneration[channel] ?? 0;
+    const destroyGenerationAtStart = this.#destroyGeneration;
+
+    await this.#initAndActivate();
+
+    if (
+      this.#destroyGeneration !== destroyGenerationAtStart ||
+      (this.#dynamicActivationGeneration[channel] ?? 0) !==
+        activationGenerationAtStart
+    ) {
+      return;
+    }
+
+    if (this.#isConnectionAlive()) {
+      activate();
+    }
+  }
+
+  /**
+   * Tears down a dynamic channel and bumps its activation generation so any
+   * activation that is still awaiting init for this channel aborts on resume
+   * instead of resurrecting the subscription.
+   *
+   * @param channel - The dynamic channel to deactivate.
+   */
+  #deactivateDynamicChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
+    this.#dynamicActivationGeneration[channel] =
+      (this.#dynamicActivationGeneration[channel] ?? 0) + 1;
+    this.#tearDownChannel(channel);
   }
 
   #activate(): void {
@@ -723,6 +831,55 @@ export class PerpsStreamBridge {
     }
   }
 
+  /**
+   * Activate the server-aggregated order-book subscription (`nSigFigs` /
+   * `mantissa`) for the order-book panel's grouped ladder.
+   *
+   * Unlike the raw `orderBook` channel — which runs on the controller's shared
+   * WebSocket — this runs on a dedicated Hyperliquid connection. The SDK routes
+   * `l2Book` events by `coin` only, so a raw and an aggregated subscription for
+   * the same coin on the same socket cross-contaminate (the coarse ladder and
+   * the precise spread/slippage clobber each other). Isolating the aggregated
+   * subscription on its own socket removes the collision: that socket carries a
+   * single `l2Book` stream and the shared socket is never touched by grouping.
+   *
+   * @param params - Subscription parameters.
+   * @param params.symbol - Market symbol.
+   * @param params.levels - Number of levels per side to request.
+   * @param params.nSigFigs - Server-side aggregation significant figures.
+   * @param params.mantissa - Mantissa refinement when nSigFigs is 5.
+   * @param params.subscriptionId - UI identity echoed on every emission.
+   */
+  #activateOrderBookAggregatedStream(params: {
+    symbol: string;
+    levels?: number;
+    nSigFigs?: 2 | 3 | 4 | 5;
+    mantissa?: 2 | 5;
+    subscriptionId?: string;
+  }): void {
+    const { symbol, subscriptionId, levels, nSigFigs, mantissa } = params;
+    this.#tearDownChannel('orderBookAggregated');
+    if (symbol) {
+      // Capture the UI identity in this subscription's closures so emissions
+      // from a prior grouping keep their old id after the UI has already
+      // switched — the StreamManager then discards the mismatch.
+      const emitExtra =
+        subscriptionId === undefined ? undefined : { subscriptionId };
+      this.#addDynamicSubscription('orderBookAggregated', () =>
+        this.#subscribeAggregatedOrderBook({
+          symbol,
+          levels,
+          nSigFigs,
+          mantissa,
+          callback: (data: unknown) =>
+            this.#emit('orderBookAggregated', data, emitExtra),
+          onStatusChange: (status) =>
+            this.#emit('orderBookAggregatedStatus', status, emitExtra),
+        }),
+      );
+    }
+  }
+
   #activateCandleStream(params: {
     symbol: string;
     interval: CandlePeriod;
@@ -782,7 +939,9 @@ export class PerpsStreamBridge {
     }
   }
 
-  #tearDownChannel(channel: 'prices' | 'orderBook'): void {
+  #tearDownChannel(
+    channel: 'prices' | 'orderBook' | 'orderBookAggregated',
+  ): void {
     const unsub = this.#dynamicUnsubs[channel];
     if (unsub) {
       this.#callAndClearUnsub(unsub);

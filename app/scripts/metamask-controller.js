@@ -130,6 +130,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
@@ -6840,6 +6841,15 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;
+    // Dedicated Hyperliquid WebSocket for the order-book panel's aggregated
+    // (`nSigFigs`) subscription, isolated from the controller's shared socket so
+    // the raw and aggregated `l2Book` streams for the same coin cannot
+    // cross-contaminate (the SDK dispatches `l2Book` events by coin only).
+    const aggregatedOrderBookConnection = perpsController
+      ? new AggregatedOrderBookConnection({
+          isTestnet: () => Boolean(perpsController.state?.isTestnet),
+        })
+      : null;
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
@@ -6869,6 +6879,8 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          subscribeAggregatedOrderBook: (params) =>
+            aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
             const { remoteFeatureFlags } = this.controllerMessenger.call(
               'RemoteFeatureFlagController:getState',
@@ -6964,6 +6976,7 @@ export default class MetamaskController extends EventEmitter {
         patchStore.destroy();
         messengerSubscriptions.clear();
         perpsStream?.destroy();
+        aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen
           // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of

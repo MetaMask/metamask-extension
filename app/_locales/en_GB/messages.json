@@ -7316,6 +7316,82 @@
   "perpsOraclePriceTooltip": {
     "message": "The median of external prices reported by validators, used for computing funding rate"
   },
+  "perpsOrderBook": {
+    "message": "Order book"
+  },
+  "perpsOrderBookApply": {
+    "message": "Apply"
+  },
+  "perpsOrderBookBuy": {
+    "message": "Buy: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Listed by & Group by"
+  },
+  "perpsOrderBookConnectionError": {
+    "message": "Order book connection lost"
+  },
+  "perpsOrderBookDepthRatio": {
+    "message": "Buy $1%, sell $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
+  "perpsOrderBookGroupBy": {
+    "message": "Group by"
+  },
+  "perpsOrderBookListedBy": {
+    "message": "Listed by"
+  },
+  "perpsOrderBookLoading": {
+    "message": "Loading order book"
+  },
+  "perpsOrderBookNoData": {
+    "message": "No order book data"
+  },
+  "perpsOrderBookPrice": {
+    "message": "Price"
+  },
+  "perpsOrderBookReconnect": {
+    "message": "Reconnect"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Reconnecting to order book"
+  },
+  "perpsOrderBookResize": {
+    "message": "Resize order book"
+  },
+  "perpsOrderBookSell": {
+    "message": "Sell: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
+  },
+  "perpsOrderBookSize": {
+    "message": "Size"
+  },
+  "perpsOrderBookSpread": {
+    "message": "Spread"
+  },
+  "perpsOrderBookTotal": {
+    "message": "Total"
+  },
+  "perpsOrderBookUsePrice": {
+    "message": "Use $1 as limit price",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
+  "perpsOrderBookValueType": {
+    "message": "Value type"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Order book showing bids and asks",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Order book showing bids only",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Order book showing asks only",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
+  },
   "perpsOrderDate": {
     "message": "Date"
   },
