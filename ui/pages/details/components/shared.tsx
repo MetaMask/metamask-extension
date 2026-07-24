@@ -93,12 +93,13 @@ export function Row({
         {label}
       </Text>
 
-      <div
+      <Text
         className="min-w-0 break-words text-end @compact:text-s-body-sm"
         data-testid="transaction-breakdown-row-value"
+        asChild
       >
-        {value}
-      </div>
+        <div>{value}</div>
+      </Text>
     </div>
   );
 }
