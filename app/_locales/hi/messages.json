@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "स्वैप नहीं हो पाया"
   },
-  "activity_swap_pending_title": {
-    "message": "स्वैप किया जा रहा है"
-  },
-  "activity_swap_success_title": {
-    "message": "स्वैप किया गया"
-  },
   "activity_unwrap_failed_description": {
     "message": "अनरैप नहीं हो पाया"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
   },
+  "rampsBestRate": {
+    "message": "सबसे अच्छी रेट"
+  },
+  "rampsBuyToken": {
+    "message": "$1 खरीदें",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "प्रोवाइडर बदलें।"
+  },
+  "rampsMostReliable": {
+    "message": "सबसे विश्वसनीय"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "पेमेंट का कोई तरीका उपलब्ध नहीं है।"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "कोई प्रोवाइडर उपलब्ध नहीं है।"
+  },
   "rampsNoTokensAvailable": {
     "message": "कोई टोकन उपलब्ध नहीं है"
+  },
+  "rampsOtherOptions": {
+    "message": "अन्य विकल्प"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "घंटा"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "घंटे"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "तुरंत"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "से कम"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "मिनट"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "मिनट"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "पहले इस्तेमाल किया गया"
+  },
+  "rampsProviders": {
+    "message": "प्रोवाइडर्स"
+  },
+  "rampsQuoteFetchError": {
+    "message": "कोटेशन प्राप्त नहीं हो पाया।"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "कोटेशन उपलब्ध नहीं है।"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "भुगतान विधि चुनें"
   },
   "rank": {
     "message": "रैंक"

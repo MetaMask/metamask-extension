@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Nabigo ang pag-swap"
   },
-  "activity_swap_pending_title": {
-    "message": "Nagsu-swap"
-  },
-  "activity_swap_success_title": {
-    "message": "Nai-swap"
-  },
   "activity_unwrap_failed_description": {
     "message": "Nabigo ang pag-unwrap"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "Kabuuang halaga: $1"
   },
+  "rampsBestRate": {
+    "message": "Pinakasulit na rate"
+  },
+  "rampsBuyToken": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Magpalit ng provider."
+  },
+  "rampsMostReliable": {
+    "message": "Pinakamaasahan"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Walang available na mga paraan ng pagbabayad."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Wala available na mga provider."
+  },
   "rampsNoTokensAvailable": {
     "message": "Walang available na token"
+  },
+  "rampsOtherOptions": {
+    "message": "Iba pang opsyon"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "business day"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "na business day"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "oras"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "(na) oras"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instant"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Mas mababa sa"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "na min"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Dating ginamit"
+  },
+  "rampsProviders": {
+    "message": "Mga Provider"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Nabigong kunin ang quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Hindi available ang quote."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Pumili ng paraan ng pagbabayad"
   },
   "rank": {
     "message": "Rank"

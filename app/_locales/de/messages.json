@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Swap fehlgeschlagen"
   },
-  "activity_swap_pending_title": {
-    "message": "Swappen"
-  },
-  "activity_swap_success_title": {
-    "message": "Geswappt"
-  },
   "activity_unwrap_failed_description": {
     "message": "Unwrapping fehlgeschlagen"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "Gesamtkosten: $1"
   },
+  "rampsBestRate": {
+    "message": "Bester Wechselkurs"
+  },
+  "rampsBuyToken": {
+    "message": "$1 kaufen",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Anbieter wechseln."
+  },
+  "rampsMostReliable": {
+    "message": "Am zuverlässigsten"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Es stehen keine Zahlungsmethoden zur Verfügung."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Keine Anbieter verfügbar."
+  },
   "rampsNoTokensAvailable": {
     "message": "Keine Tokens verfügbar"
+  },
+  "rampsOtherOptions": {
+    "message": "Weitere Optionen"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "Werktag"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "Werktage"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "Stunde"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "Stunden"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Sofort"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Weniger als"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "Min."
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "Min."
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Zuvor verwendet"
+  },
+  "rampsProviders": {
+    "message": "Anbieter"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Angebot konnte nicht abgerufen werden."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Angebot nicht verfügbar."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Zahlungsmethode auswählen"
   },
   "rank": {
     "message": "Rang"

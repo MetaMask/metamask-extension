@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Pertukaran gagal"
   },
-  "activity_swap_pending_title": {
-    "message": "Menukar"
-  },
-  "activity_swap_success_title": {
-    "message": "Ditukar"
-  },
   "activity_unwrap_failed_description": {
     "message": "Pembukaan gagal"
   },
@@ -8073,8 +8067,69 @@
   "quotedTotalCost": {
     "message": "Total biaya: $1"
   },
+  "rampsBestRate": {
+    "message": "Tarif terbaik"
+  },
+  "rampsBuyToken": {
+    "message": "Beli $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Ubah penyedia."
+  },
+  "rampsMostReliable": {
+    "message": "Paling dapat diandalkan"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Tidak ada metode pembayaran yang tersedia."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Penyedia tidak tersedia."
+  },
   "rampsNoTokensAvailable": {
     "message": "Token tidak tersedia"
+  },
+  "rampsOtherOptions": {
+    "message": "Opsi lainnya"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "hari kerja"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "hari kerja"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "jam"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "jam"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instan"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Kurang dari"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "mnt"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "menit"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Digunakan sebelumnya"
+  },
+  "rampsProviders": {
+    "message": "Penyedia"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Gagal mengambil kuotasi."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Kuotasi tidak tersedia."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Pilih metode pembayaran"
   },
   "rank": {
     "message": "Peringkat"

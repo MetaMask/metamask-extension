@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "スワップに失敗しました"
   },
-  "activity_swap_pending_title": {
-    "message": "スワップしています"
-  },
-  "activity_swap_success_title": {
-    "message": "スワップしました"
-  },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"
   },
@@ -8069,8 +8063,69 @@
   "quotedTotalCost": {
     "message": "合計コスト: $1"
   },
+  "rampsBestRate": {
+    "message": "最も有利なレート"
+  },
+  "rampsBuyToken": {
+    "message": "$1を購入",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "プロバイダーを変更します。"
+  },
+  "rampsMostReliable": {
+    "message": "信頼性が最も高い"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "使用可能な支払方法がありません。"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "利用可能なプロバイダーがありません。"
+  },
   "rampsNoTokensAvailable": {
     "message": "使用可能なトークンがありません"
+  },
+  "rampsOtherOptions": {
+    "message": "その他のオプション"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "即時"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "<"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "分"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "分"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "以前使用"
+  },
+  "rampsProviders": {
+    "message": "プロバイダー"
+  },
+  "rampsQuoteFetchError": {
+    "message": "クォートを取得できませんでした。"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "クォートが利用できません。"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "支払方法を選択"
   },
   "rank": {
     "message": "ランキング"

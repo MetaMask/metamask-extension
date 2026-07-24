@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Η ανταλλαγή απέτυχε"
   },
-  "activity_swap_pending_title": {
-    "message": "Ανταλλαγή"
-  },
-  "activity_swap_success_title": {
-    "message": "Ανταλλάχθηκε"
-  },
   "activity_unwrap_failed_description": {
     "message": "Η αποδέσμευση απέτυχε"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "Συνολικό κόστος: $1"
   },
+  "rampsBestRate": {
+    "message": "Καλύτερη τιμή"
+  },
+  "rampsBuyToken": {
+    "message": "Αγορά $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Αλλαγή παρόχου."
+  },
+  "rampsMostReliable": {
+    "message": "Πιο αξιόπιστο"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Δεν υπάρχουν διαθέσιμες μέθοδοι πληρωμής."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Δεν υπάρχουν διαθέσιμοι πάροχοι."
+  },
   "rampsNoTokensAvailable": {
     "message": "Δεν υπάρχουν διαθέσιμα tokens"
+  },
+  "rampsOtherOptions": {
+    "message": "Άλλες επιλογές"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "εργάσιμη μέρα"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "εργάσιμες μέρες"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "ώρα"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "ώρες"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Άμεσα"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Λιγότερο από"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "λεπτό"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "λεπτά"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Χρησιμοποιήθηκε στο παρελθόν"
+  },
+  "rampsProviders": {
+    "message": "Πάροχοι"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Αποτυχία λήψης προσφοράς."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Δεν υπάρχει διαθέσιμη προσφορά."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Επιλέξτε μέθοδο πληρωμής"
   },
   "rank": {
     "message": "Κατάταξη"

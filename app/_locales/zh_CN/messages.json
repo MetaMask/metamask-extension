@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "交换失败"
   },
-  "activity_swap_pending_title": {
-    "message": "正在兑换"
-  },
-  "activity_swap_success_title": {
-    "message": "已兑换"
-  },
   "activity_unwrap_failed_description": {
     "message": "解除封装失败"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "总成本：$1"
   },
+  "rampsBestRate": {
+    "message": "最优价格"
+  },
+  "rampsBuyToken": {
+    "message": "购买 $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "更换提供商。"
+  },
+  "rampsMostReliable": {
+    "message": "最可靠"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "无可用支付方式。"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "没有可用的提供商。"
+  },
   "rampsNoTokensAvailable": {
     "message": "无可用代币"
+  },
+  "rampsOtherOptions": {
+    "message": "其他选项"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "工作日"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "工作日"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "小时"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "小时"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "即时"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "少于"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "分钟"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "分钟"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "先前使用的"
+  },
+  "rampsProviders": {
+    "message": "提供商"
+  },
+  "rampsQuoteFetchError": {
+    "message": "获取报价失败。"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "报价不可用。"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "选择付款方式"
   },
   "rank": {
     "message": "排名"

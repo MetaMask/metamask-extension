@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "스왑 실패"
   },
-  "activity_swap_pending_title": {
-    "message": "스왑 중"
-  },
-  "activity_swap_success_title": {
-    "message": "스왑 완료"
-  },
   "activity_unwrap_failed_description": {
     "message": "언랩 실패"
   },
@@ -8073,8 +8067,69 @@
   "quotedTotalCost": {
     "message": "총비용: $1"
   },
+  "rampsBestRate": {
+    "message": "최적 환율"
+  },
+  "rampsBuyToken": {
+    "message": "$1 매수",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "공급자를 변경하세요."
+  },
+  "rampsMostReliable": {
+    "message": "가장 신뢰할 수 있음"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "사용 가능한 결제 방법이 없습니다."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "공급자가 없습니다."
+  },
   "rampsNoTokensAvailable": {
     "message": "사용 가능한 토큰 없음"
+  },
+  "rampsOtherOptions": {
+    "message": "기타 옵션"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "영업일"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "영업일"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "시간"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "시간"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "즉시"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "다음 미만:"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "분"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "분"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "사용한 적 있음"
+  },
+  "rampsProviders": {
+    "message": "공급자"
+  },
+  "rampsQuoteFetchError": {
+    "message": "견적을 불러오지 못했습니다."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "견적을 확인할 수 없습니다."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "결제 방법 선택"
   },
   "rank": {
     "message": "순위"

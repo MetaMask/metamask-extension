@@ -1001,12 +1001,6 @@
   "activity_swap_failed_title": {
     "message": "Своп не удался"
   },
-  "activity_swap_pending_title": {
-    "message": "Своп"
-  },
-  "activity_swap_success_title": {
-    "message": "Своп выполнен"
-  },
   "activity_unwrap_failed_description": {
     "message": "Ошибка развертывания"
   },
@@ -8065,8 +8059,69 @@
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
   },
+  "rampsBestRate": {
+    "message": "Лучший курс"
+  },
+  "rampsBuyToken": {
+    "message": "Купить $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsChangeProvider": {
+    "message": "Изменить поставщика."
+  },
+  "rampsMostReliable": {
+    "message": "Самый надежный"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Нет доступных способов оплаты."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Нет доступных поставщиков."
+  },
   "rampsNoTokensAvailable": {
     "message": "Нет доступных токенов"
+  },
+  "rampsOtherOptions": {
+    "message": "Другие варианты"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "рабочий день"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "рабочие дни"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "час"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "часы"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Мгновенный"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Менее чем"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "мин."
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "мин."
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Ранее использовались"
+  },
+  "rampsProviders": {
+    "message": "Поставщики"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Не удалось получить котировку."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Котировка недоступна."
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Выбрать способ оплаты"
   },
   "rank": {
     "message": "Рейтинг"
