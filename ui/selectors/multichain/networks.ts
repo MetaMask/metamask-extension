@@ -13,6 +13,7 @@ import {
   BtcScope,
   SolScope,
   TrxScope,
+  XlmScope,
   isEvmAccountType,
 } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
@@ -60,6 +61,7 @@ import {
   getIsBitcoinTestnetSupportEnabled,
   getIsTronSupportEnabled,
   getIsTronTestnetSupportEnabled,
+  getIsStellarSupportEnabled,
 } from './feature-flags';
 
 // Selector types
@@ -106,15 +108,33 @@ const getIsNonEvmNetworksEnabled = createSelector(
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getInternalAccounts,
-  (isBitcoinEnabled, isSolanaEnabled, isTronEnabled, internalAccounts) => {
-    if (isBitcoinEnabled && isSolanaEnabled && isTronEnabled) {
-      return { bitcoinEnabled: true, solanaEnabled: true, tronEnabled: true };
+  (
+    isBitcoinEnabled,
+    isSolanaEnabled,
+    isTronEnabled,
+    isStellarEnabled,
+    internalAccounts,
+  ) => {
+    if (
+      isBitcoinEnabled &&
+      isSolanaEnabled &&
+      isTronEnabled &&
+      isStellarEnabled
+    ) {
+      return {
+        bitcoinEnabled: true,
+        solanaEnabled: true,
+        tronEnabled: true,
+        stellarEnabled: true,
+      };
     }
 
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
     let tronEnabled = isTronEnabled;
+    let stellarEnabled = isStellarEnabled;
 
     // The scopes have been set to optional because the first time
     // they're used we can't guarantee that the scopes will be set
@@ -133,12 +153,15 @@ const getIsNonEvmNetworksEnabled = createSelector(
       if (scopes?.includes(TrxScope.Mainnet)) {
         tronEnabled = true;
       }
-      if (bitcoinEnabled && solanaEnabled && tronEnabled) {
+      if (scopes?.includes(XlmScope.Pubnet)) {
+        stellarEnabled = true;
+      }
+      if (bitcoinEnabled && solanaEnabled && tronEnabled && stellarEnabled) {
         break;
       }
     }
 
-    return { bitcoinEnabled, solanaEnabled, tronEnabled };
+    return { bitcoinEnabled, solanaEnabled, tronEnabled, stellarEnabled };
   },
 );
 
@@ -162,9 +185,9 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
         InternalMultichainNetworkConfiguration
       > = {};
 
-      // This is not ideal but since there are only three non EVM networks
+      // This is not ideal but since there are only a few non-EVM networks
       // we can just filter them out based on the support enabled
-      const { bitcoinEnabled, solanaEnabled, tronEnabled } =
+      const { bitcoinEnabled, solanaEnabled, tronEnabled, stellarEnabled } =
         isNonEvmNetworksEnabled;
 
       if (
@@ -230,6 +253,15 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
           multichainNetworkConfigurationsByChainId[TrxScope.Nile];
         filteredNonEvmNetworkConfigurationsByChainId[TrxScope.Shasta] =
           multichainNetworkConfigurationsByChainId[TrxScope.Shasta];
+      }
+
+      if (
+        stellarEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[XlmScope.Pubnet]
+      ) {
+        filteredNonEvmNetworkConfigurationsByChainId[XlmScope.Pubnet] =
+          multichainNetworkConfigurationsByChainId[XlmScope.Pubnet];
       }
 
       return filteredNonEvmNetworkConfigurationsByChainId;

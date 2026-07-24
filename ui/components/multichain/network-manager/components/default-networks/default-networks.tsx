@@ -1,7 +1,13 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  EthScope,
+  SolScope,
+  TrxScope,
+  XlmScope,
+} from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -167,6 +173,10 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
 
+  const xlmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, XlmScope.Pubnet),
+  );
+
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
@@ -302,6 +312,9 @@ const DefaultNetworks = memo(() => {
           return true;
         }
         if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+          return true;
+        }
+        if (xlmAccountGroup && network.chainId === XlmScope.Pubnet) {
           return true;
         }
         return false;

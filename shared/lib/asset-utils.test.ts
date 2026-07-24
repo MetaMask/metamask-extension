@@ -160,6 +160,45 @@ describe('asset-utils', () => {
         result,
       ]);
     });
+
+    it('creates Stellar classic asset ID from CODE-ISSUER reference', () => {
+      const ref =
+        'USDY-GAJMPX5NBOG6TQFPQGRABJEEB2YE7RFRLUKJDZAZGAD5GFX4J7TADAZ6';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(ref, chainId);
+      expect(result).toBe(`${chainId}/asset:${ref}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID from Soroban contract StrKey', () => {
+      const contractId =
+        'CAUP7NFABXE5TJRL3FKTPMWRLC7IAXYDCTHQRFSCLR5TMGKHOOQO772J';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(contractId, chainId);
+      expect(result).toBe(`${chainId}/sep41:${contractId}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID when reference includes sep41: prefix', () => {
+      const contractId =
+        'CBOOCGZSVRSZFRE4U2NWR2B4RXYVJWRCBTGOUD2JPI2TDJPWMTJX7FZP';
+      const chainId = MultichainNetworks.STELLAR;
+
+      expect(toAssetId(contractId, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+      expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+    });
   });
 
   describe('getAssetImageUrl', () => {

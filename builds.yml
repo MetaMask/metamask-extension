@@ -20,6 +20,7 @@ buildTypes:
       - multi-srp
       - bitcoin
       - tron
+      - stellar
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -46,6 +47,7 @@ buildTypes:
       - bitcoin
       - multi-srp
       - tron
+      - stellar
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -72,6 +74,7 @@ buildTypes:
       - multi-srp
       - bitcoin
       - tron
+      - stellar
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
@@ -98,6 +101,7 @@ buildTypes:
       - keyring-snaps
       - bitcoin
       - tron
+      - stellar
       - multi-srp
     env:
       - INFURA_FLASK_PROJECT_ID
@@ -169,6 +173,10 @@ features:
     assets:
       - src: ./node_modules/@metamask/tron-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/tron-wallet-snap.json
+  stellar:
+    assets:
+      - src: ./node_modules/@metamask/stellar-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/stellar-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.

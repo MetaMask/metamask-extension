@@ -1,4 +1,5 @@
 import {
+  AccountProviderWrapper,
   MultichainAccountService,
   MultichainAccountServiceMessenger,
 } from '@metamask/multichain-account-service';
@@ -17,6 +18,7 @@ import {
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 jest.mock('@metamask/multichain-account-service');
 
@@ -30,13 +32,24 @@ function buildInitRequestMock(): jest.Mocked<
 > {
   const baseControllerMessenger = new Messenger<
     MockAnyNamespace,
-    PreferencesControllerGetStateAction | ActionConstraint,
+    | PreferencesControllerGetStateAction
+    | RemoteFeatureFlagControllerGetStateAction
+    | ActionConstraint,
     never
   >({ namespace: MOCK_ANY_NAMESPACE });
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',
     jest.fn().mockReturnValue(PREFERENCES_STATE),
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        stellarAccounts: true,
+      },
+    }),
   );
 
   return {
@@ -83,6 +96,7 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(multichainAccountServiceClassMock).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
+        providers: [expect.any(AccountProviderWrapper)],
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
         ensureOnboardingComplete: requestMock.ensureOnboardingComplete,

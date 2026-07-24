@@ -3,6 +3,7 @@ import {
   EthScope,
   BtcScope,
   SolScope,
+  XlmScope,
   CaipChainId,
 } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
@@ -12,6 +13,7 @@ import {
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
   MOCK_ACCOUNT_ID_BY_ADDRESS,
+  MOCK_ACCOUNT_STELLAR_PUBNET,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
@@ -463,6 +465,46 @@ describe('Accounts Selectors', () => {
         BtcScope.Mainnet as CaipChainId,
       );
       expect(result).toEqual([]);
+    });
+
+    it('returns the pubnet stellar account when requesting the pubnet scope', () => {
+      const solanaAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-sol1`,
+        scopes: [SolScope.Mainnet],
+      };
+      const anotherSolanaAccount = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-sol2`,
+        scopes: [SolScope.Mainnet],
+      };
+      const btcAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+      };
+      const stellarAccount = {
+        ...MOCK_ACCOUNT_STELLAR_PUBNET,
+      };
+
+      const state: AccountsState = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: solanaAccount.id,
+            accounts: {
+              [solanaAccount.id]: solanaAccount,
+              [anotherSolanaAccount.id]: anotherSolanaAccount,
+              [btcAccount.id]: btcAccount,
+              [stellarAccount.id]: stellarAccount,
+            },
+          },
+        },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        XlmScope.Pubnet as CaipChainId,
+      );
+      expect(result).toEqual(expect.arrayContaining([stellarAccount]));
+      expect(result).toHaveLength(1);
     });
   });
 });

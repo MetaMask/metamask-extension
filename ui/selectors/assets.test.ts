@@ -1,4 +1,4 @@
-import { EthScope, SolScope } from '@metamask/keyring-api';
+import { EthScope, SolScope, XlmScope } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';

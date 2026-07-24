@@ -407,6 +407,7 @@ import { TokenDetectionControllerInit } from './messenger-client-init/token-dete
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
+import { StellarAssetsControllerInit } from './messenger-client-init/stellar-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
@@ -708,6 +709,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
+      StellarAssetsController: StellarAssetsControllerInit,
       // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -859,6 +861,8 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController =
       messengerClientsByName.TokenBalancesController;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
+    this.stellarAssetsController =
+      messengerClientsByName.StellarAssetsController;
     this.tokenListController = messengerClientsByName.TokenListController;
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
@@ -1457,6 +1461,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
       StaticAssetsController: this.staticAssetsController,
+      StellarAssetsController: this.stellarAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       ...(this.assetsController
@@ -1520,6 +1525,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         StaticAssetsController: this.staticAssetsController,
+        StellarAssetsController: this.stellarAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         ...(this.assetsController
