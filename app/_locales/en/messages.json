@@ -10249,7 +10249,7 @@
     "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
   },
   "srpRevealMaliciousBlockDismiss": {
-    "message": "Back to safety"
+    "message": "Got it"
   },
   "srpRevealMaliciousBlockHeading": {
     "message": "You might be getting scammed right now"
