@@ -1,0 +1,199 @@
+import {
+  applySentryRemoteRates,
+  getRemoteWrapperSampleRate,
+  resetSentryRemoteRates,
+} from './sentry-remote-rates';
+import { shouldSampleWrappers } from './wrapper-sampling';
+
+const SAMPLED_TRACE_ID = '00000000aaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 0
+const UNSAMPLED_TRACE_ID = 'ffffffffaaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 9999
+
+function mockPersistedState(sentryFlag: unknown) {
+  globalThis.stateHooks = {
+    getPersistedState: async () => ({
+      data: {
+        RemoteFeatureFlagController: {
+          remoteFeatureFlags: { sentry: sentryFlag },
+        },
+      },
+    }),
+    getSentryState: () => ({ browser: '', version: '' }),
+  };
+}
+
+function mockClient() {
+  const options: { tracesSampleRate?: number } = { tracesSampleRate: 0.0075 };
+  return { getOptions: () => options, options };
+}
+
+describe('applySentryRemoteRates', () => {
+  afterEach(() => {
+    resetSentryRemoteRates();
+    // @ts-expect-error test cleanup of the global hook
+    delete globalThis.stateHooks;
+  });
+
+  it('applies valid remote rates to the client and wrapper cache', async () => {
+    mockPersistedState({ tracesSampleRate: 0.02, wrapperSampleRate: 0.5 });
+    const client = mockClient();
+
+    const applied = await applySentryRemoteRates(client);
+
+    expect(applied).toStrictEqual({
+      tracesSampleRate: 0.02,
+      wrapperSampleRate: 0.5,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.02);
+    expect(getRemoteWrapperSampleRate()).toBe(0.5);
+  });
+
+  it('accepts the boundary rates 0 and 1', async () => {
+    mockPersistedState({ tracesSampleRate: 0, wrapperSampleRate: 1 });
+    const client = mockClient();
+
+    await applySentryRemoteRates(client);
+
+    expect(client.options.tracesSampleRate).toBe(0);
+    expect(getRemoteWrapperSampleRate()).toBe(1);
+  });
+
+  const INVALID_RATES: [label: string, value: unknown][] = [
+    ['negative', -0.1],
+    ['above one', 1.5],
+    ['NaN', NaN],
+    ['Infinity', Infinity],
+    ['string', '0.5'],
+    ['null', null],
+    ['object', { rate: 0.5 }],
+  ];
+  for (const [label, value] of INVALID_RATES) {
+    it(`ignores an invalid rate (${label}) and keeps fallbacks`, async () => {
+      mockPersistedState({ tracesSampleRate: value, wrapperSampleRate: value });
+      const client = mockClient();
+
+      const applied = await applySentryRemoteRates(client);
+
+      expect(applied).toStrictEqual({
+        tracesSampleRate: undefined,
+        wrapperSampleRate: undefined,
+      });
+      expect(client.options.tracesSampleRate).toBe(0.0075);
+      expect(getRemoteWrapperSampleRate()).toBeUndefined();
+    });
+  }
+
+  it('applies a partial flag without touching the other rate', async () => {
+    mockPersistedState({ wrapperSampleRate: 0.05 });
+    const client = mockClient();
+
+    await applySentryRemoteRates(client);
+
+    expect(client.options.tracesSampleRate).toBe(0.0075);
+    expect(getRemoteWrapperSampleRate()).toBe(0.05);
+  });
+
+  it('falls back when the sentry flag is absent', async () => {
+    mockPersistedState(undefined);
+    const client = mockClient();
+
+    const applied = await applySentryRemoteRates(client);
+
+    expect(applied).toStrictEqual({
+      tracesSampleRate: undefined,
+      wrapperSampleRate: undefined,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.0075);
+  });
+
+  it('falls back to the compile-time rate when the hook never registers', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    const applied = applySentryRemoteRates(client);
+    // Exhaust the bounded wait without the hook ever appearing.
+    await jest.advanceTimersByTimeAsync(50 * 100);
+
+    await expect(applied).resolves.toStrictEqual({});
+    expect(client.options.tracesSampleRate).toBe(0.0075);
+    expect(getRemoteWrapperSampleRate()).toBeUndefined();
+    jest.useRealTimers();
+  });
+
+  it('waits for the persisted-state hook, then applies once it registers', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    // Hook absent at call time (sentry-install runs before setup-initial-state-hooks).
+    const applied = applySentryRemoteRates(client);
+    // State-hooks registers a few ticks later.
+    mockPersistedState({ tracesSampleRate: 0.03 });
+    await jest.advanceTimersByTimeAsync(100);
+
+    await expect(applied).resolves.toStrictEqual({
+      tracesSampleRate: 0.03,
+      wrapperSampleRate: undefined,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.03);
+    jest.useRealTimers();
+  });
+
+  it('still applies when the hook registers on the last poll interval', async () => {
+    jest.useFakeTimers();
+    const client = mockClient();
+
+    // Absent through nearly the whole poll window (50 × 100ms).
+    const applied = applySentryRemoteRates(client);
+    await jest.advanceTimersByTimeAsync(49 * 100);
+    // Registers right at the end — must still be picked up (not missed by the
+    // check-then-wait off-by-one).
+    mockPersistedState({ tracesSampleRate: 0.04 });
+    await jest.advanceTimersByTimeAsync(100);
+
+    await expect(applied).resolves.toStrictEqual({
+      tracesSampleRate: 0.04,
+      wrapperSampleRate: undefined,
+    });
+    expect(client.options.tracesSampleRate).toBe(0.04);
+    jest.useRealTimers();
+  });
+
+  it('falls back when reading persisted state throws', async () => {
+    globalThis.stateHooks = {
+      getPersistedState: async () => {
+        throw new Error('storage unavailable');
+      },
+      getSentryState: () => ({ browser: '', version: '' }),
+    };
+
+    await expect(applySentryRemoteRates(mockClient())).resolves.toStrictEqual(
+      {},
+    );
+    expect(getRemoteWrapperSampleRate()).toBeUndefined();
+  });
+
+  it('works without a client (wrapper rate only)', async () => {
+    mockPersistedState({ tracesSampleRate: 0.02, wrapperSampleRate: 0.5 });
+
+    const applied = await applySentryRemoteRates();
+
+    expect(applied.tracesSampleRate).toBe(0.02);
+    expect(getRemoteWrapperSampleRate()).toBe(0.5);
+  });
+
+  describe('shouldSampleWrappers integration', () => {
+    it('uses the compile-time rate when no override was applied', () => {
+      expect(shouldSampleWrappers(SAMPLED_TRACE_ID)).toBe(true);
+      expect(shouldSampleWrappers(UNSAMPLED_TRACE_ID)).toBe(false);
+    });
+
+    it('uses the remote override once applied', async () => {
+      mockPersistedState({ wrapperSampleRate: 1 });
+      await applySentryRemoteRates();
+
+      expect(shouldSampleWrappers(UNSAMPLED_TRACE_ID)).toBe(true);
+
+      resetSentryRemoteRates();
+      expect(shouldSampleWrappers(UNSAMPLED_TRACE_ID)).toBe(false);
+    });
+  });
+});

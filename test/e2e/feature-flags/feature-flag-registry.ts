@@ -2265,6 +2265,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: { enabled: true },
     status: FeatureFlagStatus.Active,
   },
+  sentry: {
+    name: 'sentry',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    // Live remote lever; defaults to no override so the compile-time sample
+    // rates apply until the flag is set (e.g. `{ tracesSampleRate: 0.005 }`)
+    // on the client-config service in production.
+    productionDefault: {},
+    status: FeatureFlagStatus.Active,
+  },
   gasFeesSponsoredNetwork: {
     name: 'gasFeesSponsoredNetwork',
     type: FeatureFlagType.Remote,

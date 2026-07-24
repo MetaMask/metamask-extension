@@ -7,6 +7,7 @@ import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
+import { applySentryRemoteRates } from '../../../shared/lib/sentry-remote-rates';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
@@ -264,6 +265,12 @@ function setSentryClient() {
 
   Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
+
+  // Apply remote-flag sample-rate overrides once, post-init; compile-time
+  // rates remain the fallback when the flag is absent or malformed.
+  applySentryRemoteRates(Sentry.getClient()).catch((error) =>
+    log('Failed to apply remote Sentry sample rates', error),
+  );
 
   setCITags();
 
