@@ -16,6 +16,7 @@ import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
+import { errorCodes } from '@metamask/rpc-errors';
 import { isObject, hasProperty } from '@metamask/utils';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
@@ -1984,8 +1985,15 @@ export function setupController(
   }
 
   function onTransactionStatusUpdated({ transactionMeta }) {
-    const { status, txParams, chainId } = transactionMeta ?? {};
+    const { status, txParams, chainId, error } = transactionMeta ?? {};
     if (status !== 'failed' && status !== 'dropped') {
+      return;
+    }
+
+    // A hardware-wallet rejection surfaces as a `failed` transaction whose
+    // error carries the standard user-rejected JSON-RPC code. The user
+    // deliberately cancelled, so don't surface a red failure badge.
+    if (error?.code === errorCodes.provider.userRejectedRequest) {
       return;
     }
 
