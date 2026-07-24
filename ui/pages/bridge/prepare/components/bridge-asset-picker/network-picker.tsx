@@ -35,6 +35,7 @@ export const NetworkPicker = ({
   isOpen,
   onClose,
   testId,
+  balanceByChainId = {},
 }: {
   chains: { chainId: CaipChainId; name: string }[];
   selectedChainId: CaipChainId | null;
@@ -44,11 +45,31 @@ export const NetworkPicker = ({
   isOpen: boolean;
   onClose: () => void;
   testId: string;
+  balanceByChainId?: Record<CaipChainId, number>;
 }) => {
   const t = useI18nContext();
   const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
 
-  const networkSections = useMemo(() => getNetworkSections(chains), [chains]);
+  const compareChainsByBalance = useMemo(
+    () =>
+      (
+        networkA: { chainId: CaipChainId },
+        networkB: { chainId: CaipChainId },
+      ) =>
+        (balanceByChainId[networkB.chainId] ?? 0) -
+        (balanceByChainId[networkA.chainId] ?? 0),
+    [balanceByChainId],
+  );
+
+  const networkSections = useMemo(
+    () => getNetworkSections(chains, compareChainsByBalance),
+    [chains, compareChainsByBalance],
+  );
+
+  const sortedChains = useMemo(
+    () => [...chains].sort(compareChainsByBalance),
+    [chains, compareChainsByBalance],
+  );
 
   const sections = useMemo<NetworkSelectionSection[]>(
     () =>
@@ -142,7 +163,7 @@ export const NetworkPicker = ({
           />
         }
       />
-      {chains.map(({ chainId, name }) => (
+      {sortedChains.map(({ chainId, name }) => (
         <NetworkListItem
           selected={Boolean(selectedChainId === chainId)}
           key={chainId}
