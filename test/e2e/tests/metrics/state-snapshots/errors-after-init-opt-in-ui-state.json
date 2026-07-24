@@ -87,6 +87,7 @@
     },
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
+    "allDeFiPositionsV2": "object",
     "allDetectedTokens": {},
     "allIgnoredAssets": "object",
     "allIgnoredTokens": {},

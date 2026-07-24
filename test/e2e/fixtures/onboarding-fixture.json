@@ -131,6 +131,9 @@
       },
       "currentCurrency": "usd"
     },
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": {}
+    },
     "EnsController": {
       "ensEntries": {
         "0x1": {
