@@ -1,9 +1,23 @@
-import { useCallback, useMemo, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {
+  getInternalOrderCode,
+  normalizeProviderCode,
+} from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
-import { RAMPS_PAYMENT_METHOD_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  RAMPS_ORDER_DETAILS_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
@@ -66,6 +80,10 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedPaymentMethod,
     paymentMethods,
     paymentMethodsStatus,
+    getBuyWidgetData,
+    addOrder,
+    addPrecreatedOrder,
+    getOrderFromCallback,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -174,12 +192,133 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
   });
 
-  const handleContinue = useCallback(() => {
-    if (!canContinue || !selectedQuote) {
+  const [isContinuing, setIsContinuing] = useState(false);
+  const [continueError, setContinueError] = useState<string | null>(null);
+
+  // Tears down the tab listeners registered below. Kept in a ref so the
+  // unmount effect can always reach the latest pair without re-running.
+  const cleanupRedirectWatchRef = useRef<(() => void) | null>(null);
+
+  useEffect(
+    () => () => {
+      cleanupRedirectWatchRef.current?.();
+    },
+    [],
+  );
+
+  // Providers using the classic redirect/checkout flow (no precreated
+  // orderId) only create the order once the user finishes checkout on their
+  // hosted page and it navigates to our callback URL. Watch the tab we just
+  // opened for that navigation, then resolve the order via the callback URL.
+  //
+  // ponytail: this listener lives for as long as this hook is mounted. If the
+  // user closes the wallet UI before the checkout tab redirects, the order
+  // never resolves client-side. Move this into a background service
+  // (mirroring app/scripts/services/subscription/subscription-service.ts) if
+  // that gap needs closing — see docs/superpowers/specs for the write-up.
+  const watchForRedirectCallback = useCallback(
+    (openedTabId: number, providerCode: string) => {
+      // Tear down any watch still active from a prior Continue click before
+      // registering a new one, so listeners never accumulate.
+      cleanupRedirectWatchRef.current?.();
+
+      const onTabUpdated = (
+        tabId: number,
+        changeInfo: { url?: string; pendingUrl?: string },
+        tab?: { url?: string },
+      ) => {
+        if (tabId !== openedTabId) {
+          return;
+        }
+        const candidateUrl =
+          changeInfo.url ?? changeInfo.pendingUrl ?? tab?.url;
+        if (!candidateUrl?.startsWith(getRampCallbackBaseUrl())) {
+          return;
+        }
+        cleanupRedirectWatchRef.current?.();
+        global.platform.closeTab(tabId);
+        getOrderFromCallback(providerCode, candidateUrl, walletAddress)
+          .then(async (order) => {
+            await addOrder(order);
+            const orderId = getInternalOrderCode(order);
+            navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', orderId));
+          })
+          .catch((error) => {
+            setContinueError(
+              parseUserFacingError(error, t('rampsBuyWidgetError')),
+            );
+          });
+      };
+
+      const onTabRemoved = (tabId: number) => {
+        if (tabId !== openedTabId) {
+          return;
+        }
+        // User closed the checkout tab without finishing — not an error.
+        cleanupRedirectWatchRef.current?.();
+      };
+
+      cleanupRedirectWatchRef.current = () => {
+        global.platform.removeTabUpdatedListener(onTabUpdated);
+        global.platform.removeTabRemovedListener(onTabRemoved);
+        cleanupRedirectWatchRef.current = null;
+      };
+
+      global.platform.addTabUpdatedListener(onTabUpdated);
+      global.platform.addTabRemovedListener(onTabRemoved);
+    },
+    [addOrder, getOrderFromCallback, navigate, t, walletAddress],
+  );
+
+  const handleContinue = useCallback(async () => {
+    if (!canContinue || !selectedQuote || isContinuing) {
       return;
     }
-    return undefined;
-  }, [canContinue, selectedQuote]);
+    setContinueError(null);
+    setIsContinuing(true);
+    try {
+      const widget = await getBuyWidgetData(selectedQuote);
+      if (!widget?.url) {
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
+      }
+      // Open the provider checkout in a new tab; the widget is hosted by the
+      // provider, not rendered in the extension.
+      const openedTab = await global.platform.openTab({ url: widget.url });
+      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      if (widget.orderId) {
+        // A provider that precreates the order returns its id — seed it so
+        // the order-details page can resolve and refresh it.
+        await addPrecreatedOrder({
+          orderId: widget.orderId,
+          providerCode,
+          walletAddress,
+          chainId: selectedToken?.chainId,
+        });
+        navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', widget.orderId));
+      } else if (openedTab.id !== undefined) {
+        // Redirect-flow provider — no order exists yet, wait for checkout to
+        // complete and resolve it from the callback URL instead.
+        watchForRedirectCallback(openedTab.id, providerCode);
+      }
+    } catch (error) {
+      setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
+    } finally {
+      setIsContinuing(false);
+    }
+  }, [
+    addPrecreatedOrder,
+    canContinue,
+    getBuyWidgetData,
+    isContinuing,
+    navigate,
+    selectedProvider?.id,
+    selectedQuote,
+    selectedToken?.chainId,
+    t,
+    walletAddress,
+    watchForRedirectCallback,
+  ]);
 
   const viewKind = resolveBuildQuoteViewKind({
     intentAssetId,
@@ -220,11 +359,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethodsStatus === 'loading' &&
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
-    displayedQuoteError,
+    displayedQuoteError: continueError ?? displayedQuoteError,
     // Keep the known provider visible while quotes refresh; loading is shown
     // on the Continue button instead of replacing this label.
     providerStatusLabel: providerLabel,
-    isQuoteLoading,
+    isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,
     handleBack,
     handlePaymentMethodPress,

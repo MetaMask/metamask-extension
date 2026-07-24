@@ -8198,6 +8198,9 @@
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
   },
+  "rampsBuyWidgetError": {
+    "message": "Unable to start your purchase. Please try again."
+  },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
@@ -8240,6 +8243,60 @@
   "rampsOnNetwork": {
     "message": "on $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Bank transfer details"
+  },
+  "rampsOrderDetailsDateAndTime": {
+    "message": "Date and time"
+  },
+  "rampsOrderDetailsDone": {
+    "message": "Done"
+  },
+  "rampsOrderDetailsError": {
+    "message": "We couldn't load your order details."
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Fees"
+  },
+  "rampsOrderDetailsNotFound": {
+    "message": "Order not found"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
+  "rampsOrderDetailsPendingMessage": {
+    "message": "Your order may take some time to confirm."
+  },
+  "rampsOrderDetailsRefresh": {
+    "message": "Refresh"
+  },
+  "rampsOrderDetailsRetry": {
+    "message": "Try again"
+  },
+  "rampsOrderDetailsStatus": {
+    "message": "Status"
+  },
+  "rampsOrderDetailsTitle": {
+    "message": "Order details"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "View on $1"
+  },
+  "rampsOrderStatusCancelled": {
+    "message": "Cancelled"
+  },
+  "rampsOrderStatusComplete": {
+    "message": "Complete"
+  },
+  "rampsOrderStatusFailed": {
+    "message": "Failed"
+  },
+  "rampsOrderStatusProcessing": {
+    "message": "Processing"
   },
   "rampsOtherOptions": {
     "message": "Other options"

@@ -223,6 +223,10 @@ const RULE_2_BASELINE: Record<string, number> = {
   // Snap SDK Field props (label, error) are external input data, not i18n-rendered by the component under test.
   // Hardcoded to avoid tying Snap test fixtures to MetaMask locale files.
   'ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts': 2,
+  // Mocks a perps order-cancellation API error string, not a rendered locale
+  // value. Coincidentally collides with the unrelated `rampsOrderDetailsNotFound`
+  // locale message text ("Order not found").
+  'ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx': 1,
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {
