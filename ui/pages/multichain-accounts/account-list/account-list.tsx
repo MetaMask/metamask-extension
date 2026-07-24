@@ -19,15 +19,12 @@ import {
   IconSize,
   Text,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
@@ -47,10 +44,6 @@ import {
   CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../components/component-library';
 import {
   Footer,
   Header,
@@ -167,16 +160,14 @@ export const AccountList = () => {
           paddingBottom={2}
         >
           <TextFieldSearch
-            size={TextFieldSearchSize.Lg}
-            placeholder={t('searchYourAccounts')}
-            value={searchPattern}
-            onChange={onSearchBarChange}
+            className="app-text-field-search"
             clearButtonOnClick={() => setSearchPattern('')}
-            width={BlockSize.Full}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            borderRadius={BorderRadius.LG}
+            clearButtonProps={{ ariaLabel: t('clear') }}
             data-testid="multichain-account-list-search"
+            onChange={onSearchBarChange}
+            placeholder={t('searchYourAccounts')}
+            size={TextFieldSize.Lg}
+            value={searchPattern}
           />
         </Box>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">

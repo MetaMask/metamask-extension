@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  ButtonIconSize,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../../../components/component-library';
-import {
-  BlockSize,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
+import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetFilterInputProps = {
@@ -27,25 +19,19 @@ export const AssetFilterInput = ({
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
       <TextFieldSearch
-        borderRadius={BorderRadius.LG}
-        placeholder={placeholder ?? t('searchForAnAssetToSend')}
-        value={searchQuery}
-        onChange={(e) => onChange(e.target.value)}
-        error={false}
         autoFocus
-        autoComplete={false}
-        width={BlockSize.Full}
+        className="app-text-field-search"
         clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{
-          size: ButtonIconSize.Sm,
-        }}
-        style={{ paddingInline: 12 }}
-        showClearButton
-        inputProps={{
-          'data-testid': 'asset-filter-search-input',
-        }}
-        endAccessory={null}
-        size={TextFieldSearchSize.Lg}
+        clearButtonProps={{ ariaLabel: t('clear') }}
+        inputProps={
+          {
+            'data-testid': 'asset-filter-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder ?? t('searchForAnAssetToSend')}
+        size={TextFieldSize.Lg}
+        value={searchQuery}
       />
     </Box>
   );

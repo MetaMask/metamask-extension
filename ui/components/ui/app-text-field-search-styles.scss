@@ -1,0 +1,13 @@
+.app-text-field-search {
+  width: 100%;
+
+  // Suppresses the browser's native webkit search decorations (spinner icon
+  // and native clear button) so the extension can render its own affordances
+  // consistently across browsers.
+  ::-webkit-search-decoration,
+  ::-webkit-search-cancel-button,
+  ::-webkit-search-results-button,
+  ::-webkit-search-results-decoration {
+    display: none;
+  }
+}

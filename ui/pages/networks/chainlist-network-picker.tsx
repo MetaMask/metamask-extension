@@ -138,9 +138,9 @@ export const ChainlistNetworkPicker = ({
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
       <Box className="px-4 pb-4">
         <TextFieldSearch
+          className="app-text-field-search"
           clearButtonOnClick={() => setSearchValue('')}
           clearButtonProps={{ ariaLabel: t('clear') }}
-          className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
           data-testid="networks-page-chainlist-search"
           onChange={(event) => setSearchValue(event.target.value)}
           placeholder={t('searchNetworkNameOrChainId')}

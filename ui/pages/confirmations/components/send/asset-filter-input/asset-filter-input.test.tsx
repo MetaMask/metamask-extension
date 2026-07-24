@@ -5,6 +5,34 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetFilterInput } from './asset-filter-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
+jest.mock('@metamask/design-system-react', () => ({
+  TextFieldSearch: ({
+    value,
+    onChange,
+    clearButtonOnClick,
+    placeholder,
+    inputProps,
+  }: {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    clearButtonOnClick: () => void;
+    placeholder?: string;
+    inputProps?: { 'data-testid'?: string };
+  }) => (
+    <div data-testid="text-field-search">
+      <input
+        {...inputProps}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
+      <button data-testid="clear-button" onClick={clearButtonOnClick}>
+        Clear
+      </button>
+    </div>
+  ),
+  TextFieldSize: { Lg: 'lg' },
+}));
 jest.mock('../../../../../components/component-library', () => ({
   Box: ({
     children,
@@ -17,30 +45,6 @@ jest.mock('../../../../../components/component-library', () => ({
       {children}
     </div>
   ),
-  TextFieldSearch: ({
-    value,
-    onChange,
-    clearButtonOnClick,
-    placeholder,
-    inputProps,
-    ...props
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }: any) => (
-    <div data-testid="text-field-search">
-      <input
-        {...inputProps}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        {...props}
-      />
-      <button data-testid="clear-button" onClick={clearButtonOnClick}>
-        Clear
-      </button>
-    </div>
-  ),
-  ButtonIconSize: { Sm: 'sm' },
-  TextFieldSearchSize: { Lg: 'lg' },
 }));
 
 describe('AssetFilterInput', () => {

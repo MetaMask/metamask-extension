@@ -9,15 +9,11 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
-import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -164,17 +160,14 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          size={TextFieldSearchSize.Lg}
-          placeholder={t('searchNetworks')}
-          value={searchPattern}
-          onChange={handleSearchChange}
+          className="app-text-field-search"
           clearButtonOnClick={handleClearSearch}
-          width={BlockSize.Full}
-          borderWidth={0}
-          marginBottom={2}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
+          clearButtonProps={{ ariaLabel: t('clear') }}
           data-testid="multichain-address-rows-list-search"
+          onChange={handleSearchChange}
+          placeholder={t('searchNetworks')}
+          size={TextFieldSize.Lg}
+          value={searchPattern}
         />
       </Box>
 

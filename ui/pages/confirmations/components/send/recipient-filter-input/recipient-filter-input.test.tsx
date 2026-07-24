@@ -5,43 +5,46 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RecipientFilterInput } from './recipient-filter-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
-  ),
+jest.mock('@metamask/design-system-react', () => ({
   TextFieldSearch: ({
     value,
     onChange,
     clearButtonOnClick,
     placeholder,
     inputProps,
-    ...props
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }: any) => (
+  }: {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    clearButtonOnClick: () => void;
+    placeholder?: string;
+    inputProps?: { 'data-testid'?: string };
+  }) => (
     <div data-testid="text-field-search">
       <input
         {...inputProps}
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        {...props}
       />
       <button data-testid="clear-button" onClick={clearButtonOnClick}>
         Clear
       </button>
     </div>
   ),
-  ButtonIconSize: { Sm: 'sm' },
-  TextFieldSearchSize: { Lg: 'lg' },
+  TextFieldSize: { Lg: 'lg' },
+}));
+jest.mock('../../../../../components/component-library', () => ({
+  Box: ({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }) => (
+    <div data-testid="box" {...props}>
+      {children}
+    </div>
+  ),
 }));
 
 describe('RecipientFilterInput', () => {
@@ -66,7 +69,7 @@ describe('RecipientFilterInput', () => {
     expect(getByTestId('recipient-filter-search-input')).toBeInTheDocument();
   });
 
-  it('displays default placeholder', () => {
+  it('displays placeholder', () => {
     const { getByTestId } = render(
       <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
@@ -90,15 +93,10 @@ describe('RecipientFilterInput', () => {
 
   it('displays current search query value', () => {
     const { getByTestId } = render(
-      <RecipientFilterInput
-        searchQuery="current query"
-        onChange={mockOnChange}
-      />,
+      <RecipientFilterInput searchQuery="initial" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('recipient-filter-search-input')).toHaveValue(
-      'current query',
-    );
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue('initial');
   });
 
   it('clears input when clear button is clicked', () => {
@@ -106,19 +104,12 @@ describe('RecipientFilterInput', () => {
       <RecipientFilterInput searchQuery="some text" onChange={mockOnChange} />,
     );
 
-    const clearButton = getByTestId('clear-button');
-    fireEvent.click(clearButton);
+    fireEvent.click(getByTestId('clear-button'));
 
     expect(mockOnChange).toHaveBeenCalledWith('');
   });
 
-  it('calls useI18nContext hook', () => {
-    render(<RecipientFilterInput searchQuery="" onChange={mockOnChange} />);
-
-    expect(mockUseI18nContext).toHaveBeenCalledTimes(1);
-  });
-
-  it('updates value when searchQuery prop changes', () => {
+  it('updates when searchQuery prop changes', () => {
     const { getByTestId, rerender } = render(
       <RecipientFilterInput searchQuery="initial" onChange={mockOnChange} />,
     );
@@ -132,11 +123,13 @@ describe('RecipientFilterInput', () => {
     expect(getByTestId('recipient-filter-search-input')).toHaveValue('updated');
   });
 
-  it('renders with empty search query', () => {
+  it('clears when clear button is clicked with empty value', () => {
     const { getByTestId } = render(
       <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('recipient-filter-search-input')).toHaveValue('');
+    fireEvent.click(getByTestId('clear-button'));
+
+    expect(mockOnChange).toHaveBeenCalledWith('');
   });
 });
