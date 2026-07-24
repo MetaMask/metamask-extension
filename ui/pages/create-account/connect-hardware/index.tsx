@@ -295,6 +295,15 @@ const ConnectHardwareForm = () => {
           }
         }
 
+        if (deviceName === HardwareDeviceNames.qr) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Qr);
+
+          if (hwError.code === ErrorCode.PermissionCameraDenied) {
+            setError(t('youNeedToAllowCameraAccess') as string);
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
@@ -420,6 +429,7 @@ const ConnectHardwareForm = () => {
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
+      createEventBuilder,
       defaultHdPaths,
       getPage,
       hardwareAccounts.length,
@@ -498,7 +508,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [createEventBuilder, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -600,6 +610,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      createEventBuilder,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,

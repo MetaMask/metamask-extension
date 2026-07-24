@@ -22,6 +22,7 @@ import type { QrReaderProps } from './qr-reader.types';
  * @param props.requestId - Expected signing request ID.
  * @param props.setErrorTitle - Sets the popover error heading.
  * @param props.setErrorActive - Signals the parent that the scanner is showing error content.
+ * @param props.setCameraPermissionDenied - Signals the parent that camera permission was denied.
  */
 const QrReader = ({
   submitQRHardwareSignature,
@@ -29,6 +30,7 @@ const QrReader = ({
   requestId,
   setErrorTitle,
   setErrorActive,
+  setCameraPermissionDenied,
 }: QrReaderProps) => {
   const handleSuccess = useCallback(
     async (ur: UR) => {
@@ -56,6 +58,7 @@ const QrReader = ({
       handleSuccess={handleSuccess}
       setErrorTitle={setErrorTitle}
       setErrorActive={setErrorActive}
+      setCameraPermissionDenied={setCameraPermissionDenied}
     />
   );
 };

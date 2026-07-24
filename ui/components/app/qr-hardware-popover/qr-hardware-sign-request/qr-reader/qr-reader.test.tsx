@@ -50,6 +50,10 @@ jest.mock('../../base-qr-reader', () => {
         data-testid="base-qr-reader-set-error-active"
         onClick={() => mockProps.setErrorActive(true)}
       />
+      <button
+        data-testid="base-qr-reader-set-camera-permission-denied"
+        onClick={() => mockProps.setCameraPermissionDenied?.(true)}
+      />
     </div>
   );
   MockBaseQrReader.displayName = 'MockBaseQrReader';
@@ -90,6 +94,7 @@ describe('QrReader', () => {
     requestId: 'matching-request-id',
     setErrorTitle: jest.fn(),
     setErrorActive: jest.fn(),
+    setCameraPermissionDenied: jest.fn(),
   };
 
   beforeEach(() => {
@@ -186,6 +191,18 @@ describe('QrReader', () => {
       await screen.getByTestId('base-qr-reader-set-error-active').click();
 
       expect(defaultProps.setErrorActive).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('setCameraPermissionDenied propagation', () => {
+    it('passes setCameraPermissionDenied through to BaseQrReader', async () => {
+      renderWithProvider(<QrReader {...defaultProps} />);
+
+      await screen
+        .getByTestId('base-qr-reader-set-camera-permission-denied')
+        .click();
+
+      expect(defaultProps.setCameraPermissionDenied).toHaveBeenCalledWith(true);
     });
   });
 });
