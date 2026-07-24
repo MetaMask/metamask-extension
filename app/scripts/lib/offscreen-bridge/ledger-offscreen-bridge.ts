@@ -18,6 +18,7 @@ import {
   HardwareWalletType,
   toHardwareWalletError,
 } from '../../../../shared/lib/hardware-wallets';
+import { SerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
 
 const MESSAGE_TIMEOUT = 4000;
 
