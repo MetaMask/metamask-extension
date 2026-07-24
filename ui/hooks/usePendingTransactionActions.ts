@@ -15,7 +15,7 @@ type UsePendingTransactionActionsParams = {
   transactionGroup: TransactionGroup;
   isEarliestNonce: boolean;
   setEditGasMode: (mode: EditGasModes) => void;
-  /** From the caller's single `useBridgeTxHistoryData` lookup (avoids duplicate bridge hooks). */
+  /** From the caller's `selectBridgeHistoryItemForTx` lookup. */
   hasIntentBridgeActivity: boolean;
 };
 

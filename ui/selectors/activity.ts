@@ -36,7 +36,10 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
-import { selectBridgeHistoryItemForTx } from '../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
@@ -217,6 +220,33 @@ export const selectNonEvmTransactionsForActivity = createSelector(
     return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
   },
 );
+
+export const selectBridgeHistoryItemForTx = (
+  state: MetaMaskReduxState,
+  tx: { hash?: string; id?: string } | undefined,
+) => {
+  if (!tx) {
+    return undefined;
+  }
+
+  const byHash = selectBridgeHistoryItemByHash(state, tx.hash);
+  if (byHash) {
+    return byHash;
+  }
+
+  if (tx.id) {
+    const bridgeHistory = (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
+      string,
+      BridgeHistoryItem
+    >;
+    const directById = bridgeHistory[tx.id];
+    if (directById) {
+      return directById;
+    }
+  }
+
+  return selectBridgeHistoryForOriginalTxMetaId(state, tx.id);
+};
 
 const selectBridgeHistory = createSelector(
   [(state: MetaMaskReduxState) => state],
