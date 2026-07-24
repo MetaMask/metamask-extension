@@ -139,6 +139,21 @@ const errorMessages = {
     'waitUntilXWindowHandles timed out polling window handles',
 };
 
+async function getTargets(cdpConnection) {
+  const { result } = await cdpConnection.send('Target.getTargets');
+  return result?.targetInfos ?? [];
+}
+
+async function findServiceWorkerTarget(cdpConnection) {
+  const targetInfos = await getTargets(cdpConnection);
+  return targetInfos.find(
+    (info) =>
+      info.type === 'service_worker' &&
+      typeof info.url === 'string' &&
+      info.url.startsWith(this.extensionUrl),
+  );
+}
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -208,47 +223,25 @@ class Driver {
     let targetInfo;
     let attachedSessionId = null;
 
-    const getKnownTargetsDump = async () => {
-      const { result } = await cdpConnection.send('Target.getTargets');
-      const targetInfos = result?.targetInfos ?? [];
-
-      return JSON.stringify(
-        targetInfos.map(({ targetId, type, title, url }) => ({
-          targetId,
-          type,
-          title,
-          url,
-        })),
-        null,
-        2,
-      );
-    };
-
-    const getServiceWorkerTargetInfo = async () => {
-      const { result } = await cdpConnection.send('Target.getTargets');
-      const targetInfos = result?.targetInfos ?? [];
-      targetInfo = targetInfos.find(
-        (info) =>
-          info.type === 'service_worker' &&
-          typeof info.url === 'string' &&
-          info.url.startsWith(this.extensionUrl),
-      );
-      return Boolean(targetInfo);
-    };
-
     try {
-      await this.waitUntil(getServiceWorkerTargetInfo, {
-        interval: 250,
-        timeout: timeout ?? this.timeout,
-      });
+      await this.waitUntil(
+        async () => {
+          targetInfo = await findServiceWorkerTarget(cdpConnection);
+          return Boolean(targetInfo);
+        },
+        {
+          interval: 250,
+          timeout: timeout ?? this.timeout,
+        },
+      );
     } catch (error) {
-      const knownTargets = await getKnownTargetsDump();
+      const knownTargets = await getTargets(cdpConnection);
 
       const errorMessage =
         error instanceof Error && error.message ? `${error.message}. ` : '';
 
       throw new Error(
-        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${knownTargets}`,
+        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${JSON.stringify(knownTargets, null, 2)}`,
       );
     }
 
