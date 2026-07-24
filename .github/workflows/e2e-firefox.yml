@@ -60,11 +60,29 @@ jobs:
       test-command: yarn test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  test-e2e-firefox-playwright:
+    uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-playwright'] }}
+    with:
+      test-suite-name: test-e2e-firefox-playwright
+      build-artifact: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      playwright-browsers: firefox
+      test-command: E2E_DEBUG=true yarn test:e2e:playwright:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask-webpack
       - test-e2e-firefox-dist-webpack
+      - test-e2e-firefox-playwright
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() }}
