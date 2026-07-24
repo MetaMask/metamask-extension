@@ -1,4 +1,4 @@
-export type {
+import type {
   TokenSecurityData,
   TokenSecurityFeature,
   TokenSecurityFees,
@@ -8,14 +8,22 @@ export type {
   TokenSecurityMetadata,
 } from '@metamask/assets-controllers';
 
+export type {
+  TokenSecurityData,
+  TokenSecurityFeature,
+  TokenSecurityFees,
+  TokenSecurityFinancialStats,
+  TokenSecurityHolder,
+  TokenSecurityMarket,
+  TokenSecurityMetadata,
+};
+
 export type FeatureTag = {
   label: string;
 };
 
 export type SecurityTrustLocationState = {
-  securityData?:
-    | import('@metamask/assets-controllers').TokenSecurityData
-    | null;
+  securityData?: TokenSecurityData | null;
   symbol?: string;
   name?: string;
   decimals?: number;
