@@ -1997,12 +1997,6 @@
     "message": "Phê duyệt $1 cho cầu nối",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Bạn đang cho phép truy cập vào $1 $2. Hợp đồng sẽ không truy cập thêm bất kỳ khoản tiền nào khác."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Bạn sẽ cần cho phép truy cập vào $1 $2 để thực hiện cầu nối, sau đó hãy phê duyệt việc thực hiện cầu nối sang $3. Điều này sẽ yêu cầu hai lần xác nhận riêng biệt."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Đã sao chép liên kết trình khám phá khối"
   },
@@ -4163,9 +4157,6 @@
   },
   "gotIt": {
     "message": "Tôi đã hiểu"
-  },
-  "grantExactAccess": {
-    "message": "Cấp quyền truy cập chính xác"
   },
   "gwei": {
     "message": "GWEI"
@@ -11260,12 +11251,6 @@
   },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Phê duyệt token cho cầu nối."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Phê duyệt token cho hoán đổi."
   },
   "withdrawTo": {
     "message": "Nhận",
