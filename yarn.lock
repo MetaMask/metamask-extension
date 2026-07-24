@@ -5529,9 +5529,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.1.1":
-  version: 11.1.1
-  resolution: "@metamask/assets-controller@npm:11.1.1"
+"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.2.0":
+  version: 11.2.0
+  resolution: "@metamask/assets-controller@npm:11.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5563,7 +5563,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/7bf0f6cd21e5aecc1b6760937a3c4a6e140d9f323b681b0639ab26a09abdc1626367c90f32ab5bf840a37b21f1a0f53de075a0563d2543fb22ab0b6d80a35a56
+  checksum: 10/45f420415b569badbbbf36c25851a4e658b45c904ff11411bb610fdc5e258e40fbded13c9f413834f5d38ce2e7aa31449490c8e925c3bf5bc2c7ae6c7c42f675
   languageName: node
   linkType: hard
 
@@ -6712,15 +6712,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^26.1.0, @metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4":
-  version: 26.2.4
-  resolution: "@metamask/gas-fee-controller@npm:26.2.4"
+"@metamask/gas-fee-controller@npm:^26.1.1, @metamask/gas-fee-controller@npm:^26.2.1, @metamask/gas-fee-controller@npm:^26.2.3, @metamask/gas-fee-controller@npm:^26.2.4, @metamask/gas-fee-controller@npm:^26.3.0":
+  version: 26.3.0
+  resolution: "@metamask/gas-fee-controller@npm:26.3.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/polling-controller": "npm:^16.0.8"
     "@metamask/utils": "npm:^11.11.0"
@@ -6730,7 +6730,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/3086d5f13052b60eb92fc72b473395739b224eb9090ffec2ff698edb695febf9080d718a5d5bf8212f54979022f304166d90c0df159a6a3677250c258daaa07e
+  checksum: 10/a09363e61f84287596eb31af6bc9bc77361a4f3aab4f7751aa85e7c94996bdfb088ecb2620404f1bd405129077043c9c2efd9d27f5a79a5dd5f7a7435fb02b82
   languageName: node
   linkType: hard
 
@@ -7861,6 +7861,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/sentinel-api-service@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/sentinel-api-service@npm:1.0.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^0.1.3"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.11.0"
+    "@tanstack/query-core": "npm:^4.43.0"
+  checksum: 10/4c56a05eb998705be78469dcda737805a059bee144e01a8f225db83045b8b3048c9382526294b3a6d2f084ff3db4b17dbfba3bda8ca085a7689b8554ee520f7e
+  languageName: node
+  linkType: hard
+
 "@metamask/shield-controller@npm:^5.1.2":
   version: 5.1.2
   resolution: "@metamask/shield-controller@npm:5.1.2"
@@ -8478,31 +8492,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^24.0.3":
-  version: 24.1.0
-  resolution: "@metamask/transaction-pay-controller@npm:24.1.0"
+"@metamask/transaction-pay-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/transaction-pay-controller@npm:26.0.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/assets-controller": "npm:^11.0.0"
-    "@metamask/assets-controllers": "npm:^109.4.1"
+    "@metamask/assets-controller": "npm:^11.2.0"
+    "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/gas-fee-controller": "npm:^26.2.4"
+    "@metamask/gas-fee-controller": "npm:^26.3.0"
     "@metamask/keyring-controller": "npm:^27.1.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/ramps-controller": "npm:^17.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/sentinel-api-service": "npm:^1.0.0"
+    "@metamask/transaction-controller": "npm:^69.2.1"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/6a87b0534d2010f7f451a843498a8c44393952a071c4a3219c13230b4844699f1039d27189dc753ee62f42ecb1c18c075589b2920f8c6d54d791a7859988bd75
+  checksum: 10/35c681ab2e1fbf60e3ae01b3f67be52ac69e755a67266884e40a1a3dfe0db74e29c81516df4904e5a78c11d20793df09de6136d436c4513be19730c392cbd977
   languageName: node
   linkType: hard
 
@@ -32806,7 +32821,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.1.1"
+    "@metamask/assets-controller": "npm:^11.2.0"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -32859,7 +32874,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
-    "@metamask/gas-fee-controller": "npm:^26.1.0"
+    "@metamask/gas-fee-controller": "npm:^26.3.0"
     "@metamask/gator-permissions-controller": "npm:^4.2.1"
     "@metamask/gator-permissions-snap": "npm:^2.4.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
@@ -32919,6 +32934,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^10.1.0"
     "@metamask/selected-network-controller": "npm:^26.1.4"
+    "@metamask/sentinel-api-service": "npm:^1.0.0"
     "@metamask/shield-controller": "npm:^5.1.2"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
@@ -32946,7 +32962,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.1.0"
-    "@metamask/transaction-pay-controller": "npm:^24.0.3"
+    "@metamask/transaction-pay-controller": "npm:^26.0.0"
     "@metamask/tron-wallet-snap": "npm:^1.33.1"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.11.0"

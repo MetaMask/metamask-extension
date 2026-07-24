@@ -21,6 +21,14 @@ import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 // TODO: Replace with direct `TransactionData` import once exported from @metamask/transaction-pay-controller
 type TransactionData = TransactionPayControllerState['transactionData'][string];
 
+function getExecutableQuotes(
+  quotes: TransactionPayQuote<Json>[] | undefined,
+): TransactionPayQuote<Json>[] {
+  return (quotes ?? []).filter(
+    (quote) => quote.strategy !== TransactionPayStrategy.None,
+  );
+}
+
 const PAY_TYPES = [
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
@@ -89,6 +97,8 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
     const txPayData = transactionMetricsRequest.getTransactionPayData(
       parentTransaction.id,
     );
+    // Keep original quote order so quoteIndex stays aligned with bridge/swap
+    // child steps. Filtering None here would shift dust onto the wrong step.
     const quotes: TransactionPayQuote<Json>[] = txPayData?.quotes ?? [];
 
     const quoteTransactionIds = relatedTransactionIds.filter((id: string) =>
@@ -106,6 +116,7 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
 
     if (
       quote &&
+      quote.strategy !== TransactionPayStrategy.None &&
       quote.request?.targetTokenAddress !==
         '0x0000000000000000000000000000000000000000'
     ) {
@@ -235,6 +246,7 @@ function addPayTypeProperties(
   }
 
   const { quotes, totals, tokens } = txPayData;
+  const executableQuotes = getExecutableQuotes(quotes);
   const primaryRequiredToken: TransactionPayRequiredToken | undefined =
     tokens?.find((t) => !t.skipIfBalance);
 
@@ -255,12 +267,12 @@ function addPayTypeProperties(
       .toString(10);
   }
 
-  const strategy = quotes?.[0]?.strategy;
+  const strategy = executableQuotes[0]?.strategy;
 
   if (strategy === TransactionPayStrategy.Relay) {
     properties.mm_pay_strategy = 'relay';
   }
 
-  properties.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
+  properties.mm_pay_transaction_step_total = executableQuotes.length + 1;
   properties.mm_pay_transaction_step = properties.mm_pay_transaction_step_total;
 }
