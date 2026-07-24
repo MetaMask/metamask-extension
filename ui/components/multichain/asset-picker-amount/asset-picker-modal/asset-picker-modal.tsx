@@ -9,19 +9,17 @@ import { useSelector } from 'react-redux';
 import type { Token } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
   Box,
-  AvatarTokenSize,
-  AvatarToken,
   Text,
   PickerNetwork,
 } from '../../../component-library';
 import {
-  BorderRadius,
   TextVariant,
   TextAlign,
   Display,
@@ -469,10 +467,10 @@ export function AssetPickerModal({
             marginInline="auto"
           >
             <AvatarToken
-              borderRadius={BorderRadius.full}
               src={sendingAsset.image}
               name={sendingAsset.symbol}
               size={AvatarTokenSize.Xs}
+              className="rounded-full"
             />
             <Text variant={TextVariant.bodySm}>
               {t('sendingAsset', [sendingAsset.symbol])}
