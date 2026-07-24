@@ -294,6 +294,8 @@ env:
   - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
   # Determines if feature flagged Settings Page - Developer Options should be used
   - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
+  # Enables Designer Mode — a dev-only in-app visual inspector. See docs/designer-mode.md.
+  - DESIGNER_MODE: false
   # Used for debugging changes to the phishing warning page.
   # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
   - PHISHING_WARNING_PAGE_URL: null
