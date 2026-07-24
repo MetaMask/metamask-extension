@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import Typography from '.';
+import Typography, { ValidColors } from './typography';
 
 describe('Typography', () => {
   it('should render the Typography without crashing', () => {
@@ -57,5 +57,8 @@ describe('Typography', () => {
     expect(getByText('dd')).toBeDefined();
     expect(container.querySelector('label')).toBeDefined();
     expect(getByText('label')).toBeDefined();
+  });
+  it('should not contain duplicate color values in ValidColors', () => {
+    expect(new Set(ValidColors).size).toBe(ValidColors.length);
   });
 });
