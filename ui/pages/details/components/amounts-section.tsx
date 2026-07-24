@@ -34,10 +34,15 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
   const isGasFeeSponsored = useIsGasFeeSponsored(item.hash);
 
-  const visibleFees =
+  const amountFees =
     'fees' in item.data
       ? (item.data.fees?.filter((fee) => Boolean(fee.amount)) ?? [])
       : [];
+  const hasBaseFee = amountFees.some((fee) => fee.type === 'base');
+  const visibleFees =
+    isGasFeeSponsored && !hasBaseFee
+      ? [{ type: 'base' }, ...amountFees]
+      : amountFees;
 
   if (!visibleFees.length) {
     return null;
