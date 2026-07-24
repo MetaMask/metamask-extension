@@ -208,6 +208,7 @@ class Driver {
     const pollInterval = 250;
     let targetInfo;
     let attachedSessionId = null;
+    const waitUntilTimeoutPattern = /^Condition not met within \d+ms\.$/u;
 
     const getKnownTargetsDump = async () => {
       const { result } = await cdpConnection.send('Target.getTargets');
@@ -245,16 +246,11 @@ class Driver {
         });
       } catch (error) {
         if (
-          error instanceof Error &&
-          /^Condition not met within \d+ms\.$/u.test(error.message)
+          !(error instanceof Error) ||
+          !waitUntilTimeoutPattern.test(error.message)
         ) {
-          const targetDump = await getKnownTargetsDump();
-          throw new Error(
-            `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
-          );
+          throw error;
         }
-
-        throw error;
       }
 
       if (!targetInfo) {
