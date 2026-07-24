@@ -8,7 +8,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BitcoinTransactionDetailsPage from '../../page-objects/pages/home/bitcoin-transaction-details';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import { Driver } from '../../webdriver/driver';
@@ -113,7 +113,7 @@ describe('BTC Account - Activity', function (this: Suite) {
         await activity.checkPendingTxNumberDisplayedInActivity(1);
         await activity.clickOnActivity(1);
 
-        const details = new BitcoinTransactionDetailsPage(driver);
+        const details = new TransactionDetailsPage(driver);
         await details.checkPageIsLoaded();
         await details.checkTitle('Sending BTC');
         await details.checkTime();
