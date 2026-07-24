@@ -1,4 +1,5 @@
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlagsWithManifestOverrides } from '../../../shared/lib/ab-testing/ab-test-analytics';
 
 export type FeatureFlagTagConfig = {
   // Flag key inside remoteFeatureFlags.
@@ -72,8 +73,10 @@ function resolveRemoteFeatureFlags(
 
 /**
  * Builds Sentry tags for the allowlisted remote feature flags found in a Sentry
- * app-state snapshot. Each flag becomes a short, filterable tag reflecting its
- * effective value, or `unset` when the flag (or the flags map) is unavailable.
+ * app-state snapshot, with manifest overrides applied on top (same effective
+ * value path as background gating / the UI selector). Each flag becomes a
+ * short, filterable tag reflecting its effective value, or `unset` when the
+ * flag is absent from both state and manifest overrides.
  *
  * @param appState - The snapshot returned by the Sentry `getState()` hook.
  * @param configs - The flags to tag. Defaults to {@link SENTRY_FEATURE_FLAG_TAGS}.
@@ -83,14 +86,14 @@ export function getFeatureFlagTags(
   appState: unknown,
   configs: FeatureFlagTagConfig[] = SENTRY_FEATURE_FLAG_TAGS,
 ): Record<string, string> {
-  const flags = resolveRemoteFeatureFlags(appState);
+  const flags = getRemoteFeatureFlagsWithManifestOverrides(
+    resolveRemoteFeatureFlags(appState),
+  );
   const tags: Record<string, string> = {};
   for (const { name, tag, resolve } of configs) {
     const key = tag ?? `featureFlag.${name}`;
     tags[key] =
-      flags && name in flags
-        ? (resolve ?? defaultResolve)(flags[name])
-        : 'unset';
+      name in flags ? (resolve ?? defaultResolve)(flags[name]) : 'unset';
   }
   return tags;
 }

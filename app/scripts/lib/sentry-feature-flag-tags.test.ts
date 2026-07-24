@@ -1,3 +1,4 @@
+import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import {
   getFeatureFlagTags,
   type FeatureFlagTagConfig,
@@ -9,6 +10,14 @@ const TAG = `featureFlag.${FLAG}`;
 const configs: FeatureFlagTagConfig[] = [{ name: FLAG }];
 
 describe('getFeatureFlagTags', () => {
+  beforeEach(() => {
+    jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('appState shapes', () => {
     it('reads flags from the UI post-init shape (state.metamask.remoteFeatureFlags)', () => {
       const appState = {
@@ -100,6 +109,45 @@ describe('getFeatureFlagTags', () => {
 
       expect(getFeatureFlagTags(appState, configs)).toStrictEqual({
         [TAG]: 'false',
+      });
+    });
+  });
+
+  describe('manifest overrides', () => {
+    it('prefers a manifest override over the app-state flag value', () => {
+      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
+        remoteFeatureFlags: {
+          platformPersistenceSuspendWritesOnShutdown: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+        },
+      });
+
+      const appState = {
+        state: {
+          metamask: {
+            remoteFeatureFlags: {
+              platformPersistenceSuspendWritesOnShutdown: false,
+            },
+          },
+        },
+      };
+
+      expect(getFeatureFlagTags(appState, configs)).toStrictEqual({
+        [TAG]: 'true',
+      });
+    });
+
+    it('tags a manifest-only flag when app state has no flags map', () => {
+      jest.spyOn(ManifestFlags, 'getManifestFlags').mockReturnValue({
+        remoteFeatureFlags: {
+          platformPersistenceSuspendWritesOnShutdown: true,
+        },
+      });
+
+      expect(getFeatureFlagTags({}, configs)).toStrictEqual({
+        [TAG]: 'true',
       });
     });
   });
