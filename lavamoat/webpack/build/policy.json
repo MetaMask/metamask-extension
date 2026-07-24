@@ -16,17 +16,6 @@
         "postcss>picocolors": true
       }
     },
-    "@storybook/test-runner>@babel/template>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
-        "@babel/code-frame>js-tokens": true,
-        "postcss>picocolors": true
-      }
-    },
     "@babel/core": {
       "builtin": {
         "assert": true,
@@ -68,30 +57,6 @@
       }
     },
     "@babel/core>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "@babel/core>@babel/generator>jsesc": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true,
-        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "@babel/core>@babel/generator>jsesc": true
-      }
-    },
-    "@storybook/test-runner>@babel/generator": {
       "globals": {
         "console.error": true,
         "console.warn": true
@@ -189,7 +154,7 @@
     },
     "@babel/core>@babel/helpers": {
       "packages": {
-        "@babel/core>@babel/helpers>@babel/template": true,
+        "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -243,27 +208,6 @@
         "@babel/core>@babel/types": true
       }
     },
-    "@babel/core>@babel/helpers>@babel/template": {
-      "packages": {
-        "@babel/code-frame": true,
-        "depcheck>@babel/parser": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/template": {
-      "packages": {
-        "@babel/code-frame": true,
-        "depcheck>@babel/parser": true,
-        "@babel/core>@babel/types": true
-      }
-    },
-    "@storybook/test-runner>@babel/template": {
-      "packages": {
-        "@storybook/test-runner>@babel/template>@babel/code-frame": true,
-        "@storybook/test-runner>@babel/template>@babel/parser": true,
-        "@storybook/test-runner>@babel/template>@babel/types": true
-      }
-    },
     "depcheck>@babel/traverse": {
       "globals": {
         "console.log": true
@@ -271,12 +215,10 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
-        "depcheck>@babel/traverse>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "depcheck>@babel/traverse>@babel/template": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
@@ -288,25 +230,15 @@
       },
       "packages": {
         "@babel/code-frame": true,
-        "@storybook/test-runner>@babel/generator": true,
+        "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@storybook/test-runner>@babel/template": true,
+        "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "nock>debug": true
       }
     },
     "@babel/core>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
-      }
-    },
-    "@storybook/test-runner>@babel/template>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -3467,7 +3399,7 @@
         "http-server>opener": true,
         "postcss>picocolors": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-bundle-analyzer>ws": true
+        "ws": true
       }
     },
     "webpack-dev-server>webpack-dev-middleware": {
@@ -3547,7 +3479,7 @@
         "webpack-dev-server>sockjs": true,
         "webpack": true,
         "webpack-dev-server>webpack-dev-middleware": true,
-        "webpack-dev-server>ws": true
+        "ws": true
       }
     },
     "webpack>webpack-sources": {
@@ -3584,46 +3516,7 @@
         "gulp-sass>strip-ansi": true
       }
     },
-    "webpack-bundle-analyzer>ws": {
-      "builtin": {
-        "buffer.isUtf8": true,
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "crypto.randomFillSync": true,
-        "events": true,
-        "http.STATUS_CODES": true,
-        "http.createServer": true,
-        "http.request": true,
-        "https.request": true,
-        "net.connect": true,
-        "net.isIP": true,
-        "stream.Duplex": true,
-        "stream.Readable": true,
-        "stream.Writable": true,
-        "tls.connect": true,
-        "url.URL": true,
-        "util.types.isUint8Array": true,
-        "zlib.Z_DEFAULT_WINDOWBITS": true,
-        "zlib.Z_SYNC_FLUSH": true,
-        "zlib.createDeflateRaw": true,
-        "zlib.createInflateRaw": true
-      },
-      "globals": {
-        "Blob": true,
-        "Buffer": true,
-        "clearTimeout": true,
-        "process.env.WS_NO_BUFFER_UTIL": true,
-        "process.env.WS_NO_UTF_8_VALIDATE": true,
-        "process.nextTick": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "ws>bufferutil": true,
-        "ws>utf-8-validate": true
-      }
-    },
-    "webpack-dev-server>ws": {
+    "ws": {
       "builtin": {
         "buffer.isUtf8": true,
         "crypto.createHash": true,

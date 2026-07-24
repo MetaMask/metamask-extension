@@ -2452,9 +2452,6 @@
   "clear": {
     "message": "Borrar"
   },
-  "clearActivity": {
-    "message": "Borrar datos de actividad y nonce"
-  },
   "clearActivityDescription": {
     "message": "Restablece el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo la cuenta actual y la red se verán afectadas. Tus saldos y transacciones entrantes no cambiarán."
   },
@@ -5702,9 +5699,6 @@
   },
   "networksSmallCase": {
     "message": "redes"
-  },
-  "nevermind": {
-    "message": "No importa"
   },
   "new": {
     "message": "Nuevo!"

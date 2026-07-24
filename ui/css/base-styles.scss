@@ -12,7 +12,8 @@
 
   color-scheme: dark light;
   color: light-dark(var(--brand-colors-grey-grey1000), var(--brand-colors-grey-grey050));
-  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-grey-grey1000));
+  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-black));
 }
 
 html,
@@ -31,6 +32,11 @@ body {
 html[data-theme] {
   color: var(--color-text-default);
   background-color: var(--color-background-alternative);
+}
+
+// TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+html[data-theme='dark'][data-pure-black='true'] {
+  background-color: var(--color-background-default);
 }
 
 /* Border for pinned bars (bottom nav bar, dapp connection control bar) */
