@@ -1724,3 +1724,47 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+Durable, non-obvious notes for cloud agents. Standard commands live in the sections
+above (and in `README.md`, `package.json` scripts, and `test/e2e/playwright/llm-workflow/README.md`) —
+this section only captures gotchas discovered while setting up the cloud VM.
+
+### Node version / PATH gotcha (important)
+
+- The repo requires Node `>=24.13.0` (`.nvmrc` = `v24.13`, `package.json` `engines`). Node 24.13.0 is
+  installed via `nvm` and is the `nvm` default. The startup update script (`nvm install 24.13.0` +
+  `corepack enable` + `yarn install`) already runs under the correct version.
+- A runtime-injected `/exec-daemon/node` (currently v22) is prepended to `PATH` ahead of the `nvm`
+  bin, so a bare `node`/`which node` in the Shell tool may resolve to v22. Before running `yarn`
+  build/test commands, activate Node 24 in your shell, e.g.:
+  `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 24.13.0`
+  (or prepend `"$HOME/.nvm/versions/node/v24.13.0/bin"` to `PATH`).
+- This matters because the `yarn-plugin-engines` plugin (see `.yarnrc.yml`) hard-enforces the Node
+  engine: running `yarn install`/build under Node 22 fails with an engine error rather than a warning.
+
+### Infura / network connectivity
+
+- `.metamaskrc` is created from `.metamaskrc.dist` with the placeholder `INFURA_PROJECT_ID=00000000000`.
+  Builds and wallet onboarding (create/import wallet, set password) work fully offline with the
+  placeholder. Live network features (token balances, RPC) show "Unable to connect to Ethereum" until
+  a real `INFURA_PROJECT_ID` is provided (set it in `.metamaskrc`, or as a secret/env var).
+
+### Running & visually testing the extension (the `mm` CLI)
+
+- Build the test extension into `dist/chrome` first. `yarn start:test` (Webpack watch, LavaMoat
+  disabled) is the reliable path and is fast to iterate. Note: `yarn build:test:webpack` failed in this
+  env because its LavaMoat step expects a precompiled `development/.webpack/launch.js` that isn't
+  present — prefer `yarn start:test` for the cloud VM.
+- A virtual X display is already running at `DISPLAY=:1` (Xvfb). The `mm` CLI launches **headed**
+  Chrome (extensions don't load in headless-shell), so export `DISPLAY=:1` before `mm launch`.
+- Playwright's Chromium must be present: `yarn playwright install chromium` (browser binaries persist
+  in `~/.cache/ms-playwright` via the snapshot; reinstall only if missing). It is intentionally not in
+  the update script.
+- Drive the UI with `./node_modules/.bin/mm` (`mm launch --state onboarding|default`, `describe-screen`,
+  `click`, `type`, `screenshot`, `cleanup`). See `test/e2e/playwright/llm-workflow/README.md`.
+- Gotcha: the onboarding "terms" checkbox renders a visually-hidden `<input>`, so a plain `mm click`
+  on its a11y ref times out. Click it via its test id instead: `mm click <ref> --testid create-password-terms`.
