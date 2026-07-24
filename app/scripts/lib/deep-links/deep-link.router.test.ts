@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { createDeferredPromise } from '@metamask/utils';
 import MetaMaskController from '../../metamask-controller';
 import {
   DEEP_LINK_HOST,
@@ -77,6 +78,10 @@ describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
   beforeEach(() => {
+    mockIsManifestV3.mockReturnValue(true);
+    getState.mockReturnValue({
+      preferences: { skipDeepLinkInterstitial: false },
+    } as unknown as ReturnType<MetaMaskController['getState']>);
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
@@ -120,6 +125,96 @@ describe('DeepLinkRouter', () => {
   describe('handles requests', () => {
     beforeEach(() => {
       router.install();
+    });
+
+    it('redirects MV3 requests to an extension page before verification finishes', async () => {
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      const responsePromise = onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+      });
+      expect(parseMock).toHaveBeenCalledTimes(1);
+      expect(
+        (browser.tabs.update as jest.Mock).mock.invocationCallOrder[0],
+      ).toBeLessThan(parseMock.mock.invocationCallOrder[0]);
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+
+      await expect(responsePromise).resolves.toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('finishes the MV3 loading redirect before navigating to an approved destination', async () => {
+      const loadingPageRedirect =
+        createDeferredPromise<
+          Awaited<ReturnType<typeof browser.tabs.update>>
+        >();
+      (
+        browser.tabs.update as jest.MockedFunction<typeof browser.tabs.update>
+      ).mockReturnValueOnce(loadingPageRedirect.promise);
+      getState.mockReturnValue({
+        preferences: { skipDeepLinkInterstitial: true },
+      } as unknown as ReturnType<MetaMaskController['getState']>);
+      parseMock.mockResolvedValue({
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams([['one', 'two']]),
+        },
+        signature: 'valid',
+      } as ParsedDeepLink);
+
+      const responsePromise = onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      await Promise.resolve();
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenNthCalledWith(1, 1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+      });
+
+      loadingPageRedirect.resolve({} as browser.Tabs.Tab);
+
+      await expect(responsePromise).resolves.toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenNthCalledWith(2, 1, {
+        url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
+      });
+    });
+
+    it('keeps MV2 blocking while verification finishes', async () => {
+      mockIsManifestV3.mockReturnValue(false);
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      const responsePromise = onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).not.toHaveBeenCalled();
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+
+      await expect(responsePromise).resolves.toEqual({ cancel: true });
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+      });
     });
 
     // test return values for MV2 and MV3 behavior

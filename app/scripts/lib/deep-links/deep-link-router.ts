@@ -65,6 +65,22 @@ export class DeepLinkRouter extends EventEmitter<{
   }
 
   /**
+   * Returns the extension-owned interstitial URL for a deep link.
+   *
+   * The interstitial doubles as the verification loading page: it renders only
+   * its loading state until local signature verification finishes.
+   *
+   * @param url - The deep link URL to verify and display.
+   * @returns The extension URL for the deep-link interstitial.
+   */
+  private getInterstitialURL(url: URL) {
+    const search = new URLSearchParams({
+      u: this.formatUrlForInterstitialPage(url),
+    });
+    return this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+  }
+
+  /**
    * Returns the URL to the 404 error page for deep links.
    *
    * @param originalUrl - The original URL that caused the error, if available.
@@ -153,10 +169,11 @@ export class DeepLinkRouter extends EventEmitter<{
    * If the URL is invalid or too long, it redirects to the 404 error page.
    *
    * In Manifest V3 this listener is non-blocking, so Chrome continues the
-   * original request without waiting for this method's Promise. Keep all work
-   * before `redirectTab` minimal and never perform external network or API
-   * lookups here. Otherwise `link.metamask.io` can load its fallback page and
-   * incorrectly tell the user to install MetaMask even though it is installed.
+   * original request without waiting for this method's Promise. The first tab
+   * redirect below must stay before all awaited work. Never perform external
+   * network or API lookups in this path. Otherwise `link.metamask.io` can load
+   * its fallback page and incorrectly tell the user to install MetaMask even
+   * though it is installed.
    *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
@@ -173,8 +190,23 @@ export class DeepLinkRouter extends EventEmitter<{
     }
 
     let link: string;
+    let verificationPageRedirect:
+      | { promise: Promise<void>; url: string }
+      | undefined;
     try {
       const url = new URL(urlStr);
+
+      if (isManifestV3) {
+        // SECURITY BOUNDARY — **EXTREMELY HIGH RISK**
+        // MV3 cannot block the request. Redirect to an extension-owned loading
+        // page synchronously, before even local signature verification. Do not
+        // move this below `parse` or add any awaited work before it.
+        const verificationPageUrl = this.getInterstitialURL(url);
+        verificationPageRedirect = {
+          promise: this.redirectTab(tabId, verificationPageUrl),
+          url: verificationPageUrl,
+        };
+      }
 
       const parsed = await parse(url);
       if (parsed) {
@@ -195,13 +227,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
         if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
-          const search = new URLSearchParams({
-            u: this.formatUrlForInterstitialPage(url),
-          });
-          link = this.getExtensionURL(
-            TRIMMED_DEEP_LINK_ROUTE,
-            search.toString(),
-          );
+          link = this.getInterstitialURL(url);
         } else if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
         } else {
@@ -222,7 +248,16 @@ export class DeepLinkRouter extends EventEmitter<{
       link = this.get404ErrorURL();
     }
 
-    this.redirectTab(tabId, link);
+    if (verificationPageRedirect) {
+      // Ensure a fast verification result cannot make the final navigation
+      // finish before the loading-page navigation.
+      await verificationPageRedirect.promise;
+      if (link !== verificationPageRedirect.url) {
+        this.redirectTab(tabId, link);
+      }
+    } else {
+      this.redirectTab(tabId, link);
+    }
 
     if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
