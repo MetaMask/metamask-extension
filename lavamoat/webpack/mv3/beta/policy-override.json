@@ -35,7 +35,7 @@
         "devicePixelRatio": true
       }
     },
-    "@sentry/utils": {
+    "@sentry/core": {
       "globals": {
         "performance.now": true,
         "performance.timeOrigin": true,
@@ -44,7 +44,8 @@
         "navigator.language": true,
         "navigator.userAgentData": true,
         "crypto": true,
-        "onunhandledrejection": true,
+        "onerror": "write",
+        "onunhandledrejection": "write",
         "addEventListener": true,
         "PerformanceObserver": true,
         "chrome.app": true,
@@ -66,7 +67,8 @@
         "fetch": true,
         "Request": true,
         "Response": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "importScripts": false
       }
     },
     "browserify>util": {
@@ -139,9 +141,33 @@
         "removeEventListener": true
       }
     },
+    "@metamask/assets-controller": {
+      "globals": {
+        "fetch": true,
+        "fetch.bind": false
+      }
+    },
     "@metamask/network-controller": {
+      "globals": {
+        "btoa": true,
+        "btoa.bind": false,
+        "fetch": true,
+        "fetch.bind": false
+      },
       "packages": {
         "cockatiel": true
+      }
+    },
+    "@metamask/snaps-controllers": {
+      "globals": {
+        "fetch": true,
+        "fetch.bind": false
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch": {
+      "globals": {
+        "fetch": true,
+        "fetch.bind": false
       }
     },
     "@ethereumjs/tx>@ethereumjs/util": {

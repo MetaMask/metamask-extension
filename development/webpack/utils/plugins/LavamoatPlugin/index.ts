@@ -125,10 +125,6 @@ export const lavamoatPlugin = (args: Args) =>
         // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
       } else if (chunk.name === 'service-worker.ts') {
-        // The SW entry module and its static bootstrap imports are excluded
-        // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
-        // mode so it carries the LavaMoat runtime. The imported `background` bundle
-        // is wrapped and relies on it.
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -175,48 +171,20 @@ export const lavamoatPlugin = (args: Args) =>
     },
   });
 
-// Matches the app's `background` root module, which the service worker imports.
-// This is the boundary at which the 'unsafe' layer must stop, so that `background`
-// and its entire dependency graph run inside LavaMoat.
-const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
-
-// Unsafe layer that runs code without LavaMoat. `background` is excluded here
-// because, although it is imported from the unsafe service worker, it must
-// itself be wrapped; `lavamoatBackgroundLayerRule` re-layers it (and its graph)
-// so it escapes this exclusion.
+// Unsafe layer that runs code without LavaMoat.
 export const lavamoatUnsafeLayerRule = {
   issuerLayer: 'unsafe',
-  exclude: backgroundEntryRe,
   use: LavamoatExcludeLoader,
 } satisfies RuleSetRule;
 
-// Moves `background` out of the 'unsafe' layer so LavaMoat wraps it.
-// Without this, the import from the unsafe service worker would drag
-// the whole background graph into the 'unsafe' layer and leave it unprotected.
-export const lavamoatBackgroundLayerRule = {
-  test: backgroundEntryRe,
-  issuerLayer: 'unsafe',
-  layer: 'background',
-} satisfies RuleSetRule;
-
-// Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
-const unsafeLayerEntries: Set<string> = new Set([
-  'scripts/inpage.js',
-  'bootstrap',
-  'service-worker.ts',
-]);
-
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.module.rules.push(
-      lavamoatUnsafeLayerRule,
-      lavamoatBackgroundLayerRule,
-    );
+    compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
         const { name } = options;
         if (name && 'request' in entry && typeof entry.request === 'string') {
-          if (unsafeLayerEntries.has(name)) {
+          if (nullUnsafeEntries.has(name)) {
             const entryData = compilation.entries.get(name);
             if (entryData) {
               entryData.options.layer = lavamoatUnsafeLayerRule.issuerLayer;
