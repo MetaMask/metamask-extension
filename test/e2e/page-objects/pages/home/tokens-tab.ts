@@ -367,7 +367,9 @@ class TokensTab extends HomePage {
       20000,
     );
 
-    await this.driver.waitForSelector(this.tokenManagementCustomTokenSuccessToast);
+    await this.driver.waitForSelector(
+      this.tokenManagementCustomTokenSuccessToast,
+    );
     await this.returnFromTokenManagementToHome();
   }
 
