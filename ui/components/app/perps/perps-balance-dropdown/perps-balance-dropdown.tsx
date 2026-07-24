@@ -213,7 +213,9 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
           <Box
             className={twMerge(
               'absolute right-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg',
-              isPureBlack ? 'bg-background-alternative' : 'bg-background-default',
+              isPureBlack
+                ? 'bg-background-alternative'
+                : 'bg-background-default',
             )}
             flexDirection={BoxFlexDirection.Column}
             data-testid="perps-balance-dropdown-panel"
