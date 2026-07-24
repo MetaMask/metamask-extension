@@ -33,7 +33,9 @@ describe('Header', () => {
 
     render(
       <Header
-        endAccessory={<button aria-label={messages.back.message} type="button" />}
+        endAccessory={
+          <button aria-label={messages.back.message} type="button" />
+        }
       >
         {headerText}
       </Header>,
