@@ -1,9 +1,5 @@
 import { selectIsTokenSecurityTrustEnabled } from './feature-flags';
 
-jest.mock('./constants', () => ({
-  IS_TOKEN_SECURITY_TRUST_UI_ENABLED: true,
-}));
-
 describe('selectIsTokenSecurityTrustEnabled', () => {
   it('returns true when external services are enabled', () => {
     expect(

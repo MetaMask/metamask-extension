@@ -11,10 +11,6 @@ import {
   AssetPageSecurityTrustSection,
 } from './asset-page-security-trust';
 
-jest.mock('../../../../selectors/security-trust/constants', () => ({
-  IS_TOKEN_SECURITY_TRUST_UI_ENABLED: true,
-}));
-
 jest.mock('../../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: jest.fn(),
 }));
