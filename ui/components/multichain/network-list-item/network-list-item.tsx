@@ -10,7 +10,11 @@ import PropTypes from 'prop-types';
 import {
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
+  Icon,
+  IconColor,
   IconName as DsIconName,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   AlignItems,
@@ -20,7 +24,6 @@ import {
   FlexDirection,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
@@ -28,9 +31,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  Icon,
-  IconName,
-  IconSize,
   SuccessPill,
   Text,
 } from '../../component-library';
@@ -293,8 +293,8 @@ export const NetworkListItem = ({
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
+              className="ml-1"
+              color={IconColor.IconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />

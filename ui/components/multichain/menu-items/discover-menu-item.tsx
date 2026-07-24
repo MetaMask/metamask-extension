@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@metamask/design-system-react';
+import { Box, IconName } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -15,7 +15,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName } from '../../component-library';
 
 export const DiscoverMenuItem = ({
   closeMenu,
@@ -65,7 +64,7 @@ export const DiscoverMenuItem = ({
 
   return (
     <MenuItem
-      iconNameLegacy={IconName.Export}
+      iconName={IconName.Export}
       onClick={() => handlePortfolioOnClick()}
       data-testid="portfolio-menu-item"
     >

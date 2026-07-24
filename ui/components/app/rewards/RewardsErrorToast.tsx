@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useCallback } from 'react';
-import { Box } from '@metamask/design-system-react';
-import { Icon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { Box, Icon, IconColor, IconName } from '@metamask/design-system-react';
 import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
 import { Toast } from '../../multichain/toast/toast';
@@ -32,7 +30,7 @@ export default function RewardsErrorToast() {
     <Box data-testid="rewards-error-toast">
       <Toast
         startAdornment={
-          <Icon name={IconName.Danger} color={IconColor.errorDefault} />
+          <Icon name={IconName.Danger} color={IconColor.ErrorDefault} />
         }
         text={title}
         description={description}

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
+import { IconName } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   Modal,
@@ -8,7 +9,6 @@ import {
   ModalOverlay,
   ModalHeader,
   Text,
-  IconName,
   type ModalProps,
 } from '../../component-library';
 import {
