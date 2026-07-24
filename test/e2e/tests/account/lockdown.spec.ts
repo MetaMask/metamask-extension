@@ -86,6 +86,12 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
+          await driver.navigate(PAGES.OFFSCREEN);
+          assert(
+            await driver.executeScript(testCode),
+            'Expected script execution to be complete. driver.executeScript might have failed silently.',
+          );
+
           await driver.navigate(PAGES.HOME);
           assert(
             await driver.executeScriptInExtensionServiceWorker(testCode),
