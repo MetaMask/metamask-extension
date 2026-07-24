@@ -318,7 +318,11 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
-  trace: jest.fn(),
+  // Run the callback only for the RPC-dispatch path; other instrumentation
+  // traces stay no-ops, as the rest of the suite assumes.
+  trace: jest.fn((request, fn) =>
+    request?.op === 'rpc.handler' ? fn?.() : undefined,
+  ),
   endTrace: jest.fn(),
 }));
 
