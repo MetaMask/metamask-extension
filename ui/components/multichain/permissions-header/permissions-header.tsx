@@ -1,6 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   Display,
@@ -10,8 +14,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   ButtonIcon,
   ButtonIconSize,

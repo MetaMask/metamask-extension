@@ -334,9 +334,6 @@
   "networks": {
     "message": "አውታረ መረቦች"
   },
-  "nevermind": {
-    "message": "ምንም አይደል"
-  },
   "newAccountNumberName": {
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"

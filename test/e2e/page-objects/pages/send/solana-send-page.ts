@@ -135,19 +135,6 @@ class SendSolanaPage {
     }
   }
 
-  async isContinueButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.continueButton, {
-        timeout: 2000,
-      });
-    } catch (e) {
-      console.log('Continue button not enabled', e);
-      return false;
-    }
-    console.log('Continue button enabled');
-    return true;
-  }
-
   async openTokenList(): Promise<void> {
     await this.driver.clickElement(
       By.xpath('//label[@for="send-asset-selector"]/../button'),

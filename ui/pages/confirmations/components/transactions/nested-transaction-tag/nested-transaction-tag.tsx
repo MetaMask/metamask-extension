@@ -62,8 +62,6 @@ const NestedTransactionTagContent = ({
  * when switching between confirmations with different numbers of nested transactions.
  * See: https://github.com/MetaMask/metamask-extension/issues/29191
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionTag() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
