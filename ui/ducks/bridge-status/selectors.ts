@@ -273,6 +273,30 @@ export const selectBridgeHistoryItemByHash = createSelector(
   },
 );
 
+export const selectBridgeHistoryItemForTx = (
+  state: BridgeStatusAppState,
+  tx: { hash?: string; id?: string } | undefined,
+) => {
+  if (!tx) {
+    return undefined;
+  }
+
+  const byHash = selectBridgeHistoryItemByHash(state, tx.hash);
+  if (byHash) {
+    return byHash;
+  }
+
+  if (tx.id) {
+    const bridgeHistory = selectBridgeHistory(state);
+    const directById = bridgeHistory?.[tx.id];
+    if (directById) {
+      return directById;
+    }
+  }
+
+  return selectBridgeHistoryForOriginalTxMetaId(state, tx.id);
+};
+
 export const selectReceivedSwapsTokenAmountFromTxMeta = createSelector(
   [
     selectBridgeHistoryItemForTxMetaId,

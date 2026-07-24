@@ -36,7 +36,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
-import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
+import { selectBridgeHistoryItemForTx } from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
@@ -59,13 +59,6 @@ import {
   getTokenScanCache,
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-
-// @deprecated - Migrate to selectBridgeHistoryItem
-const selectBridgeHistoryDeprecated = (state: MetaMaskReduxState) =>
-  (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
-    string,
-    BridgeHistoryItem
-  >;
 
 const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
@@ -227,8 +220,8 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 
 const selectBridgeHistory = createSelector(
   [(state: MetaMaskReduxState) => state],
-  (state) => (txHash?: string) =>
-    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+  (state) => (tx?: { hash?: string; id?: string }) =>
+    selectBridgeHistoryItemForTx(state, tx),
 );
 
 export const selectNonEvmActivityItems = createSelector(
@@ -248,7 +241,8 @@ export const selectNonEvmActivityItems = createSelector(
         subjectAddress,
       });
 
-      const bridgeHistoryEntry = getBridgeHistory(transaction.id);
+      // Non-EVM keyring transactions use the on-chain tx hash as their id.
+      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
       const { quote } = bridgeHistoryEntry ?? {};
 
       if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
@@ -330,55 +324,6 @@ function patchUnit(
   };
 }
 
-function normalizeBridgeHistoryLookupKey(value: unknown) {
-  return typeof value === 'string' || typeof value === 'number'
-    ? String(value).toLowerCase()
-    : undefined;
-}
-
-// @deprecated - Migrate to selectBridgeHistoryItem
-function getBridgeHistoryItem(
-  bridgeHistory: Record<string, BridgeHistoryItem>,
-  transactionGroup: TransactionGroup,
-) {
-  const { initialTransaction, primaryTransaction } = transactionGroup;
-  const lookupValues = [
-    initialTransaction.id,
-    primaryTransaction.id,
-    initialTransaction.hash,
-    primaryTransaction.hash,
-    (initialTransaction as Record<string, unknown>).actionId,
-    (primaryTransaction as Record<string, unknown>).actionId,
-  ].flatMap((value) => {
-    const normalizedValue = normalizeBridgeHistoryLookupKey(value);
-    return normalizedValue ? [normalizedValue] : [];
-  });
-  const lookupValueSet = new Set(lookupValues);
-
-  const directEntry = lookupValues
-    .map((value) => bridgeHistory[value])
-    .find(Boolean);
-
-  return (
-    directEntry ??
-    Object.values(bridgeHistory).find((item) => {
-      const itemLookupValues = [
-        item.txMetaId,
-        item.actionId,
-        item.originalTransactionId,
-        item.approvalTxId,
-        item.status.srcChain?.txHash,
-        item.status.destChain?.txHash,
-      ].flatMap((value) => {
-        const normalizedValue = normalizeBridgeHistoryLookupKey(value);
-        return normalizedValue ? [normalizedValue] : [];
-      });
-
-      return itemLookupValues.some((value) => lookupValueSet.has(value));
-    })
-  );
-}
-
 function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   if (bridgeHistoryItem === undefined) {
     return undefined;
@@ -437,7 +382,7 @@ function getBridgeActivityStatus(
 
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
-  selectBridgeHistoryDeprecated,
+  selectBridgeHistory,
   selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
@@ -445,7 +390,7 @@ export const selectLocalActivityItems = createSelector(
   selectIsHardwareWallet,
   (
     transactionGroups,
-    bridgeHistory,
+    getBridgeHistory,
     transactionPayData,
     networkConfigurationsByChainId,
     selectedAccount,
@@ -545,9 +490,8 @@ export const selectLocalActivityItems = createSelector(
         type === TransactionType.swapAndSend ||
         type === TransactionType.bridge
       ) {
-        const bridgeHistoryItem = getBridgeHistoryItem(
-          bridgeHistory,
-          transactionGroup,
+        const bridgeHistoryItem = getBridgeHistory(
+          transactionGroup.initialTransaction,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
         const fees = getLocalTransactionFees(transactionGroup, {
