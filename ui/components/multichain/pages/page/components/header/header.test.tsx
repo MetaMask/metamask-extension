@@ -1,7 +1,6 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
-import { ButtonIcon } from '../../../../../component-library';
 import { Header } from '.';
 
 const HEADER_TEXT = 'Connections';
@@ -13,27 +12,25 @@ describe('Header', () => {
   });
 
   it('renders the startAccessory when provided', () => {
-    const { container } = render(
-      <Header
-        startAccessory={<ButtonIcon iconName="arrow-left" ariaLabel="Back" />}
-      >
+    render(
+      <Header startAccessory={<button aria-label="Back" type="button" />}>
         {HEADER_TEXT}
       </Header>,
     );
 
-    expect(container.querySelector('.mm-button-icon')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument();
   });
 
   it('renders the endAccessory when provided', () => {
     const headerText = 'Connections';
 
-    const { container } = render(
-      <Header endAccessory={<ButtonIcon iconName="close" ariaLabel="Back" />}>
+    render(
+      <Header endAccessory={<button aria-label="Back" type="button" />}>
         {headerText}
       </Header>,
     );
 
-    expect(container.querySelector('.mm-button-icon')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument();
   });
 
   it('renders the startAccessory and endAccessory when provided', () => {
@@ -41,13 +38,13 @@ describe('Header', () => {
 
     const { container } = render(
       <Header
-        startAccessory={<ButtonIcon iconName="arrow-left" ariaLabel="Back" />}
-        endAccessory={<ButtonIcon iconName="close" ariaLabel="Close" />}
+        startAccessory={<button aria-label="Back" type="button" />}
+        endAccessory={<button aria-label="Close" type="button" />}
       >
         {headerText}
       </Header>,
     );
 
-    expect(container.querySelectorAll('.mm-button-icon')).toHaveLength(2);
+    expect(container.querySelectorAll('button')).toHaveLength(2);
   });
 });
