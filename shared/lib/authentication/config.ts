@@ -10,8 +10,11 @@ export function isForceAuthMatchBuild() {
 }
 
 export function loadAuthenticationConfig(): Env {
+  // Local `yarn start` must mint DEV OIDC tokens. Staging on-ramp
+  // (`on-ramp.uat-api`) accepts `iss: https://oidc.dev-api.cx.metamask.io`
+  // and rejects PRD tokens on /v2/quotes and buy-widget (401).
   if (!isForceAuthMatchBuild()) {
-    return Env.PRD;
+    return Env.DEV;
   }
 
   const buildType = process.env.METAMASK_BUILD_TYPE;

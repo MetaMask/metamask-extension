@@ -67,3 +67,16 @@ export const selectIsContactSyncingEnabled = createSelector(
     return metamask.isContactSyncingEnabled;
   },
 );
+
+/**
+ * Selector to determine if ramps order syncing is enabled.
+ *
+ * Defaults to true when the field is absent (e.g. before profile-sync packages
+ * that include `isRampsSyncingEnabled` are consumed).
+ */
+export const selectIsRampsSyncingEnabled = createSelector(
+  [getMetamask],
+  (metamask) => {
+    return metamask.isRampsSyncingEnabled ?? true;
+  },
+);

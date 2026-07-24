@@ -8,7 +8,10 @@ import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
 } from '../messengers/identity';
-import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
+import {
+  loadAuthenticationConfig,
+  sanitizePersistedAuthenticationState,
+} from '../../../../shared/lib/authentication';
 
 /**
  * Initialize the Authentication controller.
@@ -27,8 +30,12 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
   const env = loadAuthenticationConfig();
   const messengerClient = new AuthenticationController({
     messenger: controllerMessenger,
-    state:
-      persistedState.AuthenticationController as AuthenticationControllerState,
+    state: sanitizePersistedAuthenticationState(
+      persistedState.AuthenticationController as
+        | AuthenticationControllerState
+        | undefined,
+      env,
+    ),
     metametrics: {
       getMetaMetricsId: () =>
         initMessenger.call('AnalyticsController:getState').analyticsId,

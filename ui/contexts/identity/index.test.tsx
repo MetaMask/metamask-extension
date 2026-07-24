@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
+import { useRampsOrderSyncing } from '../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
@@ -17,6 +18,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../hooks/identity/useBackupAndSync');
 jest.mock('../../hooks/identity/useAccountSyncing');
 jest.mock('../../hooks/identity/useContactSyncing');
+jest.mock('../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
 
 const mockUseSelector = jest.mocked(redux.useSelector);
@@ -24,6 +26,7 @@ const mockUseSelector = jest.mocked(redux.useSelector);
 describe('MetamaskIdentityProvider', () => {
   const mockUseAccountSyncing = jest.mocked(useAccountSyncing);
   const mockUseContactSyncing = jest.mocked(useContactSyncing);
+  const mockUseRampsOrderSyncing = jest.mocked(useRampsOrderSyncing);
   const mockUseAutoSignIn = jest.mocked(useAutoSignIn);
   const mockUseAutoSignOut = jest.mocked(useAutoSignOut);
 
@@ -36,6 +39,11 @@ describe('MetamaskIdentityProvider', () => {
     mockUseContactSyncing.mockReturnValue({
       dispatchContactSyncing: jest.fn(),
       shouldDispatchContactSyncing: false,
+    });
+
+    mockUseRampsOrderSyncing.mockReturnValue({
+      dispatchRampsOrderSyncing: jest.fn(),
+      shouldDispatchRampsOrderSyncing: false,
     });
 
     mockUseAutoSignIn.mockReturnValue({
@@ -123,6 +131,38 @@ describe('MetamaskIdentityProvider', () => {
     );
 
     expect(dispatchContactSyncing).not.toHaveBeenCalled();
+  });
+
+  it('calls dispatchRampsOrderSyncing if shouldDispatchRampsOrderSyncing is true', () => {
+    const dispatchRampsOrderSyncing = jest.fn();
+    mockUseRampsOrderSyncing.mockReturnValue({
+      dispatchRampsOrderSyncing,
+      shouldDispatchRampsOrderSyncing: true,
+    });
+
+    render(
+      <MetamaskIdentityProvider>
+        <div>Child Component</div>
+      </MetamaskIdentityProvider>,
+    );
+
+    expect(dispatchRampsOrderSyncing).toHaveBeenCalled();
+  });
+
+  it('does not call dispatchRampsOrderSyncing if shouldDispatchRampsOrderSyncing is false', () => {
+    const dispatchRampsOrderSyncing = jest.fn();
+    mockUseRampsOrderSyncing.mockReturnValue({
+      dispatchRampsOrderSyncing,
+      shouldDispatchRampsOrderSyncing: false,
+    });
+
+    render(
+      <MetamaskIdentityProvider>
+        <div>Child Component</div>
+      </MetamaskIdentityProvider>,
+    );
+
+    expect(dispatchRampsOrderSyncing).not.toHaveBeenCalled();
   });
 
   it('calls autoSignIn if shouldAutoSignIn returns true', () => {
