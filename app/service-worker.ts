@@ -1,6 +1,7 @@
 // This file is used only for manifest version 3
 
-import './scripts/load/bootstrap';
+import './scripts/load/init-statehooks';
+import './scripts/load/init-sentry';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
