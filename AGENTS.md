@@ -1724,3 +1724,54 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+Durable, non-obvious notes for running this repo in a Cursor Cloud VM. Standard
+build/test/lint commands are already documented above (see "Common Commands"); only
+environment-specific caveats live here.
+
+### Node.js / Yarn
+
+- The repo requires Node `>=24.13.0` (`.nvmrc` → `v24.13`) with Yarn 4 via Corepack.
+  Node 24 is installed via `nvm` and, because the VM ships a pre-baked
+  `/exec-daemon/node` (v22) that sits early in `PATH`, symlinks to the nvm Node 24
+  binaries are placed in `/usr/local/cargo/bin` (which precedes `/exec-daemon` in
+  every shell). This makes `node`/`npm`/`npx` resolve to v24 in interactive,
+  login, and non-interactive shells. The startup update script re-asserts this, so
+  you normally don't need to touch it. If `node -v` ever shows v22, run
+  `nvm use default` or re-create the `/usr/local/cargo/bin/node` symlink.
+
+### Config (`.metamaskrc`)
+
+- Builds/dev server need `.metamaskrc` with an `INFURA_PROJECT_ID`. It is gitignored.
+  The startup update script creates it (if missing) using the repo's free, rate-limited
+  dev Infura key (same one the official devcontainer uses). Replace it with your own key
+  for heavier RPC use.
+
+### Running / building the extension
+
+- Fast one-shot test build (no LavaMoat, ~45s): `yarn env:e2e webpack --test` → outputs
+  `dist/chrome` (MV3, service worker). `yarn build:test` is the LavaMoat, production-like
+  build and is much slower. `yarn start` / `yarn start:test` are `--watch` dev builds.
+- A VNC X server is available on `DISPLAY=:1` for headed browser runs.
+
+### Browser / E2E caveat (important)
+
+- The E2E framework pins Chrome to **v126** (`test/e2e/webdriver/chrome.js` →
+  `options.setBrowserVersion('126')`); Selenium Manager auto-downloads Chrome-for-Testing
+  126 + chromedriver (cached under `~/.cache/selenium/...`).
+- The **system Chrome is v148**, which blocks direct navigation to MetaMask's
+  non-web-accessible extension pages (`home.html`, `popup.html`, …) with
+  `ERR_BLOCKED_BY_CLIENT` — regardless of whether navigation is via the omnibox or CDP.
+  This is a Chrome-version behavior, not an app bug. For manual visual inspection of the
+  extension UI, launch the cached **Chrome 126** instead:
+  `~/.cache/selenium/chrome/linux64/126.0.6478.182/chrome --load-extension=$(pwd)/dist/chrome ...`
+  (the extension's real ID comes from the manifest `key`, e.g.
+  `hebhblbkkdabgoldnojllkipeoacjioc`, not from the load path).
+- Run a single E2E test after building a test build:
+  `yarn test:e2e:single test/e2e/tests/onboarding/onboarding.spec.ts --browser=chrome`.
+  To target one `it()` within a spec, use `E2E_ARGS='--grep <pattern-with-no-spaces>'`
+  (`E2E_ARGS` is split on spaces; use `.` in the regex to match spaces).
