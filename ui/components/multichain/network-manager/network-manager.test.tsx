@@ -270,6 +270,56 @@ describe('NetworkManager Component', () => {
     expect(screen.getByText('Base')).toBeInTheDocument();
   });
 
+  it('labels the select-all row as "All networks" when a custom network exists', () => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: {
+          ...mockNetworkConfigurations,
+          // Custom (non-featured) network so the select-all row should switch
+          // away from `All popular networks`.
+          '0x12345': {
+            chainId: '0x12345',
+            name: 'Custom Network 1',
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'custom-network-1',
+                type: 'rpc',
+                url: 'https://custom-rpc.example.com',
+              },
+            ],
+            blockExplorerUrls: [],
+            defaultBlockExplorerUrlIndex: 0,
+            nativeCurrency: 'ETH',
+          },
+        },
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        // Enable only featured chains so `useNetworkManagerInitialTab`
+        // selects the Popular tab (DefaultNetworks). The custom network is
+        // defined above but unenabled, which is exactly the bug scenario.
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+          },
+        },
+      },
+    });
+    renderWithProvider(<NetworkManager />, store, '/');
+
+    expect(screen.getByText(messages.allNetworks.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).not.toBeInTheDocument();
+  });
+
   it('should render popular networks tab when non-EVM popular network is selected', () => {
     renderNetworkManagerWithNonEvmNetworkSelected();
     expect(
