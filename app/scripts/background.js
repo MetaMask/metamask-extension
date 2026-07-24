@@ -66,6 +66,7 @@ import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
+  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
 } from '../../shared/lib/stores/persistence-manager';
 import Migrator from './lib/migrator';
 import migrations from './migrations';
@@ -162,8 +163,10 @@ const inTestState = inTest
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
-const { safePersist, requestSafeReload, evacuate } =
-  getRequestSafeReload(persistenceManager);
+const { safePersist, requestSafeReload, evacuate } = getRequestSafeReload(
+  persistenceManager,
+  IMMEDIATE_PERSISTENCE_CONTROLLER_KEYS,
+);
 
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
@@ -1589,7 +1592,7 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      safePersist().catch((error) => {
+      safePersist(changedControllerKeys).catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
@@ -1633,7 +1636,7 @@ export function setupController(
           });
         }
         try {
-          await safePersist();
+          await safePersist(controllerKey);
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
@@ -1646,7 +1649,7 @@ export function setupController(
         `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
       );
       // persist the new state
-      safePersist(currentState).catch((error) => {
+      safePersist(changedControllerKeys, currentState).catch((error) => {
         log.error('Error persisting updated controller state:', error);
         sentry?.captureException(error);
       });
