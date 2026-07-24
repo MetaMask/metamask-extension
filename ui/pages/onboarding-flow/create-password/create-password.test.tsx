@@ -318,12 +318,12 @@ describe('Onboarding Create Password', () => {
 
       const createPasswordEvent = {
         target: {
-          value: '123456789',
+          value: '12345678',
         },
       };
       const confirmPasswordEvent = {
         target: {
-          value: '12345678',
+          value: '123456789',
         },
       };
 
