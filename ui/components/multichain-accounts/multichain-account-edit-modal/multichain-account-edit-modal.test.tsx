@@ -16,6 +16,11 @@ jest.mock('../../../store/actions', () => ({
   }),
 }));
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn().mockReturnValue(false),
+}));
+
 describe('MultichainAccountEditModal', () => {
   const mockProps: MultichainAccountEditModalProps = {
     isOpen: true,
@@ -306,6 +311,31 @@ describe('MultichainAccountEditModal', () => {
         'New Account Name',
       );
       expect(mockProps.onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('pure black mode', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { usePureBlack } = require('@metamask/design-system-react');
+
+    it('applies border-muted class to ModalContent dialog when pure black is active', () => {
+      (usePureBlack as jest.Mock).mockReturnValue(true);
+      const store = configureStore(mockDefaultState);
+      renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
+
+      // The modal dialog Box rendered by ModalContent receives the border class
+      const dialog = screen.getByRole('dialog');
+      expect(dialog.parentElement).toHaveClass('border');
+      expect(dialog.parentElement).toHaveClass('border-muted');
+    });
+
+    it('does not apply border class to ModalContent dialog when pure black is inactive', () => {
+      (usePureBlack as jest.Mock).mockReturnValue(false);
+      const store = configureStore(mockDefaultState);
+      renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
+
+      const dialog = screen.getByRole('dialog');
+      expect(dialog.parentElement).not.toHaveClass('border-muted');
     });
   });
 });

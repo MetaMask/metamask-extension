@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
@@ -29,6 +30,8 @@ export const MultichainAccountEditModal = ({
 }: MultichainAccountEditModalProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const accountGroup = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
@@ -63,7 +66,11 @@ export const MultichainAccountEditModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent
+        modalDialogProps={{
+          className: isPureBlack ? 'border border-muted' : undefined,
+        }}
+      >
         <ModalHeader
           data-testid="account-edit-modal-header"
           onClose={onClose}
