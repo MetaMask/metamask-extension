@@ -20,6 +20,7 @@ import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
+import { INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG } from '../../../shared/lib/stores/persistence-flags';
 
 // ============================================================================
 // Types
@@ -92,6 +93,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: true,
+    status: FeatureFlagStatus.Active,
+  },
+
+  [INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG]: {
+    name: INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG,
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
   },
 

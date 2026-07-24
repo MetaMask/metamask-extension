@@ -6,11 +6,16 @@ import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { FixtureExtensionStore } from '../../../shared/lib/stores/fixture-extension-store';
 import ExtensionStore from '../../../shared/lib/stores/extension-store';
+import { IndexedDBPersistenceStore } from '../../../shared/lib/stores/indexeddb-persistence-store';
+import { ChromeStorageLocalBackupStore } from '../../../shared/lib/stores/chrome-storage-local-backup-store';
+import { INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG } from '../../../shared/lib/stores/persistence-flags';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import { getRemoteFeatureFlagClientConfigApiService } from '../wallet-init/remote-feature-flags';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
@@ -36,9 +41,51 @@ function createLocalStore() {
 }
 
 const localStore = createLocalStore();
+const indexedDBStore = new IndexedDBPersistenceStore();
+const localBackupStore = new ChromeStorageLocalBackupStore();
+
+function hasRemoteFeatureFlag(remoteFeatureFlags, flagName) {
+  return Object.prototype.hasOwnProperty.call(remoteFeatureFlags ?? {}, flagName);
+}
+
+function isFirefoxBrowser() {
+  return globalThis.navigator?.userAgent?.includes('Firefox') === true;
+}
+
+async function shouldUseIndexedDBForNewUsers() {
+  if (isFirefoxBrowser()) {
+    return false;
+  }
+
+  const manifestRemoteFeatureFlags = getManifestFlags().remoteFeatureFlags;
+  if (
+    hasRemoteFeatureFlag(
+      manifestRemoteFeatureFlags,
+      INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG,
+    )
+  ) {
+    return getBooleanFeatureFlag(
+      manifestRemoteFeatureFlags[INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG],
+      false,
+    );
+  }
+
+  const { remoteFeatureFlags } =
+    await getRemoteFeatureFlagClientConfigApiService().fetchRemoteFeatureFlags();
+
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags[INDEXED_DB_STORAGE_REMOTE_FEATURE_FLAG],
+    false,
+  );
+}
 
 // Single PersistenceManager per context: one in background, one per UI context.
-export const persistenceManager = new PersistenceManager({ localStore })
+export const persistenceManager = new PersistenceManager({
+  localStore,
+  indexedDBStore,
+  localBackupStore,
+  shouldUseIndexedDBForNewUsers,
+})
   .on('vaultCorruptionDetected', (payload) => {
     trackVaultCorruptionEvent(
       payload.backup,
@@ -74,7 +121,7 @@ globalThis.stateHooks.getPersistedState = async function (options = {}) {
 };
 
 /**
- * Get the backup state from IndexedDB.
+ * Get the backup state from the selected backup database.
  * This is used as a fallback when primary storage is unavailable.
  *
  * @returns The backup state, or null if unavailable.
