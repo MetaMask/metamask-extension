@@ -931,6 +931,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           } catch (err) {
             const normalizedError = this.#normalizePersistError(err);
 
+            // If writes were already suspended for shutdown (e.g. backup IDB
+            // force-closed mid-write after storage.local succeeded), stay silent:
+            // toasting/Sentry would be a false "couldn't save your data" alarm.
+            if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+              return [false, undefined];
+            }
+
             // If the write failed because the browser is shutting down, suspend
             // further writes and stay silent: this is expected, not a failure the
             // user should see. Reporting it would raise a false "couldn't save
@@ -1094,6 +1101,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             return [true, undefined];
           } catch (err) {
             const normalizedError = this.#normalizePersistError(err);
+
+            // If writes were already suspended for shutdown (e.g. backup IDB
+            // force-closed mid-write after storage.local succeeded), stay silent:
+            // toasting/Sentry would be a false "couldn't save your data" alarm.
+            if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+              return [false, undefined];
+            }
 
             // If the write failed because the browser is shutting down, suspend
             // further writes and stay silent: this is expected, not a failure the

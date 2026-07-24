@@ -916,6 +916,36 @@ describe('PersistenceManager', () => {
         openSpy.mockRestore();
         isOpenSpy.mockRestore();
       });
+
+      it('stays silent when backup IDB is force-closed mid-write after storage.local succeeds', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+        const backupStore = await openAndCaptureBackupStore();
+
+        // storage.local succeeds; during the backup write the IDB is force-closed
+        // (suspends writes) and then throws a generic disconnected-handle error.
+        mockStoreSet.mockResolvedValue(undefined);
+        const setSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockImplementation(async () => {
+            backupStore.onForcedClose?.('close');
+            throw new Error('Database is not open');
+          });
+
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+        const [result, error] = await manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+        expect(manager.writesSuspended()).toBe(true);
+        expect(onSetFailed).not.toHaveBeenCalled();
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        setSpy.mockRestore();
+      });
     });
 
     describe('recovery for inferred triggers', () => {
