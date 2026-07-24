@@ -49,7 +49,8 @@ export function EnforcedSimulationsRow() {
   }, [transactionId]);
 
   useEffect(() => {
-    const requestId = ++autoEnableRequestId.current;
+    const requestId = autoEnableRequestId.current + 1;
+    autoEnableRequestId.current = requestId;
 
     if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
       return;

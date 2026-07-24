@@ -112,10 +112,16 @@ describe('EnforcedSimulationsRow', () => {
     const consoleError = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    let triggerRerender: () => void = () => undefined;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     function RerenderableRow() {
-      const [, setRenderCount] = React.useState(0);
-      triggerRerender = () => setRenderCount((count) => count + 1);
+      const [renderCount, setRenderCount] = React.useState(0);
+
+      React.useEffect(() => {
+        if (renderCount < 2) {
+          setRenderCount((count) => count + 1);
+        }
+      }, [renderCount]);
+
       return <EnforcedSimulationsRow />;
     }
 
@@ -131,12 +137,6 @@ describe('EnforcedSimulationsRow', () => {
     render({
       containerTypes: undefined,
       component: <RerenderableRow />,
-    });
-    await act(async () => {
-      triggerRerender();
-    });
-    await act(async () => {
-      triggerRerender();
     });
 
     await waitFor(() => {
