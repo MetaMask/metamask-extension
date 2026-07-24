@@ -160,6 +160,12 @@ export class DeepLinkRouter extends EventEmitter<{
    * redirecting to the appropriate internal route.
    * If the URL is invalid or too long, it redirects to the 404 error page.
    *
+   * In Manifest V3 this listener is non-blocking, so Chrome continues the
+   * original request without waiting for this method's Promise. Keep all work
+   * before `redirectTab` minimal and never perform external network or API
+   * lookups here. Otherwise `link.metamask.io` can load its fallback page and
+   * incorrectly tell the user to install MetaMask even though it is installed.
+   *
    * @param tabId - The ID of the tab to redirect.
    * @param urlStr - The URL string to navigate to.
    * @param requestOrigin - The origin of the page that initiated this navigation, if known.
