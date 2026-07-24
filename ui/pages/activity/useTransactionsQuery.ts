@@ -205,7 +205,6 @@ export function usePrefetchTransactions() {
     queryClient
       .prefetchInfiniteQuery({
         ...queryOptions,
-        // @ts-expect-error Infinite query options from apiClient + local wrappers
         queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
