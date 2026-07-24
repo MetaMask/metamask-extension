@@ -4,16 +4,28 @@ import { getResultTypeConfig } from '../../utils/security-utils';
 import {
   SecurityTrustInlineBadge,
   SecurityTrustVerifiedBadge,
+  type SecurityTrustInlineBadgeConfig,
 } from './security-trust-inline-badge';
 
 const t = (key: string) => key;
 
+const getTestBadgeConfig = (
+  resultType: string,
+): SecurityTrustInlineBadgeConfig => {
+  const { badge } = getResultTypeConfig(resultType, t);
+  expect(badge).toBeDefined();
+  if (!badge) {
+    throw new Error(`Expected badge config for result type: ${resultType}`);
+  }
+  return badge;
+};
+
 describe('SecurityTrustInlineBadge', () => {
   it('renders verified icon without onClick', () => {
-    const badge = getResultTypeConfig('Verified', t).badge;
+    const badge = getTestBadgeConfig('Verified');
     const { getByTestId } = render(
       <SecurityTrustInlineBadge
-        badge={badge!}
+        badge={badge}
         testId="security-badge-verified"
       />,
     );
@@ -22,11 +34,11 @@ describe('SecurityTrustInlineBadge', () => {
   });
 
   it('wraps verified icon in a button when onClick is provided', () => {
-    const badge = getResultTypeConfig('Verified', t).badge;
+    const badge = getTestBadgeConfig('Verified');
     const onClick = jest.fn();
     const { getByTestId } = render(
       <SecurityTrustInlineBadge
-        badge={badge!}
+        badge={badge}
         testId="security-badge-verified"
         onClick={onClick}
       />,
@@ -37,10 +49,10 @@ describe('SecurityTrustInlineBadge', () => {
   });
 
   it('renders labeled warning badge with warning background', () => {
-    const badge = getResultTypeConfig('Warning', t).badge;
+    const badge = getTestBadgeConfig('Warning');
     const { getByTestId, getByText } = render(
       <SecurityTrustInlineBadge
-        badge={badge!}
+        badge={badge}
         testId="security-badge-warning"
       />,
     );
@@ -52,10 +64,10 @@ describe('SecurityTrustInlineBadge', () => {
   });
 
   it('renders labeled malicious badge with error background', () => {
-    const badge = getResultTypeConfig('Malicious', t).badge;
+    const badge = getTestBadgeConfig('Malicious');
     const { getByTestId, getByText } = render(
       <SecurityTrustInlineBadge
-        badge={badge!}
+        badge={badge}
         testId="security-badge-malicious"
       />,
     );
@@ -67,11 +79,11 @@ describe('SecurityTrustInlineBadge', () => {
   });
 
   it('wraps labeled badge in a button when onClick is provided', () => {
-    const badge = getResultTypeConfig('Warning', t).badge;
+    const badge = getTestBadgeConfig('Warning');
     const onClick = jest.fn();
     const { getByTestId } = render(
       <SecurityTrustInlineBadge
-        badge={badge!}
+        badge={badge}
         testId="security-badge-warning"
         onClick={onClick}
       />,
@@ -84,19 +96,19 @@ describe('SecurityTrustInlineBadge', () => {
 
 describe('SecurityTrustVerifiedBadge', () => {
   it('renders verified badge wrapper without onClick', () => {
-    const badge = getResultTypeConfig('Verified', t).badge;
+    const badge = getTestBadgeConfig('Verified');
     const { getAllByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge!} />,
+      <SecurityTrustVerifiedBadge badge={badge} />,
     );
 
     expect(getAllByTestId('security-badge-verified').length).toBeGreaterThan(0);
   });
 
   it('delegates onClick to inline badge', () => {
-    const badge = getResultTypeConfig('Verified', t).badge;
+    const badge = getTestBadgeConfig('Verified');
     const onClick = jest.fn();
     const { getByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge!} onClick={onClick} />,
+      <SecurityTrustVerifiedBadge badge={badge} onClick={onClick} />,
     );
 
     fireEvent.click(getByTestId('security-badge-verified'));
