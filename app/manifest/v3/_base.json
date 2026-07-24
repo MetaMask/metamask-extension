@@ -50,6 +50,11 @@
       "all_frames": true
     },
     {
+      "matches": ["https://*/*"],
+      "js": ["scripts/cashtag/content.ts"],
+      "run_at": "document_idle"
+    },
+    {
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }

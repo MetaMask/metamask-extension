@@ -167,7 +167,7 @@ describe('usePendingRedirectRoute', () => {
     expect(clearPendingRedirectRoute).toHaveBeenCalled();
   });
 
-  it('does not redirect but still clears when environmentType does not match', () => {
+  it('does not redirect or clear when environmentType does not match', () => {
     const setRedirectAfterDefaultPage = jest.fn();
     const clearPendingRedirectRoute = jest.fn();
 
@@ -184,7 +184,7 @@ describe('usePendingRedirectRoute', () => {
     );
 
     expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
-    expect(clearPendingRedirectRoute).toHaveBeenCalled();
+    expect(clearPendingRedirectRoute).not.toHaveBeenCalled();
   });
 
   it('fires when pendingRedirectRoute transitions from null to a value', () => {

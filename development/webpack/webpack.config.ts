@@ -63,10 +63,17 @@ const browsersListPath = join(root, '.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
-const webAccessibleResources =
-  args.devtool === 'source-map'
+const webAccessibleResources = [
+  ...(args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
-    : [];
+    : []),
+  // Fetched by cashtag content script via runtime.getURL + fetch
+  'scripts/cashtag/pill/styles.css',
+  'scripts/cashtag/widget/widget.css',
+  'scripts/cashtag/widget/page.css',
+  // Brand mark only — asset icons use static.cx CDN URLs from the page
+  'images/logo/metamask-fox.svg',
+];
 
 // #region cache
 const cache = args.cache
@@ -202,6 +209,19 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Cashtag content-script CSS (fetched at runtime into page / shadow)
+      {
+        from: join(context, 'scripts/cashtag/pill/styles.css'),
+        to: 'scripts/cashtag/pill/styles.css',
+      },
+      {
+        from: join(context, 'scripts/cashtag/widget/widget.css'),
+        to: 'scripts/cashtag/widget/widget.css',
+      },
+      {
+        from: join(context, 'scripts/cashtag/widget/page.css'),
+        to: 'scripts/cashtag/widget/page.css',
+      },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
