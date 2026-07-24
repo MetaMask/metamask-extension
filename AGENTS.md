@@ -1724,3 +1724,56 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+Durable, non-obvious notes for cloud agents. The VM startup update script already runs
+`corepack enable` + `yarn install`; dependency installation is not needed here. Standard
+commands live in this file and the [README](./README.md) — this section only covers gotchas.
+
+### Node version (important)
+
+- This repo requires Node `>=24.13.0` (`.nvmrc` → `v24.13`) and the Yarn 4 `plugin-engines`
+  will hard-fail commands run under an older Node.
+- The VM's on-PATH `node` (`/exec-daemon/node`) is **v22** and takes precedence by default.
+  Node 24 is installed via nvm and prepended to `PATH` in `~/.bashrc`, so login shells
+  (what these agent shells use) get v24. If `node --version` ever shows v22, run:
+  `export PATH="/home/ubuntu/.nvm/versions/node/v24.13.1/bin:$PATH"`.
+
+### Config
+
+- A dev build needs `.metamaskrc` (gitignored). Create it once with `cp .metamaskrc{.dist,}`.
+  The placeholder `INFURA_PROJECT_ID=00000000000` is fine for local development and for the
+  local-node (Anvil) flows used below; real mainnet RPC calls will be rate-limited without a
+  real Infura key.
+
+### Building & running the extension
+
+- `yarn start:test` (webpack watch, LavaMoat + Snow disabled) is the fastest way to produce a
+  loadable build at `dist/chrome`; initial compile ~45s, then it watches. Use `yarn start` for
+  a normal dev build.
+- Avoid the `yarn build:test:webpack` (LavaMoat) path for a quick smoke test: it expects a
+  precompiled `development/.webpack/launch.js` and fails with `ENOENT` from a clean checkout in
+  this environment. Prefer `yarn start:test` (dev) or `yarn build:test` (browserify) to get
+  `dist/chrome`.
+
+### Visual / end-to-end smoke testing with the `mm` CLI
+
+- The `mm` CLI (`node_modules/.bin/mm`, see `test/e2e/playwright/llm-workflow/README.md`) drives
+  a **headed** Chrome with the extension loaded. Requirements already satisfied on the VM:
+  - An X display is running at `DISPLAY=:1` (Xvfb) — export `DISPLAY=:1` before `mm` commands.
+  - Playwright Chromium is installed (`yarn playwright install chromium`, cached under
+    `~/.cache/ms-playwright`). Re-run that command if the cache is missing.
+- `mm launch --state default` boots a pre-onboarded wallet with 25 ETH on local Anvil
+  (chainId 1337). Unlock password is `correct horse battery staple`.
+- `mm click <ref>` also accepts a `data-testid` directly (e.g. `mm click send-continue-button`),
+  not just the `eN` accessibility refs from `mm describe-screen`. Token list rows on the send
+  screen are only reachable via their `token-asset-<chainIdHex>-<SYMBOL>` testId.
+- Always finish with `mm cleanup` (add `--shutdown` to also stop the daemon).
+
+### QA tasks repo
+
+- The sibling `experimental-mm-qa-ai-tasks` repo is a markdown/prompt task collection only —
+  no dependencies, build, or services to run.
