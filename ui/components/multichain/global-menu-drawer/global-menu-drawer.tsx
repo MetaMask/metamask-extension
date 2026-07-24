@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconColor,
   IconName,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useEventListener } from '../../../hooks/useEventListener';
@@ -19,6 +20,7 @@ import {
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
 const DRAWER_TRANSITION_MS = 300;
+const SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH = 490;
 
 type DrawerPhase = 'entering' | 'open' | 'exiting';
 
@@ -47,6 +49,8 @@ export const GlobalMenuDrawer = ({
   anchorElement,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -57,6 +61,8 @@ export const GlobalMenuDrawer = ({
     null,
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
+  const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
+    useState(false);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
@@ -135,6 +141,7 @@ export const GlobalMenuDrawer = ({
       setDrawerStyle({});
       setBackdropStyle({});
       setContentTopOffset(0);
+      setIsCompactSidepanelDrawer(false);
       return;
     }
 
@@ -199,6 +206,10 @@ export const GlobalMenuDrawer = ({
 
       const rootLayoutRect = rootLayout.getBoundingClientRect();
       const appR = appContainer.getBoundingClientRect();
+      setIsCompactSidepanelDrawer(
+        isSidepanel &&
+          rootLayoutRect.width <= SIDEPANEL_FULL_COVER_DRAWER_MAX_WIDTH,
+      );
 
       // Dialog covers root layout in both fullscreen and sidepanel
       setDrawerStyle({
@@ -245,7 +256,7 @@ export const GlobalMenuDrawer = ({
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [usePortal, isFullscreen, isOpen, anchorElement]);
+  }, [usePortal, isFullscreen, isSidepanel, isOpen, anchorElement]);
 
   // Prevent body scroll when drawer is open (only for non-fullscreen)
   useEffect(() => {
@@ -303,9 +314,10 @@ export const GlobalMenuDrawer = ({
   const drawerPanelBaseClass =
     'overflow-hidden pointer-events-none flex transition-[transform] ease-in-out motion-reduce:transition-none';
   let drawerPanelClass = `${drawerPanelBaseClass} absolute inset-y-0 right-0 pl-10`;
-  if (isFullscreen) {
+  if (isFullscreen || isSidepanel) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute right-0`;
-  } else if (isSidepanel) {
+  }
+  if (isSidepanel && isCompactSidepanelDrawer) {
     drawerPanelClass = `${drawerPanelBaseClass} absolute inset-0`;
   }
 
@@ -318,7 +330,7 @@ export const GlobalMenuDrawer = ({
       role="dialog"
       style={dialogPositionStyle}
     >
-      {!isSidepanel && (
+      {(isFullscreen || isSidepanel) && (
         <div
           className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
           style={{
@@ -347,15 +359,15 @@ export const GlobalMenuDrawer = ({
       >
         <div
           className="w-screen max-w-full pointer-events-auto h-full min-h-0"
-          style={
-            isSidepanel
-              ? { width: '100%', maxWidth: '100%' }
-              : { maxWidth: width }
-          }
+          style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
-            className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
-            backgroundColor={BoxBackgroundColor.BackgroundDefault}
+            className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack ? ' border-l border-muted' : ''}`}
+            backgroundColor={
+              isPureBlack
+                ? BoxBackgroundColor.BackgroundAlternative
+                : BoxBackgroundColor.BackgroundDefault
+            }
           >
             {showCloseButton && (
               <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">

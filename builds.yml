@@ -374,7 +374,7 @@ env:
   - QR_SYNC_ENABLED: false
   # Pure-black (OLED) dark mode. Set to true in .metamaskrc for local dev,
   # or change this entry to true to enable for all users in a build.
-  - MM_PURE_BLACK_PREVIEW: false
+  - MM_PURE_BLACK_PREVIEW: true
 
   ###
   # Meta variables

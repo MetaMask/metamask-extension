@@ -1,8 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { ScreenViewedEntryPoint } from '../../../shared/constants/metametrics';
 import { ActivityList } from './activity-list';
 
 const mockUseTransactionsQuery = jest.fn();
+const mockUseActivityScreenViewed = jest.fn();
+
+jest.mock('./useActivityScreenViewed', () => ({
+  useActivityScreenViewed: (props: unknown) =>
+    mockUseActivityScreenViewed(props),
+}));
 
 jest.mock('./useTransactionsQuery', () => ({
   useTransactionsQuery: (...args: unknown[]) =>
@@ -15,10 +22,6 @@ jest.mock('./useLocalTransactions', () => ({
 
 jest.mock('./useNonEvmTransactions', () => ({
   useNonEvmTransactions: () => [],
-}));
-
-jest.mock('./useActivityScreenOpened', () => ({
-  useActivityScreenOpened: jest.fn(),
 }));
 
 jest.mock('../../hooks/useAnalytics', () => ({
@@ -58,6 +61,10 @@ jest.mock('../../components/app/transaction-activity-empty-state', () => ({
   ),
 }));
 
+jest.mock('../details/transaction-details', () => ({
+  TransactionDetails: () => null,
+}));
+
 describe('ActivityList', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -85,5 +92,21 @@ describe('ActivityList', () => {
     expect(
       screen.queryByTestId('activity-list-skeleton'),
     ).not.toBeInTheDocument();
+  });
+
+  it('passes entry point to useActivityScreenViewed', () => {
+    mockUseTransactionsQuery.mockReturnValue({
+      data: { pages: [] },
+      isInitialLoading: false,
+      fetchNextVisiblePage: jest.fn(),
+    });
+
+    render(<ActivityList entryPoint={ScreenViewedEntryPoint.BottomNavClick} />);
+
+    expect(mockUseActivityScreenViewed).toHaveBeenCalledWith(
+      expect.objectContaining({
+        entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+      }),
+    );
   });
 });
