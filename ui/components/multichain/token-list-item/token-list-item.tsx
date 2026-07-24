@@ -5,7 +5,12 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Button,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -23,8 +28,6 @@ import {
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
   Box,
@@ -328,9 +331,7 @@ export const TokenListItemComponent = ({
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
               src={tokenChainImage || undefined}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-              className="multichain-token-list-item__badge__avatar-network"
+              className="multichain-token-list-item__badge__avatar-network bg-background-default border-2"
             />
           }
           marginRight={4}

@@ -12,11 +12,11 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
         class="mm-box mm-box--margin-auto mm-box--padding-top-1 mm-box--padding-bottom-8 mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6 mr-1"
         >
           <img
-            alt="Ethereum Mainnet logo"
-            class="mm-avatar-network__network-image"
+            alt="Ethereum Mainnet"
+            class="size-full object-contain"
             src="./images/eth_logo.svg"
           />
         </div>

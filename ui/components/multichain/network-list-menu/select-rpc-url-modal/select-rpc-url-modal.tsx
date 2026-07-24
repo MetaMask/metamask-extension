@@ -8,9 +8,8 @@ import { useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
+import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -66,7 +65,7 @@ export const SelectRpcUrlModal = ({
               src={image}
               name={networkConfigurationToUse.name}
               size={AvatarNetworkSize.Sm}
-              marginRight={1}
+              className="mr-1"
             />
           )}
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
