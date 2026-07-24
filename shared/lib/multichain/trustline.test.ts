@@ -1,4 +1,9 @@
-import { isAssetRequireActivate, isTrustlineAsset } from './trustline';
+import {
+  getAdditionalReserveForMissingTrustline,
+  isAssetRequireActivate,
+  isTrustlineAsset,
+  STELLAR_BASE_RESERVE_PER_SUBENTRY_XLM,
+} from './trustline';
 
 const CLASSIC_ASSET_ID =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
@@ -81,5 +86,41 @@ describe('isAssetRequireActivate', () => {
         assetMetadata: { limit: '0' },
       }),
     ).toBe(false);
+  });
+});
+
+describe('getAdditionalReserveForMissingTrustline', () => {
+  it('returns one base reserve when the destination trustline is inactive', () => {
+    expect(
+      getAdditionalReserveForMissingTrustline({
+        toAssetId: CLASSIC_ASSET_ID,
+        toAssetMetadata: { limit: '0' },
+      }),
+    ).toBe(STELLAR_BASE_RESERVE_PER_SUBENTRY_XLM);
+  });
+
+  it('returns one base reserve when destination trustline metadata is missing', () => {
+    expect(
+      getAdditionalReserveForMissingTrustline({
+        toAssetId: CLASSIC_ASSET_ID,
+      }),
+    ).toBe(STELLAR_BASE_RESERVE_PER_SUBENTRY_XLM);
+  });
+
+  it('returns 0 when the destination trustline is already active', () => {
+    expect(
+      getAdditionalReserveForMissingTrustline({
+        toAssetId: CLASSIC_ASSET_ID,
+        toAssetMetadata: { limit: '1000' },
+      }),
+    ).toBe('0');
+  });
+
+  it('returns 0 when the destination is not a trustline asset', () => {
+    expect(
+      getAdditionalReserveForMissingTrustline({
+        toAssetId: SEP41_ASSET_ID,
+      }),
+    ).toBe('0');
   });
 });

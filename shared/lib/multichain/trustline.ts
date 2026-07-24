@@ -6,9 +6,17 @@ import { XlmScope } from '@metamask/keyring-api';
  * Account-scoped metadata for a trustline asset, when provided by the
  * account asset controller.
  */
-type AssetMetadata = {
+export type TrustlineAssetMetadata = {
   limit?: string;
 };
+
+/**
+ * One Stellar base reserve in XLM. Opening a new classic trustline locks this
+ * additional amount on the account until the trustline is removed.
+ *
+ * @see https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance
+ */
+export const STELLAR_BASE_RESERVE_PER_SUBENTRY_XLM = '0.5';
 
 /**
  * CAIP asset namespace used for classic trustline assets on each supported
@@ -48,7 +56,7 @@ export function isTrustlineAsset(assetId: string): boolean {
  */
 export function isAssetRequireActivate(params: {
   assetId?: string;
-  assetMetadata?: AssetMetadata;
+  assetMetadata?: TrustlineAssetMetadata;
 }): boolean {
   const { assetId, assetMetadata } = params;
 
@@ -65,4 +73,28 @@ export function isAssetRequireActivate(params: {
   // default to true because the imported token doesn't have assetMetadata at first,
   // we assume it is inactive
   return true;
+}
+
+/**
+ * Extra native reserve (in XLM) required when swapping into a classic asset
+ * that does not yet have an active trustline on the account.
+ *
+ * Uses {@link isAssetRequireActivate}: missing enrichment is treated as
+ * inactive so the reserve is overestimated until metadata is available.
+ *
+ * @param params - Destination asset identity and cached trustline metadata.
+ * @param params.toAssetId - CAIP asset ID of the swap/bridge destination token.
+ * @param params.toAssetMetadata - Trustline enrichment from StellarAssetsController.
+ * @returns `'0.5'` when a new trustline would be required, otherwise `'0'`.
+ */
+export function getAdditionalReserveForMissingTrustline(params: {
+  toAssetId?: string;
+  toAssetMetadata?: TrustlineAssetMetadata;
+}): string {
+  return isAssetRequireActivate({
+    assetId: params.toAssetId,
+    assetMetadata: params.toAssetMetadata,
+  })
+    ? STELLAR_BASE_RESERVE_PER_SUBENTRY_XLM
+    : '0';
 }

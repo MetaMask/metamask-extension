@@ -3,6 +3,7 @@ import type { CaipAssetType } from '@metamask/utils';
 
 import {
   getStellarBaseReserveForAccountAsset,
+  getStellarMinimumReserveForSwap,
   getStellarTrustlineAssetInfoForAccount,
 } from './stellar-assets';
 
@@ -110,6 +111,71 @@ describe('stellar-assets selectors', () => {
           SEP41_ASSET_ID,
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getStellarMinimumReserveForSwap', () => {
+    it('returns the base reserve when the destination trustline exists', () => {
+      expect(
+        getStellarMinimumReserveForSwap(
+          mockState,
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBe('2.5');
+    });
+
+    it('adds one base reserve when destination trustline metadata is missing', () => {
+      const missingTrustlineAsset =
+        'stellar:pubnet/asset:EURC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
+
+      expect(
+        getStellarMinimumReserveForSwap(
+          mockState,
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+          missingTrustlineAsset,
+        ),
+      ).toBe('3');
+    });
+
+    it('returns zero when native reserve enrichment is missing', () => {
+      expect(
+        getStellarMinimumReserveForSwap(
+          {
+            metamask: {
+              accountAssets: {
+                [ACCOUNT_ID]: {},
+              },
+            },
+          },
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBe('0');
+    });
+
+    it('returns zero when native reserve enrichment is zero', () => {
+      expect(
+        getStellarMinimumReserveForSwap(
+          {
+            metamask: {
+              accountAssets: {
+                [ACCOUNT_ID]: {
+                  [STELLAR_NATIVE_ASSET_ID]: {
+                    baseReserve: '0',
+                  },
+                },
+              },
+            },
+          },
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBe('0');
     });
   });
 });
