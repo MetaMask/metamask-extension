@@ -142,6 +142,7 @@ import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/se
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
@@ -489,10 +490,11 @@ export const routeConfig = [
         ),
         children: contactsRoutes,
       },
-      {
+      createRouteWithMessenger({
         path: DEFAULT_ROUTE,
+        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
         element: <Home />,
-      },
+      }),
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
         element: <TransactionDetailsRoute />,

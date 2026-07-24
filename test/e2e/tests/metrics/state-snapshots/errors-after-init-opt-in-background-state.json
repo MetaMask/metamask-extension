@@ -58,7 +58,6 @@
     "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
-    "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDropdownState": {},
@@ -211,6 +210,7 @@
   },
   "MultichainTransactionsController": "object",
   "NameController": { "nameSources": "object", "names": "object" },
+  "NetworkConnectionBannerController": "object",
   "NetworkController": {
     "networkConfigurationsByChainId": "object",
     "networksMetadata": "object",

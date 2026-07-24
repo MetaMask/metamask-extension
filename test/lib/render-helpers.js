@@ -8,6 +8,7 @@ import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
+import { createUIMessenger } from '../../ui/messengers/ui-messenger';
 
 /** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
 export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
@@ -93,6 +94,8 @@ export async function integrationTestRender(extendedRenderOptions) {
   const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
-    ...render(<Root store={store} />, { ...renderOptions }),
+    ...render(<Root store={store} uiMessenger={createUIMessenger()} />, {
+      ...renderOptions,
+    }),
   };
 }

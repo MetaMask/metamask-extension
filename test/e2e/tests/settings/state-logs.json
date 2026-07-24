@@ -1202,9 +1202,8 @@
     "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
-    "networkConnectionBanner": {
-      "status": "string"
-    },
+    "networkConnectionBannerNetwork": "null",
+    "networkConnectionBannerStatus": "string",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": {

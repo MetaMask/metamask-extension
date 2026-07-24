@@ -92,6 +92,7 @@ import {
   ConfigRegistryController,
 } from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
+import { NetworkConnectionBannerController } from '@metamask/network-connection-banner-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -248,7 +249,8 @@ export type MessengerClient =
   | ProfileMetricsController
   | ProfileMetricsService
   | ProofOfOwnershipService
-  | ConnectivityController;
+  | ConnectivityController
+  | NetworkConnectionBannerController;
 
 /**
  * Flat state object for all messenger clients supporting or required by modular initialization.

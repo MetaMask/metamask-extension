@@ -3981,14 +3981,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state

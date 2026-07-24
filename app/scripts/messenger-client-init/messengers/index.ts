@@ -92,6 +92,7 @@ import {
   getSubscriptionControllerMessenger,
 } from './subscription';
 import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
+import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -388,6 +389,10 @@ export const MESSENGER_FACTORIES = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkConnectionBannerController: {
+    getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
   },
   ClaimsController: {

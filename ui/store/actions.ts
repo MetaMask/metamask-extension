@@ -207,10 +207,7 @@ import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import {
-  ClaimSubmitToastType,
-  type NetworkConnectionBanner,
-} from '../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../shared/constants/app-state';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -6593,16 +6590,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-export function updateNetworkConnectionBanner(
-  networkConnectionBanner: NetworkConnectionBanner,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateNetworkConnectionBanner', [
-      networkConnectionBanner,
-    ]);
-  };
-}
-
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *

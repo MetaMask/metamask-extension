@@ -59,6 +59,7 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
+import type { NetworkConnectionBannerControllerState } from '@metamask/network-connection-banner-controller';
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
@@ -147,7 +148,6 @@ export type ControllerStatePropertiesEnumerated = {
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
@@ -334,6 +334,8 @@ export type ControllerStatePropertiesEnumerated = {
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
+  networkConnectionBannerStatus: NetworkConnectionBannerControllerState['networkConnectionBannerStatus'];
+  networkConnectionBannerNetwork: NetworkConnectionBannerControllerState['networkConnectionBannerNetwork'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -398,7 +400,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
-  ConnectivityControllerState;
+  ConnectivityControllerState &
+  NetworkConnectionBannerControllerState;
 
 /**
  * This type contains all controller state top-level properties, and
