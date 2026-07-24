@@ -16,7 +16,13 @@ import {
   isAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import { trace } from '../../../shared/lib/trace';
+import {
+  startNewTrace,
+  trace,
+  TraceCallback,
+  TraceContext,
+  TraceRequest,
+} from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
@@ -27,6 +33,45 @@ import {
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
 import { BridgeControllerInitMessenger } from './messengers';
+
+const QUOTE_FETCH_TRACE_NAMES = [
+  'Batch Sell Quotes Fetched',
+  'Bridge Quotes Fetched',
+  'Swap Quotes Fetched',
+] as const;
+
+type QuoteFetchTraceName = (typeof QUOTE_FETCH_TRACE_NAMES)[number];
+
+/**
+ * Checks whether a trace name belongs to a bridge or swap quote fetch round
+ * that should start its own root trace.
+ *
+ * @param name - The trace name to inspect.
+ * @returns Whether the trace name should start a new root trace.
+ */
+function isQuoteFetchTraceName(name: string): name is QuoteFetchTraceName {
+  return (QUOTE_FETCH_TRACE_NAMES as readonly string[]).includes(name);
+}
+
+/**
+ * Routes quote-fetch trace operations into their own root trace so bridge and
+ * swap quote polling does not accumulate under the long-lived service-worker
+ * pageload trace.
+ *
+ * @param request - The trace request to execute.
+ * @param fn - The trace callback.
+ * @returns The trace result.
+ */
+const traceQuoteFetchOperation = <ResultType>(
+  request: TraceRequest,
+  fn?: TraceCallback<ResultType>,
+): ResultType | TraceContext => {
+  if (isQuoteFetchTraceName(request.name)) {
+    return fn ? startNewTrace(request, fn) : startNewTrace(request);
+  }
+
+  return fn ? trace(request, fn) : trace(request);
+};
 
 /**
  * Initialize the bridge controller.
@@ -150,7 +195,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
     },
 
     // @ts-expect-error: `trace` function type does not match the expected type.
-    traceFn: (...args) => trace(...args),
+    traceFn: traceQuoteFetchOperation,
 
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
