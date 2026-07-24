@@ -3,6 +3,7 @@ import browser from 'webextension-polyfill';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -131,14 +132,28 @@ export default class ExtensionPlatform {
             'Transaction encountered an error.',
           )
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
-    } else if (status === TransactionStatus.failed) {
+    } else if (
+      status === TransactionStatus.failed ||
+      status === TransactionStatus.rejected
+    ) {
+      // TransactionController persists EIP-1193 `userRejectedRequest` (4001) for HW
+      // cancellations; only branch on that code here.
       if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
         await this._showFailedTransaction(
           txMeta,
           t('ledgerEthAppNftNotSupportedNotification'),
         );
+      } else if (
+        String(txMeta.error?.code) ===
+        String(errorCodes.provider.userRejectedRequest)
+      ) {
+        await this._showFailedTransaction(
+          txMeta,
+          t('notificationTransactionFailedUserRejectedMessage'),
+        );
       } else {
-        await this._showFailedTransaction(txMeta);
+        // Never pass error.stack into notifications — it can expose raw stack traces.
+        await this._showFailedTransaction(txMeta, txMeta.error?.message);
       }
     }
   }
@@ -215,10 +230,17 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    const errorMessageText = errorMessage || txMeta.error.message;
+    // Prefer an explicit/user-facing message; never fall back to error.stack.
+    const resolvedErrorMessage =
+      errorMessage ||
+      txMeta.error?.message ||
+      'Transaction encountered an error.';
     const message = Number.isNaN(nonce)
-      ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
-      : t('notificationTransactionFailedMessage', nonce, errorMessageText);
+      ? t(
+          'notificationTransactionWithoutNonceFailedMessage',
+          resolvedErrorMessage,
+        )
+      : t('notificationTransactionFailedMessage', nonce, resolvedErrorMessage);
     await this._showNotification(title, message);
   }
 

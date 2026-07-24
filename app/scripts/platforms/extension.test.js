@@ -230,6 +230,50 @@ describe('extension platform', () => {
         `Transaction failed! ${errorMessage}`,
       );
     });
+
+    it('uses a generic message when error has only a stack', async () => {
+      const stack =
+        'Error\n    at Object.<anonymous> (app/scripts/platforms/extension.js:1:1)';
+      const txMeta = {
+        txParams: { nonce: '0x1' },
+        error: { stack },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        'Transaction 1 failed! Transaction encountered an error.',
+      );
+      expect(showNotificationSpy.mock.calls[0][1]).not.toContain(stack);
+    });
+
+    it('does not use error.stack when errorMessage is missing', async () => {
+      const stack =
+        'Error\n    at Object.<anonymous> (app/scripts/platforms/extension.js:1:1)';
+      const txMeta = {
+        txParams: { nonce: '0x2' },
+        error: { message: '', stack },
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta, undefined);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        'Transaction 2 failed! Transaction encountered an error.',
+      );
+      expect(showNotificationSpy.mock.calls[0][1]).not.toContain(stack);
+    });
   });
 
   describe('showTransactionNotification', () => {
@@ -255,6 +299,80 @@ describe('extension platform', () => {
         'Failed transaction',
         `Transaction 1 failed! ${expectedErrorMessage}`,
       );
+    });
+
+    it('shows failed transaction with user rejected signing message', async () => {
+      const txMeta = {
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { code: '4001', message: 'User rejected the request.' },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      const expectedErrorMessage = t(
+        'notificationTransactionFailedUserRejectedMessage',
+      );
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
+
+    it('shows user rejected signing message when transaction status is rejected with 4001', async () => {
+      const txMeta = {
+        status: TransactionStatus.rejected,
+        txParams: { nonce: '0x1' },
+        error: { code: '4001', message: 'User rejected the request.' },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      const expectedErrorMessage = t(
+        'notificationTransactionFailedUserRejectedMessage',
+      );
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        `Transaction 1 failed! ${expectedErrorMessage}`,
+      );
+    });
+
+    it('does not show error.stack in the generic failure notification', async () => {
+      const stack =
+        'Error\n    at Object.<anonymous> (app/scripts/platforms/extension.js:1:1)';
+      const txMeta = {
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { stack },
+      };
+      const rpcPrefs = { chainId: 1 };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        'Transaction 1 failed! Transaction encountered an error.',
+      );
+      expect(showNotificationSpy.mock.calls[0][1]).not.toContain(stack);
     });
   });
 });

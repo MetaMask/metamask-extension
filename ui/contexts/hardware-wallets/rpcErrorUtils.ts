@@ -609,6 +609,88 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
+ * Infer user action error codes from free-form error text.
+ * This is a fallback for cases where serialized causes lose their code field.
+ *
+ * @param text - The error text to inspect
+ * @returns User rejection/cancellation code when detectable, null otherwise
+ */
+function inferUserActionErrorCodeFromText(text: string): ErrorCode | null {
+  const normalizedText = text.toLowerCase();
+
+  if (normalizedText.includes('user rejected')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (normalizedText.includes('rejected by the user')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (normalizedText.includes('rejected by user')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (
+    normalizedText.includes('user cancelled') ||
+    normalizedText.includes('user canceled')
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  if (
+    normalizedText.includes('cancelled by the user') ||
+    normalizedText.includes('canceled by the user') ||
+    normalizedText.includes('cancelled by user') ||
+    normalizedText.includes('canceled by user')
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  return null;
+}
+
+/**
+ * Infer a hardware wallet error code from a serialized HardwareWalletError-like cause.
+ * Some transport paths preserve name/message/stack but drop explicit code.
+ *
+ * @param cause - The cause object to inspect
+ * @returns The inferred ErrorCode if detected, null otherwise
+ */
+function inferErrorCodeFromSerializedHardwareWalletCause(
+  cause: unknown,
+): ErrorCode | null {
+  const causeAsAny = cause as {
+    name?: unknown;
+    message?: unknown;
+    stack?: unknown;
+  };
+
+  if (causeAsAny?.name !== 'HardwareWalletError') {
+    return null;
+  }
+
+  const causeMessage =
+    typeof causeAsAny.message === 'string' ? causeAsAny.message : '';
+  const causeStack =
+    typeof causeAsAny.stack === 'string' ? causeAsAny.stack : '';
+
+  // Parse enum key in stack traces like:
+  // HardwareWalletError [UserRejected:2000]: Ledger: User rejected action on device
+  const stackEnumMatch = causeStack.match(/\[([A-Za-z]+):\d+\]/u);
+  if (stackEnumMatch?.[1]) {
+    const parsedCode = mapStringCodeToErrorCode(stackEnumMatch[1]);
+    if (parsedCode !== ErrorCode.Unknown) {
+      return parsedCode;
+    }
+  }
+
+  return (
+    inferUserActionErrorCodeFromText(causeMessage) ??
+    inferUserActionErrorCodeFromText(causeStack)
+  );
+}
+
+/**
  * Get HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
@@ -639,7 +721,9 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
     return mapCodeToErrorCode(error.code);
   }
 
-  return null;
+  // Some transport paths preserve HardwareWalletError name/message/stack but
+  // drop the explicit code field. Recover the code from those fields.
+  return inferErrorCodeFromSerializedHardwareWalletCause(error);
 }
 
 /**
@@ -800,7 +884,11 @@ export function toHardwareWalletError(
     const keyringErrorCode = error?.code
       ? mapStringCodeToErrorCode(error.code)
       : null;
-    const errorCode = keyringErrorCode ?? ErrorCode.Unknown;
+    const errorCode =
+      keyringErrorCode ??
+      inferUserActionErrorCodeFromText(error.message) ??
+      inferUserActionErrorCodeFromText((error as Error).stack ?? '') ??
+      ErrorCode.Unknown;
     return createHardwareWalletError(errorCode, walletType, error.message, {
       cause: error?.cause,
     });
