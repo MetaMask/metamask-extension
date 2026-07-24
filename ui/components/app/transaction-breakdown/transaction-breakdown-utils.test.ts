@@ -106,6 +106,22 @@ describe('getTransactionBreakdownData', () => {
     expect(result.isGasFeeSponsored).toBeFalsy();
   });
 
+  it('returns isGasFeeSponsored false for hardware wallet accounts', () => {
+    const result = getTransactionBreakdownData({
+      state: MOCK_STATE,
+      transaction: {
+        ...BASE_TX,
+        status: TransactionStatus.confirmed,
+        isGasFeeSponsored: true,
+        txReceipt: { gasUsed: '0x5208' } as TransactionMeta['txReceipt'],
+      } as TransactionMeta,
+      isTokenApprove: false,
+      isHardwareWalletAccount: true,
+    });
+
+    expect(result.isGasFeeSponsored).toBe(false);
+  });
+
   it('returns isGasFeeSponsored false for revokeDelegation even when sponsored flag is true', () => {
     const result = getTransactionBreakdownData({
       state: MOCK_STATE,

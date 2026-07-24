@@ -2,6 +2,7 @@ import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
@@ -12,7 +13,6 @@ import {
 } from '../../../multichain/networks-form/use-safe-chains';
 import { setEditedNetwork } from '../../../../store/actions';
 import {
-  ButtonSecondary,
   Modal,
   ModalBody,
   ModalContent,
@@ -209,15 +209,16 @@ export default function TokenCell({
               ])}
             </ModalBody>
             <ModalFooter>
-              <ButtonSecondary
+              <Button
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId: token.chainId }));
                   navigate(NETWORKS_ROUTE);
                 }}
-                block
+                isFullWidth
               >
                 {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
