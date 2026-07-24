@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import Box from '../../../components/ui/box';
+import { Box } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { useAnalytics } from '../../../hooks/useAnalytics';

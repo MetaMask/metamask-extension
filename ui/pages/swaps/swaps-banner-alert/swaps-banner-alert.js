@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
-import Box from '../../../components/ui/box';
 import {
   AlignItems,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonLink,
   ButtonLinkSize,
   Text,
