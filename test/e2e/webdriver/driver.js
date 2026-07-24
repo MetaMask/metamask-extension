@@ -239,44 +239,44 @@ class Driver {
     };
 
     try {
-      try {
-        await this.waitUntil(getServiceWorkerTargetInfo, {
-          interval: pollInterval,
-          timeout: timeout ?? this.timeout,
-        });
-      } catch (error) {
-        if (
-          !(error instanceof Error) ||
-          !waitUntilTimeoutPattern.test(error.message)
-        ) {
-          throw error;
-        }
+      await this.waitUntil(getServiceWorkerTargetInfo, {
+        interval: pollInterval,
+        timeout: timeout ?? this.timeout,
+      });
+    } catch (error) {
+      if (
+        !(error instanceof Error) ||
+        !waitUntilTimeoutPattern.test(error.message)
+      ) {
+        throw error;
       }
+    }
 
-      if (!targetInfo) {
-        const targetDump = await getKnownTargetsDump();
-        throw new Error(
-          `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
-        );
-      }
-
-      const { result: attachResult } = await cdpConnection.send(
-        'Target.attachToTarget',
-        {
-          targetId: targetInfo.targetId,
-          flatten: true,
-        },
+    if (!targetInfo) {
+      const targetDump = await getKnownTargetsDump();
+      throw new Error(
+        `Timed out waiting for extension service worker target for ${this.extensionUrl}. Known targets: ${targetDump}`,
       );
+    }
 
-      attachedSessionId = attachResult?.sessionId ?? null;
-      if (!attachedSessionId) {
-        throw new Error(
-          `Failed to attach to extension service worker target ${targetInfo.targetId}`,
-        );
-      }
+    const { result: attachResult } = await cdpConnection.send(
+      'Target.attachToTarget',
+      {
+        targetId: targetInfo.targetId,
+        flatten: true,
+      },
+    );
 
-      cdpConnection.sessionId = attachedSessionId;
+    attachedSessionId = attachResult?.sessionId ?? null;
+    if (!attachedSessionId) {
+      throw new Error(
+        `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+      );
+    }
 
+    cdpConnection.sessionId = attachedSessionId;
+
+    try {
       await cdpConnection.send('Runtime.enable');
 
       const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
