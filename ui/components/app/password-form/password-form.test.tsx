@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import PasswordForm from './password-form';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
+import PasswordForm, { computeMismatchError } from './password-form';
 
 const VALID_PASSWORD = 'a]2$GHvw&W';
 const SHORT_PASSWORD = 'abc';
@@ -10,6 +11,24 @@ const mockT = (key: string) => key;
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockT,
 }));
+
+describe('computeMismatchError', () => {
+  it('returns false when confirm password is below the minimum length', () => {
+    expect(computeMismatchError('a]2$GHvw&W', 'abc')).toBe(false);
+  });
+
+  it('returns false when confirm reaches the minimum length but is shorter than the password', () => {
+    expect(computeMismatchError('a]2$GHvw&W', 'a]2$GHvw')).toBe(false);
+  });
+
+  it('returns true when confirm meets the minimum length, is at least as long as the password, and differs', () => {
+    expect(computeMismatchError('a]2$GHvw&W', 'X]2$GHvw&W')).toBe(true);
+  });
+
+  it('returns false when the passwords are equal', () => {
+    expect(computeMismatchError('a]2$GHvw&W', 'a]2$GHvw&W')).toBe(false);
+  });
+});
 
 describe('PasswordForm', () => {
   let onChange: jest.Mock;
@@ -301,6 +320,37 @@ describe('PasswordForm', () => {
       });
 
       expect(screen.getByText('passwordsDontMatch')).toBeInTheDocument();
+    });
+
+    it('does not show mismatch error while confirm has reached the minimum length but is still shorter than the password', () => {
+      // 10-char password and an 8-char correct prefix of it as confirm.
+      act(() => {
+        typePassword(VALID_PASSWORD);
+      });
+      act(() => {
+        typeConfirmPassword(VALID_PASSWORD.slice(0, PASSWORD_MIN_LENGTH));
+      });
+
+      expect(screen.queryByText('passwordsDontMatch')).not.toBeInTheDocument();
+    });
+
+    it('hides the mismatch error but invalidates the form when the password is extended past a matching confirm', () => {
+      act(() => {
+        typePassword(VALID_PASSWORD);
+      });
+      act(() => {
+        typeConfirmPassword(VALID_PASSWORD);
+      });
+
+      expect(onChange).toHaveBeenLastCalledWith(VALID_PASSWORD);
+
+      // Appending to the password makes it longer than the (matching) confirm.
+      act(() => {
+        typePassword(`${VALID_PASSWORD}x`);
+      });
+
+      expect(screen.queryByText('passwordsDontMatch')).not.toBeInTheDocument();
+      expect(onChange).toHaveBeenLastCalledWith('');
     });
   });
 

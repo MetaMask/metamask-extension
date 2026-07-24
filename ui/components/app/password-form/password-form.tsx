@@ -15,6 +15,17 @@ type PasswordFormProps = {
   disabled?: boolean;
 };
 
+export function computeMismatchError(
+  password: string,
+  confirmPassword: string,
+): boolean {
+  return (
+    confirmPassword.length >= PASSWORD_MIN_LENGTH &&
+    confirmPassword.length >= password.length &&
+    password !== confirmPassword
+  );
+}
+
 export default function PasswordForm({
   onChange,
   pwdInputTestId,
@@ -45,11 +56,9 @@ export default function PasswordForm({
 
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
-      const confirmError =
-        confirmPassword.length >= PASSWORD_MIN_LENGTH &&
-        passwordInput !== confirmPassword
-          ? t('passwordsDontMatch')
-          : '';
+      const confirmError = computeMismatchError(passwordInput, confirmPassword)
+        ? t('passwordsDontMatch')
+        : '';
 
       setPassword(passwordInput);
 
@@ -61,11 +70,9 @@ export default function PasswordForm({
 
   const handleConfirmPasswordChange = useCallback(
     (confirmPasswordInput: string) => {
-      const error =
-        confirmPasswordInput.length >= PASSWORD_MIN_LENGTH &&
-        password !== confirmPasswordInput
-          ? t('passwordsDontMatch')
-          : '';
+      const error = computeMismatchError(password, confirmPasswordInput)
+        ? t('passwordsDontMatch')
+        : '';
 
       setConfirmPassword(confirmPasswordInput);
       setConfirmPasswordError(error);
