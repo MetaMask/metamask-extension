@@ -12,7 +12,8 @@
 
   color-scheme: dark light;
   color: light-dark(var(--brand-colors-grey-grey1000), var(--brand-colors-grey-grey050));
-  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-grey-grey1000));
+  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-black));
 }
 
 html,
