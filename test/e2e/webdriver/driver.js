@@ -139,21 +139,6 @@ const errorMessages = {
     'waitUntilXWindowHandles timed out polling window handles',
 };
 
-async function getTargets(cdpConnection) {
-  const { result } = await cdpConnection.send('Target.getTargets');
-  return result?.targetInfos ?? [];
-}
-
-async function findServiceWorkerTarget(cdpConnection) {
-  const targetInfos = await getTargets(cdpConnection);
-  return targetInfos.find(
-    (info) =>
-      info.type === 'service_worker' &&
-      typeof info.url === 'string' &&
-      info.url.startsWith(this.extensionUrl),
-  );
-}
-
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -218,24 +203,29 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
-  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+  async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
     const cdpConnection = await this.driver.createCDPConnection('browser');
-    let targetInfo;
     let attachedSessionId = null;
+    let targetInfo;
 
     try {
       await this.waitUntil(
         async () => {
-          targetInfo = await findServiceWorkerTarget(cdpConnection);
+          const { result } = await cdpConnection.send('Target.getTargets');
+          const targetInfos = result?.targetInfos ?? [];
+          targetInfo = targetInfos.find(
+            (info) =>
+              info.type === 'service_worker' &&
+              typeof info.url === 'string' &&
+              info.url.startsWith(this.extensionUrl),
+          );
           return Boolean(targetInfo);
         },
-        {
-          interval: 250,
-          timeout: timeout ?? this.timeout,
-        },
+        { interval: 250, timeout },
       );
     } catch (error) {
-      const knownTargets = await getTargets(cdpConnection);
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const knownTargets = result?.targetInfos ?? [];
 
       const errorMessage =
         error instanceof Error && error.message ? `${error.message}. ` : '';
@@ -262,6 +252,29 @@ class Driver {
 
     cdpConnection.sessionId = attachedSessionId;
 
+    return {
+      cdpConnection,
+      async closeServiceWorkerConnection() {
+        if (!attachedSessionId) {
+          return;
+        }
+
+        cdpConnection.sessionId = null;
+        try {
+          await cdpConnection.send('Target.detachFromTarget', {
+            sessionId: attachedSessionId,
+          });
+        } catch (_) {
+          // Best-effort cleanup.
+        }
+      },
+    };
+  }
+
+  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+    const { cdpConnection, closeServiceWorkerConnection } =
+      await this.#createServiceWorkerConnection({ timeout });
+
     try {
       await cdpConnection.send('Runtime.enable');
 
@@ -281,16 +294,7 @@ class Driver {
 
       return evaluationResult.result?.value;
     } finally {
-      if (attachedSessionId) {
-        cdpConnection.sessionId = null;
-        try {
-          await cdpConnection.send('Target.detachFromTarget', {
-            sessionId: attachedSessionId,
-          });
-        } catch (_) {
-          // Best-effort cleanup.
-        }
-      }
+      await closeServiceWorkerConnection();
     }
   }
 
