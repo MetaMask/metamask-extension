@@ -137,6 +137,10 @@ import {
   GasFeeControllerEnableNonRPCGasFeeApisAction,
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyControllerUnlockWithPasskeyAction,
+} from '@metamask/passkey-controller';
 import { cloneDeep } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
@@ -233,6 +237,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'syncKeyringEncryptionKey',
   'throwTestError',
   'toggleExternalServices',
+  'unlockWithPasskey',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
 ] as const;
@@ -294,6 +299,7 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
@@ -1313,6 +1319,41 @@ export class LegacyBackgroundApiService {
       }
     }
 
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Unlocks the vault with a passkey, then runs the post-unlock account
+   * initialization sequence.
+   *
+   * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+   * verifies the authentication assertion and submits the decrypted vault key to
+   * the KeyringController), then performs the awaited post-unlock account init
+   * (accounts / multichain / account-tree) that the controller's keyring-only
+   * unlock does not run.
+   *
+   * @param authenticationResponse - Result of `navigator.credentials.get()`.
+   */
+  async unlockWithPasskey(
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ): Promise<void> {
+    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    await this.#offscreenPromise;
+
+    await this.#messenger.call(
+      'PasskeyController:unlockWithPasskey',
+      authenticationResponse,
+    );
+
+    await this.#initAccountsAfterUnlock();
+  }
+
+  /**
+   * Runs the awaited post-unlock account initialization sequence: refreshes
+   * internal accounts, initializes multichain accounts, refreshes the account
+   * tree, and (asynchronously) resyncs and aligns accounts.
+   */
+  async #initAccountsAfterUnlock(): Promise<void> {
     await this.#messenger.call('AccountsController:updateAccounts');
 
     // Init multichain accounts after creating internal accounts.

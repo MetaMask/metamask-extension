@@ -2000,7 +2000,8 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "@noble/hashes": true
+        "@noble/hashes": true,
+        "async-mutex": true
       }
     },
     "@metamask/permission-controller": {
@@ -2651,10 +2652,13 @@
         "@metamask/browser-passworder": true,
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/passkey-controller": true,
         "@metamask/remote-feature-flag-controller": true,
+        "@metamask/seedless-onboarding-controller": true,
         "@metamask/storage-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true

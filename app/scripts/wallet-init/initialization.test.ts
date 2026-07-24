@@ -5,6 +5,8 @@ import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
+import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
@@ -13,6 +15,9 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
+import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
+import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -31,8 +36,21 @@ jest.mock('./instance-options/connectivity-controller', () => ({
     () => 'connectivity-options',
   ),
 }));
+jest.mock('./instance-options/gas-fee-controller', () => ({
+  getGasFeeControllerInstanceOptions: jest.fn(
+    () => 'gas-fee-controller-options',
+  ),
+}));
 jest.mock('./instance-options/keyring-controller', () => ({
   getKeyringControllerInstanceOptions: jest.fn(() => 'keyring-options'),
+}));
+jest.mock('./instance-options/passkey-controller', () => ({
+  getPasskeyControllerInstanceOptions: jest.fn(() => 'passkey-options'),
+}));
+jest.mock('./instance-options/seedless-onboarding-controller', () => ({
+  getSeedlessOnboardingControllerInstanceOptions: jest.fn(
+    () => 'seedless-onboarding-options',
+  ),
 }));
 jest.mock('./instance-options/remote-feature-flag-controller', () => ({
   getRemoteFeatureFlagControllerInstanceOptions: jest.fn(() => 'rffc-options'),
@@ -51,12 +69,27 @@ jest.mock('./messengers/transaction-controller-messenger', () => ({
     () => 'transaction-controller-init-messenger',
   ),
 }));
+jest.mock('./messengers/gas-fee-controller-messenger', () => ({
+  getGasFeeControllerInitMessenger: jest.fn(
+    () => 'gas-fee-controller-init-messenger',
+  ),
+}));
+jest.mock('./messengers/seedless-onboarding-controller-messenger', () => ({
+  getSeedlessOnboardingControllerInitMessenger: jest.fn(
+    () => 'seedless-onboarding-controller-init-messenger',
+  ),
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 const getFlatState = jest.fn(() => ({}) as never);
 const getPermittedAccounts = jest.fn(() => []);
 const getTransactionMetricsRequest = jest.fn(() => ({}) as never);
+const platform = {
+  runtime: {
+    getURL: jest.fn().mockReturnValue('chrome-extension://mock-id/'),
+  },
+} as never;
 
 describe('initializeWallet', () => {
   beforeEach(() => {
@@ -75,6 +108,7 @@ describe('initializeWallet', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       state,
     });
 
@@ -82,6 +116,7 @@ describe('initializeWallet', () => {
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
+        gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
@@ -99,6 +134,8 @@ describe('initializeWallet', () => {
             '0xe708': [],
           },
         },
+        passkeyController: 'passkey-options',
+        seedlessOnboardingController: 'seedless-onboarding-options',
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
         transactionController: 'transaction-controller-options',
@@ -122,6 +159,7 @@ describe('initializeWallet', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       showApprovalRequest,
       state,
     });
@@ -129,8 +167,24 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
+    expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
+      messenger,
+      platform,
+    });
+    expect(getSeedlessOnboardingControllerInitMessenger).toHaveBeenCalledWith(
+      messenger,
+    );
+    expect(getSeedlessOnboardingControllerInstanceOptions).toHaveBeenCalledWith(
+      {
+        initMessenger: 'seedless-onboarding-controller-init-messenger',
+      },
+    );
     expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
       connectivityAdapter,
+    });
+    expect(getGasFeeControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getGasFeeControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'gas-fee-controller-init-messenger',
     });
     expect(getKeyringControllerInstanceOptions).toHaveBeenCalledWith({
       encryptor,
@@ -175,6 +229,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       state: { OnboardingController: { completedOnboarding: true } },
     });
 
@@ -195,6 +250,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger: createMockMessenger(),
+      platform,
       state: { PreferencesController: { useExternalServices: false } },
     });
 

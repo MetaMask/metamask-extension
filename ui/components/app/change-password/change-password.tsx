@@ -2,7 +2,10 @@ import EventEmitter from 'events';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
+import {
+  type PasskeyAuthenticationResponse,
+  PasskeyControllerErrorCode,
+} from '@metamask/passkey-controller';
 import {
   Box,
   Button,
@@ -34,7 +37,6 @@ import {
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
-  ExtensionPasskeyErrorCode,
   getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
 } from '../../../../shared/lib/passkey/passkey-error';
@@ -235,7 +237,7 @@ const ChangePassword = ({
 
       const passkeyCode = getPasskeyControllerErrorCode(error);
       // strictly treat vault key renewal failure as a password change success
-      if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
+      if (passkeyCode !== PasskeyControllerErrorCode.VaultKeyRenewalFailed) {
         throw error;
       }
     }

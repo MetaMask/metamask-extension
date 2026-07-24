@@ -38,11 +38,6 @@ import {
   createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import {
-  PasskeyControllerError,
-  PasskeyControllerErrorCode,
-  PasskeyControllerErrorMessage,
-} from '@metamask/passkey-controller';
-import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -131,7 +126,6 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
-import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -388,10 +382,7 @@ import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
-import {
-  OAuthServiceInit,
-  SeedlessOnboardingControllerInit,
-} from './messenger-client-init/seedless-onboarding';
+import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
 import {
   getSendBundleSupportedChains,
   setSentinelApiAuth,
@@ -411,7 +402,6 @@ import { RatesControllerInit } from './messenger-client-init/rates-controller-in
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { EnsControllerInit } from './messenger-client-init/confirmations/ens-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './messenger-client-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import {
   SubscriptionControllerInit,
@@ -443,7 +433,6 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
 import {
   QrSyncControllerInit,
   QrSyncDataServiceInit,
@@ -578,6 +567,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       showApprovalRequest: this.opts.showUserConfirmation,
       state: initState,
+      platform: this.extension,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -663,12 +653,10 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      PasskeyController: PasskeyControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
-      GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
@@ -734,7 +722,6 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
@@ -815,7 +802,7 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController = this.wallet.getInstance(
       'RemoteFeatureFlagController',
     );
-    this.gasFeeController = messengerClientsByName.GasFeeController;
+    this.gasFeeController = this.wallet.getInstance('GasFeeController');
     this.userOperationController =
       messengerClientsByName.UserOperationController;
     this.cronjobController = messengerClientsByName.CronjobController;
@@ -883,8 +870,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
-    this.seedlessOnboardingController =
-      messengerClientsByName.SeedlessOnboardingController;
+    this.seedlessOnboardingController = this.wallet.getInstance(
+      'SeedlessOnboardingController',
+    );
     this.subscriptionController = messengerClientsByName.SubscriptionController;
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
@@ -904,7 +892,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.ProfileMetricsController;
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
-    this.passkeyController = messengerClientsByName.PasskeyController;
+    this.passkeyController = this.wallet.getInstance('PasskeyController');
     this.configRegistryController =
       messengerClientsByName.ConfigRegistryController;
     this.backup = new Backup({
@@ -1443,6 +1431,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
+      PasskeyController: this.passkeyController,
       SeedlessOnboardingController: this.seedlessOnboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
@@ -1506,6 +1495,7 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
+        PasskeyController: this.passkeyController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
         SubscriptionController: this.subscriptionController,
         PermissionController: this.permissionController,
@@ -2952,14 +2942,26 @@ export default class MetamaskController extends EventEmitter {
         this.passkeyController.generateAuthenticationOptions.bind(
           this.passkeyController,
         ),
-      protectVaultKeyWithPasskey: this.protectVaultKeyWithPasskey.bind(this),
-      unlockWithPasskey: this.unlockWithPasskey.bind(this),
-      removePasskeyWithPasskeyVerification:
-        this.removePasskeyWithPasskeyVerification.bind(this),
-      removePasskeyWithPasswordVerification:
-        this.removePasskeyWithPasswordVerification.bind(this),
-      changePasswordWithPasskeyVerification:
-        this.changePasswordWithPasskeyVerification.bind(this),
+      protectVaultKeyWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:protectVaultKeyWithPasskey',
+      ),
+      unlockWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockWithPasskey',
+      ),
+      removePasskeyWithPasskeyVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:removePasskeyWithPasskeyVerification',
+      ),
+      removePasskeyWithPasswordVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:removePasskeyWithPasswordVerification',
+      ),
+      changePasswordWithPasskeyVerification: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:changePasswordWithPasskeyVerification',
+      ),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -3374,7 +3376,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:exportAccount',
       ),
-      exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
+      exportAccountsWithPasskey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PasskeyController:exportAccountsWithPasskey',
+      ),
       exportSeedPhraseWithPasskey: this.exportSeedPhraseWithPasskey.bind(this),
 
       // txController
@@ -4376,189 +4381,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Wraps the vault encryption key with a passkey after WebAuthn registration in the UI.
-   * If `completedOnboarding`, `password` is required and verified first.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyRegistrationResponse} registrationResponse - Registration response from the UI.
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Post-registration `get()` response from the UI.
-   * @param {string} [password] - Wallet password when onboarding is complete (step-up).
-   * @returns {Promise<void>}
-   */
-  async protectVaultKeyWithPasskey(
-    registrationResponse,
-    authenticationResponse,
-    password,
-  ) {
-    const { completedOnboarding } = this.onboardingController.state;
-    if (completedOnboarding) {
-      // password is required when onboarding is complete
-      if (!password) {
-        throw new Error('Password required to register passkey');
-      }
-      // verify password
-      await this.keyringController.verifyPassword(password);
-    }
-
-    const vaultKey = await this.keyringController.exportEncryptionKey();
-    await this.passkeyController.protectVaultKeyWithPasskey({
-      registrationResponse,
-      authenticationResponse,
-      vaultKey,
-    });
-  }
-
-  /**
-   * Unlocks the vault with a passkey.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - Wire response from the UI.
-   * @returns {Promise<void>}
-   */
-  async unlockWithPasskey(authenticationResponse) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
-      authenticationResponse,
-    );
-    await this.submitEncryptionKey(vaultKey);
-  }
-
-  /**
-   * Removes the passkey from the vault using the passkey authentication response.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse
-   * @returns {Promise<void>}
-   */
-  async removePasskeyWithPasskeyVerification(authenticationResponse) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    const verified = await this.passkeyController.verifyPasskeyAuthentication(
-      authenticationResponse,
-    );
-    if (!verified) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
-        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
-      );
-    }
-
-    this.passkeyController.removePasskey();
-  }
-
-  /**
-   * Verifies the wallet password and removes the passkey record (settings disable fallback).
-   *
-   * @param {string} password
-   * @returns {Promise<void>}
-   */
-  async removePasskeyWithPasswordVerification(password) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-    await this.keyringController.verifyPassword(password);
-    this.passkeyController.removePasskey();
-  }
-
-  /**
-   * Changes the wallet password using a verified passkey assertion, then either renews
-   * vault key protection for the new encryption key or removes the passkey enrollment.
-   * Non-social-login only.
-   *
-   * @param {string} newPassword - New wallet password.
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {{ renewVaultKeyProtection: boolean }} [options] - If `false`, removes passkey after the change instead of calling `renewVaultKeyProtection`.
-   * @returns {Promise<void>}
-   */
-  async changePasswordWithPasskeyVerification(
-    newPassword,
-    authenticationResponse,
-    options,
-  ) {
-    const { renewVaultKeyProtection = true } = options ?? {};
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        {
-          code: PasskeyControllerErrorCode.NotEnrolled,
-        },
-      );
-    }
-
-    // verify passkey authentication
-    const isVerified = await this.passkeyController.verifyPasskeyAuthentication(
-      authenticationResponse,
-    );
-    if (!isVerified) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
-        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
-      );
-    }
-
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    try {
-      let vaultKeyBeforePasswordChange;
-      if (renewVaultKeyProtection) {
-        vaultKeyBeforePasswordChange =
-          await this.keyringController.exportEncryptionKey();
-      }
-
-      // change password
-      await this.keyringController.changePassword(newPassword);
-
-      if (renewVaultKeyProtection) {
-        try {
-          // renew vault key protection
-          const vaultKeyAfterPasswordChange =
-            await this.keyringController.exportEncryptionKey();
-          await this.passkeyController.renewVaultKeyProtection({
-            authenticationResponse,
-            oldVaultKey: vaultKeyBeforePasswordChange,
-            newVaultKey: vaultKeyAfterPasswordChange,
-          });
-        } catch (err) {
-          log.error(
-            'Passkey vault key protection renewal failed after password change',
-            err,
-          );
-          this.passkeyController.removePasskey();
-          throw new PasskeyControllerError(
-            'Passkey vault key protection renewal failed after password change',
-            {
-              code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
-              cause: err instanceof Error ? err : new Error(String(err)),
-            },
-          );
-        }
-      } else {
-        // Passkey already verified; keyring changePassword above applied newPassword.
-        this.passkeyController.removePasskey();
-      }
-    } catch (error) {
-      log.error('error while changing password with passkey', error);
-      throw error;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
    * Exports the Secret Recovery Phrase after verifying a passkey assertion,
    * used as a password-less alternative to {@link getSeedPhrase}.
    *
@@ -4567,56 +4389,15 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
    */
   async exportSeedPhraseWithPasskey(authenticationResponse, keyringId) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
-      );
-    }
-
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
+    // Assertion verification + vault-key export live in `PasskeyController`,
+    // which returns the raw wordlist-index bytes from `KeyringController`. The
+    // extension re-encodes them as UTF-8 codepoints for the UI.
+    const mnemonic = await this.passkeyController.exportSeedPhraseWithPasskey(
       authenticationResponse,
-    );
-
-    const mnemonic = await this.keyringController.exportSeedPhrase(
-      { encryptionKey: vaultKey },
       keyringId,
     );
 
     return convertEnglishWordlistIndicesToCodepoints(mnemonic);
-  }
-
-  /**
-   * Reveals the private keys of multiple accounts after verifying a single
-   * passkey assertion, used as a password-less alternative to
-   * {@link exportAccounts} for the multichain account group reveal.
-   *
-   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
-   * @param {string[]} addresses - The addresses whose private keys should be revealed.
-   * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
-   */
-  async exportAccountsWithPasskey(authenticationResponse, addresses) {
-    if (!this.passkeyController.isPasskeyEnrolled()) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
-      );
-    }
-
-    // Retrieve the passkey-wrapped vault key once. This also cryptographically
-    // verifies the assertion, throwing on an invalid passkey.
-    const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
-      authenticationResponse,
-    );
-
-    return Promise.all(
-      addresses.map((address) =>
-        this.keyringController.exportAccount(
-          { encryptionKey: vaultKey },
-          address,
-        ),
-      ),
-    );
   }
 
   /**
@@ -5299,20 +5080,6 @@ export default class MetamaskController extends EventEmitter {
       log.error(error);
       throw error;
     }
-  }
-
-  /**
-   * Submits the user's encryption key and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} encryptionKey - The user's encryption key
-   */
-  async submitEncryptionKey(encryptionKey) {
-    await this.controllerMessenger.call(
-      'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-      { encryptionKey },
-    );
   }
 
   async _loginUser(password) {

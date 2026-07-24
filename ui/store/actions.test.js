@@ -150,6 +150,10 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.protectVaultKeyWithPasskey = sinon.stub();
+    background.removePasskeyWithPasskeyVerification = sinon.stub();
+    background.removePasskeyWithPasswordVerification = sinon.stub();
+    background.unlockWithPasskey = sinon.stub();
     background.generatePasskeyRegistrationOptions = sinon.stub();
     background.generatePasskeyAuthenticationOptions = sinon.stub();
     background.generatePasskeyPostRegistrationAuthenticationOptions =
@@ -354,11 +358,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          undefined,
-        ),
+          options: undefined,
+        }),
       ).toStrictEqual(true);
     });
 
@@ -390,11 +394,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith(
+        background.changePasswordWithPasskeyVerification.calledOnceWith({
           newPassword,
           authenticationResponse,
-          { renewVaultKeyProtection: false },
-        ),
+          options: { renewVaultKeyProtection: false },
+        }),
       ).toStrictEqual(true);
     });
 
@@ -592,11 +596,11 @@ describe('Actions', () => {
       );
 
       expect(
-        background.protectVaultKeyWithPasskey.calledOnceWith(
+        background.protectVaultKeyWithPasskey.calledOnceWith({
           registrationResponse,
           authenticationResponse,
-          'secret',
-        ),
+          password: 'secret',
+        }),
       ).toBe(true);
 
       await actions.protectVaultKeyWithPasskey(
@@ -607,9 +611,11 @@ describe('Actions', () => {
       expect(
         background.protectVaultKeyWithPasskey.secondCall.args,
       ).toStrictEqual([
-        registrationResponse,
-        authenticationResponse,
-        undefined,
+        {
+          registrationResponse,
+          authenticationResponse,
+          password: undefined,
+        },
       ]);
     });
 
