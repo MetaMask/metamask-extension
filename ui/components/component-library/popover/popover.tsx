@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'clsx';
+import { usePureBlack } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -152,11 +153,18 @@ export const Popover: PopoverComponent = React.forwardRef(
       };
     }, [onPressEscKey, isOpen, onClickOutside, referenceElement]);
 
+    // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+    const isPureBlack = usePureBlack();
+
     const PopoverContent = (
       <Box
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={
+          isPureBlack
+            ? BackgroundColor.backgroundAlternative
+            : BackgroundColor.backgroundDefault
+        }
         padding={4}
         role={role}
         className={classnames(

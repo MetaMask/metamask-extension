@@ -192,5 +192,9 @@ module.exports = {
     'promise/catch-or-return': 'off',
     'promise/no-return-wrap': 'off',
     'promise/param-names': 'off',
+
+    // TODO: Update to `@metamask/eslint-config@15`, which includes these changes
+    'promise/no-nesting': 'error',
+    'promise/no-callback-in-promise': 'error',
   },
 };

@@ -1,8 +1,8 @@
 /**
  * Slack RC Build Notification (Extension)
  *
- * Posts a Block Kit message when a release-candidate Main workflow completes, aligned with
- * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
+ * Posts when Publish prerelease succeeds (Builds ready); Main may still be red.
+ * Aligned with metamask-mobile/scripts/slack-rc-notification.mjs.
  *
  * Mobile parity: downloads + cherry-picks link + View full RC notes. No inline CHANGELOG.md dump.
  *

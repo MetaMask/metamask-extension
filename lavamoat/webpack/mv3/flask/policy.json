@@ -936,7 +936,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -1127,6 +1126,10 @@
       }
     },
     "@metamask/client-utils": {
+      "globals": {
+        "Intl.DateTimeFormat": true,
+        "Intl.NumberFormat": true
+      },
       "packages": {
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
@@ -3587,6 +3590,7 @@
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,

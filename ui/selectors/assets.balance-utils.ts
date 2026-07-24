@@ -43,12 +43,20 @@ function aggregateGroupBalance(
   const placeholderAccount = accountsById[accountIds[0]] ?? {
     id: accountIds[0],
   };
+  // TEMPORARY (until the root cause is fixed in core): strip `assetsInfo` so
+  // the selector's `scaleToHumanIfRaw` heuristic cannot re-divide large
+  // human-readable balances by 10^decimals and drop them from the total
+  // (#44786).
+  const stateWithoutAssetMetadata = {
+    ...assetsControllerState,
+    assetsInfo: {},
+  };
   // Do not pass the optional `trace` callback. This runs inside a Redux
   // selector that recomputes per account group on every state change, so
   // tracing it emits an unbounded number of transaction roots (#44447).
   const { totalBalanceInFiat = 0, pricePercentChange1d = 0 } =
     getAggregatedBalanceForAccount(
-      assetsControllerState,
+      stateWithoutAssetMetadata,
       placeholderAccount,
       enabledNetworkMap,
       undefined,
