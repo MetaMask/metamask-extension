@@ -10,6 +10,7 @@
     "matches": ["http://*/*", "https://*/*"],
     "ids": ["*"]
   },
+  "message_serialization": "structured_clone",
   "minimum_chrome_version": "123",
   "side_panel": {
     "default_path": "sidepanel.html"
