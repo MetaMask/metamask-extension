@@ -6,6 +6,7 @@ import { ASSET_ROUTE } from '../helpers/constants/routes';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ETH_SWAPS_TOKEN_OBJECT,
+  SwapsTokenObject,
 } from '../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 
@@ -15,9 +16,9 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
  * user is viewing either the primary, unfiltered, activity list or the
  * default token asset page.
  *
- * @returns {import('./useTokenDisplayValue').Token}
+ * @returns The token for the current asset being viewed
  */
-export function useCurrentAsset() {
+export function useCurrentAsset(): SwapsTokenObject {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const match = useMatch({
@@ -28,7 +29,7 @@ export function useCurrentAsset() {
   const knownTokens = useSelector(getTokens);
   const token =
     tokenAddress &&
-    knownTokens.find(({ address }) =>
+    knownTokens.find(({ address }: { address: string }) =>
       isEqualCaseInsensitive(address, tokenAddress),
     );
   const chainId = useSelector(getCurrentChainId);

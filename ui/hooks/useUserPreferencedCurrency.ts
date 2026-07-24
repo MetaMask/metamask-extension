@@ -1,4 +1,5 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
@@ -15,24 +16,31 @@ import { useMultichainSelector } from './useMultichainSelector';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
- *
- * @typedef {object} UseUserPreferencedCurrencyOptions
- * @property {number} [numberOfDecimals] - Number of significant decimals to display
- * @property {number} [ethNumberOfDecimals] - Number of significant decimals to display
- *                                             when using ETH
- * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
- *                                                  show native token as main balance is needed
- * @property {boolean} [showFiatOverride] - Boolean to override showFiat value from state
- * @property {boolean} [showNativeOverride] - Boolean to override showNative value from state
  */
+export type UseUserPreferencedCurrencyOptions = {
+  /** Number of significant decimals to display */
+  numberOfDecimals?: number;
+  /** Number of significant decimals to display when using ETH */
+  ethNumberOfDecimals?: number;
+  /** Boolean to know if checking the setting show native token as main balance is needed */
+  shouldCheckShowNativeToken?: boolean;
+  /** Boolean to override showFiat value from state */
+  showFiatOverride?: boolean;
+  /** Boolean to override showNative value from state */
+  showNativeOverride?: boolean;
+  /** The account to use */
+  account?: InternalAccount | null;
+};
 
 /**
  * Defines the return shape of useUserPreferencedCurrency
- *
- * @typedef {object} UserPreferredCurrency
- * @property {string} currency - the currency type to use (eg: 'ETH', 'usd')
- * @property {number} numberOfDecimals - Number of significant decimals to display
  */
+export type UserPreferredCurrency = {
+  /** The currency type to use (eg: 'ETH', 'usd') */
+  currency: string;
+  /** Number of significant decimals to display */
+  numberOfDecimals: number;
+};
 
 /**
  * useUserPreferencedCurrency
@@ -41,13 +49,16 @@ import { useMultichainSelector } from './useMultichainSelector';
  * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
  *
- *
- * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
- * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
- * @param {string} chainId - chainId to use
- * @returns {UserPreferredCurrency}
+ * @param type - what display type is being rendered
+ * @param opts - options to override default values
+ * @param chainId - chainId to use
+ * @returns UserPreferredCurrency
  */
-export function useUserPreferencedCurrency(type, opts = {}, chainId = null) {
+export function useUserPreferencedCurrency(
+  type: 'PRIMARY' | 'SECONDARY' | undefined,
+  opts: UseUserPreferencedCurrencyOptions = {},
+  chainId: string | null = null,
+): UserPreferredCurrency {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const account = opts.account ?? selectedAccount;
   const nativeCurrency = useMultichainSelector(
@@ -58,19 +69,19 @@ export function useUserPreferencedCurrency(type, opts = {}, chainId = null) {
   const { showNativeTokenAsMainBalance } = useSelector(
     getPreferences,
     shallowEqual,
-  );
+  ) as { showNativeTokenAsMainBalance: boolean };
   const showFiat = useMultichainSelector(getMultichainShouldShowFiat, account);
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
     account,
   );
 
-  const fiatReturn = {
+  const fiatReturn: UserPreferredCurrency = {
     currency: currentCurrency,
     numberOfDecimals: opts.numberOfDecimals || 2,
   };
 
-  const nativeReturn = {
+  const nativeReturn: UserPreferredCurrency = {
     currency: chainId
       ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ||
         nativeCurrency ||

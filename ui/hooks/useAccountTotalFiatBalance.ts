@@ -1,6 +1,8 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
+import type { Token } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import {
   getAllTokens,
@@ -26,9 +28,25 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
 import { useTokenTracker } from './useTokenBalances';
 
+type TokenWithFiatBalance = Token & {
+  balance?: string;
+  string?: number | string;
+  balanceError?: unknown;
+  tokenFiatAmount?: string;
+  fiatBalance?: string;
+  iconUrl?: string;
+};
+
+type AllTokensWithFiatValues = {
+  iconUrl?: string;
+  symbol?: string;
+  fiatBalance?: string;
+  [key: string]: unknown;
+};
+
 export const useAccountTotalFiatBalance = (
-  account,
-  shouldHideZeroBalanceTokens,
+  account: { address: string } | null | undefined,
+  shouldHideZeroBalanceTokens: boolean | undefined,
   /**
    * The optional parameter to use USD conversion rate instead of the current currency.
    * If not provided, fallback to the current currency.
@@ -50,8 +68,11 @@ export const useAccountTotalFiatBalance = (
   );
   const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
 
-  const cachedBalances = useSelector(getMetaMaskCachedBalances);
-  const balance = cachedBalances?.[account?.address] ?? 0;
+  const cachedBalances = useSelector(getMetaMaskCachedBalances) as Record<
+    string,
+    string
+  >;
+  const balance = cachedBalances?.[account?.address ?? ''] ?? 0;
   const nativeFiat = getValueFromWeiHex({
     value: balance,
     toCurrency: currentCurrency,
@@ -59,28 +80,34 @@ export const useAccountTotalFiatBalance = (
     numberOfDecimals: 2,
   });
 
-  const detectedTokens = useSelector(getAllTokens);
+  const detectedTokens = useSelector(getAllTokens) as Record<
+    string,
+    Record<string, Token[]>
+  >;
   const tokens = useMemo(
-    () => detectedTokens?.[currentChainId]?.[account?.address] ?? [],
+    () => detectedTokens?.[currentChainId]?.[account?.address ?? ''] ?? [],
     [account?.address, currentChainId, detectedTokens],
   );
   // This selector returns all the tokens, we need it to get the image of token
-  const allTokenList = useSelector(getTokenList);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const allTokenList = useSelector(getTokenList) as Record<
+    string,
+    TokenWithFiatBalance
+  >;
+  const primaryTokenImage = useSelector(getNativeCurrencyImage) as string;
+  const nativeCurrency = useSelector(getNativeCurrency) as string;
 
   const loading = false;
   const { tokensWithBalances } = useTokenTracker({
-    chainId: currentChainId,
-    tokens,
-    address: account?.address,
+    chainId: currentChainId as Hex,
+    tokens: tokens as Token[],
+    address: account?.address as Hex,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
   const mergedRates = useMemo(
     () => ({
-      ...contractExchangeRates,
-      ...confirmationExchangeRates,
+      ...(contractExchangeRates as Record<string, number>),
+      ...(confirmationExchangeRates as Record<string, number>),
     }),
     [confirmationExchangeRates, contractExchangeRates],
   );
@@ -88,14 +115,15 @@ export const useAccountTotalFiatBalance = (
   // Create fiat values for token balances
   const tokenFiatBalances = useMemo(
     () =>
-      tokensWithBalances.map((token) => {
-        const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
+      (tokensWithBalances as TokenWithFiatBalance[]).map((token) => {
+        const tokenExchangeRate =
+          mergedRates[toChecksumAddress(token.address ?? '')];
 
         const totalFiatValue = getTokenFiatAmount(
           tokenExchangeRate,
           conversionRate,
           currentCurrency,
-          token.string,
+          token.string as string,
           token.symbol,
           false,
           false,
@@ -107,11 +135,14 @@ export const useAccountTotalFiatBalance = (
   );
 
   // To match the list of detected tokens with the entire token list to find the image for tokens
-  const findMatchingTokens = (tokenList, _tokensWithBalances) => {
-    const result = [];
+  const findMatchingTokens = (
+    tokenList: Record<string, TokenWithFiatBalance>,
+    _tokensWithBalances: TokenWithFiatBalance[],
+  ) => {
+    const result: TokenWithFiatBalance[] = [];
 
     _tokensWithBalances.forEach((token) => {
-      const matchingToken = tokenList?.[token.address.toLowerCase()];
+      const matchingToken = tokenList?.[token.address?.toLowerCase() ?? ''];
 
       if (matchingToken) {
         result.push({
@@ -127,13 +158,14 @@ export const useAccountTotalFiatBalance = (
   };
 
   const matchingTokens = useMemo(
-    () => findMatchingTokens(allTokenList, tokensWithBalances),
+    () =>
+      findMatchingTokens(allTokenList, tokensWithBalances as TokenWithFiatBalance[]),
     [allTokenList, tokensWithBalances],
   );
 
   // Combine native token, detected token with image in an array
   const allTokensWithFiatValues = useMemo(() => {
-    const nativeTokenValues = {
+    const nativeTokenValues: AllTokensWithFiatValues = {
       iconUrl: primaryTokenImage,
       symbol: nativeCurrency,
       fiatBalance: nativeFiat,
@@ -158,7 +190,9 @@ export const useAccountTotalFiatBalance = (
   const orderedTokenList = useMemo(
     () =>
       allTokensWithFiatValues.sort(
-        (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
+        (a, b) =>
+          parseFloat(b.fiatBalance as string) -
+          parseFloat(a.fiatBalance as string),
       ),
     [allTokensWithFiatValues],
   );
@@ -172,18 +206,22 @@ export const useAccountTotalFiatBalance = (
   const formattedTokensWithBalances = useMemo(() => {
     // we need to append some values to tokensWithBalance for UI
     // this code was ported from asset-list
-    tokensWithBalances.forEach((token) => {
+    (tokensWithBalances as TokenWithFiatBalance[]).forEach((token) => {
       // token.string is the balance displayed in the TokenList UI
-      token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+      token.string = roundToDecimalPlacesRemovingExtraZeroes(
+        token.string as string,
+        5,
+      );
 
       // to sort by fiat balance, we need to compute this at this level
-      const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
+      const tokenExchangeRate =
+        mergedRates[toChecksumAddress(token.address ?? '')];
       token.tokenFiatAmount =
         getTokenFiatAmount(
           tokenExchangeRate,
           conversionRate,
           currentCurrency,
-          token.string, // tokenAmount
+          token.string as string, // tokenAmount
           token.symbol, // tokenSymbol
           false, // no currency symbol prefix
           false, // no ticker symbol suffix
