@@ -158,7 +158,7 @@ module.exports = {
     },
   },
   typescript: {
-    reactDocgen: false,
+    reactDocgen: 'react-docgen',
     check: false,
   },
 };
