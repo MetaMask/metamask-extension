@@ -65,7 +65,7 @@ export async function applyTransactionContainers({
 
   log('Estimated gas', gas);
 
-  if (simulationFails && hasEnforcedSimulations) {
+  if (simulationFails && hasEnforcedSimulations && !isApproved) {
     throw new Error(
       `Failed to estimate gas for transaction containers: ${simulationFails.reason}`,
     );

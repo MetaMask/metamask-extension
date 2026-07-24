@@ -63,10 +63,7 @@ function render({
     metamask: {},
   });
 
-  return renderWithConfirmContextProvider(
-    component,
-    mockStore(state),
-  );
+  return renderWithConfirmContextProvider(component, mockStore(state));
 }
 
 describe('EnforcedSimulationsRow', () => {
@@ -146,6 +143,7 @@ describe('EnforcedSimulationsRow', () => {
       expect(applyTransactionContainersExisting).toHaveBeenCalledTimes(2);
     });
 
+    consoleError.mockClear();
     await act(async () => {
       rejectFirstRequest(new Error('Stale request failed'));
     });

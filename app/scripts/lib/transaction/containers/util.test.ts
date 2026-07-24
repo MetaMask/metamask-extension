@@ -174,7 +174,7 @@ describe('Container Utils', () => {
       expect(estimateGasMock.mock.calls[0][0]).not.toHaveProperty('gasLimit');
     });
 
-    it('rejects approval when the real-signature estimate fails', async () => {
+    it('preserves the original gas when the real-signature estimate fails', async () => {
       estimateGasMock.mockResolvedValue({
         gas: '0x29b92700',
         simulationFails: {
@@ -183,14 +183,19 @@ describe('Container Utils', () => {
         },
       });
 
-      await expect(
-        applyTransactionContainers({
-          isApproved: true,
-          messenger,
-          transactionMeta: TRANSACTION_META_MOCK,
-          types: [TransactionContainerType.EnforcedSimulations],
-        }),
-      ).rejects.toThrow('Failed to estimate gas for transaction containers');
+      const { updateTransaction } = await applyTransactionContainers({
+        isApproved: true,
+        messenger,
+        transactionMeta: TRANSACTION_META_MOCK,
+        types: [TransactionContainerType.EnforcedSimulations],
+      });
+
+      const transactionToUpdate = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction(transactionToUpdate);
+
+      expect(transactionToUpdate.containerTypes).toStrictEqual([
+        TransactionContainerType.EnforcedSimulations,
+      ]);
     });
 
     it('updates container types', async () => {
