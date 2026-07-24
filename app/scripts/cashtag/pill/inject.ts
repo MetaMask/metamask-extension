@@ -1,21 +1,28 @@
 import { findCashtagAnchors, formatUsd } from '../lib/helpers';
-import type { CashtagAsset, Price } from '../lib/types';
+import type { AssetData } from '../lib/types';
 import { injectPageStyles, removePageStyles } from '../lib/ui';
 
-function buildPillContents(asset: CashtagAsset) {
-  const icon = document.createElement('span');
+function buildPillContents(data: AssetData) {
+  const icon = document.createElement('img');
   icon.className = 'mm-cashtag-pill-icon';
+  icon.alt = '';
   icon.setAttribute('aria-hidden', 'true');
-  icon.style.background = asset.color;
-  icon.textContent = asset.icon;
+  if (data.color) {
+    icon.style.background = data.color;
+  }
+  if (data.iconUrl) {
+    icon.src = data.iconUrl;
+  }
 
   const ticker = document.createElement('span');
   ticker.className = 'mm-cashtag-pill-ticker';
-  ticker.textContent = asset.symbol;
+  ticker.textContent = data.ticker;
 
   const priceEl = document.createElement('span');
   priceEl.className = 'mm-cashtag-pill-price';
-  priceEl.dataset.price = '';
+  if (data.price !== null) {
+    priceEl.textContent = formatUsd(data.price);
+  }
 
   const label = document.createElement('span');
   label.className = 'mm-cashtag-pill-label';
@@ -23,17 +30,10 @@ function buildPillContents(asset: CashtagAsset) {
 
   const fragment = document.createDocumentFragment();
   fragment.append(icon, label);
-  return { fragment, priceEl };
+  return fragment;
 }
 
-export async function injectPills(
-  assetsBySymbol: Map<string, CashtagAsset>,
-  {
-    getAssetPrice,
-  }: {
-    getAssetPrice: (symbol: string) => Promise<Price>;
-  },
-) {
+export async function injectPills(assetsByTicker: Map<string, AssetData>) {
   await injectPageStyles(
     'scripts/cashtag/pill/styles.css',
     'data-mm-cashtag-pill-css',
@@ -41,29 +41,18 @@ export async function injectPills(
 
   const painted = new WeakSet<HTMLAnchorElement>();
 
-  const paint = (element: HTMLAnchorElement, asset: CashtagAsset) => {
+  const paint = (element: HTMLAnchorElement, data: AssetData) => {
     if (painted.has(element) || element.dataset.mmCashtag) {
       return;
     }
     painted.add(element);
-    element.dataset.mmCashtag = asset.symbol;
+    element.dataset.mmCashtag = data.ticker;
     element.replaceChildren();
-    const { fragment, priceEl } = buildPillContents(asset);
-    element.append(fragment);
-
-    getAssetPrice(asset.symbol)
-      .then((quote) => {
-        if (!element.isConnected) {
-          return;
-        }
-        priceEl.textContent =
-          quote.value === null ? '' : formatUsd(quote.value);
-      })
-      .catch(() => undefined);
+    element.append(buildPillContents(data));
   };
 
   const scan = (root: ParentNode) => {
-    for (const { element, asset } of findCashtagAnchors(root, assetsBySymbol)) {
+    for (const { element, asset } of findCashtagAnchors(root, assetsByTicker)) {
       paint(element, asset);
     }
   };

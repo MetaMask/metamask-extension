@@ -1,32 +1,51 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
-import { formatUsd } from '../lib/helpers';
+import { formatUsd, formatUsdCompact } from '../lib/helpers';
 import type { WidgetModel } from '../lib/types';
-import { ChartPlaceholder } from './chart';
+import { SparklineChart } from './chart';
 
 const foxSrc = browser.runtime.getURL('images/logo/metamask-fox.svg');
 
-const Widget = ({ asset, price, onSwap, onDisable }: WidgetModel) => {
-  const changeUp = price.percentChange !== null && price.percentChange >= 0;
-  const priceLabel = price.value === null ? '—' : formatUsd(price.value);
+export function Widget({ data, onSwap, onDisable }: WidgetModel) {
+  const changeUp = data.change24hPercent !== null && data.change24hPercent >= 0;
+  const priceLabel =
+    typeof data.price === 'number' && data.price > 0
+      ? formatUsd(data.price)
+      : '—';
   const changeLabel =
-    price.percentChange === null
+    data.change24hPercent === null
       ? null
-      : `${price.percentChange > 0 ? '+' : ''}${price.percentChange.toFixed(1)}%`;
+      : `${data.change24hPercent > 0 ? '+' : ''}${data.change24hPercent.toFixed(1)}%`;
+  const marketCapLabel =
+    data.marketCap === null ? '—' : formatUsdCompact(data.marketCap);
+  const volumeLabel =
+    data.volume24h === null ? '—' : formatUsdCompact(data.volume24h);
 
   return (
     <div className="widget">
       <header className="header">
         <div className="identity">
-          <div className="avatar" style={{ background: asset.color }}>
-            {asset.icon}
-          </div>
+          {data.iconUrl ? (
+            <img
+              className="avatar"
+              src={data.iconUrl}
+              alt=""
+              width={40}
+              height={40}
+              style={data.color ? { background: data.color } : undefined}
+            />
+          ) : (
+            <div
+              className="avatar"
+              style={data.color ? { background: data.color } : undefined}
+            />
+          )}
           <div className="titles">
             <div className="symbol-row">
-              <span className="symbol">{asset.symbol}</span>
+              <span className="symbol">{data.ticker}</span>
             </div>
-            <p className="name">{asset.name}</p>
+            <p className="name">{data.name}</p>
           </div>
         </div>
         <img className="fox" src={foxSrc} alt="" width={28} height={28} />
@@ -37,7 +56,7 @@ const Widget = ({ asset, price, onSwap, onDisable }: WidgetModel) => {
           <p className="section-label">Price</p>
           <div className="price-row">
             <div className="price-main">
-              <p className={price.value === null ? 'price empty' : 'price'}>
+              <p className={data.price === null ? 'price empty' : 'price'}>
                 {priceLabel}
               </p>
               {changeLabel ? (
@@ -51,17 +70,26 @@ const Widget = ({ asset, price, onSwap, onDisable }: WidgetModel) => {
 
         <section className="chart-block">
           <p className="section-label">Past 24h</p>
-          <ChartPlaceholder />
+          {data.sparkline && data.sparkline.length >= 2 ? (
+            <SparklineChart
+              values={data.sparkline}
+              positive={
+                data.change24hPercent === null
+                  ? undefined
+                  : data.change24hPercent >= 0
+              }
+            />
+          ) : null}
         </section>
 
         <section className="stats">
           <div className="stat">
             <p className="stat-label">Market cap</p>
-            <p className="stat-value">—</p>
+            <p className="stat-value">{marketCapLabel}</p>
           </div>
           <div className="stat">
             <p className="stat-label">24h volume</p>
-            <p className="stat-value">—</p>
+            <p className="stat-value">{volumeLabel}</p>
           </div>
         </section>
 
@@ -91,20 +119,16 @@ const Widget = ({ asset, price, onSwap, onDisable }: WidgetModel) => {
       </button>
     </div>
   );
-};
+}
 
-export function onMount(container: HTMLElement) {
-  const app = document.createElement('div');
-  container.append(app);
-  const root = createRoot(app);
+export function mountWidget(container: HTMLElement) {
+  const root = createRoot(container);
   return {
-    root,
     render(model: WidgetModel) {
       root.render(<Widget {...model} />);
     },
+    unmount() {
+      root.unmount();
+    },
   };
-}
-
-export function onRemove(mounted: ReturnType<typeof onMount> | undefined) {
-  mounted?.root.unmount();
 }

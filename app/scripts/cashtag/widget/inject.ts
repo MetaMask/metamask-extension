@@ -1,111 +1,82 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
-import type {
-  CashtagAsset,
-  InterestAnchor,
-  InterestEvent,
-  Price,
-} from '../lib/types';
-import {
-  createShadowRootUi,
-  injectPageStyles,
-  removePageStyles,
-} from '../lib/ui';
-import { onMount, onRemove } from './widget';
+import type { AssetData, InterestAnchor, InterestEvent } from '../lib/types';
+import { injectPageStyles, loadCssText, removePageStyles } from '../lib/ui';
+import { mountWidget } from './widget';
 
 const widgetPageStyleAttr = 'data-mm-cashtag-widget-css';
-
-type WidgetHandle = {
-  shadowHost: HTMLElement;
-  show: (asset: CashtagAsset) => void;
-};
-
 const anchorNameProp = 'anchor-name';
 const positionAnchorProp = 'position-anchor';
 const activeAnchorVar = '--mm-cashtag-invoker';
 
-function hidePopover(host: HTMLElement) {
-  if (host.matches(':popover-open')) {
-    host.hidePopover();
-  }
-}
+type WidgetHandle = {
+  shadowHost: HTMLElement;
+  show: (data: AssetData) => void;
+  stop: () => void;
+};
 
-export async function injectWidget({
-  getAssetPrice,
-}: {
-  getAssetPrice: (symbol: string) => Promise<Price>;
-}) {
+export async function injectWidget() {
   await injectPageStyles(
     'scripts/cashtag/widget/page.css',
     widgetPageStyleAttr,
   );
 
-  const shadowUi = await createShadowRootUi({
-    name: 'mm-cashtag-popover',
-    cssPath: 'scripts/cashtag/widget/widget.css',
-    prepareHost(shadowHost) {
-      shadowHost.setAttribute('popover', 'hint');
-      shadowHost.popover = 'hint';
-      shadowHost.style.setProperty(positionAnchorProp, activeAnchorVar);
-    },
-    onMount,
-    onRemove,
-  });
-  shadowUi.mount();
+  const css = await loadCssText('scripts/cashtag/widget/widget.css');
+  const shadowHost = document.createElement('div');
+  shadowHost.id = 'mm-cashtag-popover';
+  shadowHost.setAttribute('popover', 'hint');
+  shadowHost.popover = 'hint';
+  shadowHost.style.setProperty(positionAnchorProp, activeAnchorVar);
 
-  let activeSymbol: string | null = null;
+  const shadow = shadowHost.attachShadow({ mode: 'open' });
+  const style = document.createElement('style');
+  style.textContent = css.replaceAll(':root', ':host');
+  const mountNode = document.createElement('div');
+  shadow.append(style, mountNode);
 
-  const render = (asset: CashtagAsset, price: Price) => {
-    shadowUi.mounted?.render({
-      asset,
-      price,
-      onSwap: () => {
-        browser.runtime
-          .sendMessage({ type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE })
-          .catch(() => undefined);
-      },
-      onDisable: () => {
-        window.dispatchEvent(new CustomEvent('mm-cashtag-disable'));
-        hidePopover(shadowUi.shadowHost);
-      },
-    });
-  };
+  document.documentElement.appendChild(shadowHost);
+  const widget = mountWidget(mountNode);
 
   return {
-    shadowHost: shadowUi.shadowHost,
-    show(asset: CashtagAsset) {
-      activeSymbol = asset.symbol;
-      render(asset, {
-        symbol: asset.symbol,
-        value: null,
-        percentChange: null,
-      });
-      getAssetPrice(asset.symbol)
-        .then((price) => {
-          if (activeSymbol === asset.symbol) {
-            render(asset, price);
+    shadowHost,
+    show(data: AssetData) {
+      widget.render({
+        data,
+        onSwap: () => {
+          browser.runtime
+            .sendMessage({
+              type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
+              body: { caipAssetId: data.caipAssetId },
+            })
+            .catch(() => undefined);
+        },
+        onDisable: () => {
+          window.dispatchEvent(new CustomEvent('mm-cashtag-disable'));
+          if (shadowHost.matches(':popover-open')) {
+            shadowHost.hidePopover();
           }
-        })
-        .catch(() => undefined);
+        },
+      });
     },
     stop() {
-      shadowUi.remove();
+      widget.unmount();
+      shadowHost.remove();
       removePageStyles(widgetPageStyleAttr);
     },
-  };
+  } satisfies WidgetHandle;
 }
 
 export function bindWidgetTriggers(
   widget: WidgetHandle,
-  assetsBySymbol: Map<string, CashtagAsset>,
+  assetsByTicker: Map<string, AssetData>,
 ) {
   const mounted = new Set<InterestAnchor>();
   const popoverId = widget.shadowHost.id;
   let lastSource: HTMLElement | null = null;
 
   const onInterest = (event: Event) => {
-    const source = (event as InterestEvent).source;
+    const { source } = event as InterestEvent;
     if (!(source instanceof HTMLAnchorElement)) {
       return;
     }
@@ -117,9 +88,9 @@ export function bindWidgetTriggers(
     widget.shadowHost.style.setProperty(positionAnchorProp, activeAnchorVar);
     lastSource = source;
 
-    const asset = assetsBySymbol.get(symbolFromCashtagAnchor(source));
-    if (asset) {
-      widget.show(asset);
+    const data = assetsByTicker.get(symbolFromCashtagAnchor(source));
+    if (data) {
+      widget.show(data);
     }
   };
 
@@ -136,7 +107,7 @@ export function bindWidgetTriggers(
   };
 
   const scan = (root: ParentNode) => {
-    for (const { element } of findCashtagAnchors(root, assetsBySymbol)) {
+    for (const { element } of findCashtagAnchors(root, assetsByTicker)) {
       bind(element);
     }
   };

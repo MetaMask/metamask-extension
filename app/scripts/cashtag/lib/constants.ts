@@ -8,3 +8,8 @@ export const supportedHosts = new Set([
 ]);
 
 export const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
+
+export function swapRouteSearchForDest(caipAssetId: string): `?${string}` {
+  // Same query shape as deep links / useBridging destTokenAssetId.
+  return `?to=${encodeURIComponent(caipAssetId)}`;
+}

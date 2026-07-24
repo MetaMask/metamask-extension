@@ -1,74 +1,20 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import { featureFlag, supportedHosts } from './lib/constants';
-import type { CashtagAsset, Price } from './lib/types';
+import { supportedHosts } from './lib/constants';
+import type { AssetData } from './lib/types';
 import { injectPills } from './pill/inject';
 import { bindWidgetTriggers, injectWidget } from './widget/inject';
 
-async function getAssetWhitelist() {
+async function getAssetData() {
   try {
     const response = await browser.runtime.sendMessage({
-      type: EXTENSION_MESSAGES.GET_ASSET_WHITELIST,
+      type: EXTENSION_MESSAGES.GET_ASSET_DATA,
     });
     const assets = response?.body?.assets;
-    return Array.isArray(assets) ? (assets as CashtagAsset[]) : [];
+    return Array.isArray(assets) ? (assets as AssetData[]) : [];
   } catch {
     return [];
   }
-}
-
-async function getAssetPrice(symbol: string): Promise<Price> {
-  try {
-    const response = await browser.runtime.sendMessage({
-      type: EXTENSION_MESSAGES.GET_ASSET_PRICE,
-      body: { symbol },
-    });
-    return {
-      symbol,
-      value:
-        typeof response?.body?.value === 'number' ? response.body.value : null,
-      percentChange:
-        typeof response?.body?.percentChange === 'number'
-          ? response.body.percentChange
-          : null,
-    };
-  } catch {
-    return { symbol, value: null, percentChange: null };
-  }
-}
-
-async function getFeatureFlag(): Promise<boolean | null> {
-  try {
-    const response = await browser.runtime.sendMessage({
-      type: EXTENSION_MESSAGES.GET_REMOTE_FEATURE_FLAG,
-      body: { flagName: featureFlag },
-    });
-    if (typeof response?.body?.enabled === 'boolean') {
-      return response.body.enabled;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-function waitForReady(timeoutMs: number) {
-  return new Promise<void>((resolve) => {
-    let timer = 0;
-    const onMessage = (msg: { name?: string }) => {
-      if (msg?.name === EXTENSION_MESSAGES.READY) {
-        clearTimeout(timer);
-        browser.runtime.onMessage.removeListener(onMessage);
-        resolve();
-      }
-      return undefined;
-    };
-    timer = setTimeout(() => {
-      browser.runtime.onMessage.removeListener(onMessage);
-      resolve();
-    }, timeoutMs);
-    browser.runtime.onMessage.addListener(onMessage);
-  });
 }
 
 async function main() {
@@ -77,24 +23,15 @@ async function main() {
     return;
   }
 
-  let enabled = await getFeatureFlag();
-  if (enabled === null) {
-    await waitForReady(5000);
-    enabled = (await getFeatureFlag()) ?? false;
-  }
-  if (!enabled) {
+  const assets = await getAssetData();
+  const assetsByTicker = new Map(assets.map((asset) => [asset.ticker, asset]));
+  if (assetsByTicker.size === 0) {
     return;
   }
 
-  const assets = await getAssetWhitelist();
-  const assetsBySymbol = new Map(assets.map((asset) => [asset.symbol, asset]));
-  if (assetsBySymbol.size === 0) {
-    return;
-  }
-
-  const pills = await injectPills(assetsBySymbol, { getAssetPrice });
-  const widget = await injectWidget({ getAssetPrice });
-  const triggers = bindWidgetTriggers(widget, assetsBySymbol);
+  const pills = await injectPills(assetsByTicker);
+  const widget = await injectWidget();
+  const triggers = bindWidgetTriggers(widget, assetsByTicker);
 
   const teardown = () => {
     triggers.stop();

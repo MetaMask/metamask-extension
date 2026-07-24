@@ -71,7 +71,7 @@ const webAccessibleResources = [
   'scripts/cashtag/pill/styles.css',
   'scripts/cashtag/widget/widget.css',
   'scripts/cashtag/widget/page.css',
-  // Already copied with app/images; needed so the page can load it in an <img>
+  // Brand mark only — asset icons use static.cx CDN URLs from the page
   'images/logo/metamask-fox.svg',
 ];
 

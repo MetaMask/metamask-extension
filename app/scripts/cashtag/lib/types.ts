@@ -1,19 +1,20 @@
-export type CashtagAsset = {
-  symbol: string;
+export type AssetData = {
+  ticker: string;
   name: string;
-  icon: string;
-  color: string;
-};
-
-export type Price = {
-  symbol: string;
-  value: number | null;
-  percentChange: number | null;
+  iconUrl: string | null;
+  color: string | null;
+  caipAssetId: string | null;
+  chainId: string | null;
+  isNative: boolean;
+  price: number | null;
+  change24hPercent: number | null;
+  marketCap: number | null;
+  volume24h: number | null;
+  sparkline: number[] | null;
 };
 
 export type WidgetModel = {
-  asset: CashtagAsset;
-  price: Price;
+  data: AssetData;
   onSwap: () => void;
   onDisable: () => void;
 };
@@ -33,33 +34,8 @@ export type Controller = {
   appStateController?: {
     setPendingRedirectRoute?: (route: {
       path: string;
+      search?: `?${string}`;
       environmentType?: string;
     }) => void;
-  };
-  currencyRateController?: {
-    state?: {
-      currentCurrency?: string;
-      currencyRates?: Record<
-        string,
-        { conversionRate?: number | null; usdConversionRate?: number | null }
-      >;
-    };
-  };
-  multichainRatesController?: {
-    state?: {
-      fiatCurrency?: string;
-      rates?: Record<
-        string,
-        { conversionRate?: number | null; usdConversionRate?: number | null }
-      >;
-    };
-  };
-  tokenRatesController?: {
-    state?: {
-      marketData?: Record<
-        string,
-        Record<string, { pricePercentChange1d?: number | null } | undefined>
-      >;
-    };
   };
 };

@@ -47,12 +47,10 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
+  display: block;
+  object-fit: cover;
   flex-shrink: 0;
+  background: #3c3e5a;
 }
 
 .titles {

@@ -3,123 +3,15 @@ import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { swapRoute } from './lib/constants';
+import { fetchAssetData } from './lib/assets';
+import { swapRoute, swapRouteSearchForDest } from './lib/constants';
 import type { Controller } from './lib/types';
-
-type RateSource =
-  | { kind: 'multichainRates'; rateKey: string }
-  | {
-      kind: 'currencyRates';
-      rateKey: string;
-      percentChange?: { chainId: string; tokenAddress: string };
-    };
-
-type WhitelistEntry = {
-  symbol: string;
-  name: string;
-  icon: string;
-  color: string;
-  rate: RateSource;
-};
-
-// Stub until a real backend / remote-config allowlist exists.
-/* eslint-disable @metamask/design-tokens/color-no-hex -- asset brand colors, not UI tokens */
-const cashtagWhitelist: WhitelistEntry[] = [
-  {
-    symbol: 'BTC',
-    name: 'Bitcoin',
-    icon: '₿',
-    color: '#f7931a',
-    rate: { kind: 'multichainRates', rateKey: 'btc' },
-  },
-  {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    icon: 'Ξ',
-    color: '#627eea',
-    rate: {
-      kind: 'currencyRates',
-      rateKey: 'ETH',
-      percentChange: {
-        chainId: '0x1',
-        tokenAddress: '0x0000000000000000000000000000000000000000',
-      },
-    },
-  },
-];
-/* eslint-enable @metamask/design-tokens/color-no-hex */
 
 let registered = false;
 
-function getUsdPrice(
-  rate:
-    | { conversionRate?: number | null; usdConversionRate?: number | null }
-    | undefined,
-  fiatCurrency?: string,
-) {
-  if (typeof rate?.usdConversionRate === 'number') {
-    return rate.usdConversionRate;
-  }
-  if (
-    fiatCurrency?.toLowerCase() === 'usd' &&
-    typeof rate?.conversionRate === 'number'
-  ) {
-    return rate.conversionRate;
-  }
-  return null;
-}
-
-function lookupPrice(controller: Controller | undefined, symbol: string) {
-  const entry = cashtagWhitelist.find((asset) => asset.symbol === symbol);
-  if (!entry) {
-    return { symbol, value: null, percentChange: null };
-  }
-
-  const { rate } = entry;
-  if (rate.kind === 'multichainRates') {
-    const ratesState = controller?.multichainRatesController?.state;
-    return {
-      symbol,
-      value: getUsdPrice(
-        ratesState?.rates?.[rate.rateKey],
-        ratesState?.fiatCurrency,
-      ),
-      percentChange: null,
-    };
-  }
-
-  const currencyState = controller?.currencyRateController?.state;
-  let percentChange: number | null = null;
-  if (rate.percentChange) {
-    const raw =
-      controller?.tokenRatesController?.state?.marketData?.[
-        rate.percentChange.chainId
-      ]?.[rate.percentChange.tokenAddress]?.pricePercentChange1d ?? null;
-    percentChange = typeof raw === 'number' ? raw : null;
-  }
-  return {
-    symbol,
-    value: getUsdPrice(
-      currencyState?.currencyRates?.[rate.rateKey],
-      currencyState?.currentCurrency,
-    ),
-    percentChange,
-  };
-}
-
-function getMessageString(
-  message: { body?: Record<string, unknown>; [key: string]: unknown },
-  key: string,
-): string | null {
-  const fromBody = message.body?.[key];
-  if (typeof fromBody === 'string') {
-    return fromBody;
-  }
-  const fromRoot = message[key];
-  if (typeof fromRoot === 'string') {
-    return fromRoot;
-  }
-  return null;
+function bodyString(message: { body?: Record<string, unknown> }, key: string) {
+  const value = message.body?.[key];
+  return typeof value === 'string' ? value : null;
 }
 
 export function registerBackgroundBridge({
@@ -134,7 +26,7 @@ export function registerBackgroundBridge({
 
   browser.runtime.onMessage.addListener((message, sender) => {
     if (message?.type === EXTENSION_MESSAGES.GET_REMOTE_FEATURE_FLAG) {
-      const flagName = getMessageString(message, 'flagName');
+      const flagName = bodyString(message, 'flagName');
       if (!flagName) {
         return undefined;
       }
@@ -153,63 +45,56 @@ export function registerBackgroundBridge({
       });
     }
 
-    if (message?.type === EXTENSION_MESSAGES.GET_ASSET_WHITELIST) {
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.GET_ASSET_WHITELIST,
-        body: {
-          assets: cashtagWhitelist.map(({ symbol, name, icon, color }) => ({
-            symbol,
-            name,
-            icon,
-            color,
-          })),
-        },
-      });
-    }
-
-    if (message?.type === EXTENSION_MESSAGES.GET_ASSET_PRICE) {
-      const symbolRaw = getMessageString(message, 'symbol') ?? '';
-      const raw = symbolRaw.toUpperCase();
-      const allowed = cashtagWhitelist.some((asset) => asset.symbol === raw);
-      const snapshot = allowed
-        ? lookupPrice(getController(), raw)
-        : { symbol: raw || null, value: null, percentChange: null };
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.GET_ASSET_PRICE,
-        body: snapshot,
-      });
+    if (message?.type === EXTENSION_MESSAGES.GET_ASSET_DATA) {
+      return fetchAssetData()
+        .then((assets) => ({
+          type: EXTENSION_MESSAGES.GET_ASSET_DATA,
+          body: { assets },
+        }))
+        .catch(() => ({
+          type: EXTENSION_MESSAGES.GET_ASSET_DATA,
+          body: { assets: [] },
+        }));
     }
 
     if (message?.type === EXTENSION_MESSAGES.OPEN_SWAP_PAGE) {
       const controller = getController();
       const windowId = sender?.tab?.windowId;
       const tabId = sender?.tab?.id;
-      const sidePanelApi = globalThis.chrome?.sidePanel ?? browser.sidePanel;
-      const hasWindowId = typeof windowId === 'number';
-      const hasTabId = typeof tabId === 'number';
+      const sidePanelApi = globalThis.chrome?.sidePanel;
+      const caipAssetId = bodyString(message, 'caipAssetId');
 
-      if (!sidePanelApi?.open || (!hasWindowId && !hasTabId)) {
+      if (!sidePanelApi?.open) {
         return Promise.resolve({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
           body: { ok: false, reason: 'sidepanel-unavailable' },
         });
       }
 
-      // Home consumes this and navigates to Swap (sidepanel only).
+      let openOptions: { windowId: number } | { tabId: number } | null = null;
+      if (typeof windowId === 'number') {
+        openOptions = { windowId };
+      } else if (typeof tabId === 'number') {
+        openOptions = { tabId };
+      }
+
+      if (!openOptions) {
+        return Promise.resolve({
+          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
+          body: { ok: false, reason: 'sidepanel-unavailable' },
+        });
+      }
+
       controller?.appStateController?.setPendingRedirectRoute?.({
         path: swapRoute,
+        ...(caipAssetId ? { search: swapRouteSearchForDest(caipAssetId) } : {}),
         environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
       });
 
-      // Must call open synchronously in this turn to keep the user gesture.
-      const openResult = hasWindowId
-        ? sidePanelApi.open({ windowId })
-        : sidePanelApi.open({ tabId });
-
-      return Promise.resolve(openResult).then(
+      return Promise.resolve(sidePanelApi.open(openOptions)).then(
         () => ({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-          body: { ok: true },
+          body: { ok: true, caipAssetId },
         }),
         (error: unknown) => ({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
