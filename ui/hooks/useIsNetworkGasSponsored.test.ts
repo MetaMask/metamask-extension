@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { getGasFeesSponsoredNetworkEnabled } from '../selectors';
-import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from './useIsHardwareWalletAccount';
 import { useIsNetworkGasSponsored } from './useIsNetworkGasSponsored';
 
 jest.mock('react-redux', () => ({
@@ -11,29 +11,26 @@ jest.mock('react-redux', () => ({
 jest.mock('../selectors', () => ({
   getGasFeesSponsoredNetworkEnabled: jest.fn(),
 }));
-jest.mock('../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../shared/lib/selectors/keyring'),
-  isHardwareWallet: jest.fn(),
-}));
+
+jest.mock('./useIsHardwareWalletAccount');
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
+const mockUseIsHardwareWalletAccount = jest.mocked(useIsHardwareWalletAccount);
 
 const renderWithMock = ({
   chainId,
-  mockIsHardwareWallet = false,
+  mockIsHardwareWalletAccount = false,
   mockGasFeesSponsoredNetworkEnabled = {
     '0x1': true,
     '0x2': false,
   },
 }: {
   chainId: string | undefined;
-  mockIsHardwareWallet?: boolean;
+  mockIsHardwareWalletAccount?: boolean;
   mockGasFeesSponsoredNetworkEnabled?: { [key: string]: boolean };
 }) => {
+  mockUseIsHardwareWalletAccount.mockReturnValue(mockIsHardwareWalletAccount);
   mockUseSelector.mockImplementation((selector) => {
-    if (selector === isHardwareWallet) {
-      return mockIsHardwareWallet;
-    }
     if (selector === getGasFeesSponsoredNetworkEnabled) {
       return mockGasFeesSponsoredNetworkEnabled;
     }
@@ -80,7 +77,7 @@ describe('useIsNetworkGasSponsored', () => {
   it('returns false when network is enabled using hex chainId BUT is hardware wallet', () => {
     const { result } = renderWithMock({
       chainId: '0x1',
-      mockIsHardwareWallet: true,
+      mockIsHardwareWalletAccount: true,
     });
     expect(result.current).toEqual({ isNetworkGasSponsored: false });
   });
@@ -88,7 +85,7 @@ describe('useIsNetworkGasSponsored', () => {
   it('returns false when network is enabled using CAIP chainId BUT is hardware wallet', () => {
     const { result } = renderWithMock({
       chainId: 'eip155:1',
-      mockIsHardwareWallet: true,
+      mockIsHardwareWalletAccount: true,
     });
     expect(result.current).toEqual({ isNetworkGasSponsored: false });
   });

@@ -40,6 +40,9 @@ module.exports = defineConfig([
       // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
       parser: babelParser,
     },
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error',
+    },
   },
 
   /**
@@ -402,7 +405,7 @@ module.exports = defineConfig([
       'react/default-props-match-prop-types': 'error',
       'react/jsx-no-duplicate-props': 'error',
       'react-hooks/exhaustive-deps': [
-        'warn',
+        'error',
         {
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
@@ -446,12 +449,12 @@ module.exports = defineConfig([
     rules: {
       'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
-      'react/no-unused-state': 'warn',
+      'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'off',
       'react/jsx-curly-brace-presence': 'off',
-      'react/no-deprecated': 'warn',
-      'react/default-props-match-prop-types': 'warn',
-      'react/jsx-no-duplicate-props': 'warn',
+      'react/no-deprecated': 'error',
+      'react/default-props-match-prop-types': 'error',
+      'react/jsx-no-duplicate-props': 'error',
       'react/display-name': 'off',
       'react/no-unescaped-entities': 'error',
       'react/prop-types': 'off',
@@ -459,7 +462,7 @@ module.exports = defineConfig([
       'react/jsx-key': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': [
-        'warn',
+        'error',
         {
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
@@ -605,6 +608,9 @@ module.exports = defineConfig([
 
       // TODO: Re-enable after ESLint v9 update
       'jest/unbound-method': 'off',
+
+      // TODO: Update to `@metamask/eslint-config-jest@15`, which includes these changes
+      'jest/no-disabled-tests': 'error',
     },
   },
   /**

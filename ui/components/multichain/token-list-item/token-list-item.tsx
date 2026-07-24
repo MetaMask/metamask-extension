@@ -5,6 +5,7 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -29,7 +30,6 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
   IconName,
   Modal,
   ModalBody,
@@ -510,15 +510,16 @@ export const TokenListItemComponent = ({
               ])}
             </ModalBody>
             <ModalFooter>
-              <ButtonSecondary
+              <Button
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
                   navigate(NETWORKS_ROUTE);
                 }}
-                block
+                isFullWidth
               >
                 {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

@@ -276,7 +276,7 @@ describe('Deep link utils', () => {
         });
       });
 
-      it('returns navigate route for unsigned whitelisted asset link', async () => {
+      it('returns interstitial route for unsigned asset link', async () => {
         const createdAt = 1000000;
         jest.setSystemTime(createdAt + 60 * 1000);
         const assetLink =
@@ -297,10 +297,9 @@ describe('Deep link utils', () => {
         });
 
         expect(result).toStrictEqual({
-          type: DeferredDeepLinkRouteType.Navigate,
-          route:
-            '/asset/eip155:1/eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
-          signature: MISSING,
+          type: DeferredDeepLinkRouteType.Interstitial,
+          urlPathAndQuery:
+            '/asset?assetId=eip155%3A1%2Ferc20%3A0x6b175474e89094c44da98b954eedeac495271d0f',
         });
       });
     });
