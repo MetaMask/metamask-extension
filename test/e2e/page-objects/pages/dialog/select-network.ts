@@ -54,7 +54,7 @@ class SelectNetwork {
   };
 
   private readonly showTestNetworksToggle =
-    '[data-testid="networks-page-show-test-networks"]';
+    'label.toggle-button:has([data-testid="networks-page-show-test-networks"])';
 
   private readonly networksPageSuccessToast = {
     testId: 'networks-page-network-success-toast',
