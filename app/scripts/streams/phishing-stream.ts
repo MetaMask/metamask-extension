@@ -99,9 +99,33 @@ const destroyPhishingExtStreams = (): void => {
   phishingExtChannel.destroy();
 
   phishingExtStream = null;
+  if (phishingReconnectTimer) {
+    clearTimeout(phishingReconnectTimer as unknown as number);
+    phishingReconnectTimer = null;
+  }
 };
 
+const BASE_PHISHING_RECONNECT_DELAY_MS = 1000;
+const MAX_PHISHING_RECONNECT_DELAY_MS = 30000;
+let phishingReconnectAttempts = 0;
+let phishingReconnectTimer: number | null = null;
+function schedulePhishingReconnect() {
+  if (phishingReconnectTimer) {
+    return;
+  }
+  const base = Math.min(BASE_PHISHING_RECONNECT_DELAY_MS * 2 ** phishingReconnectAttempts, MAX_PHISHING_RECONNECT_DELAY_MS);
+  const jitter = Math.floor(Math.random() * base * 0.2);
+  phishingReconnectTimer = setTimeout(() => {
+    phishingReconnectTimer = null;
+    setupPhishingExtStreams();
+  }, base + jitter) as unknown as number;
+}
+
 export const setupPhishingExtStreams = (): void => {
+  if (phishingReconnectTimer) {
+    clearTimeout(phishingReconnectTimer as unknown as number);
+    phishingReconnectTimer = null;
+  }
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
@@ -192,7 +216,8 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    */
   if (err) {
     console.warn(`${err} Resetting the phishing streams.`);
-    setTimeout(setupPhishingExtStreams, 1000);
+    phishingReconnectAttempts = Math.min(phishingReconnectAttempts + 1, 30);
+    schedulePhishingReconnect();
   }
 };
 
@@ -209,6 +234,11 @@ const onMessageSetUpPhishingStreams = (
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
+    }
+    phishingReconnectAttempts = 0;
+    if (phishingReconnectTimer) {
+      clearTimeout(phishingReconnectTimer as unknown as number);
+      phishingReconnectTimer = null;
     }
     return Promise.resolve(
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
