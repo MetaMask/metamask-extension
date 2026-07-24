@@ -266,6 +266,38 @@ describe('useHistoricalPrices', () => {
     });
   });
 
+  describe('when no CAIP asset id can be derived', () => {
+    const currency = 'usd';
+    const timeRange = 'P7D';
+    const state = {
+      ...mockBaseState,
+      metamask: {
+        ...mockBaseState.metamask,
+        internalAccounts: {
+          ...mockBaseState.metamask.internalAccounts,
+          selectedAccount: '81b1ead4-334c-4921-9adf-282fde539752',
+        },
+      },
+    };
+
+    it('does not fetch when the chain id cannot be parsed', async () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useHistoricalPrices({
+            // @ts-expect-error intentionally malformed chain id
+            chainId: 'garbage',
+            address: '0x458036e7Bc0612e9b207640Dc07Ca7711346AAE5',
+            currency,
+            timeRange,
+          }),
+        state,
+      );
+
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
+      expect(mockPricesFetch).not.toHaveBeenCalled();
+    });
+  });
+
   describe('non-EVM chain (Solana)', () => {
     const chainId = SolScope.Mainnet;
     const address = '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC';
