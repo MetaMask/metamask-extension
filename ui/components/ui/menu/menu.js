@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'clsx';
+import { usePureBlack } from '@metamask/design-system-react';
 
 /**
  * @deprecated The `<Menu />` component has been deprecated in favor of the new `<Popover>` component from the component-library.
@@ -32,6 +33,9 @@ const Menu = ({
     popperOptions,
   );
 
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
+
   return createPortal(
     <>
       <div
@@ -43,7 +47,15 @@ const Menu = ({
         className={classnames('menu__container', className)}
         data-testid={className}
         ref={setPopperElement}
-        style={styles.popper}
+        style={{
+          ...styles.popper,
+          ...(isPureBlack
+            ? {
+                background: 'var(--color-background-alternative)',
+                border: '1px solid var(--color-border-muted)',
+              }
+            : {}),
+        }}
         {...attributes.popper}
       >
         {children}
