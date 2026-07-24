@@ -10,24 +10,17 @@ import {
   FontWeight,
   Icon,
   IconSize,
-  Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
-import {
   Modal,
   ModalBody,
   ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
-} from '../../../../components/component-library';
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -66,8 +59,7 @@ export const SecurityTrustInfoModal = ({
     () =>
       isCompactSheet
         ? {
-            justifyContent: JustifyContent.flexEnd,
-            alignItems: AlignItems.stretch,
+            contentClassName: 'flex justify-end items-stretch p-0',
             dialogStyle: {
               marginTop: 'auto',
               width: '100%',
@@ -80,8 +72,7 @@ export const SecurityTrustInfoModal = ({
             },
           }
         : {
-            justifyContent: JustifyContent.center,
-            alignItems: AlignItems.center,
+            contentClassName: 'flex justify-center items-center p-0',
             dialogStyle: {
               width: '100%',
               maxWidth: '360px',
@@ -145,17 +136,17 @@ export const SecurityTrustInfoModal = ({
       <ModalOverlay />
       <ModalContent
         size={ModalContentSize.Sm}
-        display={Display.Flex}
-        justifyContent={modalLayoutProps.justifyContent}
-        alignItems={modalLayoutProps.alignItems}
-        padding={0}
+        className={modalLayoutProps.contentClassName}
         modalDialogProps={{
           padding: 0,
           style: modalLayoutProps.dialogStyle,
         }}
       >
-        <ModalHeader onClose={onClose} />
-        <ModalBody paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        />
+        <ModalBody className="px-4 pb-4">
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}
