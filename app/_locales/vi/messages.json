@@ -1095,9 +1095,6 @@
   "addCustomToken": {
     "message": "Thêm token tùy chỉnh"
   },
-  "addDevice": {
-    "message": "Đồng bộ với thiết bị di động"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Chỉ thêm nhà cung cấp RPC này nếu bạn chắc chắn bạn có thể tin tưởng. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1224,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "Đang nhập tài khoản"
+  },
+  "add_device_try_again": {
+    "message": "Thử lại"
   },
   "add_device_validating_desc": {
     "message": "Đang thiết lập kết nối an toàn, được mã hóa với điện thoại của bạn."
@@ -3203,9 +3203,6 @@
   },
   "decimal": {
     "message": "Số thập phân của token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Số thập phân ít nhất phải bằng 0 và không được quá 36."
   },
   "decrypt": {
     "message": "Giải mã"
@@ -8137,9 +8134,6 @@
     "message": "Hết hạn sau $1 giây",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Đã xảy ra lỗi khi quét mã QR. Hãy tạo mã mới để thử lại."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Mã QR này dành cho một giao dịch khác. Vui lòng hủy và thử lại, đảm bảo quét mã QR được hiển thị trong MetaMask bằng ví cứng của bạn trước.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8204,6 +8198,9 @@
   },
   "quotedTotalCost": {
     "message": "Tổng chi phí: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Không có token khả dụng"
   },
   "rank": {
     "message": "Xếp hạng"
@@ -8416,9 +8413,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "Đã hoàn thành thao tác thành công."
-  },
-  "retryTransaction": {
-    "message": "Thử lại giao dịch"
   },
   "reusedTokenNameWarning": {
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
@@ -10759,6 +10753,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Ký hiệu không được dài quá 11 ký tự."
+  },
+  "syncAccounts": {
+    "message": "Đồng bộ với thiết bị di động"
   },
   "syncing": {
     "message": "Đang đồng bộ..."

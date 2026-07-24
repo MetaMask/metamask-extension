@@ -1095,9 +1095,6 @@
   "addCustomToken": {
     "message": "Adicionar um token personalizado"
   },
-  "addDevice": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Adicione esse provedor de RPC apenas se tiver certeza de que é confiável. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1224,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "Importação de contas"
+  },
+  "add_device_try_again": {
+    "message": "Tentar novamente"
   },
   "add_device_validating_desc": {
     "message": "Estabelecendo uma conexão segura e criptografada com o seu telefone."
@@ -3203,9 +3203,6 @@
   },
   "decimal": {
     "message": "Decimal do token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
   },
   "decrypt": {
     "message": "Descriptografar"
@@ -8129,9 +8126,6 @@
     "message": "Expira em $1s",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Algo deu errado ao escanear o código QR. Gere um novo código para tentar novamente."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Este código QR serve para uma transação diferente. Cancele e tente novamente, certificando-se de escanear primeiro o código QR exibido no MetaMask com sua carteira de hardware.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8196,6 +8190,9 @@
   },
   "quotedTotalCost": {
     "message": "Custo total: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Nenhum token disponível"
   },
   "rank": {
     "message": "Classificação"
@@ -8408,9 +8405,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "A operação foi concluída com sucesso."
-  },
-  "retryTransaction": {
-    "message": "Tentar transação novamente"
   },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
@@ -10751,6 +10745,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter até 11 caracteres."
+  },
+  "syncAccounts": {
+    "message": "Sincronizar com dispositivo móvel"
   },
   "syncing": {
     "message": "Sincronizando..."

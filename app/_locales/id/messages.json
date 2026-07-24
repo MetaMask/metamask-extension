@@ -1095,9 +1095,6 @@
   "addCustomToken": {
     "message": "Tambahkan token khusus"
   },
-  "addDevice": {
-    "message": "Sinkronkan dengan seluler"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -1224,6 +1221,9 @@
   },
   "add_device_syncing_title": {
     "message": "Mengimpor akun"
+  },
+  "add_device_try_again": {
+    "message": "Coba lagi"
   },
   "add_device_validating_desc": {
     "message": "Membangun koneksi yang aman dan terenkripsi dengan ponsel Anda."
@@ -3203,9 +3203,6 @@
   },
   "decimal": {
     "message": "Desimal token"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desimal minimal 0, dan tidak lebih dari 36."
   },
   "decrypt": {
     "message": "Dekripsikan"
@@ -8137,9 +8134,6 @@
     "message": "Berakhir dalam $1 dtk",
     "description": "$1 is the number of seconds remaining before the QR code expires"
   },
-  "qrCodeScanError": {
-    "message": "Terjadi kesalahan saat memindai kode QR. Buat kode QR baru untuk mencoba lagi."
-  },
   "qrErrorMismatchedTransactionBody": {
     "message": "Kode QR ini untuk transaksi yang berbeda. Batalkan dan coba lagi, pastikan untuk memindai kode QR yang ditampilkan di MetaMask dengan dompet perangkat keras Anda terlebih dahulu.",
     "description": "Body text when a signature QR belongs to a previous transaction."
@@ -8204,6 +8198,9 @@
   },
   "quotedTotalCost": {
     "message": "Total biaya: $1"
+  },
+  "rampsNoTokensAvailable": {
+    "message": "Token tidak tersedia"
   },
   "rank": {
     "message": "Peringkat"
@@ -8416,9 +8413,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "Operasi berhasil dilakukan."
-  },
-  "retryTransaction": {
-    "message": "Coba lagi transaksi"
   },
   "reusedTokenNameWarning": {
     "message": "Token di sini menggunakan kembali simbol dari token lain yang Anda lihat, ini bisa jadi membingungkan atau menipu."
@@ -10759,6 +10753,9 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol harus terdiri dari 11 karakter atau lebih sedikit."
+  },
+  "syncAccounts": {
+    "message": "Sinkronkan dengan seluler"
   },
   "syncing": {
     "message": "Menyinkronkan..."

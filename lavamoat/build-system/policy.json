@@ -1,4 +1,9 @@
 {
+  "resolutions": {
+    "sass-embedded": {
+      "@bufbuild/protobuf/codegenv2": "./node_modules/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js"
+    }
+  },
   "resources": {
     "@babel/code-frame": {
       "globals": {
@@ -830,6 +835,9 @@
     },
     "sass-embedded>@bufbuild/protobuf": {
       "globals": {
+        "AsyncIterator": true,
+        "Bun": true,
+        "Deno": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "__values": true,
@@ -1660,11 +1668,6 @@
         "browserslist>node-releases": true
       }
     },
-    "sass-embedded>buffer-builder": {
-      "globals": {
-        "Buffer": true
-      }
-    },
     "gulp-zip>yazl>buffer-crc32": {
       "builtin": {
         "buffer.Buffer": true
@@ -1900,6 +1903,13 @@
         "process": true
       }
     },
+    "sass-embedded>colorjs.io": {
+      "globals": {
+        "CSS": true,
+        "console.warn": true,
+        "process.env.NODE_ENV.toLowerCase": true
+      }
+    },
     "@lavamoat/lavapack>combine-source-map": {
       "builtin": {
         "path.dirname": true,
@@ -1983,7 +1993,7 @@
       "packages": {
         "gulp-sourcemaps>debug-fabulous>debug": true,
         "gulp-sourcemaps>debug-fabulous>memoizee": true,
-        "react>object-assign": true
+        "gulp-watch>object-assign": true
       }
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": {
@@ -3410,7 +3420,7 @@
         "chokidar": true,
         "gulp-watch>fancy-log": true,
         "eslint>glob-parent": true,
-        "react>object-assign": true,
+        "gulp-watch>object-assign": true,
         "gulp-watch>path-is-absolute": true,
         "gulp-zip>plugin-error": true,
         "gulp-watch>readable-stream": true,
@@ -4526,7 +4536,7 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "react>object-assign": true,
+        "gulp-watch>object-assign": true,
         "prop-types>react-is": true
       }
     },
@@ -5850,10 +5860,13 @@
       "builtin": {
         "assert.strict": true,
         "child_process.spawn": true,
-        "events.EventEmitter": true,
+        "fs.closeSync": true,
         "fs.existsSync": true,
+        "fs.openSync": true,
         "fs.readFileSync": true,
+        "fs.readSync": true,
         "fs.statSync": true,
+        "module.createRequire": true,
         "path.basename": true,
         "path.delimiter": true,
         "path.dirname": true,
@@ -5862,23 +5875,19 @@
         "path.join": true,
         "path.relative": true,
         "path.resolve": true,
-        "stream.Writable": true,
         "url.URL": true,
         "url.fileURLToPath": true,
         "url.pathToFileURL": true,
-        "util.inspect": true,
-        "worker_threads.MessageChannel": true,
-        "worker_threads.Worker": true,
-        "worker_threads.receiveMessageOnPort": true
+        "util.inspect": true
       },
       "globals": {
         "Buffer.alloc": true,
         "Buffer.from": true,
         "URL": true,
-        "__dirname": true,
-        "__filename": true,
         "console.error": true,
+        "console.warn": true,
         "process.arch": true,
+        "process.argv": true,
         "process.cwd": true,
         "process.execPath": true,
         "process.platform": true,
@@ -5886,10 +5895,11 @@
       },
       "packages": {
         "sass-embedded>@bufbuild/protobuf": true,
-        "sass-embedded>buffer-builder": true,
+        "sass-embedded>colorjs.io": true,
         "sass-embedded>immutable": true,
         "wait-on>rxjs": true,
         "mocha>supports-color": true,
+        "sass-embedded>sync-child-process": true,
         "sass-embedded>varint": true
       }
     },
@@ -6376,6 +6386,30 @@
         "chalk>supports-color>has-flag": true
       }
     },
+    "sass-embedded>sync-child-process": {
+      "builtin": {
+        "fs.existsSync": true,
+        "path.dirname": true,
+        "path.join": true,
+        "stream.Writable": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "__filename": true,
+        "console.error": true
+      },
+      "packages": {
+        "sass-embedded>sync-child-process>sync-message-port": true
+      }
+    },
+    "sass-embedded>sync-child-process>sync-message-port": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "worker_threads.MessageChannel": true,
+        "worker_threads.receiveMessageOnPort": true
+      }
+    },
     "eslint-plugin-prettier>synckit": {
       "builtin": {
         "node:crypto": true,
@@ -6720,7 +6754,7 @@
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
-        "react>object-assign": true,
+        "gulp-watch>object-assign": true,
         "mockttp>express>qs": true
       }
     },
