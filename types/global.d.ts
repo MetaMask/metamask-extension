@@ -15,6 +15,7 @@ import {
 import type { Provider } from '@metamask/network-controller';
 import type { Browser } from 'webextension-polyfill';
 import {
+  LedgerAction,
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
@@ -48,6 +49,11 @@ type SerializedLedgerError = {
   // from TransportStatusError
   statusCode?: number;
   statusText?: string;
+  // from HardwareWalletError
+  code?: number;
+  severity?: string;
+  category?: string;
+  userMessage?: string;
 };
 
 export type LedgerIframeMissingResponse = {
@@ -201,6 +207,7 @@ type sendMessage = {
     },
     callback: (response: {
       success: boolean;
+      payload?: boolean | { error?: SerializedLedgerError };
       error?: SerializedLedgerError;
     }) => void,
   ): Promise<boolean>;
@@ -233,6 +240,19 @@ declare class Runtime {
         sendResponse: (response?: ResponseType) => void,
       ) => void,
     ) => void;
+    removeListener: (
+      callback: (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        message: any,
+        sender: MessageSender,
+        sendResponse: (response?: ResponseType) => void,
+      ) => void,
+    ) => void;
+  };
+
+  lastError?: {
+    message?: string;
   };
 
   sendMessage: sendMessage;

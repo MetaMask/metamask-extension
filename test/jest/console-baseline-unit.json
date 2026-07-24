@@ -1,5 +1,8 @@
 {
   "files": {
+    "app/offscreen/hardware-wallets/ledger-dmk.test.ts": {
+      "error: [LedgerDMK] ensureBridge: connect failed HardwareWalletError...": 4
+    },
     "app/scripts/controllers/rewards/rewards-data-service.test.ts": {
       "error: RewardsDataService: Failed to fetch geolocation": 2
     },

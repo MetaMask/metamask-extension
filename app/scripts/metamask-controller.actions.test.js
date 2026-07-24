@@ -69,7 +69,7 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
     }),
 }));
 
-jest.mock('../../ui/contexts/hardware-wallets', () => ({
+jest.mock('../../shared/lib/hardware-wallets', () => ({
   toHardwareWalletError: (...args) => mockToHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args) =>
     mockIsUserRejectedHardwareWalletError(...args),

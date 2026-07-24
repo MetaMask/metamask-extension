@@ -234,8 +234,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
+} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -5412,9 +5411,12 @@ export default class MetamaskController extends EventEmitter {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+    const rawFlag = merged[ENABLE_DMK_FEATURE_FLAG];
+    const isDmkEnabled = getBooleanFeatureFlag(rawFlag, false);
+    const mode = isDmkEnabled
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
+    return mode;
   }
 
   /**

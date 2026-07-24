@@ -42,6 +42,9 @@ export enum OffscreenCommunicationEvents {
   connectivityChange = 'connectivity-change',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  ledgerModeReady = 'ledger-mode-ready',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   switchLedgerMode = 'switch-ledger-mode',
 }
 
@@ -97,6 +100,9 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  signDelegationAuthorization = 'ledger-sign-delegation-authorization',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',

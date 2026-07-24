@@ -862,7 +862,7 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  setupLedgerModeOffscreenBridge(controller);
+  setupLedgerModeOffscreenBridge(controller, offscreenPromise);
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,

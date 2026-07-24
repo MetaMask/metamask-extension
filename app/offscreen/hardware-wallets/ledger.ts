@@ -529,6 +529,11 @@ export class LedgerLegacyHandler {
           message: params.message,
         } as LedgerSignTypedDataParams);
 
+      case LedgerAction.signDelegationAuthorization:
+        throw new Error(
+          'Ledger delegation authorization signing requires DMK mode',
+        );
+
       default:
         throw new Error(`Unknown Ledger action: ${action as string}`);
     }
