@@ -164,9 +164,8 @@ describe('Deep link utils', () => {
     });
 
     describe('when signature is missing or invalid', () => {
-      it.each(protectedRouteTestCases)(
-        'returns interstitial route for $route when the signature is $signature',
-        async ({ route, signature }) => {
+      for (const { route, signature } of protectedRouteTestCases) {
+        it(`returns interstitial route for ${route} when the signature is ${signature}`, async () => {
           const createdAt = 1000000;
           jest.setSystemTime(createdAt + 60 * 1000);
 
@@ -188,8 +187,8 @@ describe('Deep link utils', () => {
             type: DeferredDeepLinkRouteType.Interstitial,
             urlPathAndQuery: route,
           });
-        },
-      );
+        });
+      }
 
       it('returns interstitial route for unsigned external URL redirect', async () => {
         const createdAt = 1000000;
