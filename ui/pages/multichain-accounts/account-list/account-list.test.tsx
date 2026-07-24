@@ -9,6 +9,11 @@ import mockState from '../../../../test/data/mock-state.json';
 import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { AccountList } from './account-list';
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
+
 const mockUseNavigate = jest.fn();
 let mockLocationKey = 'default';
 let mockLocationState: Record<string, unknown> | null = null;
@@ -204,6 +209,30 @@ describe('AccountList', () => {
 
     expect(screen.queryByText('Account 1')).not.toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
+  });
+
+  describe('Pure Black mode', () => {
+    it('uses background-alternative when isPureBlack is true', () => {
+      const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
+      usePureBlack.mockReturnValue(true);
+
+      renderComponent();
+
+      const page = screen.getByTestId('multichain-page');
+      expect(page).toHaveClass(
+        'mm-box--background-color-background-alternative',
+      );
+    });
+
+    it('uses background-default when isPureBlack is false', () => {
+      const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
+      usePureBlack.mockReturnValue(false);
+
+      renderComponent();
+
+      const page = screen.getByTestId('multichain-page');
+      expect(page).toHaveClass('mm-box--background-color-background-default');
+    });
   });
 
   describe('Loading States Integration', () => {
