@@ -6,6 +6,8 @@ import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
 import {
+  APP_INIT_LIVENESS_STREAM,
+  BACKGROUND_LIVENESS_STREAM,
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
   LEGACY_INPAGE,
@@ -113,6 +115,10 @@ export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
+  // This stream is shared by the main and legacy mux pipelines, which
+  // together legitimately attach more than the default limit of 10
+  // close/end listeners, so raise the limit like the muxes below do.
+  extensionStream.setMaxListeners(25);
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -120,6 +126,8 @@ export const setupExtensionStreams = () => {
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+  extensionMux.ignoreStream(APP_INIT_LIVENESS_STREAM);
+  extensionMux.ignoreStream(BACKGROUND_LIVENESS_STREAM);
 
   /**
    * Graceful shutdown handler for the extension mux.
@@ -171,6 +179,10 @@ export const setupExtensionStreams = () => {
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
   pageChannel.removeAllListeners();
+  // The CAIP channel must be cleaned up like `pageChannel`, or the listeners
+  // added by its pipeline accumulate on every service worker reconnect,
+  // eventually triggering MaxListenersExceededWarning.
+  caipChannel.removeAllListeners();
 
   extensionMux.removeAllListeners();
   extensionMux.destroy();
@@ -261,6 +273,8 @@ const setupLegacyExtensionStreams = () => {
   legacyExtMux.ignoreStream(LEGACY_PROVIDER);
   legacyExtMux.ignoreStream(PHISHING_SAFELIST);
   legacyExtMux.ignoreStream(PHISHING_STREAM);
+  legacyExtMux.ignoreStream(APP_INIT_LIVENESS_STREAM);
+  legacyExtMux.ignoreStream(BACKGROUND_LIVENESS_STREAM);
 };
 
 /**
