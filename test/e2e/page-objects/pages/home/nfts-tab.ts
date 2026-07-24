@@ -157,8 +157,11 @@ class NftsTab extends HomePage {
         this.importNftErrorMessageByText(expectedErrorMessage),
       );
     } else {
+      // On-chain ownership verification can exceed the default 3s wait under
+      // CI load, so allow more time for the modal to close.
       await this.driver.clickElementAndWaitToDisappear(
         this.confirmImportNftButton,
+        10000,
       );
     }
   }
