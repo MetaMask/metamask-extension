@@ -30,18 +30,18 @@ async function getDiffByAutomationType(
   if (automationType === AUTOMATION_TYPE.CI) {
     // For non-PR triggers (e.g. `merge_queue` or `push` to protected branch)
     // we can assume we're dealing with a single squashed commit.
-    return await getCommitDiff();
+    return getCommitDiff();
   } else if (automationType === AUTOMATION_TYPE.PR) {
     // Fetch diff directly (requires CI environment variables).
     // Lazy dynamic import to avoid pulling @actions/github into local dev hooks
     // (and because @actions/github is now ESM-only).
     const { getPrDiff } =
       await import('../../../.github/scripts/shared/get-pr-diff.mts');
-    return await getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
+    return getPrDiff({ baseBranch: process.env.BASE_REF || 'main' });
   } else if (automationType === AUTOMATION_TYPE.PRE_COMMIT_HOOK) {
-    return await getPreCommitHookDiff();
+    return getPreCommitHookDiff();
   } else if (automationType === AUTOMATION_TYPE.PRE_PUSH_HOOK) {
-    return await getPrePushHookDiff();
+    return getPrePushHookDiff();
   }
 
   // Check that all types were handled
