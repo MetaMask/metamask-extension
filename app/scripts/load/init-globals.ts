@@ -1,8 +1,8 @@
 /**
  * WARNING: This code runs outside of LavaMoat.
- * This script add properties in `globalThis` and initialises them with undefined.
+ * This script adds properties in `globalThis` and initialises them with undefined.
  * This is workaround needed to avoid error in dependencies expecting to be run in a browser
- * these dependencies are not available to service worker in MV3.
+ * where these dependencies are not available to service worker in MV3.
  */
 
 const keys = ['XMLHttpRequest'];
