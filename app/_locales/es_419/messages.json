@@ -1997,12 +1997,6 @@
     "message": "Aprobar $1 para puentear",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Estás permitiendo el acceso a $1 y $2. El contrato no accederá a fondos adicionales."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Deberás permitir el acceso a $1 $2 para puentear y luego aprobar el puente a $3. Esto requerirá dos confirmaciones por separado."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Se copió el enlace del explorador de bloques"
   },
@@ -4163,9 +4157,6 @@
   },
   "gotIt": {
     "message": "Entendido"
-  },
-  "grantExactAccess": {
-    "message": "Otorgar acceso exacto"
   },
   "gwei": {
     "message": "GWEI"
@@ -11260,12 +11251,6 @@
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprueba token para puentear."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprueba token para canjear."
   },
   "withdrawTo": {
     "message": "Recibir",

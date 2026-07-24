@@ -1997,12 +1997,6 @@
     "message": "ब्रिज के लिए $1 एप्रूव करें",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "आप $1 $2 को एक्सेस की अनुमति दे रहे हैं। कॉन्ट्रैक्ट किसी अतिरिक्त फंड तक एक्सेस नहीं करेगा।"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "आपको ब्रिजिंग के लिए $1 $2 तक एक्सेस की अनुमति देनी होगी, और फिर $3 तक ब्रिजिंग को एप्रूव करनी होगी। इसके लिए दो अलग-अलग कन्फर्मेशन की आवश्यकता होगी।"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ब्लॉक एक्सप्लोरर लिंक कॉपी किया गया"
   },
@@ -4159,9 +4153,6 @@
   },
   "gotIt": {
     "message": "समझ गए"
-  },
-  "grantExactAccess": {
-    "message": "सटीक पहुंच प्रदान करें"
   },
   "gwei": {
     "message": "GWEI"
@@ -11252,12 +11243,6 @@
   },
   "whatsThis": {
     "message": "यह क्या है?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ब्रिज के लिए टोकन एप्रूव करता है।"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "स्वैप के लिए टोकन एप्रूव करता है।"
   },
   "withdrawTo": {
     "message": "प्राप्त करें",

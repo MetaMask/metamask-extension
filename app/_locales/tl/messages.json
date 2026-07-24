@@ -1997,12 +1997,6 @@
     "message": "Aprubahan ang $1 para sa bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Pinahihintulutan mo ang access sa $1 $2. Hindi gagamitin ng kontrata ang anumang karagdagang pondo."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $3. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nakopya ang link ng block explorer"
   },
@@ -4159,9 +4153,6 @@
   },
   "gotIt": {
     "message": "Nakuha ko"
-  },
-  "grantExactAccess": {
-    "message": "Payagan ang eksaktong access"
   },
   "gwei": {
     "message": "GWEI"
@@ -11252,12 +11243,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprubahan ang token para sa bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprubahan ang token para sa swap."
   },
   "withdrawTo": {
     "message": "Tumanggap",
