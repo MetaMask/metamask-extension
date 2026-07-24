@@ -18,6 +18,23 @@ export class IndexedDBStore {
   #db: IDBDatabase | null = null;
 
   /**
+   * Invoked when the browser forcibly closes the database connection, which can
+   * happen when the browser is shutting down (`close` event) or when another
+   * connection requests a version change (`versionchange` event). Used as a
+   * best-effort "browser is shutting down" signal so callers can suspend writes.
+   *
+   * @param reason - Which browser event triggered the forced close.
+   */
+  onForcedClose?: (reason: 'close' | 'versionchange') => void;
+
+  /**
+   * Whether this store currently holds a live database connection.
+   */
+  isOpen(): boolean {
+    return this.#db !== null;
+  }
+
+  /**
    * Opens the database, running migrations if necessary.
    *
    * @param name - The name of the database.
@@ -37,7 +54,26 @@ export class IndexedDBStore {
         }
       };
       request.onsuccess = () => {
-        this.#db = request.result;
+        const db = request.result;
+        // The browser can force-close IndexedDB connections during shutdown, or
+        // ask us to close for a version change. Clear `#db` so a later `open()`
+        // can reconnect instead of early-returning against a closed handle.
+        const handleForcedClose = (reason: 'close' | 'versionchange') => {
+          if (this.#db === null) {
+            return;
+          }
+          this.#db = null;
+          this.onForcedClose?.(reason);
+        };
+        db.onclose = () => handleForcedClose('close');
+        db.onversionchange = () => {
+          // Closing unblocks other connections. Some environments fire
+          // `onclose` afterward; others (e.g. fake-indexeddb) may not, so we
+          // also handle the forced-close bookkeeping here (deduped above).
+          handleForcedClose('versionchange');
+          db.close();
+        };
+        this.#db = db;
         resolve();
       };
       request.onerror = () => {

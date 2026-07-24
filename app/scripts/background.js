@@ -48,6 +48,8 @@ import {
 } from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlagsWithManifestOverrides } from '../../shared/lib/ab-testing/ab-test-analytics';
 import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
@@ -66,6 +68,7 @@ import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
+  ShutdownTrigger,
 } from '../../shared/lib/stores/persistence-manager';
 import Migrator from './lib/migrator';
 import migrations from './migrations';
@@ -738,6 +741,21 @@ if (
   installOnConnectListener();
 }
 
+// Proactively suspend persistence writes when the browser signals it is
+// shutting down, so we never start a `storage.local` write we can't finish
+// (which can corrupt the on-disk LevelDB database). These signals are
+// best-effort — `runtime.onSuspend` is not guaranteed to fire for MV3 service
+// workers — so they complement the reactive detection inside PersistenceManager
+// and the IndexedDB force-close signal. No-op unless the feature flag enables
+// shutdown suspension. `onSuspendCanceled` resumes writes if the shutdown was a
+// false alarm (e.g. an idle eviction that got cancelled).
+lazyListener.addListener('runtime', 'onSuspend', () => {
+  persistenceManager.suspendWrites(ShutdownTrigger.OnSuspend);
+});
+lazyListener.addListener('runtime', 'onSuspendCanceled', () => {
+  persistenceManager.resumeWrites();
+});
+
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
@@ -1001,6 +1019,28 @@ async function loadPhishingWarningPage() {
 //
 
 /**
+ * Sets shutdown write-suspension from a `remoteFeatureFlags` map (persisted or
+ * live), with manifest overrides applied on top so `MANIFEST_OVERRIDES` can
+ * enable the flag for local/E2E the same way the UI selector does.
+ * Applying this early from persisted state during startup lets writes in the
+ * boot window benefit from suspension before `RemoteFeatureFlagController` is
+ * constructed.
+ *
+ * @param {Record<string, unknown> | undefined} remoteFeatureFlags - The
+ * `remoteFeatureFlags` map to read the flag from. Missing/invalid flags default
+ * to off.
+ */
+function setShutdownSuspensionFromFlags(remoteFeatureFlags) {
+  const flags = getRemoteFeatureFlagsWithManifestOverrides(remoteFeatureFlags);
+  persistenceManager.setShutdownSuspensionEnabled(
+    getBooleanFeatureFlag(
+      flags.platformPersistenceSuspendWritesOnShutdown,
+      false,
+    ),
+  );
+}
+
+/**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
@@ -1192,6 +1232,14 @@ export async function loadStateFromPersistence(backup) {
 
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
+
+  // Enable shutdown write-suspension from the persisted remote feature flag
+  // before the first startup writes below, so the boot window is protected too
+  // (the flag survives across sessions once fetched). setupController syncs
+  // this from live controller state and keeps it in sync afterwards.
+  setShutdownSuspensionFromFlags(
+    versionedData.data?.RemoteFeatureFlagController?.remoteFeatureFlags,
+  );
 
   log.debug(
     "[Split State]: Loaded data from persistence with storageKind '%s'",
@@ -1542,6 +1590,21 @@ export function setupController(
   persistenceManager.setOnSetFailed((errorType) => {
     controller.appStateController.setStorageWriteErrorType(errorType);
   });
+
+  // Gate shutdown write-suspension behind a remote feature flag so it can be
+  // ramped and measured before being enabled by default. Sync from live
+  // controller state and on every remote-feature-flag update, since flags may
+  // arrive after startup (the persisted value was already applied earlier in
+  // loadStateFromPersistence to cover the boot window).
+  const syncShutdownSuspensionFromController = () =>
+    setShutdownSuspensionFromFlags(
+      controller.remoteFeatureFlagController.state.remoteFeatureFlags,
+    );
+  syncShutdownSuspensionFromController();
+  controller.controllerMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    syncShutdownSuspensionFromController,
+  );
 
   /**
    * @type {Array<string>} List of controller store keys that have changed since initialization.

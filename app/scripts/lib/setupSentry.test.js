@@ -327,6 +327,50 @@ describe('Setup Sentry', () => {
         'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
       );
     });
+
+    describe('feature flag tags', () => {
+      const originalStateHooks = globalThis.stateHooks;
+
+      afterEach(() => {
+        globalThis.stateHooks = originalStateHooks;
+      });
+
+      it('tags the report with the effective value of allowlisted feature flags', () => {
+        globalThis.stateHooks = {
+          getSentryState: () => ({
+            state: {
+              metamask: {
+                remoteFeatureFlags: {
+                  platformPersistenceSuspendWritesOnShutdown: true,
+                },
+              },
+            },
+          }),
+        };
+        const testReport = { message: 'An error occurred', request: {} };
+
+        rewriteReport(testReport);
+
+        expect(
+          testReport.tags[
+            'featureFlag.platformPersistenceSuspendWritesOnShutdown'
+          ],
+        ).toStrictEqual('true');
+      });
+
+      it('tags allowlisted feature flags as "unset" when unavailable', () => {
+        globalThis.stateHooks = { getSentryState: () => ({}) };
+        const testReport = { message: 'An error occurred', request: {} };
+
+        rewriteReport(testReport);
+
+        expect(
+          testReport.tags[
+            'featureFlag.platformPersistenceSuspendWritesOnShutdown'
+          ],
+        ).toStrictEqual('unset');
+      });
+    });
   });
 
   describe('rewriteTransactionReport', () => {

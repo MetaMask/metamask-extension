@@ -138,6 +138,14 @@ export type ManifestFlags = {
      */
     simulateStorageSetFailure?: boolean;
     /**
+     * Simulate a browser-shutdown write error for testing shutdown write
+     * suspension. When enabled, PersistenceManager write operations throw a
+     * "The browser is shutting down." error, exercising the reactive suspension
+     * path (writes suspended silently, no error toast). Only meaningful when the
+     * shutdown-suspension feature flag is also enabled.
+     */
+    simulateBrowserShutdown?: boolean;
+    /**
      * Override the fixture server port for dynamic port allocation.
      * When set, FixtureExtensionStore fetches state from this port
      * instead of the default 12345.

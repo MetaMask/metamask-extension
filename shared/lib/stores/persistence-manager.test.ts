@@ -5,7 +5,7 @@ import log from 'loglevel';
 
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
-import { PersistenceManager } from './persistence-manager';
+import { PersistenceManager, ShutdownTrigger } from './persistence-manager';
 import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
@@ -496,6 +496,687 @@ describe('PersistenceManager', () => {
     });
   });
 
+  describe('shutdown write suspension', () => {
+    describe('suspendWrites / resumeWrites / writesSuspended', () => {
+      it('is a no-op while the feature flag is disabled', () => {
+        manager.suspendWrites();
+        expect(manager.writesSuspended()).toBe(false);
+      });
+
+      it('suspends and resumes writes when enabled', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites();
+        expect(manager.writesSuspended()).toBe(true);
+
+        manager.resumeWrites();
+        expect(manager.writesSuspended()).toBe(false);
+      });
+
+      it('flushes pending split-storage pairs when writes resume', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.storageKind = 'split';
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        // Short-circuit leaves the pending pair queued.
+        const [shortCircuitResult, shortCircuitError] = await manager.persist();
+        expect(shortCircuitResult).toBe(false);
+        expect(shortCircuitError).toBeUndefined();
+        expect(mockStoreSetKeyValues).not.toHaveBeenCalled();
+
+        mockStoreSetKeyValues.mockResolvedValue(undefined);
+        manager.resumeWrites();
+
+        // resumeWrites kicks off a fire-and-forget persist; wait for it.
+        await new Promise<void>((resolve) => {
+          setImmediate(resolve);
+        });
+
+        expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+        const passedMap = mockStoreSetKeyValues.mock.calls[0][0] as Map<
+          string,
+          unknown
+        >;
+        /* eslint-disable jest/prefer-strict-equal -- persist() uses structuredClone for map values; toEqual matches deep shape (stricter than toMatchObject); toStrictEqual fails on prototype */
+        expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+        /* eslint-enable jest/prefer-strict-equal */
+      });
+
+      it('clears suspended state when the feature flag is disabled', () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        expect(manager.writesSuspended()).toBe(true);
+
+        manager.setShutdownSuspensionEnabled(false);
+
+        expect(manager.writesSuspended()).toBe(false);
+
+        // Re-enabling must not inherit the previous suspension.
+        manager.setShutdownSuspensionEnabled(true);
+        expect(manager.writesSuspended()).toBe(false);
+      });
+
+      it('reports a single low-volume telemetry message per suspension', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-shutdown',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('emits promotion telemetry when OnSuspend takes ownership after an inferred trigger', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(2);
+        expect(mockedCaptureMessage).toHaveBeenNthCalledWith(
+          1,
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-shutdown',
+              'persistence.shutdownTrigger': ShutdownTrigger.Reactive,
+            }),
+          }),
+        );
+        expect(mockedCaptureMessage).toHaveBeenNthCalledWith(
+          2,
+          'MetaMask - writes suspended: shutdown ownership promoted',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-promoted',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+              'persistence.previousShutdownTrigger': ShutdownTrigger.Reactive,
+            }),
+          }),
+        );
+      });
+
+      it('does not emit promotion telemetry when OnSuspend was already the owner', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('defaults the telemetry trigger to unknown when omitted', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites();
+
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.Unknown,
+            }),
+          }),
+        );
+      });
+
+      it('honors a shutdown signal that arrived before the feature flag was enabled', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        expect(manager.writesSuspended()).toBe(false);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('does not honor a pending shutdown signal that was cancelled before the flag was enabled', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.resumeWrites();
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      });
+
+      it('preserves a pending shutdown across a no-op disable sync', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        // Startup often re-applies `false` while the flag is still default-off.
+        manager.setShutdownSuspensionEnabled(false);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('does not let a later inferred trigger demote a pending onSuspend', () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.IdbClose);
+
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('drops pending when the feature is turned off after having been enabled', () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.setShutdownSuspensionEnabled(false);
+
+        // Re-enable must not inherit the previous suspension or a pending signal.
+        manager.setShutdownSuspensionEnabled(true);
+
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-shutdown',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+    });
+
+    describe('reactive detection (data storageKind / set)', () => {
+      beforeEach(() => {
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+      });
+
+      it('suspends silently when the write reports the browser is shutting down', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+        mockStoreSet.mockRejectedValueOnce(
+          new Error('The browser is shutting down.'),
+        );
+
+        const [result, error] = await manager.set({ appState: { test: 1 } });
+
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+        expect(manager.writesSuspended()).toBe(true);
+        // no failure toast and no error report
+        expect(onSetFailed).not.toHaveBeenCalled();
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('short-circuits subsequent writes once suspended', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        mockStoreSet.mockRejectedValueOnce(
+          new Error('The browser is shutting down.'),
+        );
+
+        await manager.set({ appState: { test: 1 } });
+        expect(mockStoreSet).toHaveBeenCalledTimes(1);
+
+        const [result, error] = await manager.set({ appState: { test: 2 } });
+
+        // the second write never reaches the store
+        expect(mockStoreSet).toHaveBeenCalledTimes(1);
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+      });
+
+      it('reports the error normally when the feature flag is disabled', async () => {
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+        const error = new Error('The browser is shutting down.');
+        mockStoreSet.mockRejectedValueOnce(error);
+
+        const [result, persistError] = await manager.set({
+          appState: { test: 1 },
+        });
+
+        expect(result).toBe(false);
+        expect(persistError).toBe(error);
+        expect(manager.writesSuspended()).toBe(false);
+        expect(onSetFailed).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+          tags: { 'persistence.error': 'set-failed' },
+          fingerprint: ['persistence-error', 'set-failed'],
+        });
+      });
+    });
+
+    describe('reactive detection (split storageKind / persist)', () => {
+      beforeEach(() => {
+        manager.storageKind = 'split';
+        manager.setMetadata({ version: 10 });
+      });
+
+      it('suspends silently when the write reports the browser is shutting down', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+        mockStoreSetKeyValues.mockRejectedValueOnce(
+          new Error('The browser is shutting down.'),
+        );
+
+        const [result, error] = await manager.persist();
+
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+        expect(manager.writesSuspended()).toBe(true);
+        expect(onSetFailed).not.toHaveBeenCalled();
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('short-circuits subsequent persists once suspended', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        mockStoreSetKeyValues.mockRejectedValueOnce(
+          new Error('The browser is shutting down.'),
+        );
+
+        await manager.persist();
+        expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+
+        const [result, error] = await manager.persist();
+
+        expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+      });
+    });
+
+    describe('reset', () => {
+      it('clears the suspended state', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.suspendWrites();
+        expect(manager.writesSuspended()).toBe(true);
+
+        await manager.reset();
+
+        expect(manager.writesSuspended()).toBe(false);
+      });
+    });
+
+    describe('backup IndexedDB force-close telemetry', () => {
+      // Captures the IndexedDBStore instance created inside #openBackupDatabase
+      // so we can invoke the wired `onForcedClose` handler directly.
+      async function openAndCaptureBackupStore(): Promise<IndexedDBStore> {
+        const created: IndexedDBStore[] = [];
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockImplementation(async function (this: IndexedDBStore) {
+            created.push(this);
+          });
+        // open() is mocked without a live handle; stub isOpen so the manager
+        // records `#open = true` the same way a real successful open would.
+        const isOpenSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'isOpen')
+          .mockReturnValue(true);
+        await manager.open();
+        openSpy.mockRestore();
+        isOpenSpy.mockRestore();
+        const [backupStore] = created;
+        if (!backupStore) {
+          throw new Error('backup store was not created');
+        }
+        return backupStore;
+      }
+
+      it('reports a versionchange force-close even while the feature flag is disabled', async () => {
+        const backupStore = await openAndCaptureBackupStore();
+
+        backupStore.onForcedClose?.('versionchange');
+
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - backup IndexedDB force-closed',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'backup-idb-forced-close',
+              'persistence.idbCloseReason': 'versionchange',
+            }),
+          }),
+        );
+        // Telemetry is emitted at the source, so suspension stays flag-gated.
+        expect(manager.writesSuspended()).toBe(false);
+      });
+
+      it('reports a close force-close and suspends writes when the feature flag is enabled', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const backupStore = await openAndCaptureBackupStore();
+
+        backupStore.onForcedClose?.('close');
+
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - backup IndexedDB force-closed',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'backup-idb-forced-close',
+              'persistence.idbCloseReason': 'close',
+            }),
+          }),
+        );
+        expect(manager.writesSuspended()).toBe(true);
+
+        // Clear the recovery timer scheduled by the idb-close suspension.
+        manager.resumeWrites();
+      });
+
+      it('reconnects the backup database after a force-close so later opens are not no-ops', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const backupStore = await openAndCaptureBackupStore();
+
+        // OnSuspend owns the suspension; a later force-close must still clear
+        // `#open` so resume + the next write can reconnect the backup handle.
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        backupStore.onForcedClose?.('close');
+        manager.resumeWrites();
+
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const setSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockResolvedValue(undefined);
+        mockStoreSet.mockResolvedValue(undefined);
+
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+        const [ok, error] = await manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+
+        expect(ok).toBe(true);
+        expect(error).toBeUndefined();
+        expect(openSpy).toHaveBeenCalledTimes(1);
+        expect(setSpy).toHaveBeenCalled();
+        openSpy.mockRestore();
+        setSpy.mockRestore();
+      });
+
+      it('does not leave the backup marked open when a force-close races open completion', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        let openCalls = 0;
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockImplementation(async function (this: IndexedDBStore) {
+            openCalls += 1;
+            if (openCalls === 1) {
+              // onForcedClose is wired before open(); simulate a close that
+              // finishes during the open turn and leaves the handle dead.
+              this.onForcedClose?.('close');
+            }
+          });
+        const isOpenSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'isOpen')
+          .mockImplementation(() => openCalls >= 2);
+
+        await manager.open();
+        expect(manager.writesSuspended()).toBe(true);
+        expect(openCalls).toBe(1);
+
+        manager.resumeWrites();
+        await manager.open();
+
+        expect(openCalls).toBe(2);
+        openSpy.mockRestore();
+        isOpenSpy.mockRestore();
+      });
+
+      it('stays silent when backup IDB is force-closed mid-write after storage.local succeeds', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        const onSetFailed = jest.fn();
+        manager.setOnSetFailed(onSetFailed);
+        const backupStore = await openAndCaptureBackupStore();
+
+        // storage.local succeeds; during the backup write the IDB is force-closed
+        // (suspends writes) and then throws a generic disconnected-handle error.
+        mockStoreSet.mockResolvedValue(undefined);
+        const setSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockImplementation(async () => {
+            backupStore.onForcedClose?.('close');
+            throw new Error('Database is not open');
+          });
+
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+        const [result, error] = await manager.set({
+          KeyringController: { vault: 'encrypted-vault' },
+        } as unknown as MetaMaskStateType);
+
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+        expect(manager.writesSuspended()).toBe(true);
+        expect(onSetFailed).not.toHaveBeenCalled();
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+        setSpy.mockRestore();
+      });
+    });
+
+    describe('recovery for inferred triggers', () => {
+      // How often the recovery probe runs; mirrors SHUTDOWN_RECOVERY_RETRY_MS
+      // in the implementation.
+      const RETRY_MS = 250;
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+        manager.setShutdownSuspensionEnabled(true);
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('resumes writes after a reactive suspension once storage is responsive again', async () => {
+        // No backup DB was opened, so the probe falls back to storage.local.
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes resumed: shutdown recovered',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-resumed-recovery',
+              'persistence.shutdownTrigger': ShutdownTrigger.Reactive,
+            }),
+          }),
+        );
+      });
+
+      it('resumes writes after an idb-close suspension once both the backup database and storage.local respond', async () => {
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const getSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'get')
+          .mockResolvedValue([undefined]);
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+        // Populate #backupDb so the probe exercises the IndexedDB path.
+        await manager.open();
+
+        manager.suspendWrites(ShutdownTrigger.IdbClose);
+        expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        // Both stores are probed before resuming.
+        expect(openSpy).toHaveBeenCalledWith('metamask-backup', 1);
+        expect(getSpy).toHaveBeenCalledWith(['meta']);
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(false);
+
+        openSpy.mockRestore();
+        getSpy.mockRestore();
+      });
+
+      it('stays suspended while the backup database is healthy but storage.local still fails', async () => {
+        const openSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'open')
+          .mockResolvedValue(undefined);
+        const getSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'get')
+          .mockResolvedValue([undefined]);
+        // The backup DB always responds, but storage.local fails once then
+        // recovers. Writes must not resume until storage.local is responsive.
+        mockStoreGet
+          .mockRejectedValueOnce(new Error('The browser is shutting down.'))
+          .mockResolvedValueOnce(MOCK_DATA);
+        await manager.open();
+
+        manager.suspendWrites(ShutdownTrigger.IdbClose);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // storage.local still failing: stay suspended despite a healthy backup DB.
+        expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // storage.local recovered: now writes resume.
+        expect(manager.writesSuspended()).toBe(false);
+
+        openSpy.mockRestore();
+        getSpy.mockRestore();
+      });
+
+      it('keeps retrying while storage stays unresponsive and resumes on the first success', async () => {
+        mockStoreGet
+          .mockRejectedValueOnce(new Error('still shutting down'))
+          .mockResolvedValueOnce(MOCK_DATA);
+
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // First probe failed: still suspended and scheduled again.
+        expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        // Second probe succeeded: writes resume.
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockStoreGet).toHaveBeenCalledTimes(2);
+      });
+
+      it('does not schedule a recovery probe for the onSuspend lifecycle trigger', async () => {
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(true);
+      });
+
+      it('cancels a pending inferred recovery when onSuspend takes ownership', async () => {
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(true);
+      });
+
+      it('does not let a later inferred trigger resume an onSuspend suspension', async () => {
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.IdbClose);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(true);
+      });
+
+      it('allows inferred recovery again after onSuspendCanceled resumes writes', async () => {
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.resumeWrites();
+
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(false);
+      });
+
+      it('cancels a pending recovery probe when writes resume', async () => {
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.resumeWrites();
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+
+      it('cancels a pending recovery probe on reset', async () => {
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        await manager.reset();
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+
+      it('cancels a pending recovery probe when suspension is disabled', async () => {
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.setShutdownSuspensionEnabled(false);
+
+        await jest.advanceTimersByTimeAsync(RETRY_MS);
+
+        expect(mockStoreGet).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('Locks', () => {
     it('should acquire a lock when setting state', async () => {
       manager.storageKind = 'data';
@@ -528,6 +1209,70 @@ describe('PersistenceManager', () => {
       expect(mockLocksRequest).toHaveBeenCalledTimes(3);
       // but the mockCallback should only be called twice!
       expect(mockCallback).toHaveBeenCalledTimes(2);
+    });
+
+    it('resolves silently when a queued write is aborted (superseded or shutting down)', async () => {
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      manager.setShutdownSuspensionEnabled(true);
+      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+
+      const onSetFailed = jest.fn();
+      manager.setOnSetFailed(onSetFailed);
+
+      // Simulate a real browser rejecting a queued lock request with an
+      // AbortError once its signal is aborted (the `navigator.locks` polyfill
+      // resolves instead of rejecting, so we mock the rejection here).
+      const originalRequest = navigator.locks.request;
+      navigator.locks.request = jest
+        .fn()
+        .mockImplementation((_name, options: { signal: AbortSignal }) => {
+          return new Promise((_resolve, reject) => {
+            options.signal.addEventListener('abort', () => {
+              reject(
+                new DOMException('The request was aborted.', 'AbortError'),
+              );
+            });
+          });
+        }) as typeof navigator.locks.request;
+
+      try {
+        const write = manager.set({ appState: { test: 1 } });
+        await Promise.resolve();
+
+        // A browser shutdown aborts the still-queued write.
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        const [result, error] = await write;
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+        // The aborted write is not reported as a failure.
+        expect(onSetFailed).not.toHaveBeenCalled();
+        expect(mockedCaptureException).not.toHaveBeenCalled();
+      } finally {
+        navigator.locks.request = originalRequest;
+      }
+    });
+
+    it('rethrows non-abort errors from the lock request', async () => {
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      jest.spyOn(manager, 'open').mockResolvedValue(undefined);
+
+      const originalRequest = navigator.locks.request;
+      navigator.locks.request = jest
+        .fn()
+        .mockRejectedValue(
+          new Error('unexpected lock failure'),
+        ) as typeof navigator.locks.request;
+
+      try {
+        await expect(manager.set({ appState: { test: 1 } })).rejects.toThrow(
+          'unexpected lock failure',
+        );
+      } finally {
+        navigator.locks.request = originalRequest;
+      }
     });
   });
 

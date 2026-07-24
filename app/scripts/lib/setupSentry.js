@@ -20,6 +20,7 @@ import {
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
+import { getFeatureFlagTags } from './sentry-feature-flag-tags';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -484,6 +485,7 @@ export function rewriteReport(report) {
     report.tags.installType = installType;
     report.tags.storageKind =
       globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
+    Object.assign(report.tags, getFeatureFlagTags(appState));
   } catch (err) {
     log('Error rewriting report', err);
   }

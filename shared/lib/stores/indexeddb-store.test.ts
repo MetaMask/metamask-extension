@@ -25,10 +25,28 @@ describe('IndexedDBStore', () => {
   describe('open', () => {
     it('opens the database successfully and creates store on first open', async () => {
       await db.open(dbName, dbVersion);
+      expect(db.isOpen()).toBe(true);
       // Verify the database is open by performing an operation
       await db.set({ key: 'value' });
       const values = await db.get(['key']);
       expect(values).toStrictEqual(['value']);
+    });
+
+    it('reports isOpen as false before open and after a forced close', async () => {
+      expect(db.isOpen()).toBe(false);
+      await db.open(dbName, dbVersion);
+      expect(db.isOpen()).toBe(true);
+
+      await new Promise<void>((resolve, reject) => {
+        const req = indexedDB.open(dbName, dbVersion + 1);
+        req.onsuccess = () => {
+          req.result.close();
+          resolve();
+        };
+        req.onerror = () => reject(req.error);
+      });
+
+      expect(db.isOpen()).toBe(false);
     });
 
     it('rejects with TypeError for invalid version (0)', async () => {
@@ -125,6 +143,70 @@ describe('IndexedDBStore', () => {
 
     it('throws when database is not open', async () => {
       await expect(db.remove(['key'])).rejects.toThrow('Database is not open');
+    });
+  });
+
+  describe('onForcedClose', () => {
+    it('is invoked with "versionchange" when the connection receives a versionchange (e.g. shutdown/upgrade)', async () => {
+      await db.open(dbName, dbVersion);
+      const onForcedClose = jest.fn();
+      db.onForcedClose = onForcedClose;
+
+      // Opening a newer version from another connection fires `versionchange`
+      // on our open connection. We close in response, which also fires `onclose`.
+      await new Promise<void>((resolve, reject) => {
+        const req = indexedDB.open(dbName, dbVersion + 1);
+        req.onsuccess = () => {
+          req.result.close();
+          resolve();
+        };
+        req.onerror = () => reject(req.error);
+      });
+
+      expect(onForcedClose).toHaveBeenCalledWith('versionchange');
+    });
+
+    it('is invoked with "close" when the connection receives a close event (e.g. browser shutdown)', async () => {
+      const openSpy = jest.spyOn(indexedDB, 'open');
+      await db.open(dbName, dbVersion);
+      const onForcedClose = jest.fn();
+      db.onForcedClose = onForcedClose;
+
+      // Simulate the browser firing `close` on our live connection (as happens
+      // during shutdown) by invoking the handler wired in `open`.
+      const request = openSpy.mock.results[0].value as IDBOpenDBRequest;
+      request.result.onclose?.(new Event('close'));
+
+      expect(onForcedClose).toHaveBeenCalledWith('close');
+      openSpy.mockRestore();
+    });
+
+    it('clears the closed connection so open can reconnect', async () => {
+      await db.open(dbName, dbVersion);
+      const onForcedClose = jest.fn();
+      db.onForcedClose = onForcedClose;
+
+      await new Promise<void>((resolve, reject) => {
+        const req = indexedDB.open(dbName, dbVersion + 1);
+        req.onsuccess = () => {
+          req.result.close();
+          resolve();
+        };
+        req.onerror = () => reject(req.error);
+      });
+
+      expect(onForcedClose).toHaveBeenCalled();
+      await expect(db.set({ key: 'value' })).rejects.toThrow(
+        'Database is not open',
+      );
+
+      const openSpy = jest.spyOn(indexedDB, 'open');
+      await db.open(dbName, dbVersion + 1);
+      expect(openSpy).toHaveBeenCalled();
+      openSpy.mockRestore();
+
+      await db.set({ key: 'value' });
+      await expect(db.get(['key'])).resolves.toStrictEqual(['value']);
     });
   });
 });

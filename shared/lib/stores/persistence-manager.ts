@@ -149,6 +149,30 @@ export function hasVault(state?: MetaMaskStateType | Backup | null): state is {
 const STATE_LOCK = 'state-lock';
 
 /**
+ * What detected a suspected browser shutdown. {@link ShutdownTrigger.OnSuspend}
+ * is the proactive MV3 lifecycle signal (paired with `onSuspendCanceled`);
+ * {@link ShutdownTrigger.Reactive} and {@link ShutdownTrigger.IdbClose} are
+ * inferred heuristics that can be false positives, so they are recoverable
+ * (see {@link SHUTDOWN_RECOVERY_RETRY_MS}). {@link ShutdownTrigger.Unknown} is
+ * the default when a caller omits the trigger.
+ */
+export enum ShutdownTrigger {
+  Reactive = 'reactive',
+  OnSuspend = 'onSuspend',
+  IdbClose = 'idb-close',
+  Unknown = 'unknown',
+}
+/**
+ * How often to re-probe storage after suspending writes due to an inferred
+ * shutdown signal ({@link ShutdownTrigger.Reactive} /
+ * {@link ShutdownTrigger.IdbClose}). Set to a quarter of the 1000ms
+ * persist debounce (`wait` in `safe-reload.ts`) so a false positive recovers
+ * quickly. A genuine shutdown tears down the service worker, so probing stops
+ * on its own.
+ */
+const SHUTDOWN_RECOVERY_RETRY_MS = 250;
+
+/**
  * The PersistenceManager class serves as a high-level manager for handling
  * storage-related operations using a local storage system. It provides methods to read
  * and write state, manage metadata, and handle errors or corruption in the
@@ -195,6 +219,51 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * likely that multiple writes will fail concurrently.
    */
   #dataPersistenceFailing: boolean = false;
+
+  /**
+   * Why writes are currently suspended, or `null` when writes are allowed.
+   * Set by {@link suspendWrites} from reactive write errors, lifecycle
+   * signals (`onSuspend`), or IndexedDB force-close. While non-null,
+   * `set`/`persist` short-circuit without touching storage, so we never start
+   * a `storage.local` write the browser could interrupt mid-flight (a cause of
+   * on-disk LevelDB corruption). Cleared by {@link resumeWrites} (e.g.
+   * `runtime.onSuspendCanceled`) and by {@link reset}; a fresh service-worker
+   * start also clears it (new instance).
+   *
+   * `OnSuspend` is authoritative: inferred triggers (`Reactive`/`IdbClose`)
+   * must not overwrite it or schedule recovery while it is set.
+   */
+  #shutdownTrigger: ShutdownTrigger | null = null;
+
+  /**
+   * When false (the default), all shutdown write-suspension behavior is disabled
+   * and writes behave exactly as before. The background script flips this on via
+   * `setShutdownSuspensionEnabled` based on a feature flag, so the behavior can
+   * be ramped and measured before being enabled by default.
+   */
+  #shutdownSuspensionEnabled: boolean = false;
+
+  /**
+   * Deduplicates the "writes suspended due to browser shutdown" telemetry so it
+   * is reported at most once per suspension (mirrors `#dataPersistenceFailing`).
+   */
+  #shutdownReported: boolean = false;
+
+  /**
+   * Records that a browser shutdown was signaled while shutdown suspension was
+   * not yet enabled (e.g. a buffered `runtime.onSuspend` replayed during cold
+   * start, before the feature flag has been applied). When suspension is later
+   * enabled we honor this pending signal instead of dropping it. `null` means
+   * no pending signal (or it was cancelled via {@link resumeWrites}).
+   */
+  #pendingShutdownTrigger: ShutdownTrigger | null = null;
+
+  /**
+   * Pending recovery-probe timer for an inferred shutdown suspension
+   * (`reactive`/`idb-close`). Non-null while a probe is scheduled; cleared once
+   * writes resume, are reset, or suspension is disabled.
+   */
+  #shutdownRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -263,6 +332,326 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
+   * Enables or disables shutdown write-suspension. Disabled by default so the
+   * behavior can be gated behind a feature flag and ramped safely. When
+   * disabled, `set`/`persist` behave exactly as before (a shutdown write error
+   * is reported like any other failure). Disabling also clears any in-session
+   * suspension so a later re-enable does not inherit a stale suspended state.
+   * Enabling honors a shutdown signal that arrived while the flag was still off
+   * (see {@link suspendWrites}).
+   *
+   * A no-op disable while already off does **not** clear
+   * `#pendingShutdownTrigger`: startup often syncs `false` before the
+   * persisted/live flag is known, and that must not erase a buffered
+   * `onSuspend` waiting to be applied.
+   *
+   * @param enabled - Whether shutdown write-suspension is active.
+   */
+  setShutdownSuspensionEnabled(enabled: boolean) {
+    const wasEnabled = this.#shutdownSuspensionEnabled;
+    this.#shutdownSuspensionEnabled = enabled;
+    if (!enabled) {
+      this.#shutdownTrigger = null;
+      this.#shutdownReported = false;
+      this.#clearShutdownRecoveryTimer();
+      // Drop pending only when the feature is turned off after having been on.
+      // false→false syncs (common at startup) must preserve a cold-start signal.
+      if (wasEnabled) {
+        this.#pendingShutdownTrigger = null;
+      }
+      return;
+    }
+    // If a shutdown was signaled before the flag was applied (e.g. a buffered
+    // `onSuspend` replayed during cold start), honor it now rather than dropping
+    // it.
+    if (this.#pendingShutdownTrigger !== null && !this.writesSuspended()) {
+      const trigger = this.#pendingShutdownTrigger;
+      this.#pendingShutdownTrigger = null;
+      this.suspendWrites(trigger);
+    }
+  }
+
+  /**
+   * Whether writes are currently suspended because a browser shutdown was
+   * detected.
+   */
+  writesSuspended(): boolean {
+    return this.#shutdownTrigger !== null;
+  }
+
+  /**
+   * Suspends all writes to the local store because the browser appears to be
+   * shutting down. Any write queued in the state lock but not yet started is
+   * aborted, and subsequent `set`/`persist` calls short-circuit until
+   * `resumeWrites()` is called (or the service worker restarts).
+   *
+   * If shutdown suspension is not yet enabled, the trigger is remembered and
+   * applied when {@link setShutdownSuspensionEnabled} turns the feature on.
+   * That covers a cold-start race where a buffered `runtime.onSuspend` is
+   * replayed before the persisted feature flag has been applied.
+   *
+   * This deliberately does NOT flush a final write (unlike `OperationSafener`'s
+   * `evacuate`): a write started during shutdown is exactly what we want to
+   * avoid, since it can be interrupted mid-flight and corrupt the database.
+   *
+   * @param trigger - What detected the shutdown, for telemetry only. Defaults
+   * to {@link ShutdownTrigger.Unknown} when the caller does not specify one.
+   */
+  suspendWrites(trigger: ShutdownTrigger = ShutdownTrigger.Unknown) {
+    if (!this.#shutdownSuspensionEnabled) {
+      // Same OnSuspend authority as the enabled path: inferred triggers must
+      // not demote a pending lifecycle signal before the flag is applied.
+      if (trigger === ShutdownTrigger.OnSuspend) {
+        this.#pendingShutdownTrigger = ShutdownTrigger.OnSuspend;
+      } else if (this.#pendingShutdownTrigger !== ShutdownTrigger.OnSuspend) {
+        this.#pendingShutdownTrigger = trigger;
+      }
+      return;
+    }
+    this.#pendingShutdownTrigger = null;
+
+    const previousTrigger = this.#shutdownTrigger;
+
+    // `OnSuspend` is authoritative: inferred triggers must not demote it.
+    // Otherwise record the latest trigger so recovery knows which path owns
+    // the suspension.
+    if (trigger === ShutdownTrigger.OnSuspend) {
+      this.#shutdownTrigger = ShutdownTrigger.OnSuspend;
+      this.#clearShutdownRecoveryTimer();
+    } else if (this.#shutdownTrigger !== ShutdownTrigger.OnSuspend) {
+      this.#shutdownTrigger = trigger;
+    }
+
+    // Drop any write that is queued in the state lock but hasn't started yet.
+    this.#currentLockAbortController?.abort();
+
+    if (!this.#shutdownReported) {
+      this.#shutdownReported = true;
+      // Low-volume, deduplicated telemetry so we can measure how often
+      // shutdown-suspension triggers without the noise/severity of an exception.
+      // Tag the effective owner (`#shutdownTrigger`), not merely the caller.
+      captureMessage('MetaMask - writes suspended: browser shutting down', {
+        level: 'info',
+        tags: {
+          'persistence.event': 'writes-suspended-shutdown',
+          'persistence.shutdownTrigger': this.#shutdownTrigger,
+        },
+        fingerprint: ['persistence-event', 'writes-suspended-shutdown'],
+      });
+    } else if (
+      trigger === ShutdownTrigger.OnSuspend &&
+      previousTrigger !== null &&
+      previousTrigger !== ShutdownTrigger.OnSuspend
+    ) {
+      // Inferred suspension was later confirmed by the lifecycle signal.
+      // Emit a second low-volume event so we can count promotions separately.
+      captureMessage(
+        'MetaMask - writes suspended: shutdown ownership promoted',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'writes-suspended-promoted',
+            'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            'persistence.previousShutdownTrigger': previousTrigger,
+          },
+          fingerprint: ['persistence-event', 'writes-suspended-promoted'],
+        },
+      );
+    }
+
+    // `Reactive` and `IdbClose` are inferred heuristics that can misfire (e.g.
+    // a transient write error or a spurious IndexedDB `versionchange`). If they
+    // do, nothing would ever resume writes, leaving the extension stuck. So we
+    // periodically probe storage and resume once the browser proves responsive.
+    // Skip while `OnSuspend` owns the suspension: that path recovers via
+    // `onSuspendCanceled` only.
+    if (
+      (trigger === ShutdownTrigger.Reactive ||
+        trigger === ShutdownTrigger.IdbClose) &&
+      this.#shutdownTrigger !== ShutdownTrigger.OnSuspend
+    ) {
+      this.#scheduleShutdownRecovery(trigger);
+    }
+  }
+
+  /**
+   * Reports that the backup IndexedDB was force-closed by the browser. Emitted
+   * regardless of whether shutdown suspension is enabled, so we get a baseline
+   * of how often these events happen (and whether they are `close` vs
+   * `versionchange`) independent of the feature rollout. `IndexedDBStore` only
+   * fires this once per live connection, so it stays low-volume without extra
+   * deduplication here.
+   *
+   * @param reason - Which browser event triggered the forced close.
+   */
+  #reportBackupDbForcedClose(reason: 'close' | 'versionchange') {
+    captureMessage('MetaMask - backup IndexedDB force-closed', {
+      level: 'info',
+      tags: {
+        'persistence.event': 'backup-idb-forced-close',
+        'persistence.idbCloseReason': reason,
+      },
+      fingerprint: ['persistence-event', 'backup-idb-forced-close'],
+    });
+  }
+
+  /**
+   * Resumes writes previously suspended by {@link suspendWrites}. Called when a
+   * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`) or when a
+   * recovery probe confirms the browser is still responsive.
+   *
+   * For split storage, also best-effort flushes any `#pendingPairs` queued while
+   * writes were suspended. Without that, those updates would wait for the next
+   * controller `stateChange` and could be lost if the service worker stops first.
+   */
+  resumeWrites() {
+    this.#shutdownTrigger = null;
+    this.#shutdownReported = false;
+    this.#pendingShutdownTrigger = null;
+    this.#clearShutdownRecoveryTimer();
+    this.#flushPendingPairsAfterResume();
+  }
+
+  /**
+   * Persists any split-storage pairs that accumulated during suspension.
+   * No-op for data storage (there is no pending queue) or when nothing is queued.
+   * Errors are reported but not rethrown: resume must stay synchronous and
+   * non-fatal for lifecycle listeners.
+   */
+  #flushPendingPairsAfterResume() {
+    if (this.storageKind !== 'split' || this.#pendingPairs.size === 0) {
+      return;
+    }
+    this.persist().catch((error: unknown) => {
+      log.error('Error persisting after writes resumed:', error);
+      captureException(error);
+    });
+  }
+
+  /**
+   * Schedules a one-shot recovery probe for an inferred shutdown suspension.
+   * No-op if a probe is already pending, so repeated `suspendWrites` calls do
+   * not stack timers.
+   *
+   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   */
+  #scheduleShutdownRecovery(trigger: ShutdownTrigger) {
+    if (
+      this.#shutdownTrigger === ShutdownTrigger.OnSuspend ||
+      this.#shutdownRecoveryTimer !== null
+    ) {
+      return;
+    }
+    this.#shutdownRecoveryTimer = setTimeout(() => {
+      this.#shutdownRecoveryTimer = null;
+      // Best-effort: the probe handles its own errors and reschedules, so any
+      // unexpected rejection here is swallowed rather than left floating.
+      this.#attemptShutdownRecovery(trigger).catch(() => undefined);
+    }, SHUTDOWN_RECOVERY_RETRY_MS);
+  }
+
+  /**
+   * Probes storage once. If the probe succeeds the suspension was a false
+   * positive, so writes resume; if it fails the browser is likely really
+   * shutting down, so another probe is scheduled. A genuine shutdown tears down
+   * the service worker before the next probe, so this stops on its own.
+   *
+   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   */
+  async #attemptShutdownRecovery(trigger: ShutdownTrigger) {
+    // Writes were already resumed, reset, or suspension disabled; nothing to do.
+    // Also bail if `onSuspend` took ownership after this probe was scheduled:
+    // that lifecycle signal recovers only via `onSuspendCanceled`.
+    // Read `#shutdownTrigger` into a local so TypeScript does not narrow the
+    // field across the await below (OnSuspend can still take ownership then).
+    const triggerBeforeProbe = this.#shutdownTrigger;
+    if (
+      triggerBeforeProbe === null ||
+      !this.#shutdownSuspensionEnabled ||
+      triggerBeforeProbe === ShutdownTrigger.OnSuspend
+    ) {
+      return;
+    }
+
+    try {
+      await this.#probeStorageAlive();
+    } catch {
+      // Still failing: keep suspended and try again later.
+      this.#scheduleShutdownRecovery(trigger);
+      return;
+    }
+
+    // Re-check after the async probe: `onSuspend` may have taken ownership
+    // while we were waiting on storage.
+    const triggerAfterProbe = this.#shutdownTrigger;
+    if (
+      triggerAfterProbe === null ||
+      triggerAfterProbe === ShutdownTrigger.OnSuspend
+    ) {
+      return;
+    }
+
+    const wasReported = this.#shutdownReported;
+    this.resumeWrites();
+    if (wasReported) {
+      captureMessage('MetaMask - writes resumed: shutdown recovered', {
+        level: 'info',
+        tags: {
+          'persistence.event': 'writes-resumed-recovery',
+          'persistence.shutdownTrigger': trigger,
+        },
+        fingerprint: ['persistence-event', 'writes-resumed-recovery'],
+      });
+    }
+  }
+
+  /**
+   * Checks whether storage is responsive again after an inferred shutdown
+   * suspension. Every store we can reach must respond before we resume, so we
+   * never restart writes to one store while another is still unresponsive.
+   *
+   * The backup IndexedDB (when available) is checked first: reopening reconnects
+   * after an `idb-close` (the store nulls its handle on forced close), and the
+   * `get` round-trip exercises the browser for the `reactive` case where the
+   * handle is still open. It is skipped when no backup database exists (e.g.
+   * Firefox private browsing). Then `storage.local` (the store that `reactive`
+   * suspensions come from) is read to confirm the primary database is
+   * responsive again.
+   *
+   * Throws if any reachable store is still unresponsive.
+   */
+  async #probeStorageAlive(): Promise<void> {
+    if (this.#backupDb) {
+      await this.#backupDb.open('metamask-backup', 1);
+      await this.#backupDb.get(['meta']);
+    }
+    await this.#localStore.get();
+  }
+
+  /**
+   * Cancels any pending recovery probe.
+   */
+  #clearShutdownRecoveryTimer() {
+    if (this.#shutdownRecoveryTimer !== null) {
+      clearTimeout(this.#shutdownRecoveryTimer);
+      this.#shutdownRecoveryTimer = null;
+    }
+  }
+
+  /**
+   * Determines whether a write error indicates the browser is shutting down
+   * (e.g. Chromium's "The browser is shutting down." rejection). Such errors are
+   * expected during shutdown and should suspend writes silently rather than be
+   * reported as failures.
+   *
+   * @param errorMessage - The error message from the failed operation
+   * @returns True if the error indicates a browser shutdown.
+   */
+  #isShutdownError(errorMessage: string): boolean {
+    return errorMessage.includes('shutting down');
+  }
+
+  /**
    * Determines the storage write error type from an error message.
    *
    * @param errorMessage - The error message from the failed operation
@@ -314,9 +703,22 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #openBackupDatabase(): Promise<void> {
     try {
-      const db = new IndexedDBStore();
+      // Reuse the existing store after a forced close so we reconnect the same
+      // handle instead of orphaning it. IndexedDBStore.open() is a no-op when
+      // already connected.
+      const db = this.#backupDb ?? new IndexedDBStore();
+      // Wire before open() so a force-close during/just after open is observed
+      // (and so we never assign `#open = true` after onForcedClose cleared it).
+      db.onForcedClose = (reason) => {
+        this.#reportBackupDbForcedClose(reason);
+        this.#open = false;
+        this.suspendWrites(ShutdownTrigger.IdbClose);
+      };
       await db.open('metamask-backup', 1);
       this.#backupDb = db;
+      // Synchronous with isOpen(): no IndexedDB event can run between the check
+      // and the assignment, so a close that already fired cannot be stomped.
+      this.#open = db.isOpen();
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
       // private browsing mode due to this bug:
@@ -339,12 +741,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         console.warn(
           'Could not open backup database; automatic vault recovery will not be available.',
         );
+        // Treat the manager as open without a backup so set/persist can proceed.
+        this.#open = true;
       } else {
         // rethrow since we couldn't handle it here.
         throw error;
       }
     }
-    this.#open = true;
   }
 
   /**
@@ -414,6 +817,22 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
+   * Checks if a browser-shutdown write error should be simulated. When enabled,
+   * write operations throw a "The browser is shutting down." style error so the
+   * reactive shutdown-suspension path can be exercised in tests/e2e.
+   *
+   * @throws Error if simulating a browser shutdown for testing
+   */
+  #maybeSimulateShutdownError(): void {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateBrowserShutdown
+    ) {
+      throw new Error('The browser is shutting down.');
+    }
+  }
+
+  /**
    * Sets state in the local store, with optional test simulation.
    * In test mode with simulateStorageSetFailure flag, all set operations
    * will fail immediately.
@@ -425,6 +844,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     data: Required<MetaMaskStorageStructure>,
   ): Promise<void> {
     this.#maybeSimulateSetFailure();
+    this.#maybeSimulateShutdownError();
     await this.#localStore.set(data);
   }
 
@@ -438,6 +858,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
     this.#maybeSimulateSetFailure();
+    this.#maybeSimulateShutdownError();
     await this.#localStore.setKeyValues(pairs);
   }
 
@@ -455,6 +876,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
       );
+    }
+
+    if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+      // The browser is shutting down; do not start a write we may not finish.
+      return [false, undefined];
     }
 
     await this.open();
@@ -480,76 +906,109 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    return await navigator.locks.request(
-      STATE_LOCK,
-      { mode: 'exclusive', signal: abortController.signal },
-      async () => {
-        this.#currentLockAbortController = undefined;
-        // Track which operation failed to use the correct Sentry tag
-        let backupFailed = false;
-        try {
-          // atomically set all the keys (includes test simulation check)
-          await this.#setInLocalStore({
-            data: state,
-            meta,
-          });
+    return await navigator.locks
+      .request(
+        STATE_LOCK,
+        { mode: 'exclusive', signal: abortController.signal },
+        async () => {
+          this.#currentLockAbortController = undefined;
+          // Track which operation failed to use the correct Sentry tag
+          let backupFailed = false;
+          try {
+            // atomically set all the keys (includes test simulation check)
+            await this.#setInLocalStore({
+              data: state,
+              meta,
+            });
 
-          const backup = makeBackup(state, meta);
-          // if we have a vault we can back it up
-          if (hasVault(backup)) {
-            const stringifiedBackup = JSON.stringify(backup);
-            // and the backup has changed
-            if (this.#backup !== stringifiedBackup) {
-              // save it to the backup DB - wrapped in try-catch to differentiate
-              // backup failures from storage.local failures in Sentry
-              try {
-                await this.#backupDb?.set(backup);
-                this.#backup = stringifiedBackup;
-              } catch (backupErr) {
-                backupFailed = true;
-                throw backupErr;
+            const backup = makeBackup(state, meta);
+            // if we have a vault we can back it up
+            if (hasVault(backup)) {
+              const stringifiedBackup = JSON.stringify(backup);
+              // and the backup has changed
+              if (this.#backup !== stringifiedBackup) {
+                // save it to the backup DB - wrapped in try-catch to differentiate
+                // backup failures from storage.local failures in Sentry
+                try {
+                  await this.#backupDb?.set(backup);
+                  this.#backup = stringifiedBackup;
+                } catch (backupErr) {
+                  backupFailed = true;
+                  throw backupErr;
+                }
               }
             }
-          }
 
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'set-recovered' },
-                fingerprint: ['persistence-event', 'set-recovered'],
-              },
-            );
-          }
+            if (this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = false;
+              // Track recovery to understand how often failures are temporary.
+              // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+              captureMessage(
+                'Data persistence recovered after temporary failure',
+                {
+                  level: 'info',
+                  tags: { 'persistence.event': 'set-recovered' },
+                  fingerprint: ['persistence-event', 'set-recovered'],
+                },
+              );
+            }
 
-          return [true, undefined];
-        } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+            return [true, undefined];
+          } catch (err) {
+            const normalizedError = this.#normalizePersistError(err);
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+            // If writes were already suspended for shutdown (e.g. backup IDB
+            // force-closed mid-write after storage.local succeeded), stay silent:
+            // toasting/Sentry would be a false "couldn't save your data" alarm.
+            if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+              return [false, undefined];
+            }
+
+            // If the write failed because the browser is shutting down, suspend
+            // further writes and stay silent: this is expected, not a failure the
+            // user should see. Reporting it would raise a false "couldn't save
+            // your data" toast and add Sentry noise.
+            if (
+              this.#shutdownSuspensionEnabled &&
+              !backupFailed &&
+              this.#isShutdownError(normalizedError.message)
+            ) {
+              this.suspendWrites(ShutdownTrigger.Reactive);
+              return [false, undefined];
+            }
+
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
+            return [false, normalizedError];
+          } finally {
+            this.#isExtensionInitialized = true;
           }
-          const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
-          return [false, normalizedError];
-        } finally {
-          this.#isExtensionInitialized = true;
+        },
+      )
+      .catch((err) => {
+        // The lock request was aborted before it was granted: either a newer
+        // write superseded this one, or writes were suspended because the browser
+        // is shutting down. Neither is a real persistence failure, so resolve to
+        // `[false, undefined]` (the same contract used for suspended writes)
+        // rather than letting the abort rejection surface as an error.
+        if (abortController.signal.aborted) {
+          return [false, undefined];
         }
-      },
-    );
+        throw err;
+      });
   }
 
   /**
@@ -576,6 +1035,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
+    if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+      // The browser is shutting down; do not start a write we may not finish.
+      // The pending pairs are left untouched so they can be written by a later
+      // session if the shutdown is cancelled.
+      return [false, undefined];
+    }
+
     await this.open();
 
     const meta = this.#metadata;
@@ -598,91 +1064,124 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    return await navigator.locks.request(
-      STATE_LOCK,
-      { mode: 'exclusive', signal: abortController.signal },
-      async () => {
-        this.#currentLockAbortController = undefined;
-        // Track which operation failed to use the correct Sentry tag
-        let backupFailed = false;
-        try {
-          const clone = structuredClone(this.#pendingPairs);
-          // reset the pendingPairs
-          this.#pendingPairs.clear();
+    return await navigator.locks
+      .request(
+        STATE_LOCK,
+        { mode: 'exclusive', signal: abortController.signal },
+        async () => {
+          this.#currentLockAbortController = undefined;
+          // Track which operation failed to use the correct Sentry tag
+          let backupFailed = false;
           try {
-            // save the pairs (includes test simulation check)
-            await this.#setKeyValuesInLocalStore(clone);
-          } catch (err) {
-            // merge the clone with the pending pairs again
+            const clone = structuredClone(this.#pendingPairs);
+            // reset the pendingPairs
+            this.#pendingPairs.clear();
+            try {
+              // save the pairs (includes test simulation check)
+              await this.#setKeyValuesInLocalStore(clone);
+            } catch (err) {
+              // merge the clone with the pending pairs again
+              for (const [key, value] of clone.entries()) {
+                // we can't just overwrite because other `update` calls might have
+                // happened since we created the clone. We don't want to overwrite
+                // any new changes.
+                if (!this.#pendingPairs.has(key)) {
+                  this.#pendingPairs.set(key, value);
+                }
+              }
+              throw err;
+            }
+
+            const partialState = Object.create(null);
             for (const [key, value] of clone.entries()) {
-              // we can't just overwrite because other `update` calls might have
-              // happened since we created the clone. We don't want to overwrite
-              // any new changes.
-              if (!this.#pendingPairs.has(key)) {
-                this.#pendingPairs.set(key, value);
+              if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
+                partialState[key] = value;
               }
             }
-            throw err;
-          }
-
-          const partialState = Object.create(null);
-          for (const [key, value] of clone.entries()) {
-            if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
-              partialState[key] = value;
+            if (hasVault(partialState)) {
+              const backup = makeBackup(partialState, meta);
+              // save it to the backup DB - wrapped in try-catch to differentiate
+              // backup failures from storage.local failures in Sentry
+              try {
+                await this.#backupDb?.set(backup);
+              } catch (backupErr) {
+                backupFailed = true;
+                throw backupErr;
+              }
             }
-          }
-          if (hasVault(partialState)) {
-            const backup = makeBackup(partialState, meta);
-            // save it to the backup DB - wrapped in try-catch to differentiate
-            // backup failures from storage.local failures in Sentry
-            try {
-              await this.#backupDb?.set(backup);
-            } catch (backupErr) {
-              backupFailed = true;
-              throw backupErr;
+
+            if (this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = false;
+              // Track recovery to understand how often failures are temporary.
+              // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+              captureMessage(
+                'Data persistence recovered after temporary failure',
+                {
+                  level: 'info',
+                  tags: { 'persistence.event': 'persist-recovered' },
+                  fingerprint: ['persistence-event', 'persist-recovered'],
+                },
+              );
             }
-          }
 
-          if (this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = false;
-            // Track recovery to understand how often failures are temporary.
-            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
-            captureMessage(
-              'Data persistence recovered after temporary failure',
-              {
-                level: 'info',
-                tags: { 'persistence.event': 'persist-recovered' },
-                fingerprint: ['persistence-event', 'persist-recovered'],
-              },
-            );
-          }
+            return [true, undefined];
+          } catch (err) {
+            const normalizedError = this.#normalizePersistError(err);
 
-          return [true, undefined];
-        } catch (err) {
-          if (!this.#dataPersistenceFailing) {
-            this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
+            // If writes were already suspended for shutdown (e.g. backup IDB
+            // force-closed mid-write after storage.local succeeded), stay silent:
+            // toasting/Sentry would be a false "couldn't save your data" alarm.
+            if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+              return [false, undefined];
+            }
 
-            // Custom fingerprint prevents Sentry's deduplication from dropping
-            // this event when other persistence errors with the same underlying
-            // error message (e.g., "An unexpected error occurred") are reported.
-            captureException(err, {
-              tags: { 'persistence.error': tag },
-              fingerprint: ['persistence-error', tag],
-            });
+            // If the write failed because the browser is shutting down, suspend
+            // further writes and stay silent: this is expected, not a failure the
+            // user should see. Reporting it would raise a false "couldn't save
+            // your data" toast and add Sentry noise.
+            if (
+              this.#shutdownSuspensionEnabled &&
+              !backupFailed &&
+              this.#isShutdownError(normalizedError.message)
+            ) {
+              this.suspendWrites(ShutdownTrigger.Reactive);
+              return [false, undefined];
+            }
+
+            if (!this.#dataPersistenceFailing) {
+              this.#dataPersistenceFailing = true;
+              // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+              const tag = backupFailed
+                ? 'persist-backup-failed'
+                : 'persist-failed';
+
+              // Custom fingerprint prevents Sentry's deduplication from dropping
+              // this event when other persistence errors with the same underlying
+              // error message (e.g., "An unexpected error occurred") are reported.
+              captureException(err, {
+                tags: { 'persistence.error': tag },
+                fingerprint: ['persistence-error', tag],
+              });
+            }
+            this.#notifySetFailed(normalizedError.message);
+            log.error('error setting state in local store:', err);
+            return [false, normalizedError];
+          } finally {
+            this.#isExtensionInitialized = true;
           }
-          const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
-          log.error('error setting state in local store:', err);
-          return [false, normalizedError];
-        } finally {
-          this.#isExtensionInitialized = true;
+        },
+      )
+      .catch((err) => {
+        // The lock request was aborted before it was granted: either a newer
+        // write superseded this one, or writes were suspended because the browser
+        // is shutting down. Neither is a real persistence failure, so resolve to
+        // `[false, undefined]` (the same contract used for suspended writes)
+        // rather than letting the abort rejection surface as an error.
+        if (abortController.signal.aborted) {
+          return [false, undefined];
         }
-      },
-    );
+        throw err;
+      });
   }
 
   /**
@@ -833,6 +1332,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#backup = undefined;
         this.#isExtensionInitialized = false;
         this.#dataPersistenceFailing = false;
+        // Clear per-session shutdown-suspension state (the enablement flag is
+        // config set by the background and is intentionally left intact).
+        this.#shutdownTrigger = null;
+        this.#shutdownReported = false;
+        this.#pendingShutdownTrigger = null;
+        this.#clearShutdownRecoveryTimer();
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
