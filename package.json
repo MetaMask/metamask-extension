@@ -501,7 +501,7 @@
     "eciesjs": "^0.5.0",
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
-    "eth-lattice-keyring": "^1.1.0",
+    "eth-lattice-keyring": "patch:eth-lattice-keyring@npm%3A1.1.0#~/.yarn/patches/eth-lattice-keyring-npm-1.1.0-11788f98f0.patch",
     "eth-method-registry": "^4.0.0",
     "ethereum-cryptography": "^3.2.0",
     "ethereumjs-util": "^7.0.10",

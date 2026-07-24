@@ -25306,7 +25306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-lattice-keyring@npm:^1.1.0":
+"eth-lattice-keyring@npm:1.1.0":
   version: 1.1.0
   resolution: "eth-lattice-keyring@npm:1.1.0"
   dependencies:
@@ -25317,6 +25317,20 @@ __metadata:
     gridplus-sdk: "npm:^4.0.0"
     rlp: "npm:^3.0.0"
   checksum: 10/e569140d11bf518e082ce94bb8b57f6d5e77929f99e426a6bc2dfa8b7cb94398c74d1431e612b3b8919c0f04443990f50ee1d72dbcb69aa3af58f90cd11ee4e4
+  languageName: node
+  linkType: hard
+
+"eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A1.1.0#~/.yarn/patches/eth-lattice-keyring-npm-1.1.0-11788f98f0.patch":
+  version: 1.1.0
+  resolution: "eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A1.1.0#~/.yarn/patches/eth-lattice-keyring-npm-1.1.0-11788f98f0.patch::version=1.1.0&hash=ee090f"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.0.0"
+    "@noble/secp256k1": "npm:^1.7.0"
+    bn.js: "npm:^5.2.0"
+    gridplus-sdk: "npm:^4.0.0"
+    rlp: "npm:^3.0.0"
+  checksum: 10/7dd4e3de2f8c89f783137087eaa357d0e5240ae8265d123c89c693ba3216c10177a9af31bd389d4dd827af7990a927d29059b58c3b20d4e05c63b40fa62b47b0
   languageName: node
   linkType: hard
 
@@ -27744,7 +27758,7 @@ __metadata:
 
 "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch":
   version: 4.0.0
-  resolution: "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch::version=4.0.0&hash=87ec23"
+  resolution: "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch::version=4.0.0&hash=0d4568"
   dependencies:
     "@ethereumjs/common": "npm:^10.0.0"
     "@ethereumjs/rlp": "npm:^10.0.0"
@@ -27769,7 +27783,7 @@ __metadata:
     uuid: "npm:^13.0.0"
     viem: "npm:^2.37.8"
     zod: "npm:^4.1.11"
-  checksum: 10/e64411cd1ceac7a459cc52dd8fcc7e8c80fb34a39f85c38225c3d3b06e687a70c6be49894875aa45eb8bc9cfb96406566f7fbec984711fe82a30dfae95e3095c
+  checksum: 10/a35cfec3c3d12bbb851957f4b211a1bb3bbc73147c3675431369f4493ec52c2997df5ac42b3e90058089170ee172b91fdf8ac8beb9d7b5d82efcb5af4b901a48
   languageName: node
   linkType: hard
 
@@ -33106,7 +33120,7 @@ __metadata:
     eslint-plugin-tailwindcss: "npm:^3.18.0"
     eth-chainlist: "npm:~0.0.498"
     eth-ens-namehash: "npm:^2.0.8"
-    eth-lattice-keyring: "npm:^1.1.0"
+    eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A1.1.0#~/.yarn/patches/eth-lattice-keyring-npm-1.1.0-11788f98f0.patch"
     eth-method-registry: "npm:^4.0.0"
     ethereum-cryptography: "npm:^3.2.0"
     ethereumjs-util: "npm:^7.0.10"

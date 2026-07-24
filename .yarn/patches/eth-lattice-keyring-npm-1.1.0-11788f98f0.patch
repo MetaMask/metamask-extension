@@ -1,0 +1,26 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index 3f1e8142224853a42abc69ab78adb6ecc723cf11..d681e98879f96ca4a7e9de8cb76679f0f5640ba7 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -43,7 +43,7 @@ var keyringType = "Lattice Hardware";
+ var HARDENED_OFFSET = 2147483648;
+ var PER_PAGE = 5;
+ var STANDARD_HD_PATH = `m/44'/60'/0'/0/x`;
+-var SDK_TIMEOUT = 12e4;
++var SDK_TIMEOUT = 18e5;
+ var CONNECT_TIMEOUT = 2e4;
+ var stripHexPrefix = (hex) => hex.toLowerCase().startsWith("0x") ? hex.slice(2) : hex;
+ var normalizeHex = (value) => {
+diff --git a/dist/index.js b/dist/index.js
+index 470c00746de673459132d0a1689d9e63c4925140..5fcaaa11f540e6ab2310dd72c9539432047e4c4f 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -10,7 +10,7 @@ var keyringType = "Lattice Hardware";
+ var HARDENED_OFFSET = 2147483648;
+ var PER_PAGE = 5;
+ var STANDARD_HD_PATH = `m/44'/60'/0'/0/x`;
+-var SDK_TIMEOUT = 12e4;
++var SDK_TIMEOUT = 18e5;
+ var CONNECT_TIMEOUT = 2e4;
+ var stripHexPrefix = (hex) => hex.toLowerCase().startsWith("0x") ? hex.slice(2) : hex;
+ var normalizeHex = (value) => {
