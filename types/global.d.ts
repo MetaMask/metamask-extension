@@ -277,6 +277,7 @@ type StateHooks = {
   throwTestError?: (msg?: string) => void;
   captureTestError?: (msg?: string) => Promise<void>;
   captureBackgroundError?: (msg?: string) => Promise<void>;
+  throwLavamoatError?: () => void;
 
   /**
    * This is initialized by the service worker in MV3. It is handled in `background.js`.

@@ -1,0 +1,5 @@
+{
+  "name": "dummy-package",
+  "private": true,
+  "main": "./index.js"
+}

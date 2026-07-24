@@ -1,6 +1,7 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
+import { runDummyPackage } from 'dummy-package';
 import {
   OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
@@ -45,6 +46,10 @@ async function init(): Promise<void> {
   } catch (error) {
     console.error('Ledger initialization failed:', error);
   }
+}
+
+if (process.env.IN_TEST) {
+  globalThis.stateHooks.throwLavamoatError = () => runDummyPackage();
 }
 
 init().then(() => {

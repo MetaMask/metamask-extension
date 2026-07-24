@@ -13,7 +13,8 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
-  'bootstrap',
+  'init-statehooks',
+  'init-sentry',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [
@@ -202,7 +203,8 @@ export const lavamoatBackgroundLayerRule = {
 // Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
 const unsafeLayerEntries: Set<string> = new Set([
   'scripts/inpage.js',
-  'bootstrap',
+  'init-statehooks',
+  'init-sentry',
   'service-worker.ts',
 ]);
 
