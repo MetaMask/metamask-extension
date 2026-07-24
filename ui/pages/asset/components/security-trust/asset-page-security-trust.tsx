@@ -12,7 +12,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
-import { selectIsTokenSecurityTrustEnabled } from '../../../../selectors/security-trust/feature-flags';
+import { getUseExternalServices } from '../../../../selectors';
 import {
   getResultTypeConfig,
   type ResultTypeConfig,
@@ -93,7 +93,7 @@ export const AssetPageSecurityTrustProvider = ({
   children,
 }: AssetPageSecurityTrustProviderProps) => {
   const t = useI18nContext();
-  const isEnabled = useSelector(selectIsTokenSecurityTrustEnabled);
+  const isEnabled = useSelector(getUseExternalServices);
   const resolvedAssetId =
     isEnabled && assetId ? (assetId as CaipAssetType) : null;
   const [sheetParams, setSheetParams] =
