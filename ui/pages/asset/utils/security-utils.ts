@@ -355,55 +355,91 @@ export type FeatureTagsResult = {
 const FEATURE_TAG_DISPLAY_MAX = 3;
 const POSITIVE_FEATURE_TAG_DISPLAY_MAX = 4;
 
-export const getFeatureTags = (
+const collectNegativeFeatureTags = (
   features: TokenSecurityFeature[],
-  resultType: TokenSecurityData['resultType'] | undefined,
-  t: SecurityTrustTranslate,
-  showAll = false,
-): FeatureTagsResult => {
+  negativeLabels: Record<string, FeatureDefinition>,
+  matchingTypes: BlockaidFeatureType[],
+  showAll: boolean,
+  maxTags: number,
+): { tags: FeatureTag[]; totalMatching: number } => {
   const tags: FeatureTag[] = [];
   let totalMatching = 0;
 
-  if (resultType === 'Malicious') {
-    const negativeLabels = getNegativeFeatureLabels(t);
-    for (const feature of features) {
-      const def = negativeLabels[feature.featureId];
-      if (def?.type === 'Malicious') {
-        totalMatching += 1;
-        if (showAll || tags.length < FEATURE_TAG_DISPLAY_MAX) {
-          tags.push({ label: def.label });
-        }
+  for (const feature of features) {
+    const def = negativeLabels[feature.featureId];
+    if (def && matchingTypes.includes(def.type)) {
+      totalMatching += 1;
+      if (showAll || tags.length < maxTags) {
+        tags.push({ label: def.label });
       }
     }
-  } else if (resultType === 'Warning' || resultType === 'Spam') {
-    const negativeLabels = getNegativeFeatureLabels(t);
-    for (const feature of features) {
-      const def = negativeLabels[feature.featureId];
-      if (def?.type === 'Warning' || def?.type === 'Spam') {
-        totalMatching += 1;
-        if (showAll || tags.length < FEATURE_TAG_DISPLAY_MAX) {
-          tags.push({ label: def.label });
-        }
-      }
-    }
-  } else {
-    const positiveLabels = getPositiveFeatureLabels(t);
-    for (const feature of features) {
-      const def = positiveLabels[feature.featureId];
-      if (def) {
-        if (showAll || tags.length < POSITIVE_FEATURE_TAG_DISPLAY_MAX) {
-          tags.push({ label: def.label });
-        }
-      }
-    }
-    return { tags, remainingCount: 0 };
   }
+
+  return { tags, totalMatching };
+};
+
+const collectPositiveFeatureTags = (
+  features: TokenSecurityFeature[],
+  t: SecurityTrustTranslate,
+  showAll: boolean,
+): FeatureTag[] => {
+  const positiveLabels = getPositiveFeatureLabels(t);
+  const tags: FeatureTag[] = [];
+
+  for (const feature of features) {
+    const def = positiveLabels[feature.featureId];
+    if (def && (showAll || tags.length < POSITIVE_FEATURE_TAG_DISPLAY_MAX)) {
+      tags.push({ label: def.label });
+    }
+  }
+
+  return tags;
+};
+
+const buildNegativeFeatureTagsResult = (
+  features: TokenSecurityFeature[],
+  matchingTypes: BlockaidFeatureType[],
+  t: SecurityTrustTranslate,
+  showAll: boolean,
+): FeatureTagsResult => {
+  const { tags, totalMatching } = collectNegativeFeatureTags(
+    features,
+    getNegativeFeatureLabels(t),
+    matchingTypes,
+    showAll,
+    FEATURE_TAG_DISPLAY_MAX,
+  );
 
   return {
     tags,
     remainingCount: showAll
       ? 0
       : Math.max(0, totalMatching - FEATURE_TAG_DISPLAY_MAX),
+  };
+};
+
+export const getFeatureTags = (
+  features: TokenSecurityFeature[],
+  resultType: TokenSecurityData['resultType'] | undefined,
+  t: SecurityTrustTranslate,
+  showAll = false,
+): FeatureTagsResult => {
+  if (resultType === 'Malicious') {
+    return buildNegativeFeatureTagsResult(features, ['Malicious'], t, showAll);
+  }
+
+  if (resultType === 'Warning' || resultType === 'Spam') {
+    return buildNegativeFeatureTagsResult(
+      features,
+      ['Warning', 'Spam'],
+      t,
+      showAll,
+    );
+  }
+
+  return {
+    tags: collectPositiveFeatureTags(features, t, showAll),
+    remainingCount: 0,
   };
 };
 
