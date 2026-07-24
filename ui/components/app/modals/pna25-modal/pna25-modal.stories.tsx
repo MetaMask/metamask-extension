@@ -8,7 +8,7 @@ const storeMock = configureStore({
   metamask: {
     completedOnboarding: true,
     optedIn: true,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     pna25Acknowledged: false,
   },
 });

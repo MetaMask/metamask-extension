@@ -84,7 +84,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
           await onboardingMetricsFlow(driver, {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
             dataCollectionForMarketing: false,
           });

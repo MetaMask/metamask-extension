@@ -10,15 +10,13 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
-  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
+import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
-import type { AnalyticsEvent } from '../../controllers/analytics';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -63,11 +61,7 @@ export class OAuthService {
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
-  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
-
-  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
-
-  #getOptedIn: OAuthServiceOptions['getOptedIn'];
+  #trackEvent: OAuthServiceOptions['trackEvent'];
 
   constructor({
     messenger,
@@ -75,9 +69,7 @@ export class OAuthService {
     platform,
     bufferedTrace,
     bufferedEndTrace,
-    addEventBeforeMetricsOptIn,
-    getCompletedMetaMetricsOnboarding,
-    getOptedIn,
+    trackEvent,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -86,41 +78,12 @@ export class OAuthService {
     this.#platform = platform;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
-    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
-    this.#getOptedIn = getOptedIn;
+    this.#trackEvent = trackEvent;
 
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
-  }
-
-  /**
-   * Track a MetaMetrics event with buffering (handles consent checking)
-   *
-   * @param built - The built analytics event.
-   */
-  #trackEventWithBuffering(built: AnalyticsEvent): void {
-    const isMetricsEnabled =
-      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
-
-    if (isMetricsEnabled) {
-      trackEvent(built);
-      return;
-    }
-
-    const { category, ...properties } = built.properties;
-    const bufferedPayload: MetaMetricsEventPayload = {
-      event: built.name,
-      category: category as MetaMetricsEventCategory,
-      properties: {
-        ...properties,
-        actionId: `${Date.now() + Math.random()}`,
-      },
-      sensitiveProperties: built.sensitiveProperties,
-    };
-    this.#addEventBeforeMetricsOptIn(bufferedPayload);
   }
 
   /**
@@ -383,7 +346,7 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering(
+    this.#trackEvent(
       createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
         .addCategory(MetaMetricsEventCategory.Onboarding)
         .addProperties({

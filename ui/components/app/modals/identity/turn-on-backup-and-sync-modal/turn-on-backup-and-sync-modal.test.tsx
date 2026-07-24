@@ -60,7 +60,7 @@ const initialStore = () => ({
     isSignedIn: false,
     useExternalServices: true,
     isBackupAndSyncEnabled: true,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],

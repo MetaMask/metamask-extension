@@ -28,7 +28,7 @@ describe('Sessions', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -50,7 +50,7 @@ describe('Sessions', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: false,
           })
           .build(),

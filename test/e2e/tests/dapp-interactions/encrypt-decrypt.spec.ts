@@ -90,7 +90,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -157,7 +157,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

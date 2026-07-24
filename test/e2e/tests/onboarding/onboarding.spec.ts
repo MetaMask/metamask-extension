@@ -381,7 +381,7 @@ describe('MetaMask onboarding', function () {
             hasSeenOnboardingCompletionPage: false,
           })
           .withMetaMetricsController({
-            completedMetaMetricsOnboarding: false,
+            consentDecisionMade: false,
             optedIn: false,
             analyticsId: null,
           })

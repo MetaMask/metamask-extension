@@ -33,13 +33,23 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false
+      "optedIn": false,
+      "consentDecisionMade": false,
+      "preConsentEventQueue": {
+        "00000000-0000-4000-8000-000000000000": {
+          "type": "track",
+          "eventName": "App Installed",
+          "messageId": "00000000-0000-4000-8000-000000000000",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "properties": {}
+        }
+      }
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 219,
+      "currentMigrationVersion": 220,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -194,15 +204,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "completedMetaMetricsOnboarding": false,
       "dataCollectionForMarketing": null,
-      "eventsBeforeMetricsOptIn": [
-        {
-          "category": "App",
-          "event": "App Installed",
-          "properties": {}
-        }
-      ],
       "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [
@@ -2316,6 +2318,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 219
+    "version": 220
   }
 }

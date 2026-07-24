@@ -90,8 +90,10 @@ describe('Dapp viewed Event', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            analyticsId: null,
-            completedMetaMetricsOnboarding: true,
+            // Non-null invalid ID: null is replaced with a generated ID at
+            // AnalyticsController init, which can still sample into the 1%.
+            analyticsId: 'fake-metrics-id-invalid',
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -123,7 +125,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -166,7 +168,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -212,7 +214,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -261,7 +263,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -307,7 +309,7 @@ describe('Dapp viewed Event', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: validFakeMetricsId,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

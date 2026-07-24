@@ -38,7 +38,7 @@ function buildState({
       recoveryPhraseReminderLastShown: Date.now(),
       remoteFeatureFlags: {},
       // selectShowPna25Modal fields
-      completedMetaMetricsOnboarding: Boolean(showPna25Modal),
+      consentDecisionMade: Boolean(showPna25Modal),
       optedIn: Boolean(showPna25Modal),
       pna25Acknowledged: !showPna25Modal,
     },

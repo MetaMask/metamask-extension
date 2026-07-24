@@ -22,7 +22,7 @@ describe('useMetametrics', () => {
   beforeEach(() => {
     store = mockStore({
       metamask: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
       },
     });
@@ -40,7 +40,7 @@ describe('useMetametrics', () => {
   it('should enable MetaMetrics', async () => {
     store.getState = () => ({
       metamask: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: false,
       },
     });
@@ -68,7 +68,7 @@ describe('useMetametrics', () => {
   it('should disable MetaMetrics', async () => {
     store.getState = () => ({
       metamask: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
     });

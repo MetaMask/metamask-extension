@@ -139,7 +139,7 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: false,
           passkeyRecord: null,
         },
@@ -166,7 +166,7 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: false,
           passkeyRecord: {
             credentialId: 'cred',
@@ -198,7 +198,7 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           passkeyRecord: {
             credentialId: 'cred',
@@ -836,7 +836,7 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       };
@@ -857,7 +857,7 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       };

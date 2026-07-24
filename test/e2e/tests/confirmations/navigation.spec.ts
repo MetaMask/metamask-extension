@@ -137,7 +137,7 @@ describe('Confirmation Navigation', function (this: Suite) {
           .withSnapsPrivacyWarningAlreadyShown()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

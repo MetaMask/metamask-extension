@@ -24,6 +24,7 @@ export function getMetaMetricsControllerMessenger(
       'AnalyticsController:identify',
       'AnalyticsController:optIn',
       'AnalyticsController:optOut',
+      'AnalyticsController:resetConsentDecision',
       'AnalyticsController:trackEvent',
       'AnalyticsController:trackView',
       'NetworkController:getNetworkClientById',

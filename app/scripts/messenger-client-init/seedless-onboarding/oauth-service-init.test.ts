@@ -24,20 +24,10 @@ describe('OAuthServiceInit', () => {
     const metaMetricsController = {
       bufferedTrace: jest.fn(),
       bufferedEndTrace: jest.fn(),
-      addEventBeforeMetricsOptIn: jest.fn(),
-      state: { completedMetaMetricsOnboarding: true },
-    };
-    const analyticsController = {
-      state: { optedIn: false },
     };
 
-    // OAuthServiceInit reads MetaMetrics onboarding state and Analytics opt-in state.
     // @ts-expect-error: Partial mock for testing.
-    requestMock.getMessengerClient.mockImplementation((controllerName) => {
-      if (controllerName === 'AnalyticsController') {
-        return analyticsController;
-      }
-
+    requestMock.getMessengerClient.mockImplementation(() => {
       return metaMetricsController;
     });
 

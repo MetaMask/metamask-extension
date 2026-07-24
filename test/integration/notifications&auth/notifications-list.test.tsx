@@ -94,7 +94,7 @@ describe('Notifications List', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: false,
         },

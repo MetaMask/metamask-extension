@@ -638,8 +638,8 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
-    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
@@ -856,13 +856,6 @@
         "snapId": "string"
       }
     },
-    "eventsBeforeMetricsOptIn": [
-      {
-        "category": "string",
-        "event": "string",
-        "properties": {}
-      }
-    ],
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "string",
