@@ -339,7 +339,7 @@
     "@ledgerhq/hw-app-eth": "^6.42.0",
     "@ledgerhq/hw-transport": "^6.31.0",
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
-    "@metamask/7715-permission-types": "^0.7.1",
+    "@metamask/7715-permission-types": "^1.0.0",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.4",
     "@metamask/account-tree-controller": "^7.5.3",
