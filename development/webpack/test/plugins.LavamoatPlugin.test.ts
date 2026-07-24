@@ -145,6 +145,7 @@ describe('LavamoatPlugin', () => {
         'scripts/inpage.js',
         'init-statehooks',
         'init-sentry',
+        'init-globals',
       ]) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(

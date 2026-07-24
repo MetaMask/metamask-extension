@@ -15,6 +15,7 @@ const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'init-statehooks',
   'init-sentry',
+  'init-globals',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [
@@ -205,6 +206,7 @@ const unsafeLayerEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'init-statehooks',
   'init-sentry',
+  'init-globals',
   'service-worker.ts',
 ]);
 

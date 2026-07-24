@@ -4,6 +4,4 @@
 // The root compartment will populate this with hooks.
 global.stateHooks = global.stateHooks || ({} as typeof stateHooks);
 
-require('../init-globals');
-
 export {};

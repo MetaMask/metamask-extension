@@ -110,6 +110,7 @@ export class ManifestPlugin<Z extends boolean> {
     'use-snow',
     'init-statehooks',
     'init-sentry',
+    'init-globals',
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 

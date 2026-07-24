@@ -1797,6 +1797,11 @@ describe('ManifestPlugin', () => {
           false,
           'init-sentry should not be chunked',
         );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'init-globals' }),
+          false,
+          'init-globals should not be chunked',
+        );
       });
 
       it('should return true when name is null or undefined', () => {

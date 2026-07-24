@@ -2,6 +2,7 @@
 
 import './scripts/load/init-statehooks';
 import './scripts/load/init-sentry';
+import './scripts/load/init-globals';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
