@@ -127,6 +127,7 @@ import {
 import Tooltip from '../../components/ui/tooltip';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { TraceName } from '../../../shared/lib/trace';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
@@ -562,10 +563,10 @@ const PerpsMarketDetailPage = () => {
     throttleMs: 1000,
   });
 
-  usePerpsMeasurement(
-    'PerpsMarketDetailLoaded',
-    !marketsLoading && !isCandleLoading,
-  );
+  usePerpsMeasurement({
+    traceName: TraceName.PerpsMarketDetailLive,
+    isReady: !marketsLoading && !isCandleLoading,
+  });
 
   // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
   // const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);

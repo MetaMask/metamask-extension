@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/core';
+import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -704,10 +704,6 @@ function integrateLogging() {
   if (!METAMASK_DEBUG) {
     return;
   }
-
-  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
-  // override its methods so SDK-internal logs flow through our module logger.
-  const sentrySdkLogger = logger;
 
   for (const loggerType of ['log', 'error']) {
     sentrySdkLogger[loggerType] = (...args) => {

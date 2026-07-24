@@ -33,6 +33,7 @@ import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { TraceName } from '../../../../shared/lib/trace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -309,7 +310,10 @@ export const PerpsView = () => {
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
-  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+  usePerpsMeasurement({
+    traceName: TraceName.PerpsEntryToLiveMarketList,
+    isReady: !isLoading,
+  });
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
