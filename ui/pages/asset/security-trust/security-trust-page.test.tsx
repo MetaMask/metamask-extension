@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
 
@@ -150,29 +151,39 @@ describe('SecurityTrustPage', () => {
     renderWithProvider(<SecurityTrustPage />, createStore());
 
     expect(screen.getByTestId('security-trust-screen')).toBeInTheDocument();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
   });
 
   it('renders verified summary and feature tags', () => {
     renderPage();
 
-    expect(screen.getByText('Verified')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'No risk signals detected. Always research any asset before trading.',
-      ),
+      screen.getByText(messages.securityTrustVerified.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Published contract')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustSubtitleKnown.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustFeatureVerifiedContract.message),
+    ).toBeInTheDocument();
   });
 
   it('renders buy and sell tax with no hidden fees banner', () => {
     renderPage();
 
-    expect(screen.getByText('Buy tax')).toBeInTheDocument();
-    expect(screen.getByText('Sell tax')).toBeInTheDocument();
-    expect(screen.getByText('Transfer')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustBuyTax.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustSellTax.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTransfer.message),
+    ).toBeInTheDocument();
     expect(screen.getAllByText('0.0%').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText('No hidden fees detected')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustNoHiddenFeesDetected.message),
+    ).toBeInTheDocument();
   });
 
   it('omits no hidden fees banner when fees are non-zero', () => {
@@ -189,7 +200,7 @@ describe('SecurityTrustPage', () => {
     });
 
     expect(
-      screen.queryByText('No hidden fees detected'),
+      screen.queryByText(messages.securityTrustNoHiddenFeesDetected.message),
     ).not.toBeInTheDocument();
   });
 
@@ -208,9 +219,13 @@ describe('SecurityTrustPage', () => {
     expect(
       screen.getByTestId('security-trust-link-explorer'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Website')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustWebsite.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('@exampletoken')).toBeInTheDocument();
-    expect(screen.getByText('Telegram')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTelegram.message),
+    ).toBeInTheDocument();
   });
 
   it('opens official links in a new tab', () => {
@@ -249,8 +264,12 @@ describe('SecurityTrustPage', () => {
 
     renderWithProvider(<SecurityTrustPage />, createStore());
 
-    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
-    expect(screen.getByText('Verified')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.loading.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustVerified.message),
+    ).toBeInTheDocument();
     expect(useTokenSecurityData).toHaveBeenCalledWith(
       expect.objectContaining({
         assetId,
@@ -262,12 +281,20 @@ describe('SecurityTrustPage', () => {
   it('renders token distribution and info sections', () => {
     renderPage();
 
-    expect(screen.getByText('Token distribution')).toBeInTheDocument();
-    expect(screen.getByText('Total supply')).toBeInTheDocument();
-    expect(screen.getByText('Top 10 holders')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTokenDistribution.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTotalSupply.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTop10Holders.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('35.0%')).toBeInTheDocument();
-    expect(screen.getByText('Token Info')).toBeInTheDocument();
-    expect(screen.getByText('Network')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.securityTrustTokenInfo.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.network.message)).toBeInTheDocument();
     expect(screen.getByText('ERC-20')).toBeInTheDocument();
   });
 });
