@@ -159,6 +159,19 @@
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
+    "shared/lib/contract-utils.test.js": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
+    "shared/lib/deep-linking.test.ts": {
+      "error: Error: Not implemented: navigation (except": 1
+    },
+    "shared/lib/metametrics.test.ts": {
+      "Third-party: Bindings failed, using pure JS": 1,
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
+    },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
     },

@@ -11,6 +11,15 @@ const BRIDGE_CACHE_PREFIX = 'bridgeCache';
 const MAX_CACHE_AGE = MINUTE * 15;
 const DEFAULT_CACHE_PAGE_KEY = 'default';
 
+type CachedPage = {
+  cachedResponse: object;
+  hash: string;
+};
+
+type BridgeCacheStorage = {
+  timestamp: number;
+} & Record<string, CachedPage | number | undefined>;
+
 const hashData = (body: object) => {
   return createHash('sha256').update(JSON.stringify(body)).digest('hex');
 };
@@ -28,13 +37,15 @@ export const retrieveCachedResponse = async (
   after: string = DEFAULT_CACHE_PAGE_KEY,
 ) => {
   try {
-    const storageItem = await getStorageItem(cacheKey);
+    const storageItem = (await getStorageItem(cacheKey)) as
+      | BridgeCacheStorage
+      | undefined;
     const cachedPage = storageItem?.[after];
 
-    if (cachedPage) {
-      const { hash, cachedResponse } = cachedPage;
+    if (cachedPage && typeof cachedPage === 'object') {
+      const { hash, cachedResponse } = cachedPage as CachedPage;
       const isDataInvalid = hash !== hashData(cachedResponse);
-      if (isStale(storageItem) || isDataInvalid) {
+      if (!storageItem || isStale(storageItem) || isDataInvalid) {
         await removeStorageItem(cacheKey);
         return null;
       }
@@ -52,16 +63,26 @@ export const updateCache = async (
   after: string = DEFAULT_CACHE_PAGE_KEY,
 ) => {
   try {
-    const newCachedPage = {
+    const newCachedPage: CachedPage = {
       cachedResponse: response,
       hash: hashData(response),
     };
 
-    const storageItem = (await getStorageItem(cacheKey)) ?? {
-      timestamp: Date.now(),
-    };
+    const storageItem =
+      ((await getStorageItem(cacheKey)) as BridgeCacheStorage | undefined) ?? {
+        timestamp: Date.now(),
+      };
+
+    const storageItemWithTimestamp: BridgeCacheStorage =
+      typeof (storageItem as BridgeCacheStorage).timestamp === 'number'
+        ? (storageItem as BridgeCacheStorage)
+        : ({
+            ...storageItem,
+            timestamp: Date.now(),
+          } as BridgeCacheStorage);
+
     await setStorageItem(cacheKey, {
-      ...storageItem,
+      ...storageItemWithTimestamp,
       [after]: newCachedPage,
     });
   } catch (error) {
@@ -78,7 +99,9 @@ export const clearAllBridgeCacheItems = async () => {
   const cacheKeys = await getStorageKeysWithPrefix(BRIDGE_CACHE_PREFIX);
   await Promise.allSettled(
     cacheKeys.map(async (key) => {
-      const cachedItem = await getStorageItem(key);
+      const cachedItem = (await getStorageItem(key)) as
+        | BridgeCacheStorage
+        | undefined;
       if (cachedItem && (isStale(cachedItem) || key.includes('search'))) {
         await removeStorageItem(key);
       }

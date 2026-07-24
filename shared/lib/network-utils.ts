@@ -16,6 +16,10 @@ type ChainInfo = {
   rpc?: string[];
 };
 
+type CachedFetchStorageEntry = {
+  cachedResponse?: unknown;
+};
+
 /**
  * The list of unofficial endpoints that we allow users to add easily.
  */
@@ -48,8 +52,10 @@ const KNOWN_CUSTOM_ENDPOINT_URLS = [
  */
 export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
   try {
-    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
-    return cachedResponse || [];
+    const { cachedResponse } =
+      ((await getStorageItem(cacheKey)) as CachedFetchStorageEntry | undefined) ||
+      {};
+    return (cachedResponse as ChainInfo[]) || [];
   } catch (error) {
     console.error('Error retrieving chains list from cache', error);
     return [];
