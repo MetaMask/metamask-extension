@@ -3,6 +3,7 @@ import type {
   FeatureTag,
   TokenSecurityData,
   TokenSecurityFeature,
+  TokenSecurityFees,
   TokenSecurityFinancialStats,
 } from '../types/security-trust';
 
@@ -411,6 +412,23 @@ export const formatFeePercent = (fee: number | null | undefined): string => {
     return 'N/A';
   }
   return `${fee.toFixed(1)}%`;
+};
+
+const hasHiddenFee = (fee: number | null | undefined): boolean =>
+  fee !== null && fee !== undefined && fee > 0;
+
+export const hasNoHiddenFees = (
+  fees: TokenSecurityFees | null | undefined,
+): boolean => {
+  if (!fees) {
+    return false;
+  }
+
+  return (
+    !hasHiddenFee(fees.buy) &&
+    !hasHiddenFee(fees.sell) &&
+    !hasHiddenFee(fees.transfer)
+  );
 };
 
 export const getTop10HoldingPct = (

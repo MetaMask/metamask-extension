@@ -40,12 +40,37 @@ import {
   getResultTypeConfig,
   getSecurityAlertIconProps,
   getTop10HoldingPct,
+  hasNoHiddenFees,
 } from '../utils/security-utils';
 import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import type { SecurityTrustLocationState } from '../types/security-trust';
 
 const OTHER_HOLDERS_BAR_BG_LIGHT = 'bg-[rgba(133,139,154,0.77)]';
 const OTHER_HOLDERS_BAR_BG_DARK = 'bg-[rgba(237,239,242,0.3)]';
+
+const OfficialLinkButton = ({
+  iconName,
+  label,
+  onClick,
+  testId,
+}: {
+  iconName: IconName;
+  label: string;
+  onClick: () => void;
+  testId?: string;
+}) => (
+  <button
+    type="button"
+    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border-0 bg-muted px-3 py-2"
+    onClick={onClick}
+    data-testid={testId}
+  >
+    <Icon name={iconName} size={IconSize.Sm} color={IconColor.IconDefault} />
+    <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+      {label}
+    </Text>
+  </button>
+);
 
 const SectionHeader = ({ title }: { title: string }) => (
   <Text
@@ -392,23 +417,20 @@ const SecurityTrustPage = () => {
               </Box>
             ))}
           </Box>
-          {fees !== null &&
-          fees.transfer === 0 &&
-          fees.buy === 0 &&
-          fees.sell === 0 ? (
+          {hasNoHiddenFees(fees) ? (
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={1}
-              className="bg-success-muted rounded px-1.5 self-start mt-3"
+              className="mt-3 inline-flex self-start rounded-sm bg-success-muted px-1.5 py-0.5"
             >
               <Icon
                 name={IconName.SecurityTick}
-                size={IconSize.Sm}
+                size={IconSize.Xs}
                 color={IconColor.SuccessDefault}
               />
               <Text
-                variant={TextVariant.BodySm}
+                variant={TextVariant.BodyXs}
                 color={TextColor.SuccessDefault}
                 fontWeight={FontWeight.Medium}
               >
@@ -501,50 +523,46 @@ const SecurityTrustPage = () => {
                 gap={2}
               >
                 {metadata.externalLinks.homepage ? (
-                  <button
-                    type="button"
-                    className="rounded-lg bg-muted px-3 py-2 text-sm font-medium"
+                  <OfficialLinkButton
+                    iconName={IconName.WebTraffic}
+                    label={t('securityTrustWebsite')}
                     onClick={() =>
                       openLink(metadata.externalLinks.homepage ?? '')
                     }
-                  >
-                    {t('securityTrustWebsite')}
-                  </button>
+                    testId="security-trust-link-website"
+                  />
                 ) : null}
                 {metadata.externalLinks.twitterPage ? (
-                  <button
-                    type="button"
-                    className="rounded-lg bg-muted px-3 py-2 text-sm font-medium"
+                  <OfficialLinkButton
+                    iconName={IconName.X}
+                    label={`@${metadata.externalLinks.twitterPage}`}
                     onClick={() =>
                       openLink(
                         `https://x.com/${metadata.externalLinks.twitterPage}`,
                       )
                     }
-                  >
-                    @{metadata.externalLinks.twitterPage}
-                  </button>
+                    testId="security-trust-link-twitter"
+                  />
                 ) : null}
                 {metadata.externalLinks.telegramChannelId ? (
-                  <button
-                    type="button"
-                    className="rounded-lg bg-muted px-3 py-2 text-sm font-medium"
+                  <OfficialLinkButton
+                    iconName={IconName.Telegram}
+                    label={t('securityTrustTelegram')}
                     onClick={() =>
                       openLink(
                         `https://t.me/${metadata.externalLinks.telegramChannelId}`,
                       )
                     }
-                  >
-                    {t('securityTrustTelegram')}
-                  </button>
+                    testId="security-trust-link-telegram"
+                  />
                 ) : null}
                 {blockExplorerLink ? (
-                  <button
-                    type="button"
-                    className="rounded-lg bg-muted px-3 py-2 text-sm font-medium"
+                  <OfficialLinkButton
+                    iconName={IconName.Explore}
+                    label={blockExplorerLink.name}
                     onClick={() => openLink(blockExplorerLink.url)}
-                  >
-                    {blockExplorerLink.name}
-                  </button>
+                    testId="security-trust-link-explorer"
+                  />
                 ) : null}
               </Box>
             </>

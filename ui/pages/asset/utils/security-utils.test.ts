@@ -9,6 +9,7 @@ import {
   getFeatureTags,
   getResultTypeConfig,
   getTop10HoldingPct,
+  hasNoHiddenFees,
 } from './security-utils';
 
 const t = (key: string, substitutions?: string[]) => {
@@ -77,6 +78,34 @@ describe('security-utils', () => {
 
     it('returns N/A for null', () => {
       expect(formatFeePercent(null)).toBe('N/A');
+    });
+  });
+
+  describe('hasNoHiddenFees', () => {
+    it('returns true when fees are zero or absent', () => {
+      expect(
+        hasNoHiddenFees({
+          transfer: 0,
+          transferFeeMaxAmount: null,
+          buy: 0,
+          sell: null,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when any fee is greater than zero', () => {
+      expect(
+        hasNoHiddenFees({
+          transfer: 0,
+          transferFeeMaxAmount: null,
+          buy: 0,
+          sell: 2.5,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false when fees are missing', () => {
+      expect(hasNoHiddenFees(null)).toBe(false);
     });
   });
 
