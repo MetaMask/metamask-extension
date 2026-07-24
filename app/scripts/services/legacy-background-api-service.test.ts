@@ -450,6 +450,30 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('markNotificationPopupAsAutomaticallyClosed', () => {
+    it('marks the notification popup as automatically closed', async () => {
+      const mockMarkNotificationPopupAsAutomaticallyClosed = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markNotificationPopupAsAutomaticallyClosed:
+              mockMarkNotificationPopupAsAutomaticallyClosed,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+          );
+
+          expect(
+            mockMarkNotificationPopupAsAutomaticallyClosed,
+          ).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
   describe('markPasswordForgotten', () => {
     it('sets the preference and triggers an update', async () => {
       const mockSendUpdate = jest.fn();
@@ -3642,6 +3666,7 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     createVaultMutex: new Mutex(),
