@@ -1,0 +1,515 @@
+{
+  "app/scripts/controllers/qr-sync/qr-sync-controller.ts": {
+    "promise/no-nesting": {
+      "count": 1
+    }
+  },
+  "app/scripts/lib/metaRPCClientFactory.test.js": {
+    "promise/no-callback-in-promise": {
+      "count": 3
+    }
+  },
+  "app/scripts/metamask-controller.test.js": {
+    "jest/no-disabled-tests": {
+      "count": 1
+    }
+  },
+  "development/webpack/utils/loaders/swcLoader.ts": {
+    "promise/no-callback-in-promise": {
+      "count": 1
+    }
+  },
+  "ui/components/app/balance-empty-state/balance-empty-state.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/components/app/currency-input/currency-input.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/modals/multichain-accounts/intro-modal/multichain-account-intro-modal.container.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/perps/hooks/useClickOutside.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/shield-entry-modal/shield-illustration-animation.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/snaps/snap-ui-address-input/snap-ui-address-input.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/snaps/snap-ui-input/snap-ui-input.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/snaps/snap-ui-selector/snap-ui-selector.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/srp-quiz-modal/SRPQuiz/SRPQuiz.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/terms-of-use-popup/terms-of-use-popup.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/app/wallet-overview/coin-buttons.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 4
+    }
+  },
+  "ui/components/component-library/modal-content/deprecated/modal-content.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/component-library/modal-content/modal-content.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain-accounts/permissions/multichain-edit-networks-page/multichain-edit-networks-page.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/components/multichain/asset-picker-amount/asset-picker-modal/hooks/useAssetMetadata.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/dropdown-editor/dropdown-editor.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/edit-networks-modal/edit-networks-modal.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/network-list-menu/popular-network-list/popular-network-list.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/networks-form/networks-form-state.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/multichain/networks-form/networks-form.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 4
+    }
+  },
+  "ui/components/multichain/toast/toast.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/components/ui/form-combo-field/form-combo-field.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 3
+    }
+  },
+  "ui/components/ui/jazzicon/jazzicon.component.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/components/ui/survey-toast/survey-toast.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/contexts/hardware-wallets/HardwareWalletContext.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/bridge/useBridgeNavigation.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 6
+    }
+  },
+  "ui/hooks/bridge/useInitialBridgeTokens.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/bridge/useLatestBalance.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/bridge/usePrefillFromBridgeState.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/bridge/usePrefillFromSearchQuery.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 5
+    }
+  },
+  "ui/hooks/bridge/useQuoteFetchEvents.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/bridge/useRewards.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/hooks/bridge/useTokenSearchResults.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 3
+    }
+  },
+  "ui/hooks/bridge/useTxAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/metamask-notifications/useSwitchNotifications.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 3
+    }
+  },
+  "ui/hooks/swap/useSwapDefaultToToken.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useAsync.test.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useAsync.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 4
+    }
+  },
+  "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useMultiPolling.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/usePolling.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useScrollRequired.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useTokenFiatAmount.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/activity/useActivityScreenViewed.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/activity/useTransactionsQuery.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/batch-sell/hooks/useBatchSellHighRateAlertModal.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/awaiting-signatures/awaiting-signatures.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/hooks/useExternalAccountResolution.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/prepare/components/bridge-alert-modal.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/prepare/components/bridge-asset-picker/bridge-asset-picker-content.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/bridge/prepare/prepare-bridge-page.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/footer/shield-footer-coverage-indicator/shield-icon-animation.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 4
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/hooks/useDecodedTransactionData.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/shared/batched-approval-function/batched-approval-function.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/confirmations/components/send/amount/amount.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/send/hex-data/hex-data.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/components/simulation-details/useSimulationMetrics.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/transactions/useContractCode.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/transactions/useGasFeeLowAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/transactions/useNoGasPriceAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/transactions/useNonContractAddressAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/send/useContactRecipients.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/send/useMaxAmount.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/send/useSendNfts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/send/useSendQueryParams.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/send/useSnapAmountOnInput.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapUSDValues.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/confirmations/hooks/useAddEthereumChain.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/useCancelSpeedupInitialGas.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/useDecodedSignatureMetrics.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/useLedgerConnection.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/confirmations/hooks/useSetConfirmationAlerts.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/create-account/connect-hardware/account-list.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/create-account/connect-hardware/index.tsx": {
+    "promise/no-nesting": {
+      "count": 1
+    },
+    "react-hooks/exhaustive-deps": {
+      "count": 3
+    }
+  },
+  "ui/pages/create-account/connect-hardware/select-hardware.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/details/components/convert-again-button.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/details/templates/helpers.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/hardware-wallets/swap/hooks/useSendBundleSubmission.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/notification-details/notification-details.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/notifications-settings/notifications-settings-allow-notifications.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 2
+    }
+  },
+  "ui/pages/settings/debug-tab/debug-content/sentry-test.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/pages/shield/transaction-shield/shield-banner-animation.tsx": {
+    "react-hooks/exhaustive-deps": {
+      "count": 3
+    }
+  },
+  "ui/pages/swaps/awaiting-signatures/awaiting-signatures.js": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  }
+}

@@ -8,7 +8,6 @@ describe('deep link interstitial bypass routes', () => {
   it('includes the Extension routes matching mobile whitelisted actions', () => {
     expect([...DEEP_LINK_INTERSTITIAL_BYPASS_ROUTE_PATHS].sort()).toStrictEqual(
       [
-        '/asset',
         '/buy',
         '/batch-sell',
         '/card-onboarding',
@@ -33,13 +32,13 @@ describe('deep link interstitial bypass routes', () => {
     }
   });
 
-  it('does not include supported routes that are not whitelisted on mobile', () => {
+  it('does not include supported routes that are not whitelisted for bypass', () => {
     expect(
       isDeepLinkRouteAllowedToBypassInterstitial(routes.get('/home')),
     ).toBe(false);
     expect(
       isDeepLinkRouteAllowedToBypassInterstitial(routes.get('/asset')),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       isDeepLinkRouteAllowedToBypassInterstitial(routes.get('/notifications')),
     ).toBe(false);
