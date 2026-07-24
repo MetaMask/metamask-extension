@@ -11,18 +11,21 @@ import { createAnnouncer, getClientRequest } from './websocket';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the
- * MV2 background page (whose `<script>`s are `scripts/load/bootstrap.ts` and
- * `scripts/load/background.ts`) and the MV3 offscreen document.
+ * MV2 background page (whose `<script>`s are `scripts/load/init-statehooks.ts`,
+ * `scripts/load/init-sentry.ts`, and `scripts/load/background.ts`) and the MV3
+ * offscreen document (whose shared state hook initializer is
+ * `scripts/load/init-statehooks.ts`).
  * `HtmlBundlerPlugin` registers a page and each of its scripts as separate
  * entries named `<stem>` or `<stem>.<n>` (the numeric suffix de-duplicates
  * stems already taken, e.g. the background page's `background.ts` script
  * becomes `background.1` because the page itself owns `background`), so both
- * forms are matched. `bootstrap` entries also exist for UI pages, but they
- * share the same source file — and that code runs in the background page too,
- * so changes to it genuinely require an extension reload.
+ * forms are matched. `init-statehooks` and `init-sentry` entries also exist
+ * for UI pages, but they share the same source files — and those code paths
+ * run in the background page too, so changes to them genuinely require an
+ * extension reload.
  */
 const PRIVILEGED_PAGE_ENTRY_RE =
-  /^(?:background|bootstrap|offscreen)(?:\.\d+)?$/u;
+  /^(?:background|offscreen|init-statehooks|init-sentry)(?:\.\d+)?$/u;
 
 /**
  * Finds the {@link ManifestPlugin} instance registered on a compiler.
@@ -69,9 +72,10 @@ const getServiceWorkerEntryName = (
  * @param compilation - The finished compilation.
  * @param entrypoint - The entrypoint to walk.
  * @param seen - Modules already visited; shared across entrypoints so graphs
- * they have in common (each page has its own `bootstrap` entry over the same
- * modules) are only walked and hashed once. A source change updates a module's
- * hash under every runtime, so deduplication doesn't lose change detection.
+ * they have in common (each page has its own `init-statehooks`/`init-sentry`
+ * entries over the same modules) are only walked and hashed once. A source
+ * change updates a module's hash under every runtime, so deduplication doesn't
+ * lose change detection.
  * @param hashes - The array to append the module hashes to.
  */
 const collectEntrypointModuleHashes = (

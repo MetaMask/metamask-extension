@@ -38,6 +38,12 @@ describe('lavamoat', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         if (isManifestV3) {
+          await driver.navigate(PAGES.OFFSCREEN);
+          await assert.rejects(
+            driver.executeScript(lavamoatErrorScript),
+            lavamoatErrorPattern,
+          );
+
           await driver.navigate(PAGES.HOME);
           await assert.rejects(
             driver.executeScriptInExtensionServiceWorker(lavamoatErrorScript),
