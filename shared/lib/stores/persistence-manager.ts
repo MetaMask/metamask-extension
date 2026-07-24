@@ -382,6 +382,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     } finally {
       if (this.#currentWriteRetryAbortController === abortController) {
+        // `delay` must be this signal's only consumer.
+        // Additional consumers will be orphaned, 
+        // unless aborted here or cancelled with `#supersedeWriteRetry`.
         this.#currentWriteRetryAbortController = null;
       }
     }
