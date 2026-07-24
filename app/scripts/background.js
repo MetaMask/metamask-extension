@@ -49,6 +49,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlagsWithManifestOverrides } from '../../shared/lib/ab-testing/ab-test-analytics';
 import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
@@ -1018,18 +1019,21 @@ async function loadPhishingWarningPage() {
 
 /**
  * Sets shutdown write-suspension from a `remoteFeatureFlags` map (persisted or
- * live). Applying this early from persisted state during startup lets writes in
- * the boot window benefit from suspension before `RemoteFeatureFlagController`
- * is constructed.
+ * live), with manifest overrides applied on top so `MANIFEST_OVERRIDES` can
+ * enable the flag for local/E2E the same way the UI selector does.
+ * Applying this early from persisted state during startup lets writes in the
+ * boot window benefit from suspension before `RemoteFeatureFlagController` is
+ * constructed.
  *
  * @param {Record<string, unknown> | undefined} remoteFeatureFlags - The
  * `remoteFeatureFlags` map to read the flag from. Missing/invalid flags default
  * to off.
  */
 function setShutdownSuspensionFromFlags(remoteFeatureFlags) {
+  const flags = getRemoteFeatureFlagsWithManifestOverrides(remoteFeatureFlags);
   persistenceManager.setShutdownSuspensionEnabled(
     getBooleanFeatureFlag(
-      remoteFeatureFlags?.platformPersistenceSuspendWritesOnShutdown,
+      flags.platformPersistenceSuspendWritesOnShutdown,
       false,
     ),
   );
