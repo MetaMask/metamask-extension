@@ -164,7 +164,10 @@ describe('EnforcedSimulationsRow', () => {
     const input = getByTestId(
       'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
-    input?.click();
+
+    await act(async () => {
+      input?.click();
+    });
 
     expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
       expect.any(String),
@@ -173,6 +176,11 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('shows a loading spinner while the container types are updating', async () => {
+    // Keep the operation in-flight so the spinner remains visible.
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockReturnValue(new Promise(() => undefined));
+
     const { getByTestId, queryByTestId } = render({
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
@@ -195,6 +203,70 @@ describe('EnforcedSimulationsRow', () => {
     expect(
       queryByTestId('enforced-simulations-toggle'),
     ).not.toBeInTheDocument();
+  });
+
+  it('restores the checkbox after the toggle resolves even when container types do not change', async () => {
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockResolvedValue(undefined);
+
+    const { getByTestId, queryByTestId } = render({
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('enforced-simulations-toggle-input'),
+      ).toBeInTheDocument();
+    });
+
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
+    ) as HTMLInputElement;
+
+    await act(async () => {
+      input?.click();
+    });
+
+    expect(
+      queryByTestId('enforced-simulations-loading'),
+    ).not.toBeInTheDocument();
+    expect(getByTestId('enforced-simulations-toggle')).toBeInTheDocument();
+  });
+
+  it('logs the error and restores the checkbox when the toggle fails', async () => {
+    const error = new Error('failed to apply containers');
+    jest.mocked(applyTransactionContainersExisting).mockRejectedValue(error);
+
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const { getByTestId, queryByTestId } = render({
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    await waitFor(() => {
+      expect(
+        getByTestId('enforced-simulations-toggle-input'),
+      ).toBeInTheDocument();
+    });
+
+    const input = getByTestId(
+      'enforced-simulations-toggle-input',
+    ) as HTMLInputElement;
+
+    await act(async () => {
+      input?.click();
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(error);
+    expect(
+      queryByTestId('enforced-simulations-loading'),
+    ).not.toBeInTheDocument();
+    expect(getByTestId('enforced-simulations-toggle')).toBeInTheDocument();
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('shows description text', async () => {
