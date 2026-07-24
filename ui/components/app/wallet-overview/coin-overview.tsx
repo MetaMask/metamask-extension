@@ -77,10 +77,10 @@ export type CoinOverviewProps = {
 
 const BalanceOverviewSkeleton = () => (
   <Box
-    className="flex w-full max-w-[400px] items-center gap-[10px] self-center px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
+    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
     data-testid="coin-overview-balance-skeleton"
   >
-    <Box className="flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px] [.wallet-overview-fullscreen_&]:items-center">
+    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
       <Skeleton className="h-[50px] w-full rounded-lg" />
       <Skeleton className="h-6 w-[180px] rounded-lg" />
     </Box>

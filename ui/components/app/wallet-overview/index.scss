@@ -2,10 +2,10 @@
 
 $wallet-overview-sidepanel-max-width: 490px;
 
-@mixin sidepanel-left-align-before-max-width {
+@mixin sidepanel-start-before-max-width($property) {
   .wallet-overview-sidepanel & {
     @media (max-width: $wallet-overview-sidepanel-max-width) {
-      align-items: start;
+      #{$property}: start;
     }
   }
 }
@@ -36,7 +36,7 @@ $wallet-overview-sidepanel-max-width: 490px;
       align-items: center;
     }
 
-    @include sidepanel-left-align-before-max-width;
+    @include sidepanel-start-before-max-width(align-items);
   }
 
   &__buttons {
@@ -56,6 +56,24 @@ $wallet-overview-sidepanel-max-width: 490px;
     flex-direction: row;
     gap: 8px;
     flex-wrap: wrap;
+  }
+
+  &__balance-skeleton {
+    align-self: start;
+
+    .wallet-overview-fullscreen & {
+      align-self: center;
+    }
+
+    @include sidepanel-start-before-max-width(align-self);
+  }
+
+  &__balance-skeleton-lines {
+    .wallet-overview-fullscreen & {
+      align-items: center;
+    }
+
+    @include sidepanel-start-before-max-width(align-items);
   }
 }
 
@@ -94,7 +112,7 @@ $wallet-overview-sidepanel-max-width: 490px;
       align-items: center;
     }
 
-    @include sidepanel-left-align-before-max-width;
+    @include sidepanel-start-before-max-width(align-items);
   }
 
   &__primary-container {
