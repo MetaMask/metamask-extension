@@ -48,7 +48,15 @@ describe('PersistenceManager', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockStoreSet.mockReset();
+    mockStoreSetKeyValues.mockReset();
+    mockStoreGet.mockReset();
+    mockStoreReset.mockReset();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('open', () => {
@@ -189,6 +197,52 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { working: true } });
 
       expect(mockedCaptureMessage).not.toHaveBeenCalled();
+    });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce(undefined);
+
+      const [firstResult, firstError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-backup-failed' },
+        fingerprint: ['persistence-error', 'set-backup-failed'],
+      });
+
+      const [secondResult, secondError] = await manager.set({
+        appState: { working: true },
+      });
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      const [thirdResult, thirdError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'set-backup-recovered' },
+          fingerprint: ['persistence-event', 'set-backup-recovered'],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -477,6 +531,49 @@ describe('PersistenceManager', () => {
       await manager.persist();
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce(undefined);
+
+      const [firstResult, firstError] = await manager.persist();
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-backup-failed' },
+        fingerprint: ['persistence-error', 'persist-backup-failed'],
+      });
+
+      manager.update('FooController', { foo: 'bar' });
+      const [secondResult, secondError] = await manager.persist();
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      const [thirdResult, thirdError] = await manager.persist();
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'persist-backup-recovered' },
+          fingerprint: ['persistence-event', 'persist-backup-recovered'],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(2);
     });
   });
 
