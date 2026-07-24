@@ -79,22 +79,32 @@ export function getBundlePartSizes(
   categoryAssets: BundleSizeCategoryAssets,
   assetSizes: ReadonlyMap<string, number>,
 ): Record<BundlePart, number> {
-  const commonAssets = categoryAssets.background
+  const backgroundUiAssets = categoryAssets.background
     // @ts-expect-error - Node types need to be updated.
-    .intersection(categoryAssets.ui)
+    .intersection(categoryAssets.ui) as Set<string>;
+  const backgroundOtherAssets = categoryAssets.background
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.other) as Set<string>;
+  const uiOtherAssets = categoryAssets.ui
+    // @ts-expect-error - Node types need to be updated.
+    .intersection(categoryAssets.other) as Set<string>;
+
+  const commonAssets = backgroundUiAssets
+    // @ts-expect-error - Node types need to be updated.
+    .union(backgroundOtherAssets)
+    .union(uiOtherAssets)
     .difference(categoryAssets.contentScripts) as Set<string>;
   const backgroundAssets = categoryAssets.background
     // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.ui)
+    .difference(commonAssets)
     .difference(categoryAssets.contentScripts) as Set<string>;
   const uiAssets = categoryAssets.ui
     // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.background)
+    .difference(commonAssets)
     .difference(categoryAssets.contentScripts) as Set<string>;
   const otherAssets = categoryAssets.other
     // @ts-expect-error - Node types need to be updated.
-    .difference(categoryAssets.background)
-    .difference(categoryAssets.ui)
+    .difference(commonAssets)
     .difference(categoryAssets.contentScripts) as Set<string>;
 
   return {
