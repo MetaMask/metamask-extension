@@ -25,44 +25,12 @@ module.exports = {
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
     ENABLE_ENFORCED_SIMULATIONS: process.env.ENABLE_ENFORCED_SIMULATIONS || '',
   }),
-  // Uses babel.config.js settings and prevents "Missing class properties transform" error
-  // But excludes React Compiler to avoid React 17/18 compatibility issues
-  babel: async (options) => {
-    // Filter out babel-plugin-react-compiler from all configs
-    const removeReactCompiler = (config) => {
-      if (config.plugins) {
-        config.plugins = config.plugins.filter(plugin => {
-          const pluginName = Array.isArray(plugin) ? plugin[0] : plugin;
-          return !pluginName.includes('babel-plugin-react-compiler');
-        });
-      }
-      if (config.overrides) {
-        config.overrides = config.overrides.map(override => ({
-          ...override,
-          plugins: override.plugins?.filter(plugin => {
-            const pluginName = Array.isArray(plugin) ? plugin[0] : plugin;
-            return !pluginName.includes('babel-plugin-react-compiler');
-          }),
-        }));
-      }
-      return config;
-    };
-
-    return removeReactCompiler({
-      ...options,
-      overrides: options.overrides,
-    });
-  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
       __filename: true,
     };
 
-    // Force React 17 compatible shim for Storybook 8
-    config.resolve.alias['@storybook/react-dom-shim'] = require.resolve(
-      '@storybook/react-dom-shim/dist/react-16',
-    );
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
@@ -198,9 +166,7 @@ module.exports = {
   },
   framework: {
     name: '@storybook/react-webpack5',
-    options: {
-      legacyRootApi: true,
-    },
+    options: {},
   },
   typescript: {
     reactDocgen: false,
