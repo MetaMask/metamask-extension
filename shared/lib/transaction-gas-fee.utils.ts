@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { TransactionGroup } from './multichain/types';
 
 /**
  * Determines whether a transaction should be displayed as gas-fee sponsored.
@@ -34,4 +35,24 @@ export function isTransactionGasFeeSponsored({
     status !== TransactionStatus.rejected &&
     !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed)
   );
+}
+
+export function isTransactionGroupGasFeeSponsored({
+  transactionGroup,
+  isHardwareWalletAccount = false,
+}: {
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'> &
+    Partial<Pick<TransactionGroup, 'initialTransaction'>>;
+  isHardwareWalletAccount?: boolean;
+}) {
+  const { initialTransaction, primaryTransaction } = transactionGroup;
+  const transaction =
+    primaryTransaction.isGasFeeSponsored || !initialTransaction
+      ? primaryTransaction
+      : initialTransaction;
+
+  return isTransactionGasFeeSponsored({
+    transaction,
+    isHardwareWalletAccount,
+  });
 }
