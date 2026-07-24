@@ -84,20 +84,20 @@ export class TestDappBitcoin {
     testId: dataTestIds.testPage.sendTransaction.sendTransaction,
   };
 
-  private readonly signMessageButtonSelector = {
-    testId: dataTestIds.testPage.signMessage.signMessage,
-  };
-
-  private readonly signPsbtButtonSelector = {
-    testId: dataTestIds.testPage.signTransaction.signTransaction,
-  };
-
   private readonly signedMessageSelector = {
     testId: dataTestIds.testPage.signMessage.signedMessage,
   };
 
   private readonly signedPsbtSelector = {
     testId: dataTestIds.testPage.signTransaction.signedPsbt,
+  };
+
+  private readonly signMessageButtonSelector = {
+    testId: dataTestIds.testPage.signMessage.signMessage,
+  };
+
+  private readonly signPsbtButtonSelector = {
+    testId: dataTestIds.testPage.signTransaction.signTransaction,
   };
 
   private readonly standardButtonSelector = {
