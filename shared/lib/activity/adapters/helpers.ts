@@ -21,6 +21,8 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
+import { isTransactionGasFeeSponsored } from '../../transaction-gas-fee.utils';
+import { GAS_FEE_SPONSORED } from '../fees';
 import type { ActivityFee, Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
@@ -133,6 +135,12 @@ function buildBaseNetworkFee(
   };
 }
 
+function buildSponsoredNetworkFee(): ActivityFee {
+  return {
+    type: GAS_FEE_SPONSORED,
+  };
+}
+
 function getNetworkFee(
   transaction: V1TransactionByHashResponse,
   chainId: string,
@@ -155,9 +163,29 @@ export function getFees(
 }
 
 export function getLocalTransactionFees(
-  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'>,
+  transactionGroup: Pick<TransactionGroup, 'primaryTransaction'> &
+    Partial<Pick<TransactionGroup, 'initialTransaction'>>,
+  {
+    isHardwareWalletAccount = false,
+  }: {
+    isHardwareWalletAccount?: boolean;
+  } = {},
 ): ActivityFee[] | undefined {
-  const { primaryTransaction } = transactionGroup;
+  const { initialTransaction, primaryTransaction } = transactionGroup;
+  const transaction =
+    primaryTransaction.isGasFeeSponsored || !initialTransaction
+      ? primaryTransaction
+      : initialTransaction;
+
+  if (
+    isTransactionGasFeeSponsored({
+      transaction,
+      isHardwareWalletAccount,
+    })
+  ) {
+    return [buildSponsoredNetworkFee()];
+  }
+
   const amount = toNetworkFeeAmount(
     primaryTransaction.txReceipt?.gasUsed,
     primaryTransaction.txReceipt?.effectiveGasPrice ??
