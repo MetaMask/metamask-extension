@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { AvatarTokenSize } from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderStyle,
@@ -15,7 +16,6 @@ import { AvatarGroup } from '../avatar-group';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  AvatarTokenSize,
   Box,
   Text,
 } from '../../component-library';
