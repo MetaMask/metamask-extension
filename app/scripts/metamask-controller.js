@@ -463,6 +463,7 @@ import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-b
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
+import { cancelHardwareConnect as cancelHardwareConnectBridge } from './wallet-init/keyrings';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -2909,6 +2910,7 @@ export default class MetamaskController extends EventEmitter {
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
+      cancelHardwareConnect: this.cancelHardwareConnect.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       getHdPathForLedgerKeyring: this.getHdPathForLedgerKeyring.bind(this),
@@ -5451,6 +5453,29 @@ export default class MetamaskController extends EventEmitter {
         return accounts;
       },
     );
+  }
+
+  /**
+   * Cancel an in-flight hardware-wallet connect request.
+   *
+   * Used when the user closes the connect screen while a request is still
+   * pending (for example, a Trezor `getFirstPage` that hangs because the device
+   * is left locked). That pending request runs inside
+   * `KeyringController.withKeyringV2`, so it holds the global controller
+   * operation mutex; on Firefox the Suite Desktop transport keeps such calls
+   * pending indefinitely, which blocks Backup & Sync and leaves the account list
+   * stuck on "Syncing...".
+   *
+   * This cancels the pending Trezor Connect call directly via the bridge,
+   * deliberately bypassing `withKeyringForDevice`/`withKeyringV2` (which would
+   * deadlock on the same held mutex), so the keyring call can unwind and release
+   * the mutex.
+   *
+   * @param {string} deviceName - The hardware device being connected.
+   * @returns {Promise<void>}
+   */
+  async cancelHardwareConnect(deviceName) {
+    return cancelHardwareConnectBridge(deviceName);
   }
 
   /**

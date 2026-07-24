@@ -137,6 +137,21 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return (SuiteDesktopConnect as any).dispose();
   }
 
+  /**
+   * Cancel any in-flight Trezor Connect call. This is used when the user closes
+   * the connect screen while a request (such as a `getPublicKey` on a locked
+   * device) is still pending. On Firefox MV2 the Suite Desktop transport keeps
+   * such calls pending indefinitely, which keeps the `KeyringController`
+   * operation mutex held by the surrounding keyring call and blocks Backup &
+   * Sync. Cancelling settles the pending promise so that mutex is released. It
+   * deliberately acts on the Suite Desktop connection singleton rather than
+   * going through `withKeyringV2`, which would deadlock on the same held mutex.
+   */
+  async cancel(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (SuiteDesktopConnect as any).cancel();
+  }
+
   getPublicKey(params: {
     path: string;
     coin: string;

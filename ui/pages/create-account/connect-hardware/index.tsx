@@ -357,6 +357,21 @@ const ConnectHardwareForm = () => {
     }
   }, []);
 
+  // When the screen is closed via navigation/unmount while a connect request is
+  // still in flight (e.g. a Trezor left locked, loading forever), cancel it so
+  // the background releases the KeyringController operation mutex. Otherwise the
+  // hung call keeps the mutex held and Backup & Sync stays stuck on "Syncing...".
+  useEffect(() => {
+    return () => {
+      const pendingDevice = latestPendingDevice.current;
+      if (pendingDevice) {
+        actions
+          .cancelHardwareConnect(pendingDevice as HardwareDeviceNames)
+          .catch(() => undefined);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const previousScanRequest = previousActiveQrCodeScanRequest.current;
 
@@ -615,6 +630,12 @@ const ConnectHardwareForm = () => {
   // route change would be a no-op. The request ID is incremented to discard
   // any in-flight getPage responses.
   const onCancel = useCallback(() => {
+    // Capture the pending device before clearing it so we can cancel its
+    // in-flight connect request. A Trezor left locked keeps `getFirstPage`
+    // pending forever, which holds the KeyringController operation mutex and
+    // blocks Backup & Sync ("Syncing..."). Cancelling releases that mutex.
+    const pendingDevice = latestPendingDevice.current;
+
     setError(null);
     setSelectedAccounts([]);
     latestGetPageRequestId.current += 1;
@@ -623,6 +644,12 @@ const ConnectHardwareForm = () => {
     setHardwareAccounts([]);
     setCurrentDevice(null);
     setUnlocked(false);
+
+    if (pendingDevice) {
+      actions
+        .cancelHardwareConnect(pendingDevice as HardwareDeviceNames)
+        .catch(() => undefined);
+    }
   }, [setCurrentDevice]);
 
   const renderError = () => {

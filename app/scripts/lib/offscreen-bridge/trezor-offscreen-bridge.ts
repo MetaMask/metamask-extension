@@ -144,4 +144,26 @@ export class TrezorOffscreenBridge implements TrezorBridge {
       action: TrezorAction.getFeatures,
     }) as TrezorResponse<Features>;
   }
+
+  /**
+   * Cancel any in-flight Trezor Connect call. This is used when the user closes
+   * the connect screen while a request (such as a `getPublicKey` on a locked
+   * device) is still pending. Cancelling settles that pending promise, which
+   * lets the keyring operation holding the `KeyringController` operation mutex
+   * unwind and release it. It deliberately does not go through `withKeyringV2`,
+   * which would deadlock on the same held mutex.
+   */
+  cancel() {
+    return new Promise<void>((resolve) => {
+      chrome.runtime.sendMessage(
+        {
+          target: OffscreenCommunicationTarget.trezorOffscreen,
+          action: TrezorAction.cancel,
+        },
+        () => {
+          resolve();
+        },
+      );
+    });
+  }
 }

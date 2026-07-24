@@ -13,6 +13,7 @@ const mockEthereumSignTransaction = jest.fn();
 const mockEthereumSignMessage = jest.fn();
 const mockEthereumSignTypedData = jest.fn();
 const mockGetFeatures = jest.fn();
+const mockCancel = jest.fn();
 
 jest.mock('@trezor/connect-web', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,6 +30,7 @@ jest.mock('@trezor/connect-web', () => ({
     ethereumSignTypedData: (...args: unknown[]) =>
       mockEthereumSignTypedData(...args),
     getFeatures: (...args: unknown[]) => mockGetFeatures(...args),
+    cancel: (...args: unknown[]) => mockCancel(...args),
   },
   DEVICE: { CONNECT: 'device-connect' },
   DEVICE_EVENT: 'DEVICE_EVENT',
@@ -265,6 +267,24 @@ describe('Trezor Offscreen', () => {
       );
 
       expect(mockDispose).toHaveBeenCalledTimes(1);
+      expect(sendResponse).toHaveBeenCalledWith();
+    });
+  });
+
+  describe('cancel', () => {
+    it('cancels the in-flight Trezor connection', () => {
+      const sendResponse = jest.fn();
+
+      capturedMessageListener(
+        {
+          target: OffscreenCommunicationTarget.trezorOffscreen,
+          action: TrezorAction.cancel,
+        },
+        undefined,
+        sendResponse,
+      );
+
+      expect(mockCancel).toHaveBeenCalledTimes(1);
       expect(sendResponse).toHaveBeenCalledWith();
     });
   });

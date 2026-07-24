@@ -1542,6 +1542,28 @@ export function forgetDevice(
   };
 }
 
+/**
+ * Cancel an in-flight hardware-wallet connect request.
+ *
+ * Used when the user closes the connect screen while a request is still pending
+ * (for example a Trezor `getFirstPage` that hangs because the device is left
+ * locked). Cancelling releases the global KeyringController operation mutex that
+ * the hung call holds, which otherwise blocks Backup & Sync and leaves the
+ * account list stuck on "Syncing...".
+ *
+ * @param deviceName - The hardware device being connected.
+ */
+export async function cancelHardwareConnect(
+  deviceName: HardwareDeviceNames,
+): Promise<void> {
+  log.debug(`background.cancelHardwareConnect`, deviceName);
+  try {
+    await submitRequestToBackground('cancelHardwareConnect', [deviceName]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 // TODO: Define an Account Type for the return type of this method and anywhere
 // else dealing with accounts.
 export function connectHardware(

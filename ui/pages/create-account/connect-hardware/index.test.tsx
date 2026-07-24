@@ -51,6 +51,7 @@ const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 const mockForgetDevice = jest.fn().mockResolvedValue(undefined);
 const mockUnlockHardwareWalletAccountsAction = jest.fn();
 const mockUnlockHardwareWalletAccounts = jest.fn().mockResolvedValue(undefined);
+const mockCancelHardwareConnect = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
   connectHardware: (...args: unknown[]) => {
@@ -58,6 +59,8 @@ jest.mock('../../../store/actions', () => ({
     return mockConnectHardware;
   },
   checkHardwareStatus: () => mockCheckHardwareStatus,
+  cancelHardwareConnect: (...args: unknown[]) =>
+    mockCancelHardwareConnect(...args),
   forgetDevice: () => mockForgetDevice,
   showAlert: () => ({ type: 'SHOW_ALERT', payload: '' }),
   hideAlert: () => ({ type: 'HIDE_ALERT' }),
@@ -477,6 +480,53 @@ describe('ConnectHardwareForm', () => {
       });
 
       expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+    });
+  });
+
+  describe('cancelHardwareConnect', () => {
+    it('cancels an in-flight connect when the screen is closed (unmounted) while loading', async () => {
+      // A locked Trezor leaves `connectHardware` pending forever; closing the
+      // screen must cancel it so the background releases the keyring mutex and
+      // Backup & Sync does not stay stuck on "Syncing...".
+      mockConnectHardware.mockReturnValue(new Promise(() => undefined));
+      const mockStore = configureMockStore([thunk])(createMockState());
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalled();
+      });
+
+      unmount();
+
+      expect(mockCancelHardwareConnect).toHaveBeenCalledWith(
+        HardwareDeviceNames.trezor,
+      );
+    });
+
+    it('does not cancel after a connection has successfully completed', async () => {
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(
+          screen.getAllByText(tEn('selectAnAccount')).length,
+        ).toBeGreaterThan(0);
+      });
+
+      unmount();
+
+      expect(mockCancelHardwareConnect).not.toHaveBeenCalled();
     });
   });
 
