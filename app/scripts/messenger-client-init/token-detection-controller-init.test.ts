@@ -51,6 +51,7 @@ describe('TokenDetectionControllerInit', () => {
       useExternalServices: expect.any(Function),
       useTokenDetection: expect.any(Function),
       tokenListService: expect.any(Object),
+      isDeprecated: expect.any(Function),
     });
   });
 });

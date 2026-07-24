@@ -2,7 +2,9 @@ import {
   MultichainAssetsRatesController,
   MultichainAssetsRatesControllerMessenger,
 } from '@metamask/assets-controllers';
+import { getIsDeprecatedController } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from '../types';
+import { MultichainAssetsRatesControllerInitMessenger } from '../messengers/multichain/multichain-assets-rates-controller-messenger';
 
 /**
  * Initialize the Multichain Assets Rate controller.
@@ -14,12 +16,22 @@ import { MessengerClientInitFunction } from '../types';
  */
 export const MultichainAssetsRatesControllerInit: MessengerClientInitFunction<
   MultichainAssetsRatesController,
-  MultichainAssetsRatesControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+  MultichainAssetsRatesControllerMessenger,
+  MultichainAssetsRatesControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   const messengerClient = new MultichainAssetsRatesController({
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsRatesController,
     interval: 1000 * 60 * 3, // 3 mins
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'MultichainAssetsRatesController',
+      );
+    },
   });
 
   return {

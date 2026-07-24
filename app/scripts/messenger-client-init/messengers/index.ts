@@ -33,10 +33,13 @@ import {
 } from './core-backend';
 import {
   getMultichainBalancesControllerMessenger,
+  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
+  getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
+  getMultichainAssetsRatesControllerInitMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -500,15 +503,15 @@ export const MESSENGER_FACTORIES = {
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsControllerInitMessenger,
   },
   MultichainAssetsRatesController: {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
   },
   MultichainBalancesController: {
     getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,

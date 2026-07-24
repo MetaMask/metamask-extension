@@ -2,7 +2,9 @@ import {
   MultichainAssetsController,
   MultichainAssetsControllerMessenger,
 } from '@metamask/assets-controllers';
+import { getIsDeprecatedController } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from '../types';
+import { MultichainAssetsControllerInitMessenger } from '../messengers/multichain/multichain-assets-controller-messenger';
 
 /**
  * Initialize the Multichain Assets controller.
@@ -14,11 +16,21 @@ import { MessengerClientInitFunction } from '../types';
  */
 export const MultichainAssetsControllerInit: MessengerClientInitFunction<
   MultichainAssetsController,
-  MultichainAssetsControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+  MultichainAssetsControllerMessenger,
+  MultichainAssetsControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState }) => {
   const messengerClient = new MultichainAssetsController({
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsController,
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'MultichainAssetsController',
+      );
+    },
   });
 
   return {
