@@ -179,6 +179,24 @@ describe('send utils', () => {
 
       expect(result).toBeDefined();
     });
+
+    it('encodes decimal amount strings as base-10 (regression for #40456)', () => {
+      // The `amount` argument is the user-entered token count; it must be
+      // interpreted as decimal. Previously the helper hex-prefixed the input,
+      // so `"10"` (decimal ten) was encoded as `0x10` (= sixteen). Inspect the
+      // exact argument the encoder receives rather than its (mocked) output.
+      encode.mockClear();
+      generateERC1155TransferData({
+        toAddress: '0x0',
+        fromAddress: '0x0',
+        tokenId: '1',
+        amount: '10',
+      });
+      const encodedArgs = encode.mock.calls[0][1];
+      // The 4th positional encoder argument is the transfer amount.
+      expect(encodedArgs[3]).toStrictEqual(BigInt(10));
+      expect(encodedArgs[3]).not.toStrictEqual(BigInt(16));
+    });
   });
 
   describe('getAssetTransferData', () => {
