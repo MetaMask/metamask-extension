@@ -75,7 +75,6 @@ describe('remove-snap-account confirmation', () => {
     );
     await waitFor(() => {
       expect(getByText(messages.removeAccount.message)).toBeInTheDocument();
-      expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });
