@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   Box,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -72,10 +75,11 @@ const AddBlockExplorerModal = ({
         padding={4}
         width={BlockSize.Full}
       >
-        <ButtonPrimary
-          width={BlockSize.Full}
-          disabled={Boolean(error)}
-          size={ButtonPrimarySize.Lg}
+        <Button
+          isFullWidth
+          isDisabled={Boolean(error)}
+          size={ButtonSize.Lg}
+          variant={ButtonVariant.Primary}
           onClick={async () => {
             if (url) {
               onAdded(url);
@@ -83,7 +87,7 @@ const AddBlockExplorerModal = ({
           }}
         >
           {t('addUrl')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </Box>
   );

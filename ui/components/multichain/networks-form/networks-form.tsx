@@ -2,9 +2,9 @@ import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Button as DSButton,
-  ButtonSize as DSButtonSize,
-  ButtonVariant as DSButtonVariant,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconName,
 } from '@metamask/design-system-react';
 import {
@@ -49,8 +49,6 @@ import {
 import {
   Box,
   ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -468,9 +466,9 @@ export const NetworksForm = ({
         paddingBottom={2}
       >
         {onAddFromChainlist && !existingNetwork ? (
-          <DSButton
-            variant={DSButtonVariant.Secondary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
@@ -478,7 +476,7 @@ export const NetworksForm = ({
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
-          </DSButton>
+          </Button>
         ) : null}
 
         <FormTextField
@@ -814,26 +812,27 @@ export const NetworksForm = ({
         width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
-          <DSButton
-            variant={DSButtonVariant.Primary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
             className="w-full rounded-xl"
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </DSButton>
+          </Button>
         ) : (
-          <ButtonPrimary
-            disabled={isSaveDisabled}
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            isFullWidth
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Box>
     </Box>
