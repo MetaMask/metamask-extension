@@ -224,8 +224,6 @@ test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/
 test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-validation.spec.ts                       @MetaMask/qa @MetaMask/extension-platform
-test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform
-test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
@@ -252,6 +250,11 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # CI, background process, and platform infrastructure. Changes to
 # config files, dotfiles, and core platform files require approval,
 # as they affect build and release outcomes and developer experience.
+
+# Performance Quality Gates
+test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+shared/constants/benchmarks.ts                                        @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
 
 # Lint
 /.editorconfig                                        @MetaMask/extension-platform
