@@ -2,9 +2,6 @@ import HomePage from './homepage';
 import TokensTab from './tokens-tab';
 
 class NonEvmHomepage extends HomePage {
-  private readonly receiveButtonTestId =
-    '[data-testid="coin-overview-receive"]';
-
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
@@ -16,10 +13,11 @@ class NonEvmHomepage extends HomePage {
     );
   }
 
-  async clickOnReceiveButton(): Promise<void> {
-    console.log('Click Receive on non-EVM homepage');
-    await this.driver.clickElement(this.receiveButtonTestId);
-  }
+  // Receive is clicked via the inherited HomePage.clickOnReceiveButton
+  // (matches the visible "Receive" button label). A previous override matched
+  // `[data-testid="coin-overview-receive"]`, which no longer exists on current
+  // main: when Receive is the only enabled overflow action (typical for
+  // non-EVM accounts) CoinButtons renders it as `coin-overview-default`.
 }
 
 export default NonEvmHomepage;

@@ -53,7 +53,8 @@ class SelectNetwork {
     tag: 'h4',
   };
 
-  private readonly showTestNetworksToggle = '.toggle-button';
+  private readonly showTestNetworksToggle =
+    'label.toggle-button:has([data-testid="networks-page-show-test-networks"])';
 
   private readonly networksPageSuccessToast = {
     testId: 'networks-page-network-success-toast',
