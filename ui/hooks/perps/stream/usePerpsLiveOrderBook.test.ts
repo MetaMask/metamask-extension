@@ -1,7 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
-import { usePerpsLiveOrderBook } from './usePerpsLiveOrderBook';
+import {
+  resetOrderBookAggregatedSubscriptionGenerationForTests,
+  usePerpsLiveOrderBook,
+} from './usePerpsLiveOrderBook';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -24,6 +27,7 @@ const mockSetActiveOrderBookAggregatedSubscriptionId = jest.fn();
 describe('usePerpsLiveOrderBook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetOrderBookAggregatedSubscriptionGenerationForTests();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUsePerpsChannel.mockReturnValue({
       data: null,
@@ -91,7 +95,7 @@ describe('usePerpsLiveOrderBook', () => {
   });
 
   describe('aggregated channel', () => {
-    it('activates and deactivates the aggregated stream with nSigFigs/mantissa', () => {
+    it('activates and deactivates the aggregated stream with a unique subscription identity', () => {
       const { unmount } = renderHook(() =>
         usePerpsLiveOrderBook({
           symbol: 'BTC',
@@ -110,13 +114,13 @@ describe('usePerpsLiveOrderBook', () => {
             levels: 20,
             nSigFigs: 3,
             mantissa: 5,
-            subscriptionId: 'BTC:3:5:0',
+            subscriptionId: 'BTC:3:5:1',
           },
         ],
       );
       expect(
         mockSetActiveOrderBookAggregatedSubscriptionId,
-      ).toHaveBeenCalledWith('BTC:3:5:0');
+      ).toHaveBeenCalledWith('BTC:3:5:1');
 
       unmount();
 
@@ -124,6 +128,10 @@ describe('usePerpsLiveOrderBook', () => {
         'perpsDeactivateOrderBookAggregatedStream',
         [],
       );
+      // Deregister so late packets are rejected while the panel is closed.
+      expect(
+        mockSetActiveOrderBookAggregatedSubscriptionId,
+      ).toHaveBeenLastCalledWith(null);
     });
 
     it('reads from the orderBookAggregated channel', () => {
@@ -143,7 +151,25 @@ describe('usePerpsLiveOrderBook', () => {
       expect(getChannel(streamManager as never)).toBe(orderBookAggregated);
     });
 
-    it('folds aggregation params into the reset key so grouping changes drop stale rows', () => {
+    it('allocates a never-reused generation so repeated configs get distinct identities', () => {
+      const { unmount: unmountFirst } = renderHook(() =>
+        usePerpsLiveOrderBook({
+          symbol: 'BTC',
+          channel: 'orderBookAggregated',
+          nSigFigs: 3,
+          mantissa: 2,
+        }),
+      );
+
+      const firstId = mockUsePerpsChannel.mock.calls[0][2];
+      expect(firstId).toBe('BTC:3:2:1');
+      unmountFirst();
+
+      mockUsePerpsChannel.mockClear();
+      mockSubmitRequestToBackground.mockClear();
+      mockSetActiveOrderBookAggregatedSubscriptionId.mockClear();
+
+      // Same config after close → reopen must not reuse the prior identity.
       renderHook(() =>
         usePerpsLiveOrderBook({
           symbol: 'BTC',
@@ -153,9 +179,9 @@ describe('usePerpsLiveOrderBook', () => {
         }),
       );
 
-      const resetKey = mockUsePerpsChannel.mock.calls[0][2];
-      // Trailing `:0` is the reconnect nonce (bumped by reconnect()).
-      expect(resetKey).toBe('BTC:3:2:0');
+      const secondId = mockUsePerpsChannel.mock.calls[0][2];
+      expect(secondId).toBe('BTC:3:2:2');
+      expect(secondId).not.toBe(firstId);
     });
 
     it('keeps the raw channel reset key symbol-only', () => {
@@ -194,7 +220,13 @@ describe('usePerpsLiveOrderBook', () => {
         }),
       );
 
+      const firstId = mockSubmitRequestToBackground.mock.calls.find(
+        ([action]) => action === 'perpsActivateOrderBookAggregatedStream',
+      )?.[1]?.[0]?.subscriptionId;
+      expect(firstId).toBe('BTC:3::1');
+
       mockSubmitRequestToBackground.mockClear();
+      mockSetActiveOrderBookAggregatedSubscriptionId.mockClear();
 
       act(() => {
         result.current.reconnect();
@@ -214,13 +246,13 @@ describe('usePerpsLiveOrderBook', () => {
             levels: undefined,
             nSigFigs: 3,
             mantissa: undefined,
-            subscriptionId: 'BTC:3::1',
+            subscriptionId: 'BTC:3::2',
           },
         ],
       );
       expect(
         mockSetActiveOrderBookAggregatedSubscriptionId,
-      ).toHaveBeenCalledWith('BTC:3::1');
+      ).toHaveBeenCalledWith('BTC:3::2');
     });
   });
 });

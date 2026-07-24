@@ -290,4 +290,72 @@ describe('usePerpsChannel', () => {
     expect(result.current.isInitialLoading).toBe(true);
     expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
   });
+
+  it('rejects a late packet after close so reopen does not render stale rows', () => {
+    const manager = new PerpsStreamManager();
+    manager.init('0xacc');
+
+    const closedBook: OrderBookData = {
+      bids: [
+        {
+          price: '100',
+          size: '1',
+          total: '1',
+          notional: '100',
+          totalNotional: '100',
+        },
+      ],
+      asks: [],
+      spread: '1',
+      spreadPercentage: '1',
+      midPrice: '100.5',
+      lastUpdated: 1,
+      maxTotal: '1',
+    };
+
+    const closedIdentity = 'BTC:5::1';
+    const reopenIdentity = 'BTC:5::2';
+
+    manager.setActiveOrderBookAggregatedSubscriptionId(closedIdentity);
+    manager.handleBackgroundUpdate({
+      channel: 'orderBookAggregated',
+      data: closedBook,
+      subscriptionId: closedIdentity,
+    });
+    expect(manager.orderBookAggregated.hasCachedData()).toBe(true);
+
+    // Close the panel: deregister and clear (mirrors unmount cleanup).
+    manager.setActiveOrderBookAggregatedSubscriptionId(null);
+    manager.orderBookAggregated.clearCache();
+
+    // Late packet from the closed subscription arrives while nothing is active.
+    manager.handleBackgroundUpdate({
+      channel: 'orderBookAggregated',
+      data: closedBook,
+      subscriptionId: closedIdentity,
+    });
+    expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+
+    // Reopen with a never-reused identity (same config, new generation).
+    manager.setActiveOrderBookAggregatedSubscriptionId(reopenIdentity);
+
+    mockUsePerpsStreamManager.mockReturnValue({
+      streamManager: manager,
+      isInitializing: false,
+      error: null,
+      selectedAddress: '0xacc',
+    });
+
+    const { result } = renderHook(() =>
+      usePerpsChannel(
+        (sm) => sm.orderBookAggregated,
+        EMPTY_ORDER_BOOK,
+        reopenIdentity,
+      ),
+    );
+
+    expect(result.current.data).toBeNull();
+    expect(result.current.isInitialLoading).toBe(true);
+    expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+  });
 });

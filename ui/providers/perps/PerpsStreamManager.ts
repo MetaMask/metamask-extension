@@ -339,11 +339,11 @@ class PerpsStreamManager {
 
   /**
    * Register the UI identity for the active aggregated order-book stream.
-   * Call synchronously when the grouping/symbol/reconnect identity changes so
-   * packets tagged with a prior identity are dropped before they hit the cache.
+   * Call synchronously when a subscription instance starts, and pass `null` on
+   * unmount / teardown so late packets are rejected until the next activation.
    *
-   * @param subscriptionId - Active identity, or `null` to accept untagged
-   * packets (e.g. when the aggregated panel is closed).
+   * @param subscriptionId - Active instance identity, or `null` when no
+   * aggregated subscription is live.
    */
   setActiveOrderBookAggregatedSubscriptionId(
     subscriptionId: string | null,
@@ -685,9 +685,10 @@ class PerpsStreamManager {
 
   /**
    * Whether an aggregated order-book emission matches the UI's active identity.
-   * When no active identity is registered, untagged packets are accepted so
-   * legacy/test callers keep working; once the UI registers an identity,
-   * every emission must carry a matching `subscriptionId`.
+   * When no active identity is registered (panel closed / between activations),
+   * every aggregated packet is rejected so a late emission cannot refill the
+   * cache. While a subscription is active, only matching `subscriptionId`s
+   * are accepted.
    *
    * @param subscriptionId - Identity tagged on the background emission.
    * @returns True when the packet may update the aggregated channels.
@@ -697,7 +698,7 @@ class PerpsStreamManager {
   ): boolean {
     const activeId = this.activeOrderBookAggregatedSubscriptionId;
     if (activeId === null) {
-      return true;
+      return false;
     }
     return subscriptionId === activeId;
   }
