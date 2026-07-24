@@ -61,11 +61,13 @@ describe('ImportNftsModal', () => {
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+    const { getByRole, getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled();
 
     // Select a network first
     const networkSelectorButton = getByTestId(
@@ -85,15 +87,19 @@ describe('ImportNftsModal', () => {
     fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText(messages.import.message)).toBeEnabled();
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).toBeEnabled();
   });
 
   it('should not enable the "Import" button when no network is selected', () => {
-    const { getByText, getByPlaceholderText } = renderWithProvider(
+    const { getByRole, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled();
 
     // Fill in valid address and tokenId but don't select a network
     const addressInput = getByPlaceholderText('0x...');
@@ -108,15 +114,19 @@ describe('ImportNftsModal', () => {
     });
 
     // Button should still be disabled without network selection
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled();
   });
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+    const { getByRole, getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled();
 
     // Select a network first
     const networkSelectorButton = getByTestId(
@@ -137,19 +147,25 @@ describe('ImportNftsModal', () => {
       target: { value: VALID_TOKENID },
     });
 
-    expect(getByText(messages.import.message)).not.toBeEnabled(); // Invalid token address, valid token id
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled(); // Invalid token address, valid token id
 
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
 
-    expect(getByText(messages.import.message)).toBeEnabled(); // Valid token address, valid token id
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).toBeEnabled(); // Valid token address, valid token id
 
     fireEvent.change(tokenIdInput, {
       target: { value: INVALID_TOKENID },
     });
 
-    expect(getByText(messages.import.message)).not.toBeEnabled(); // Valid token address, invalid token id
+    expect(
+      getByRole('button', { name: messages.import.message }),
+    ).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
