@@ -25,6 +25,7 @@ import {
   selectTokens,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
+import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -102,18 +103,13 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
- * unsupported, providers/tokens fetched-but-empty) and then routes into the
- * native buy flow: an intent with a supported `assetId` pre-selects the token
- * and opens the build-quote page; without one it opens the token-selection
- * page; an unsupported `assetId` raises the unsupported modal. The gate is
- * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
- * Portfolio redirect).
+ * When `rampsEnabled` is on:
+ * - Wallets that have **never** connected to Portfolio → in-app Buy (geo gates).
+ * - Wallets that **have** connected to Portfolio → open Portfolio (hedge while
+ *   order-history Profile Sync is still rolling out; returning buyers keep
+ *   Portfolio until migration lands).
  *
- * Geolocation is resolved on demand via the background `GeolocationController`
- * (mobile parity — it does not fetch at startup, so reading synced state alone
- * would fail closed). Any loading/indeterminate state fails open; only a
- * settled, definitively-blocking state raises a modal.
+ * When the flag is off → unchanged Portfolio redirect for everyone.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
@@ -131,6 +127,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -138,6 +135,13 @@ export default function useRampsNavigation() {
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
+        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        return true;
+      }
+
+      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
+      // migration can flip them onto native Buy.
+      if (everConnectedToPortfolio) {
         openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
@@ -206,6 +210,7 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      everConnectedToPortfolio,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
