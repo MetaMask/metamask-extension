@@ -1,8 +1,9 @@
 import { RpcEndpointType } from '@metamask/network-controller';
+import { Tag } from '@metamask/design-system-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { infuraProjectId } from '../../../../shared/constants/network';
-import { Box, Tag, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   Display,
   FlexDirection,
@@ -87,7 +88,7 @@ const RpcListItem = ({
           {isRpcFailoverEnabled &&
           rpcEndpoint.failoverUrls &&
           rpcEndpoint.failoverUrls.length > 0 ? (
-            <Tag label={t('failover')} display={Display.Inline} />
+            <Tag className="inline-flex">{t('failover')}</Tag>
           ) : null}
         </Text>
       </Box>

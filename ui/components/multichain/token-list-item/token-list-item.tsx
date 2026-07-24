@@ -5,7 +5,7 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
+import { Tag, Button, ButtonVariant } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -39,7 +39,6 @@ import {
   ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
-  Tag,
   Text,
 } from '../../component-library';
 import { MarketClosedModal } from '../../app/assets/market-closed-modal';
@@ -384,12 +383,12 @@ export const TokenListItemComponent = ({
                 </Text>
               )}
               {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
-                <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
+                <Tag>{ACCOUNT_TYPE_LABELS[accountType]}</Tag>
               )}
               {isRWAToken ? (
                 <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />
               ) : null}
-              {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
+              {isNoFeeAsset && <Tag>{t('bridgeNoMMFee')}</Tag>}
             </Box>
 
             {showScamWarning ? (

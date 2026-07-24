@@ -22,6 +22,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   TextVariant,
@@ -53,7 +54,6 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { getURLHost } from '../../../helpers/utils/util';
 import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
-import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
@@ -282,11 +282,11 @@ export const DappConnectionControlBar = memo(() => {
                 </Text>
                 {showNotConnectedState && (
                   <Tag
-                    label={t('statusNotConnected')}
-                    textVariant={TextVariant.BodyXs}
                     className="dapp-connection-control-bar__not-connected-tag"
                     data-testid="dapp-connection-control-bar__not-connected-tag"
-                  />
+                  >
+                    {t('statusNotConnected')}
+                  </Tag>
                 )}
               </Box>
             )}
