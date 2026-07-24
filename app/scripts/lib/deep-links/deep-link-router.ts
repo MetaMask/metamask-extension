@@ -18,7 +18,6 @@ import {
   VALID,
 } from '../../../../shared/lib/deep-links/verify';
 import { BaseUrl } from '../../../../shared/constants/urls';
-import { canBypassDeepLinkInterstitialAsync } from '../../../../shared/lib/deep-links/routes/interstitial-bypass-async';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -183,14 +182,7 @@ export class DeepLinkRouter extends EventEmitter<{
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        if (
-          await this.canSkipInterstitial(
-            parsed.signature,
-            requestOrigin,
-            parsed.route,
-            url,
-          )
-        ) {
+        if (this.canSkipInterstitial(parsed.signature, requestOrigin)) {
           if ('redirectTo' in parsed.destination) {
             link = parsed.destination.redirectTo.toString();
           } else {
@@ -274,19 +266,11 @@ export class DeepLinkRouter extends EventEmitter<{
    *
    * @param signatureStatus - The signature status of the deep link.
    * @param requestOrigin - The origin of the page that initiated the navigation.
-   * @param route - The parsed deep-link route.
-   * @param deepLinkUrl - The original deep-link URL.
    */
-  async canSkipInterstitial(
+  canSkipInterstitial(
     signatureStatus: SignatureStatus,
     requestOrigin?: string,
-    route?: ParsedDeepLink['route'],
-    deepLinkUrl?: URL,
-  ): Promise<boolean> {
-    if (await canBypassDeepLinkInterstitialAsync(route, deepLinkUrl)) {
-      return true;
-    }
-
+  ): boolean {
     if (requestOrigin && TRUSTED_ORIGINS.has(requestOrigin)) {
       return true;
     }

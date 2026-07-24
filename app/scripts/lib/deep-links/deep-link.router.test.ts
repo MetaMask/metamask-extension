@@ -6,7 +6,6 @@ import {
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
-import { canBypassDeepLinkInterstitialAsync } from '../../../../shared/lib/deep-links/routes/interstitial-bypass-async';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
 
@@ -38,11 +37,6 @@ const parseMock = parse as jest.MockedFunction<typeof parse>;
 jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
-
-jest.mock('../../../../shared/lib/deep-links/routes/interstitial-bypass-async');
-const canBypassDeepLinkInterstitialMock = jest.mocked(
-  canBypassDeepLinkInterstitialAsync,
-);
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
 jest.mock('../../../../shared/lib/mv3.utils', () => ({
@@ -333,17 +327,14 @@ describe('DeepLinkRouter', () => {
       });
     });
 
-    describe('skipInterstitial routes', () => {
+    describe('unsigned asset routes', () => {
       const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
       const WARB_ASSET_ID =
         'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
       const DAI_ASSET_ID =
         'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
 
-      const buildAssetSkipInterstitialTestCase = (
-        assetId: string,
-        { bypassInterstitial }: { bypassInterstitial: boolean },
-      ) => {
+      const buildAssetInterstitialTestCase = (assetId: string) => {
         const encodedAssetId = encodeURIComponent(assetId);
         const chainId = assetId.split('/')[0];
 
@@ -357,47 +348,32 @@ describe('DeepLinkRouter', () => {
             },
             route: { pathname: '/asset' },
           } as ParsedDeepLink,
-          expectedUrl: bypassInterstitial
-            ? `${EXTENSION_HOME}#asset/${chainId}/${encodedAssetId}`
-            : `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+          expectedUrl: `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
         };
       };
 
-      type SkipInterstitialRouteTestCase = {
+      type AssetRouteTestCase = {
         description: string;
         url: string;
         parsed: ParsedDeepLink;
         expectedUrl: string;
-        arrange?: () => void;
       };
 
-      const skipInterstitialRouteCases: SkipInterstitialRouteTestCase[] = [
+      const assetRouteCases: AssetRouteTestCase[] = [
         {
           description:
             'shows interstitial for unsigned unknown/scam asset links',
-          ...buildAssetSkipInterstitialTestCase(WARB_ASSET_ID, {
-            bypassInterstitial: false,
-          }),
-          arrange: () => {
-            canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(false);
-          },
+          ...buildAssetInterstitialTestCase(WARB_ASSET_ID),
         },
         {
-          description:
-            'redirects unsigned known-safe asset links directly without interstitial',
-          ...buildAssetSkipInterstitialTestCase(DAI_ASSET_ID, {
-            bypassInterstitial: true,
-          }),
-          arrange: () => {
-            canBypassDeepLinkInterstitialMock.mockResolvedValueOnce(true);
-          },
+          description: 'shows interstitial for unsigned known-safe asset links',
+          ...buildAssetInterstitialTestCase(DAI_ASSET_ID),
         },
       ];
 
-      it.each(skipInterstitialRouteCases)(
+      it.each(assetRouteCases)(
         '$description',
-        async (testCase: SkipInterstitialRouteTestCase) => {
-          testCase.arrange?.();
+        async (testCase: AssetRouteTestCase) => {
           parseMock.mockResolvedValue(testCase.parsed);
           await onBeforeRequest?.({
             tabId: 1,
