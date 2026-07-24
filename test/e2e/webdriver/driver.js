@@ -1289,6 +1289,7 @@ class Driver {
    * @returns {Promise<void>} promise that resolves once the switch is complete
    */
   async switchToFrame(element) {
+    console.log('Switching to frame', element);
     await this.driver.switchTo().frame(element);
   }
 
@@ -1299,6 +1300,7 @@ class Driver {
    * @returns {Promise<void>} promise that resolves once the switch is complete
    */
   async switchToDefaultContent() {
+    console.log('Switching to default content');
     await this.driver.switchTo().defaultContent();
   }
 
