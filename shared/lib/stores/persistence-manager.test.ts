@@ -576,6 +576,54 @@ describe('PersistenceManager', () => {
         );
       });
 
+      it('emits promotion telemetry when OnSuspend takes ownership after an inferred trigger', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(2);
+        expect(mockedCaptureMessage).toHaveBeenNthCalledWith(
+          1,
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-shutdown',
+              'persistence.shutdownTrigger': ShutdownTrigger.Reactive,
+            }),
+          }),
+        );
+        expect(mockedCaptureMessage).toHaveBeenNthCalledWith(
+          2,
+          'MetaMask - writes suspended: shutdown ownership promoted',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-suspended-promoted',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+              'persistence.previousShutdownTrigger': ShutdownTrigger.Reactive,
+            }),
+          }),
+        );
+      });
+
+      it('does not emit promotion telemetry when OnSuspend was already the owner', () => {
+        manager.setShutdownSuspensionEnabled(true);
+
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        manager.suspendWrites(ShutdownTrigger.Reactive);
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes suspended: browser shutting down',
+          expect.objectContaining({
+            tags: expect.objectContaining({
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
       it('defaults the telemetry trigger to unknown when omitted', () => {
         manager.setShutdownSuspensionEnabled(true);
 

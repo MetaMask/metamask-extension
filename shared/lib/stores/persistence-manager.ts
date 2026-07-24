@@ -410,6 +410,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
     this.#pendingShutdownTrigger = null;
 
+    const previousTrigger = this.#shutdownTrigger;
+
     // `OnSuspend` is authoritative: inferred triggers must not demote it.
     // Otherwise record the latest trigger so recovery knows which path owns
     // the suspension.
@@ -427,14 +429,34 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       this.#shutdownReported = true;
       // Low-volume, deduplicated telemetry so we can measure how often
       // shutdown-suspension triggers without the noise/severity of an exception.
+      // Tag the effective owner (`#shutdownTrigger`), not merely the caller.
       captureMessage('MetaMask - writes suspended: browser shutting down', {
         level: 'info',
         tags: {
           'persistence.event': 'writes-suspended-shutdown',
-          'persistence.shutdownTrigger': trigger,
+          'persistence.shutdownTrigger': this.#shutdownTrigger,
         },
         fingerprint: ['persistence-event', 'writes-suspended-shutdown'],
       });
+    } else if (
+      trigger === ShutdownTrigger.OnSuspend &&
+      previousTrigger !== null &&
+      previousTrigger !== ShutdownTrigger.OnSuspend
+    ) {
+      // Inferred suspension was later confirmed by the lifecycle signal.
+      // Emit a second low-volume event so we can count promotions separately.
+      captureMessage(
+        'MetaMask - writes suspended: shutdown ownership promoted',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'writes-suspended-promoted',
+            'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            'persistence.previousShutdownTrigger': previousTrigger,
+          },
+          fingerprint: ['persistence-event', 'writes-suspended-promoted'],
+        },
+      );
     }
 
     // `Reactive` and `IdbClose` are inferred heuristics that can misfire (e.g.
