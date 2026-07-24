@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -11,15 +11,15 @@ import DeleteActivityModal from './delete-activity-modal';
 
 export const DeleteActivityItem = () => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteActivity = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.AccountReset,
-      properties: {},
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountReset)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .build(),
+    );
     setShowDeleteModal(true);
   };
 

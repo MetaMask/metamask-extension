@@ -55,17 +55,19 @@ development/circular-deps.ts         @MetaMask/extension-security-team
 ui/components/component-library      @MetaMask/design-system-engineers
 tailwind.config.js                   @MetaMask/design-system-engineers
 
-# The Notifications team is responsible for code related to notifications
+# The Engagement team is responsible for code related to notifications.
 
-# Controllers
-**/controllers/metamask-notifications/**            @MetaMask/notifications
-**/controllers/push-platform-notifications/**       @MetaMask/notifications
+# Notifications - controllers and services
+app/scripts/controllers/push-notifications/**                     @MetaMask/engagement
+app/scripts/messenger-client-init/messengers/notifications/**    @MetaMask/engagement
+app/scripts/messenger-client-init/notifications/**               @MetaMask/engagement
 
-# UI
-**/metamask-notifications/**                        @MetaMask/notifications
-**/multichain/notification*/**                      @MetaMask/notifications
-**/pages/notification*/**                           @MetaMask/notifications
-**/utils/notification.util.ts                       @MetaMask/notifications
+# Notifications - UI
+**/metamask-notifications/**                                @MetaMask/engagement
+ui/pages/notifications/**                                         @MetaMask/engagement
+ui/pages/notification-details/**                                  @MetaMask/engagement
+ui/pages/notifications-settings/**                                @MetaMask/engagement
+ui/helpers/utils/notification.util.ts                             @MetaMask/engagement
 
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets
@@ -85,8 +87,17 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge/**                                          @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
-# Ramps team to own code for the ramps folder
-**/ramps/**                                           @MetaMask/ramp
+# Money Movement team (formerly Ramps) to own code for the ramps folder
+ui/hooks/ramps/                                       @MetaMask/money-movement
+ui/selectors/rampsController/                         @MetaMask/money-movement
+ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
+app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
+app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
+**/ramps/**                                           @MetaMask/money-movement
+
+# Product Safety Team
+**/product-safety/**                     @MetaMask/product-safety
 
 # Perps Team
 ui/pages/perps/ @MetaMask/perps
@@ -108,7 +119,10 @@ app/scripts/services/legacy-background-api-service.ts      @MetaMask/core-platfo
 app/scripts/services/legacy-background-api-service.test.ts @MetaMask/core-platform
 
 
-# Co-owned by Confirmations and Snaps
+# Co-owned by Extension Platform and Core Platform
+app/scripts/metamask-controller.js @MetaMask/extension-platform @MetaMask/core-platform
+
+# Co-owned by Confirmations and Core Platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
@@ -118,12 +132,16 @@ shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
 ui/pages/activity                               @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/details                                @MetaMask/core-extension-ux
 ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item         @MetaMask/core-extension-ux
+ui/pages/settings/notifications-tab/**          @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notification*/**       @MetaMask/core-extension-ux @MetaMask/engagement
+ui/components/multichain/notifications*/**      @MetaMask/core-extension-ux @MetaMask/engagement
 
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
@@ -135,21 +153,30 @@ ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @M
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 
 # Web3Auth / Onboarding
+app/scripts/services/oauth            @MetaMask/web3auth
 ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Web3Auth / Shield
-app/scripts/controller-init/claims              @MetaMask/web3auth
-app/scripts/controller-init/shield              @MetaMask/web3auth
-app/scripts/controller-init/subscription        @MetaMask/web3auth
-shared/lib/shield.ts                            @MetaMask/web3auth
-ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
-ui/components/app/shield-entry-modal            @MetaMask/web3auth
-ui/contexts/claims                              @MetaMask/web3auth
-ui/contexts/shield                              @MetaMask/web3auth
-ui/hooks/claims                                 @MetaMask/web3auth
-ui/hooks/subscription                           @MetaMask/web3auth
-ui/pages/shield                                 @MetaMask/web3auth
-ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+app/scripts/messenger-client-init/claims              @MetaMask/web3auth
+app/scripts/messenger-client-init/shield              @MetaMask/web3auth
+app/scripts/messenger-client-init/subscription        @MetaMask/web3auth
+shared/lib/shield.ts                                  @MetaMask/web3auth
+ui/components/app/modals/add-funds-modal              @MetaMask/web3auth
+ui/components/app/shield-entry-modal                  @MetaMask/web3auth
+ui/contexts/claims                                    @MetaMask/web3auth
+ui/contexts/shield                                    @MetaMask/web3auth
+ui/hooks/claims                                       @MetaMask/web3auth
+ui/hooks/subscription                                 @MetaMask/web3auth
+ui/pages/shield                                       @MetaMask/web3auth
+ui/pages/settings/transaction-shield-tab              @MetaMask/web3auth
+
+# Web3Auth / QrSync
+app/scripts/controllers/qr-sync                       @MetaMask/web3auth
+app/scripts/messenger-client-init/qr-sync             @MetaMask/web3auth
+app/scripts/messenger-client-init/messengers/qr-sync  @MetaMask/web3auth
+shared/constants/qr-sync.ts                           @MetaMask/web3auth
+ui/selectors/qr-sync                                  @MetaMask/web3auth
+ui/pages/settings/sync-accounts                       @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
@@ -203,7 +230,7 @@ test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/
 # Wallet Integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
 test/e2e/playwright/benchmark                                         @MetaMask/core-platform
-app/scripts/lib/createDefiReferralMiddleware.ts                       @MetaMask/core-platform
+app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts        @MetaMask/core-platform
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
@@ -252,6 +279,12 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # CI
 /.github/workflows/                                   @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/scripts/                                     @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+
+# Store submission
+/.github/workflows/upload-extension-to-cws.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/adjust-cws-rollout.yml                  @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/upload-extension-to-amo.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/scripts/release-create-gh-release.sh              @MetaMask/extension-security-team @MetaMask/release-team
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform
 development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
@@ -262,7 +295,6 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 # Build
 development/build/                                    @MetaMask/extension-platform @itsyoboieltr
 development/webpack/                                  @MetaMask/extension-platform @itsyoboieltr
-development/generate-lavamoat-policies.js             @MetaMask/extension-platform @itsyoboieltr
 /babel.config.js                                      @MetaMask/extension-platform
 /tsconfig.json                                        @MetaMask/extension-platform
 /tsconfig.*.json                                      @MetaMask/extension-platform
@@ -275,6 +307,17 @@ app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platfor
 ui/hooks/gator-permissions                           @MetaMask/delegation
 app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
 shared/lib/gator-permissions                         @MetaMask/delegation
+
+# Wallet Library initialization
+app/scripts/wallet-init/initialization*                                  @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/keyrings*                                        @MetaMask/accounts-engineers @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/remote-feature-flags*                            @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/approval-controller*            @MetaMask/confirmations
+app/scripts/wallet-init/instance-options/connectivity-controller*        @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/keyring-controller*             @MetaMask/accounts-engineers @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/network-controller*             @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/remote-feature-flag-controller* @MetaMask/extension-platform @MetaMask/core-platform
+app/scripts/wallet-init/instance-options/storage-service*                @MetaMask/extension-platform @MetaMask/core-platform
 
 # Snapshots – no code owners assigned
 # This allows anyone with write access to approve changes to any *.snap files.

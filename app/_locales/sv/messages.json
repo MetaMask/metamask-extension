@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "addAcquiredTokens": {
-    "message": "Lägg till de tokens du har skaffat med MetaMask"
-  },
   "addAlias": {
     "message": "Lägg till alias"
   },
@@ -175,14 +172,8 @@
   "custom": {
     "message": "Avancerat"
   },
-  "customToken": {
-    "message": "Anpassad token"
-  },
   "decimal": {
     "message": "Decimalprecision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
   "delete": {
     "message": "Radera"
@@ -336,9 +327,6 @@
   "metamaskVersion": {
     "message": "MetaMask-version"
   },
-  "mustSelectOne": {
-    "message": "Minst 1 token måste väljas."
-  },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
@@ -348,9 +336,6 @@
   },
   "networks": {
     "message": "Nätverk"
-  },
-  "nevermind": {
-    "message": "Strunt i det"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -370,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webbkamera hittades ej"
-  },
-  "notEnoughGas": {
-    "message": "Inte tillräckligt med gas"
   },
   "ofTextNofM": {
     "message": "av"
@@ -511,9 +493,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signatureRequest": {
-    "message": "Signaturbegäran"
   },
   "signed": {
     "message": "Signerat"

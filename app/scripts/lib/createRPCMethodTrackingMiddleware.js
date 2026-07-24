@@ -28,6 +28,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { getIframeProperties } from './getIframeProperties';
 
@@ -468,14 +469,16 @@ export default function createRPCMethodTrackingMiddleware({
           eventCategory,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties: eventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(eventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
@@ -581,14 +584,16 @@ export default function createRPCMethodTrackingMiddleware({
           fragmentPayload,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(properties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
       return callback();
     });

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "addAcquiredTokens": {
-    "message": "Dodajte stečene tokene koristeći MetaMask."
-  },
   "addAlias": {
     "message": "Dodaj pseudonim"
   },
@@ -178,14 +175,8 @@
   "custom": {
     "message": "Напредне опције"
   },
-  "customToken": {
-    "message": "Prilagođeni token"
-  },
   "decimal": {
     "message": "Decimale preciznosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "delete": {
     "message": "Избриши"
@@ -339,9 +330,6 @@
   "metamaskVersion": {
     "message": "MetaMask verzija"
   },
-  "mustSelectOne": {
-    "message": "Morate izabrati najmanje 1 token."
-  },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -351,9 +339,6 @@
   },
   "networks": {
     "message": "Mreže"
-  },
-  "nevermind": {
-    "message": "Nema veze"
   },
   "newAccountNumberName": {
     "message": "Nalog $1",
@@ -373,9 +358,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Nije nađena veb kamera"
-  },
-  "notEnoughGas": {
-    "message": "Nema dovoljno gasa"
   },
   "ofTextNofM": {
     "message": "od"
@@ -514,9 +496,6 @@
   },
   "sign": {
     "message": "Potpišite"
-  },
-  "signatureRequest": {
-    "message": "Zahtev za potpis"
   },
   "signed": {
     "message": "Potpisan"

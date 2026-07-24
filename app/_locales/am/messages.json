@@ -20,9 +20,6 @@
   "accountSelectionRequired": {
     "message": "መለያ መምረጥ ይኖርብዎታል!"
   },
-  "addAcquiredTokens": {
-    "message": "MetaMask በመጠቀም የገዟቸውን ተለዋጭ ስሞች ያክሉ"
-  },
   "addAlias": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -172,14 +169,8 @@
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
   },
-  "customToken": {
-    "message": "ብጁ ተለዋጭ ስም"
-  },
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -333,9 +324,6 @@
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
   },
-  "mustSelectOne": {
-    "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
-  },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
     "description": "User is important an account and needs to add a file to continue"
@@ -345,9 +333,6 @@
   },
   "networks": {
     "message": "አውታረ መረቦች"
-  },
-  "nevermind": {
-    "message": "ምንም አይደል"
   },
   "newAccountNumberName": {
     "message": "መለያ $1",
@@ -367,9 +352,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam አልተገኘም"
-  },
-  "notEnoughGas": {
-    "message": "በቂ ነዳጅ የለም"
   },
   "ofTextNofM": {
     "message": "ከ"
@@ -508,9 +490,6 @@
   },
   "sign": {
     "message": "ፈርም"
-  },
-  "signatureRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "signed": {
     "message": "ተፈርሟል"

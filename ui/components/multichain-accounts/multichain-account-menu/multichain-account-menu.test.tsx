@@ -4,7 +4,6 @@ import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -24,12 +23,18 @@ jest.mock('../../../../shared/lib/trace', () => {
 });
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -101,12 +106,7 @@ describe('MultichainAccountMenu', () => {
     state = mockState,
   ) => {
     const store = configureStore(state);
-    return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <MultichainAccountMenu {...props} />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
   };
 
   beforeEach(() => {
@@ -473,13 +473,14 @@ describe('MultichainAccountMenu', () => {
     }
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.AccountPinned,
-      category: MetaMetricsEventCategory.Accounts,
+      name: MetaMetricsEventName.AccountPinned,
       properties: {
+        category: MetaMetricsEventCategory.Accounts,
         pinned: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         pinned_count_after: 1,
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -504,13 +505,14 @@ describe('MultichainAccountMenu', () => {
     }
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.AccountHidden,
-      category: MetaMetricsEventCategory.Accounts,
+      name: MetaMetricsEventName.AccountHidden,
       properties: {
+        category: MetaMetricsEventCategory.Accounts,
         hidden: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hidden_count_after: 1,
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -525,14 +527,12 @@ describe('MultichainAccountMenu', () => {
     it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
       const store = configureStore(mockDefaultState);
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <MultichainAccountMenu
-            accountGroupId={groupId}
-            isRemovable={false}
-            isOpen
-            onToggle={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+        <MultichainAccountMenu
+          accountGroupId={groupId}
+          isRemovable={false}
+          isOpen
+          onToggle={() => undefined}
+        />,
         store,
       );
 

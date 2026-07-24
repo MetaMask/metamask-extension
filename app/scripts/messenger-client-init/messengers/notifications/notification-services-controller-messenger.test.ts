@@ -20,6 +20,8 @@ describe('getAuthenticationControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
+          'AuthenticatedUserStorageService:getNotificationPreferences',
+          'AuthenticatedUserStorageService:putNotificationPreferences',
           'NotificationServicesPushController:addPushNotificationLinks',
         ]),
       }),

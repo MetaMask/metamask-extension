@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Jums reikia pasirinkti paskyrą!"
   },
-  "addAcquiredTokens": {
-    "message": "Pridėkite žetonus, kuriuos gavote naudodamiesi „MetaMask“"
-  },
   "addAlias": {
     "message": "Pridėti alternatyvųjį vardą"
   },
@@ -181,14 +178,8 @@
   "custom": {
     "message": "Išplėstiniai"
   },
-  "customToken": {
-    "message": "Pritaikytas žetonas"
-  },
   "decimal": {
     "message": "Skaičiai po kablelio"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
   },
   "delete": {
     "message": "Ištrinti"
@@ -348,9 +339,6 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "mustSelectOne": {
-    "message": "Turite pasirinkti bent 1 žetoną."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -360,9 +348,6 @@
   },
   "networks": {
     "message": "Tinklai"
-  },
-  "nevermind": {
-    "message": "Nekreipti dėmesio"
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",
@@ -382,9 +367,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Internetinė vaizdo kamera nerasta"
-  },
-  "notEnoughGas": {
-    "message": "Nepakanka dujų"
   },
   "ofTextNofM": {
     "message": "nuo"
@@ -523,9 +505,6 @@
   },
   "sign": {
     "message": "Prisijunkite"
-  },
-  "signatureRequest": {
-    "message": "Parašo užklausa"
   },
   "signed": {
     "message": "Pasirašyta"

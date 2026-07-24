@@ -3,7 +3,7 @@ import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -35,7 +35,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
@@ -113,6 +113,7 @@ describe('BridgeQuotesModal', () => {
             {
               "best_quote_provider": "socket_across",
               "can_submit": true,
+              "feature_id": "unified_swap_bridge",
               "gas_included": false,
               "gas_included_7702": false,
               "is_best_quote": true,
@@ -140,7 +141,7 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesErc20Erc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {

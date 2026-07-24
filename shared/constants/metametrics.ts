@@ -136,15 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * Whether the event is a duplicate of an anonymized event.
-   */
-  isDuplicateAnonymizedEvent?: boolean;
-  /**
-   * The timestamp of the event. If provided, this timestamp will be used
-   * instead of the current time when sending to Segment.
-   */
-  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -302,6 +293,18 @@ export type SegmentEventPayload = {
     value?: number;
     currency?: string;
     category?: string;
+    /**
+     * The profile ID of the user if they have been signed in.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    profile_id?: string;
+    /**
+     * The canonical profile ID grouping profile IDs for the same person.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    canonical_profile_id?: string;
   };
   /**
    * The context the event occurred in.
@@ -532,11 +535,11 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
-   * The profile ID of the user if they have been signed in
+   * The canonical profile ID of the user if they have been signed in
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  profile_id?: string;
+  canonical_profile_id?: string;
   /**
    * The account type derived from the user's onboarding flow.
    */
@@ -748,7 +751,7 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user signs in
    */
-  ProfileId = 'profile_id',
+  CanonicalProfileId = 'canonical_profile_id',
   /**
    * Identifies the account type derived from the user's onboarding flow.
    */
@@ -774,8 +777,6 @@ export enum MetaMetricsUserTrait {
   /**
    * Whether the device is mobile or desktop.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).
@@ -866,6 +867,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -1002,6 +1004,14 @@ export enum MetaMetricsEventName {
   SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
+  SecurityCheckStarted = 'Security Check Started',
+  SecurityCheckQuestionAnswered = 'Security Check Question Answered',
+  SecurityCheckCompletedClean = 'Security Check Completed Clean',
+  SecurityCheckDismissed = 'Security Check Dismissed',
+  ScamWarningShown = 'Scam Warning Shown',
+  ScamWarningStopped = 'Scam Warning Stopped',
+  ScamWarningContactSupport = 'Scam Warning Contact Support',
+  ScamWarningProceeded = 'Scam Warning Proceeded',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -1028,7 +1038,7 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   ImportCustomTokenViewed = 'Import Custom Token Viewed',
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
-  TokenScreenOpened = 'Token Screen Opened',
+  TokenScreenViewed = 'Token Screen Viewed',
   TokenAdded = 'Token Added',
   LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1069,12 +1079,15 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  NftScreenViewed = 'NFT Screen Viewed',
   NftDetailsOpened = 'NFT Details Opened',
-  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiScreenViewed = 'DeFi Screen Viewed',
   DeFiDetailsOpened = 'DeFi Details Opened',
-  ActivityScreenOpened = 'Activity Screen Opened',
+  ActivityScreenViewed = 'Activity Screen Viewed',
   PerpsScreenViewed = 'Perp Screen Viewed',
   PerpsUiInteraction = 'Perp UI Interaction',
   PerpsTradeTransaction = 'Perp Trade Transaction',
@@ -1335,6 +1348,11 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
+export enum MetaMetricsEventVerificationMethod {
+  Password = 'password',
+  Passkey = 'passkey',
+}
+
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
   GasTimeout = 'gas_timeout',
@@ -1353,7 +1371,10 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
@@ -1428,4 +1449,9 @@ export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
+}
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
 }

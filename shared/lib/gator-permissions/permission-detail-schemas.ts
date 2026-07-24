@@ -16,6 +16,7 @@ import {
   convertAmountPerSecondToAmountPerPeriod,
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
+import { isMetaMaskFacilitatorAddress } from './facilitator-addresses';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -46,6 +47,16 @@ const requireStartTime = (permission: {
 };
 
 const alwaysVisible = () => true;
+
+function areOnlyMetaMaskFacilitatorAddresses(
+  addresses: string[] | null | undefined,
+): boolean {
+  if (!addresses?.length) {
+    return false;
+  }
+
+  return addresses.every(isMetaMaskFacilitatorAddress);
+}
 
 const TOKEN_APPROVAL_REVOCATION_METHODS: {
   key: string;
@@ -162,11 +173,22 @@ const permissionInfoSection: SchemaSection = {
     },
     { type: 'network', includeInViews: ['confirmation', 'reviewDetail'] },
     {
+      type: 'text',
+      labelKey: 'redeemers',
+      testId: 'confirmation-redeemer-metamask-facilitator',
+      getValue: () => ({ key: 'gatorPermissionsMetaMaskFacilitator' }),
+      isVisible: (ctx) =>
+        areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
+      includeInViews: ['confirmation', 'reviewDetail'],
+    },
+    {
       type: 'rule-address',
       labelKey: 'redeemer',
       testId: 'confirmation-redeemer',
       getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
-      isVisible: (ctx) => Boolean(ctx.redeemerAddresses?.length),
+      isVisible: (ctx) =>
+        Boolean(ctx.redeemerAddresses?.length) &&
+        !areOnlyMetaMaskFacilitatorAddresses(ctx.redeemerAddresses),
       includeInViews: ['confirmation', 'reviewDetail'],
     },
     {

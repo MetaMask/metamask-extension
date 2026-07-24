@@ -1,3 +1,4 @@
+import type { CaipAssetType } from '@metamask/utils';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../transactions-controller-utils';
 
@@ -7,12 +8,15 @@ const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
 const EVM_CHAIN_NAMESPACE = 'eip155:';
 
 export type TokenSearchResult = {
-  assetId: string;
+  assetId: CaipAssetType;
   symbol: string;
   decimals: number;
   name: string;
   iconUrl?: string;
   labels?: string[];
+  securityData?: {
+    resultType?: string;
+  };
 };
 
 export type TokenSearchPageInfo = {

@@ -30,9 +30,6 @@
   "accountSelectionRequired": {
     "message": "يجب عليك تحديد حساب!"
   },
-  "addAcquiredTokens": {
-    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
-  },
   "addAlias": {
     "message": "إضافة اسم مستعار"
   },
@@ -185,14 +182,8 @@
   "custom": {
     "message": "إعدادات متقدمة"
   },
-  "customToken": {
-    "message": "عملة رمزية مخصصة"
-  },
   "decimal": {
     "message": "دقة بالكسور العشرية"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
   },
   "delete": {
     "message": "حذف"
@@ -349,9 +340,6 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "mustSelectOne": {
-    "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
     "description": "User is important an account and needs to add a file to continue"
@@ -361,9 +349,6 @@
   },
   "networks": {
     "message": "الشبكات"
-  },
-  "nevermind": {
-    "message": "لا يهم"
   },
   "newAccountNumberName": {
     "message": "حساب $1",
@@ -383,9 +368,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "لم يتم العثور على كاميرا متصلة بالإنترنت"
-  },
-  "notEnoughGas": {
-    "message": "لا توجد عملات جاس كافية"
   },
   "ofTextNofM": {
     "message": "من"
@@ -524,9 +506,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"

@@ -96,7 +96,7 @@ describe('Popular Networks', function (this: Suite) {
     );
   });
 
-  it('delete the Arbitrum network', async function () {
+  it('disable the Arbitrum network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -110,7 +110,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.deleteNetwork('eip155:42161');
+        await selectNetworkDialog.disableNetwork('eip155:42161');
         await selectNetworkDialog.clickCloseButton();
         await headerNavbar.clickDrawerBackButton();
 

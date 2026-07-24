@@ -30,6 +30,21 @@ import ConnectHardwareForm, {
   TREZOR_HD_PATHS,
 } from '.';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockConnectHardware = jest.fn();
 const mockConnectHardwareAction = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
@@ -516,6 +531,23 @@ describe('ConnectHardwareForm', () => {
       await waitFor(() => {
         expect(screen.getByText(tEn('ledgerTimeout'))).toBeInTheDocument();
       });
+    });
+
+    it('displays the generic timeout error for non-Ledger timeout errors', async () => {
+      mockConnectHardware.mockRejectedValue(
+        new Error('Trezor getPublicKey timed out after 120000 ms'),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('hardwareWalletConnectionTimeout')),
+        ).toBeInTheDocument();
+      });
+      expect(screen.queryByText(tEn('ledgerTimeout'))).not.toBeInTheDocument();
     });
 
     it('displays U2F error message for non-Firefox browser', async () => {

@@ -461,6 +461,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setPerpsTabBadgeSeen', () => {
+    it('updates whether the Perps tab New badge has been seen', async () => {
+      await withController(({ controller }) => {
+        controller.setPerpsTabBadgeSeen(true);
+
+        expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setOnboardingDate', () => {
     it('set the onboardingDate', async () => {
       await withController(({ controller }) => {
@@ -846,6 +856,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -933,6 +944,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1010,6 +1022,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1096,6 +1109,7 @@ describe('AppStateController', () => {
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1294,6 +1308,7 @@ async function withController<ReturnValue>(
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'LegacyBackgroundApiService:setLocked',
     ],
     events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
@@ -1309,14 +1324,16 @@ async function withController<ReturnValue>(
 
   rootMessenger.registerActionHandler(
     'ApprovalController:addRequest',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
+  );
+
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setLocked',
+    jest.fn(),
   );
 
   return fn({
     controller: new AppStateController({
-      onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
       state,

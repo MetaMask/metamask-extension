@@ -111,10 +111,27 @@ function makeSendAssetsConfig(): BatchSellQuotesConfig['sendAssetsConfig'] {
   };
 }
 
+function makeQuotes(
+  assetIds: CaipAssetType[],
+): BatchSellQuotesResults['quotes'] {
+  return Object.fromEntries(
+    assetIds.map((assetId) => [
+      assetId,
+      {
+        asset: {} as never,
+        quote: {} as never,
+        hasQuote: true,
+        isLoadingQuote: false,
+      },
+    ]),
+  );
+}
+
 const defaultProps = {
   open: true,
   onClose: jest.fn(),
   sendAssetsConfig: makeSendAssetsConfig(),
+  quotes: makeQuotes([ASSET_A]),
   receivedAsset: buildReceivedAsset({
     assetId: 'eip155:1/erc20:0xUSDC' as CaipAssetType,
     symbol: 'USDC',
@@ -124,9 +141,10 @@ const defaultProps = {
   totalNetworkFee: '0.01',
   totalNetworkFeeFiat: '20',
   totalNetworkFeeAssetSymbol: 'ETH',
-  isInsufficientGasForFee: false,
   isBatchSellTradeAvailable: true,
-  totalNetworkfeeAreLoading: false,
+  totalNetworkFeeAreLoading: false,
+  totalNetworkFeeHasError: false,
+  quotesAreLoading: false,
 };
 
 describe('ReviewAndConfirmModal', () => {
@@ -155,12 +173,36 @@ describe('ReviewAndConfirmModal', () => {
     config[ASSET_B] = { ...config[ASSET_B], enabled: true };
 
     render(
-      <ReviewAndConfirmModal {...defaultProps} sendAssetsConfig={config} />,
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        sendAssetsConfig={config}
+        quotes={makeQuotes([ASSET_A, ASSET_B])}
+      />,
     );
 
     expect(
       screen.getByText('batchSellYouSellTokenCountPlural:2'),
     ).toBeInTheDocument();
+  });
+
+  it('excludes enabled assets that do not have a quote from the token count', () => {
+    const config = makeSendAssetsConfig();
+    config[ASSET_B] = { ...config[ASSET_B], enabled: true };
+
+    render(
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        sendAssetsConfig={config}
+        quotes={makeQuotes([ASSET_A])}
+      />,
+    );
+
+    expect(
+      screen.getByText('batchSellYouSellTokenCount:1'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('batchSellYouSellTokenCountPlural:2'),
+    ).not.toBeInTheDocument();
   });
 
   it('toggles the summary list when the youSell row is clicked', () => {
@@ -195,23 +237,7 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByText('sellAll')).toBeInTheDocument();
   });
 
-  it('renders the insufficient balance label when funds are insufficient', () => {
-    render(<ReviewAndConfirmModal {...defaultProps} isInsufficientGasForFee />);
-
-    expect(
-      screen.getByText('alertReasonInsufficientBalance'),
-    ).toBeInTheDocument();
-  });
-
-  it('disables the Sell all button when funds are insufficient', () => {
-    render(<ReviewAndConfirmModal {...defaultProps} isInsufficientGasForFee />);
-
-    expect(
-      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
-    ).toBeDisabled();
-  });
-
-  it('disables the Sell all button when the trade is unavailable', () => {
+  it('renders the insufficient balance label when trade is unavailable', () => {
     render(
       <ReviewAndConfirmModal
         {...defaultProps}
@@ -219,7 +245,35 @@ describe('ReviewAndConfirmModal', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
+    expect(
+      screen.getByText('alertReasonInsufficientBalance'),
+    ).toBeInTheDocument();
+  });
+
+  it('disables the submit button when trade is unavailable', () => {
+    render(
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        isBatchSellTradeAvailable={false}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
+    ).toBeDisabled();
+  });
+
+  it('disables the button and shows the fallback label when the trade is unavailable', () => {
+    render(
+      <ReviewAndConfirmModal
+        {...defaultProps}
+        isBatchSellTradeAvailable={false}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'alertReasonInsufficientBalance' }),
+    ).toBeDisabled();
   });
 
   it('enables the Sell all button when funds are sufficient and trade is available', () => {
@@ -436,6 +490,12 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByText(/rateIncludesMMFee/u)).toBeInTheDocument();
   });
 
+  it('falls back to the bridge default MM fee rate when quotes is undefined', () => {
+    render(<ReviewAndConfirmModal {...defaultProps} quotes={undefined} />);
+
+    expect(screen.getByText(/rateIncludesMMFee/u)).toBeInTheDocument();
+  });
+
   describe('AssetsReceivedTotalAmountsSummary isLoading prop', () => {
     it('passes isLoading=true when minimumReceivedAmount is undefined', () => {
       render(
@@ -461,37 +521,52 @@ describe('ReviewAndConfirmModal', () => {
     });
   });
 
-  describe('NetworkFeeRow skeleton', () => {
-    it('shows the skeleton when totalNetworkfeeAreLoading is true', () => {
+  describe('NetworkFeeRow', () => {
+    it('shows a skeleton while fees are loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          totalNetworkFeeAreLoading={true}
         />,
       );
 
       expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
     });
 
-    it('does not show the skeleton when totalNetworkfeeAreLoading is false and fee is provided', () => {
+    it('does not show a skeleton once fees have finished loading', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee="0.01"
         />,
       );
 
       expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
     });
-  });
 
-  describe('NetworkFeeRow error state', () => {
+    it('renders the error styling on the label, tooltip, and amounts when totalNetworkFeeHasError is true', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkFeeAreLoading={false}
+          totalNetworkFeeHasError={true}
+          totalNetworkFee="0.01"
+          totalNetworkFeeFiat="20"
+        />,
+      );
+
+      // The row still renders its label/amount despite the error styling
+      // branches (error ? ... : ...) taking their "true" path.
+      expect(screen.getByText('networkFee')).toBeInTheDocument();
+      expect(screen.getByText(/\$20/u)).toBeInTheDocument();
+    });
+
     it('shows a dash when fees failed to load (not loading, fee is null)', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee={null}
           totalNetworkFeeFiat={null}
         />,
@@ -504,7 +579,7 @@ describe('ReviewAndConfirmModal', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          totalNetworkFeeAreLoading={false}
           totalNetworkFee={undefined}
           totalNetworkFeeFiat={undefined}
         />,
@@ -517,7 +592,7 @@ describe('ReviewAndConfirmModal', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          totalNetworkFeeAreLoading={true}
           totalNetworkFee={undefined}
           totalNetworkFeeFiat={undefined}
         />,
@@ -527,23 +602,54 @@ describe('ReviewAndConfirmModal', () => {
     });
   });
 
-  describe('totalNetworkfeeAreLoading', () => {
-    it('disables the Sell all button while fees are loading', () => {
+  describe('quotesAreLoading', () => {
+    it('shows the sellAll label while quotes are loading even when the trade is unavailable', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={true}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByText('sellAll')).toBeInTheDocument();
+      expect(
+        screen.queryByText('alertReasonInsufficientBalance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the insufficient balance label once quotes finish loading and trade is still unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={false}
+        />,
+      );
+
+      expect(
+        screen.getByText('alertReasonInsufficientBalance'),
+      ).toBeInTheDocument();
+    });
+
+    it('keeps the button disabled while quotes are loading and trade is unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
         />,
       );
 
       expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
     });
 
-    it('enables the Sell all button when fees have finished loading', () => {
+    it('does not affect the label or button state when trade is available', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkfeeAreLoading={false}
+          isBatchSellTradeAvailable={true}
+          quotesAreLoading={true}
         />,
       );
 
@@ -596,6 +702,22 @@ describe('ReviewAndConfirmModal', () => {
       if (closeButton) {
         fireEvent.click(closeButton);
       }
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('resets the expanded state and calls onClose when the modal is closed via the escape key', () => {
+      const onClose = jest.fn();
+
+      render(<ReviewAndConfirmModal {...defaultProps} onClose={onClose} />);
+
+      // Expand the list.
+      fireEvent.click(screen.getByRole('button', { expanded: false }));
+      expect(screen.getByTestId('summary-list')).toBeInTheDocument();
+
+      // Close via the escape key, which triggers the Modal's own onClose
+      // wrapper (resets isYouSellExpanded before delegating to onClose).
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
 
       expect(onClose).toHaveBeenCalledTimes(1);
     });

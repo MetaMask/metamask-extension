@@ -75,14 +75,8 @@
   "create": {
     "message": "Vytvořit"
   },
-  "customToken": {
-    "message": "Vlastní token"
-  },
   "decimal": {
     "message": "Počet desetinných míst přesnosti"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Desetinných míst musí být od 0 do 36."
   },
   "details": {
     "message": "Podrobnosti"
@@ -172,9 +166,6 @@
   "message": {
     "message": "Zpráva"
   },
-  "mustSelectOne": {
-    "message": "Musíte zvolit aspoň 1 token."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -257,9 +248,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signatureRequest": {
-    "message": "Požadavek podpisu"
   },
   "signed": {
     "message": "Podepsáno"

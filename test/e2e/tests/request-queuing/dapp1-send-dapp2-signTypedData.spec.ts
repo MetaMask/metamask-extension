@@ -10,6 +10,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import { SIGN_TYPED_DATA_EXPECTED } from '../confirmations/signatures/sign-typed-data-expected';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
@@ -140,7 +141,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Check correct network on the signTypedData confirmation.
         const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
-        await signTypedDataConfirmation.verifyConfirmationHeadingTitle();
+        await signTypedDataConfirmation.verifySignatureHeadingTitle(
+          SIGN_TYPED_DATA_EXPECTED.heading,
+        );
         await signTypedDataConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );

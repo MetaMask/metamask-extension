@@ -3,6 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
@@ -15,6 +16,11 @@ export type CheckExpectedBalanceOptions = {
   expectFundYourWalletBanner?: boolean;
   timeout?: number;
 };
+
+// TODO: Remove this widened wait once #43958 completes the Solana discovery
+// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
+// past the default 10s wait.
+const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {
   protected driver: Driver;
@@ -146,7 +152,6 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.activityTab,
         this.overviewBalanceSection,
         this.tokensTab,
       ]);
@@ -218,8 +223,14 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
+    // as soon as the icons render.
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
@@ -525,7 +536,10 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
-    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    await this.checkExpectedBalanceIsDisplayed({
+      expectedBalance,
+      timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+    });
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
@@ -593,6 +607,11 @@ class HomePage {
   async checkShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check shield entry modal is displayed on homepage');
     await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
   }
 
   async clickOnSendButton(): Promise<void> {

@@ -78,6 +78,27 @@ export const toAssetId = (
 };
 
 /**
+ * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
+ * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * custom/unsupported networks).
+ *
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The native asset id, or `undefined` when it can't be resolved.
+ */
+export const getNativeAssetId = (
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    return getNativeAssetForChainId(chainId).assetId;
+  } catch {
+    return undefined;
+  }
+};
+
+/**
  * Returns the image url for a caip-formatted asset
  *
  * @param assetId - The hex address or caip-formatted asset id
@@ -107,6 +128,21 @@ export const getAssetImageUrl = (
     });
     return undefined;
   }
+};
+
+/**
+ * Returns the image url for a CAIP-formatted asset
+ *
+ * @param assetId - The CAIP-formatted asset id
+ * @returns The image url for the asset
+ */
+export const getCaipAssetImageUrl = (assetId?: CaipAssetType) => {
+  if (!assetId) {
+    return undefined;
+  }
+
+  const chainId = assetId.split('/')[0] as CaipChainId;
+  return getAssetImageUrl(assetId, chainId);
 };
 
 export type AssetMetadata = {
@@ -288,3 +324,21 @@ export const isTronSpecialAsset = (
     `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };
+
+/**
+ * Returns the chain ID from a CAIP asset ID
+ *
+ * @param assetId - The CAIP asset ID to get the chain ID from.
+ * @returns The chain ID from the CAIP asset ID.
+ */
+export function getChainIdFromAssetId(
+  assetId: CaipAssetType,
+): CaipChainId | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+
+  return CaipAssetTypeStruct.is(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
+}

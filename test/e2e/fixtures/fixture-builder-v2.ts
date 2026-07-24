@@ -1,6 +1,6 @@
 import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
-import type { Hex, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
@@ -57,6 +57,7 @@ import {
   DAPP_TWO_URL,
   DAPP_URL,
   DAPP_URL_LOCALHOST,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   HARDWARE_WALLET_ACCOUNT_ID,
   IMPORTED_ACCOUNT_FIXTURE_VAULT,
@@ -68,6 +69,7 @@ import {
   SECOND_NODE_NETWORK_CLIENT_ID,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
+  HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
   TREZOR_VAULT,
 } from '../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
@@ -762,55 +764,68 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
-    }).withAccountsController({
-      internalAccounts: {
-        accounts: {
-          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
-            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-            options: {
-              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
-              derivationPath: "m/44'/60'/0'/0/0",
-              groupIndex: 0,
-              entropy: {
-                type: 'mnemonic',
-                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              options: {
+                entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
               },
             },
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Account 1',
-              importTime: 1724486724986,
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+            [HARDWARE_WALLET_ACCOUNT_ID]: {
+              id: HARDWARE_WALLET_ACCOUNT_ID,
+              address: ledgerAddressLower,
+              options: {},
+              methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
               },
             },
           },
+          selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+        },
+      })
+      .withAssetsController({
+        assetsBalance: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            'eip155:1337/slip44:1': { amount: '25' },
+          },
           [HARDWARE_WALLET_ACCOUNT_ID]: {
-            id: HARDWARE_WALLET_ACCOUNT_ID,
-            address: ledgerAddressLower,
-            options: {},
-            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
-            type: 'eip155:eoa',
-            scopes: ['eip155:0'],
-            metadata: {
-              name: 'Ledger 1',
-              importTime: 1724486729079,
-              keyring: {
-                type: 'Ledger Hardware',
-              },
-              lastSelected: 1724486729083,
+            'eip155:1337/slip44:1': {
+              amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
             },
           },
         },
-        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
-      },
-    });
+      });
     return this;
   }
 
@@ -882,6 +897,38 @@ class FixtureBuilderV2 {
       };
     }
     return this;
+  }
+
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
   }
 
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default
@@ -1319,24 +1366,32 @@ class FixtureBuilderV2 {
   }
 
   withTokensControllerERC20({ chainId = 1337 } = {}): this {
-    return this.withTokensController({
-      allTokens: {
-        [toHex(chainId)]: {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-              symbol: 'TST',
-              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
-              isERC721: false,
-              decimals: 4,
-              aggregators: ['Metamask', 'Aave'],
-              name: 'test',
+    const tokenAddress: Hex = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
+    const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
+    return (
+      this
+        // When `assetsUnifyState` is enabled the asset list is derived from the
+        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
+        // not from TokensController/TokenBalancesController.
+        .withAssetsController({
+          customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
+          assetsBalance: {
+            [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+              [assetId]: { amount: '10' },
             },
-          ],
-        },
-      },
-      allIgnoredTokens: {},
-    });
+          },
+          assetsInfo: {
+            [assetId]: {
+              aggregators: ['Metamask', 'Aave'],
+              decimals: 4,
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/${chainId}/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png`,
+              name: 'TST',
+              symbol: 'TST',
+              type: 'erc20',
+            },
+          },
+        })
+    );
   }
 
   withTrezorAccount(): this {
@@ -1346,7 +1401,9 @@ class FixtureBuilderV2 {
           'eip155:1337/slip44:1': { amount: '25' },
         },
         [HARDWARE_WALLET_ACCOUNT_ID]: {
-          'eip155:1337/slip44:1': { amount: '100' },
+          'eip155:1337/slip44:1': {
+            amount: HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
+          },
         },
       },
     })

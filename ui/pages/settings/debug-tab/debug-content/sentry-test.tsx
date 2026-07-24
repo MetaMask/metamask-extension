@@ -1,4 +1,5 @@
 import React, { useState, useCallback, ReactElement } from 'react';
+import { flushSync } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -19,10 +20,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
-import {
-  forceUpdateMetamaskState,
-  setCurrentLocale,
-} from '../../../../store/actions';
+import { setCurrentLocale } from '../../../../store/actions';
 import { FALLBACK_LOCALE, fetchLocale } from '../../../../../shared/lib/i18n';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
@@ -32,8 +30,6 @@ function sleep(ms: number) {
 
 const SentryTest = () => {
   const currentLocale: string =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     useSelector(getCurrentLocale) || FALLBACK_LOCALE;
 
   return (
@@ -188,14 +184,15 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   const dispatch = useDispatch();
   const handleClick = async () => {
     const localeMessages = await fetchLocale(currentLocale);
-    await dispatch(
-      setCurrentLocale(currentLocale, {
-        ...localeMessages,
-        // @ts-expect-error - remove a language string in this page to trigger a page crash
-        debug: undefined,
-      }),
-    );
-    await forceUpdateMetamaskState(dispatch);
+    flushSync(() => {
+      dispatch(
+        setCurrentLocale(currentLocale, {
+          ...localeMessages,
+          // @ts-expect-error - remove a language string in this page to trigger a page crash
+          debug: undefined,
+        }),
+      );
+    });
   };
 
   return (
@@ -240,8 +237,6 @@ function TestButton({
       hasError = true;
       throw error;
     } finally {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       if (expectError || !hasError) {
         setIsComplete(true);
       }
@@ -262,8 +257,6 @@ function TestButton({
       <div className="settings-page__content-item-col">
         <Button
           variant={ButtonVariant.Primary}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleClick}
           size={ButtonSize.Lg}
           data-testid={testId}

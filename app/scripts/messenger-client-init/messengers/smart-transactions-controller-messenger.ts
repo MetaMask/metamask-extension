@@ -4,7 +4,6 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { SmartTransactionsControllerMessenger } from '@metamask/smart-transactions-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 /**
@@ -34,7 +33,7 @@ export function getSmartTransactionsControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'TransactionController:getNonceLock',
       'TransactionController:getTransactions',
-      'TransactionController:updateTransaction',
+      'TransactionController:failTransaction',
     ],
     events: [
       'NetworkController:stateChange',
@@ -44,8 +43,7 @@ export function getSmartTransactionsControllerMessenger(
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+type AllowedInitializationActions = never;
 
 export type SmartTransactionsControllerInitMessenger = ReturnType<
   typeof getSmartTransactionsControllerInitMessenger
@@ -73,7 +71,7 @@ export function getSmartTransactionsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [],
   });
   return controllerInitMessenger;
 }

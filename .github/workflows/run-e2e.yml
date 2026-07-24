@@ -83,16 +83,7 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Restore .metamask folder
-        id: restore-metamask
-        uses: actions/cache/restore@v5
-        with:
-          path: .metamask
-          key: .metamask-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: false
-
-      - name: Install anvil if cache missed
-        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+      - name: Install anvil
         run: yarn mm-foundryup
 
       - name: Download build artifact

@@ -52,10 +52,8 @@ class NetworkManager {
 
   private readonly networkManagerToggle = '[data-testid="sort-by-networks"]';
 
-  private readonly networkPopupDeleteButton = {
-    text: 'Delete',
-    tag: 'button',
-  };
+  private readonly networkPopupDeleteButton =
+    '[data-testid="confirm-delete-network-modal-delete-button"]';
 
   private readonly selectedNetworkListItem = (selector: string) =>
     `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
@@ -122,7 +120,7 @@ class NetworkManager {
 
   async selectNetworkByName(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName} on network manager`);
-    await this.driver.clickElement(`[data-testid="${networkName}"]`);
+    await this.driver.clickElement(this.networkListItemByName(networkName));
   }
 
   async checkAllPopularNetworksIsSelected(): Promise<void> {
@@ -208,6 +206,34 @@ class NetworkManager {
       text: tabName,
     });
     console.log(`${tabName} tab is properly selected`);
+  }
+
+  async openNetworkAndSelectNetwork(
+    tabName: string,
+    networkName: string,
+  ): Promise<void> {
+    console.log(
+      `Opening network manager and selecting ${networkName} on ${tabName} tab`,
+    );
+    await this.openNetworkManager();
+    await this.selectTab(tabName);
+    if (networkName.startsWith('eip155:')) {
+      await this.selectNetworkByChainId(networkName);
+    } else {
+      await this.selectNetworkByNameWithWait(networkName);
+    }
+  }
+
+  async openNetworkAndDeleteNetwork(
+    tabName: string,
+    networkName: string,
+  ): Promise<void> {
+    console.log(
+      `Opening network manager and deleting ${networkName} on ${tabName} tab`,
+    );
+    await this.openNetworkManager();
+    await this.selectTab(tabName);
+    await this.deleteNetworkByChainId(networkName as `0x${string}`);
   }
 }
 

@@ -63,6 +63,10 @@ export const UI_COMPONENT_RE = new RegExp(
   'u',
 );
 
+export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+
+export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+
 /**
  * No Operation. A function that does nothing and returns nothing.
  *

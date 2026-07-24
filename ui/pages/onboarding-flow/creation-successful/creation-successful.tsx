@@ -1,12 +1,6 @@
-import React, {
-  useCallback,
-  useMemo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
   Button,
@@ -26,7 +20,6 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -34,82 +27,37 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getBackupAndSyncOnboardingToggleState,
-  getExternalServicesOnboardingToggleState,
-  getFirstTimeFlowType,
-  getOptedIn,
-  getDeferredDeepLink,
-  getAccountTypeForOnboardingMetrics,
-} from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import {
-  getCompletedOnboarding,
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
-import {
-  toggleExternalServices,
-  setCompletedOnboarding,
-  setCompletedOnboardingWithSidepanel,
-  setUseSidePanelAsDefault,
-  removeDeferredDeepLink,
-  setIsBackupAndSyncFeatureEnabled,
-} from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
-import {
-  getDeferredDeepLinkRoute,
-  buildInterstitialRoute,
-} from '../../../../shared/lib/deep-links/utils';
-import {
-  DeferredDeepLink,
-  DeferredDeepLinkRoute,
-  DeferredDeepLinkRouteType,
-} from '../../../../shared/lib/deep-links/types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import WalletReadyAnimation from './wallet-ready-animation';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreationSuccessful() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const t = useI18nContext();
-  const { search } = useLocation();
   const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
-  const externalServicesOnboardingToggleState = useSelector(
-    getExternalServicesOnboardingToggleState,
-  );
-  const backupAndSyncOnboardingToggleState = useSelector(
-    getBackupAndSyncOnboardingToggleState,
-  );
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const isOnboardingCompleted = useSelector(getCompletedOnboarding);
-  const isOptedIn = useSelector(getOptedIn);
-  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
-  const deferredDeepLink: DeferredDeepLink | null =
-    useSelector(getDeferredDeepLink);
-
   const isInitialized = useSelector(getIsInitialized);
   const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
+  const {
+    completeOnboarding: completeOnboardingFromCompletionPage,
+    markCompletionPageSeen,
+    isSidePanelOpen,
+    setIsSidePanelOpen,
+  } = useOnboardingCompletion();
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const { isFromReminder, isFromSettingsSecurity } =
+    useOnboardingSearchParams();
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
-
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
 
   // Guard: redirect if wallet is not properly set up.
   // Prevents users from skipping onboarding steps by navigating directly to the completion route.
@@ -121,6 +69,19 @@ export default function CreationSuccessful() {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
+
+  useEffect(() => {
+    if (isFromReminder || isResetWalletInProgress || !isInitialized) {
+      return;
+    }
+
+    markCompletionPageSeen();
+  }, [
+    isFromReminder,
+    isInitialized,
+    isResetWalletInProgress,
+    markCompletionPageSeen,
+  ]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -149,7 +110,7 @@ export default function CreationSuccessful() {
         );
       }
     };
-  }, [isSidePanelEnabled]);
+  }, [isSidePanelEnabled, setIsSidePanelOpen]);
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
@@ -206,50 +167,6 @@ export default function CreationSuccessful() {
     );
   }, [navigate, t]);
 
-  const handleOnDoneNavigation = useCallback(
-    (
-      deferredDeepLinkResult: DeferredDeepLinkRoute,
-      hasDeferredDeepLink: boolean,
-      completedWithSidePanelFlow: boolean,
-    ) => {
-      // Clean up deferred deep link from the state (both: expired or active)
-      if (hasDeferredDeepLink) {
-        dispatch(removeDeferredDeepLink());
-      }
-
-      if (deferredDeepLinkResult) {
-        if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
-        ) {
-          if (completedWithSidePanelFlow) {
-            // User completed onboarding with the side panel opened: navigate directly to the external URL
-            window.location.assign(deferredDeepLinkResult.url);
-          } else {
-            // User completed onboarding without the side panel: opening the external URL in a new tab
-            // prevents them from finishing their setup on an external website. Instead, we keep them
-            // in the onboarding flow by navigating to the home page while opening the link separately.
-            window.open(deferredDeepLinkResult.url, '_blank');
-            navigate(DEFAULT_ROUTE);
-          }
-        } else if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
-        ) {
-          navigate(deferredDeepLinkResult.route);
-        } else if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
-        ) {
-          const interstitialRoute = buildInterstitialRoute(
-            deferredDeepLinkResult.urlPathAndQuery,
-          );
-          navigate(interstitialRoute);
-        }
-      } else if (!completedWithSidePanelFlow) {
-        navigate(DEFAULT_ROUTE);
-      }
-    },
-    [dispatch, navigate],
-  );
-
   const onDone = useCallback(async () => {
     if (isFromReminder) {
       navigate(
@@ -264,120 +181,13 @@ export default function CreationSuccessful() {
       return;
     }
 
-    const deferredDeepLinkResult =
-      await getDeferredDeepLinkRoute(deferredDeepLink);
-    const shouldOpenSidePanel =
-      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
-      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Interstitial;
-
-    // Track onboarding completion event
-    if (!isOnboardingCompleted) {
-      const isNewWallet =
-        firstTimeFlowType === FirstTimeFlowType.create ||
-        firstTimeFlowType === FirstTimeFlowType.socialCreate;
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: firstTimeFlowType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: isNewWallet,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        },
-      });
-    }
-
-    await dispatch(
-      toggleExternalServices(externalServicesOnboardingToggleState),
-    );
-
-    if (!backupAndSyncOnboardingToggleState) {
-      await dispatch(
-        setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
-      );
-    }
-
-    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
-    // Since we will track the `Metrics Opt In/Out` event even when optedIn is false,
-    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
-    if (!isOnboardingCompleted) {
-      // before onboarding completion, we track the MetricsOptIn/Out event
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: isOptedIn
-          ? MetaMetricsEventName.MetricsOptIn
-          : MetaMetricsEventName.MetricsOptOut,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountTypeForMetrics,
-        },
-      });
-    }
-
-    // Side Panel - only if feature flag is enabled
-    if (isSidePanelEnabled) {
-      try {
-        // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
-        if (browserWithSidePanel?.sidePanel?.open) {
-          const tabs = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
-          });
-          if (tabs && tabs.length > 0) {
-            // We deliberately skip the opening of the side panel
-            // if a user is coming from a deep link
-            if (shouldOpenSidePanel) {
-              await browserWithSidePanel.sidePanel.open({
-                windowId: tabs[0].windowId,
-              });
-              setIsSidePanelOpen(true);
-            }
-            await dispatch(setUseSidePanelAsDefault(true));
-            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
-            await dispatch(setCompletedOnboardingWithSidepanel());
-
-            handleOnDoneNavigation(
-              deferredDeepLinkResult,
-              Boolean(deferredDeepLink),
-              true,
-            );
-
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Error opening side panel:', error);
-        // Fall through to regular onboarding
-      }
-    }
-    // Fallback to regular onboarding completion
-    await dispatch(setCompletedOnboarding());
-
-    handleOnDoneNavigation(
-      deferredDeepLinkResult,
-      Boolean(deferredDeepLink),
-      false,
-    );
+    await completeOnboardingFromCompletionPage();
   }, [
+    completeOnboardingFromCompletionPage,
     isFromReminder,
-    deferredDeepLink,
-    isOnboardingCompleted,
-    dispatch,
-    externalServicesOnboardingToggleState,
-    backupAndSyncOnboardingToggleState,
-    isSidePanelEnabled,
-    navigate,
     isFromSettingsSecurity,
-    firstTimeFlowType,
-    trackEvent,
-    isOptedIn,
-    handleOnDoneNavigation,
     isResetWalletInProgress,
-    accountTypeForMetrics,
+    navigate,
   ]);
 
   const renderDoneButton = () => {

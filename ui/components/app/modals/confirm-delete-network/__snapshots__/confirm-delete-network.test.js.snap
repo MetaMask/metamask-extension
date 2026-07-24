@@ -1,43 +1,123 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Confirm Delete Network should match snapshot 1`] = `
-<div>
+<body>
   <div
-    class="modal-container"
+    id="popover-content"
+  />
+  <div />
+  <div
+    class=""
     data-testid="confirm-delete-network-modal"
   >
     <div
-      class="modal-container__content"
+      aria-hidden="true"
+      class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
+    />
+    <div
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
+    <div
+      data-focus-lock-disabled="false"
     >
       <div
-        class="modal-content"
+        class="fixed inset-0 z-[1050] flex justify-center [@media(max-height:475px)]:p-2 items-center p-4 sm:py-6 md:py-6"
       >
-        <div
-          class="modal-content__title"
+        <section
+          aria-modal="true"
+          class="flex-col items-stretch justify-start bg-default flex max-h-full w-full rounded-lg motion-safe:animate-slide-up max-w-[360px] overflow-hidden p-4 shadow-lg"
+          role="dialog"
         >
-          Delete Goerli network?
-        </div>
-        <div
-          class="modal-content__description"
-        >
-          If you delete this network, you will need to add it again to view your assets in this network
-        </div>
+          <header
+            class="grid grid-cols-[1fr_auto_1fr] items-start px-0 pb-4"
+          >
+            <div
+              class="col-start-2 col-end-3 w-full"
+            >
+              <div
+                class="flex flex-col gap-2 items-center min-w-0"
+              >
+                <svg
+                  class="inline-block w-8 h-8 text-error-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 21 12 2l11 19zm3.45-2h15.1L12 6zM12 18q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.712S12.283 16 12 16s-.52.096-.712.288S11 16.717 11 17s.096.52.288.713.429.287.712.287m-1-3h2v-5h-2z"
+                  />
+                </svg>
+                <h2
+                  class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
+                >
+                  Delete Goerli network?
+                </h2>
+              </div>
+            </div>
+            <div
+              class="col-start-3 justify-self-end"
+            >
+              <button
+                aria-label="Close"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              >
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </header>
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default w-full"
+          >
+            If you delete this network, you will need to add it again to view your assets in this network
+          </p>
+          <footer
+            class="px-0 pt-6"
+          >
+            <div
+              class="flex flex-row gap-4"
+            >
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Cancel
+                </span>
+              </button>
+              <button
+                class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-error-default text-error-inverse hover:bg-error-default-hover active:bg-error-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default flex-1"
+                data-testid="confirm-delete-network-modal-delete-button"
+                role="button"
+              >
+                <span
+                  class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                >
+                  Delete
+                </span>
+              </button>
+            </div>
+          </footer>
+        </section>
       </div>
     </div>
     <div
-      class="modal-container__footer"
-    >
-      <button
-        class="button btn-secondary modal-container__footer-button"
-      >
-        Cancel
-      </button>
-      <button
-        class="button btn-danger-primary modal-container__footer-button"
-      >
-        Delete
-      </button>
-    </div>
+      data-focus-guard="true"
+      style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+      tabindex="0"
+    />
   </div>
-</div>
+</body>
 `;

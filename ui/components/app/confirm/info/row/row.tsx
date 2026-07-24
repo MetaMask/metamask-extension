@@ -1,4 +1,5 @@
 import React, { createContext, useMemo } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -9,7 +10,6 @@ import {
   IconSize,
   Text,
 } from '../../../../component-library';
-import { Skeleton } from '../../../../component-library/skeleton';
 import {
   AlignItems,
   BackgroundColor,

@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Has de seleccionar un compte!"
   },
-  "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
-  },
   "addAlias": {
     "message": "Afegeix un àlies"
   },
@@ -178,14 +175,8 @@
   "custom": {
     "message": "Configuració avançada"
   },
-  "customToken": {
-    "message": "Fitxa a Mida"
-  },
   "decimal": {
     "message": "Decimals de precisió"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
   "delete": {
     "message": "Suprimeix"
@@ -336,9 +327,6 @@
   "metamaskVersion": {
     "message": "Versió MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Has de seleccionar "
-  },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"
@@ -348,9 +336,6 @@
   },
   "networks": {
     "message": "Xarxes"
-  },
-  "nevermind": {
-    "message": "No importa"
   },
   "newAccountNumberName": {
     "message": "Compte $1",
@@ -370,9 +355,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Càmera web no trobada"
-  },
-  "notEnoughGas": {
-    "message": "Gas Insuficient"
   },
   "ofTextNofM": {
     "message": "de"
@@ -508,9 +490,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signatureRequest": {
-    "message": "Sol·licitud de Signatura"
   },
   "signed": {
     "message": "Signat"
