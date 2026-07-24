@@ -271,7 +271,6 @@ export const selectNonEvmActivityItems = createSelector(
         subjectAddress,
       });
 
-      // Non-EVM keyring transactions use the on-chain tx hash as their id.
       const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
       const { quote } = bridgeHistoryEntry ?? {};
 
