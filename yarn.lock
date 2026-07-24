@@ -7295,12 +7295,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:34.0.0":
-  version: 34.0.0
-  resolution: "@metamask/network-controller@npm:34.0.0"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@34.0.0-preview-275c14221":
+  version: 34.0.0-preview-275c14221
+  resolution: "@metamask-previews/network-controller@npm:34.0.0-preview-275c14221"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/connectivity-controller": "npm:^0.2.0"
+    "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-infura": "npm:^10.3.0"
@@ -7308,7 +7308,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/swappable-obj-proxy": "npm:^2.3.0"
@@ -7319,7 +7319,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/6afb874ca5702e1be616bf6ea92b35332d1969878794ce118138ca8f3733a1521a266d00bb658cf7a37e126545ac942ef5bc09bbd64159612b5424d848dbdc67
+  checksum: 10/3bba4c0c7f6f4249ae96e16f30d34f5570f083e28a8c6562dc035edc71282b0bc0ab32670788bf9670f84a5a21972bd33a5dc25b7199004e23dd02af75c71c5a
   languageName: node
   linkType: hard
 

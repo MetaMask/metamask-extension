@@ -169,7 +169,7 @@
   },
   "resolutions": {
     "@grpc/grpc-js": "^1.9.16",
-    "@metamask/network-controller": "34.0.0",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@34.0.0-preview-275c14221",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
