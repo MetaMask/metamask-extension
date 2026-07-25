@@ -1,7 +1,17 @@
 import { writeFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { argv, exit } from 'node:process';
-import sharp from 'sharp';
+import sharp, {
+  type AvifOptions,
+  type HeifOptions,
+  type JpegOptions,
+  type Jp2Options,
+  type JxlOptions,
+  type OutputOptions,
+  type PngOptions,
+  type TiffOptions,
+  type WebpOptions,
+} from 'sharp';
 import globby from 'globby';
 import yargs from 'yargs/yargs';
 
@@ -41,15 +51,15 @@ const supportedFileFormats = [
 ];
 
 type SupportedSharpFileOptions =
-  | sharp.OutputOptions
-  | sharp.JpegOptions
-  | sharp.PngOptions
-  | sharp.WebpOptions
-  | sharp.AvifOptions
-  | sharp.HeifOptions
-  | sharp.JxlOptions
-  | sharp.Jp2Options
-  | sharp.TiffOptions;
+  | OutputOptions
+  | JpegOptions
+  | PngOptions
+  | WebpOptions
+  | AvifOptions
+  | HeifOptions
+  | JxlOptions
+  | Jp2Options
+  | TiffOptions;
 
 /**
  * Optimizes an image file if its format is supported and if optimization reduces file size.
@@ -84,8 +94,8 @@ async function optimizeImage(filePath: string, fix = true) {
         } satisfies SupportedSharpFileOptions)
         .toBuffer();
 
-      if (optimizedBuffer.byteLength < originalSize) {
-        // if we saved some bytes, write the optimized image back to disk
+      if (originalSize - optimizedBuffer.byteLength > 1000) {
+        // if we saved at least 1KB, write the optimized image back to disk
         if (fix) {
           await writeFile(filePath, optimizedBuffer);
         }

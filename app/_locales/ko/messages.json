@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "계정 옵션"
   },
-  "accountPermissionToast": {
-    "message": "계정 권한이 업데이트됨"
-  },
   "accountSelectionRequired": {
     "message": "계정을 선택해야 합니다!"
   },
@@ -380,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "예치 실패"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "예치 실패"
   },
   "activity_deposit_pending_description": {
-    "message": "$1 예치 중",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1 예치 중",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "$1 예치 완료",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 예치 완료",
@@ -1005,12 +1000,10 @@
     "message": "스왑 실패"
   },
   "activity_swap_pending_title": {
-    "message": "$1을(를) $2(으)로 스왑 중",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "스왑 중"
   },
   "activity_swap_success_title": {
-    "message": "$1을(를) $2(으)로 스왑 완료",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "스왑 완료"
   },
   "activity_unwrap_failed_description": {
     "message": "언랩 실패"
@@ -2002,12 +1995,6 @@
     "message": "브릿지에 $1 승인",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2에 대한 액세스를 허용하고 있습니다. 계약은 추가 자금에 액세스하지 않습니다."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "브릿징을 위해 $1 $2에 대한 액세스를 허용한 다음 $3로의 브릿징을 승인해야 합니다. 두 번의 별도 컨펌이 필요합니다."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "블록 탐색기 링크 복사 완료"
   },
@@ -2456,9 +2443,6 @@
   },
   "clear": {
     "message": "지우기"
-  },
-  "clearActivity": {
-    "message": "활동 및 논스 데이터 지우기"
   },
   "clearActivityDescription": {
     "message": "이는 계정의 논스를 초기화하고 지갑의 활동 탭에 있는 데이터를 지웁니다. 이렇게 하면 현재 계정과 네트워크만 변경될 뿐 잔액과 입금 트랜잭션에는 영향을 미치지 않습니다."
@@ -4172,9 +4156,6 @@
   "gotIt": {
     "message": "컨펌"
   },
-  "grantExactAccess": {
-    "message": "정확한 접근 허용"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5707,9 +5688,6 @@
   },
   "networksSmallCase": {
     "message": "네트워크"
-  },
-  "nevermind": {
-    "message": "취소"
   },
   "new": {
     "message": "신규!"
@@ -11271,12 +11249,6 @@
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "브릿지를 위한 토큰 승인."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "스왑을 위한 토큰 승인."
   },
   "withdrawTo": {
     "message": "받기",

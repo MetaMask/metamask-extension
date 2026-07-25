@@ -326,7 +326,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -368,7 +367,6 @@ describe('DataDeletionService', () => {
           dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
 
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -403,7 +401,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -459,7 +456,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -529,7 +525,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() => {
             return fetchWithFakeTimers({
@@ -864,7 +859,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -906,7 +900,6 @@ describe('DataDeletionService', () => {
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
 
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -941,7 +934,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -998,7 +990,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -1071,7 +1062,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() => {
             return fetchWithFakeTimers({
@@ -1141,7 +1131,6 @@ async function fetchWithFakeTimers({
 
   // Advance timer enough to exceed max possible retry delay for initial call and all
   // subsequent retries, until request has resolved.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ of Array(retries + 1).keys()) {
     if (resolved) {
       break;
@@ -1150,7 +1139,6 @@ async function fetchWithFakeTimers({
     // waiting period, and to prevent unnecessarily long waiting.
     const intervalLength = defaultMaxRetryDelay / 10;
     const numberOfIntervals = defaultMaxRetryDelay / intervalLength;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _interval of new Array(numberOfIntervals).keys()) {
       if (resolved) {
         break;

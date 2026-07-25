@@ -108,7 +108,7 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe('activity_swap_success_description');
   });
 
-  it('keeps full swap copy when destination is present', () => {
+  it('uses a clean swap title with the token pair as subtitle', () => {
     const activity = {
       type: 'swap',
       chainId: 'eip155:1',
@@ -137,7 +137,8 @@ describe('useActivityRowContent', () => {
     );
 
     expect(result.current.title.props.children).toBe(
-      'activity_swap_success_title|ETH,USDC',
+      'activity_swap_success_title',
     );
+    expect(result.current.subtitle).toBe('ETH → USDC');
   });
 });

@@ -152,8 +152,6 @@ export const getChainSupportsSmartTransactions = (
   state: NetworkState,
   chainId?: string,
 ): boolean => {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
@@ -175,8 +173,6 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   state: NetworkState & RemoteFeatureFlagsState,
   chainId?: string,
 ) => {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (
@@ -210,7 +206,6 @@ export const getSmartTransactionsEnabled = (
   state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
   // @ts-expect-error Smart transaction selector types does not match controller state
   const supportedAccount = accountSupportsSmartTx(state);

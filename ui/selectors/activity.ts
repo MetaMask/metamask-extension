@@ -28,13 +28,14 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
@@ -59,7 +60,7 @@ import {
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 // @deprecated - Migrate to selectBridgeHistoryItem
-const selectBridgeHistory = (state: MetaMaskReduxState) =>
+const selectBridgeHistoryDeprecated = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
     string,
     BridgeHistoryItem
@@ -69,6 +70,9 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+const selectIsHardwareWallet = (state: MetaMaskReduxState) =>
+  isHardwareWallet(state as never);
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -82,24 +86,32 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
 export const selectLocalTransactions = createSelector(
   selectOrderedTransactions,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   smartTransactionsListSelector,
   selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
   (
     transactions,
-    selectedAccount,
+    evmAddress,
     smartTransactions,
     internalTxIds,
     internalTxHashes,
   ): TransactionGroup[] => {
-    if (!selectedAccount?.address) {
+    if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
-    const selectedAddress = selectedAccount.address.toLowerCase();
+    const selectedAddress = evmAddress.toLowerCase();
 
     const isInternalRequiredTransaction = (
       tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
@@ -220,20 +232,51 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
+const selectBridgeHistory = createSelector(
+  [(state: MetaMaskReduxState) => state],
+  (state) => (txHash?: string) =>
+    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+);
+
 export const selectNonEvmActivityItems = createSelector(
   [
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
+    selectBridgeHistory,
   ],
-  (transactions, assetsMetadata, internalAccountsById) =>
-    transactions.map((transaction) =>
-      mapKeyringTransaction({
+  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
+    transactions.map((transaction) => {
+      const subjectAddress =
+        internalAccountsById?.[transaction.account]?.address;
+      const activity = mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress: internalAccountsById?.[transaction.account]?.address,
-      }),
-    ),
+        subjectAddress,
+      });
+
+      const bridgeHistoryEntry = getBridgeHistory(transaction.id);
+      const { quote } = bridgeHistoryEntry ?? {};
+
+      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+        const tokens = getSwapTokens(bridgeHistoryEntry);
+        const status = getBridgeActivityStatus(bridgeHistoryEntry);
+        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+
+        return {
+          ...activity,
+          type: 'bridge',
+          ...(status ? { status } : {}),
+          data: {
+            from: subjectAddress,
+            ...tokens,
+            ...(fees === undefined ? {} : { fees }),
+          },
+        } as ActivityListItem;
+      }
+
+      return activity;
+    }),
 );
 
 export const selectNonEvmActivityItemsById = createSelector(
@@ -401,20 +444,22 @@ function getBridgeActivityStatus(
 
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
-  selectBridgeHistory,
+  selectBridgeHistoryDeprecated,
   selectTransactionPayData,
   getNetworkConfigurationsByChainId,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   getTokensControllerAllTokens,
+  selectIsHardwareWallet,
   (
     transactionGroups,
     bridgeHistory,
     transactionPayData,
     networkConfigurationsByChainId,
-    selectedAccount,
+    evmAddress,
     allTokens,
+    isHardwareWalletAccount,
   ) => {
-    const selectedAddress = selectedAccount?.address?.toLowerCase();
+    const selectedAddress = evmAddress?.toLowerCase();
 
     // Resolves symbol/decimals for an ERC-20 contract address from the user's
     // watched-tokens list (TokensController). The static mainnet token list
@@ -512,7 +557,9 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
-        const fees = getLocalTransactionFees(transactionGroup);
+        const fees = getLocalTransactionFees(transactionGroup, {
+          isHardwareWalletAccount,
+        });
 
         const prepared = {
           ...transactionGroup,
@@ -606,12 +653,4 @@ export const selectMarketRates = createSelector(
 
     return rates;
   },
-);
-
-// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
-export const selectEvmAddress = createSelector(
-  (state: MultichainAccountsState) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
-  (account) =>
-    account && isEvmAccountType(account.type) ? account.address : undefined,
 );

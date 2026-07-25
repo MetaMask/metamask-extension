@@ -9,6 +9,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { RAMPS_PROVIDER_SELECTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
@@ -21,6 +22,7 @@ import {
   RampsSelectionCenteredMessage,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
   formatPaymentMethodLimits,
@@ -54,6 +56,7 @@ export function RampsPaymentMethodScreen() {
     setSelectedPaymentMethod,
   } = useRampsController();
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
+  const regionCode = userRegion?.regionCode ?? '';
   const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
   const [isSelecting, setIsSelecting] = useState(false);
   const isSelectingRef = useRef(false);
@@ -82,6 +85,8 @@ export function RampsPaymentMethodScreen() {
             amount,
             walletAddress,
             assetId,
+            ...(regionCode ? { region: regionCode } : {}),
+            ...(fiatCurrency ? { fiat: fiatCurrency } : {}),
             redirectUrl: getRampCallbackBaseUrl(),
             providers: selectedProvider ? [selectedProvider.id] : undefined,
             paymentMethods: paymentMethodIds,
@@ -91,6 +96,8 @@ export function RampsPaymentMethodScreen() {
       amount,
       walletAddress,
       assetId,
+      regionCode,
+      fiatCurrency,
       selectedProvider,
       paymentMethodIds,
       paymentMethodsLoading,
@@ -106,6 +113,12 @@ export function RampsPaymentMethodScreen() {
   const handleBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
+
+  const handleChangeProvider = useCallback(() => {
+    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
+      state: { amount },
+    });
+  }, [amount, navigate]);
 
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
@@ -130,79 +143,45 @@ export function RampsPaymentMethodScreen() {
   const title = t('rampsSelectPaymentMethod');
   const backButtonTestId = 'ramps-payment-method-back';
 
+  let testId = 'ramps-payment-method-screen';
+  let body: React.ReactNode;
+
   // Prerequisites missing — query stays disabled until the user leaves.
   if (paymentMethodsStatus === 'idle') {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoPaymentMethodsAvailable')}
-        />
-      </RampsSelectionPage>
+    testId = 'ramps-payment-method-empty';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsNoPaymentMethodsAvailable')}
+      />
     );
-  }
-
-  if (paymentMethodsLoading) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-loading"
-        backButtonTestId={backButtonTestId}
+  } else if (paymentMethodsLoading) {
+    testId = 'ramps-payment-method-loading';
+    body = (
+      <Box
+        className="flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
       >
-        <Box
-          className="flex-1"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-        >
-          <Spinner className="h-8 w-8" />
-        </Box>
-      </RampsSelectionPage>
+        <Spinner className="h-8 w-8" />
+      </Box>
     );
-  }
-
-  if (showError) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-error"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsErrorLoadingPaymentMethods')}
-        />
-      </RampsSelectionPage>
+  } else if (showError) {
+    testId = 'ramps-payment-method-error';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsErrorLoadingPaymentMethods')}
+      />
     );
-  }
-
-  if (paymentMethods.length === 0) {
-    return (
-      <RampsSelectionPage
-        title={title}
-        onBack={handleBack}
-        testId="ramps-payment-method-empty"
-        backButtonTestId={backButtonTestId}
-      >
-        <RampsSelectionCenteredMessage
-          message={t('rampsNoPaymentMethodsAvailable')}
-        />
-      </RampsSelectionPage>
+  } else if (paymentMethods.length === 0) {
+    testId = 'ramps-payment-method-empty';
+    body = (
+      <RampsSelectionCenteredMessage
+        message={t('rampsNoPaymentMethodsAvailable')}
+      />
     );
-  }
-
-  return (
-    <RampsSelectionPage
-      title={title}
-      onBack={handleBack}
-      testId="ramps-payment-method-screen"
-      backButtonTestId={backButtonTestId}
-    >
+  } else {
+    body = (
       <ScrollContainer className="flex-1 overflow-y-auto px-2 pb-4">
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           {paymentMethods.map((paymentMethod) => {
@@ -221,7 +200,7 @@ export function RampsPaymentMethodScreen() {
                 key={paymentMethod.id}
                 paymentMethod={paymentMethod}
                 isSelected={selectedPaymentMethod?.id === paymentMethod.id}
-                isDisabled={isSelecting || hasQuoteError}
+                isDisabled={isSelecting}
                 limitText={formatPaymentMethodLimits(
                   getProviderBuyLimit(
                     selectedProvider,
@@ -248,6 +227,24 @@ export function RampsPaymentMethodScreen() {
           })}
         </Box>
       </ScrollContainer>
+    );
+  }
+
+  return (
+    <RampsSelectionPage
+      title={title}
+      onBack={handleBack}
+      testId={testId}
+      backButtonTestId={backButtonTestId}
+    >
+      {body}
+      {selectedProvider ? (
+        <RampsChangeProviderFooter
+          providerName={selectedProvider.name}
+          isDisabled={isSelecting}
+          onChangeProvider={handleChangeProvider}
+        />
+      ) : null}
     </RampsSelectionPage>
   );
 }

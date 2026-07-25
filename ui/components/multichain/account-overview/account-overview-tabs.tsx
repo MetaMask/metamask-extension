@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
   Box,
@@ -13,14 +13,11 @@ import {
 } from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
   AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
@@ -33,7 +30,6 @@ import {
   getIsPerpsExperienceAvailable,
   getPerpsTabBadgeSeen,
 } from '../../../selectors/perps';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
@@ -45,6 +41,7 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useABTest } from '../../../hooks/useABTest';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import {
   PERPS_TAB_BADGE_AB_KEY,
   PERPS_TAB_BADGE_VARIANTS,
@@ -54,6 +51,7 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../../../pages/activity/activity-list';
 import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -95,14 +93,26 @@ export const AccountOverviewTabs = ({
   const activeTabKey = urlTab || persistedTab;
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tracks how the currently active tab was reached so screen-viewed events
+  // can distinguish a bottom-nav click (arriving at home) from a subtab click.
+  const [tabEntryPoint, setTabEntryPoint] = useState<
+    ScreenViewedEntryPoint | undefined
+  >(
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
+  );
+
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const prefetchTransactions = usePrefetchTransactions();
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showBottomNav = useBottomNavBar();
 
   // Track exposure only when the Perps tab is shown, gated on availability (not
   // dismissal) so control and treatment record symmetrically once per session.
@@ -125,22 +135,24 @@ export const AccountOverviewTabs = ({
 
   // Whether the persisted/url active tab resolves to a tab that is actually
   // rendered. Membership only — render order is irrelevant here.
-  const renderedTabKeys: AccountOverviewTab[] = [
+  const renderedTabKeys: Set<AccountOverviewTab> = new Set([
     ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
-    ...(isPerpsExperienceAvailable ? [AccountOverviewTabKey.Perps] : []),
+    ...(isPerpsExperienceAvailable && !showBottomNav
+      ? [AccountOverviewTabKey.Perps]
+      : []),
     ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
-    ...(showActivity ? [AccountOverviewTabKey.Activity] : []),
-  ];
+    ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
+  ]);
   // Perps is the effective active tab when it is explicitly selected, or when
   // the active tab isn't rendered and Tabs clamps to the first rendered tab.
   // Perps is that first tab whenever Tokens (the only tab that can precede it)
   // is hidden and the Perps experience is available.
+  const perpsIsRendered = renderedTabKeys.has(AccountOverviewTabKey.Perps);
   const perpsIsEffectiveActiveTab =
-    activeTabKey === AccountOverviewTabKey.Perps ||
-    (!renderedTabKeys.includes(activeTabKey) &&
-      !showTokens &&
-      isPerpsExperienceAvailable);
+    perpsIsRendered &&
+    (activeTabKey === AccountOverviewTabKey.Perps ||
+      (!renderedTabKeys.has(activeTabKey) && !showTokens));
 
   // Mark the badge seen whenever Perps is the effective active tab — covers
   // clicking in, landing directly on Perps (persisted default or ?tab=perps),
@@ -152,10 +164,6 @@ export const AccountOverviewTabs = ({
       dispatch(setPerpsTabBadgeSeen(true));
     }
   }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
-
-  const networkFilterForMetrics = useSelector(
-    selectEnabledNetworksAsCaipChainIds,
-  );
 
   // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
   // Keeping it in an isolated child prevents balance updates from re-rendering
@@ -169,29 +177,11 @@ export const AccountOverviewTabs = ({
         });
       }
 
+      setTabEntryPoint(ScreenViewedEntryPoint.SubtabClick);
       setActiveTabKey(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
-      }
-
-      if (
-        tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        tabName !== AccountOverviewTabKey.Activity
-      ) {
-        trackEvent(
-          createEventBuilder(
-            ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
-              tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
-            ],
-          )
-            .addCategory(MetaMetricsEventCategory.Home)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              network_filter: networkFilterForMetrics,
-            })
-            .build(),
-        );
       }
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({
@@ -199,15 +189,7 @@ export const AccountOverviewTabs = ({
         });
       }
     },
-    [
-      activeTabKey,
-      createEventBuilder,
-      networkFilterForMetrics,
-      setActiveTabKey,
-      dispatch,
-      selectedChainIds,
-      trackEvent,
-    ],
+    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds],
   );
 
   const onClickAsset = useCallback(
@@ -250,12 +232,13 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
         )}
 
-        {isPerpsExperienceAvailable && (
+        {isPerpsExperienceAvailable && !showBottomNav && (
           <Tab
             name={
               showPerpsTabBadge ? (
@@ -311,6 +294,7 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
@@ -323,12 +307,12 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__nfts-tab"
           >
             <ErrorBoundary key="nfts">
-              <NftsTab />
+              <NftsTab entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}
 
-        {showActivity && (
+        {showActivity && !showBottomNav && (
           <Tab
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
@@ -336,7 +320,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              <ActivityList />
+              <ActivityList entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}

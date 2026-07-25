@@ -117,6 +117,9 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  # package.json subpath imports
+  - '#ui'
+  - '#shared'
 
 # files depcheck should not parse
 ignorePatterns:

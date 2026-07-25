@@ -104,7 +104,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -793,7 +793,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -922,7 +922,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-disabled="true"
@@ -1048,7 +1048,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
@@ -1171,7 +1171,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-busy="true"
@@ -1617,7 +1617,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           aria-disabled="true"
@@ -1743,7 +1743,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
           data-testid="ramps-build-quote-provider-label"
         >
-          Buying via Transak
+          Buying via Transak.
         </p>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
