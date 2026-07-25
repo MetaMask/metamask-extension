@@ -1,0 +1,7 @@
+{
+  "name": "@metamask/lavamoat-policy-probe",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts"
+}

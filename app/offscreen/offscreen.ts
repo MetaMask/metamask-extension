@@ -11,6 +11,17 @@ import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
 
+if (process.env.IN_TEST) {
+  const { hasConsoleAccess } =
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    require('@metamask/lavamoat-policy-probe');
+
+  document.documentElement.dataset.lavaMoatPolicyProbeConsoleAccess = String(
+    hasConsoleAccess(),
+  );
+}
+
 /**
  * Initialize a post message stream with the parent window that is initialized
  * in the metamask-controller (background/serivce worker) process. This will be

@@ -6966,6 +6966,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/lavamoat-policy-probe@file:test/fakes/lavamoat-policy-probe::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/lavamoat-policy-probe@file:test/fakes/lavamoat-policy-probe#test/fakes/lavamoat-policy-probe::hash=c3d450&locator=metamask-crx%40workspace%3A."
+  checksum: 10/3fd8069c0ae84bd2a8acaf2960bd4da50bae52f3f90d7d07ed6b65958c5baff479afd432282aa18ceaa7d1f499d02d46db63d8a2d0c0fa78bf98ecdc00b8474a
+  languageName: node
+  linkType: hard
+
 "@metamask/local-node-utils@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/local-node-utils@npm:1.0.0"
@@ -32835,6 +32842,7 @@ __metadata:
     "@metamask/keyring-sdk": "npm:^2.2.0"
     "@metamask/keyring-snap-client": "npm:^9.0.2"
     "@metamask/keyring-utils": "npm:^3.3.1"
+    "@metamask/lavamoat-policy-probe": "file:test/fakes/lavamoat-policy-probe"
     "@metamask/logging-controller": "npm:^8.0.0"
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"

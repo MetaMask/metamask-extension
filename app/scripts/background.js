@@ -140,6 +140,29 @@ const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
 
+if (process.env.IN_TEST) {
+  const { hasConsoleAccess } =
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    require('@metamask/lavamoat-policy-probe');
+
+  const hasLavaMoatPolicyProbeConsoleAccess = hasConsoleAccess();
+
+  if (isManifestV3) {
+    browser.storage.session
+      .set({
+        hasLavaMoatPolicyProbeConsoleAccess,
+      })
+      .catch((error) => {
+        console.error('Failed to store the LavaMoat policy probe result', error);
+      });
+  } else {
+    document.documentElement.dataset.lavaMoatPolicyProbeConsoleAccess = String(
+      hasLavaMoatPolicyProbeConsoleAccess,
+    );
+  }
+}
+
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
 /**
