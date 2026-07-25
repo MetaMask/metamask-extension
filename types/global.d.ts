@@ -100,10 +100,12 @@ type StateHooks = {
   getPerpsStreamManager?: () => unknown;
 };
 
-export declare global {
+declare global {
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;
+
+  var chrome: typeof chrome;
 
   var ethereumProvider: Provider;
 
