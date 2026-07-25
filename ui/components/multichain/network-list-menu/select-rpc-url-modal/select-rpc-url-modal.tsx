@@ -20,7 +20,9 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
+import { toast } from '../../../ui/toast/toast';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
 
@@ -32,6 +34,7 @@ export const SelectRpcUrlModal = ({
   onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
 }) => {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const location = useLocation();
   const chainId = location.state?.chainId;
 
@@ -82,12 +85,16 @@ export const SelectRpcUrlModal = ({
           paddingRight={4}
           display={Display.Flex}
           key={rpcEndpoint.url}
-          onClick={() => {
+          onClick={async () => {
             const network = {
               ...networkConfigurationToUse,
               defaultRpcEndpointIndex: index,
             };
-            dispatch(updateNetwork(network));
+            const result = await dispatch(updateNetwork(network));
+            if (!result) {
+              toast.error(t('networkUpdateFailed'));
+              return;
+            }
             dispatch(setEditedNetwork());
             onNetworkChange(
               toEvmCaipChainId(network.chainId),

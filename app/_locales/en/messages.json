@@ -5780,6 +5780,9 @@
   "networkURLDefinition": {
     "message": "The URL used to access this network."
   },
+  "networkUpdateFailed": {
+    "message": "Failed to update network."
+  },
   "networkUrlErrorWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: $1",
     "description": "$1 replaced by RPC URL for network"
@@ -8715,6 +8718,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlAlreadyInUse": {
+    "message": "This RPC URL is already in use by another network."
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
