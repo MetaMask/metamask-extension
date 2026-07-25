@@ -69,15 +69,14 @@ export {
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
-if (process.env.IN_TEST) {
+if (process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined') {
   const { hasConsoleAccess } =
     // Load conditionally so this test-only package is excluded from production builds and policies.
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
     require('@metamask/lavamoat-policy-probe');
 
-  document.documentElement.dataset.lavaMoatPolicyProbeConsoleAccess = String(
-    hasConsoleAccess(),
-  );
+  document.documentElement.dataset.lavaMoatPolicyProbeConsoleAccess =
+    String(hasConsoleAccess());
 }
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);

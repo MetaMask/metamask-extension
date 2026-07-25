@@ -140,7 +140,7 @@ const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
 
-if (process.env.IN_TEST) {
+if (process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined') {
   const { hasConsoleAccess } =
     // Load conditionally so this test-only package is excluded from production builds and policies.
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
@@ -154,7 +154,10 @@ if (process.env.IN_TEST) {
         hasLavaMoatPolicyProbeConsoleAccess,
       })
       .catch((error) => {
-        console.error('Failed to store the LavaMoat policy probe result', error);
+        console.error(
+          'Failed to store the LavaMoat policy probe result',
+          error,
+        );
       });
   } else {
     document.documentElement.dataset.lavaMoatPolicyProbeConsoleAccess = String(
