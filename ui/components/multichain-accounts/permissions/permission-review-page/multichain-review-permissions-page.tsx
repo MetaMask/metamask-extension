@@ -8,6 +8,8 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
+  AvatarFavicon,
+  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -31,6 +33,7 @@ import {
   setPermittedChains,
 } from '../../../../store/actions';
 import { dismissPermittedNetworkToast } from '../../../../helpers/utils/show-permitted-network-toast';
+import { toast, ToastContent } from '../../../ui/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
@@ -92,6 +95,19 @@ export const MultichainReviewPermissions = () => {
   );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
+
+  const showNetworkPermissionToast = useCallback(() => {
+    toast.success(<ToastContent title={t('networkPermissionToast')} />, {
+      id: 'network-permission-toast',
+      icon: (
+        <AvatarFavicon
+          name={connectedSubjectsMetadata?.name}
+          size={AvatarFaviconSize.Sm}
+          src={connectedSubjectsMetadata?.iconUrl}
+        />
+      ),
+    });
+  }, [connectedSubjectsMetadata?.iconUrl, connectedSubjectsMetadata?.name, t]);
 
   const disconnectAllPermissions = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
