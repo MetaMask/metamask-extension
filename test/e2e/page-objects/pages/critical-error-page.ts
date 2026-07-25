@@ -1,4 +1,5 @@
 import { until } from 'selenium-webdriver';
+import { METAMASK_RESTORING_PAGE_URL } from '../../../../shared/constants/critical-error-repair-session';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 
@@ -28,6 +29,52 @@ class CriticalErrorPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async waitForInPlaceRepairReload(): Promise<void> {
+    await this.driver.waitUntil(
+      async () => !(await this.driver.isElementPresent(this.repairButton)),
+      { interval: 300, timeout: 30_000 },
+    );
+
+    await this.assertNoCriticalErrorRepairSession();
+    await this.assertNoRestoringTab();
+
+    await this.driver.waitForControllersLoaded();
+  }
+
+  async assertNoCriticalErrorRepairSession(): Promise<void> {
+    const cleared = await this.driver.executeScript(`
+      return new Promise(resolve => {
+        const b = globalThis.browser ?? globalThis.chrome;
+        b.storage.local.get('criticalErrorRepair', (data) => {
+          resolve(!data.criticalErrorRepair);
+        });
+      });
+    `);
+
+    if (!cleared) {
+      throw new Error(
+        'Expected in-place repair not to write criticalErrorRepair session',
+      );
+    }
+  }
+
+  async assertNoRestoringTab(): Promise<void> {
+    const handles = await this.driver.getAllWindowHandles();
+    const currentHandle = await this.driver.driver.getWindowHandle();
+
+    for (const handle of handles) {
+      await this.driver.driver.switchTo().window(handle);
+      const url = await this.driver.getCurrentUrl();
+      if (url.includes(METAMASK_RESTORING_PAGE_URL)) {
+        throw new Error(
+          `Expected no ${METAMASK_RESTORING_PAGE_URL} tab during in-place repair`,
+        );
+      }
+    }
+
+    await this.driver.driver.switchTo().window(currentHandle);
   }
 
   async waitForRepairReloadAndHandoff(): Promise<void> {
@@ -123,8 +170,15 @@ class CriticalErrorPage {
    *
    * @param options - Options for the repair action.
    * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
+   * @param options.expectsExtensionReload
    */
-  async clickRepairButton({ confirm }: { confirm: boolean }): Promise<void> {
+  async clickRepairButton({
+    confirm,
+    expectsExtensionReload = true,
+  }: {
+    confirm: boolean;
+    expectsExtensionReload?: boolean;
+  }): Promise<void> {
     console.log(
       `Click repair button and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
@@ -139,7 +193,11 @@ class CriticalErrorPage {
 
     if (confirm) {
       await alert.accept();
-      await this.waitForRepairReloadAndHandoff();
+      if (expectsExtensionReload) {
+        await this.waitForRepairReloadAndHandoff();
+      } else {
+        await this.waitForInPlaceRepairReload();
+      }
     } else {
       await alert.dismiss();
       await this.checkRepairButtonIsDisplayed();

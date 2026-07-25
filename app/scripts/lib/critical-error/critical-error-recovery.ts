@@ -12,8 +12,16 @@ import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corru
 import { trackCriticalErrorEvent } from './track-critical-error';
 
 type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
-type RepairCallback = (
-  repairAction: CriticalErrorRepairAction,
+
+export type RepairCallbackOptions = {
+  repairAction: CriticalErrorRepairAction;
+  criticalErrorType: CriticalErrorType;
+  backup: Backup | null;
+  connectedPorts: Set<chrome.runtime.Port>;
+};
+
+export type RepairCallback = (
+  options: RepairCallbackOptions,
 ) => Promise<boolean>;
 
 export type RegisterPortForCriticalErrorConfig = {
@@ -132,14 +140,15 @@ export class CriticalErrorHandler {
       return;
     }
 
-    // only allow the restore process once, unregister
-    // listeners from all UI windows
-    for (const connectedPort of this.connectedPorts) {
-      this.removeListenersForPort(connectedPort);
-    }
-
     const backup = params.backup as Backup | null;
     const criticalErrorType = getCriticalErrorType(params);
+    const connectedPorts = new Set(this.connectedPorts);
+
+    // only allow the restore process once, unregister
+    // listeners from all UI windows
+    for (const connectedPort of connectedPorts) {
+      this.removeListenersForPort(connectedPort);
+    }
 
     try {
       if (isStateCorruptionErrorType(criticalErrorType)) {
@@ -164,7 +173,12 @@ export class CriticalErrorHandler {
         },
       );
 
-      await this.#repairCallback(repairAction);
+      await this.#repairCallback({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      });
     } catch (repairError) {
       captureException(repairError);
     }

@@ -94,7 +94,10 @@ describe('Storage Operations Failure Recovery', function () {
 
           // Phase 2: Start recovery
           const criticalErrorPage = new CriticalErrorPage(driver);
-          await criticalErrorPage.clickRepairButton({ confirm: true });
+          await criticalErrorPage.clickRepairButton({
+            confirm: true,
+            expectsExtensionReload: false,
+          });
 
           // Phase 3: Complete vault recovery onboarding
           await completeVaultRecoveryOnboardingFlow({

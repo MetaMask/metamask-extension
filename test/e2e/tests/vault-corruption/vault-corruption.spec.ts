@@ -118,7 +118,10 @@ describe('Vault Corruption', function () {
 
         // start recovery
         const criticalErrorPage = new CriticalErrorPage(driver);
-        await criticalErrorPage.clickRepairButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({
@@ -224,7 +227,10 @@ describe('Vault Corruption', function () {
 
         // start reset
         const criticalErrorPage = new CriticalErrorPage(driver);
-        await criticalErrorPage.clickRepairButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // Now onboard again, like a first-time user :-(
         await completeCreateNewWalletOnboardingFlow({
@@ -278,7 +284,10 @@ describe('Vault Corruption', function () {
         await criticalErrorPage.clickRepairButton({ confirm: false });
         // actually recover the vault this time just to make sure
         // it all still works after dismissing the prompt previously
-        await criticalErrorPage.clickRepairButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // verify that the UI has completed recovery this time
         await completeVaultRecoveryOnboardingFlow({
@@ -312,7 +321,10 @@ describe('Vault Corruption', function () {
 
         // start recovery
         const criticalErrorPage = new CriticalErrorPage(driver);
-        await criticalErrorPage.clickRepairButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({

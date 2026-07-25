@@ -65,6 +65,7 @@ import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-e
 import {
   CriticalErrorRepairAction,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  isStateCorruptionErrorType,
 } from '../../shared/constants/state-corruption';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getInstallAttribution } from '../../shared/lib/install-attribution';
@@ -118,6 +119,7 @@ import {
   handoffRestoringTabToExtension,
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
+import { repairStateCorruptionInPlace } from './lib/critical-error/repair-state-corruption-in-place';
 import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
@@ -628,10 +630,32 @@ const handleOnConnect = async (port) => {
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
       port,
-      repairCallback: (repairAction) =>
-        requestRepair(() =>
-          openRestoringTabAndReload(requestSafeReload, repairAction),
-        ),
+      repairCallback: async ({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      }) =>
+        requestRepair(async () => {
+          if (isStateCorruptionErrorType(criticalErrorType)) {
+            await repairStateCorruptionInPlace({
+              repairAction,
+              backup,
+              connectedPorts,
+              initBackground,
+              persistenceManager,
+              setGlobalInitializers,
+              setRestoreFlowType: () => {
+                controller.onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              },
+              tryPostMessage,
+            });
+          } else {
+            await openRestoringTabAndReload(requestSafeReload, repairAction);
+          }
+        }),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);

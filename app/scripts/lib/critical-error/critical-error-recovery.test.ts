@@ -177,9 +177,12 @@ describe('CriticalErrorHandler', () => {
 
       await flushPromises();
 
-      expect(repairCallback).toHaveBeenCalledWith(
-        CriticalErrorRepairAction.Recover,
-      );
+      expect(repairCallback).toHaveBeenCalledWith({
+        repairAction: CriticalErrorRepairAction.Recover,
+        criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        backup,
+        connectedPorts: expect.any(Set),
+      });
       expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
         backup,
         MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
@@ -257,6 +260,9 @@ describe('CriticalErrorHandler', () => {
 
       expect(config1.port.onMessage.removeListener).toHaveBeenCalled();
       expect(config2.port.onMessage.removeListener).toHaveBeenCalled();
+      const restoreCall = sharedRestore.mock.calls[0][0];
+      expect(restoreCall.connectedPorts.has(config1.port)).toBe(true);
+      expect(restoreCall.connectedPorts.has(config2.port)).toBe(true);
       expect(sharedRestore).toHaveBeenCalledTimes(1);
       expect(handler.connectedPorts.size).toBe(0);
     });
@@ -279,9 +285,12 @@ describe('CriticalErrorHandler', () => {
 
       await flushPromises();
 
-      expect(repairCallback).toHaveBeenCalledWith(
-        CriticalErrorRepairAction.Reset,
-      );
+      expect(repairCallback).toHaveBeenCalledWith({
+        repairAction: CriticalErrorRepairAction.Reset,
+        criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        backup: null,
+        connectedPorts: expect.any(Set),
+      });
       expect(jest.mocked(trackVaultCorruptionEvent)).toHaveBeenCalledWith(
         null,
         MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
