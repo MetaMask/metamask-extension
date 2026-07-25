@@ -493,7 +493,6 @@
     "chart.js": "^4.4.1",
     "clsx": "^2.1.1",
     "cockatiel": "^3.1.2",
-    "copy-to-clipboard": "^3.3.3",
     "cron-parser": "^4.5.0",
     "currency-formatter": "^1.4.2",
     "deep-freeze-strict": "1.1.1",

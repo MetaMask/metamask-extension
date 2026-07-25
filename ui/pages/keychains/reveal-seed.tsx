@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import copyToClipboard from 'copy-to-clipboard';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextButton,
@@ -24,9 +23,11 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
+import { MINUTE } from '../../../shared/constants/time';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import {
   requestRevealSeedWords,
   getSeedPhraseWithPasskey,
@@ -147,11 +148,16 @@ function RevealSeedPage() {
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
+  // useCopyToClipboard analysis: Copies the sensitive SRP
+  const [, handleCopySeedWords] = useCopyToClipboard({
+    clearDelayMs: MINUTE,
+  });
+
   const onClickCopy = useCallback(() => {
     if (!seedWords || !phraseRevealed) {
       return;
     }
-    copyToClipboard(seedWords);
+    handleCopySeedWords(seedWords);
     setShowSuccessToast(true);
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportCopied)
@@ -181,6 +187,7 @@ function RevealSeedPage() {
     );
   }, [
     createEventBuilder,
+    handleCopySeedWords,
     hdEntropyIndex,
     phraseRevealed,
     seedWords,
