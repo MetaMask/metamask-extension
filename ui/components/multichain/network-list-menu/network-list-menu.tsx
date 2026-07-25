@@ -31,8 +31,6 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
 import { showPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
-import { getURLHost } from '../../../helpers/utils/util';
-import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
@@ -401,22 +399,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
         if (!isNetworkPermitted) {
           await dispatch(addPermittedChain(selectedTabOrigin, chainId));
-          const network = getMultichainNetworkConfigurationOrThrow(chainId);
-          const networkName = network.name;
           showPermittedNetworkToast({
             origin: selectedTabOrigin,
-            networkName,
-            networkImageUrl: getNetworkIcon(network),
-            title: t('permittedChainToastUpdate', [
-              getURLHost(selectedTabOrigin),
-              networkName,
-            ]),
-            editPermissionsLabel: t('editPermissions'),
-            onEditPermissions: () => {
-              navigate(
-                `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(selectedTabOrigin)}`,
-              );
-            },
+            network: getMultichainNetworkConfigurationOrThrow(chainId),
+            t,
+            navigate,
           });
         }
 
