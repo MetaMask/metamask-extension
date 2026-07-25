@@ -8,7 +8,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
@@ -132,7 +131,7 @@ export function useOnboardingCompletion() {
       autoCompleteWithoutUserGesture: boolean;
     }): Promise<boolean> => {
       try {
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return false;
         }

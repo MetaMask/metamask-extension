@@ -46,6 +46,10 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+Object.assign(globalThis, {
+  chrome: jest.requireMock('webextension-polyfill'),
+});
+
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
 
