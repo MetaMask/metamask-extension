@@ -45,12 +45,12 @@ import {
 } from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
-  hidePermittedNetworkToast,
   removePermissionsFor,
 } from '../../../store/actions';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getURLHost } from '../../../helpers/utils/util';
+import { dismissPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
 import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip25-permissions';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { Tag } from '../../component-library/tag/tag';
@@ -189,7 +189,7 @@ export const DappConnectionControlBar = memo(() => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
+    dismissPermittedNetworkToast();
     setShowDisconnectModal(false);
   }, [dispatch, subjects, activeTabOrigin]);
 

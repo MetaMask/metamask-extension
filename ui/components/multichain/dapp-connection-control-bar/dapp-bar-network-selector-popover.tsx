@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { type Hex } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
@@ -26,6 +27,9 @@ import {
 } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { showPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
+import { getURLHost } from '../../../helpers/utils/util';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { NetworkListItem } from '../network-list-item';
 import {
   getAllDomains,
@@ -45,7 +49,6 @@ import {
   setNextNonce,
   setShowTestNetworks,
   setTokenNetworkFilter,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -85,6 +88,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -175,7 +179,22 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            dispatch(showPermittedNetworkToast());
+            const networkName = network.name;
+            showPermittedNetworkToast({
+              origin: selectedTabOrigin,
+              networkName,
+              networkImageUrl: getNetworkIcon(network),
+              title: t('permittedChainToastUpdate', [
+                getURLHost(selectedTabOrigin),
+                networkName,
+              ]),
+              editPermissionsLabel: t('editPermissions'),
+              onEditPermissions: () => {
+                navigate(
+                  `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(selectedTabOrigin)}`,
+                );
+              },
+            });
           }
 
           await setNetworkClientIdForDomain(
@@ -230,6 +249,8 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       tokenNetworkFilter,
       trackEvent,
       createEventBuilder,
+      navigate,
+      t,
       onClose,
     ],
   );

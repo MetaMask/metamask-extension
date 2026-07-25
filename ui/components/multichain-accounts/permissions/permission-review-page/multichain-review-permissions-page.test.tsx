@@ -43,11 +43,13 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   })),
 }));
 
+jest.mock('../../../../helpers/utils/show-permitted-network-toast', () => ({
+  dismissPermittedNetworkToast: jest.fn(),
+  showPermittedNetworkToast: jest.fn(),
+}));
+
 jest.mock('../../../../store/actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
-  hidePermittedNetworkToast: jest.fn(() => ({
-    type: 'HIDE_PERMITTED_NETWORK_TOAST',
-  })),
   removePermissionsFor: jest.fn(() => ({ type: 'REMOVE_PERMISSIONS_FOR' })),
   requestAccountsAndChainPermissionsWithId: jest.fn(() =>
     Promise.resolve('test-request-id'),

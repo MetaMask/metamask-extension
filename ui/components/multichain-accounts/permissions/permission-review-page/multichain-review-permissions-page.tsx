@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
@@ -8,8 +8,6 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -25,16 +23,14 @@ import {
   getConnectedSitesList,
   getPermissions,
   getPermissionSubjects,
-  getShowPermittedNetworkToastOpen,
 } from '../../../../selectors';
 import {
-  hidePermittedNetworkToast,
   removePermissionsFor,
   requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import { toast, ToastContent } from '../../../ui/toast/toast';
+import { dismissPermittedNetworkToast } from '../../../../helpers/utils/show-permitted-network-toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
@@ -80,10 +76,6 @@ export const MultichainReviewPermissions = () => {
   );
   const activeTabOrigin: string = securedOrigin;
 
-  const showPermittedNetworkToastOpen = useSelector(
-    getShowPermittedNetworkToastOpen,
-  );
-
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(activeTabOrigin),
@@ -101,26 +93,6 @@ export const MultichainReviewPermissions = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
 
-  const showNetworkPermissionToast = useCallback(() => {
-    toast.success(<ToastContent title={t('networkPermissionToast')} />, {
-      id: 'network-permission-toast',
-      icon: (
-        <AvatarFavicon
-          name={connectedSubjectsMetadata?.name}
-          size={AvatarFaviconSize.Sm}
-          src={connectedSubjectsMetadata?.iconUrl}
-        />
-      ),
-    });
-  }, [connectedSubjectsMetadata?.iconUrl, connectedSubjectsMetadata?.name, t]);
-
-  useEffect(() => {
-    if (showPermittedNetworkToastOpen) {
-      showNetworkPermissionToast();
-      dispatch(hidePermittedNetworkToast());
-    }
-  }, [showPermittedNetworkToastOpen, dispatch, showNetworkPermissionToast]);
-
   const disconnectAllPermissions = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -137,7 +109,7 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-    dispatch(hidePermittedNetworkToast());
+    dismissPermittedNetworkToast();
   };
 
   const handleDisconnectClick = () => {

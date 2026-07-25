@@ -6,6 +6,7 @@ import {
   DropResult,
 } from '@hello-pangea/dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -29,6 +30,9 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
+import { showPermittedNetworkToast } from '../../../helpers/utils/show-permitted-network-toast';
+import { getURLHost } from '../../../helpers/utils/util';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
@@ -39,7 +43,6 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
   addPermittedChain,
@@ -168,6 +171,7 @@ const isCustomNetworkConfiguration = (
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
@@ -397,7 +401,23 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
         if (!isNetworkPermitted) {
           await dispatch(addPermittedChain(selectedTabOrigin, chainId));
-          dispatch(showPermittedNetworkToast());
+          const network = getMultichainNetworkConfigurationOrThrow(chainId);
+          const networkName = network.name;
+          showPermittedNetworkToast({
+            origin: selectedTabOrigin,
+            networkName,
+            networkImageUrl: getNetworkIcon(network),
+            title: t('permittedChainToastUpdate', [
+              getURLHost(selectedTabOrigin),
+              networkName,
+            ]),
+            editPermissionsLabel: t('editPermissions'),
+            onEditPermissions: () => {
+              navigate(
+                `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(selectedTabOrigin)}`,
+              );
+            },
+          });
         }
 
         await setNetworkClientIdForDomain(
