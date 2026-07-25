@@ -8,7 +8,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
@@ -132,8 +131,8 @@ export function useOnboardingCompletion() {
       autoCompleteWithoutUserGesture: boolean;
     }): Promise<boolean> => {
       try {
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
-        if (!browserWithSidePanel?.sidePanel?.open) {
+        const browserWithSidePanel = chrome;
+        if (!browserWithSidePanel.sidePanel?.open) {
           return false;
         }
 
@@ -145,7 +144,7 @@ export function useOnboardingCompletion() {
           return false;
         }
 
-        // `browser.sidePanel.open()` requires a user gesture. Auto-complete
+        // `sidePanel.open()` requires a user gesture. Auto-complete
         // runs from `useEffect`, so skip the call there. Navigate/Interstitial
         // deferred deep links also skip opening so the popup can route first.
         if (shouldOpenSidePanel && !autoCompleteWithoutUserGesture) {

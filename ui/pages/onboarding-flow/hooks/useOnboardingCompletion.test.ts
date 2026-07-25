@@ -46,6 +46,11 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+// Production aliases `const browserWithSidePanel = chrome`.
+Object.assign(globalThis, {
+  chrome: jest.requireMock('webextension-polyfill'),
+});
+
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
 

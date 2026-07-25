@@ -4346,13 +4346,8 @@ export function toggleDefaultView(): ThunkAction<
       }
 
       if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
-        if (!browserWithSidePanel?.sidePanel?.open) {
+        const browserWithSidePanel = chrome;
+        if (!browserWithSidePanel.sidePanel?.open) {
           return;
         }
 

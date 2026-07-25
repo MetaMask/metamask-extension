@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
 import {
   Button,
   ButtonSize,
@@ -33,7 +32,6 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
@@ -84,15 +82,15 @@ export default function CreationSuccessful() {
   ]);
 
   useEffect(() => {
-    const browserWithSidePanel = browser as BrowserWithSidePanel;
-    const handleSidePanelClosed = (_args: unknown) => {
+    const browserWithSidePanel = chrome;
+    const handleSidePanelClosed = () => {
       setIsSidePanelOpen(false);
     };
 
     if (isSidePanelEnabled) {
       // NOTE: `sidePanel.onClosed` event is only available on later versions of Chrome
       // REFERENCE: {@link https://developer.chrome.com/docs/extensions/reference/api/sidePanel#event-onClosed}
-      if (browserWithSidePanel?.sidePanel?.onClosed?.addListener) {
+      if (browserWithSidePanel.sidePanel?.onClosed?.addListener) {
         browserWithSidePanel.sidePanel.onClosed.addListener(
           handleSidePanelClosed,
         );
@@ -104,7 +102,7 @@ export default function CreationSuccessful() {
     }
 
     return () => {
-      if (browserWithSidePanel?.sidePanel?.onClosed?.removeListener) {
+      if (browserWithSidePanel.sidePanel?.onClosed?.removeListener) {
         browserWithSidePanel.sidePanel.onClosed.removeListener(
           handleSidePanelClosed,
         );
