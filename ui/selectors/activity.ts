@@ -28,7 +28,6 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
@@ -83,24 +82,32 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
 export const selectLocalTransactions = createSelector(
   selectOrderedTransactions,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   smartTransactionsListSelector,
   selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
   (
     transactions,
-    selectedAccount,
+    evmAddress,
     smartTransactions,
     internalTxIds,
     internalTxHashes,
   ): TransactionGroup[] => {
-    if (!selectedAccount?.address) {
+    if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
-    const selectedAddress = selectedAccount.address.toLowerCase();
+    const selectedAddress = evmAddress.toLowerCase();
 
     const isInternalRequiredTransaction = (
       tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
@@ -436,17 +443,17 @@ export const selectLocalActivityItems = createSelector(
   selectBridgeHistoryDeprecated,
   selectTransactionPayData,
   getNetworkConfigurationsByChainId,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   getTokensControllerAllTokens,
   (
     transactionGroups,
     bridgeHistory,
     transactionPayData,
     networkConfigurationsByChainId,
-    selectedAccount,
+    evmAddress,
     allTokens,
   ) => {
-    const selectedAddress = selectedAccount?.address?.toLowerCase();
+    const selectedAddress = evmAddress?.toLowerCase();
 
     // Resolves symbol/decimals for an ERC-20 contract address from the user's
     // watched-tokens list (TokensController). The static mainnet token list
@@ -638,12 +645,4 @@ export const selectMarketRates = createSelector(
 
     return rates;
   },
-);
-
-// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
-export const selectEvmAddress = createSelector(
-  (state: MultichainAccountsState) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
-  (account) =>
-    account && isEvmAccountType(account.type) ? account.address : undefined,
 );
