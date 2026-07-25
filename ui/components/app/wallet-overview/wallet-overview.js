@@ -19,6 +19,8 @@ const WalletOverview = ({ balance, buttons, className }) => {
           'wallet-overview-fullscreen':
             environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
             environmentType === ENVIRONMENT_TYPE_SIDEPANEL,
+          'wallet-overview-sidepanel':
+            environmentType === ENVIRONMENT_TYPE_SIDEPANEL,
         },
         className,
       )}
