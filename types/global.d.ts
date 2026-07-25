@@ -244,6 +244,11 @@ declare class Runtime {
 
 declare class Chrome {
   runtime: Runtime;
+
+  // Chrome-only API, absent on other browsers, so optional.
+  sidePanel?: {
+    open: (options: { tabId?: number; windowId?: number }) => Promise<void>;
+  };
 }
 
 type StateHooks = {
