@@ -24,8 +24,7 @@ type SelectedAccountProps = {
 
 function SelectedAccount({ selectedAccount }: SelectedAccountProps) {
   const t = useI18nContext();
-  // useCopyToClipboard analysis: Copies a public address
-  const [copied, handleCopyAddress] = useCopyToClipboard({
+  const [copied, copyToClipboard] = useCopyToClipboard({
     clearDelayMs: null,
   });
 
@@ -36,8 +35,8 @@ function SelectedAccount({ selectedAccount }: SelectedAccountProps) {
   const showAccountCopyIcon = true;
 
   const handleCopy = useCallback(() => {
-    handleCopyAddress(checksummedAddress);
-  }, [checksummedAddress, handleCopyAddress]);
+    copyToClipboard(checksummedAddress);
+  }, [checksummedAddress, copyToClipboard]);
 
   return (
     <div className="selected-account">

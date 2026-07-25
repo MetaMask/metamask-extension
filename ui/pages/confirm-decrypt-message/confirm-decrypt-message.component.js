@@ -192,13 +192,12 @@ const MessageBody = forwardRef(
     const [hasDecrypted, setHasDecrypted] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    // useCopyToClipboard analysis: Copies a decrypted message payload
-    const [hasCopied, handleCopyMessage] = useCopyToClipboard({
+    const [hasCopied, copyToClipboard] = useCopyToClipboard({
       clearDelayMs: null,
     });
 
     const copyMessage = () => {
-      handleCopyMessage(rawMessage);
+      copyToClipboard(rawMessage);
       trackEvent(
         createEventBuilder('Copy')
           .addCategory(MetaMetricsEventCategory.Messages)

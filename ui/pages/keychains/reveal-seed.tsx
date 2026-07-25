@@ -148,8 +148,7 @@ function RevealSeedPage() {
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
-  // useCopyToClipboard analysis: Copies the sensitive SRP
-  const [, handleCopySeedWords] = useCopyToClipboard({
+  const [, copyToClipboard] = useCopyToClipboard({
     clearDelayMs: MINUTE,
   });
 
@@ -157,7 +156,7 @@ function RevealSeedPage() {
     if (!seedWords || !phraseRevealed) {
       return;
     }
-    handleCopySeedWords(seedWords);
+    copyToClipboard(seedWords);
     setShowSuccessToast(true);
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportCopied)
@@ -187,7 +186,7 @@ function RevealSeedPage() {
     );
   }, [
     createEventBuilder,
-    handleCopySeedWords,
+    copyToClipboard,
     hdEntropyIndex,
     phraseRevealed,
     seedWords,
