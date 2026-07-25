@@ -2,6 +2,9 @@
   "name": "metamask-crx",
   "version": "13.41.0",
   "private": true,
+  "workspaces": [
+    "test/fakes/lavamoat-policy-probe"
+  ],
   "imports": {
     "#ui/*": [
       "./ui/*",
@@ -592,7 +595,7 @@
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
     "@metamask/java-tron-up": "^1.0.0",
-    "@metamask/lavamoat-policy-probe": "file:test/fakes/lavamoat-policy-probe",
+    "@metamask/lavamoat-policy-probe": "workspace:*",
     "@metamask/messenger-cli": "^0.1.0",
     "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^23.0.0",

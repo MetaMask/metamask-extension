@@ -69,6 +69,8 @@ export {
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
+// This E2E-only probe runs in browser CI, outside Istanbul coverage.
+/* istanbul ignore next */
 if (process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined') {
   const { hasConsoleAccess } =
     // Load conditionally so this test-only package is excluded from production builds and policies.
