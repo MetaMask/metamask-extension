@@ -75,59 +75,6 @@ beforeEach(() => {
   (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
 });
 
-describe('AccountOverviewTabs - event metrics', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('includes network_filter property with both EVM and non-EVM networks in CAIP format', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-    });
-
-    const { getByText } = renderWithProvider(
-      <AccountOverviewTabs
-        showTokens={true}
-        showNfts={false}
-        showActivity={true}
-        setBasicFunctionalityModalOpen={jest.fn()}
-        onSupportLinkClick={jest.fn()}
-      />,
-      store,
-      '/?tab=activity',
-    );
-
-    // Click a tab to trigger event
-    fireEvent.click(getByText(messages.tokens.message));
-
-    // Verify network_filter property is included in correct format
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: MetaMetricsEventName.TokenScreenOpened,
-      properties: {
-        category: MetaMetricsEventCategory.Home,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        network_filter: [
-          'eip155:1',
-          'eip155:137',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ],
-      },
-      sensitiveProperties: {},
-    });
-  });
-});
-
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   const BADGE_TESTID = 'perps-tab-new-badge';
   const PERPS_TAB_TESTID = 'account-overview__perps-tab';

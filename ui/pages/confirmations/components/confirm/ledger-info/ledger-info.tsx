@@ -76,8 +76,6 @@ const LedgerInfo = () => {
           variant={ButtonVariant.Link}
           textAlign={TextAlign.Left}
           fontWeight={FontWeight.Normal}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
@@ -95,8 +93,6 @@ const LedgerInfo = () => {
             variant={ButtonVariant.Link}
             textAlign={TextAlign.Left}
             fontWeight={FontWeight.Normal}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 let connectedDevices: HIDDevice[] = [];

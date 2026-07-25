@@ -11,6 +11,7 @@ import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -55,6 +56,7 @@ import { BalanceEmptyState } from '../balance-empty-state';
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectBalanceBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -75,11 +77,13 @@ export type CoinOverviewProps = {
 
 const BalanceOverviewSkeleton = () => (
   <Box
-    className="flex flex-col gap-[2px] w-full"
+    className="flex w-full max-w-[400px] items-center gap-[10px] self-center px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
     data-testid="coin-overview-balance-skeleton"
   >
-    <Skeleton className="h-[50px] w-full rounded-lg" />
-    <Skeleton className="h-6 w-[180px] rounded-lg" />
+    <Box className="flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px] [.wallet-overview-fullscreen_&]:items-center">
+      <Skeleton className="h-[50px] w-full rounded-lg" />
+      <Skeleton className="h-6 w-[180px] rounded-lg" />
+    </Box>
   </Box>
 );
 
@@ -211,7 +215,17 @@ export const CoinOverview = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { privacyMode } = useSelector(getPreferences);
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const showNativeTokenAsMain = useMemo(
+    () =>
+      Boolean(
+        showNativeTokenAsMainBalance &&
+        Object.keys(enabledNetworks).length === 1,
+      ),
+    [showNativeTokenAsMainBalance, enabledNetworks],
+  );
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
@@ -219,24 +233,39 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
+  const isEvm = isEvmChainId(chainId);
 
   const period = '1d';
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
 
   useRewardsModal();
 
+  const aggregateFiatBalanceIsZero = isZeroAmount(
+    selectedGroupBalance?.totalBalanceInUserCurrency ?? 0,
+  );
+
+  const shouldCheckBalanceState =
+    Boolean(selectedAccountGroup) && !isTestnet && !balanceIsCached;
+
+  const shouldDelayZeroFiatBalance =
+    shouldCheckBalanceState &&
+    !showNativeTokenAsMain &&
+    hasBalance &&
+    aggregateFiatBalanceIsZero;
+
   const shouldShowBalanceLoadingState = useMemo(
     () =>
-      Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
-      !hasBalance &&
-      (balanceIsLoading || !balanceIsLoaded),
+      isEvm &&
+      (shouldDelayZeroFiatBalance ||
+        (shouldCheckBalanceState &&
+          !hasBalance &&
+          (balanceIsLoading || !balanceIsLoaded))),
     [
-      selectedAccountGroup,
-      isTestnet,
-      balanceIsCached,
+      isEvm,
+      shouldDelayZeroFiatBalance,
+      shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
@@ -245,18 +274,11 @@ export const CoinOverview = ({
 
   const shouldShowBalanceEmptyState = useMemo(
     () =>
-      Boolean(selectedAccountGroup) &&
-      !isTestnet &&
-      !balanceIsCached &&
+      isEvm &&
+      shouldCheckBalanceState &&
       !hasBalance &&
       !shouldShowBalanceLoadingState,
-    [
-      selectedAccountGroup,
-      isTestnet,
-      balanceIsCached,
-      hasBalance,
-      shouldShowBalanceLoadingState,
-    ],
+    [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
 
   const handleSensitiveToggle = useCallback(() => {

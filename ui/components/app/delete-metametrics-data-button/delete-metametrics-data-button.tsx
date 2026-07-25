@@ -51,7 +51,6 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { defaultPrivacySettings, ...props }: DeleteMetaMetricsDataButtonProps<C>,
       ref: PolymorphicRef<C>,
     ) => {

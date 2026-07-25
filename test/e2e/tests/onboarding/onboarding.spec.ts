@@ -214,7 +214,7 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const wrongTestPassword = 'test test test test';
+        const wrongTestPassword = 'wrong horse battery staple test';
         await driver.navigate();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {

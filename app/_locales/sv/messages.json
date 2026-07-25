@@ -337,9 +337,6 @@
   "networks": {
     "message": "Nätverk"
   },
-  "nevermind": {
-    "message": "Strunt i det"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
