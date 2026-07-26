@@ -46,7 +46,7 @@ const network = {
   chainId: 'eip155:1',
   name: 'Ethereum Mainnet',
   isEvm: true,
-} as MultichainNetworkConfiguration;
+} as unknown as MultichainNetworkConfiguration;
 
 describe('showPermittedNetworkToast', () => {
   beforeEach(() => {
