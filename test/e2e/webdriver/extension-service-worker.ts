@@ -41,7 +41,9 @@ export async function executeScriptInExtensionServiceWorker(
     const { error, result } = await cdpConnection.send<Result>(method, params);
 
     if (error) {
-      throw new Error(`CDP ${method} failed: ${error.message ?? 'Unknown error'}`);
+      throw new Error(
+        `CDP ${method} failed: ${error.message ?? 'Unknown error'}`,
+      );
     }
 
     return result as Result;
