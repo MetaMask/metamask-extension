@@ -78,7 +78,7 @@ export type AllowedBridgeChainIds =
  * @returns the Bridge API base URL for the current MetaMask environment
  */
 const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
-  console.log('METAMASK_ENVIRONMENT', process.env.METAMASK_ENVIRONMENT)
+  console.log('METAMASK_ENVIRONMENT', process.env.METAMASK_ENVIRONMENT);
   switch (process.env.METAMASK_ENVIRONMENT) {
     case 'exp':
     case ENVIRONMENT.STAGING:
