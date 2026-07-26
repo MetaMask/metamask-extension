@@ -32,16 +32,11 @@ export function showPermittedNetworkToast({
 
   toast.success(
     <ToastContent
-      title={t('permittedChainToastUpdate', [
-        getURLHost(origin),
-        networkName,
-      ])}
+      title={t('permittedChainToastUpdate', [getURLHost(origin), networkName])}
       actionText={t('editPermissions')}
       onActionClick={() => {
         toast.dismiss(permittedNetworkToastId);
-        navigate(
-          `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(origin)}`,
-        );
+        navigate(`${REVIEW_PERMISSIONS}?origin=${encodeURIComponent(origin)}`);
       }}
       dataTestId={permittedNetworkToastId}
     />,

@@ -57,10 +57,10 @@ describe('showPermittedNetworkToast', () => {
     const navigate = jest.fn();
     const t = jest.fn((key: string, args?: string[]) => {
       if (key === 'permittedChainToastUpdate') {
-        return `${args?.[0]} has access to ${args?.[1]}.`;
+        return `${args?.[0]}::${args?.[1]}`;
       }
       if (key === 'editPermissions') {
-        return 'Edit permissions';
+        return 'edit-permissions-action';
       }
       return key;
     });
@@ -82,11 +82,11 @@ describe('showPermittedNetworkToast', () => {
 
     render(content);
     expect(
-      screen.getByText('dapp.example.com has access to Ethereum Mainnet.'),
+      screen.getByText('dapp.example.com::Ethereum Mainnet'),
     ).toBeInTheDocument();
     expect(screen.getByTestId(permittedNetworkToastId)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Edit permissions'));
+    fireEvent.click(screen.getByText('edit-permissions-action'));
     expect(mockToastDismiss).toHaveBeenCalledWith(permittedNetworkToastId);
     expect(navigate).toHaveBeenCalledWith(
       `${REVIEW_PERMISSIONS}?origin=${encodeURIComponent('https://dapp.example.com')}`,
