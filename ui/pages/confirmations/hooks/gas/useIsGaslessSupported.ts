@@ -1,8 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -11,12 +10,14 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * Hook to determine if gasless transactions are supported for the current confirmation context.
  *
  * Gasless support can be enabled in two ways:
- * - Via Smart Transactions (sendBundle): Supported when smart transactions are enabled and
- * sendBundle is supported for the chain. Works for all account types including hardware wallets,
- * since only standard EIP-1559 signing is required.
- * - Via 7702 relay: Supported when the current account is upgraded, the chain supports atomic
- * batch, relay is available, and the transaction is not a contract deployment. Hardware wallets
- * are excluded from this path because they cannot sign EIP-7702 authorization lists.
+ * - Via 7702: Supported when the current account is upgraded, the chain supports atomic batch, relay is available, and the transaction is not a contract deployment.
+ * - Via Smart Transactions: Supported when smart transactions are enabled and sendBundle is supported for the chain.
+ *
+ * Hardware wallets are excluded from gasless support because they cannot sign
+ * EIP-7702 authorization lists. They fall back to the standard "user pay gas" flow.
+ * Detection uses the confirmation's `txParams.from` account (not the globally
+ * selected account) so Non-EVM network selection cannot mis-classify a Ledger/
+ * Trezor send as gasless-eligible.
  *
  * Account downgrade (revoke delegation) transactions are excluded because gasless
  * requires an upgraded account, which conflicts with the downgrade intent.
@@ -31,7 +32,9 @@ export function useIsGaslessSupported() {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useIsHardwareWalletAccount(
+    transactionMeta?.txParams?.from,
+  );
 
   const isDowngradeTransaction =
     transactionMeta?.txParams?.authorizationList?.[0]?.address ===
@@ -58,15 +61,15 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-    relaySupportsChain &&
-    // contract deployments can't be delegated
-    transactionMeta?.txParams?.to !== undefined,
+      relaySupportsChain &&
+      // contract deployments can't be delegated
+      transactionMeta?.txParams?.to !== undefined,
   );
 
   // sendBundle is open to all account types; is7702Supported already gates HW wallets
   const isSupported = Boolean(
     !isDowngradeTransaction &&
-    (isSmartTransactionAndBundleSupported || is7702Supported),
+      (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   // sendBundle pending state applies to all account types; 7702 pending stays HW-gated

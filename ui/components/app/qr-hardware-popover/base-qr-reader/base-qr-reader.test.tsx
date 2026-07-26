@@ -163,7 +163,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame(
           'UR:CRYPTO-HDKEY/24-2/LPCSCSAOCSNYCYNLAMSKJPHDGTEHOEADCSFNAOAEAMTAADDYOTADLNCSDWYKCSFNYKAEYKAOCYJKSKTNBKAXAXATTAADDYOEADLRAEWKLAWKAXAEAYCYTEDMFEAYASISGRIHKKJKJYJLJTIHBKJOHSIAIAJLKPJTJYDMJKJYHSJTIEHSJPIEHTSTGSAO',
@@ -786,7 +785,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame('not-a-valid-ur-payload');
       }, [onFrame]);
@@ -809,7 +807,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame('not-a-valid-ur-payload');
       }, [onFrame]);
@@ -848,7 +845,6 @@ describe('BaseQrReader', () => {
     }: {
       onFrame: (data: string) => void;
     }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
         onFrame(`ur:${UrType.EthSignature}/mock-frame`);
       }, [onFrame]);
@@ -1228,7 +1224,6 @@ describe('BaseQrReader', () => {
       }: {
         onFrame: (data: string) => void;
       }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           onFrame('not-a-valid-ur-payload');
         }, [onFrame]);
@@ -1264,7 +1259,6 @@ describe('BaseQrReader', () => {
       }: {
         onFrame: (data: string) => void;
       }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           onFrame('not-a-valid-ur-payload');
         }, [onFrame]);

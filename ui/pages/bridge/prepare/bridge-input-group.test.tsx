@@ -258,6 +258,25 @@ describe('BridgeInputGroup', () => {
     });
   });
 
+  it('passes fetched security metadata to the selected asset button', () => {
+    const { getByTestId } = renderBridgeInputGroup(
+      {},
+      { tokenSecurityData: { isVerified: true } },
+    );
+
+    expect(
+      getByTestId('bridge-selected-asset-verified-badge'),
+    ).toBeInTheDocument();
+  });
+
+  it('leaves the selected asset button unchanged without fetched metadata', () => {
+    const { queryByTestId } = renderBridgeInputGroup();
+
+    expect(
+      queryByTestId('bridge-selected-asset-verified-badge'),
+    ).not.toBeInTheDocument();
+  });
+
   it('should search for tokens', async () => {
     setupFetchMock();
     const { getByTestId } = renderBridgeInputGroup();

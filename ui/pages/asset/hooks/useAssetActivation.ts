@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipAssetType,
+  type CaipChainId,
+} from '@metamask/utils';
 import { getAsset } from '../../../selectors/assets';
 import {
   isAssetRequireActivate,
@@ -15,7 +19,6 @@ import {
   requestStellarChangeTrustOptAdd,
   requestStellarChangeTrustOptDelete,
 } from '../utils/stellar-snap-client-requests';
-import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
@@ -40,7 +43,7 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
     assetId = asset.address as CaipAssetType;
     isAssetIsTrustlineAsset = isTrustlineAsset(assetId);
     if (isAssetIsTrustlineAsset) {
-      chainId = getChainIdFromAssetId(assetId);
+      chainId = parseCaipAssetType(assetId).chainId;
     }
   }
 
@@ -49,10 +52,6 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
       ? getInternalAccountBySelectedAccountGroupAndCaip(state, chainId)
       : undefined,
   ) as InternalAccount | undefined;
-
-  const assetFromState = useSelector((state) =>
-    chainId && assetId ? getAsset(state, assetId, chainId) : undefined,
-  );
 
   const [isDeactivating, setIsDeactivating] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
@@ -66,7 +65,11 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
     isAssetIsTrustlineAsset &&
     !isAssetRequireActivate({
       assetId,
-      assetMetadata: assetFromState?.accountAssetInfo,
+      assetMetadata: {
+        // hardcoded for now to prevent breaking the test
+        // TODO: we will change it to use the unified asset controller once it is ready
+        limit: '0',
+      },
     });
 
   const deactivateAsset = useCallback(async () => {

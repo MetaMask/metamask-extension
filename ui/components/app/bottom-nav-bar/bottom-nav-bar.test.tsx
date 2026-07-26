@@ -10,7 +10,10 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsSwapsEventSource,
+  ScreenViewedEntryPoint,
+} from '../../../../shared/constants/metametrics';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const mockNavigate = jest.fn();
@@ -168,7 +171,10 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-home'));
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
     });
 
@@ -180,7 +186,10 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-home'));
       expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
     });
 
@@ -207,7 +216,10 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-activity'));
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
     });
 

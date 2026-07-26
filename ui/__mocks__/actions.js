@@ -50,7 +50,6 @@ module.exports = {
     return Promise.resolve(TOKEN_DETAILS_MOCK[address]);
   },
 
-  // eslint-disable-next-line no-empty-function
   trackMetaMetricsEvent: () => {
     // Intentionally empty
   },
