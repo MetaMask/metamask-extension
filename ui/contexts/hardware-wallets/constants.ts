@@ -11,3 +11,14 @@ export const CameraPermissionState = {
   Denied: 'denied',
   Prompt: 'prompt',
 } as const;
+
+/**
+ * Result of {@link ensureQrCameraReadyForHwFlow} side-panel QR camera preflight.
+ */
+export const QrCameraHwPreflightStatus = {
+  Ready: 'ready',
+  Redirected: 'redirected',
+} as const;
+
+export type QrCameraHwPreflightStatus =
+  (typeof QrCameraHwPreflightStatus)[keyof typeof QrCameraHwPreflightStatus];

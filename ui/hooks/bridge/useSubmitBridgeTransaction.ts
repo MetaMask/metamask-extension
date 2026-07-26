@@ -32,6 +32,8 @@ import {
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { useQrCameraHwPreflight } from '../../contexts/hardware-wallets/useQrCameraHwPreflight';
+import { QrCameraHwPreflightStatus } from '../../contexts/hardware-wallets/constants';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
@@ -71,6 +73,7 @@ export default function useSubmitBridgeTransaction() {
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const { ensureReadyBeforeHwFlow } = useQrCameraHwPreflight();
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Tracks an in-flight submitBridgeTx so Promise.race timeouts cannot leave a
   // live dispatch that a hardware-wallet retry would duplicate.
@@ -194,6 +197,14 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed && !isHardwareWalletSigningPage) {
+      // QR + side panel: open fullscreen before locking the quote / entering
+      // the HW page so the camera permission prompt can appear.
+      const cameraPreflight = await ensureReadyBeforeHwFlow();
+      if (cameraPreflight === QrCameraHwPreflightStatus.Redirected) {
+        setIsSubmitting(false);
+        return;
+      }
+
       navigateToHwSigningPage();
       setIsSubmitting(false);
       return;

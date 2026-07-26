@@ -1711,7 +1711,9 @@ describe('webConnectionUtils', () => {
           writable: true,
         });
 
-        redirectToFullscreen('from=eip155%3A1%2Fslip44%3A60&amount=1000');
+        redirectToFullscreen({
+          queryString: 'from=eip155%3A1%2Fslip44%3A60&amount=1000',
+        });
 
         expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
           '/cross-chain/swaps/prepare-bridge-page',
@@ -1727,11 +1729,30 @@ describe('webConnectionUtils', () => {
           writable: true,
         });
 
-        redirectToFullscreen(null);
+        redirectToFullscreen({ queryString: null });
 
         expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
           '/cross-chain/swaps/prepare-bridge-page',
           null,
+        );
+      });
+
+      it('opens an explicit targetRoute instead of the current hash route when provided', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/cross-chain/swaps/hardware-wallet-signatures',
+          },
+          writable: true,
+        });
+
+        redirectToFullscreen({
+          queryString: 'from=eip155%3A1%2Fslip44%3A60&amount=1000',
+          targetRoute: '/cross-chain/swaps/prepare-bridge-page',
+        });
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/cross-chain/swaps/prepare-bridge-page',
+          'from=eip155%3A1%2Fslip44%3A60&amount=1000',
         );
       });
     });
@@ -1777,34 +1798,6 @@ describe('webConnectionUtils', () => {
 
         expect(mockOpenExtensionInBrowser).toHaveBeenCalledTimes(1);
         expect(onRetry).not.toHaveBeenCalled();
-      });
-
-      it('forwards redirectQueryString to fullscreen redirect', async () => {
-        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-        getMockedPermissions().query.mockResolvedValue({
-          state: CameraPermissionState.Prompt,
-        } as unknown as PermissionStatus);
-
-        const queryString = 'from=eip155%3A1%2Fslip44%3A60&amount=1000';
-        await handleContinueWithPermissionCheck(onRetry, queryString);
-
-        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-          expect.any(String),
-          queryString,
-        );
-        expect(onRetry).not.toHaveBeenCalled();
-      });
-
-      it('does not forward queryString when permission is granted', async () => {
-        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-        getMockedPermissions().query.mockResolvedValue({
-          state: CameraPermissionState.Granted,
-        } as unknown as PermissionStatus);
-
-        await handleContinueWithPermissionCheck(onRetry, 'from=something');
-
-        expect(onRetry).toHaveBeenCalledTimes(1);
-        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
       });
 
       it('calls onRetry when permission is prompt and in popup (popup can show native prompt)', async () => {

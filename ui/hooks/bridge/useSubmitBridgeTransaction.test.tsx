@@ -26,6 +26,7 @@ import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import { QrCameraHwPreflightStatus } from '../../contexts/hardware-wallets/constants';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -61,6 +62,15 @@ jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
     }),
   };
 });
+
+const mockEnsureReadyBeforeHwFlow = jest.fn().mockResolvedValue(
+  QrCameraHwPreflightStatus.Ready,
+);
+jest.mock('../../contexts/hardware-wallets/useQrCameraHwPreflight', () => ({
+  useQrCameraHwPreflight: () => ({
+    ensureReadyBeforeHwFlow: mockEnsureReadyBeforeHwFlow,
+  }),
+}));
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
@@ -208,6 +218,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       jest.clearAllMocks();
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+        QrCameraHwPreflightStatus.Ready,
+      );
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
         submitTx: submitTxSpy,
@@ -333,6 +346,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         );
       });
 
+      expect(mockEnsureReadyBeforeHwFlow).toHaveBeenCalledTimes(1);
       expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
         [
           [
@@ -347,6 +361,38 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('aborts HW navigation when QR camera preflight redirects to fullscreen', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      isHardwareWalletSpy.mockImplementation(() => true);
+      mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+        QrCameraHwPreflightStatus.Redirected,
+      );
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockEnsureReadyBeforeHwFlow).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(result.current.isSubmitting).toBe(false);
     });
 
     it('submits hardware-wallet transactions from the hardware wallet signatures page', async () => {

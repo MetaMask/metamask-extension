@@ -79,10 +79,7 @@ subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
 isRestrictedCameraEnvironment.mockReturnValue(false);
 redirectToFullscreen.mockImplementation(() => undefined);
 handleContinueWithPermissionCheck.mockImplementation(
-  async (
-    onRetry: () => Promise<void>,
-    _redirectQueryString?: string | null,
-  ) => {
+  async (onRetry: () => Promise<void>) => {
     await onRetry();
   },
 );
@@ -137,10 +134,7 @@ export const resetwebConnectionUtilsMocks = () => {
   isRestrictedCameraEnvironment.mockReturnValue(false);
   redirectToFullscreen.mockImplementation(() => undefined);
   handleContinueWithPermissionCheck.mockImplementation(
-    async (
-      onRetry: () => Promise<void>,
-      _redirectQueryString?: string | null,
-    ) => {
+    async (onRetry: () => Promise<void>) => {
       await onRetry();
     },
   );

@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
+import { useQrCameraHwPreflight } from '../../contexts/hardware-wallets/useQrCameraHwPreflight';
+import { QrCameraHwPreflightStatus } from '../../contexts/hardware-wallets/constants';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
 import { BUNDLE_SEND_TRANSACTION_TYPES } from './hw-sign-tracker/constants';
@@ -21,6 +23,9 @@ export type UseSendBundleHwNavigationArgs = {
  * through the bridge flow). Applies to all hardware-wallet sends regardless of
  * Smart Transactions (STX) / gasless support.
  *
+ * For QR wallets in the side panel without camera permission, opens fullscreen
+ * on the confirmation route first and skips in-panel HW navigation.
+ *
  * transactionMeta is the only injected input; the send amount/symbol are
  * derived internally via useSendBundleAmountSymbol, keeping this hook free of
  * confirmations route dependencies (ADR 0021).
@@ -36,6 +41,7 @@ export function useSendBundleHwNavigation({
 }: UseSendBundleHwNavigationArgs) {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const { navigateToHwSigningPage } = useBridgeNavigation();
+  const { ensureReadyBeforeHwFlow } = useQrCameraHwPreflight();
   // Derive the send amount/symbol internally so the HW signing page label
   // matches what the user saw on the send screen.
   const { sendAmount, sendSymbol, gasSymbol } =
@@ -48,7 +54,12 @@ export function useSendBundleHwNavigation({
     BUNDLE_SEND_TRANSACTION_TYPES.has(transactionType);
 
   const redirectToHwSigningPage = useCallback(
-    (newTransactionMeta: TransactionMeta) => {
+    async (newTransactionMeta: TransactionMeta) => {
+      const cameraPreflight = await ensureReadyBeforeHwFlow();
+      if (cameraPreflight === QrCameraHwPreflightStatus.Redirected) {
+        return;
+      }
+
       navigateToHwSigningPage({
         bridgeState: null,
         token: null,
@@ -71,6 +82,7 @@ export function useSendBundleHwNavigation({
       });
     },
     [
+      ensureReadyBeforeHwFlow,
       navigateToHwSigningPage,
       sendAmount,
       sendSymbol,

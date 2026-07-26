@@ -24,6 +24,7 @@ import {
 } from '../../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
+import { QrCameraHwPreflightStatus } from '../../../../contexts/hardware-wallets/constants';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
@@ -89,6 +90,18 @@ jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
     navigateToHwSigningPage: mockNavigateToHwSigningPage,
   }),
 }));
+
+const mockEnsureReadyBeforeHwFlow = jest.fn().mockResolvedValue(
+  QrCameraHwPreflightStatus.Ready,
+);
+jest.mock(
+  '../../../../contexts/hardware-wallets/useQrCameraHwPreflight',
+  () => ({
+    useQrCameraHwPreflight: () => ({
+      ensureReadyBeforeHwFlow: mockEnsureReadyBeforeHwFlow,
+    }),
+  }),
+);
 
 const mockUseSendBundleAmountSymbol = jest.fn();
 jest.mock(
@@ -203,6 +216,9 @@ describe('useTransactionConfirm', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     isHardwareWalletMock.mockReturnValue(false);
     mockNavigateToHwSigningPage.mockReset();
+    mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+      QrCameraHwPreflightStatus.Ready,
+    );
     mockUseSendBundleAmountSymbol.mockReset();
     mockUseSendBundleAmountSymbol.mockReturnValue({
       sendAmount: '1.5',
@@ -358,6 +374,24 @@ describe('useTransactionConfirm', () => {
         }),
       }),
     );
+  });
+
+  it('skips HW signing navigation when QR camera preflight redirects to fullscreen', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+      QrCameraHwPreflightStatus.Redirected,
+    );
+
+    const { onTransactionConfirm } = runHook({
+      type: TransactionType.simpleSend,
+    });
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(mockEnsureReadyBeforeHwFlow).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToHwSigningPage).not.toHaveBeenCalled();
+    expect(updateAndApproveTxMock).not.toHaveBeenCalled();
   });
 
   it('updates transaction params if smart transaction and selected gas fee token', async () => {

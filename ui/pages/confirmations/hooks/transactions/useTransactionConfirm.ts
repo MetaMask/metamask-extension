@@ -116,7 +116,7 @@ export function useTransactionConfirm() {
     }
 
     if (shouldRedirectToHwSigningPage) {
-      redirectToHwSigningPage(newTransactionMeta);
+      await redirectToHwSigningPage(newTransactionMeta);
       return false;
     }
 
