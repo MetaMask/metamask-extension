@@ -76,7 +76,7 @@ describe('ImportNftsModal', () => {
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+    const { getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
@@ -104,7 +104,7 @@ describe('ImportNftsModal', () => {
   });
 
   it('should not enable the "Import" button when no network is selected', () => {
-    const { getByText, getByPlaceholderText } = renderWithProvider(
+    const { getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
@@ -127,7 +127,7 @@ describe('ImportNftsModal', () => {
   });
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+    const { getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
@@ -174,7 +174,7 @@ describe('ImportNftsModal', () => {
     });
 
     const onClose = jest.fn();
-    const { getByPlaceholderText, getByText, getByTestId } = renderWithProvider(
+    const { getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
       store,
     );
@@ -234,7 +234,7 @@ describe('ImportNftsModal', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText, getByPlaceholderText } = renderWithProvider(
+    const { getByTestId, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
@@ -386,6 +386,31 @@ describe('ImportNftsModal', () => {
     fireEvent.click(getByTestId('test-import-tokens-drop-down-custom-import'));
 
     expect(queryByText('Sepolia')).not.toBeInTheDocument();
+  });
+
+  it('shows the current test network when test networks are disabled', () => {
+    store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.LOCALHOST }),
+        preferences: {
+          ...mockState.metamask.preferences,
+          showTestNetworks: false,
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <ImportNftsModal onClose={jest.fn()} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('test-import-tokens-drop-down-custom-import'));
+
+    expect(
+      getByTestId(`select-network-item-${CHAIN_IDS.LOCALHOST}`),
+    ).toBeInTheDocument();
   });
 
   it('should route to default route when close button is clicked', () => {

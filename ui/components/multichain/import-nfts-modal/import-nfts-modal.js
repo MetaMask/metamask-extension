@@ -26,7 +26,6 @@ import {
   IconColor,
   JustifyContent,
   Size,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -115,9 +114,11 @@ export const ImportNftsModal = ({ onClose }) => {
         }))
         .filter(
           (network) =>
-            showTestNetworks || !TEST_CHAINS.includes(network.chainId),
+            network.chainId === chainId ||
+            showTestNetworks ||
+            !TEST_CHAINS.includes(network.chainId),
         ),
-    [networkConfigurations, showTestNetworks],
+    [chainId, networkConfigurations, showTestNetworks],
   );
 
   const [nftAddressValidationError, setNftAddressValidationError] =
