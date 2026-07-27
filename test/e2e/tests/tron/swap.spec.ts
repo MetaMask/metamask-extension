@@ -1,9 +1,9 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import {
   mockTronSwapApis,
@@ -11,14 +11,12 @@ import {
   mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
-import { buildTronFixtures } from './unified-tron-assets';
 
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApis,
         ignoredConsoleErrors: [
@@ -28,10 +26,7 @@ describe('Swap on Tron', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -60,18 +55,14 @@ describe('Swap on Tron', function () {
   it('Swap disabled when Tron network fees cannot be estimated', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -95,18 +86,14 @@ describe('Swap on Tron', function () {
   it('No quotes available for the pair', async function () {
     await withFixtures(
       {
-        fixtures: buildTronFixtures(),
-        localNodeOptions: [{ type: 'none' as const }],
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisNoQuotes,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

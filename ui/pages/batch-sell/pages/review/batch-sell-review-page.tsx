@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -8,6 +8,7 @@ import {
 } from '../../../../constants/batch-sell';
 import { BATCH_SELL_SELECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getBatchSellTrades } from '../../../../ducks/batch-sell/selectors';
+import { useBatchSellHighRateAlertModal } from '../../hooks/useBatchSellHighRateAlertModal';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { Header } from './components/header';
 import { QuotesList } from './components/quotes-list';
@@ -29,6 +30,8 @@ export const BatchSellReviewPage = () => {
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
+
+  const { openHighAlertModal } = useBatchSellHighRateAlertModal();
 
   const {
     sendAssetsConfig,
@@ -87,6 +90,22 @@ export const BatchSellReviewPage = () => {
     [sendAssetsConfig],
   );
 
+  const onReviewClick = useCallback(() => {
+    const selectedAssetsToSell = Object.values(sendAssetsConfig).filter(
+      (config) => config.enabled,
+    );
+
+    if (selectedAssetsToSell.length === 1) {
+      openHighAlertModal(
+        selectedAssetsToSell[0].asset,
+        selectedReceiveAsset.assetId,
+      );
+      return;
+    }
+
+    setReviewAndConfirmModalIsOpen(true);
+  }, [sendAssetsConfig, openHighAlertModal, selectedReceiveAsset.assetId]);
+
   useEffect(() => {
     setReviewAndConfirmModalIsOpen(false);
   }, [areQuotesRefreshExpired]);
@@ -129,7 +148,7 @@ export const BatchSellReviewPage = () => {
       />
       <Footer
         quotesAreLoading={quotesAreLoading}
-        onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
+        onReviewClick={onReviewClick}
         reviewIsDisabled={
           quotesAreLoading || !data || validation.isNoQuotesAvailable
         }

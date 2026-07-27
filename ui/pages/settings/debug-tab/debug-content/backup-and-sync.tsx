@@ -47,8 +47,6 @@ const DeleteSyncedData = ({
         </div>
 
         <div className="settings-page__content-item-col">
-          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <Button variant={ButtonVariant.Primary} onClick={onDelete}>
             Reset
           </Button>

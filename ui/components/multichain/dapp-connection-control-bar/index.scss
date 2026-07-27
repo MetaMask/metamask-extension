@@ -3,7 +3,13 @@
 .dapp-connection-control-bar {
   flex-shrink: 0;
   background-color: var(--color-background-default);
-  border-top: 1px solid var(--color-border-muted);
+  background-image:
+    linear-gradient(
+      180deg,
+      var(--color-background-default) -59.02%,
+      var(--color-background-section) 294.26%
+    );
+  border-top: 1px solid var(--bar-border-color);
   z-index: design-system.$dapp-connection-bar-z-index;
   view-transition-name: dapp-connection-bar;
 
@@ -51,7 +57,7 @@
     font-size: 0.9375rem;
     background-color: var(--color-background-muted);
     color: var(--color-text-default);
-    border: 1px solid var(--color-border-muted);
+    border: 0.5px solid var(--color-border-muted);
 
     &:hover {
       background-color: var(--color-background-pressed) !important;
@@ -60,8 +66,8 @@
 
   &__network-button {
     cursor: pointer;
-    border: 1px solid var(--color-border-muted);
-    border-radius: 12px;
+    border: 0.5px solid var(--color-border-muted);
+    border-radius: 8px;
     background-color: var(--color-background-muted);
     height: 36px;
     flex-shrink: 0;
@@ -82,14 +88,13 @@
   }
 
   &__network-icon {
-    width: 1.25rem !important;
-    height: 1.25rem !important;
     border-radius: 0.375rem !important;
   }
 
   &__combined-actions {
-    border: 1px solid var(--color-border-muted);
-    border-radius: 12px;
+    border: 0.5px solid var(--color-border-muted);
+    border-radius: 8px;
+    overflow: hidden;
     background-color: var(--color-background-muted);
     height: 36px;
     flex-shrink: 0;
@@ -104,7 +109,6 @@
     width: 34px;
     justify-content: center;
     flex-shrink: 0;
-    border-radius: 12px;
 
     &:hover {
       background-color: var(--color-background-hover);
