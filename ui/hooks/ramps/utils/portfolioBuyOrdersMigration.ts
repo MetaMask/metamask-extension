@@ -241,7 +241,9 @@ function waitForMigrateDone(
         return;
       }
       migrationWait.settled = true;
-      platform.removeTabUpdatedListener(onUpdated);
+      platform.removeTabUpdatedListener(
+        onUpdated as (...args: unknown[]) => void,
+      );
       if (migrationWait.timeoutId !== undefined) {
         clearTimeout(migrationWait.timeoutId);
       }
