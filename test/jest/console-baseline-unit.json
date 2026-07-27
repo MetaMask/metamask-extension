@@ -1077,7 +1077,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/token-management/token-management.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 13
+      "React: Act warnings (component updates not wrapped)": 22
     },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
