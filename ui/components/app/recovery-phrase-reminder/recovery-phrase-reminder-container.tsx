@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getShowRecoveryPhraseReminder } from '../../../selectors';
 import {
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
 } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import RecoveryPhraseReminder from './recovery-phrase-reminder';
 
 export function RecoveryPhraseReminderContainer() {

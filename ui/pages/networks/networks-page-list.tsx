@@ -8,7 +8,7 @@ import {
 } from '@metamask/multichain-network-controller';
 import { ChainId } from '@metamask/controller-utils';
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   Box,
@@ -62,6 +62,7 @@ import {
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
+import { useDispatch } from '../../store/hooks';
 import { NoSearchResult } from './no-search-result';
 
 const filterNetworks = <
