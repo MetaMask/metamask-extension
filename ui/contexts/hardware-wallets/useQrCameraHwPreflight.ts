@@ -5,13 +5,13 @@ import { ensureQrCameraReadyForHwFlow } from './qrCameraHwPreflight';
 import { useQrCameraHwPreflightRedirect } from './useQrCameraHwPreflightRedirect';
 
 /**
- * Returns a side-panel-only preflight callback that must run before navigating
- * to the hardware-wallet signing page.
+ * Returns a preflight callback that must run before navigating to the
+ * hardware-wallet signing page.
  *
- * For QR wallets in the side panel without camera permission, opens fullscreen
- * on the swap form or confirmation (see {@link useQrCameraHwPreflightRedirect})
- * and returns {@link QrCameraHwPreflightStatus.Redirected}. Popup and fullscreen
- * skip this gate.
+ * For QR wallets in popup/side panel without camera permission, opens
+ * fullscreen on the swap form or confirmation (see
+ * {@link useQrCameraHwPreflightRedirect}) and returns
+ * {@link QrCameraHwPreflightStatus.Redirected}. Fullscreen skips this gate.
  *
  * @returns `ensureReadyBeforeHwFlow` async gate.
  */

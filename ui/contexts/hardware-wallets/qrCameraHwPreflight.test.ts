@@ -4,15 +4,10 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import {
-  CameraPermissionState,
-  QrCameraHwPreflightStatus,
-} from './constants';
+import WebcamUtils from '../../helpers/utils/webcam-utils';
+import { QrCameraHwPreflightStatus } from './constants';
 import { HardwareWalletType } from './types';
-import {
-  checkCameraPermission,
-  redirectToFullscreen,
-} from './webConnectionUtils';
+import { redirectToFullscreen } from './webConnectionUtils';
 import {
   ensureQrCameraReadyForHwFlow,
   isSidePanelCameraPreflightEnvironment,
@@ -22,22 +17,47 @@ jest.mock('../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
+jest.mock('../../helpers/utils/webcam-utils', () => ({
+  __esModule: true,
+  default: {
+    checkStatus: jest.fn(),
+  },
+}));
+
 jest.mock('./webConnectionUtils', () => ({
-  checkCameraPermission: jest.fn(),
+  isRestrictedCameraEnvironment: jest.fn(),
   redirectToFullscreen: jest.fn(),
 }));
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
-const mockCheckCameraPermission = jest.mocked(checkCameraPermission);
+const mockCheckStatus = jest.mocked(WebcamUtils.checkStatus);
 const mockRedirectToFullscreen = jest.mocked(redirectToFullscreen);
 
+// isSidePanelCameraPreflightEnvironment delegates to isRestrictedCameraEnvironment
+// which we need to behave like the real implementation for these unit tests.
+const {
+  isRestrictedCameraEnvironment: mockIsRestrictedCameraEnvironment,
+} = jest.requireMock('./webConnectionUtils') as {
+  isRestrictedCameraEnvironment: jest.Mock;
+};
+
 describe('isSidePanelCameraPreflightEnvironment', () => {
-  it('returns true only for the side panel', () => {
+  beforeEach(() => {
+    mockIsRestrictedCameraEnvironment.mockImplementation(() => {
+      const environmentType = mockGetEnvironmentType();
+      return (
+        environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+        environmentType === ENVIRONMENT_TYPE_POPUP
+      );
+    });
+  });
+
+  it('returns true for popup and side panel', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
     expect(isSidePanelCameraPreflightEnvironment()).toBe(true);
 
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    expect(isSidePanelCameraPreflightEnvironment()).toBe(false);
+    expect(isSidePanelCameraPreflightEnvironment()).toBe(true);
 
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     expect(isSidePanelCameraPreflightEnvironment()).toBe(false);
@@ -48,9 +68,10 @@ describe('ensureQrCameraReadyForHwFlow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-    mockCheckCameraPermission.mockResolvedValue(
-      CameraPermissionState.Granted as PermissionState,
-    );
+    mockCheckStatus.mockResolvedValue({
+      environmentReady: true,
+      permissions: true,
+    });
   });
 
   it('returns ready for non-QR wallets without checking camera', async () => {
@@ -60,20 +81,7 @@ describe('ensureQrCameraReadyForHwFlow', () => {
     });
 
     expect(status).toBe(QrCameraHwPreflightStatus.Ready);
-    expect(mockCheckCameraPermission).not.toHaveBeenCalled();
-    expect(mockRedirectToFullscreen).not.toHaveBeenCalled();
-  });
-
-  it('returns ready in popup without checking camera', async () => {
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-
-    const status = await ensureQrCameraReadyForHwFlow({
-      walletType: HardwareWalletType.Qr,
-      targetRoute: '/cross-chain/swaps/prepare-bridge-page',
-    });
-
-    expect(status).toBe(QrCameraHwPreflightStatus.Ready);
-    expect(mockCheckCameraPermission).not.toHaveBeenCalled();
+    expect(mockCheckStatus).not.toHaveBeenCalled();
     expect(mockRedirectToFullscreen).not.toHaveBeenCalled();
   });
 
@@ -86,7 +94,7 @@ describe('ensureQrCameraReadyForHwFlow', () => {
     });
 
     expect(status).toBe(QrCameraHwPreflightStatus.Ready);
-    expect(mockCheckCameraPermission).not.toHaveBeenCalled();
+    expect(mockCheckStatus).not.toHaveBeenCalled();
     expect(mockRedirectToFullscreen).not.toHaveBeenCalled();
   });
 
@@ -97,31 +105,16 @@ describe('ensureQrCameraReadyForHwFlow', () => {
     });
 
     expect(status).toBe(QrCameraHwPreflightStatus.Ready);
+    expect(mockCheckStatus).toHaveBeenCalledTimes(1);
     expect(mockRedirectToFullscreen).not.toHaveBeenCalled();
   });
 
-  it('opens fullscreen and returns redirected when side-panel permission is prompt', async () => {
-    mockCheckCameraPermission.mockResolvedValue(
-      CameraPermissionState.Prompt as PermissionState,
-    );
-
-    const status = await ensureQrCameraReadyForHwFlow({
-      walletType: HardwareWalletType.Qr,
-      targetRoute: '/cross-chain/swaps/prepare-bridge-page',
-      queryString: 'from=eip155%3A1%2Fslip44%3A60',
+  it('opens fullscreen when popup lacks camera permission', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockCheckStatus.mockResolvedValue({
+      environmentReady: false,
+      permissions: false,
     });
-
-    expect(status).toBe(QrCameraHwPreflightStatus.Redirected);
-    expect(mockRedirectToFullscreen).toHaveBeenCalledWith({
-      targetRoute: '/cross-chain/swaps/prepare-bridge-page',
-      queryString: 'from=eip155%3A1%2Fslip44%3A60',
-    });
-  });
-
-  it('opens fullscreen and returns redirected when side-panel permission is denied', async () => {
-    mockCheckCameraPermission.mockResolvedValue(
-      CameraPermissionState.Denied as PermissionState,
-    );
 
     const status = await ensureQrCameraReadyForHwFlow({
       walletType: HardwareWalletType.Qr,
@@ -135,8 +128,29 @@ describe('ensureQrCameraReadyForHwFlow', () => {
     });
   });
 
-  it('opens fullscreen when the side-panel permission probe throws', async () => {
-    mockCheckCameraPermission.mockRejectedValue(new Error('unsupported'));
+  it('opens fullscreen and returns redirected when side-panel permission is missing', async () => {
+    mockCheckStatus.mockResolvedValue({
+      environmentReady: false,
+      permissions: false,
+    });
+
+    const status = await ensureQrCameraReadyForHwFlow({
+      walletType: HardwareWalletType.Qr,
+      targetRoute: '/cross-chain/swaps/prepare-bridge-page',
+      queryString: 'from=eip155%3A1%2Fslip44%3A60',
+    });
+
+    expect(status).toBe(QrCameraHwPreflightStatus.Redirected);
+    expect(mockRedirectToFullscreen).toHaveBeenCalledWith({
+      targetRoute: '/cross-chain/swaps/prepare-bridge-page',
+      queryString: 'from=eip155%3A1%2Fslip44%3A60',
+    });
+  });
+
+  it('opens fullscreen when WebcamUtils.checkStatus throws', async () => {
+    mockCheckStatus.mockRejectedValue(
+      Object.assign(new Error('No webcam found'), { type: 'NO_WEBCAM_FOUND' }),
+    );
 
     const status = await ensureQrCameraReadyForHwFlow({
       walletType: HardwareWalletType.Qr,

@@ -2,7 +2,10 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
@@ -535,10 +538,15 @@ export function subscribeToHardwareWalletEvents(
 
 /**
  * Returns `true` when the extension is running in an environment where the
- * native browser camera-permission prompt cannot appear (side panel only).
+ * native browser camera-permission prompt cannot reliably appear (popup or
+ * side panel). Matches {@link WebcamUtils.checkStatus} restricted environments.
  */
 export function isRestrictedCameraEnvironment(): boolean {
-  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const environmentType = getEnvironmentType();
+  return (
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+    environmentType === ENVIRONMENT_TYPE_POPUP
+  );
 }
 
 /**
@@ -570,7 +578,7 @@ export function redirectToFullscreen({
  * Resolves the Continue action for QR camera-access errors.
  *
  * When permission is already granted (or the probe fails), retries in place.
- * When permission is still `prompt` in the side panel, opens fullscreen with
+ * When permission is still `prompt` in popup/side panel, opens fullscreen with
  * the current hash route so the native prompt can appear — destination rebuild
  * is handled by preflight before HW navigation, not here.
  *

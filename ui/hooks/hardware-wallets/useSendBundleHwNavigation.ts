@@ -23,7 +23,7 @@ export type UseSendBundleHwNavigationArgs = {
  * through the bridge flow). Applies to all hardware-wallet sends regardless of
  * Smart Transactions (STX) / gasless support.
  *
- * For QR wallets in the side panel without camera permission, opens fullscreen
+ * For QR wallets in popup/side panel without camera permission, opens fullscreen
  * on the confirmation route first and skips in-panel HW navigation.
  *
  * transactionMeta is the only injected input; the send amount/symbol are

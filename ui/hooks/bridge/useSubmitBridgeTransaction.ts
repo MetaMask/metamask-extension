@@ -197,7 +197,7 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed && !isHardwareWalletSigningPage) {
-      // QR + side panel: open fullscreen before locking the quote / entering
+      // QR + popup/side panel: open fullscreen before locking the quote / entering
       // the HW page so the camera permission prompt can appear.
       const cameraPreflight = await ensureReadyBeforeHwFlow();
       if (cameraPreflight === QrCameraHwPreflightStatus.Redirected) {

@@ -1,12 +1,10 @@
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import {
-  CameraPermissionState,
-  QrCameraHwPreflightStatus,
-} from './constants';
+import WebcamUtils from '../../helpers/utils/webcam-utils';
+import { QrCameraHwPreflightStatus } from './constants';
 import { HardwareWalletType } from './types';
 import {
-  checkCameraPermission,
+  isRestrictedCameraEnvironment,
   redirectToFullscreen,
 } from './webConnectionUtils';
 
@@ -19,28 +17,25 @@ export type EnsureQrCameraReadyForHwFlowOptions = {
 };
 
 /**
- * True when the extension UI is the side panel (the only environment where
- * QR camera preflight redirects to fullscreen).
+ * True when the extension UI cannot reliably show the native camera-permission
+ * prompt (popup or side panel) — same gate as {@link WebcamUtils.checkStatus}.
  *
- * Popup and fullscreen tabs can show the native camera-permission prompt, so
- * they skip this gate.
- *
- * @returns Whether the current environment is the side panel.
+ * @returns Whether the current environment is popup or side panel.
  */
 export function isSidePanelCameraPreflightEnvironment(): boolean {
-  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  return isRestrictedCameraEnvironment();
 }
 
 /**
- * Side-panel-only preflight before entering the hardware-wallet signing page
- * for QR wallets.
+ * Preflight before entering the hardware-wallet signing page for QR wallets.
  *
- * The side panel cannot show the native camera-permission prompt. If permission
- * is not already granted there, this opens a fullscreen tab (where the prompt
- * can appear) and returns {@link QrCameraHwPreflightStatus.Redirected} so the
- * caller aborts in-panel navigation to the HW page.
+ * Popup and side panel cannot reliably show the native camera-permission
+ * prompt (see {@link WebcamUtils.checkStatus}). If camera permission is not
+ * already granted there, this opens a fullscreen tab and returns
+ * {@link QrCameraHwPreflightStatus.Redirected} so the caller aborts in-panel
+ * navigation to the HW page.
  *
- * Non-QR wallets, popup, and fullscreen always return
+ * Non-QR wallets and fullscreen always return
  * {@link QrCameraHwPreflightStatus.Ready}.
  *
  * @param options - Preflight options.
@@ -58,25 +53,22 @@ export async function ensureQrCameraReadyForHwFlow({
     return QrCameraHwPreflightStatus.Ready;
   }
 
-  // Preflight redirect is side-panel only — not popup or fullscreen.
-  if (!isSidePanelCameraPreflightEnvironment()) {
+  // Fullscreen can show the native permission prompt via getUserMedia.
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
     return QrCameraHwPreflightStatus.Ready;
   }
 
-  let permissionState: PermissionState;
+  // Align with WebcamUtils / QR reader: popup + side panel are restricted, and
+  // permission is detected via media-device labels (not permissions.query alone).
   try {
-    permissionState = await checkCameraPermission();
+    const { environmentReady, permissions } = await WebcamUtils.checkStatus();
+    if (environmentReady && permissions) {
+      return QrCameraHwPreflightStatus.Ready;
+    }
   } catch {
-    redirectToFullscreen({ targetRoute, queryString });
-    return QrCameraHwPreflightStatus.Redirected;
+    // No webcam or probe failure — still open fullscreen so the user can recover.
   }
 
-  if (permissionState === CameraPermissionState.Granted) {
-    return QrCameraHwPreflightStatus.Ready;
-  }
-
-  // `prompt` cannot surface a permission dialog in the side panel; `denied`
-  // still benefits from fullscreen so the user can open settings / retry.
   redirectToFullscreen({ targetRoute, queryString });
   return QrCameraHwPreflightStatus.Redirected;
 }

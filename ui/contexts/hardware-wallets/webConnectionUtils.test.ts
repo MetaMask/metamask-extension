@@ -1645,9 +1645,9 @@ describe('webConnectionUtils', () => {
         expect(isRestrictedCameraEnvironment()).toBe(true);
       });
 
-      it('returns false for popup', () => {
+      it('returns true for popup', () => {
         mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-        expect(isRestrictedCameraEnvironment()).toBe(false);
+        expect(isRestrictedCameraEnvironment()).toBe(true);
       });
 
       it('returns false for fullscreen', () => {
@@ -1800,7 +1800,7 @@ describe('webConnectionUtils', () => {
         expect(onRetry).not.toHaveBeenCalled();
       });
 
-      it('calls onRetry when permission is prompt and in popup (popup can show native prompt)', async () => {
+      it('redirects to fullscreen when permission is prompt and in popup', async () => {
         mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
         getMockedPermissions().query.mockResolvedValue({
           state: CameraPermissionState.Prompt,
@@ -1808,8 +1808,8 @@ describe('webConnectionUtils', () => {
 
         await handleContinueWithPermissionCheck(onRetry);
 
-        expect(onRetry).toHaveBeenCalledTimes(1);
-        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledTimes(1);
+        expect(onRetry).not.toHaveBeenCalled();
       });
 
       it('calls onRetry when permission is prompt and in fullscreen', async () => {
