@@ -397,17 +397,17 @@ export const CustomTokenImportPage = () => {
     (value: string) => {
       if (value === '') {
         setDecimals('');
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
         return;
       }
       const next = Number(value);
       setDecimals(value);
       if (
-        Number.isNaN(next) ||
+        !Number.isInteger(next) ||
         next < MIN_DECIMAL_VALUE ||
         next > MAX_DECIMAL_VALUE
       ) {
-        setDecimalsError(t('decimalsMustZerotoTen'));
+        setDecimalsError(t('tokenDecimalsMustBeWholeNumber'));
       } else {
         setDecimalsError(null);
       }
@@ -467,13 +467,15 @@ export const CustomTokenImportPage = () => {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.ImportCustomTokenInteracted)
           .addCategory(MetaMetricsEventCategory.Wallet)
-          .addSensitiveProperties({
+          .addProperties({
             [METRICS_PROPERTIES.addedToken]: addedToken,
-            [METRICS_PROPERTIES.tokenSymbol]: symbol,
-            [METRICS_PROPERTIES.tokenContractAddress]: address,
             [METRICS_PROPERTIES.chainId]: selectedNetwork,
             [METRICS_PROPERTIES.clickedSecurityLink]:
               clickedSecurityLinkRef.current,
+          })
+          .addSensitiveProperties({
+            [METRICS_PROPERTIES.tokenSymbol]: symbol,
+            [METRICS_PROPERTIES.tokenContractAddress]: address,
             [METRICS_PROPERTIES.assetType]: AssetType.token,
             [METRICS_PROPERTIES.tokenStandard]: ERC20,
           })
@@ -484,7 +486,12 @@ export const CustomTokenImportPage = () => {
   );
 
   const handleSubmit = useCallback(async () => {
-    if (Number.isNaN(parsedDecimals) || !isValid || isSubmitting) {
+    if (
+      Number.isNaN(parsedDecimals) ||
+      !Number.isInteger(parsedDecimals) ||
+      !isValid ||
+      isSubmitting
+    ) {
       return;
     }
     setIsSubmitting(true);

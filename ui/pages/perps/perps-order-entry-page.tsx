@@ -96,7 +96,7 @@ import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
-  getDisplayName,
+  getDisplaySymbol,
   deriveTpslType,
   getChangeColor,
   getPositionPnlRatio,
@@ -876,7 +876,7 @@ const PerpsOrderEntryPage = () => {
           : t('perpsShort');
     }
     const rawAssetSymbol = orderFormState.asset;
-    const displayAssetSymbol = getDisplayName(rawAssetSymbol);
+    const displayAssetSymbol = getDisplaySymbol(rawAssetSymbol);
     const formattedPositionSize = orderCalculations?.positionSize?.trim();
     if (!formattedPositionSize) {
       return undefined;
@@ -925,7 +925,7 @@ const PerpsOrderEntryPage = () => {
         minimumFractionDigits: 0,
         maximumFractionDigits: 4,
       }),
-      getDisplayName(orderFormState.asset),
+      getDisplaySymbol(orderFormState.asset),
     ]);
   }, [formatNumber, orderFormState, orderMode, position, t]);
 
@@ -1589,7 +1589,7 @@ const PerpsOrderEntryPage = () => {
     );
   }
 
-  const displayName = getDisplayName(market.symbol);
+  const displayName = getDisplaySymbol(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
     if (hasNoAvailableBalance) {

@@ -88,6 +88,12 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/bridge-status/**                                   @MetaMask/swaps-engineers
 
 # Money Movement team (formerly Ramps) to own code for the ramps folder
+ui/hooks/ramps/                                       @MetaMask/money-movement
+ui/selectors/rampsController/                         @MetaMask/money-movement
+ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
+app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
+app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
 **/ramps/**                                           @MetaMask/money-movement
 
 # Product Safety Team
@@ -147,21 +153,30 @@ ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @M
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 
 # Web3Auth / Onboarding
+app/scripts/services/oauth            @MetaMask/web3auth
 ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Web3Auth / Shield
-app/scripts/controller-init/claims              @MetaMask/web3auth
-app/scripts/controller-init/shield              @MetaMask/web3auth
-app/scripts/controller-init/subscription        @MetaMask/web3auth
-shared/lib/shield.ts                            @MetaMask/web3auth
-ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
-ui/components/app/shield-entry-modal            @MetaMask/web3auth
-ui/contexts/claims                              @MetaMask/web3auth
-ui/contexts/shield                              @MetaMask/web3auth
-ui/hooks/claims                                 @MetaMask/web3auth
-ui/hooks/subscription                           @MetaMask/web3auth
-ui/pages/shield                                 @MetaMask/web3auth
-ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+app/scripts/messenger-client-init/claims              @MetaMask/web3auth
+app/scripts/messenger-client-init/shield              @MetaMask/web3auth
+app/scripts/messenger-client-init/subscription        @MetaMask/web3auth
+shared/lib/shield.ts                                  @MetaMask/web3auth
+ui/components/app/modals/add-funds-modal              @MetaMask/web3auth
+ui/components/app/shield-entry-modal                  @MetaMask/web3auth
+ui/contexts/claims                                    @MetaMask/web3auth
+ui/contexts/shield                                    @MetaMask/web3auth
+ui/hooks/claims                                       @MetaMask/web3auth
+ui/hooks/subscription                                 @MetaMask/web3auth
+ui/pages/shield                                       @MetaMask/web3auth
+ui/pages/settings/transaction-shield-tab              @MetaMask/web3auth
+
+# Web3Auth / QrSync
+app/scripts/controllers/qr-sync                       @MetaMask/web3auth
+app/scripts/messenger-client-init/qr-sync             @MetaMask/web3auth
+app/scripts/messenger-client-init/messengers/qr-sync  @MetaMask/web3auth
+shared/constants/qr-sync.ts                           @MetaMask/web3auth
+ui/selectors/qr-sync                                  @MetaMask/web3auth
+ui/pages/settings/sync-accounts                       @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations

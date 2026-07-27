@@ -78,6 +78,25 @@ jest.mock('../token-management/index.ts', () => ({
   default: () => <div data-testid="token-management-route" />,
 }));
 
+// React 18 can defer React.lazy resolution in CI; resolve token-management synchronously.
+jest.mock('../../helpers/utils/mm-lazy', () => {
+  // eslint-disable-next-line n/global-require
+  const reactModule = require('react');
+
+  return {
+    mmLazy: (importFn) => {
+      if (importFn.toString().includes('token-management')) {
+        const { default: TokenManagementMock } = jest.requireMock(
+          '../token-management/index.ts',
+        );
+        return TokenManagementMock;
+      }
+
+      return reactModule.lazy(importFn);
+    },
+  };
+});
+
 jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );

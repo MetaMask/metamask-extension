@@ -7,7 +7,7 @@ import {
 
 describe('getReactCompilerLoader', () => {
   const baseConfig: ReactCompilerLoaderConfig = {
-    target: '17',
+    target: '18',
     verbose: false,
     debug: 'none',
     threadLoaderEnabled: false,

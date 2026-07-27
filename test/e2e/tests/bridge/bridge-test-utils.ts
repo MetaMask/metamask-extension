@@ -245,6 +245,14 @@ async function mockHistoricalPrices(mockServer: Mockttp) {
 const MUSD_ASSET_ID =
   'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
+const BRIDGE_ASSETS_CONTROLLER_BALANCES = {
+  'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+    'eip155:1/slip44:60': { amount: '25' },
+    'eip155:59144/slip44:60': { amount: '25' },
+    'eip155:42161/slip44:60': { amount: '25' },
+  },
+};
+
 /**
  * Overrides the popular and search token endpoints so the MUSD token includes
  * the given securityData. The bridge UI reads securityData from the token list

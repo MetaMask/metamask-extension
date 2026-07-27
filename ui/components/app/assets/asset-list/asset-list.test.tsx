@@ -1,60 +1,89 @@
 import React from 'react';
-import { screen, act, waitFor } from '@testing-library/react';
+import { screen, act, waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { trace } from '../../../../../shared/lib/trace';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
+import { BuyGetMusdCtaVariant } from '../../../../hooks/musd';
 import AssetList from '.';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;
 const ETH_BALANCE = '0x041173b2c0e57d'; // 0.0011 ETH ($1.83)
 
-const USDC_BALANCE = '199.4875'; // @ $1
-const LINK_BALANCE = '122.0005'; // @ $6.75
-const WBTC_BALANCE = '2.38'; // @ $26,601.51
-
 const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const LINK_CONTRACT = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
 const WBTC_CONTRACT = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599';
 
-const mockTokens = [
-  {
-    address: USDC_CONTRACT,
-    decimals: 6,
-    symbol: 'USDC',
-    string: USDC_BALANCE, // $199.36
-  },
-  {
-    address: LINK_CONTRACT,
-    aggregators: [],
-    decimals: 18,
-    symbol: 'LINK',
-    string: LINK_BALANCE, // $824.78
-  },
-  {
-    address: WBTC_CONTRACT,
-    aggregators: [],
-    decimals: 8,
-    symbol: 'WBTC',
-    string: WBTC_BALANCE, // $63,381.02
-  },
-];
+const mockOnClickAsset = jest.fn();
+const mockShouldShowBuyGetMusdCta = jest.fn();
+const mockHasConvertibleTokensByChainId = jest.fn();
 
-jest.mock('../../../../hooks/useTokenTracker', () => {
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const mockTrackEvent = jest.fn();
+
   return {
-    useTokenTracker: () => ({
-      loading: false,
-      tokensWithBalances: mockTokens,
-      error: null,
+    useAnalytics: () => ({
+      createEventBuilder: jest.requireActual(
+        '../../../../../shared/lib/analytics/create-event-builder',
+      ).createEventBuilder,
+      trackEvent: mockTrackEvent,
     }),
+    mockTrackEvent,
+  };
+});
+
+const getMockTrackEvent = () =>
+  jest.requireMock('../../../../hooks/useAnalytics')
+    .mockTrackEvent as jest.Mock;
+
+const mockUseMusdBalance = jest.fn();
+const mockUseMusdNetworkFilter = jest.fn();
+const mockUseMusdConversionTokens = jest.fn();
+
+jest.mock('../token-list', () => {
+  const { CHAIN_IDS: chainIds } = jest.requireActual(
+    '../../../../../shared/constants/network',
+  );
+  const usdcContract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({
+      onTokenClick,
+    }: {
+      onTokenClick: (
+        chainId: string,
+        address: string,
+        assetId?: string,
+      ) => void;
+    }) => (
+      <button
+        data-testid="mock-token-list-item"
+        onClick={() =>
+          onTokenClick(chainIds.MAINNET, usdcContract, usdcContract)
+        }
+        type="button"
+      >
+        USDC
+      </button>
+    ),
   };
 });
 
@@ -76,14 +105,11 @@ jest.mock('../../../../store/actions', () => {
   };
 });
 
-// Mock the dispatch function
-const mockDispatch = jest.fn();
-
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
-    useDispatch: () => mockDispatch,
+    useDispatch: () => jest.fn(),
   };
 });
 
@@ -94,18 +120,76 @@ jest.mock('../../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
-// useMusdGeoBlocking calls submitRequestToBackground on mount; mock it so
-// the test environment does not trigger a "Background connection not
-// initialized" warning.
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue('US'),
+}));
+
+jest.mock('../../../../../shared/lib/trace', () => ({
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  TraceName: {
+    AssetDetails: 'Asset Details',
+    AccountOverviewAssetListTab: 'Account Overview Asset List Tab',
+  },
+}));
+
+jest.mock('../hooks', () => ({
+  usePrimaryCurrencyProperties: () => ({
+    primaryCurrencyProperties: { suffix: 'ETH' },
+  }),
+}));
+
+jest.mock('../../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../../selectors/assets'),
+  selectAccountGroupBalanceForEmptyState: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowBuyGetMusdCta: mockShouldShowBuyGetMusdCta,
+  }),
+  useMusdBalance: () => mockUseMusdBalance(),
+  useMusdNetworkFilter: () => mockUseMusdNetworkFilter(),
+  useMusdConversionTokens: () => mockUseMusdConversionTokens(),
+  BuyGetMusdCtaVariant: {
+    BUY: 'buy',
+    GET: 'get',
+  },
+}));
+
+jest.mock('../../musd', () => ({
+  MusdBuyGetCta: ({
+    variant,
+    selectedChainId,
+  }: {
+    variant: string | null;
+    selectedChainId: string | null;
+  }) => (
+    <div
+      data-testid="musd-buy-get-cta"
+      data-variant={variant ?? ''}
+      data-chain-id={selectedChainId ?? ''}
+    />
+  ),
 }));
 
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
 
-const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
+type RenderAssetListOptions = {
+  balance?: string;
+  chainId?: Hex;
+  showTokensLinks?: boolean;
+  onClickAsset?: typeof mockOnClickAsset;
+};
+
+const renderAssetList = ({
+  balance = ETH_BALANCE,
+  chainId = CHAIN_IDS.MAINNET,
+  showTokensLinks = true,
+  onClickAsset = mockOnClickAsset,
+}: RenderAssetListOptions = {}) => {
   const state = {
     ...mockState,
     metamask: {
@@ -137,46 +221,64 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
   };
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
-    <AssetList onClickAsset={() => undefined} showTokensLinks />,
+    <AssetList onClickAsset={onClickAsset} showTokensLinks={showTokensLinks} />,
     store,
+    '/',
   );
 };
 
 describe('AssetList', () => {
-  (useMultiPolling as jest.Mock).mockClear();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockOnClickAsset.mockClear();
+    getMockTrackEvent().mockClear();
+    mockShouldShowBuyGetMusdCta.mockClear();
+    mockHasConvertibleTokensByChainId.mockReset();
 
-  // Mock implementation for useMultiPolling
-  (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
-    // Mock startPolling and stopPollingByPollingToken for each input
-    const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
-    const stopPollingByPollingToken = jest.fn();
+    (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
+      const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+      const stopPollingByPollingToken = jest.fn();
 
-    input.forEach((inputItem: string) => {
-      const key = JSON.stringify(inputItem);
-      // Simulate returning a unique token for each input
-      startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+      input.forEach((inputItem: string) => {
+        const key = JSON.stringify(inputItem);
+        startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+      });
+
+      return { startPolling, stopPollingByPollingToken };
+    });
+    (useIsOriginalNativeTokenSymbol as jest.Mock).mockReturnValue(true);
+
+    (getTokenSymbol as jest.Mock).mockImplementation(async (address) => {
+      if (address === USDC_CONTRACT) {
+        return 'USDC';
+      }
+      if (address === LINK_CONTRACT) {
+        return 'LINK';
+      }
+      if (address === WBTC_CONTRACT) {
+        return 'WBTC';
+      }
+      return null;
     });
 
-    return { startPolling, stopPollingByPollingToken };
-  });
-  (useIsOriginalNativeTokenSymbol as jest.Mock).mockReturnValue(true);
-
-  (getTokenSymbol as jest.Mock).mockImplementation(async (address) => {
-    if (address === USDC_CONTRACT) {
-      return 'USDC';
-    }
-    if (address === LINK_CONTRACT) {
-      return 'LINK';
-    }
-    if (address === WBTC_CONTRACT) {
-      return 'WBTC';
-    }
-    return null;
+    jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+    mockUseMusdBalance.mockReturnValue({ hasMusdBalance: false });
+    mockUseMusdNetworkFilter.mockReturnValue({ selectedChainId: null });
+    mockUseMusdConversionTokens.mockReturnValue({
+      tokens: [],
+      hasConvertibleTokensByChainId: mockHasConvertibleTokensByChainId,
+    });
+    mockShouldShowBuyGetMusdCta.mockReturnValue({
+      shouldShowCta: false,
+      selectedChainId: null,
+      isEmptyWallet: false,
+      variant: null,
+    });
   });
 
   it('renders AssetList component and shows AssetList control bar', async () => {
     await act(async () => {
-      render();
+      renderAssetList();
     });
 
     await waitFor(() => {
@@ -184,6 +286,159 @@ describe('AssetList', () => {
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('mUSD CTA', () => {
+    it('renders MusdBuyGetCta when shouldShowBuyGetMusdCta returns visible state', async () => {
+      mockShouldShowBuyGetMusdCta.mockReturnValue({
+        shouldShowCta: true,
+        selectedChainId: CHAIN_IDS.MAINNET,
+        isEmptyWallet: false,
+        variant: BuyGetMusdCtaVariant.BUY,
+      });
+
+      await act(async () => {
+        renderAssetList();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('musd-buy-get-cta')).toBeInTheDocument();
+        expect(screen.getByTestId('musd-buy-get-cta')).toHaveAttribute(
+          'data-variant',
+          BuyGetMusdCtaVariant.BUY,
+        );
+      });
+    });
+
+    it('does not render MusdBuyGetCta when shouldShowBuyGetMusdCta returns hidden state', async () => {
+      await act(async () => {
+        renderAssetList();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('musd-buy-get-cta'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('passes hasConvertibleTokens false when the wallet has no balance', async () => {
+      jest
+        .mocked(selectAccountGroupBalanceForEmptyState)
+        .mockReturnValue(false);
+
+      await act(async () => {
+        renderAssetList({ balance: '0x0' });
+      });
+
+      await waitFor(() => {
+        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith({
+          hasConvertibleTokens: false,
+          hasMusdBalance: false,
+          isEmptyWallet: true,
+          selectedChainId: null,
+        });
+      });
+    });
+
+    it('checks convertible tokens on the selected chain when a network filter is active', async () => {
+      mockUseMusdNetworkFilter.mockReturnValue({
+        selectedChainId: CHAIN_IDS.MAINNET,
+      });
+      mockHasConvertibleTokensByChainId.mockReturnValue(true);
+
+      await act(async () => {
+        renderAssetList();
+      });
+
+      await waitFor(() => {
+        expect(mockHasConvertibleTokensByChainId).toHaveBeenCalledWith(
+          CHAIN_IDS.MAINNET,
+        );
+        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith(
+          expect.objectContaining({
+            hasConvertibleTokens: true,
+          }),
+        );
+      });
+    });
+
+    it('uses conversion token count when no chain filter is selected', async () => {
+      mockUseMusdConversionTokens.mockReturnValue({
+        tokens: [{ symbol: 'USDC' }],
+        hasConvertibleTokensByChainId: mockHasConvertibleTokensByChainId,
+      });
+
+      await act(async () => {
+        renderAssetList();
+      });
+
+      await waitFor(() => {
+        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith(
+          expect.objectContaining({
+            hasConvertibleTokens: true,
+          }),
+        );
+      });
+    });
+  });
+
+  describe('token interactions', () => {
+    it('calls onClickAsset and tracks navigation when a token is clicked', async () => {
+      await act(async () => {
+        renderAssetList();
+      });
+
+      fireEvent.click(screen.getByTestId('mock-token-list-item'));
+
+      await waitFor(() => {
+        expect(mockOnClickAsset).toHaveBeenCalledWith(
+          CHAIN_IDS.MAINNET,
+          USDC_CONTRACT,
+          USDC_CONTRACT,
+        );
+        expect(trace).toHaveBeenCalledWith({ name: 'Asset Details' });
+        expect(getMockTrackEvent()).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.TokenScreenOpened,
+            properties: {
+              category: MetaMetricsEventCategory.Navigation,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: 'ETH',
+              location: 'Home',
+            },
+            sensitiveProperties: {},
+          }),
+        );
+      });
+    });
+  });
+
+  describe('showTokensLinks', () => {
+    it('enables the asset options control when showTokensLinks is true', async () => {
+      await act(async () => {
+        renderAssetList({ showTokensLinks: true });
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('asset-list-control-bar-action-button'),
+        ).not.toBeDisabled();
+      });
+    });
+
+    it('disables the asset options control when showTokensLinks is false', async () => {
+      await act(async () => {
+        renderAssetList({ showTokensLinks: false });
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('asset-list-control-bar-action-button'),
+        ).toBeDisabled();
+      });
     });
   });
 });

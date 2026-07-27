@@ -14,8 +14,8 @@ export const ActivityPage = () => {
     <Page data-testid="activity-page">
       <Text
         variant={TextVariant.HeadingLg}
-        fontWeight={FontWeight.Medium}
-        className="pt-6 px-4 pb-2"
+        fontWeight={FontWeight.Bold}
+        className="pt-4 px-4 pb-2"
       >
         {t('activity')}
       </Text>

@@ -6,10 +6,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import mockState from '../../../../../test/data/mock-state.json';
 import DebugContent from '.';
 
-const mockSetServiceWorkerKeepAlivePreference = jest.fn().mockReturnValue({
-  type: 'SET_SERVICE_WORKER_KEEP_ALIVE',
-  value: true,
-});
 const mockPerpsToggleTestnet = jest.fn().mockResolvedValue(undefined);
 const mockRemoteFeatureFlags = { feature1: 'value1' };
 // eslint-disable-next-line
@@ -30,8 +26,6 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 jest.mock('../../../../store/actions.ts', () => ({
-  setServiceWorkerKeepAlivePreference: () =>
-    mockSetServiceWorkerKeepAlivePreference,
   perpsToggleTestnet: () => mockPerpsToggleTestnet(),
 }));
 
@@ -82,16 +76,5 @@ describe('Debug tab', () => {
       fireEvent.click(getByTestId('perps-testnet-toggle'));
       expect(mockPerpsToggleTestnet).toHaveBeenCalled();
     });
-  });
-
-  it('should toggle Service Worker Keep Alive', async () => {
-    const { getByTestId } = renderWithProvider(<DebugContent />, mockStore);
-    const triggerButton = getByTestId(
-      'developer-options-service-worker-alive-toggle',
-    );
-    expect(triggerButton).toBeInTheDocument();
-    fireEvent.click(triggerButton);
-
-    expect(mockSetServiceWorkerKeepAlivePreference).toHaveBeenCalled();
   });
 });

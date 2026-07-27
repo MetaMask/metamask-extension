@@ -10,11 +10,49 @@ const genericToastLabels: Record<ToastStatus, string> = {
   failed: 'transactionFailed',
 };
 
+type ToastLabel = { title: string; description?: string };
+type TranslateFn = ReturnType<typeof useI18nContext>;
+
+function getPerpsWithdrawToastContent(
+  status: ToastStatus,
+  item: Extract<ActivityListItem, { type: 'perpsAddFunds' | 'perpsWithdraw' }>,
+  t: TranslateFn,
+): ToastLabel {
+  if (status === 'pending') {
+    return {
+      title: t('perpsWithdrawPostQuoteToastPendingTitle'),
+      description: t('perpsWithdrawPostQuoteToastPendingDescription'),
+    };
+  }
+
+  if (status === 'success') {
+    const fiatAmount = Number(item.data.fiat?.amount);
+    const symbol = item.data.token?.symbol;
+    const description =
+      Number.isFinite(fiatAmount) && symbol
+        ? t('perpsWithdrawPostQuoteToastSuccessDescription', [
+            `$${fiatAmount.toFixed(2)}`,
+            symbol,
+          ])
+        : t('perpsWithdrawPostQuoteToastSuccessGenericDescription');
+
+    return {
+      title: t('perpsWithdrawPostQuoteToastSuccessTitle'),
+      description,
+    };
+  }
+
+  return {
+    title: t('perpsWithdrawPostQuoteToastErrorTitle'),
+    description: t('perpsWithdrawPostQuoteToastErrorDescription'),
+  };
+}
+
 // Add per-type toast content here
 function useGetToastContent(
   status: ToastStatus,
   item?: ActivityListItem,
-): { title: string; description?: string } {
+): ToastLabel {
   const t = useI18nContext();
 
   switch (item?.type) {
@@ -36,6 +74,21 @@ function useGetToastContent(
 
       return { title: t('musdConversionToastFailed') };
     }
+
+    case 'claimMusdBonus': {
+      if (status === 'pending') {
+        return { title: t('merklRewardsToastInProgress') };
+      }
+
+      if (status === 'success') {
+        return { title: t('merklRewardsToastSuccess') };
+      }
+
+      return { title: t('merklRewardsToastFailed') };
+    }
+
+    case 'perpsWithdraw':
+      return getPerpsWithdrawToastContent(status, item, t);
 
     default:
       return { title: t(genericToastLabels[status]) };

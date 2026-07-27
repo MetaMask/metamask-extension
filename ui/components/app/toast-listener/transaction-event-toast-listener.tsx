@@ -1,14 +1,14 @@
 import React from 'react';
 import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { useActivityCacheInvalidation } from '../../../hooks/activity/useActivityCacheInvalidation';
 import {
   toastListenerCapabilities,
   useTransactionEventToasts,
 } from './useTransactionEventToasts';
-import { useResolveSmartTransactionApprovals } from './useResolveSmartTransactionApprovals';
 
 const TransactionEventToastListenerInner = () => {
   useTransactionEventToasts();
-  useResolveSmartTransactionApprovals();
+  useActivityCacheInvalidation();
   return null;
 };
 

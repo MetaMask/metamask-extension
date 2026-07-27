@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -23,7 +23,7 @@ import {
   ModalOverlay,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
@@ -34,19 +34,20 @@ export default function Pna25Modal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const hasTrackedView = useRef(false);
 
   const handleAction = useCallback(
     (action: Pna25NoticeAction) => {
-      trackEvent({
-        event: MetaMetricsEventName.NoticeUpdateDisplayed,
-        properties: {
-          name: 'pna25',
-          action,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NoticeUpdateDisplayed)
+          .addProperties({
+            name: 'pna25',
+            action,
+          })
+          .build(),
+      );
 
       // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
@@ -61,7 +62,7 @@ export default function Pna25Modal() {
         navigate(PRIVACY_ROUTE);
       }
     },
-    [trackEvent, dispatch, navigate],
+    [createEventBuilder, trackEvent, dispatch, navigate],
   );
 
   useEffect(() => {

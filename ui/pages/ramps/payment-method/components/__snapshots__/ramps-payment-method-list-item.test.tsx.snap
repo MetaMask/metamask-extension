@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-debit-credit-card"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-primary-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-primary-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Debit card
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-debit-credit-card"
+          >
+            5 - 10 mins
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-limits-debit-credit-card"
+          >
+            $25.00 – $2,000.00
+          </p>
+        </div>
+      </div>
+      <svg
+        class="inline-block w-5 h-5 text-primary-default"
+        data-testid="ramps-payment-method-item-selected"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+        />
+      </svg>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no limits 1`] = `
+<div>
+  <button
+    class="inline-flex items-center justify-center font-medium text-default bg-muted overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+    data-testid="ramps-payment-method-item-bank-transfer"
+    role="button"
+  >
+    <div
+      class="flex flex-row gap-3 items-center justify-between w-full"
+    >
+      <div
+        class="flex flex-row gap-3 items-center min-w-0 flex-1"
+      >
+        <div
+          class="bg-muted flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        >
+          <svg
+            class="inline-block w-5 h-5 text-icon-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 17.886v-7h2v7zm6 0v-7h2v7zm-9 4v-2h20v2zm15-4v-7h2v7zm-15-9v-2l10-5 10 5v2zm4.45-2h11.1L12 4.136z"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex flex-col items-start min-w-0 flex-1"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+          >
+            Bank transfer
+          </p>
+          <p
+            class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
+            data-testid="ramps-payment-method-item-delay-bank-transfer"
+          >
+            Instant
+          </p>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;

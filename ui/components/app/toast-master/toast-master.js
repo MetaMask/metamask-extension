@@ -38,7 +38,6 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { MerklClaimToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
@@ -89,7 +88,6 @@ const MemoizedSurveyToast = memo(SurveyToast);
 const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
 const MemoizedPermittedNetworkToast = memo(PermittedNetworkToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
-const MemoizedMerklClaimToast = memo(MerklClaimToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
@@ -117,7 +115,6 @@ export function ToastMaster() {
         <MemoizedPrivacyPolicyToast />
         <MemoizedPermittedNetworkToast />
         <MemoizedInfuraSwitchToast />
-        <MemoizedMerklClaimToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />

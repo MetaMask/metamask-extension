@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Decimalna natančnost"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalk mora biti med 0 in 36."
-  },
   "delete": {
     "message": "Izbriši"
   },

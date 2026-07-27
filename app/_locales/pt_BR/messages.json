@@ -377,9 +377,6 @@
   "decimal": {
     "message": "Decimal do token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
-  },
   "decrypt": {
     "message": "Descriptografar"
   },
@@ -1131,9 +1128,6 @@
   },
   "restore": {
     "message": "Restaurar"
-  },
-  "retryTransaction": {
-    "message": "Tentar transação novamente"
   },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."

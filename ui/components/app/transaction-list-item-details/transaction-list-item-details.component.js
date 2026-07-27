@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
@@ -24,56 +24,61 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { I18nContext } from '../../../contexts/i18n';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default class TransactionListItemDetails extends PureComponent {
-  static contextType = I18nContext;
+function TransactionListItemDetails({
+  trackEvent,
+  onCancel,
+  onRetry,
+  showCancel,
+  showSpeedUp,
+  primaryCurrency,
+  transactionGroup,
+  title,
+  onClose,
+  recipientAddress,
+  senderAddress,
+  tryReverseResolveAddress,
+  senderNickname,
+  transactionStatus: TransactionStatus,
+  isCustomNetwork,
+  navigate,
+  blockExplorerLinkText,
+  networkConfiguration,
+  isHardwareWalletAccount,
+  isProtectedByEnforcedSimulations,
+  chainId: chainIdProp,
+}) {
+  const t = useI18nContext();
+  const [justCopied, setJustCopied] = useState(false);
+  const copyTimeoutRef = useRef(null);
 
-  static defaultProps = {};
+  const {
+    primaryTransaction,
+    initialTransaction: { type },
+    hasCancelled,
+  } = transactionGroup;
+  const { hash: txHash } = primaryTransaction;
+  const chainId = chainIdProp ?? primaryTransaction.chainId;
+  const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
-  static propTypes = {
-    trackEvent: PropTypes.func.isRequired,
-    onCancel: PropTypes.func,
-    onRetry: PropTypes.func,
-    showCancel: PropTypes.bool,
-    showSpeedUp: PropTypes.bool,
-    /**
-     * Disabling the retry button until further notice
-     *
-     * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
-     */
-    // showRetry: PropTypes.bool,
-    primaryCurrency: PropTypes.string,
-    transactionGroup: PropTypes.object,
-    title: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
-    recipientAddress: PropTypes.string,
-    senderAddress: PropTypes.string.isRequired,
-    tryReverseResolveAddress: PropTypes.func.isRequired,
-    senderNickname: PropTypes.string.isRequired,
-    transactionStatus: PropTypes.func,
-    isCustomNetwork: PropTypes.bool,
-    navigate: PropTypes.func.isRequired,
-    blockExplorerLinkText: PropTypes.object,
-    chainId: PropTypes.string,
-    networkConfiguration: PropTypes.object,
-    isHardwareWalletAccount: PropTypes.bool,
-    isProtectedByEnforcedSimulations: PropTypes.bool,
-  };
+  useEffect(() => {
+    if (recipientAddress) {
+      tryReverseResolveAddress(recipientAddress);
+    }
+  }, [recipientAddress, tryReverseResolveAddress]);
 
-  state = {
-    justCopied: false,
-  };
+  useEffect(
+    () => () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
-  handleBlockExplorerClick = () => {
-    const {
-      transactionGroup: { primaryTransaction },
-      networkConfiguration,
-      isCustomNetwork,
-      navigate,
-      onClose,
-      chainId,
-    } = this.props;
+  const handleBlockExplorerClick = useCallback(() => {
+    const { primaryTransaction: primaryTx } = transactionGroup;
     const blockExplorerUrl =
       networkConfiguration?.[chainId]?.blockExplorerUrls[
         networkConfiguration?.[chainId]?.defaultBlockExplorerUrlIndex
@@ -84,16 +89,13 @@ export default class TransactionListItemDetails extends PureComponent {
       imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
     };
 
-    const blockExplorerLink = getBlockExplorerLink(
-      primaryTransaction,
-      rpcPrefs,
-    );
+    const blockExplorerLink = getBlockExplorerLink(primaryTx, rpcPrefs);
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();
       navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
-      this.props.trackEvent({
+      trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
@@ -107,26 +109,34 @@ export default class TransactionListItemDetails extends PureComponent {
         url: blockExplorerLink,
       });
     }
-  };
+  }, [
+    chainId,
+    isCustomNetwork,
+    navigate,
+    networkConfiguration,
+    onClose,
+    trackEvent,
+    transactionGroup,
+  ]);
 
-  handleCancel = (event) => {
-    const { onCancel, onClose } = this.props;
-    onCancel(event);
-    onClose();
-  };
+  const handleCancel = useCallback(
+    (event) => {
+      onCancel(event);
+      onClose();
+    },
+    [onCancel, onClose],
+  );
 
-  handleRetry = (event) => {
-    const { onClose, onRetry } = this.props;
-    onRetry(event);
-    onClose();
-  };
+  const handleRetry = useCallback(
+    (event) => {
+      onRetry(event);
+      onClose();
+    },
+    [onClose, onRetry],
+  );
 
-  handleCopyTxId = () => {
-    const { transactionGroup } = this.props;
-    const { primaryTransaction: transaction } = transactionGroup;
-    const { hash } = transaction;
-
-    this.props.trackEvent({
+  const handleCopyTxId = useCallback(() => {
+    trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
@@ -135,170 +145,147 @@ export default class TransactionListItemDetails extends PureComponent {
       },
     });
 
-    this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash, COPY_OPTIONS);
-      setTimeout(() => this.setState({ justCopied: false }), SECOND);
-    });
-  };
+    setJustCopied(true);
+    copyToClipboard(txHash, COPY_OPTIONS);
+    copyTimeoutRef.current = setTimeout(() => setJustCopied(false), SECOND);
+  }, [trackEvent, txHash]);
 
-  componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
-
-    if (recipientAddress) {
-      tryReverseResolveAddress(recipientAddress);
-    }
-  }
-
-  render() {
-    const t = this.context;
-    const { justCopied } = this.state;
-    const {
-      transactionGroup,
-      primaryCurrency,
-      showSpeedUp,
-      // showRetry,
-      recipientAddress,
-      senderAddress,
-      senderNickname,
-      title,
-      onClose,
-      showCancel,
-      transactionStatus: TransactionStatus,
-      blockExplorerLinkText,
-      isHardwareWalletAccount,
-      isProtectedByEnforcedSimulations,
-    } = this.props;
-    const {
-      primaryTransaction: transaction,
-      initialTransaction: { type },
-      hasCancelled,
-    } = transactionGroup;
-    const { chainId, hash } = transaction;
-    const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
-
-    return (
-      <Popover title={title} onClose={onClose}>
-        <div className="transaction-list-item-details">
-          {isProtectedByEnforcedSimulations && (
-            <BannerAlert
-              severity={BannerAlertSeverity.Info}
-              className="mx-4"
-              data-testid="transaction-protected-by-enforced-simulations"
-            >
-              <Text variant={TextVariant.BodySm}>
-                {t('transactionProtectedByEnforcedSimulations')}
-              </Text>
-            </BannerAlert>
-          )}
-          <div className="transaction-list-item-details__operations">
-            <div className="flex gap-2">
-              {showSpeedUp && (
-                <Button
-                  size={ButtonSize.Sm}
-                  onClick={this.handleRetry}
-                  data-testid="speedup-button"
-                >
-                  {t(speedUpLabel)}
-                </Button>
-              )}
-              {showCancel && (
-                <CancelButton
-                  size={ButtonSize.Sm}
-                  cancelTransaction={this.handleCancel}
+  return (
+    <Popover title={title} onClose={onClose}>
+      <div className="transaction-list-item-details">
+        {isProtectedByEnforcedSimulations && (
+          <BannerAlert
+            severity={BannerAlertSeverity.Info}
+            className="mx-4"
+            data-testid="transaction-protected-by-enforced-simulations"
+          >
+            <Text variant={TextVariant.BodySm}>
+              {t('transactionProtectedByEnforcedSimulations')}
+            </Text>
+          </BannerAlert>
+        )}
+        <div className="transaction-list-item-details__operations">
+          <div className="flex gap-2">
+            {showSpeedUp && (
+              <Button
+                size={ButtonSize.Sm}
+                onClick={handleRetry}
+                data-testid="speedup-button"
+              >
+                {t(speedUpLabel)}
+              </Button>
+            )}
+            {showCancel && (
+              <CancelButton
+                size={ButtonSize.Sm}
+                cancelTransaction={handleCancel}
+              />
+            )}
+          </div>
+        </div>
+        <div className="transaction-list-item-details__header">
+          <div
+            className="transaction-list-item-details__tx-status gap-1 h-auto"
+            data-testid="transaction-list-item-details-tx-status"
+          >
+            <div>{t('status')}</div>
+            <div>
+              {isProtectedByEnforcedSimulations ? (
+                <TransactionStatusLabel
+                  label={t('cancelled')}
+                  tooltip={t('transactionProtectedByEnforcedSimulations')}
                 />
+              ) : (
+                <TransactionStatus />
               )}
-              {/* {showRetry && (
-                <Tooltip title={t('retryTransaction')}>
-                  <Button
-                    type="raised"
-                    onClick={this.handleRetry}
-                    className="transaction-list-item-details__header-button"
-                    data-testid="rety-button"
-                  >
-                    <i className="fa fa-sync"></i>
-                  </Button>
-                </Tooltip>
-              )} */}
             </div>
           </div>
-          <div className="transaction-list-item-details__header">
-            <div
-              className="transaction-list-item-details__tx-status gap-1 h-auto"
-              data-testid="transaction-list-item-details-tx-status"
+          <div className="transaction-list-item-details__tx-hash gap-1">
+            <button
+              type="button"
+              className="text-primary-default"
+              onClick={handleBlockExplorerClick}
+              disabled={!txHash}
             >
-              <div>{t('status')}</div>
-              <div>
-                {isProtectedByEnforcedSimulations ? (
-                  <TransactionStatusLabel
-                    label={t('cancelled')}
-                    tooltip={t('transactionProtectedByEnforcedSimulations')}
-                  />
-                ) : (
-                  <TransactionStatus />
-                )}
-              </div>
-            </div>
-            <div className="transaction-list-item-details__tx-hash gap-1">
+              {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                ? t('addBlockExplorer')
+                : t('viewOnBlockExplorer')}
+            </button>
+
+            <Tooltip
+              wrapperClassName="transaction-list-item-details__header-button"
+              containerClassName="transaction-list-item-details__header-button-tooltip-container"
+              title={justCopied ? t('copiedExclamation') : null}
+            >
               <button
                 type="button"
                 className="text-primary-default"
-                onClick={this.handleBlockExplorerClick}
-                disabled={!hash}
+                onClick={handleCopyTxId}
+                disabled={!txHash}
               >
-                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                  ? t('addBlockExplorer')
-                  : t('viewOnBlockExplorer')}
+                {t('copyTransactionId')}
               </button>
-
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={justCopied ? t('copiedExclamation') : null}
-              >
-                <button
-                  type="button"
-                  className="text-primary-default"
-                  onClick={this.handleCopyTxId}
-                  disabled={!hash}
-                >
-                  {t('copyTransactionId')}
-                </button>
-              </Tooltip>
-            </div>
-          </div>
-          <div className="transaction-list-item-details__body">
-            <div className="transaction-list-item-details__sender-to-recipient-header">
-              <div>{t('from')}</div>
-              <div>{t('to')}</div>
-            </div>
-            <div className="transaction-list-item-details__sender-to-recipient-container">
-              <SenderToRecipient
-                warnUserOnAccountMismatch={false}
-                variant={DEFAULT_VARIANT}
-                addressOnly
-                recipientAddress={recipientAddress}
-                senderName={senderNickname}
-                senderAddress={senderAddress}
-                chainId={chainId}
-              />
-            </div>
-            <div className="transaction-list-item-details__cards-container">
-              <TransactionBreakdown
-                isHardwareWalletAccount={isHardwareWalletAccount}
-                nonce={transactionGroup.initialTransaction.txParams.nonce}
-                isTokenApprove={
-                  type === TransactionType.tokenMethodApprove ||
-                  type === TransactionType.tokenMethodSetApprovalForAll
-                }
-                transaction={transaction}
-                primaryCurrency={primaryCurrency}
-                className="transaction-list-item-details__transaction-breakdown"
-                chainId={chainId}
-              />
-            </div>
+            </Tooltip>
           </div>
         </div>
-      </Popover>
-    );
-  }
+        <div className="transaction-list-item-details__body">
+          <div className="transaction-list-item-details__sender-to-recipient-header">
+            <div>{t('from')}</div>
+            <div>{t('to')}</div>
+          </div>
+          <div className="transaction-list-item-details__sender-to-recipient-container">
+            <SenderToRecipient
+              warnUserOnAccountMismatch={false}
+              variant={DEFAULT_VARIANT}
+              addressOnly
+              recipientAddress={recipientAddress}
+              senderName={senderNickname}
+              senderAddress={senderAddress}
+              chainId={chainId}
+            />
+          </div>
+          <div className="transaction-list-item-details__cards-container">
+            <TransactionBreakdown
+              isHardwareWalletAccount={isHardwareWalletAccount}
+              nonce={transactionGroup.initialTransaction.txParams.nonce}
+              isTokenApprove={
+                type === TransactionType.tokenMethodApprove ||
+                type === TransactionType.tokenMethodSetApprovalForAll
+              }
+              transaction={primaryTransaction}
+              primaryCurrency={primaryCurrency}
+              className="transaction-list-item-details__transaction-breakdown"
+              chainId={chainId}
+            />
+          </div>
+        </div>
+      </div>
+    </Popover>
+  );
 }
+
+TransactionListItemDetails.propTypes = {
+  trackEvent: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
+  onRetry: PropTypes.func,
+  showCancel: PropTypes.bool,
+  showSpeedUp: PropTypes.bool,
+  primaryCurrency: PropTypes.string,
+  transactionGroup: PropTypes.object,
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  recipientAddress: PropTypes.string,
+  senderAddress: PropTypes.string.isRequired,
+  tryReverseResolveAddress: PropTypes.func.isRequired,
+  senderNickname: PropTypes.string.isRequired,
+  transactionStatus: PropTypes.func,
+  isCustomNetwork: PropTypes.bool,
+  navigate: PropTypes.func.isRequired,
+  blockExplorerLinkText: PropTypes.object,
+  chainId: PropTypes.string,
+  networkConfiguration: PropTypes.object,
+  isHardwareWalletAccount: PropTypes.bool,
+  isProtectedByEnforcedSimulations: PropTypes.bool,
+};
+
+export default memo(TransactionListItemDetails);

@@ -5,6 +5,7 @@ import { toHex } from '@metamask/controller-utils';
 import {
   isCaipChainId,
   CaipChainId,
+  CaipAssetType,
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
@@ -62,7 +63,7 @@ import {
   TagProps,
 } from '../../component-library';
 import IconButton from '../../ui/icon-button';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { Toast, ToastContainer } from '../../multichain/toast';
@@ -223,6 +224,11 @@ type CoinButtonsProps = {
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
+  /**
+   * CAIP-19 asset to pre-select when buying (asset-page native tokens). When
+   * omitted (e.g. wallet overview), Buy opens the token-selection page instead.
+   */
+  buyAssetId?: CaipAssetType;
 };
 
 const CoinButtons = ({
@@ -233,6 +239,7 @@ const CoinButtons = ({
   isSigningEnabled,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
+  buyAssetId,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -355,7 +362,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy, isRampsEnabled } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -411,9 +418,20 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    setShowTabOpenedToast(true);
-    openBuyCryptoInPdapp(getChainId());
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy({
+      assetId: buyAssetId,
+      chainId: getChainId(),
+    });
+    if (!opened) {
+      return;
+    }
+    // Only the flag-off path opens a Portfolio browser tab; with the ramps
+    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
+    // be misleading.
+    if (!isRampsEnabled) {
+      setShowTabOpenedToast(true);
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -433,7 +451,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url

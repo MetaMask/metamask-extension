@@ -1488,9 +1488,6 @@
   "decimal": {
     "message": "Deicheamhach comhartha"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Ní mór deachúlacha a bheith ar a laghad 0, agus ní mó ná 36."
-  },
   "decrypt": {
     "message": "Díchriptigh"
   },
@@ -4414,9 +4411,6 @@
   },
   "resultPageSuccessDefaultMessage": {
     "message": "Críochnaíodh an oibríocht go rathúil."
-  },
-  "retryTransaction": {
-    "message": "Déan iarracht eile ar an idirbheart"
   },
   "reusedTokenNameWarning": {
     "message": "Athúsáideann comhartha anseo siombail ó chomhartha eile a fhéachann tú air, is féidir leis seo a bheith mearbhall nó mealltach."

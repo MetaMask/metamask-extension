@@ -746,12 +746,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternallyConnectable(...args);
 });
 
-function saveTimestamp() {
-  const timestamp = new Date().toISOString();
-
-  browser.storage.session.set({ timestamp });
-}
-
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
@@ -846,15 +840,6 @@ async function initialize(backup) {
   }
 
   if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-    }
-
     const sessionData = await browser.storage.session.get([
       'isFirstMetaMaskControllerSetup',
     ]);

@@ -1,6 +1,7 @@
 import type { Route } from './route';
 
 const deepLinkInterstitialBypassRoutePathList = [
+  '/asset',
   '/buy',
   '/sell',
   '/batch-sell',

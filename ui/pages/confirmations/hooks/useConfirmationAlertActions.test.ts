@@ -1,8 +1,10 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useGasFeeModalContext } from '../context/gas-fee-modal';
 import { useConfirmContext } from '../context/confirm';
 import { GasModalType } from '../constants/gas';
@@ -16,9 +18,9 @@ jest.mock('../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
 
-jest.mock('../../../hooks/ramps/useRamps/useRamps');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation');
 
-const mockOpenBuyCryptoInPdapp = jest.fn();
+const mockGoToBuy = jest.fn();
 
 function processAlertActionKey(actionKey: string) {
   const { result } = renderHookWithProvider(
@@ -38,10 +40,9 @@ describe('useConfirmationAlertActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.mocked(useRamps).mockReturnValue({
-      openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
-      getBuyURI: jest.fn(),
-    } as ReturnType<typeof useRamps>);
+    jest.mocked(useRampsNavigation).mockReturnValue({
+      goToBuy: mockGoToBuy,
+    } as unknown as ReturnType<typeof useRampsNavigation>);
 
     useGasFeeModalContextMock.mockReturnValue({
       openGasFeeModal: openGasFeeModalMock,
@@ -52,6 +53,7 @@ describe('useConfirmationAlertActions', () => {
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           type: TransactionEnvelopeType.feeMarket,
         },
@@ -62,10 +64,13 @@ describe('useConfirmationAlertActions', () => {
     });
   });
 
-  it('opens in-extension buy flow if action key is Buy', () => {
+  it('routes Buy through goToBuy with the native gas token and chain', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
-    expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
+    expect(mockGoToBuy).toHaveBeenCalledWith({
+      assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
+      chainId: CHAIN_IDS.MAINNET,
+    });
   });
 
   it('opens advanced EIP-1559 gas fee modal if action key is ShowAdvancedGasFeeModal for fee market transactions', () => {

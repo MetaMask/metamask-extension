@@ -5,6 +5,8 @@
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
  * Build URLs include main Chrome/Firefox Webpack artifacts plus the deprecated Browserify fallback.
+ * Slack also links to run-specific PR comment anchors for cherry-picks and full RC notes
+ * (same pattern as Mobile after MetaMask/metamask-mobile#32969).
  *
  * Local / manual testing
  * ----------------------
@@ -338,14 +340,17 @@ function buildSlackMessage(options: {
     });
   }
 
+  // Match Mobile: link Slack to the run-specific PR comment anchors.
+  // GitHub prefixes user-provided anchor IDs with `user-content-`.
   if (prNumber) {
+    const cherryPicksLink = `<${REPO_URL}/pull/${prNumber}#user-content-cherry-picks-${runId}|View cherry-picks>`;
     blocks.push(
       { type: 'divider' },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*:cherries: What's in this RC:* <${REPO_URL}/pull/${prNumber}#user-content-whats-in-this-rc-${runId}|View details>`,
+          text: `*🍒 Cherry-picks:* ${cherryPicksLink}`,
         },
       },
     );
@@ -353,21 +358,25 @@ function buildSlackMessage(options: {
 
   const footerBits = [
     actionsRunUrl ? `<${actionsRunUrl}|View Build Pipeline>` : null,
-    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|View full release notes>`,
+    prNumber
+      ? `<${REPO_URL}/pull/${prNumber}#user-content-whats-in-this-rc-${runId}|View full RC notes>`
+      : null,
   ].filter(Boolean);
 
-  blocks.push(
-    { type: 'divider' },
-    {
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: footerBits.join(' | '),
-        },
-      ],
-    },
-  );
+  if (footerBits.length > 0) {
+    blocks.push(
+      { type: 'divider' },
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: footerBits.join(' | '),
+          },
+        ],
+      },
+    );
+  }
 
   return {
     blocks,
@@ -391,6 +400,8 @@ async function postToSlack(
         channel: channelName,
         blocks: payload.blocks,
         text: payload.text,
+        unfurl_links: false,
+        unfurl_media: false,
       }),
     });
 

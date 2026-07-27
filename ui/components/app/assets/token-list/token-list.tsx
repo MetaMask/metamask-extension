@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+  isCaipAssetType,
+} from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -52,7 +57,11 @@ import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type TokenListProps = {
-  onTokenClick: (chainId: string, address: string) => void;
+  onTokenClick: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
   safeChains?: SafeChain[];
 };
 
@@ -332,34 +341,42 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
-  const handleTokenClick = (token: TokenWithFiatAmount) => () => {
-    // Ensure token has a valid chainId before proceeding
-    if (!token.chainId) {
-      return;
-    }
+  const handleTokenClick = useCallback(
+    (token: TokenWithFiatAmount) => () => {
+      // Ensure token has a valid chainId before proceeding
+      if (!token.chainId) {
+        return;
+      }
 
-    // TODO BIP44 Refactor: The route requires evm native tokens to not pass the address
-    const tokenAddress =
-      isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
+      // TODO BIP44 Refactor: The route requires evm native tokens to not pass the address
+      const tokenAddress =
+        isEvmChainId(token.chainId) && token.isNative ? '' : token.address;
 
-    onTokenClick(token.chainId, tokenAddress);
+      const routeAssetId =
+        token.assetId && isCaipAssetType(token.assetId)
+          ? token.assetId
+          : undefined;
 
-    // Track event: token details
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
-        .addCategory(MetaMetricsEventCategory.Tokens)
-        .addProperties({
-          location: 'Home',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol ?? 'unknown',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: token.chainId,
-        })
-        .build(),
-    );
-  };
+      onTokenClick(token.chainId, tokenAddress, routeAssetId);
+
+      // Track event: token details
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+          .addCategory(MetaMetricsEventCategory.Tokens)
+          .addProperties({
+            location: 'Home',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: token.symbol ?? 'unknown',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: token.chainId,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, onTokenClick, trackEvent],
+  );
 
   const handleLowValueAssetsToggle = useCallback(() => {
     const nextIsExpanded = !isLowValueAssetsExpanded;
@@ -382,35 +399,42 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     trackEvent,
   ]);
 
-  const renderTokenCell = (token: TokenWithFiatAmount) => {
-    const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
-      token.chainId as CaipChainId,
-    );
+  const renderTokenListItem = useCallback(
+    (info: { item: TokenListDisplayItem }) => {
+      const { item } = info;
+      if (item.type === 'low-value-toggle') {
+        return (
+          <LowValueAssetsToggle
+            count={item.count}
+            isExpanded={isLowValueAssetsExpanded}
+            onClick={handleLowValueAssetsToggle}
+          />
+        );
+      }
 
-    return (
-      <TokenCell
-        token={token}
-        privacyMode={privacyMode}
-        onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-        safeChains={safeChains}
-        musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
-      />
-    );
-  };
+      const { token } = item;
+      const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
+        token.chainId as CaipChainId,
+      );
 
-  const renderTokenListItem = ({ item }: { item: TokenListDisplayItem }) => {
-    if (item.type === 'low-value-toggle') {
       return (
-        <LowValueAssetsToggle
-          count={item.count}
-          isExpanded={isLowValueAssetsExpanded}
-          onClick={handleLowValueAssetsToggle}
+        <TokenCell
+          token={token}
+          privacyMode={privacyMode}
+          onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+          safeChains={safeChains}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
         />
       );
-    }
-
-    return renderTokenCell(item.token);
-  };
+    },
+    [
+      handleLowValueAssetsToggle,
+      handleTokenClick,
+      isLowValueAssetsExpanded,
+      privacyMode,
+      safeChains,
+    ],
+  );
 
   // Disable virtualization when empty balance state is shown
   if (!hasBalance) {

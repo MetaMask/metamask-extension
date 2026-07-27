@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import type { CaipAssetType } from '@metamask/utils';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -21,7 +22,11 @@ import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/as
 import AssetListControlBar from './asset-list-control-bar';
 
 export type AssetListProps = {
-  onClickAsset: (chainId: string, address: string) => void;
+  onClickAsset: (
+    chainId: string,
+    address: string,
+    assetId?: CaipAssetType,
+  ) => void;
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
 };
@@ -35,9 +40,9 @@ const TokenListContainer = React.memo(
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(
-      (chainId: string, tokenAddress: string) => {
+      (chainId: string, tokenAddress: string, assetId?: CaipAssetType) => {
         trace({ name: TraceName.AssetDetails });
-        onClickAsset(chainId, tokenAddress);
+        onClickAsset(chainId, tokenAddress, assetId);
         trackEvent(
           createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
             .addCategory(MetaMetricsEventCategory.Navigation)

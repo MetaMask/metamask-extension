@@ -1,17 +1,16 @@
 import React, { useMemo } from 'react';
-import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
-import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
+import { mapApiTransaction } from '@metamask/client-utils';
+import { mergeActivityItemSponsoredFees } from '../../../shared/lib/activity/fees';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
+import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
-import { useCachedEvmTransaction } from './useCachedEvmTransaction';
-import { useTransactionQuery } from './useTransactionQuery';
 
 type Props = {
   chainId: string | undefined;
@@ -23,11 +22,9 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const selectedAddress = useSelector(selectEvmAddress);
   const isEvm = chainId?.startsWith('eip155:');
 
-  const localActivityItemsByIdentifier = useSelector(
-    selectLocalActivityItemsByIdentifier,
-  );
+  const localActivityItems = useSelector(selectLocalActivityItemsByIdentifier);
   const localActivityItem = txIdentifier
-    ? localActivityItemsByIdentifier.get(txIdentifier.toLowerCase())
+    ? localActivityItems.get(txIdentifier.toLowerCase())
     : undefined;
 
   const nonEvmActivityItems = useSelector(selectNonEvmActivityItemsById);
@@ -36,28 +33,17 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
-  const cachedApiTransaction = useCachedEvmTransaction({
+  const apiTransaction = useApiTransaction({
     chainId,
-    txHash: txIdentifier,
-  });
-
-  const { data: apiTransaction } = useTransactionQuery({
-    chainId,
-    txHash: txIdentifier,
-    enabled: Boolean(
-      isEvm && selectedAddress && txIdentifier && !cachedApiTransaction,
-    ),
+    txHash: isEvm && selectedAddress ? txIdentifier : undefined,
   });
 
   const transaction = useMemo(() => {
-    const evmTransaction = (cachedApiTransaction ??
-      apiTransaction) as V1TransactionByHashResponse;
-
     const apiActivityItem =
-      evmTransaction && selectedAddress
-        ? mapApiEvmTransactions({
+      apiTransaction && selectedAddress
+        ? mapApiTransaction({
             subjectAddress: selectedAddress,
-            transaction: evmTransaction,
+            transaction: apiTransaction,
           })
         : undefined;
 
@@ -72,7 +58,10 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
         apiActivityItem &&
         (hasMatchingActivityType || isLocalUncategorized)
       ) {
-        return apiActivityItem;
+        return mergeActivityItemSponsoredFees(
+          localActivityItem,
+          apiActivityItem,
+        );
       }
 
       return localActivityItem;
@@ -87,13 +76,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [
-    apiTransaction,
-    cachedApiTransaction,
-    localActivityItem,
-    nonEvmActivityItem,
-    selectedAddress,
-  ]);
+  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">

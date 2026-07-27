@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   BannerAlert,
@@ -11,13 +12,17 @@ import {
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../shared/constants/network';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   type SafeChain,
   useSafeChains,
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { getShowTestNetworks } from '../../selectors/selectors';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -45,6 +50,9 @@ export const getUsableUrls = (urls: string[] = []) =>
 
 const CHAINLIST_PAGE_SIZE = 100;
 const CHAINLIST_SCROLL_THRESHOLD_PX = 120;
+const BUILT_IN_TEST_CHAIN_IDS = new Set(
+  TEST_CHAINS.map((chainId) => chainId.toLowerCase()),
+);
 
 type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
@@ -62,14 +70,19 @@ export const ChainlistNetworkPicker = ({
   const [visibleNetworkCount, setVisibleNetworkCount] =
     useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
+  const showTestNetworks = useSelector(getShowTestNetworks);
 
   const chainlistNetworks = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
 
     return ((safeChains ?? []) as ChainlistNetwork[]).filter((network) => {
-      const existingNetworkName =
-        existingNetworkNamesByChainId[getHexChainId(network.chainId)];
+      const chainId = getHexChainId(network.chainId);
+      const existingNetworkName = existingNetworkNamesByChainId[chainId];
       if (getUsableUrls(network.rpc).length === 0) {
+        return false;
+      }
+
+      if (!showTestNetworks && BUILT_IN_TEST_CHAIN_IDS.has(chainId)) {
         return false;
       }
 
@@ -83,7 +96,12 @@ export const ChainlistNetworkPicker = ({
         String(network.chainId).includes(normalizedSearchValue)
       );
     });
-  }, [existingNetworkNamesByChainId, safeChains, searchValue]);
+  }, [
+    existingNetworkNamesByChainId,
+    safeChains,
+    searchValue,
+    showTestNetworks,
+  ]);
 
   const visibleChainlistNetworks = useMemo(
     () => chainlistNetworks.slice(0, visibleNetworkCount),
@@ -129,25 +147,26 @@ export const ChainlistNetworkPicker = ({
           size={TextFieldSize.Lg}
           value={searchValue}
         />
-        <BannerAlert
-          className="mt-4"
-          severity={BannerAlertSeverity.Info}
-          data-testid="networks-page-chainlist-source-banner"
-          description={t('chainlistNetworkDataSourceBanner', [
-            <TextButton
-              key="chainlist-learn-how-to-stay-safe"
-              onClick={handleLearnHowToStaySafe}
-            >
-              {t('chainlistLearnHowToStaySafe')}
-            </TextButton>,
-          ])}
-        />
       </Box>
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
+        <Box className="px-4 pb-4">
+          <BannerAlert
+            severity={BannerAlertSeverity.Info}
+            data-testid="networks-page-chainlist-source-banner"
+            description={t('chainlistNetworkDataSourceBanner', [
+              <TextButton
+                key="chainlist-learn-how-to-stay-safe"
+                onClick={handleLearnHowToStaySafe}
+              >
+                {t('chainlistLearnHowToStaySafe')}
+              </TextButton>,
+            ])}
+          />
+        </Box>
         {showNoSearchResults ? (
           <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
         ) : null}

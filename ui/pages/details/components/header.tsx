@@ -64,9 +64,6 @@ function getTitleArgs(item: ActivityListItem) {
     case 'nftSell': {
       return getDefinedArgs(item.data.token?.symbol);
     }
-    case 'swapIncomplete': {
-      return getDefinedArgs(item.data.sourceToken?.symbol);
-    }
     default:
       return [''];
   }

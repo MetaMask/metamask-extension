@@ -55,6 +55,11 @@ export type RouteOptions = {
    * Defaults to canonical params, which removes unsigned params for signed links.
    */
   handlerSearchParams?: HandlerSearchParams;
+  /**
+   * When true, unsigned deep links to this route skip the interstitial warning
+   * page and navigate directly to the destination.
+   */
+  skipInterstitial?: boolean;
 };
 
 export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -85,10 +90,16 @@ export class Route {
    */
   public readonly handlerSearchParams: HandlerSearchParams;
 
+  /**
+   * @see {@link RouteOptions.skipInterstitial}
+   */
+  public readonly skipInterstitial: boolean;
+
   constructor(options: RouteOptions) {
     this.pathname = options.pathname.toLowerCase();
     this.getTitle = options.getTitle;
     this.handler = options.handler;
     this.handlerSearchParams = options.handlerSearchParams ?? 'canonical';
+    this.skipInterstitial = options.skipInterstitial ?? false;
   }
 }

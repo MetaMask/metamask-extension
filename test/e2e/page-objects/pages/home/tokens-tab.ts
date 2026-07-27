@@ -345,6 +345,16 @@ class TokensTab extends HomePage {
     );
   }
 
+  async clickTokenOptionsButton(): Promise<void> {
+    console.log('Click the token options button');
+    await this.driver.clickElement(this.tokenOptionsButton);
+  }
+
+  async clickManageTokens(): Promise<void> {
+    console.log('Click Manage tokens in the token options menu');
+    await this.driver.clickElement(this.manageTokensButton);
+  }
+
   async importCustomTokenByChain(
     chainId: string,
     tokenAddress: string,
