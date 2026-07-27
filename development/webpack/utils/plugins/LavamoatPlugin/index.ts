@@ -13,7 +13,7 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
-  'bootstrap',
+  'init-state-hooks',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [

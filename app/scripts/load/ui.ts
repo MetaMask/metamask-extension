@@ -1,5 +1,6 @@
 // currently only used in webpack build.
 
+import './bootstrap';
 import '../ui';
 
 if (process.env.IN_TEST) {

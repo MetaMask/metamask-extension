@@ -35,6 +35,11 @@
         "devicePixelRatio": true
       }
     },
+    "@sentry/browser": {
+      "globals": {
+        "importScripts": false
+      }
+    },
     "@sentry/core": {
       "globals": {
         "performance.now": true,
@@ -47,11 +52,14 @@
         "onerror": "write",
         "onunhandledrejection": "write",
         "addEventListener": true,
+        "removeEventListener": true,
         "PerformanceObserver": true,
         "chrome.app": true,
         "chrome.runtime": true,
-        "location": false,
+        "history": true,
         "location.href": true,
+        "location.origin": true,
+        "location.pathname": true,
         "top": true
       }
     },
