@@ -4,7 +4,6 @@ import {
 } from '@metamask/snaps-controllers';
 import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import type { Json } from '@metamask/utils';
-import { v4 as uuid } from 'uuid';
 import { MultichainRoutingServiceInitMessenger } from '../messengers/snaps';
 import { MessengerClientInitFunction } from '../types';
 
@@ -46,7 +45,7 @@ export async function withSnapKeyring(
               throw new Error('Expected v2 Snap keyring');
             }
             return keyring.submitRequest({
-              id: uuid(),
+              id: crypto.randomUUID(),
               origin: request.origin,
               scope: request.scope,
               account: request.account,
