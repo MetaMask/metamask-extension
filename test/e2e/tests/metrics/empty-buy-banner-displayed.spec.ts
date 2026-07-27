@@ -64,11 +64,7 @@ describe('Empty Buy Banner Displayed event', function () {
           ? 'sidepanel'
           : 'fullscreen';
         const {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           profile_id: _profileId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           canonical_profile_id: _canonicalProfileId,
           ...eventProperties
         } = events[0].properties;

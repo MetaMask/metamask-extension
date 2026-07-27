@@ -20,6 +20,12 @@ import {
 } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+} from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
@@ -80,12 +86,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonSecondary,
-  ButtonSecondarySize,
   Modal,
   ModalOverlay,
   Text,
-  IconName,
   ModalContent,
   ModalHeader,
   AvatarNetworkSize,
@@ -784,11 +787,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           </Box>
 
           <Box padding={4}>
-            <ButtonSecondary
-              size={ButtonSecondarySize.Lg}
+            <Button
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Secondary}
               startIconName={IconName.Add}
-              startIconProps={{ marginRight: 2 }}
-              block
+              isFullWidth
               onClick={() => {
                 trackEvent(
                   createEventBuilder(MetaMetricsEventName.AddNetworkButtonClick)
@@ -799,7 +802,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               }}
             >
               {t('addACustomNetwork')}
-            </ButtonSecondary>
+            </Button>
           </Box>
         </>
       );
