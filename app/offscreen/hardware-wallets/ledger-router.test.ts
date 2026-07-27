@@ -147,9 +147,7 @@ describe('LedgerRouter', () => {
     const dmkModule = require('./ledger-dmk') as DmkModule;
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const legacyModule = require('./ledger') as LegacyModule;
-    mockedDmkCtor = jest.mocked(
-      dmkModule.LedgerDmkBridgeHandler,
-    ) as jest.Mock;
+    mockedDmkCtor = jest.mocked(dmkModule.LedgerDmkBridgeHandler) as jest.Mock;
     mockedLegacyCtor = jest.mocked(legacyModule.default) as jest.Mock;
 
     jest.clearAllMocks();
