@@ -49,6 +49,8 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
           label = t('networkFee');
         } else if (type === 'priority') {
           label = t('priorityFee');
+        } else if (type === 'total') {
+          label = t('rampsOrderDetailsFees');
         }
 
         return (

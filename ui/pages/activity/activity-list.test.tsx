@@ -17,6 +17,10 @@ jest.mock('./useNonEvmTransactions', () => ({
   useNonEvmTransactions: () => [],
 }));
 
+jest.mock('./useRampsOrderActivity', () => ({
+  useRampsOrderActivity: () => [],
+}));
+
 jest.mock('./useActivityScreenOpened', () => ({
   useActivityScreenOpened: jest.fn(),
 }));

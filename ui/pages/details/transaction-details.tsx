@@ -8,6 +8,8 @@ import {
 } from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
+import { useRampsOrders } from '../../hooks/ramps/useRampsOrders';
+import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
 
@@ -37,7 +39,27 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     txHash: isEvm && selectedAddress ? txIdentifier : undefined,
   });
 
+  const { orders: rampsOrders, getOrderById } = useRampsOrders();
+  const rampsOrder = txIdentifier
+    ? (getOrderById(txIdentifier) ??
+      rampsOrders.find(
+        (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
+      ))
+    : undefined;
+
   const transaction = useMemo(() => {
+    // The ramps order is the authoritative source for its own activity —
+    // takes precedence even if its settlement hash also resolves generically
+    // below (mirrors the dedupe precedence in the activity list). Falls
+    // through to the generic sources if the order can't be mapped yet (e.g.
+    // its network/chainId hasn't been populated right after a redirect).
+    const mappedRampsOrder = rampsOrder
+      ? mapRampsOrderSafely(rampsOrder)
+      : undefined;
+    if (mappedRampsOrder) {
+      return mappedRampsOrder;
+    }
+
     const apiActivityItem =
       apiTransaction && selectedAddress
         ? mapApiTransaction({
@@ -72,7 +94,13 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     }
 
     return undefined;
-  }, [apiTransaction, localActivityItem, nonEvmActivityItem, selectedAddress]);
+  }, [
+    apiTransaction,
+    localActivityItem,
+    nonEvmActivityItem,
+    rampsOrder,
+    selectedAddress,
+  ]);
 
   return (
     <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">

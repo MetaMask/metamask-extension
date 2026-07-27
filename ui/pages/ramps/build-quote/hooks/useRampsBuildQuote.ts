@@ -15,8 +15,8 @@ import {
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
-  RAMPS_ORDER_DETAILS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
+  TX_DETAILS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -241,7 +241,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           .then(async (order) => {
             await addOrder(order);
             const orderId = getInternalOrderCode(order);
-            navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', orderId));
+            // Use the token the user picked rather than re-deriving chainId
+            // from the callback order — its `network.chainId` isn't always
+            // populated yet at this point, and mapRampsOrder's CAIP
+            // conversion throws on an undefined chainId.
+            navigate(`${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderId}`);
           })
           .catch((error) => {
             setContinueError(
@@ -267,7 +271,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       global.platform.addTabUpdatedListener(onTabUpdated);
       global.platform.addTabRemovedListener(onTabRemoved);
     },
-    [addOrder, getOrderFromCallback, navigate, t, walletAddress],
+    [addOrder, getOrderFromCallback, navigate, selectedToken?.chainId, t, walletAddress],
   );
 
   const handleContinue = useCallback(async () => {
@@ -295,7 +299,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           walletAddress,
           chainId: selectedToken?.chainId,
         });
-        navigate(RAMPS_ORDER_DETAILS_ROUTE.replace(':orderId', widget.orderId));
+        navigate(
+          `${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${widget.orderId}`,
+        );
       } else if (openedTab.id !== undefined) {
         // Redirect-flow provider — no order exists yet, wait for checkout to
         // complete and resolve it from the callback URL instead.

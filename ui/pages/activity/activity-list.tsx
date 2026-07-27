@@ -31,6 +31,7 @@ import {
 import { useActivityScreenOpened } from './useActivityScreenOpened';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
+import { useRampsOrderActivity } from './useRampsOrderActivity';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 62;
@@ -54,16 +55,21 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
 
   const localItems = useLocalTransactions(filters);
   const nonEvmItems = useNonEvmTransactions(filters);
+  const rampsItems = useRampsOrderActivity(filters);
   const evmItems = useMemo(
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data],
   );
 
   const groupedItems = useMemo(() => {
-    const items = dedupeItems(localItems, evmItems, nonEvmItems);
+    // rampsItems first: once a ramp order settles on-chain, its hash can
+    // also surface as a generic local/API tx — dedupeItems keeps whichever
+    // source it saw first for a given hash, and the ramp-specific view is
+    // strictly more informative than the generic classification.
+    const items = dedupeItems(rampsItems, localItems, evmItems, nonEvmItems);
 
     return groupActivityListItems(items);
-  }, [evmItems, localItems, nonEvmItems]);
+  }, [evmItems, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),
@@ -74,7 +80,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,
-    pendingLength: [...localItems, ...nonEvmItems].filter(
+    pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
     ).length,
   });
@@ -90,7 +96,10 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   const handleClick = (item: ActivityListItem) => {
-    if (!item.hash) {
+    // A pending ramp order has no on-chain hash yet — fall back to its
+    // stable provider order id so it can still be opened.
+    const identifier = item.hash ?? item.id;
+    if (!identifier) {
       return;
     }
 
@@ -105,7 +114,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     );
     setSelectedItem(item);
 
-    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
+    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
     const alreadyOnDetails = window.location.hash.includes(
       `${TX_DETAILS_ROUTE}/`,
     );
@@ -182,9 +191,9 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       />
 
       <TransactionDetailsModal
-        isOpen={Boolean(selectedItem?.hash)}
+        isOpen={Boolean(selectedItem?.hash ?? selectedItem?.id)}
         chainId={selectedItem?.chainId}
-        txIdentifier={selectedItem?.hash}
+        txIdentifier={selectedItem?.hash ?? selectedItem?.id}
         onClose={handleClose}
       />
     </PendingTransactionCancelSpeedUpProvider>

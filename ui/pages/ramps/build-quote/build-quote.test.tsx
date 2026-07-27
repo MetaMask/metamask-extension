@@ -251,7 +251,7 @@ describe('RampsBuildQuoteScreen', () => {
         chainId: 'eip155:1',
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/order-details/order-123');
+    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-123');
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {

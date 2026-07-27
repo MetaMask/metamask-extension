@@ -1,0 +1,77 @@
+import { renderHook } from '@testing-library/react-hooks';
+import {
+  createRampsMockStore,
+  createRampsTestWrapper,
+} from '../../hooks/ramps/test-utils';
+import { useRampsOrderActivity } from './useRampsOrderActivity';
+
+const buyOrder = {
+  id: '1',
+  provider: { id: 'transak', name: 'Transak' },
+  cryptoAmount: '1.5',
+  fiatAmount: 100,
+  cryptoCurrency: { symbol: 'ETH', assetId: 'eip155:1/slip44:60' },
+  fiatCurrency: { symbol: 'USD' },
+  providerOrderId: 'order-1',
+  providerOrderLink: 'https://transak.example/order-1',
+  createdAt: 1700000000000,
+  totalFeesFiat: 2,
+  txHash: '',
+  walletAddress: '0xabc123',
+  status: 'COMPLETED',
+  network: { chainId: '1', name: 'Ethereum' },
+  orderType: 'buy',
+} as never;
+
+describe('useRampsOrderActivity', () => {
+  it('maps ramps orders into activity items filtered by network', () => {
+    const store = createRampsMockStore({ orders: [buyOrder] });
+
+    const { result } = renderHook(
+      () => useRampsOrderActivity({ networks: ['eip155:1'] }),
+      { wrapper: createRampsTestWrapper(store) },
+    );
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toMatchObject({
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      id: 'order-1',
+    });
+  });
+
+  it('excludes orders whose chain is not in the selected networks', () => {
+    const store = createRampsMockStore({ orders: [buyOrder] });
+
+    const { result } = renderHook(
+      () => useRampsOrderActivity({ networks: ['eip155:137'] }),
+      { wrapper: createRampsTestWrapper(store) },
+    );
+
+    expect(result.current).toHaveLength(0);
+  });
+
+  it('returns an empty list when no networks are selected and no assetId filter is given', () => {
+    const store = createRampsMockStore({ orders: [buyOrder] });
+
+    const { result } = renderHook(
+      () => useRampsOrderActivity({ networks: [] }),
+      {
+        wrapper: createRampsTestWrapper(store),
+      },
+    );
+
+    expect(result.current).toHaveLength(0);
+  });
+
+  it('filters by assetId when provided', () => {
+    const store = createRampsMockStore({ orders: [buyOrder] });
+
+    const { result } = renderHook(
+      () => useRampsOrderActivity({ assetId: 'eip155:1/slip44:60' as never }),
+      { wrapper: createRampsTestWrapper(store) },
+    );
+
+    expect(result.current).toHaveLength(1);
+  });
+});

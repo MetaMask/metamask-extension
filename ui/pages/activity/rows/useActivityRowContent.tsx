@@ -174,7 +174,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       }
       case 'buy':
       case 'claim':
-      case 'deposit': {
+      case 'deposit':
+      case 'rampBuy':
+      case 'rampSell': {
         const { token } = activity.data;
         const symbol = token?.symbol ?? '';
 
