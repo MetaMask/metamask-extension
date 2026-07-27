@@ -1062,6 +1062,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         { mode: 'exclusive', signal: abortController.signal },
         async () => {
           this.#currentLockAbortController = undefined;
+          // Suspension may have started while `open()` or the lock request was
+          // pending. Re-check immediately before the synchronous path to the
+          // first storage write so no write starts after shutdown detection.
+          if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+            return [false, undefined];
+          }
           // Track which operation failed to use the correct Sentry tag
           let backupFailed = false;
           try {
@@ -1233,6 +1239,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         { mode: 'exclusive', signal: abortController.signal },
         async () => {
           this.#currentLockAbortController = undefined;
+          // Suspension may have started while `open()` or the lock request was
+          // pending. Re-check before cloning or clearing pending pairs so they
+          // remain available for the recovery flush.
+          if (this.#shutdownSuspensionEnabled && this.writesSuspended()) {
+            return [false, undefined];
+          }
           // Track which operation failed to use the correct Sentry tag
           let backupFailed = false;
           try {

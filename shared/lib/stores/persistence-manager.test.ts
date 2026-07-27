@@ -1173,6 +1173,29 @@ describe('PersistenceManager', () => {
         expect(error).toBeUndefined();
       });
 
+      it('does not start a write when suspension begins while opening storage', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        let resolveOpen: (() => void) | undefined;
+        const openPromise = new Promise<void>((resolve) => {
+          resolveOpen = resolve;
+        });
+        const openSpy = jest
+          .spyOn(manager, 'open')
+          .mockReturnValue(openPromise);
+
+        const setPromise = manager.set({ appState: { test: 1 } });
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        resolveOpen?.();
+
+        const [result, error] = await setPromise;
+
+        expect(mockStoreSet).not.toHaveBeenCalled();
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+
+        openSpy.mockRestore();
+      });
+
       it('reports the error normally when the feature flag is disabled', async () => {
         prepareForWriteRetry();
         const onSetFailed = jest.fn();
@@ -1238,6 +1261,36 @@ describe('PersistenceManager', () => {
         expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
         expect(result).toBe(false);
         expect(error).toBeUndefined();
+      });
+
+      it('does not start a persist when suspension begins while opening storage', async () => {
+        manager.setShutdownSuspensionEnabled(true);
+        manager.update('FooController', { foo: 'bar' });
+        let resolveOpen: (() => void) | undefined;
+        const openPromise = new Promise<void>((resolve) => {
+          resolveOpen = resolve;
+        });
+        const openSpy = jest
+          .spyOn(manager, 'open')
+          .mockReturnValue(openPromise);
+
+        const persistPromise = manager.persist();
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+        resolveOpen?.();
+
+        const [result, error] = await persistPromise;
+
+        expect(mockStoreSetKeyValues).not.toHaveBeenCalled();
+        expect(result).toBe(false);
+        expect(error).toBeUndefined();
+
+        manager.resumeWrites();
+        await new Promise<void>((resolve) => {
+          setImmediate(resolve);
+        });
+        expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+
+        openSpy.mockRestore();
       });
     });
 
