@@ -111,8 +111,6 @@ export function setupTransactionControllerListeners({
 }: SetupTransactionControllerListenersRequest) {
   messenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (...args) =>
       handlePostTransactionBalanceUpdate(
         getTransactionMetricsRequest(),
@@ -122,34 +120,22 @@ export function setupTransactionControllerListeners({
 
   messenger.subscribe(
     'TransactionController:unapprovedTransactionAdded',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
       handleTransactionAdded(getTransactionMetricsRequest(), {
         transactionMeta,
       }),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionApproved',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionApproved(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionApproved', (...args) =>
+    handleTransactionApproved(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionDropped',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionDropped(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionDropped', (...args) =>
+    handleTransactionDropped(getTransactionMetricsRequest(), ...args),
   );
 
   messenger.subscribe(
     'TransactionController:transactionConfirmed',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
       handleTransactionConfirmed(
         getTransactionMetricsRequest(),
@@ -157,28 +143,16 @@ export function setupTransactionControllerListeners({
       ),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionFailed',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionFailed(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionFailed', (...args) =>
+    handleTransactionFailed(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionRejected',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionRejected(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionRejected', (...args) =>
+    handleTransactionRejected(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionSubmitted',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionSubmitted', (...args) =>
+    handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
   );
 }
 

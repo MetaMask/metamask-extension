@@ -243,9 +243,6 @@
   "networks": {
     "message": "Rezo"
   },
-  "nevermind": {
-    "message": "Pa pwoblèm"
-  },
   "newAccountNumberName": {
     "message": "Kont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -378,9 +375,6 @@
   },
   "sign": {
     "message": "Siyen"
-  },
-  "signatureRequest": {
-    "message": "Siyati Mande"
   },
   "signed": {
     "message": "Te Siyen"

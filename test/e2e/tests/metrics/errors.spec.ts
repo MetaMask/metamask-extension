@@ -105,6 +105,13 @@ const removedBackgroundFields = [
   'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
+  // Populated asynchronously during sign-in (the shield cohort-eligibility
+  // evaluation round-trips to the subscription backend), so captured as
+  // `null` or a string depending on whether that settles before the error.
+  'AppStateController.pendingShieldCohort',
+  // Present only once the SRP/account-sync session is established, so its
+  // capture is timing-dependent across runs.
+  'AuthenticationController.srpSessionData',
   // PhishingController properties (except urlScanCache which is masked)
   'PhishingController.c2DomainBlocklistLastFetched',
   'PhishingController.hotlistLastFetched',

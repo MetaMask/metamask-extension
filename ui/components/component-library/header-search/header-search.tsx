@@ -7,9 +7,10 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  TextFieldSearch,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TextFieldSearch } from '../text-field-search';
 import { HeaderSearchProps, HeaderSearchVariant } from './header-search.types';
 
 function adaptTextFieldSearchProps(
@@ -20,17 +21,22 @@ function adaptTextFieldSearchProps(
     onClickClearButton,
     onChange,
     clearButtonOnClick,
+    className,
+    size = TextFieldSize.Md,
     ...rest
   } = props;
+
   return {
     ...rest,
+    size,
+    className: classnames('app-text-field-search', className),
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       onChangeText?.(e.target.value);
       onChange?.(e);
     },
-    clearButtonOnClick: () => {
+    clearButtonOnClick: (e: React.MouseEvent<HTMLButtonElement>) => {
       onClickClearButton?.();
-      clearButtonOnClick?.();
+      clearButtonOnClick?.(e);
     },
   };
 }
@@ -41,11 +47,8 @@ export const HeaderSearch = (props: HeaderSearchProps) => {
   const searchProps = adaptTextFieldSearchProps(textFieldSearchProps);
 
   const searchBox = (
-    <Box className="flex-1 min-w-0 flex items-center">
-      <TextFieldSearch
-        {...searchProps}
-        className={classnames('w-full', searchProps.className ?? '')}
-      />
+    <Box className="flex min-w-0 flex-1 items-center">
+      <TextFieldSearch {...searchProps} />
     </Box>
   );
 

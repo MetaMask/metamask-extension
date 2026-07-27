@@ -21,15 +21,6 @@ module.exports = function (api) {
       },
     ],
     plugins: [
-      // `browserify` is old and busted, and doesn't support `??=` (and other
-      // logical assignment operators) or private class features. Keep these
-      // syntax transforms enabled even when our browser support floor is high
-      // enough to run them natively.
-      '@babel/plugin-transform-class-properties',
-      '@babel/plugin-transform-class-static-block',
-      '@babel/plugin-transform-private-methods',
-      '@babel/plugin-transform-private-property-in-object',
-      '@babel/plugin-transform-logical-assignment-operators',
       [
         path.resolve(
           __dirname,

@@ -29,7 +29,6 @@ export const ENTRYPOINT_PATTERNS = [
   'app/scripts/phishing-detect',
   'app/scripts/sentry-install',
   'app/scripts/ui',
-  'development/build/index',
   '**/*.stories',
   '**/*.test',
 ];

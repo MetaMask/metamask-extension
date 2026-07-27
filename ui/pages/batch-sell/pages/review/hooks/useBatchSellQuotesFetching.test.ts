@@ -6,10 +6,8 @@ import {
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getIsStxEnabled,
-} from '../../../../../ducks/bridge/selectors';
+import { getIsStxEnabled } from '../../../../../ducks/bridge/selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   getBatchSellQuotes,
   getBatchSellQuotesValidationErrors,
@@ -42,8 +40,11 @@ jest.mock('../../../../../ducks/bridge/actions', () => ({
 }));
 
 jest.mock('../../../../../ducks/bridge/selectors', () => ({
-  getFromAccount: jest.fn(),
   getIsStxEnabled: jest.fn(),
+}));
+
+jest.mock('../../../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/batch-sell/selectors', () => ({
@@ -73,7 +74,9 @@ jest.mock('lodash', () => ({
 const mockDispatch = jest.fn();
 const mockUseDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
-const mockGetFromAccount = jest.mocked(getFromAccount);
+const mockGetInternalAccountBySelectedAccountGroupAndCaip = jest.mocked(
+  getInternalAccountBySelectedAccountGroupAndCaip,
+);
 const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
 const mockGetBatchSellQuotes = jest.mocked(getBatchSellQuotes);
 const mockGetBatchSellQuotesValidationErrors = jest.mocked(
@@ -181,7 +184,9 @@ describe('useBatchSellQuotesFetching', () => {
     mockDispatch.mockReset();
     mockUseDispatch.mockReturnValue(mockDispatch as never);
 
-    mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
+    mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+      MOCK_ACCOUNT as never,
+    );
     mockGetIsStxEnabled.mockReturnValue(true as never);
     mockGetBatchSellQuotes.mockReturnValue(
       MOCK_CONTROLLER_RESULT_NOT_FETCHED as never,
@@ -309,7 +314,9 @@ describe('useBatchSellQuotesFetching', () => {
     });
 
     it('does not dispatch when selectedAccount has no address', () => {
-      mockGetFromAccount.mockReturnValue(null as never);
+      mockGetInternalAccountBySelectedAccountGroupAndCaip.mockReturnValue(
+        null as never,
+      );
 
       renderDefault({ enabled: true });
 

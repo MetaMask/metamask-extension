@@ -21,6 +21,13 @@ ignores:
   # dev deps
   #
 
+  # ESLint import resolvers, referenced by short name in `import-x/resolver`
+  # settings in .eslintrc.js (`node`, `typescript`) rather than imported
+  - 'eslint-import-resolver-node'
+  - 'eslint-import-resolver-typescript'
+  # invoked as a string transform (`bundler.transform('babelify')`) in the
+  # ts-migration dashboard build, so depcheck can't see the reference
+  - 'babelify'
   # all @types/* packages are imported implicitly by TypeScript
   - '@types/*'
   # safety fallback for npm lifecycle scripts, not used normally
@@ -110,6 +117,9 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
+  # package.json subpath imports
+  - '#ui'
+  - '#shared'
 
 # files depcheck should not parse
 ignorePatterns:

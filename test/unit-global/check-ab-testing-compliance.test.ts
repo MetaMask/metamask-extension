@@ -2,7 +2,6 @@
  * @jest-environment node
  */
 
-/* eslint-disable import-x/no-nodejs-modules */
 import { spawnSync } from 'child_process';
 import {
   appendFileSync,

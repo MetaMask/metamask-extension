@@ -346,9 +346,6 @@
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
   },
-  "nevermind": {
-    "message": "কিছু মনে করবেন না"
-  },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
@@ -505,9 +502,6 @@
   },
   "sign": {
     "message": "স্বাক্ষর করুন"
-  },
-  "signatureRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
   },
   "signed": {
     "message": "স্বাক্ষরিত"

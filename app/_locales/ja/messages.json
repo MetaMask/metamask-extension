@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "アカウントのオプション"
   },
-  "accountPermissionToast": {
-    "message": "アカウントのアクセス許可が更新されました"
-  },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
@@ -380,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "デポジット失敗"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "デポジット失敗"
   },
   "activity_deposit_pending_description": {
-    "message": "$1をデポジットしています",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1をデポジットしています",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "$1をデポジットしました",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1をデポジットしました",
@@ -1005,12 +1000,10 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしています"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしました"
   },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"
@@ -2002,21 +1995,11 @@
     "message": "$1のブリッジを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2へのアクセスを許可しようとしています。このコントラクトが他の資金にアクセスすることはありません。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$3へのブリッジを承認する必要があります。これには2回の承認が必要です。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
-  },
-  "bridgeDetailsTitle": {
-    "message": "ブリッジの詳細",
-    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
@@ -2026,9 +2009,6 @@
   },
   "bridgeEnterAmount": {
     "message": "金額を選択"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "$1で表示"
   },
   "bridgeExplorerPopupDescription": {
     "message": "このトランザクションは2つのネットワーク上に存在します。一つのリンクはソースを表示し、もう一つのリンクは確定後に送金先を表示します。"
@@ -2313,42 +2293,11 @@
   "bridgeSendLoading": {
     "message": "ブリッジ元のチェーンから送金中"
   },
-  "bridgeStatusComplete": {
-    "message": "完了",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "失敗",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "進行中",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$2で$1を受け取りました",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "$2で$1を受け取っています",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "不審"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "不審なトークン"
-  },
-  "bridgeTo": {
-    "message": "ブリッジ先:"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1は悪意のあるトークンです。"
@@ -2364,56 +2313,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "「$1」に一致するトークンがありません"
-  },
-  "bridgeTransactionProgress": {
-    "message": "トランザクション $1/2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "ブリッジ完了"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "ブリッジ"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "お問い合わせ先:"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMaskサポート"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "3時間を経過していますか？"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "ナンス"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "ステータス"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "スワップ完了"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "スワップ中"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "タイムスタンプ"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "次のネットワークの$1 $2:",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "ガス代合計"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "受取"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "送金"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "最大許容額を使用"
@@ -2431,12 +2330,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "$1以上の準備金が必要です",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "ブリッジ完了"
-  },
-  "bridgedToChain": {
-    "message": "$1へのブリッジ完了"
   },
   "bridging": {
     "message": "ブリッジ"
@@ -2550,9 +2443,6 @@
   },
   "clear": {
     "message": "消去"
-  },
-  "clearActivity": {
-    "message": "アクティビティとナンスデータを消去"
   },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
@@ -3461,10 +3351,6 @@
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "受取アドレス"
   },
-  "destinationTransactionIdLabel": {
-    "message": "送金先Tx ID",
-    "description": "Label for the destination transaction ID field."
-  },
   "details": {
     "message": "詳細"
   },
@@ -4269,9 +4155,6 @@
   },
   "gotIt": {
     "message": "了解"
-  },
-  "grantExactAccess": {
-    "message": "正確なアクセスを許可する"
   },
   "gwei": {
     "message": "gwei"
@@ -5504,10 +5387,6 @@
     "message": "請求可能なボーナスの詳細",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1をmUSDに変換",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "ボーナスの詳細",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5810,9 +5689,6 @@
   "networksSmallCase": {
     "message": "ネットワーク"
   },
-  "nevermind": {
-    "message": "取り消し"
-  },
   "new": {
     "message": "新登場!"
   },
@@ -5890,14 +5766,8 @@
   "nftAutoDetectionEnabled": {
     "message": "NFTの自動検出が有効になりました"
   },
-  "nftBought": {
-    "message": "$1を購入しました"
-  },
   "nftEmptyDescription": {
     "message": "NFTの世界が無限に広がっています。さっそくコレクションを始めましょう。"
-  },
-  "nftMinted": {
-    "message": "$1をミントしました"
   },
   "nftOptions": {
     "message": "NFTオプション"
@@ -7076,9 +6946,6 @@
   "perpsDateYesterday": {
     "message": "昨日"
   },
-  "perpsDepositActivityTitle": {
-    "message": "パーペチュアルに入金しました"
-  },
   "perpsDepositErrorBridgeFailed": {
     "message": "ブリッジに失敗しました"
   },
@@ -7736,10 +7603,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "パーペチュアルの引き出し",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "推定所要時間"
@@ -8464,10 +8327,6 @@
   "revokePermission": {
     "message": "許可を取り消す"
   },
-  "revokePermissionTitle": {
-    "message": "$1のアクセス許可を取り消す",
-    "description": "The token symbol that is being revoked"
-  },
   "revokeSimulationDetailsDesc": {
     "message": "アカウントのトークンの使用許可を取り消そうとしています。"
   },
@@ -8938,14 +8797,6 @@
   "sent": {
     "message": "送信完了"
   },
-  "sentSpecifiedTokens": {
-    "message": "$1を送金しました",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "$1を$2として送金しました",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
   },
@@ -8954,10 +8805,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "出金リクエスト"
-  },
-  "setApprovalForAllTitle": {
-    "message": "使用限度額なしで$1を承認",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "設定",
@@ -9660,9 +9507,6 @@
   },
   "sign": {
     "message": "署名"
-  },
-  "signatureRequest": {
-    "message": "署名要求"
   },
   "signature_decoding_bid_nft_tooltip": {
     "message": "入札が受け入れられると、NFTがウォレットに反映されます。"
@@ -10474,10 +10318,6 @@
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
   },
-  "swapDetailsTitle": {
-    "message": "スワップの詳細",
-    "description": "Title for the modal showing details about a swap transaction."
-  },
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
   },
@@ -10681,10 +10521,6 @@
   },
   "swapTokenNotAvailable": {
     "message": "この地域ではトークンのスワップが行えません"
-  },
-  "swapTokenToToken": {
-    "message": "$1を$2にスワップ",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "swapTokens": {
     "message": "トークンをスワップ"
@@ -10960,10 +10796,6 @@
   "transactionIncludesTypes": {
     "message": "このトランザクションには$1が含まれています。"
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "このトランザクションは保護されました。予期せぬ資金の損失を防ぐため、トランザクションがキャンセルされました。",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "トランザクション設定"
   },
@@ -10972,10 +10804,6 @@
   },
   "transactionSubmitted": {
     "message": "トランザクションが送信されました"
-  },
-  "transactionTotalGasFee": {
-    "message": "ガス代合計",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "トランザクション"
@@ -11302,9 +11130,6 @@
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
   },
-  "viewDetails": {
-    "message": "詳細を表示"
-  },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
   },
@@ -11420,12 +11245,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ブリッジ用にトークンを承認します。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "トークンのスワップを承認"
   },
   "withdrawTo": {
     "message": "受取",
