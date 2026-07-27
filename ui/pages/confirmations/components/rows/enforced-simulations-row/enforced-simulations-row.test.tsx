@@ -251,7 +251,10 @@ describe('EnforcedSimulationsRow', () => {
     const input = await waitFor(() =>
       getByTestId('enforced-simulations-toggle-input'),
     );
-    input.click();
+
+    await act(async () => {
+      input.click();
+    });
 
     await waitFor(() => {
       expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();
