@@ -29,5 +29,7 @@ export function getRampsControllerApi(rampsController: RampsController) {
     refreshRampsOrder: rampsController.getOrder.bind(rampsController),
     getRampsOrderFromCallback:
       rampsController.getOrderFromCallback.bind(rampsController),
+    syncRampsOrdersWithUserStorage: () =>
+      rampsController.syncOrdersWithUserStorage(),
   };
 }

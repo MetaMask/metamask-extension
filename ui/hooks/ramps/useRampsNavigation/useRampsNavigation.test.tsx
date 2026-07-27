@@ -17,10 +17,18 @@ import {
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
+import { runPortfolioBuyOrdersMigration } from '../utils/portfolioBuyOrdersMigration';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
+
+jest.mock('../utils/portfolioBuyOrdersMigration', () => ({
+  runPortfolioBuyOrdersMigration: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockRunPortfolioBuyOrdersMigration =
+  runPortfolioBuyOrdersMigration as jest.Mock;
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -55,6 +63,8 @@ type MetamaskOverrides = Partial<{
   countries: ResourceState<Country[]>;
   providers: ResourceState<Provider[], Provider | null>;
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
+  subjects: Record<string, unknown>;
+  permissionHistory: Record<string, unknown>;
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
@@ -75,6 +85,8 @@ const buildState = (over: MetamaskOverrides = {}) => ({
       isLoading: false,
       error: null,
     },
+    subjects: {},
+    permissionHistory: {},
     ...over,
   },
 });
@@ -199,7 +211,23 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('ever connected to Portfolio → runs silent migrate before native buy', async () => {
+    const { result } = run(
+      buildState({
+        subjects: {
+          'https://app.metamask.io': {
+            permissions: { 'endowment:caip25': {} },
+          },
+        },
+      }),
+    );
+    await goToBuy(result);
+    expect(mockRunPortfolioBuyOrdersMigration).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
   });
 
   it('providers fetch errored → fails open and navigates to token selection', async () => {

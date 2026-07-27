@@ -61,9 +61,50 @@ describe('AuthenticationControllerInit', () => {
         getAppVersion: expect.any(Function),
       },
       config: {
-        env: Env.PRD,
+        env: Env.DEV,
       },
     });
+  });
+
+  it('clears persisted sessions minted for a different OIDC env', () => {
+    // Minimal JWT payload: {"iss":"https://oidc.api.cx.metamask.io"} (PRD)
+    const prdJwt =
+      'aaa.' +
+      Buffer.from(
+        JSON.stringify({ iss: 'https://oidc.api.cx.metamask.io' }),
+      ).toString('base64url') +
+      '.bbb';
+
+    const requestMock = buildInitRequestMock();
+    requestMock.persistedState.AuthenticationController = {
+      isSignedIn: true,
+      srpSessionData: {
+        'entropy-1': {
+          token: {
+            accessToken: prdJwt,
+            expiresIn: 3600,
+            obtainedAt: Date.now(),
+          },
+          profile: {
+            identifierId: 'id',
+            profileId: 'profile',
+            metaMetricsId: 'mmid',
+          },
+        },
+      },
+    };
+
+    AuthenticationControllerInit(requestMock);
+
+    expect(AuthenticationControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        state: expect.objectContaining({
+          isSignedIn: false,
+          srpSessionData: undefined,
+        }),
+        config: { env: Env.DEV },
+      }),
+    );
   });
 
   it('wires getAppVersion to process.env.METAMASK_VERSION', () => {

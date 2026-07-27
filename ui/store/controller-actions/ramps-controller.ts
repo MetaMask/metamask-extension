@@ -126,3 +126,7 @@ export async function getRampsOrderFromCallback(
     wallet,
   ]);
 }
+
+export async function syncRampsOrdersWithUserStorage(): Promise<void> {
+  return submitRequestToBackground('syncRampsOrdersWithUserStorage');
+}
