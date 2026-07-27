@@ -140,13 +140,8 @@ describe('LavamoatPlugin', () => {
       );
     });
 
-    it('keeps null_unsafe mode for inpage.js and init scripts (no LavaMoat runtime needed)', () => {
-      for (const name of [
-        'scripts/inpage.js',
-        'init-statehooks',
-        'init-sentry',
-        'init-globals',
-      ]) {
+    it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
+      for (const name of ['scripts/inpage.js', 'bootstrap']) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,

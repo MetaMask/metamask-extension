@@ -108,9 +108,7 @@ export class ManifestPlugin<Z extends boolean> {
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
     'use-snow',
-    'init-statehooks',
-    'init-sentry',
-    'init-globals',
+    'bootstrap',
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 

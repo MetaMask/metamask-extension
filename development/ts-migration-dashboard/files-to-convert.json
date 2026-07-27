@@ -15,6 +15,7 @@
   "app/scripts/fixtures/with-networks.js",
   "app/scripts/fixtures/with-preferences.js",
   "app/scripts/fixtures/with-unread-notifications.js",
+  "app/scripts/init-globals.js",
   "app/scripts/inpage.js",
   "app/scripts/lib/ComposableObservableStore.js",
   "app/scripts/lib/ComposableObservableStore.test.js",
