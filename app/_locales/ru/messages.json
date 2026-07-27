@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Ошибка депозита"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Ошибка депозита"
   },
   "activity_deposit_pending_description": {
-    "message": "Внесение $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Внесение $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "Внесено $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Внесено $1",
@@ -1997,12 +1995,6 @@
     "message": "Одобрить использование $1 для моста",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Вы даете доступ к $1 $2. Контракт не будет использовать дополнительные средства."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Вам нужно будет дать доступ к $1 $2 для создания моста, а затем утвердить создание моста к $3. Для этого потребуется два отдельных подтверждения."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ссылка обозревателя блоков скопирована"
   },
@@ -2451,9 +2443,6 @@
   },
   "clear": {
     "message": "Очистить"
-  },
-  "clearActivity": {
-    "message": "Очистить данные о действиях и одноразовых номерах"
   },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -4163,9 +4152,6 @@
   "gotIt": {
     "message": "Понятно"
   },
-  "grantExactAccess": {
-    "message": "Предоставить точный доступ"
-  },
   "gwei": {
     "message": "Гвей"
   },
@@ -5698,9 +5684,6 @@
   },
   "networksSmallCase": {
     "message": "сети"
-  },
-  "nevermind": {
-    "message": "Неважно"
   },
   "new": {
     "message": "Новые!"
@@ -11258,12 +11241,6 @@
   },
   "whatsThis": {
     "message": "Что это?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Утверждает токен для моста."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Утверждает токен для свопа."
   },
   "withdrawTo": {
     "message": "Получить",

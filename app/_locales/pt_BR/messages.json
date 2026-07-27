@@ -934,9 +934,6 @@
   "networks": {
     "message": "Redes"
   },
-  "nevermind": {
-    "message": "Não importa"
-  },
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"

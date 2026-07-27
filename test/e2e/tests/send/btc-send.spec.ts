@@ -137,7 +137,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await sendPage.selectToken(bitcoinChainId, 'BTC');
         await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount(sendAmount);
-        await sendPage.isContinueButtonEnabled();
+        await sendPage.checkContinueButton({ state: 'enabled' });
         await sendPage.pressContinueButton();
 
         // From here, we have moved to the confirmation screen
