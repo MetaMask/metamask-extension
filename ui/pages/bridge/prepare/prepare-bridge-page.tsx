@@ -82,13 +82,13 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
 import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
-import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 
 const PrepareBridgePage = ({
   onOpenSettings,

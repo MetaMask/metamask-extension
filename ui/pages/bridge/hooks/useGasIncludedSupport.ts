@@ -16,6 +16,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 import { useAsyncResult } from '../../../hooks/useAsync';
+
 export const useGasIncludedSupport = () => {
   const fromToken = useSelector(getFromToken);
   const hexChainId = fromToken?.chainId
@@ -42,10 +43,8 @@ export const useGasIncludedSupport = () => {
   // If native EVM and simulationIncludeFees are supported, gasless request params pretty much get ignored
   // This means the backend can always return a gasIncluded quote
   const nativeGasIncluded = useMemo(() => {
-    return fromToken?.assetId &&
-      networkFlags &&
-      isNativeAddress(fromToken.assetId)
-      ? networkFlags.simulationIncludeFees
+    return fromToken?.assetId && isNativeAddress(fromToken.assetId)
+      ? networkFlags?.simulationIncludeFees
       : undefined;
   }, [networkFlags?.simulationIncludeFees, fromToken?.assetId]);
 

@@ -1,7 +1,5 @@
 import { waitFor } from '@testing-library/react';
 import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { useGasIncludedSupport } from './useGasIncludedSupport';
 import {
   ChainId,
   formatChainIdToCaip,
@@ -10,6 +8,8 @@ import {
   isNonEvmChainId,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+// @eslint-disable-next-line import-x/no-restricted-paths
 import * as sentinelApi from '../../../../app/scripts/lib/transaction/sentinel-api';
 import * as smartTransactionsSelectors from '../../../../shared/lib/selectors/smart-transactions';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -19,6 +19,7 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { useGasIncludedSupport } from './useGasIncludedSupport';
 
 const MOCK_NETWORK_FLAGS = {
   // sendBundle and relay
@@ -257,8 +258,8 @@ describe.each([
                           !stxEnabled
                         ) {
                           expect(result.current).toStrictEqual({
-                            gasIncluded: false, //gasless7702Bridge,
-                            gasIncluded7702: false, //gasless7702Bridge,
+                            gasIncluded: false,
+                            gasIncluded7702: false,
                             nativeGasIncluded: isNativeAddress(
                               validFromToken.assetId,
                             )
