@@ -77,8 +77,11 @@ export type AllowedBridgeChainIds =
  *
  * @returns the Bridge API base URL for the current MetaMask environment
  */
-const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
-  console.log('METAMASK_ENVIRONMENT', process.env.METAMASK_ENVIRONMENT);
+export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
+  if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL
+  }
+
   switch (process.env.METAMASK_ENVIRONMENT) {
     case 'exp':
     case ENVIRONMENT.STAGING:
@@ -105,8 +108,7 @@ const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
 
 // Allows developers to point the extension at a custom Bridge API deployment
 // (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
-export const BRIDGE_API_BASE_URL =
-  process.env.BRIDGE_USE_CUSTOM_BASE_URL || getBridgeApiBaseUrlForMetaMaskEnv();
+export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
 
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
