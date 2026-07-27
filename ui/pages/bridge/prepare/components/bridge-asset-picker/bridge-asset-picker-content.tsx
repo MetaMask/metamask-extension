@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  Box,
   ButtonBase,
   ButtonBaseSize,
   FontWeight,
@@ -206,20 +207,22 @@ export const BridgeAssetPickerContent = forwardRef<
             onClose={() => setIsNetworkPickerOpen(false)}
             testId="bridge-network-picker-popover"
           />
-          <TextFieldSearch
-            autoFocus
-            className="app-text-field-search mx-4"
-            clearButtonOnClick={() => setSearchQuery('')}
-            inputProps={
-              {
-                'data-testid': 'bridge-asset-picker-search-input',
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder={t('enterTokenNameOrAddress')}
-            size={TextFieldSize.Lg}
-            value={searchQuery}
-          />
+          <Box className="mx-4">
+            <TextFieldSearch
+              autoFocus
+              className="app-text-field-search"
+              clearButtonOnClick={() => setSearchQuery('')}
+              inputProps={
+                {
+                  'data-testid': 'bridge-asset-picker-search-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={t('enterTokenNameOrAddress')}
+              size={TextFieldSize.Lg}
+              value={searchQuery}
+            />
+          </Box>
         </div>
 
         {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
