@@ -1,10 +1,5 @@
 {
   "resources": {
-    "@metamask/dummy-package": {
-      "globals": {
-        "console.log": false
-      }
-    },
     "@ethersproject/wallet>@ethersproject/random": {
       "globals": {
         "crypto": true
