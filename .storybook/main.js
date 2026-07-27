@@ -15,6 +15,7 @@ module.exports = {
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
+    '@storybook/addon-docs',
     '@storybook/addon-webpack5-compiler-babel',
     './i18n-party-addon/register.js',
   ],
