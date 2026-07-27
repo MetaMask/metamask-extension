@@ -242,7 +242,7 @@
       "React: Act warnings (component updates not wrapped)": 36
     },
     "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 9
+      "React: Act warnings (component updates not wrapped)": 8
     },
     "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 24,
@@ -773,9 +773,6 @@
       "React: Act warnings (component updates not wrapped)": 28
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/pages/confirmations/components/rows/enforced-simulations-row/enforced-simulations-row.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {

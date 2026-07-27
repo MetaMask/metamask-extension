@@ -81,7 +81,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the component when enforced simulations is supported', async () => {
-    const { getByTestId } = render();
+    const { getByTestId } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the optional badge', async () => {
-    const { getByTestId, getByText } = render();
+    const { getByTestId, getByText } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -103,7 +103,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the title and description', async () => {
-    const { getByText } = render();
+    const { getByText } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -117,7 +117,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the learn more link', async () => {
-    const { getByTestId } = render();
+    const { getByTestId } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -164,7 +164,10 @@ describe('EnforcedSimulationsRow', () => {
     const input = getByTestId(
       'enforced-simulations-toggle-input',
     ) as HTMLInputElement;
-    input?.click();
+
+    await act(async () => {
+      input.click();
+    });
 
     expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
       expect.any(String),
