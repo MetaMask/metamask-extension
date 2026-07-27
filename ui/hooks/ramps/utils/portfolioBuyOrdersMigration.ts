@@ -23,7 +23,10 @@ const MIGRATE_TIMEOUT_MS = 45_000;
 const SYNC_TIMEOUT_MS = 12_000;
 
 type PlatformTabApi = {
-  openTab: (options: { url: string; active?: boolean }) => Promise<{ id?: number }>;
+  openTab: (options: {
+    url: string;
+    active?: boolean;
+  }) => Promise<{ id?: number }>;
   closeTab: (tabId: number) => Promise<void>;
   addTabUpdatedListener: (
     listener: (
@@ -36,7 +39,9 @@ type PlatformTabApi = {
 };
 
 export async function hasCompletedPortfolioBuyOrdersMigration(): Promise<boolean> {
-  const value = await getStorageItem(PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY);
+  const value = await getStorageItem(
+    PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY,
+  );
   return value === true || value === '1';
 }
 
@@ -68,16 +73,16 @@ function isMigrateDoneUrl(candidateUrl: string | undefined): boolean {
   }
 }
 
-async function withTimeout<T>(
-  promise: Promise<T>,
+async function withTimeout<Result>(
+  promise: Promise<Result>,
   timeoutMs: number,
   label: string,
-): Promise<T> {
+): Promise<Result> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
       promise,
-      new Promise<T>((_, reject) => {
+      new Promise<Result>((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error(`${label} timed out after ${timeoutMs}ms`));
         }, timeoutMs);
@@ -108,9 +113,11 @@ export async function runPortfolioBuyOrdersMigration(options?: {
     return;
   }
 
-  migrationInFlight = runPortfolioBuyOrdersMigrationInner(options).finally(() => {
-    migrationInFlight = null;
-  });
+  migrationInFlight = runPortfolioBuyOrdersMigrationInner(options).finally(
+    () => {
+      migrationInFlight = null;
+    },
+  );
   await migrationInFlight;
 }
 
@@ -126,8 +133,7 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
   }
 
   const platform =
-    options?.platform ??
-    (globalThis as { platform?: PlatformTabApi }).platform;
+    options?.platform ?? (globalThis as { platform?: PlatformTabApi }).platform;
   if (!platform?.openTab || !platform?.closeTab) {
     await markPortfolioBuyOrdersMigrationCompleted();
     return;
@@ -172,19 +178,29 @@ async function runPortfolioBuyOrdersMigrationInner(options?: {
     }
     await submitRequestToBackground('performSignIn');
 
-    await withTimeout(syncOrders(), syncTimeoutMs, 'syncRampsOrdersWithUserStorage');
+    await withTimeout(
+      syncOrders(),
+      syncTimeoutMs,
+      'syncRampsOrdersWithUserStorage',
+    );
 
     // Clear any pre-migrate auto-selection (often Transak with empty history)
     // so preferred-provider can re-run against synced completed orders.
     try {
       await setRampsSelectedProvider(null);
     } catch (clearError) {
-      console.error('Failed to clear selected provider after migrate sync', clearError);
+      console.error(
+        'Failed to clear selected provider after migrate sync',
+        clearError,
+      );
     }
 
     syncSucceeded = true;
   } catch (error) {
-    console.error('syncRampsOrdersWithUserStorage after Portfolio migrate failed', error);
+    console.error(
+      'syncRampsOrdersWithUserStorage after Portfolio migrate failed',
+      error,
+    );
   }
 
   // Only mark complete when sync succeeded — otherwise the next Buy re-runs
@@ -200,23 +216,16 @@ function waitForMigrateDone(
   timeoutMs: number,
 ): Promise<void> {
   return new Promise((resolve) => {
-    let settled = false;
-
-    const finish = () => {
-      if (settled) {
-        return;
-      }
-      settled = true;
-      platform.removeTabUpdatedListener(onUpdated);
-      clearTimeout(timeoutId);
-      resolve();
+    const migrationWait = {
+      settled: false,
+      timeoutId: undefined as ReturnType<typeof setTimeout> | undefined,
     };
 
-    const onUpdated = (
+    function onUpdated(
       tabId: number,
       changeInfo: { url?: string; pendingUrl?: string },
       tab?: { url?: string },
-    ) => {
+    ) {
       if (tabId !== openedTabId) {
         return;
       }
@@ -225,9 +234,21 @@ function waitForMigrateDone(
       if (isMigrateDoneUrl(candidateUrl)) {
         finish();
       }
-    };
+    }
 
-    const timeoutId = setTimeout(finish, timeoutMs);
+    function finish() {
+      if (migrationWait.settled) {
+        return;
+      }
+      migrationWait.settled = true;
+      platform.removeTabUpdatedListener(onUpdated);
+      if (migrationWait.timeoutId !== undefined) {
+        clearTimeout(migrationWait.timeoutId);
+      }
+      resolve();
+    }
+
+    migrationWait.timeoutId = setTimeout(finish, timeoutMs);
     platform.addTabUpdatedListener(onUpdated);
   });
 }
