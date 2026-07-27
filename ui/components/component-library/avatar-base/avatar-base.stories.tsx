@@ -30,7 +30,6 @@ const marginSizeKnobOptions = [
 export default {
   title: 'Components/ComponentLibrary/AvatarBase (deprecated)',
   component: AvatarBase,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

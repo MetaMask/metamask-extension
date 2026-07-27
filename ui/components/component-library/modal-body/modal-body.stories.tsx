@@ -5,7 +5,6 @@ import { ModalBody } from './modal-body';
 const meta: Meta<typeof ModalBody> = {
   title: 'Components/ComponentLibrary/ModalBody (deprecated)',
   component: ModalBody,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

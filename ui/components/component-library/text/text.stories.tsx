@@ -25,7 +25,6 @@ import { TextDirection } from './text.types';
 export default {
   title: 'Components/ComponentLibrary/Text (deprecated)',
   component: Text,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

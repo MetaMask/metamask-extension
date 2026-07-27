@@ -7,7 +7,6 @@ import { QrErrorType, QrErrorFlowContext } from './qr-error-content.types';
 const meta = {
   title: 'Components/App/QrErrorContent',
   component: QrErrorContent,
-  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {

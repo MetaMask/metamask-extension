@@ -13,7 +13,6 @@ type ModalFocusProps = React.ComponentProps<typeof ModalFocus>;
 export default {
   title: 'Components/ComponentLibrary/ModalFocus (deprecated)',
   component: ModalFocus,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
