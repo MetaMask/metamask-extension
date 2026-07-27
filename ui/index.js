@@ -6,7 +6,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { runDummyPackage } from 'dummy-package';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -398,6 +397,8 @@ function setupStateHooks(store) {
     ) {
       await actions.captureTestBackgroundError(msg);
     };
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { runDummyPackage } = require('dummy-package');
     /**
      * The following stateHook is a method intended to verify that LavaMoat is
      * applied correctly. If this throws, the protection is working as expected.
