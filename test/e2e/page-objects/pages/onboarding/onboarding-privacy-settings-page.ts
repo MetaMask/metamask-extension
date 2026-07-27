@@ -67,6 +67,9 @@ class OnboardingPrivacySettingsPage {
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
+  private readonly networkMenuBackButton =
+    '[data-testid="network-list-menu-back-button"]';
+
   // Assets settings
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
@@ -172,6 +175,29 @@ class OnboardingPrivacySettingsPage {
     console.log(`Open edit network modal for ${networkName}`);
     await this.driver.clickElement({ text: networkName, tag: 'p' });
     await this.driver.waitForSelector(this.addRpcUrlDropDown);
+  }
+
+  /**
+   * Open the add custom network form from general settings without submitting it.
+   */
+  async openAddNetworkForm(): Promise<void> {
+    console.log('Open add custom network form');
+    await this.driver.clickElement(this.addCustomNetworkButton);
+    await this.driver.waitForMultipleSelectors([
+      this.networkNameInput,
+      this.chainIdInput,
+      this.addRpcUrlDropDown,
+    ]);
+  }
+
+  /**
+   * Assert that the network menu back button is not displayed. When the network
+   * menu is opened from onboarding it renders directly in the add/edit view with
+   * no preceding list, so there should be no back button.
+   */
+  async checkNetworkMenuBackButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that the network menu back button is not displayed');
+    await this.driver.assertElementNotPresent(this.networkMenuBackButton);
   }
 
   /**

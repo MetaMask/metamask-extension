@@ -332,6 +332,60 @@ describe('MetaMask onboarding', function () {
     );
   });
 
+  it('Hides the network menu back button when editing a network from onboarding', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({ driver });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
+        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+
+        // Opening a network to edit from onboarding goes straight to the
+        // add/edit view, so the network menu must not show a back button.
+        await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
+        await onboardingPrivacySettingsPage.checkNetworkMenuBackButtonIsNotDisplayed();
+      },
+    );
+  });
+
+  it('Hides the network menu back button when adding a network from onboarding', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({ driver });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
+        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+
+        // Adding a network from onboarding also opens the add/edit view
+        // directly, so the network menu must not show a back button.
+        await onboardingPrivacySettingsPage.openAddNetworkForm();
+        await onboardingPrivacySettingsPage.checkNetworkMenuBackButtonIsNotDisplayed();
+      },
+    );
+  });
+
   it('User can turn off basic functionality in default settings', async function () {
     await withFixtures(
       {

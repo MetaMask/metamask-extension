@@ -919,6 +919,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
           onClose={onClose}
           onBack={onBack}
+          backButtonProps={{
+            'data-testid': 'network-list-menu-back-button',
+          }}
         >
           <Text
             ellipsis
