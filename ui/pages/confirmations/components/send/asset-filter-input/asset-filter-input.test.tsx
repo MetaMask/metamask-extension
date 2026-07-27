@@ -6,16 +6,8 @@ import { AssetFilterInput } from './asset-filter-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
+  Box: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="box">{children}</div>
   ),
   TextFieldSearch: ({
     value,
