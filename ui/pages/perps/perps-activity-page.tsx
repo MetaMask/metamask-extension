@@ -269,7 +269,9 @@ const PerpsActivityPage = () => {
                       <TransactionCard
                         key={transaction.id}
                         transaction={transaction}
-                        onClick={hasDestination ? handleTransactionClick : undefined}
+                        onClick={
+                          hasDestination ? handleTransactionClick : undefined
+                        }
                         screenName={
                           PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
                         }

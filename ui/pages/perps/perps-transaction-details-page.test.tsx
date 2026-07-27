@@ -56,9 +56,11 @@ const findTransaction = (id: string): PerpsTransaction => {
 const getRowValueByLabel = (label: string): string | null => {
   const row = screen
     .getAllByTestId('transaction-breakdown-row')
-    .find((rowElement) =>
-      rowElement.querySelector('[data-testid="transaction-breakdown-row-title"]')
-        ?.textContent === label,
+    .find(
+      (rowElement) =>
+        rowElement.querySelector(
+          '[data-testid="transaction-breakdown-row-title"]',
+        )?.textContent === label,
     );
   return (
     row?.querySelector('[data-testid="transaction-breakdown-row-value"]')
@@ -236,9 +238,9 @@ describe('PerpsTransactionDetailsPage', () => {
         screen.getByText(messages.perpsOrderTotalFee.message),
       ).toBeInTheDocument();
 
-      expect(
-        getRowValueByLabel(messages.perpsOrderMetamaskFee.message),
-      ).toBe('$4.5');
+      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
+        '$4.5',
+      );
       expect(
         getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
       ).toBe('$2.025');
@@ -267,9 +269,9 @@ describe('PerpsTransactionDetailsPage', () => {
       // tx-004 is an open (unfilled) limit order
       renderWithTransaction(findTransaction('tx-004'));
 
-      expect(
-        getRowValueByLabel(messages.perpsOrderMetamaskFee.message),
-      ).toBe('$0');
+      expect(getRowValueByLabel(messages.perpsOrderMetamaskFee.message)).toBe(
+        '$0',
+      );
       expect(
         getRowValueByLabel(messages.perpsOrderHyperliquidFee.message),
       ).toBe('$0');

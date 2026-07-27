@@ -91,9 +91,7 @@ export const TransactionCard = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const translatedStatus = t(
-        getOrderStatusI18nKey(transaction.order.text),
-      );
+      const translatedStatus = t(getOrderStatusI18nKey(transaction.order.text));
       return { text: translatedStatus, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };
