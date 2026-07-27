@@ -184,6 +184,7 @@ describe('useIsGaslessSupported', () => {
   });
 
   it('returns isSupported false for hardware wallets when only relay (7702) is supported but not sendBundle', async () => {
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
     isRelaySupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
