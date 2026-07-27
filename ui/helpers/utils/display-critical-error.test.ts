@@ -353,16 +353,18 @@ describe('displayCriticalError', () => {
       const [, , eventPayload] = requestBody.split('\n');
       const parsedEventPayload = JSON.parse(eventPayload) as {
         tags: Record<string, string>;
-        extra: { error_details: Record<string, unknown> };
+        extra: Record<string, unknown>;
       };
+      const errorDetails = parsedEventPayload.extra.error_details as Record<
+        string,
+        unknown
+      >;
 
       expect(parsedEventPayload.tags).toStrictEqual({
         'corruption.backupShouldExist': 'true',
       });
-      expect(parsedEventPayload.extra.error_details.backup).toBeUndefined();
-      expect(parsedEventPayload.extra.error_details.message).toBe(
-        MOCK_ERROR_MESSAGE,
-      );
+      expect(errorDetails.backup).toBeUndefined();
+      expect(errorDetails.message).toBe(MOCK_ERROR_MESSAGE);
     }
   });
 
