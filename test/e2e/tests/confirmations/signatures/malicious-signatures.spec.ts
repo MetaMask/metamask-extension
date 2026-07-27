@@ -61,6 +61,9 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           SignatureType.SIWE_BadDomain,
         );
 
+        // Alert metrics are only attached once the inline alert has rendered.
+        await confirmation.waitForInlineAlert();
+
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

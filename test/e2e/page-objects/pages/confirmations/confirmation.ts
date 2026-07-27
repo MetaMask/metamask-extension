@@ -137,6 +137,10 @@ class Confirmation {
     await this.driver.clickElement(this.inlineAlertButton);
   }
 
+  async waitForInlineAlert(): Promise<void> {
+    await this.driver.waitForSelector(this.inlineAlertButton);
+  }
+
   async checkNavigationIsNotPresent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.navigationTitle, {
       waitAtLeastGuard: 1000,

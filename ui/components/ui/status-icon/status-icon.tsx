@@ -16,14 +16,12 @@ type Props = {
 export function StatusIcon({ state, className }: Props) {
   const theme = useTheme();
   const isDark = theme === ThemeType.dark;
-  // Avoid constructing Rive instances in test builds (see rive-wasm IN_TEST skip).
-  const skipRive = Boolean(process.env.IN_TEST);
 
   const { riveFile, status: fileStatus } = useRiveFileLavamoat({ src: source });
   const { rive, RiveComponent } = useRive({
-    riveFile: skipRive ? undefined : (riveFile ?? undefined),
-    stateMachines: skipRive || !riveFile ? undefined : stateMachine,
-    autoplay: !skipRive,
+    riveFile: riveFile ?? undefined,
+    stateMachines: riveFile ? stateMachine : undefined,
+    autoplay: true,
   });
 
   useEffect(() => {
@@ -58,7 +56,7 @@ export function StatusIcon({ state, className }: Props) {
 
   // useRive owns instance cleanup on unmount / instance change.
 
-  if (skipRive || fileStatus !== 'success') {
+  if (fileStatus !== 'success') {
     return null;
   }
 
