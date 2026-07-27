@@ -3520,7 +3520,7 @@ describe('LegacyBackgroundApiService', () => {
     );
 
     it('captures the error and rethrows when backup creation fails', async () => {
-      await withService(async ({ rootMessenger, service }) => {
+      await withService(async ({ rootMessenger, service, serviceMessenger }) => {
         const error = new Error('backup failed');
         rootMessenger.registerActionHandler(
           'MetaMetricsController:bufferedTrace',
@@ -3536,7 +3536,7 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         const captureExceptionSpy = jest.spyOn(
-          rootMessenger,
+          serviceMessenger,
           'captureException',
         );
 
@@ -3689,7 +3689,7 @@ describe('LegacyBackgroundApiService', () => {
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
     it('captures the error and rethrows when adding secret data fails', async () => {
-      await withService(async ({ rootMessenger, service }) => {
+      await withService(async ({ rootMessenger, service, serviceMessenger }) => {
         const error = new Error('add failed');
         rootMessenger.registerActionHandler(
           'OnboardingController:getState',
@@ -3709,7 +3709,7 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         const captureExceptionSpy = jest.spyOn(
-          rootMessenger,
+          serviceMessenger,
           'captureException',
         );
 
