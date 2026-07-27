@@ -239,7 +239,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
             // from the callback order — its `network.chainId` isn't always
             // populated yet at this point, and mapRampsOrder's CAIP
             // conversion throws on an undefined chainId.
-            navigate(`${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderId}`);
+            navigate(
+              `${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderId}`,
+            );
           })
           .catch((error) => {
             setContinueError(
@@ -265,7 +267,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       global.platform.addTabUpdatedListener(onTabUpdated);
       global.platform.addTabRemovedListener(onTabRemoved);
     },
-    [addOrder, getOrderFromCallback, navigate, selectedToken?.chainId, t, walletAddress],
+    [
+      addOrder,
+      getOrderFromCallback,
+      navigate,
+      selectedToken?.chainId,
+      t,
+      walletAddress,
+    ],
   );
 
   const handleContinue = useCallback(async () => {
