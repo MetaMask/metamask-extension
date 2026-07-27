@@ -46,3 +46,8 @@ jobs:
           add-label: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          # Gate override for Runway release-branch cherry-picks
+          gate-override-risk-threshold: medium
+          gate-override-base-pattern: '^release/'
+          gate-override-author: 'runway-github[bot]'
+          gate-override-title-pattern: 'cherry.?pick'

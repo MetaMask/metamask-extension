@@ -5,7 +5,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -20,6 +20,12 @@ import {
 } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+} from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
@@ -80,12 +86,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonSecondary,
-  ButtonSecondarySize,
   Modal,
   ModalOverlay,
   Text,
-  IconName,
   ModalContent,
   ModalHeader,
   AvatarNetworkSize,
@@ -108,6 +111,7 @@ import NetworksForm from '../networks-form';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useDispatch } from '../../../store/hooks';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -784,11 +788,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           </Box>
 
           <Box padding={4}>
-            <ButtonSecondary
-              size={ButtonSecondarySize.Lg}
+            <Button
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Secondary}
               startIconName={IconName.Add}
-              startIconProps={{ marginRight: 2 }}
-              block
+              isFullWidth
               onClick={() => {
                 trackEvent(
                   createEventBuilder(MetaMetricsEventName.AddNetworkButtonClick)
@@ -799,7 +803,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               }}
             >
               {t('addACustomNetwork')}
-            </ButtonSecondary>
+            </Button>
           </Box>
         </>
       );

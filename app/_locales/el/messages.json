@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Η κατάθεση απέτυχε"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Η κατάθεση απέτυχε"
   },
   "activity_deposit_pending_description": {
-    "message": "Κατάθεση $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Κατάθεση $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "Κατατέθηκαν $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Κατατέθηκαν $1",
@@ -1996,12 +1994,6 @@
   "bridgeApproval": {
     "message": "Έγκριση $1 για διασύνδεση",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "Επιτρέπετε την πρόσβαση σε $1 $2. Το συμβόλαιο δεν θα έχει πρόσβαση σε επιπλέον κεφάλαια."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Θα χρειαστεί να επιτρέψετε την πρόσβαση σε $1 $2 για μεταφορά και στη συνέχεια να εγκρίνετε την μεταφορά προς $3. Αυτό θα απαιτήσει δύο ξεχωριστές επιβεβαιώσεις."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Ο σύνδεσμος από το Block explorer αντιγράφηκε"
@@ -4159,9 +4151,6 @@
   },
   "gotIt": {
     "message": "Το κατάλαβα"
-  },
-  "grantExactAccess": {
-    "message": "Χορήγηση ακριβούς πρόσβασης"
   },
   "gwei": {
     "message": "GWEI"
@@ -11252,12 +11241,6 @@
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Εγκρίνει το token για μεταφορά."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Εγκρίνει το token για ανταλλαγή."
   },
   "withdrawTo": {
     "message": "Λήψη",
