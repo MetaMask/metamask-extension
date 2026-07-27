@@ -888,6 +888,7 @@ describe('LegacyBackgroundApiService', () => {
             'RemoteFeatureFlagController:getState',
             () => ({
               remoteFeatureFlags: {},
+              cacheTimestamp: 0,
             }),
           );
 
@@ -909,6 +910,7 @@ describe('LegacyBackgroundApiService', () => {
                   minimumVersion: null,
                 },
               },
+              cacheTimestamp: 0,
             }),
           );
 
@@ -930,6 +932,7 @@ describe('LegacyBackgroundApiService', () => {
                   minimumVersion: '13.36.0',
                 },
               },
+              cacheTimestamp: 0,
             }),
           );
 
@@ -943,7 +946,8 @@ describe('LegacyBackgroundApiService', () => {
         await withService(async ({ rootMessenger }) => {
           rootMessenger.registerActionHandler(
             'RemoteFeatureFlagController:getState',
-            () => ({}),
+            // Incomplete state on purpose to exercise the fallback path.
+            () => ({}) as never,
           );
 
           expect(
@@ -958,6 +962,7 @@ describe('LegacyBackgroundApiService', () => {
             'RemoteFeatureFlagController:getState',
             () => ({
               remoteFeatureFlags: {},
+              cacheTimestamp: 0,
             }),
           );
 
