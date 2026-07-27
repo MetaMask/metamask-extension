@@ -951,8 +951,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
               </p>
             </button>
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-              style="min-height: 48px; padding-right: 8px; outline: none;"
+              class="inline-flex items-center border bg-default transition-colors h-12 pl-4 pr-0 border-default rounded-full app-text-field-search mx-4"
             >
               <svg
                 class="inline-block w-5 h-5 text-icon-alternative"
@@ -965,12 +964,10 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                 />
               </svg>
               <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+                class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate"
                 data-testid="bridge-asset-picker-search-input"
-                focused="true"
                 placeholder="Enter token name or paste address"
-                type="text"
+                type="search"
                 value=""
               />
             </div>
@@ -1341,8 +1338,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
               </p>
             </button>
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-              style="min-height: 48px; padding-right: 8px; outline: none;"
+              class="inline-flex items-center border bg-default transition-colors h-12 pl-4 pr-4 border-default rounded-full app-text-field-search mx-4"
             >
               <svg
                 class="inline-block w-5 h-5 text-icon-alternative"
@@ -1355,14 +1351,28 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
                 />
               </svg>
               <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+                class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-2 truncate"
                 data-testid="bridge-asset-picker-search-input"
-                focused="true"
                 placeholder="Enter token name or paste address"
-                type="text"
+                type="search"
                 value="USD"
               />
+              <button
+                aria-label="Clear"
+                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                data-testid="text-field-search-clear-button"
+              >
+                <svg
+                  class="inline-block w-6 h-6 text-inherit"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m8.4 17 3.6-3.6 3.6 3.6 1.4-1.4-3.6-3.6L17 8.4 15.6 7 12 10.6 8.4 7 7 8.4l3.6 3.6L7 15.6zm3.6 5q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
           <div
