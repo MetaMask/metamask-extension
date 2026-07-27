@@ -497,10 +497,10 @@ export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
 };
 
 /**
- * Gets the Sentinel network flags for the given chain.
+ * Get Sentinel Network flags for the given chain.
  *
- * @param chainId - The chain ID to get the Sentinel network flags for.
- * @returns The Sentinel network flags for the given chain.
+ * @param chainId - The chain ID to check for relay support.
+ * @returns The Sentinel network flags for the given chain, or undefined if not found.
  */
 export type LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction = {
   type: `LegacyBackgroundApiService:getSentinelNetworkFlags`;
@@ -536,7 +536,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction
   | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
-  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
@@ -553,4 +552,5 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceCaptureTestErrorAction
   | LegacyBackgroundApiServiceThrowTestErrorAction
-  | LegacyBackgroundApiServiceIsRelaySupportedAction;
+  | LegacyBackgroundApiServiceIsRelaySupportedAction
+  | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction;
