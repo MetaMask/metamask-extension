@@ -560,7 +560,7 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Send}
+            name={IconName.Arrow2UpRight}
             color={IconColor.IconAlternative}
             size={IconSize.Md}
           />

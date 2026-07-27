@@ -159,7 +159,7 @@ const TokenButtons = ({
           onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.Send}
+              name={IconName.Arrow2UpRight}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
