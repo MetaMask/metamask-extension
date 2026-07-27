@@ -6,15 +6,34 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../shared/lib/swaps.utils';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import type { SwapsTokenObject } from '../../shared/constants/swaps';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
-/**
- * @typedef {object} SwappedTokenValue
- * @property {string} swapTokenValue - a primary currency string formatted for display
- * @property {string} swapTokenFiatAmount - a secondary currency string formatted for display
- * @property {boolean} isViewingReceivedTokenFromSwap - true if user is on the asset page for the
- *                                                      destination/received asset in a swap.
- */
+type SwappedTokenValue = {
+  /** a primary currency string formatted for display */
+  swapTokenValue: string | boolean | undefined;
+  /** a secondary currency string formatted for display */
+  swapTokenFiatAmount: string | undefined;
+  /** true if user is on the asset page for the destination/received asset in a swap */
+  isViewingReceivedTokenFromSwap: boolean;
+  /** true if the swap token value is negative */
+  isNegative: boolean;
+};
+
+type SwapTransactionGroup = {
+  primaryTransaction: {
+    destinationTokenSymbol?: string;
+    swapTokenValue?: string;
+    sourceTokenAddress?: string;
+    sourceTokenSymbol?: string;
+    [key: string]: unknown;
+  };
+  initialTransaction: {
+    type?: string;
+    txParams?: { from?: string };
+    [key: string]: unknown;
+  };
+};
 
 /**
  * A Swap transaction group's primaryTransaction contains details of the swap,
@@ -25,11 +44,14 @@ import { useTokenFiatAmount } from './useTokenFiatAmount';
  * activity list that is most relevant for that token (- 1000 DAI, for example, when
  * swapping DAI for ETH).
  *
- * @param {import('../selectors').transactionGroup} transactionGroup - Group of transactions by nonce
- * @param {import('./useTokenDisplayValue').Token} currentAsset - The current asset the user is looking at
- * @returns {SwappedTokenValue}
+ * @param transactionGroup - Group of transactions by nonce
+ * @param currentAsset - The current asset the user is looking at
+ * @returns SwappedTokenValue
  */
-export function useSwappedTokenValue(transactionGroup, currentAsset) {
+export function useSwappedTokenValue(
+  transactionGroup: SwapTransactionGroup,
+  currentAsset: SwapsTokenObject,
+): SwappedTokenValue {
   const { symbol, decimals, address } = currentAsset;
   const { primaryTransaction, initialTransaction } = transactionGroup;
   const { type } = initialTransaction;
@@ -46,36 +68,40 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
         )));
 
   const swapTokenValue =
-    [TransactionType.swap].includes(type) && isViewingReceivedTokenFromSwap
+    [TransactionType.swap].includes(type as TransactionType) &&
+    isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
-          initialTransaction,
+          initialTransaction as Parameters<
+            typeof getSwapsTokensReceivedFromTxMeta
+          >[1],
           address,
           senderAddress,
           decimals,
           null,
           chainId,
         )
-      : [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
-        primaryTransaction.swapTokenValue;
+      : [TransactionType.swap, TransactionType.swapAndSend].includes(
+            type as TransactionType,
+          ) && primaryTransaction.swapTokenValue;
 
   const isNegative =
     typeof swapTokenValue === 'string'
-      ? Math.sign(swapTokenValue) === -1
+      ? Number(swapTokenValue) < 0
       : false;
 
   const _swapTokenFiatAmount = useTokenFiatAmount(
     address,
-    swapTokenValue || '',
+    typeof swapTokenValue === 'string' ? swapTokenValue : '',
     symbol,
   );
   const _swapAndSendTokenFiatAmount = useTokenFiatAmount(
     primaryTransaction.sourceTokenAddress,
-    swapTokenValue,
+    typeof swapTokenValue === 'string' ? swapTokenValue : undefined,
     primaryTransaction.sourceTokenSymbol,
   );
 
-  let swapTokenFiatAmount;
+  let swapTokenFiatAmount: string | undefined;
   if (swapTokenValue) {
     if (isViewingReceivedTokenFromSwap) {
       swapTokenFiatAmount = _swapTokenFiatAmount;

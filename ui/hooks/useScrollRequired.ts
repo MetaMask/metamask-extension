@@ -9,15 +9,15 @@ import { usePrevious } from './usePrevious';
  * The hook expects both the `ref` and the `onScroll` handler to be passed to the scrolling element.
  *
  * @param dependencies - Any optional hook dependencies for updating the scroll state.
- * @param opt
- * @param {number} opt.offsetPxFromBottom
+ * @param opt - Options object
+ * @param opt.offsetPxFromBottom - Pixel offset from bottom to trigger scroll detection
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
 export const useScrollRequired = (
-  dependencies = [],
-  { offsetPxFromBottom = 16 } = {},
+  dependencies: unknown[] = [],
+  { offsetPxFromBottom = 16 }: { offsetPxFromBottom?: number } = {},
 ) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement | null>(null);
   const prevOffsetHeight = usePrevious(ref.current?.offsetHeight);
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);

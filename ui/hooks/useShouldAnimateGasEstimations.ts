@@ -8,7 +8,7 @@ import {
 } from '../ducks/app/app';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
-export function useShouldAnimateGasEstimations() {
+export function useShouldAnimateGasEstimations(): void {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
   const dispatch = useDispatch();
 
@@ -44,7 +44,7 @@ export function useShouldAnimateGasEstimations() {
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 
   useEffect(() => {
-    let timer;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     if (isGasLoadingAnimationActive && !showLoadingAnimation) {
       timer = setTimeout(() => {

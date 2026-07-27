@@ -33,6 +33,15 @@ const MIN_AMOUNT_DISPLAY = `<${MIN_AMOUNT}`;
 // It set to the number of decimal places in the minimum amount.
 export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
+type FormatEthCurrencyDisplayOptions = {
+  isNativeCurrency: boolean;
+  isUserPreferredCurrency: boolean;
+  nativeCurrency: string | undefined;
+  inputValue: string | undefined;
+  denomination: string | undefined;
+  numberOfDecimals: number | undefined;
+};
+
 function formatEthCurrencyDisplay({
   isNativeCurrency,
   isUserPreferredCurrency,
@@ -40,11 +49,13 @@ function formatEthCurrencyDisplay({
   inputValue,
   denomination,
   numberOfDecimals,
-}) {
+}: FormatEthCurrencyDisplayOptions): string | null {
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
     const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
-      .toDenomination(denomination || EtherDenomination.ETH)
-      .round(numberOfDecimals || DEFAULT_PRECISION)
+      .toDenomination(
+        (denomination as EtherDenomination) || EtherDenomination.ETH,
+      )
+      .round(numberOfDecimals || (DEFAULT_PRECISION as number))
       .toBase(10)
       .toString();
 
@@ -55,6 +66,17 @@ function formatEthCurrencyDisplay({
   return null;
 }
 
+type FormatNonEvmAssetCurrencyDisplayOptions = {
+  tokenSymbol: string | undefined;
+  isNativeCurrency: boolean;
+  isUserPreferredCurrency: boolean;
+  currency: string | undefined;
+  currentCurrency: string | undefined;
+  nativeCurrency: string | undefined;
+  inputValue: string | undefined;
+  conversionRate: number | undefined;
+};
+
 function formatNonEvmAssetCurrencyDisplay({
   tokenSymbol,
   isNativeCurrency,
@@ -64,7 +86,7 @@ function formatNonEvmAssetCurrencyDisplay({
   nativeCurrency,
   inputValue,
   conversionRate,
-}) {
+}: FormatNonEvmAssetCurrencyDisplayOptions): string | null {
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
     // NOTE: We use the value coming from the MultichainBalancesController here (and thus, the non-EVM
     // account Snap).
@@ -90,25 +112,39 @@ function formatNonEvmAssetCurrencyDisplay({
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
- *
- * @typedef {object} UseCurrencyOptions
- * @property {string} [displayValue] - When present is used in lieu of formatting the inputValue
- * @property {string} [prefix] - String to prepend to the final result
- * @property {number} [numberOfDecimals] - Number of significant decimals to display
- * @property {string} [denomination] - Denomination (wei, gwei) to convert to for display
- * @property {string} [currency] - Currency type to convert to. Will override nativeCurrency
- * @property {boolean} [hideLabel] – hide the currency label
- * @property {object} [account] - The account object
  */
+export type UseCurrencyOptions = {
+  /** When present is used in lieu of formatting the inputValue */
+  displayValue?: string;
+  /** String to prepend to the final result */
+  prefix?: string;
+  /** Number of significant decimals to display */
+  numberOfDecimals?: number;
+  /** Denomination (wei, gwei) to convert to for display */
+  denomination?: string;
+  /** Currency type to convert to. Will override nativeCurrency */
+  currency?: string;
+  /** Hide the currency label */
+  hideLabel?: boolean;
+  /** The account object */
+  account?: object;
+  /** Whether this is an aggregated fiat overview balance */
+  isAggregatedFiatOverviewBalance?: boolean;
+  /** The suffix to display */
+  suffix?: string;
+};
 
 /**
  * Defines the return shape of the second value in the tuple
- *
- * @typedef {object} CurrencyDisplayParts
- * @property {string} [prefix] - string to prepend to the value for display
- * @property {string} value - string representing the value, formatted for display
- * @property {string} [suffix] - string to append to the value for display
  */
+export type CurrencyDisplayParts = {
+  /** string to prepend to the value for display */
+  prefix?: string;
+  /** string representing the value, formatted for display */
+  value: string | null;
+  /** string to append to the value for display */
+  suffix?: string;
+};
 
 /**
  * useCurrencyDisplay hook
@@ -117,14 +153,17 @@ function formatNonEvmAssetCurrencyDisplay({
  * display, produce both a fully formed string and the pieces of that string used for displaying
  * the currency to the user
  *
- * @param {string} inputValue - The value to format for display
- * @param {UseCurrencyOptions} opts - An object for options to format the inputValue
- * @param {string} chainId - chainId to use
- * @returns {[string, CurrencyDisplayParts]}
+ * @param inputValue - The value to format for display
+ * @param opts - An object for options to format the inputValue
+ * @param chainId - chainId to use
+ * @returns A tuple of [displayString, CurrencyDisplayParts]
  */
 export function useCurrencyDisplay(
-  inputValue,
-  {
+  inputValue: string | undefined,
+  opts: UseCurrencyOptions,
+  chainId: string | null = null,
+): [string, CurrencyDisplayParts] {
+  const {
     account,
     displayValue,
     prefix,
@@ -132,10 +171,9 @@ export function useCurrencyDisplay(
     denomination,
     currency,
     isAggregatedFiatOverviewBalance,
-    ...opts
-  },
-  chainId = null,
-) {
+    hideLabel,
+    suffix: optsuffix,
+  } = opts;
   const { formatCurrency } = useFormatters();
   const isEvm = useMultichainSelector(getMultichainIsEvm, account);
   const currentCurrency = useMultichainSelector(
@@ -155,7 +193,7 @@ export function useCurrencyDisplay(
   const isUserPreferredCurrency = currency === currentCurrency;
   const isNativeCurrency =
     currency === nativeCurrency ||
-    currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+    currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId as string];
 
   // Check if the transaction's chain is EVM, not just the account
   const isTransactionOnEvmChain = chainId ? isEvmChainId(chainId) : isEvm;
@@ -165,7 +203,8 @@ export function useCurrencyDisplay(
   const chainNativeCurrency =
     (chainId && CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]) || nativeCurrency;
   const chainConversionRate =
-    currencyRates?.[chainNativeCurrency]?.conversionRate ?? conversionRate;
+    (currencyRates as Record<string, { conversionRate?: number } | undefined>)?.[chainNativeCurrency as string]
+      ?.conversionRate ?? conversionRate;
 
   const value = useMemo(() => {
     if (displayValue) {
@@ -181,7 +220,7 @@ export function useCurrencyDisplay(
         currentCurrency,
         nativeCurrency: chainNativeCurrency,
         inputValue,
-        conversionRate: chainConversionRate,
+        conversionRate: chainConversionRate as number | undefined,
       });
     }
 
@@ -194,7 +233,7 @@ export function useCurrencyDisplay(
         value: inputValue,
         fromCurrency: chainNativeCurrency,
         toCurrency: currency,
-        conversionRate: chainConversionRate,
+        conversionRate: chainConversionRate as number,
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
       });
@@ -225,22 +264,22 @@ export function useCurrencyDisplay(
     formatCurrency,
   ]);
 
-  let suffix;
+  let suffix: string | undefined;
 
   // Don't add suffix to fiat currencies
   const isFiatCurrency = isAggregatedFiatOverviewBalance || !isNativeCurrency;
 
-  if (!opts.hideLabel && !isFiatCurrency) {
+  if (!hideLabel && !isFiatCurrency) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
     const currencyTickerSymbol = [
       ...Object.values(TEST_NETWORK_TICKER_MAP),
       ...Object.values(MULTICHAIN_NETWORK_TICKER),
-    ].includes(currency)
+    ].includes(currency as string)
       ? currency
       : currency?.toUpperCase();
 
-    suffix = opts.suffix || currencyTickerSymbol;
+    suffix = optsuffix || currencyTickerSymbol;
   }
 
   return [

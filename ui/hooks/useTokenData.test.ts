@@ -46,7 +46,7 @@ describe('useTokenData', () => {
     const testTitle =
       // eslint-disable-next-line no-negated-condition
       tokenData !== null
-        ? `should return properly decoded data with _value ${tokenData.args[1]}`
+        ? `should return properly decoded data with _value ${tokenData.args[1].toString()}`
         : `should return null when no data provided`;
     it(`${testTitle}`, () => {
       const { result } = renderHook(() => useTokenData(data));

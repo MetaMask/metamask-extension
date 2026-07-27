@@ -3,15 +3,30 @@ import { useSelector } from 'react-redux';
 import { SECOND } from '../../shared/constants/time';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 
+type Transaction = {
+  chainId?: string;
+  submittedTime?: number;
+  [key: string]: unknown;
+};
+
+type TransactionGroup = {
+  transactions: Transaction[];
+  hasRetried: boolean;
+  [key: string]: unknown;
+};
+
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers
  * an effect to check the logic again after the transaction has surpassed 5 seconds
  * of queue time.
  *
- * @param {object} transactionGroup - the transaction group to check against
- * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
+ * @param transactionGroup - the transaction group to check against
+ * @param isEarliestNonce - Whether this group is currently the earliest nonce
  */
-export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
+export function useShouldShowSpeedUp(
+  transactionGroup: TransactionGroup,
+  isEarliestNonce: boolean,
+): boolean {
   const { transactions, hasRetried } = transactionGroup;
   const currentChainId = useSelector(getCurrentChainId);
 
@@ -21,7 +36,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
 
   const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
-    const timeDelta = Date.now() - submittedTime;
+    const timeDelta = Date.now() - (submittedTime ?? 0);
     const shouldEnable =
       timeDelta > 5000 && isEarliestNonce && !hasRetried && matchCurrentChainId;
     return shouldEnable;
@@ -34,7 +49,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // also immediately set retryEnabled and not create a timeout if the
     // condition is already met. This effect will run anytime the variables
     // for determining enabled status change
-    let timeoutId;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     // Disable speed up if conditions are no longer met
     if (
@@ -49,7 +64,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       !speedUpEnabled
     ) {
       // Enable speed up after 5 seconds if conditions are met
-      if (Date.now() - submittedTime > SECOND * 5) {
+      if (Date.now() - (submittedTime ?? 0) > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
         timeoutId = setTimeout(
@@ -57,7 +72,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
             setSpeedUpEnabled(true);
             clearTimeout(timeoutId);
           },
-          5001 - (Date.now() - submittedTime),
+          5001 - (Date.now() - (submittedTime ?? 0)),
         );
       }
     }
