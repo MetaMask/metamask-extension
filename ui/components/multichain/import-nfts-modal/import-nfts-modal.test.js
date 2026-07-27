@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -22,6 +22,20 @@ const INVALID_TOKENID = 'abcde';
 
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
+
+const getImportButton = () =>
+  screen.getByRole('button', { name: messages.import.message });
+
+const mockStateWithTestNetworks = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      showTestNetworks: true,
+    },
+  },
+};
 
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
@@ -52,10 +66,11 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('ImportNftsModal', () => {
-  let store = configureMockStore([thunk])(mockState);
+  let store = configureMockStore([thunk])(mockStateWithTestNetworks);
 
   beforeEach(() => {
     jest.restoreAllMocks();
+    store = configureMockStore([thunk])(mockStateWithTestNetworks);
     mockToastSuccess.mockClear();
     mockToastError.mockClear();
   });
@@ -65,7 +80,7 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(getImportButton()).not.toBeEnabled();
 
     // Select a network first
     const networkSelectorButton = getByTestId(
@@ -85,7 +100,7 @@ describe('ImportNftsModal', () => {
     fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText(messages.import.message)).toBeEnabled();
+    expect(getImportButton()).toBeEnabled();
   });
 
   it('should not enable the "Import" button when no network is selected', () => {
@@ -93,7 +108,7 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(getImportButton()).not.toBeEnabled();
 
     // Fill in valid address and tokenId but don't select a network
     const addressInput = getByPlaceholderText('0x...');
@@ -108,7 +123,7 @@ describe('ImportNftsModal', () => {
     });
 
     // Button should still be disabled without network selection
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(getImportButton()).not.toBeEnabled();
   });
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
@@ -116,7 +131,7 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
-    expect(getByText(messages.import.message)).not.toBeEnabled();
+    expect(getImportButton()).not.toBeEnabled();
 
     // Select a network first
     const networkSelectorButton = getByTestId(
@@ -137,24 +152,24 @@ describe('ImportNftsModal', () => {
       target: { value: VALID_TOKENID },
     });
 
-    expect(getByText(messages.import.message)).not.toBeEnabled(); // Invalid token address, valid token id
+    expect(getImportButton()).not.toBeEnabled(); // Invalid token address, valid token id
 
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
 
-    expect(getByText(messages.import.message)).toBeEnabled(); // Valid token address, valid token id
+    expect(getImportButton()).toBeEnabled(); // Valid token address, valid token id
 
     fireEvent.change(tokenIdInput, {
       target: { value: INVALID_TOKENID },
     });
 
-    expect(getByText(messages.import.message)).not.toBeEnabled(); // Valid token address, invalid token id
+    expect(getImportButton()).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
     store = configureMockStore([thunk])({
-      ...mockState,
+      ...mockStateWithTestNetworks,
       appState: { importNftsModal: { ignoreErc20Token: true } },
     });
 
@@ -186,7 +201,7 @@ describe('ImportNftsModal', () => {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText(messages.import.message));
+    fireEvent.click(getImportButton());
 
     await waitFor(() => {
       expect(addNftVerifyOwnership).toHaveBeenCalledWith(
@@ -244,7 +259,7 @@ describe('ImportNftsModal', () => {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText(messages.import.message));
+    fireEvent.click(getImportButton());
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalled();
@@ -278,9 +293,9 @@ describe('ImportNftsModal', () => {
     };
 
     store = configureMockStore([thunk])({
-      ...mockState,
+      ...mockStateWithTestNetworks,
       metamask: {
-        ...mockState.metamask,
+        ...mockStateWithTestNetworks.metamask,
         ...mockNetworkState(
           { chainId: CHAIN_IDS.MAINNET },
           { chainId: CHAIN_IDS.GOERLI },
@@ -318,7 +333,7 @@ describe('ImportNftsModal', () => {
     });
 
     // Click import
-    fireEvent.click(getByText(messages.import.message));
+    fireEvent.click(getImportButton());
 
     // Get the actual networkClientId that was used in the addNftVerifyOwnership call (use last call to be robust against previous test calls)
     const addNftCalls = addNftVerifyOwnership.mock.calls;
@@ -347,9 +362,30 @@ describe('ImportNftsModal', () => {
     const cancelButton = getByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
-    // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('does not show test networks when test networks are disabled', () => {
+    store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          showTestNetworks: false,
+        },
+      },
+    });
+
+    const { getByTestId, queryByText } = renderWithProvider(
+      <ImportNftsModal onClose={jest.fn()} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('test-import-tokens-drop-down-custom-import'));
+
+    expect(queryByText('Sepolia')).not.toBeInTheDocument();
   });
 
   it('should route to default route when close button is clicked', () => {
