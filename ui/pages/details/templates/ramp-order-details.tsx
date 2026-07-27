@@ -47,7 +47,7 @@ export function RampOrderDetails({
   // context for a pending/failed one (thread: providers often disclose why).
   const showStatusDescription = statusDescription && item.status !== 'success';
   const fiatTotal =
-    fiat?.amount && Number.isFinite(Number(fiat.amount))
+    fiat?.amount && fiat.currency && Number.isFinite(Number(fiat.amount))
       ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
       : null;
   // The order's fee is already a fiat amount (not a crypto token amount like
@@ -57,7 +57,7 @@ export function RampOrderDetails({
   // the currency text ("0.98 USD USD") when there's no token to badge.
   const fee = item.data.fees?.[0];
   const feeTotal =
-    fee?.amount && Number.isFinite(Number(fee.amount))
+    fee?.amount && fee.symbol && Number.isFinite(Number(fee.amount))
       ? formatCurrencyWithMinThreshold(Number(fee.amount), fee.symbol)
       : null;
 

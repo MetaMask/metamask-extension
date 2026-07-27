@@ -12,10 +12,13 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     args ? `${key}:${args.join(',')}` : key,
 }));
 
+const mockFormatCurrencyWithMinThreshold = jest.fn(
+  (amount: number, currency?: string) => `${amount} ${currency ?? ''}`.trim(),
+);
+
 jest.mock('../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (amount: number, currency?: string) =>
-      `${amount} ${currency ?? ''}`.trim(),
+    formatCurrencyWithMinThreshold: mockFormatCurrencyWithMinThreshold,
   }),
 }));
 
@@ -203,6 +206,31 @@ describe('RampOrderDetails', () => {
     );
 
     expect(queryByText('rampsOrderDetailsBuyAgain')).not.toBeInTheDocument();
+  });
+
+  it('does not format or render a total/fee row when the currency is missing', () => {
+    // A not-yet-priced order can have a numeric amount before its currency is
+    // known (real @metamask/client-utils formatCurrency throws "Currency code
+    // is required with currency style" if called without one) — the row
+    // should just be omitted instead of crashing the details page.
+    const { queryAllByTestId } = render(
+      <RampOrderDetails
+        item={buildItem({
+          data: {
+            ...buildItem().data,
+            fiat: { amount: '100', currency: undefined },
+            fees: [{ type: 'total', amount: '0.98', symbol: undefined }],
+          },
+        })}
+      />,
+    );
+
+    expect(mockFormatCurrencyWithMinThreshold).not.toHaveBeenCalled();
+    const labels = queryAllByTestId('row').map((row) =>
+      row.getAttribute('data-label'),
+    );
+    expect(labels).not.toContain('rampsOrderDetailsTotal');
+    expect(labels).not.toContain('rampsOrderDetailsFees');
   });
 
   it('renders a block explorer button with the item chain id and hash', () => {
