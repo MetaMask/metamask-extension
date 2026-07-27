@@ -52,7 +52,6 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-import { useBridgeRedirectQueryString } from '../../../../contexts/hardware-wallets/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
@@ -110,20 +109,16 @@ function shouldShowQrCameraBlockedVariant(
  * @param params.errorCode - The hardware wallet error code.
  * @param params.onRetry - Callback invoked when the user clicks Continue.
  * @param params.isLoading - Whether the retry action is in progress.
- * @param params.redirectQueryString - Optional query string forwarded to the
- * fullscreen tab for restoring Swap / Bridge form parameters.
  * @returns The camera-access error content element.
  */
 function renderQrCameraFlowContent({
   errorCode,
   onRetry,
   isLoading,
-  redirectQueryString,
 }: {
   errorCode: ErrorCode | undefined;
   onRetry: () => Promise<void>;
   isLoading: boolean;
-  redirectQueryString?: string | null;
 }): JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
@@ -131,8 +126,7 @@ function renderQrCameraFlowContent({
     });
   };
 
-  const handleContinue = () =>
-    handleContinueWithPermissionCheck(onRetry, redirectQueryString);
+  const handleContinue = () => handleContinueWithPermissionCheck(onRetry);
 
   if (shouldShowQrCameraBlockedVariant(errorCode)) {
     return (
@@ -249,7 +243,6 @@ export const HardwareWalletErrorModal = React.memo(
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
-    const getRedirectQueryString = useBridgeRedirectQueryString();
 
     // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
     // account may differ from the selected account). Read both top-level `metadata` and RPC-style
@@ -617,7 +610,6 @@ export const HardwareWalletErrorModal = React.memo(
                   errorCode: error.code,
                   onRetry: handleRetry,
                   isLoading,
-                  redirectQueryString: getRedirectQueryString(),
                 })}
               {!isQrCameraFlow && standardErrorContent ? (
                 <>

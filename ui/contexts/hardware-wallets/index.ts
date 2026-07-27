@@ -21,3 +21,22 @@ export * from './errors';
 export * from './types';
 export * from './webConnectionUtils';
 export * from './rpcErrorUtils';
+export {
+  CameraPermissionState,
+  HARDWARE_WALLET_ERROR_MODAL_NAME,
+  HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
+  QrCameraHwPreflightStatus,
+} from './constants';
+export type { QrCameraHwPreflightStatus as QrCameraHwPreflightStatusType } from './constants';
+export {
+  ensureQrCameraReadyForHwFlow,
+  isSidePanelCameraPreflightEnvironment,
+  type EnsureQrCameraReadyForHwFlowOptions,
+} from './qrCameraHwPreflight';
+export { useQrCameraHwPreflight } from './useQrCameraHwPreflight';
+export {
+  useQrCameraHwPreflightRedirect,
+  resolveQrCameraPreflightRoute,
+  buildBridgePreflightQueryString,
+  isConfirmationPath,
+} from './useQrCameraHwPreflightRedirect';

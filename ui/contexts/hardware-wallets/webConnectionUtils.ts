@@ -2,7 +2,10 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
@@ -535,43 +538,54 @@ export function subscribeToHardwareWalletEvents(
 
 /**
  * Returns `true` when the extension is running in an environment where the
- * native browser camera-permission prompt cannot appear (side panel only).
+ * native browser camera-permission prompt cannot reliably appear (popup or
+ * side panel). Matches {@link WebcamUtils.checkStatus} restricted environments.
  */
 export function isRestrictedCameraEnvironment(): boolean {
-  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const environmentType = getEnvironmentType();
+  return (
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
+    environmentType === ENVIRONMENT_TYPE_POPUP
+  );
 }
 
 /**
- * Opens the current page in a fullscreen tab, preserving the hash route so
- * the user lands on the exact same confirmation / transaction screen.
+ * Opens a fullscreen tab with the current page's hash route, or an explicit
+ * `targetRoute` when provided, forwarding an optional `queryString`.
  *
- * For most flows (e.g. Send) transaction parameters live in background
- * controller state and survive the context switch automatically. Flows whose
- * form data is stored in UI-only Redux (e.g. Swap / Bridge) must supply a
- * `queryString` so the fullscreen tab can restore the values via deep-link
- * query parameters.
+ * Used by side-panel QR camera *preflight* (before entering the HW signing
+ * page) so the form/confirmation can reopen where the permission prompt works.
  *
- * @param queryString - Optional query string appended to the fullscreen URL.
+ * @param options - Options object.
+ * @param options.queryString - Optional query string appended to the fullscreen URL.
+ * @param options.targetRoute - Optional route override; defaults to the current hash route.
  */
-export function redirectToFullscreen(queryString?: string | null): void {
+export function redirectToFullscreen({
+  queryString,
+  targetRoute,
+}: {
+  queryString?: string | null;
+  targetRoute?: string | null;
+} = {}): void {
   const currentUrl = new URL(globalThis.location.href);
   const currentHash = currentUrl.hash;
-  const currentRoute = currentHash ? currentHash.substring(1) : null;
-  globalThis.platform.openExtensionInBrowser(currentRoute, queryString ?? null);
+  const fallbackRoute = currentHash ? currentHash.substring(1) : null;
+  const route = targetRoute ?? fallbackRoute;
+  globalThis.platform.openExtensionInBrowser(route, queryString ?? null);
 }
 
 /**
- * Resolves the Continue action within QR recovery flow
- * based on the current camera permission state and the extension environment.
+ * Resolves the Continue action for QR camera-access errors.
+ *
+ * When permission is already granted (or the probe fails), retries in place.
+ * When permission is still `prompt` in popup/side panel, opens fullscreen with
+ * the current hash route so the native prompt can appear — destination rebuild
+ * is handled by preflight before HW navigation, not here.
  *
  * @param onRetry - The default retry handler (e.g. calls `ensureDeviceReady`).
- * @param redirectQueryString - Optional query string forwarded to the
- * fullscreen tab so flows with UI-only state (Swap / Bridge) can restore
- * their form parameters via deep-link query params.
  */
 export async function handleContinueWithPermissionCheck(
   onRetry: () => Promise<void>,
-  redirectQueryString?: string | null,
 ): Promise<void> {
   let permissionState: PermissionState;
   try {
@@ -588,7 +602,7 @@ export async function handleContinueWithPermissionCheck(
 
   if (permissionState === CameraPermissionState.Prompt) {
     if (isRestrictedCameraEnvironment()) {
-      redirectToFullscreen(redirectQueryString);
+      redirectToFullscreen();
     } else {
       await onRetry();
     }

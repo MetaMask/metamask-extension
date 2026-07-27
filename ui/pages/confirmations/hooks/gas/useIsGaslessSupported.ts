@@ -23,7 +23,7 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * requires an upgraded account, which conflicts with the downgrade intent.
  *
  * @returns An object containing:
- * - `isSupported`: `true` if gasless transactions are supported via either 7702 or smart transactions with sendBundle.
+ * - `isSupported`: `true` if gasless transactions are supported via either sendBundle or 7702.
  * - `isSmartTransaction`: `true` if smart transactions are enabled for the current chain.
  * - `pending`: `true` if the support check is still in progress.
  */
@@ -61,21 +61,22 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-    relaySupportsChain &&
-    // contract deployments can't be delegated
-    transactionMeta?.txParams?.to !== undefined,
+      relaySupportsChain &&
+      // contract deployments can't be delegated
+      transactionMeta?.txParams?.to !== undefined,
   );
 
+  // sendBundle is open to all account types; is7702Supported already gates HW wallets
   const isSupported = Boolean(
-    !isHardwareWalletAccount &&
     !isDowngradeTransaction &&
-    (isSmartTransactionAndBundleSupported || is7702Supported),
+      (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
+  // sendBundle pending state applies to all account types; 7702 pending stays HW-gated
   const isPending =
-    !isHardwareWalletAccount &&
     !isDowngradeTransaction &&
-    (smartTransactionPending || (shouldCheck7702Eligibility && relayPending));
+    (smartTransactionPending ||
+      (!isHardwareWalletAccount && shouldCheck7702Eligibility && relayPending));
 
   return {
     isSupported,

@@ -7,6 +7,7 @@ import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmat
 import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { isSignatureTransactionType } from '../../pages/confirmations/utils';
+import { QrCameraHwPreflightStatus } from './constants';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -23,6 +24,7 @@ import {
   type EnsureDeviceReadyOptions,
 } from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
+import { useQrCameraHwPreflight } from './useQrCameraHwPreflight';
 
 type UseHardwareFooterArgs = {
   currentConfirmation?: TransactionMeta;
@@ -82,6 +84,7 @@ export const useHardwareFooter = ({
     walletType: selectedWalletType,
   } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { ensureReadyBeforeHwFlow } = useQrCameraHwPreflight();
   const { showErrorModal } = useHardwareWalletError();
   const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
 
@@ -146,8 +149,8 @@ export const useHardwareFooter = ({
     }
 
     // QR wallets don't need a physical device connection before showing the
-    // primary footer CTA. The Confirm action still runs ensureDeviceReady,
-    // which handles camera permission before signing.
+    // primary footer CTA. Confirm still runs QR camera preflight
+    // (fullscreen redirect when needed) then ensureDeviceReady before signing.
     if (walletType === HardwareWalletType.Qr) {
       return true;
     }
@@ -178,6 +181,13 @@ export const useHardwareFooter = ({
         trackConnectCtaClicked();
       }
 
+      // Popup/side panel cannot reliably show the camera permission prompt.
+      // Redirect to fullscreen before ensureDeviceReady / HW navigation (Send).
+      const cameraPreflight = await ensureReadyBeforeHwFlow();
+      if (cameraPreflight === QrCameraHwPreflightStatus.Redirected) {
+        return false;
+      }
+
       const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
       setHasPreflightSucceeded(isDeviceReady);
 
@@ -187,6 +197,7 @@ export const useHardwareFooter = ({
       inE2e,
       isHardwareWalletAccount,
       trackConnectCtaClicked,
+      ensureReadyBeforeHwFlow,
       ensureDeviceReady,
       ensureDeviceReadyOptions,
     ],

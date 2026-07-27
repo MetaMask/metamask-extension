@@ -15,6 +15,8 @@ import {
 } from './rpcErrorUtils';
 import { useHardwareFooter } from './useHardwareFooter';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
+import { useQrCameraHwPreflight } from './useQrCameraHwPreflight';
+import { QrCameraHwPreflightStatus } from './constants';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
@@ -23,6 +25,10 @@ import {
 
 jest.mock('./useHardwareWalletMetrics', () => ({
   useHardwareWalletMetrics: jest.fn(),
+}));
+
+jest.mock('./useQrCameraHwPreflight', () => ({
+  useQrCameraHwPreflight: jest.fn(),
 }));
 
 jest.mock('./HardwareWalletContext', () => ({
@@ -41,6 +47,10 @@ jest.mock('./rpcErrorUtils', () => ({
 }));
 
 const mockUseHardwareWalletMetrics = jest.mocked(useHardwareWalletMetrics);
+const mockUseQrCameraHwPreflight = jest.mocked(useQrCameraHwPreflight);
+const mockEnsureReadyBeforeHwFlow = jest.fn().mockResolvedValue(
+  QrCameraHwPreflightStatus.Ready,
+);
 const HARDWARE_ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111';
 const NON_HARDWARE_ACCOUNT_ADDRESS =
   '0x2222222222222222222222222222222222222222';
@@ -74,6 +84,12 @@ describe('useHardwareFooter', () => {
     mockOnUserRejectedHardwareWalletError = jest
       .fn()
       .mockResolvedValue(undefined);
+    mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+      QrCameraHwPreflightStatus.Ready,
+    );
+    mockUseQrCameraHwPreflight.mockReturnValue({
+      ensureReadyBeforeHwFlow: mockEnsureReadyBeforeHwFlow,
+    });
 
     (useHardwareWalletState as jest.Mock).mockReturnValue({
       connectionState: mockConnectionState,
@@ -319,6 +335,59 @@ describe('useHardwareFooter', () => {
       expect(result.current.isHardwareWalletReady).toBe(true);
     });
 
+    it('returns false without calling ensureDeviceReady when QR camera preflight redirects', async () => {
+      mockEnsureReadyBeforeHwFlow.mockResolvedValue(
+        QrCameraHwPreflightStatus.Redirected,
+      );
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Prompt,
+      });
+
+      const { result } = renderUseHardwareFooter({
+        currentConfirmation: createConfirmation(TransactionType.simpleSend),
+      });
+
+      let isReady = true;
+      await act(async () => {
+        isReady = await result.current.onSubmitPreflightCheck();
+      });
+
+      expect(isReady).toBe(false);
+      expect(mockEnsureReadyBeforeHwFlow).toHaveBeenCalledTimes(1);
+      expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+    });
+
+    it('runs QR camera preflight before ensureDeviceReady for send confirmations', async () => {
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      (useHardwareWalletConfig as jest.Mock).mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Qr,
+        accountAddress: HARDWARE_ACCOUNT_ADDRESS,
+        hardwareConnectionPermissionState:
+          HardwareConnectionPermissionState.Granted,
+      });
+
+      const { result } = renderUseHardwareFooter({
+        currentConfirmation: createConfirmation(TransactionType.simpleSend),
+      });
+
+      let isReady = false;
+      await act(async () => {
+        isReady = await result.current.onSubmitPreflightCheck();
+      });
+
+      expect(isReady).toBe(true);
+      expect(mockEnsureReadyBeforeHwFlow).toHaveBeenCalledTimes(1);
+      expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(mockEnsureReadyBeforeHwFlow.mock.invocationCallOrder[0]).toBeLessThan(
+        mockEnsureDeviceReady.mock.invocationCallOrder[0],
+      );
+    });
+
     it('returns true without calling the device check in e2e mode', async () => {
       process.env.IN_TEST = 'true';
       process.env.JEST_WORKER_ID = 'undefined';
@@ -331,6 +400,7 @@ describe('useHardwareFooter', () => {
       });
 
       expect(isReady).toBe(true);
+      expect(mockEnsureReadyBeforeHwFlow).not.toHaveBeenCalled();
       expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
     });
 

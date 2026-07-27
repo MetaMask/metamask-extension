@@ -721,7 +721,6 @@ describe('HardwareWalletErrorModal', () => {
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
           expect.any(Function),
-          null,
         );
       });
 
@@ -743,7 +742,6 @@ describe('HardwareWalletErrorModal', () => {
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledTimes(1);
         expect(mockHandleContinueWithPermissionCheck).toHaveBeenCalledWith(
           expect.any(Function),
-          null,
         );
       });
 
