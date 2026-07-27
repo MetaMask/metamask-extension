@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsQuoteDisplay matches snapshot when empty 1`] = `<div />`;
+
+exports[`RampsQuoteDisplay matches snapshot while loading 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-1 items-end"
+    data-testid="ramps-quote-display-loading"
+  >
+    <div
+      aria-hidden="true"
+      class="relative overflow-hidden rounded"
+      style="height: 16px; width: 80px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+      />
+    </div>
+    <div
+      aria-hidden="true"
+      class="relative overflow-hidden rounded"
+      style="height: 16px; width: 60px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsQuoteDisplay matches snapshot with crypto and fiat amounts 1`] = `
+<div>
+  <div
+    class="flex flex-col items-end"
+    data-testid="ramps-quote-display"
+  >
+    <p
+      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+    >
+      0.10596 ETH
+    </p>
+    <p
+      class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+    >
+      $499.97
+    </p>
+  </div>
+</div>
+`;
+
+exports[`RampsQuoteDisplay matches snapshot with warning icon 1`] = `
+<div>
+  <div
+    class="flex flex-col items-end justify-center"
+    data-testid="ramps-quote-display-warning"
+  >
+    <svg
+      class="inline-block w-4 h-4 text-warning-default"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+      />
+    </svg>
+  </div>
+</div>
+`;

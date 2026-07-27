@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Tarkkuusdesimaalit"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
   "delete": {
     "message": "Poista"
   },
@@ -351,9 +348,6 @@
   },
   "networks": {
     "message": "Verkot"
-  },
-  "nevermind": {
-    "message": "Antaa olla"
   },
   "newAccountNumberName": {
     "message": "Tili $1",

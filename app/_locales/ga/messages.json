@@ -112,9 +112,6 @@
   "accountOptions": {
     "message": "Roghanna cuntais"
   },
-  "accountPermissionToast": {
-    "message": "Ceadanna cuntais nuashonraithe"
-  },
   "accountSelectionRequired": {
     "message": "Ní mór duit cuntas a roghnú!"
   },
@@ -772,12 +769,6 @@
     "message": "Ceadaigh $1 don droichead",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Tá tú ag ceadú rochtana ar $1 $2. Ní bheidh rochtain ag an gconradh ar aon chistí breise."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $3 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nasc taiscéalaí blocála cóipeáilte!"
   },
@@ -891,9 +882,6 @@
   },
   "clear": {
     "message": "Glan"
-  },
-  "clearActivity": {
-    "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
   },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
@@ -1393,9 +1381,6 @@
   },
   "decimal": {
     "message": "Deicheamhach comhartha"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Ní mór deachúlacha a bheith ar a laghad 0, agus ní mó ná 36."
   },
   "decrypt": {
     "message": "Díchriptigh"
@@ -2147,9 +2132,6 @@
   },
   "gotIt": {
     "message": "Tuigim é."
-  },
-  "grantExactAccess": {
-    "message": "Deonaigh rochtain chruinn"
   },
   "gwei": {
     "message": "GWEI"
@@ -3105,9 +3087,6 @@
   },
   "networksSmallCase": {
     "message": "líonraí"
-  },
-  "nevermind": {
-    "message": "Ná miste"
   },
   "new": {
     "message": "Nua!"
@@ -6239,12 +6218,6 @@
   },
   "whatsThis": {
     "message": "Cad é seo?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Ceadaíonn sé comhartha don droichead."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Ceadaíonn sé comhartha le haghaidh malartaithe."
   },
   "withdrawing": {
     "message": "Ag Tarraingt Amach"
