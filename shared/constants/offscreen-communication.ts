@@ -2,6 +2,13 @@ export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
 export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
 
 /**
+ * Max wait for Ledger device discovery / first-connect probe round-trips.
+ * Used by the DMK offscreen handler and the background bridge timeout for
+ * connect-ish actions (`attemptMakeApp`, `getAppNameAndVersion`, etc.).
+ */
+export const LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS = 15_000;
+
+/**
  * Defines legal targets for offscreen communication. These values are used to
  * filter and route messages to the correct target.
  */

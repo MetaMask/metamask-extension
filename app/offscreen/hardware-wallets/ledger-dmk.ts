@@ -25,14 +25,13 @@ import {
 } from 'rxjs';
 
 import {
+  LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import { serializeLedgerError } from './ledger-utils';
-
-const DEVICE_DISCOVERY_TIMEOUT_MS = 15_000;
 
 function isWebHIDSupported(): boolean {
   return (
@@ -347,7 +346,7 @@ export class LedgerDmkBridgeHandler {
   ): Promise<LedgerDevice> {
     return firstValueFrom(
       bridge.startDiscovering({}).pipe(
-        timeoutOperator(DEVICE_DISCOVERY_TIMEOUT_MS),
+        timeoutOperator(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS),
         catchError((reason: unknown) =>
           throwError(() => normalizeDiscoveryError(reason)),
         ),

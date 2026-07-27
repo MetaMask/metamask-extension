@@ -11,6 +11,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
+  LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
@@ -20,7 +21,8 @@ import {
 } from '../../../../shared/lib/hardware-wallets';
 import { SerializedLedgerError } from '../../../offscreen/hardware-wallets/ledger-utils';
 
-const MESSAGE_TIMEOUT = 4000;
+/** Aligns connect/probe bridge timeouts with DMK device discovery. */
+const MESSAGE_TIMEOUT = LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS;
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge

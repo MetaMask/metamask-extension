@@ -9,6 +9,7 @@ import {
 import { NEVER, of, Subject, throwError } from 'rxjs';
 
 import {
+  LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationEvents,
 } from '../../../shared/constants/offscreen-communication';
@@ -142,7 +143,7 @@ describe('LedgerDmkBridgeHandler', () => {
         message: 'No permitted Ledger device found',
       });
 
-      await jest.advanceTimersByTimeAsync(15_000);
+      await jest.advanceTimersByTimeAsync(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS);
       await expectation;
       await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
     });

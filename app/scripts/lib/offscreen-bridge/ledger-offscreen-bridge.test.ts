@@ -4,6 +4,7 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import {
+  LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
@@ -299,7 +300,7 @@ describe('LedgerOffscreenBridge', () => {
       const bridge = new LedgerOffscreenBridge();
       const promise = bridge.attemptMakeApp();
 
-      jest.advanceTimersByTime(5000);
+      jest.advanceTimersByTime(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS);
 
       await expect(promise).rejects.toThrow('Ledger iframe timeout');
     });
