@@ -73,7 +73,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
         setIsReady(READY_STATE.READY);
       } else if (isMountedRef.current) {
         // Keep checking for permissions
-        setPermissionChecker(setTimeout(this.checkPermissions, SECOND));
+        setPermissionChecker(setTimeout(() => checkPermissions(), SECOND));
       }
     } catch (error) {
       if (isMountedRef.current) {
