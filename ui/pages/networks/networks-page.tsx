@@ -43,7 +43,6 @@ import {
 } from '../../selectors/multichain/networks';
 import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
