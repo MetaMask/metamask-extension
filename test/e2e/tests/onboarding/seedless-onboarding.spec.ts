@@ -194,7 +194,7 @@ describe('Metamask onboarding (with social login)', function () {
     );
   });
 
-  it.only('Imports an existing wallet with Google login and completes the onboarding process', async function () {
+  it('Imports an existing wallet with Google login and completes the onboarding process', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
