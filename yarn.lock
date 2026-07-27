@@ -36202,7 +36202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^7.0.16":
+"postcss@npm:7.0.39":
   version: 7.0.39
   resolution: "postcss@npm:7.0.39"
   dependencies:
@@ -36220,6 +36220,27 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10/4849872929ff764216515f4f746469e5e91b3ef79be85fcd8d34df068a00bcfea47f7181d523a7353a3aa3fb017ff749c23308257ae5c8c06743582ffbf066f6
+  languageName: node
+  linkType: hard
+
+"postcss@patch:postcss@npm%3A7.0.36#~/.yarn/patches/postcss-npm-7.0.36-de66d123d0.patch":
+  version: 7.0.36
+  resolution: "postcss@patch:postcss@npm%3A7.0.36#~/.yarn/patches/postcss-npm-7.0.36-de66d123d0.patch::version=7.0.36&hash=88415e"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    source-map: "npm:^0.6.1"
+    supports-color: "npm:^6.1.0"
+  checksum: 10/8c2b877778653be9c2c4ace438298fc172f14c971144343cb30aa0a5916221a1d9e14646e2c33068fb4c32f568943c80927e5dfcda87804c7223af6985a73f36
+  languageName: node
+  linkType: hard
+
+"postcss@patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch":
+  version: 7.0.39
+  resolution: "postcss@patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch::version=7.0.39&hash=88415e"
+  dependencies:
+    picocolors: "npm:^0.2.1"
+    source-map: "npm:^0.6.1"
+  checksum: 10/1371cceb9b7f27c6ba18b6b051c31e1e954b7e66fa1af6e04db84102ba2965f01337064d2630e0566683e31c995c51107f0d69773c8d6386bd09164a3aeafabd
   languageName: node
   linkType: hard
 
