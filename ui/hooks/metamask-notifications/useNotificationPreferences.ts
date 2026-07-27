@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import log from 'loglevel';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
+import { useDispatch } from '../../store/hooks';
+
 import {
   getNotificationPreferences,
   putNotificationPreferences,
