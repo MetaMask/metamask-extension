@@ -241,9 +241,7 @@ describe('PerpsActivityPage', () => {
       // The wallet-tracked deposit renders immediately, without waiting for
       // isLoading to become false, and no skeleton is shown since there is
       // already something to display.
-      expect(
-        screen.getByTestId('transaction-card-tx-005'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-card-tx-005')).toBeInTheDocument();
       expect(
         screen.queryByTestId('perps-activity-page-skeleton'),
       ).not.toBeInTheDocument();
