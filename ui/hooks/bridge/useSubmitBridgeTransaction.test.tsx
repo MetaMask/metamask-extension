@@ -381,7 +381,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(result.current.isSubmitting).toBe(false);
     });
 
-    it('throws when hardware-wallet submission fails from the signing page', async () => {
+    it('throws when hardware-wallet submission fails from the signing page without marking the tx declined', async () => {
       const store = makeMockStore({
         metamaskStateOverrides: {
           internalAccounts: {
@@ -425,6 +425,59 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(didThrow).toBe(true);
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
       expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(result.current.isSubmitting).toBe(false);
+      expect(store.getActions()).not.toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
+    });
+
+    it('marks the tx declined only when the hardware wallet user rejects signing', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const submitError = new Error('user rejected the request');
+      submitTxSpy.mockImplementationOnce((async () => {
+        throw submitError;
+      }) as never);
+      isHardwareWalletSpy.mockImplementation(() => true);
+      const { result, unmount } = renderHook(
+        () => useSubmitBridgeTransaction(),
+        {
+          wrapper: makeWrapper(store, [
+            `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+          ]),
+        },
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.submitBridgeTransaction(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+          ),
+        ).rejects.toThrow(submitError);
+      });
+      unmount();
+
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(store.getActions()).toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -482,6 +535,12 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       // Retry must reuse the in-flight dispatch instead of starting another.
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(store.getActions()).not.toContainEqual(
+        expect.objectContaining({
+          type: 'bridge/setWasTxDeclined',
+          payload: true,
+        }),
+      );
       unmount();
     });
 

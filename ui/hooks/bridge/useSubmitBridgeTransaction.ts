@@ -204,6 +204,7 @@ export default function useSubmitBridgeTransaction() {
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));
         if (!isHardwareWalletSigningPage) {
           navigateToBridgePage();
@@ -212,7 +213,6 @@ export default function useSubmitBridgeTransaction() {
       }
 
       if (hardwareWalletUsed) {
-        dispatch(setWasTxDeclined(true));
         throw e;
       }
     } finally {
