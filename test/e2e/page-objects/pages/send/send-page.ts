@@ -11,6 +11,9 @@ class SendPage {
 
   private readonly continueButton = { testId: 'send-continue-button' };
 
+  private readonly continueButtonEnabled =
+    '[data-testid="send-continue-button"]:not([disabled])';
+
   private readonly sendAlertAcknowledgeButton =
     '[data-testid="send-alert-modal-acknowledge-button"]';
 
@@ -228,6 +231,8 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.clickMaxButton();
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -253,6 +258,9 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.fillAmount(amount);
+    await this.checkAmountInputValue(amount);
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -293,10 +301,32 @@ class SendPage {
     }
   }
 
+  /**
+   * Clicks Continue once the button is stably enabled, then acknowledges the
+   * optional send-alert modal when present.
+   */
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
+    await this.waitForContinueButtonStablyEnabled();
     await this.driver.clickElement(this.continueButton);
     await this.acknowledgeSendAlertIfPresent();
+  }
+
+  /**
+   * Waits until the Continue button is visible, enabled, and remains so long
+   * enough to avoid clicking during enable/disable flicker from validation.
+   */
+  async waitForContinueButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for continue button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.continueButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
+    );
   }
 
   async pressOnAmountInput(key: string): Promise<void> {

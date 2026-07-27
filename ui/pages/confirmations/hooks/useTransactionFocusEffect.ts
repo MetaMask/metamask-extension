@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -7,6 +6,7 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
   TransactionType.batch,
