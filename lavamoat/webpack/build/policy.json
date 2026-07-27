@@ -2435,7 +2435,7 @@
     "stylelint>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "tailwindcss>postcss-selector-parser": {
@@ -3011,8 +3011,7 @@
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
-        "terser-webpack-plugin>terser": true,
-        "html-bundler-webpack-plugin>handlebars>uglify-js": true
+        "terser-webpack-plugin>terser": true
       }
     },
     "terser-webpack-plugin>terser": {
@@ -3186,16 +3185,6 @@
         "addons-linter>source-map-support": true
       }
     },
-    "html-bundler-webpack-plugin>handlebars>uglify-js": {
-      "builtin": {
-        "fs.readFileSync": true
-      },
-      "globals": {
-        "AST_Node": true,
-        "OutputStream": true,
-        "process.env": true
-      }
-    },
     "uri-js": {
       "globals": {
         "define": true
@@ -3210,7 +3199,7 @@
         "lavamoat>node-gyp-build": true
       }
     },
-    "@storybook/react>util-deprecate": {
+    "readable-stream-2>util-deprecate": {
       "builtin": {
         "util.deprecate": true
       }
