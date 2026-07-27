@@ -769,12 +769,6 @@
     "message": "Ceadaigh $1 don droichead",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Tá tú ag ceadú rochtana ar $1 $2. Ní bheidh rochtain ag an gconradh ar aon chistí breise."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $3 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nasc taiscéalaí blocála cóipeáilte!"
   },
@@ -2138,9 +2132,6 @@
   },
   "gotIt": {
     "message": "Tuigim é."
-  },
-  "grantExactAccess": {
-    "message": "Deonaigh rochtain chruinn"
   },
   "gwei": {
     "message": "GWEI"
@@ -6227,12 +6218,6 @@
   },
   "whatsThis": {
     "message": "Cad é seo?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Ceadaíonn sé comhartha don droichead."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Ceadaíonn sé comhartha le haghaidh malartaithe."
   },
   "withdrawing": {
     "message": "Ag Tarraingt Amach"
