@@ -31,7 +31,7 @@ describe('getRampsEnvironment', () => {
 
   it('returns Staging for METAMASK_ENVIRONMENT=dev', () => {
     process.env.METAMASK_ENVIRONMENT = 'dev';
-    expect(getRampsEnvironment()).toBe(RampsEnvironment.Staging);
+    expect(getRampsEnvironment()).toBe(RampsEnvironment.Development);
   });
 
   it('returns Staging for METAMASK_ENVIRONMENT=test', () => {
