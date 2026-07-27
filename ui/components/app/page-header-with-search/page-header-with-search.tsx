@@ -9,18 +9,19 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Header } from '../../../components/multichain/pages/page';
-import {
-  HeaderSearch,
-  HeaderSearchVariant,
-} from '../../../components/component-library';
+import { Header } from '../../multichain/pages/page';
+import { HeaderSearch, HeaderSearchVariant } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-type SettingsHeaderProps = {
+type PageHeaderWithSearchProps = {
   title: string;
-  isPopupOrSidepanel?: boolean;
-  isOnSettingsRoot?: boolean;
-  onClose?: () => void;
+  /**
+   * Which button to render on the right side of the header when search is
+   * closed: the search toggle (`'search'`) or a close button that navigates
+   * back to the wallet home (`'close'`). Defaults to `'search'`.
+   */
+  endAction?: 'search' | 'close';
+  onBack?: () => void;
   isSearchOpen?: boolean;
   onOpenSearch?: () => void;
   onCloseSearch?: () => void;
@@ -31,11 +32,10 @@ type SettingsHeaderProps = {
   showSearchBorder?: boolean;
 };
 
-export const SettingsHeader = ({
+export const PageHeaderWithSearch = ({
   title,
-  isPopupOrSidepanel = false,
-  isOnSettingsRoot = false,
-  onClose,
+  endAction = 'search',
+  onBack,
   isSearchOpen = false,
   onOpenSearch,
   onCloseSearch,
@@ -44,10 +44,9 @@ export const SettingsHeader = ({
   onSearchChange,
   onSearchClear,
   showSearchBorder = true,
-}: SettingsHeaderProps) => {
+}: PageHeaderWithSearchProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
 
   if (isSearchOpen) {
     return (
@@ -63,13 +62,11 @@ export const SettingsHeader = ({
         textFieldSearchProps={{
           value: searchValue,
           placeholder: searchPlaceholder ?? t('search'),
-          className: 'rounded-full border border-border-muted',
           onChangeText: onSearchChange,
           onClickClearButton: onSearchClear,
-          showClearButton: false,
           autoFocus: true,
           inputProps: {
-            'data-testid': 'settings-header-search-input',
+            'data-testid': 'page-header-search-input',
           },
         }}
       />
@@ -82,13 +79,13 @@ export const SettingsHeader = ({
       alignItems={BoxAlignItems.Center}
       gap={1}
     >
-      {showSearchButton ? (
+      {endAction === 'search' ? (
         <ButtonIcon
           iconName={IconName.Search}
           ariaLabel={t('search')}
           size={ButtonIconSize.Md}
           onClick={onOpenSearch}
-          data-testid="settings-header-search-button"
+          data-testid="page-header-search-button"
         />
       ) : (
         <ButtonIcon
@@ -96,7 +93,7 @@ export const SettingsHeader = ({
           ariaLabel={t('close')}
           size={ButtonIconSize.Md}
           onClick={() => navigate(DEFAULT_ROUTE)}
-          data-testid="settings-header-close-button"
+          data-testid="page-header-close-button"
         />
       )}
     </Box>
@@ -111,8 +108,8 @@ export const SettingsHeader = ({
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
-        onClick={onClose}
-        data-testid="settings-header-back-button"
+        onClick={onBack}
+        data-testid="page-header-back-button"
       />
     </Box>
   );

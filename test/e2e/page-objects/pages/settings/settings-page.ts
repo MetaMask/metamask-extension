@@ -12,7 +12,7 @@ class SettingsPage {
     '[data-testid="settings-tab-item-assets"]';
 
   private readonly backButton = {
-    testId: 'settings-header-back-button',
+    testId: 'page-header-back-button',
   };
 
   private readonly developerToolsSettingsButton =
@@ -39,10 +39,9 @@ class SettingsPage {
     '[data-testid="settings-search-result-item"]';
 
   private readonly searchSettingsInput =
-    '[data-testid="settings-header-search-input"]';
+    '[data-testid="page-header-search-input"]';
 
-  private readonly searchButton =
-    '[data-testid="settings-header-search-button"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';

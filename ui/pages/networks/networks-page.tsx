@@ -43,8 +43,7 @@ import {
 } from '../../selectors/multichain/networks';
 import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { SettingsHeader } from '../settings/shared/settings-header';
+import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
@@ -413,9 +412,9 @@ export const NetworksPage = () => {
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
-          <SettingsHeader
+          <PageHeaderWithSearch
             title={t('manageNetworksMenuHeading')}
-            onClose={handleRootBack}
+            onBack={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}
             onCloseSearch={() => setIsSearchOpen(false)}
