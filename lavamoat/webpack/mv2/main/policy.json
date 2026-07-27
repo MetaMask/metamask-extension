@@ -4479,7 +4479,7 @@
         "console.warn": true
       }
     },
-    "dummy-package": {
+    "@metamask/dummy-package": {
       "globals": {
         "console.log": true
       }

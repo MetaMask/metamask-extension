@@ -1,6 +1,6 @@
 {
   "resources": {
-    "dummy-package": {
+    "@metamask/dummy-package": {
       "globals": {
         "console.log": false
       }
