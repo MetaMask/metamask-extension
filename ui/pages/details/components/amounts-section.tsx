@@ -6,9 +6,9 @@ import type {
   FiatAmount,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { GAS_FEE_SPONSORED } from '../../../../shared/lib/activity/fees';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
 import { SuccessPill } from '../../../components/component-library';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
 import { TokenLabel } from '../../../components/app/transaction/token-label';
@@ -32,12 +32,17 @@ function feeToToken(fee: ActivityFee): TokenAmount {
 
 export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
-  const visibleFees =
+  const isGasFeeSponsored = useIsGasFeeSponsored(item.hash);
+
+  const amountFees =
     'fees' in item.data
-      ? (item.data.fees?.filter(
-          (fee) => fee.amount || fee.type === GAS_FEE_SPONSORED,
-        ) ?? [])
+      ? (item.data.fees?.filter((fee) => Boolean(fee.amount)) ?? [])
       : [];
+  const hasBaseFee = amountFees.some((fee) => fee.type === 'base');
+  const visibleFees =
+    isGasFeeSponsored && !hasBaseFee
+      ? [{ type: 'base' }, ...amountFees]
+      : amountFees;
 
   if (!visibleFees.length) {
     return null;
@@ -57,22 +62,18 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
 
         if (type === 'base') {
           label = t('networkFee');
+          if (isGasFeeSponsored) {
+            value = <SuccessPill label={t('paidByMetaMask')} />;
+          }
         } else if (type === 'priority') {
           label = t('priorityFee');
-        } else if (type === GAS_FEE_SPONSORED) {
-          label = t('networkFee');
-          value = <SuccessPill label={t('paidByMetaMask')} />;
         }
 
         return (
           <Row
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
-            testId={
-              type === 'base' || type === GAS_FEE_SPONSORED
-                ? 'transaction-base-fee'
-                : undefined
-            }
+            testId={type === 'base' ? 'transaction-base-fee' : undefined}
             value={value}
           />
         );
