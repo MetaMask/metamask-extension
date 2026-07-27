@@ -77,10 +77,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
           const reviewPermissionsConfirmation =
             new ReviewPermissionsConfirmation(driver);
           // Short timeout to check if permissions dialog exists
-          await driver.waitForSelector(
-            { text: 'Review permissions', tag: 'h3' },
-            { timeout: 3000 },
-          );
+          await reviewPermissionsConfirmation.checkPageIsLoaded(3000);
           await reviewPermissionsConfirmation.confirmReviewPermissions();
         } catch (error) {
           // Permissions dialog doesn't appear (local environment)

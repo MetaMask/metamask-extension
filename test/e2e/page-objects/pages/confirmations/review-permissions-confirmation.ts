@@ -36,10 +36,12 @@ class ReviewPermissionsConfirmation {
     });
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout?: number): Promise<void> {
     try {
+      const options = timeout === undefined ? undefined : { timeout };
       await this.driver.waitForSelector(
         this.reviewPermissionsConfirmationTitle,
+        options,
       );
     } catch (e) {
       console.log(

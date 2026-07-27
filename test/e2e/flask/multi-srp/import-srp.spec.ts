@@ -104,9 +104,9 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
 
         const firstSrpInputSelector =
           '[data-testid="srp-input-import__srp-note"]';
-        await driver.waitForSelector(firstSrpInputSelector);
-
-        const firstSrpInput = await driver.findElement(firstSrpInputSelector);
+        const firstSrpInput = await driver.findVisibleElement(
+          firstSrpInputSelector,
+        );
 
         assert.strictEqual(
           await firstSrpInput.getAttribute('type'),
