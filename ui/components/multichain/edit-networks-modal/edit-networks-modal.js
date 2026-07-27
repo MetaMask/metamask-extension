@@ -34,6 +34,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
+const checkboxContainerProps = {
+  style: { pointerEvents: 'none' },
+};
+
 export const EditNetworksModal = ({
   nonTestNetworks,
   testNetworks,
@@ -114,6 +118,7 @@ export const EditNetworksModal = ({
               label={t('selectAll')}
               isSelected={checked || isIndeterminate}
               onChange={() => (allAreSelected() ? deselectAll() : selectAll())}
+              checkboxContainerProps={checkboxContainerProps}
               checkedIconProps={
                 isIndeterminate ? { name: IconName.MinusBold } : undefined
               }
@@ -130,6 +135,7 @@ export const EditNetworksModal = ({
               startAccessory={
                 <Checkbox
                   isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
                 />
@@ -150,6 +156,7 @@ export const EditNetworksModal = ({
               startAccessory={
                 <Checkbox
                   isSelected={selectedChainIds.includes(network.caipChainId)}
+                  checkboxContainerProps={checkboxContainerProps}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
                 />
