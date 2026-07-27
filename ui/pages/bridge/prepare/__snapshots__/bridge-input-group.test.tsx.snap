@@ -928,28 +928,6 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
           <div
             class="flex flex-col gap-4"
           >
-            <button
-              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
-              data-testid="multichain-asset-picker__network"
-              role="button"
-            >
-              <svg
-                aria-hidden="true"
-                class="inline-block w-5 h-5 shrink-0 text-inherit"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
-                />
-              </svg>
-              <p
-                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
-              >
-                All networks
-              </p>
-            </button>
             <div
               class="mx-4"
             >
@@ -975,6 +953,28 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
                 />
               </div>
             </div>
+            <button
+              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
+              data-testid="multichain-asset-picker__network"
+              role="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
+              >
+                All networks
+              </p>
+            </button>
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -1319,28 +1319,6 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
           <div
             class="flex flex-col gap-4"
           >
-            <button
-              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
-              data-testid="multichain-asset-picker__network"
-              role="button"
-            >
-              <svg
-                aria-hidden="true"
-                class="inline-block w-5 h-5 shrink-0 text-inherit"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
-                />
-              </svg>
-              <p
-                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
-              >
-                All networks
-              </p>
-            </button>
             <div
               class="mx-4"
             >
@@ -1382,6 +1360,28 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
                 </button>
               </div>
             </div>
+            <button
+              class="inline-flex items-center justify-center gap-x-1 font-medium overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed text-default"
+              data-testid="multichain-asset-picker__network"
+              role="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 18v-2h4v2zm-4-5v-2h12v2zM3 8V6h18v2z"
+                />
+              </svg>
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default truncate"
+              >
+                All networks
+              </p>
+            </button>
           </div>
           <div
             class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
