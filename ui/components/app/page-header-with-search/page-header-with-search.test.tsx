@@ -22,13 +22,9 @@ describe('PageHeaderWithSearch', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the title and search button when forceSearchButton is set in a popup', () => {
+  it('renders the title and search button by default', () => {
     renderWithProvider(
-      <PageHeaderWithSearch
-        title={messages.settings.message}
-        isPopupOrSidepanel
-        forceSearchButton
-      />,
+      <PageHeaderWithSearch title={messages.settings.message} />,
       createMockStore(),
     );
 
@@ -36,11 +32,11 @@ describe('PageHeaderWithSearch', () => {
     expect(screen.getByTestId('page-header-search-button')).toBeVisible();
   });
 
-  it('renders the close button instead of the search button in a popup when forceSearchButton is not set', () => {
+  it('renders the close button instead of the search button when endAction is close', () => {
     renderWithProvider(
       <PageHeaderWithSearch
         title={messages.settings.message}
-        isPopupOrSidepanel
+        endAction="close"
       />,
       createMockStore(),
     );
@@ -55,7 +51,7 @@ describe('PageHeaderWithSearch', () => {
     renderWithProvider(
       <PageHeaderWithSearch
         title={messages.settings.message}
-        isPopupOrSidepanel
+        endAction="close"
       />,
       createMockStore(),
     );
@@ -65,20 +61,19 @@ describe('PageHeaderWithSearch', () => {
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it('calls onClose when back button is clicked', () => {
-    const onClose = jest.fn();
+  it('calls onBack when back button is clicked', () => {
+    const onBack = jest.fn();
     renderWithProvider(
       <PageHeaderWithSearch
         title={messages.settings.message}
-        isPopupOrSidepanel
-        onClose={onClose}
+        onBack={onBack}
       />,
       createMockStore(),
     );
 
     fireEvent.click(screen.getByTestId('page-header-back-button'));
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onBack).toHaveBeenCalledTimes(1);
   });
 
   it('calls onOpenSearch when search button is clicked', () => {
@@ -86,8 +81,6 @@ describe('PageHeaderWithSearch', () => {
     renderWithProvider(
       <PageHeaderWithSearch
         title={messages.settings.message}
-        isPopupOrSidepanel
-        forceSearchButton
         onOpenSearch={onOpenSearch}
       />,
       createMockStore(),

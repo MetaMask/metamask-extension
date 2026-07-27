@@ -415,7 +415,7 @@ export const NetworksPage = () => {
         <>
           <PageHeaderWithSearch
             title={t('manageNetworksMenuHeading')}
-            onClose={handleRootBack}
+            onBack={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}
             onCloseSearch={() => setIsSearchOpen(false)}

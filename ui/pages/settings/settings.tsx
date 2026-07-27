@@ -468,9 +468,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       )}
       <PageHeaderWithSearch
         title={headerTitle}
-        isPopupOrSidepanel={usesCompactSettingsLayout}
-        forceSearchButton={isOnSettingsRoot}
-        onClose={handleClose}
+        endAction={
+          usesCompactSettingsLayout && !isOnSettingsRoot ? 'close' : 'search'
+        }
+        onBack={handleClose}
         isSearchOpen={isSearchOpen}
         onOpenSearch={() => setIsSearchOpen(true)}
         onCloseSearch={handleCloseSearch}

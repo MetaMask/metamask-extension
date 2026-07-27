@@ -15,9 +15,13 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type PageHeaderWithSearchProps = {
   title: string;
-  isPopupOrSidepanel?: boolean;
-  forceSearchButton?: boolean;
-  onClose?: () => void;
+  /**
+   * Which button to render on the right side of the header when search is
+   * closed: the search toggle (`'search'`) or a close button that navigates
+   * back to the wallet home (`'close'`). Defaults to `'search'`.
+   */
+  endAction?: 'search' | 'close';
+  onBack?: () => void;
   isSearchOpen?: boolean;
   onOpenSearch?: () => void;
   onCloseSearch?: () => void;
@@ -30,9 +34,8 @@ type PageHeaderWithSearchProps = {
 
 export const PageHeaderWithSearch = ({
   title,
-  isPopupOrSidepanel = false,
-  forceSearchButton = false,
-  onClose,
+  endAction = 'search',
+  onBack,
   isSearchOpen = false,
   onOpenSearch,
   onCloseSearch,
@@ -44,7 +47,6 @@ export const PageHeaderWithSearch = ({
 }: PageHeaderWithSearchProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopupOrSidepanel || forceSearchButton;
 
   if (isSearchOpen) {
     return (
@@ -77,7 +79,7 @@ export const PageHeaderWithSearch = ({
       alignItems={BoxAlignItems.Center}
       gap={1}
     >
-      {showSearchButton ? (
+      {endAction === 'search' ? (
         <ButtonIcon
           iconName={IconName.Search}
           ariaLabel={t('search')}
@@ -106,7 +108,7 @@ export const PageHeaderWithSearch = ({
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
-        onClick={onClose}
+        onClick={onBack}
         data-testid="page-header-back-button"
       />
     </Box>
