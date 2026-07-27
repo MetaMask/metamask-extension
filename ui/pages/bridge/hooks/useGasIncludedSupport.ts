@@ -3,7 +3,7 @@ import {
   isNativeAddress,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
 import { getSentinelNetworkFlags } from '../../../store/actions';
@@ -15,7 +15,8 @@ import {
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
-import { useAsyncResult } from '../../../hooks/useAsync';
+
+type NetworkFlags = Awaited<ReturnType<typeof getSentinelNetworkFlags>>;
 
 export const useGasIncludedSupport = () => {
   const fromToken = useSelector(getFromToken);
@@ -33,12 +34,39 @@ export const useGasIncludedSupport = () => {
 
   const isBridge = isCrossChain(fromToken?.chainId, toChain?.chainId);
 
-  // Fetch all sentinel flags for src chain
-  const { value: networkFlags } = useAsyncResult(
-    async () =>
-      hexChainId ? await getSentinelNetworkFlags(hexChainId) : undefined,
-    [hexChainId],
-  );
+  // Fetch sentinel flags for src chain; cancel in-flight work on chain change
+  const [networkFlags, setNetworkFlags] = useState<NetworkFlags | undefined>();
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const fetchNetworkFlags = async () => {
+      if (!hexChainId) {
+        if (!isCancelled) {
+          setNetworkFlags(undefined);
+        }
+        return;
+      }
+
+      try {
+        const flags = await getSentinelNetworkFlags(hexChainId);
+        if (!isCancelled) {
+          setNetworkFlags(flags);
+        }
+      } catch {
+        if (!isCancelled) {
+          setNetworkFlags(undefined);
+        }
+      }
+    };
+
+    setNetworkFlags(undefined);
+    fetchNetworkFlags();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [hexChainId]);
 
   // If native EVM and simulationIncludeFees are supported, gasless request params pretty much get ignored
   // This means the backend can always return a gasIncluded quote
@@ -53,7 +81,7 @@ export const useGasIncludedSupport = () => {
     if (isSolanaChainId(fromToken?.chainId)) {
       return true;
     }
-    return isSmartTransaction && networkFlags?.sendBundle;
+    return Boolean(isSmartTransaction && networkFlags?.sendBundle);
   }, [isSmartTransaction, networkFlags?.sendBundle, fromToken?.chainId]);
 
   // GasIncluded7702 flag
