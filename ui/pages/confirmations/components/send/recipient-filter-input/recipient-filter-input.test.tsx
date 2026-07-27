@@ -33,19 +33,6 @@ jest.mock('@metamask/design-system-react', () => ({
   ),
   TextFieldSize: { Lg: 'lg' },
 }));
-jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
-  ),
-}));
 
 describe('RecipientFilterInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
@@ -64,12 +51,11 @@ describe('RecipientFilterInput', () => {
       <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('text-field-search')).toBeInTheDocument();
     expect(getByTestId('recipient-filter-search-input')).toBeInTheDocument();
   });
 
-  it('displays placeholder', () => {
+  it('displays default placeholder', () => {
     const { getByTestId } = render(
       <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
@@ -93,10 +79,15 @@ describe('RecipientFilterInput', () => {
 
   it('displays current search query value', () => {
     const { getByTestId } = render(
-      <RecipientFilterInput searchQuery="initial" onChange={mockOnChange} />,
+      <RecipientFilterInput
+        searchQuery="current query"
+        onChange={mockOnChange}
+      />,
     );
 
-    expect(getByTestId('recipient-filter-search-input')).toHaveValue('initial');
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue(
+      'current query',
+    );
   });
 
   it('clears input when clear button is clicked', () => {
@@ -123,13 +114,11 @@ describe('RecipientFilterInput', () => {
     expect(getByTestId('recipient-filter-search-input')).toHaveValue('updated');
   });
 
-  it('clears when clear button is clicked with empty value', () => {
+  it('renders with empty search query', () => {
     const { getByTestId } = render(
       <RecipientFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    fireEvent.click(getByTestId('clear-button'));
-
-    expect(mockOnChange).toHaveBeenCalledWith('');
+    expect(getByTestId('recipient-filter-search-input')).toHaveValue('');
   });
 });

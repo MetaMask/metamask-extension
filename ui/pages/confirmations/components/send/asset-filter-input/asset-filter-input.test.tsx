@@ -33,19 +33,6 @@ jest.mock('@metamask/design-system-react', () => ({
   ),
   TextFieldSize: { Lg: 'lg' },
 }));
-jest.mock('../../../../../components/component-library', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: unknown;
-  }) => (
-    <div data-testid="box" {...props}>
-      {children}
-    </div>
-  ),
-}));
 
 describe('AssetFilterInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
@@ -64,7 +51,6 @@ describe('AssetFilterInput', () => {
       <AssetFilterInput searchQuery="" onChange={mockOnChange} />,
     );
 
-    expect(getByTestId('box')).toBeInTheDocument();
     expect(getByTestId('text-field-search')).toBeInTheDocument();
     expect(getByTestId('asset-filter-search-input')).toBeInTheDocument();
   });
