@@ -457,9 +457,6 @@
   "ui/pages/create-account/connect-hardware/index.tsx": {
     "promise/no-nesting": {
       "count": 1
-    },
-    "react-hooks/exhaustive-deps": {
-      "count": 3
     }
   },
   "ui/pages/create-account/connect-hardware/select-hardware.tsx": {
