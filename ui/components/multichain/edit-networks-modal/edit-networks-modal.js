@@ -129,7 +129,6 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  className="pointer-events-none"
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
@@ -150,7 +149,6 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  className="pointer-events-none"
                   isSelected={selectedChainIds.includes(network.caipChainId)}
                   onChange={() => handleNetworkClick(network.caipChainId)}
                   onClick={(event) => event.stopPropagation()}
