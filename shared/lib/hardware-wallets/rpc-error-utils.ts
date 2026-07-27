@@ -234,7 +234,7 @@ function isPlainObjectWithTrezorSdkErrorCode(
  * @param error - The error to check
  * @returns True if the error has HardwareWalletError-like top-level shape
  */
-function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
+type SerializedTopLevelHardwareWalletError = {
   name: 'HardwareWalletError';
   message?: string;
   stack?: string;
@@ -243,7 +243,11 @@ function isSerializedTopLevelHardwareWalletError(error: unknown): error is {
   category?: string;
   userMessage?: string;
   metadata?: Record<string, unknown>;
-} {
+};
+
+function isSerializedTopLevelHardwareWalletError(
+  error: unknown,
+): error is SerializedTopLevelHardwareWalletError {
   if (!isPlainObjectWithErrorCode(error)) {
     return false;
   }
@@ -738,6 +742,183 @@ const getErrorMessage = (err: unknown): string => {
 };
 
 /**
+ * Return the value if it is an Error instance, otherwise undefined.
+ *
+ * @param cause - The potential Error cause
+ * @returns The cause if it is an Error, otherwise undefined
+ */
+function getErrorCause(cause: unknown): Error | undefined {
+  return cause instanceof Error ? cause : undefined;
+}
+
+/**
+ * Infer a Trezor ErrorCode from a KeyringControllerError when the cause
+ * code is missing or Unknown.
+ *
+ * @param error - The KeyringControllerError to inspect
+ * @param walletType - The hardware wallet type
+ * @param causeCode - The already-extracted cause ErrorCode, if any
+ * @returns A HardwareWalletError if a Trezor code was inferred, otherwise null
+ */
+function tryInferTrezorKeyringError(
+  error: KeyringControllerError,
+  walletType: HardwareWalletType,
+  causeCode: ErrorCode | null,
+): HardwareWalletError | null {
+  if (
+    walletType !== HardwareWalletType.Trezor ||
+    (causeCode !== ErrorCode.Unknown && causeCode !== null)
+  ) {
+    return null;
+  }
+
+  const inferredCauseCode = mapTrezorErrorToErrorCode(error.cause);
+  if (inferredCauseCode !== ErrorCode.Unknown) {
+    return createHardwareWalletError(
+      inferredCauseCode,
+      walletType,
+      getErrorMessage(error.cause),
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  const inferredKeyringCode = mapTrezorErrorToErrorCode(error);
+  if (inferredKeyringCode !== ErrorCode.Unknown) {
+    return createHardwareWalletError(
+      inferredKeyringCode,
+      walletType,
+      error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Reconstruct a HardwareWalletError from a KeyringControllerError.
+ *
+ * @param error - The KeyringControllerError to reconstruct from
+ * @param walletType - The hardware wallet type
+ * @returns A reconstructed HardwareWalletError
+ */
+function fromKeyringControllerError(
+  error: KeyringControllerError,
+  walletType: HardwareWalletType,
+): HardwareWalletError {
+  const causeCode = getHardwareWalletErrorCode(error.cause);
+
+  const trezorInferred = tryInferTrezorKeyringError(
+    error,
+    walletType,
+    causeCode,
+  );
+  if (trezorInferred) {
+    return trezorInferred;
+  }
+
+  if (causeCode !== null) {
+    return createHardwareWalletError(
+      causeCode,
+      walletType,
+      getErrorMessage(error.cause),
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  const keyringErrorCode = error.code
+    ? mapStringCodeToErrorCode(error.code)
+    : null;
+  const errorCode = keyringErrorCode ?? ErrorCode.Unknown;
+  return createHardwareWalletError(errorCode, walletType, error.message, {
+    cause: error.cause,
+  });
+}
+
+/**
+ * Reconstruct a HardwareWalletError from a top-level serialized shape.
+ *
+ * @param error - A plain object matching the HardwareWalletError shape
+ * @param walletType - The hardware wallet type
+ * @returns A reconstructed HardwareWalletError
+ */
+function fromSerializedTopLevelHardwareWalletError(
+  error: SerializedTopLevelHardwareWalletError,
+  walletType: HardwareWalletType,
+): HardwareWalletError {
+  return convertDataToHardwareWalletError(
+    {
+      code: error.code,
+      severity: error.severity as Severity | undefined,
+      category: error.category as Category | undefined,
+      userMessage: error.userMessage,
+      metadata: error.metadata,
+    },
+    error.message ?? '',
+    walletType,
+    error.stack,
+  );
+}
+
+/**
+ * Try to reconstruct a HardwareWalletError from a Ledger status code
+ * embedded in the error message.
+ *
+ * @param error - The error to inspect
+ * @param walletType - The hardware wallet type
+ * @returns A HardwareWalletError if a Ledger status code was found, otherwise null
+ */
+function tryFromLedgerErrorMessage(
+  error: unknown,
+  walletType: HardwareWalletType,
+): HardwareWalletError | null {
+  if (walletType !== HardwareWalletType.Ledger) {
+    return null;
+  }
+
+  // Status code may be in the message, e.g. "Device is locked (... (0x5515))"
+  const errorMessage = getErrorMessage(error);
+  const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
+  if (!hexStatusCode) {
+    return null;
+  }
+
+  const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
+  return createHardwareWalletError(errorCode, walletType, errorMessage, {
+    cause: error instanceof Error ? error : undefined,
+  });
+}
+
+/**
+ * Try to reconstruct a HardwareWalletError from a Trezor error via message mapping.
+ *
+ * @param error - The error to map
+ * @param walletType - The hardware wallet type
+ * @returns A HardwareWalletError if the wallet type is Trezor, otherwise null
+ */
+function tryFromTrezorErrorMessage(
+  error: unknown,
+  walletType: HardwareWalletType,
+): HardwareWalletError | null {
+  if (walletType !== HardwareWalletType.Trezor) {
+    return null;
+  }
+
+  const errorMessage = getErrorMessage(error);
+  const errorCode = mapTrezorErrorToErrorCode(error);
+
+  return createHardwareWalletError(errorCode, walletType, errorMessage, {
+    cause: error instanceof Error ? error : undefined,
+  });
+}
+
+/**
  * Reconstruct a HardwareWalletError from a JsonRpcError
  *
  * When errors cross the RPC boundary, they lose their class instance type.
@@ -756,57 +937,10 @@ export function toHardwareWalletError(
   }
 
   if (error instanceof KeyringControllerError) {
-    const causeCode = getHardwareWalletErrorCode(error.cause);
-    if (
-      walletType === HardwareWalletType.Trezor &&
-      (causeCode === ErrorCode.Unknown || causeCode === null)
-    ) {
-      const inferredCauseCode = mapTrezorErrorToErrorCode(error.cause);
-      if (inferredCauseCode !== ErrorCode.Unknown) {
-        return createHardwareWalletError(
-          inferredCauseCode,
-          walletType,
-          getErrorMessage(error.cause),
-          {
-            cause: error?.cause instanceof Error ? error.cause : undefined,
-          },
-        );
-      }
-
-      const inferredKeyringCode = mapTrezorErrorToErrorCode(error);
-      if (inferredKeyringCode !== ErrorCode.Unknown) {
-        return createHardwareWalletError(
-          inferredKeyringCode,
-          walletType,
-          error.message,
-          {
-            cause: error?.cause instanceof Error ? error.cause : undefined,
-          },
-        );
-      }
-    }
-
-    if (causeCode !== null) {
-      return createHardwareWalletError(
-        causeCode,
-        walletType,
-        getErrorMessage(error.cause),
-        {
-          cause: error?.cause instanceof Error ? error.cause : undefined,
-        },
-      );
-    }
-
-    const keyringErrorCode = error?.code
-      ? mapStringCodeToErrorCode(error.code)
-      : null;
-    const errorCode = keyringErrorCode ?? ErrorCode.Unknown;
-    return createHardwareWalletError(errorCode, walletType, error.message, {
-      cause: error?.cause,
-    });
+    return fromKeyringControllerError(error, walletType);
   }
 
-  // Check for serialized RPC error with HardwareWalletError in data.cause
+  // Serialized RPC error with HardwareWalletError in data.cause
   // Structure: { data: { cause: { name: 'HardwareWalletError', ... }, metadata?: {...} }, code: -32603 }
   if (isSerializedRpcHardwareWalletError(error)) {
     // Pass parent data which contains metadata like recreatedTxId
@@ -821,62 +955,33 @@ export function toHardwareWalletError(
 
   // JsonRpcError with hardware wallet data (data.code is a string or numeric ErrorCode)
   if (isJsonRpcHardwareWalletError(error)) {
-    const hwError = convertDataToHardwareWalletError(
+    return convertDataToHardwareWalletError(
       error.data,
       error.message ?? '',
       walletType,
       error.stack,
     );
-
-    return hwError;
   }
 
-  // Plain serialized HardwareWalletError shape at the top level:
-  // { name, message, code, severity, category, userMessage, metadata, ... }
+  // Plain serialized HardwareWalletError shape at the top level
   if (isSerializedTopLevelHardwareWalletError(error)) {
-    return convertDataToHardwareWalletError(
-      {
-        code: error.code,
-        severity: error.severity as Severity | undefined,
-        category: error.category as Category | undefined,
-        userMessage: error.userMessage,
-        metadata: error.metadata,
-      },
-      error.message ?? '',
-      walletType,
-      error.stack,
-    );
+    return fromSerializedTopLevelHardwareWalletError(error, walletType);
   }
 
-  // For Ledger errors, the status code might be in the error message
-  // (e.g., "Device is locked (Ledger device: Locked device (0x5515))")
-  if (walletType === HardwareWalletType.Ledger) {
-    const errorMessage = getErrorMessage(error);
-    const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
-
-    if (hexStatusCode) {
-      const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-
-      return createHardwareWalletError(errorCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+  const ledgerError = tryFromLedgerErrorMessage(error, walletType);
+  if (ledgerError) {
+    return ledgerError;
   }
 
-  if (walletType === HardwareWalletType.Trezor) {
-    const errorMessage = getErrorMessage(error);
-    const errorCode = mapTrezorErrorToErrorCode(error);
-
-    return createHardwareWalletError(errorCode, walletType, errorMessage, {
-      cause: error instanceof Error ? error : undefined,
-    });
+  const trezorError = tryFromTrezorErrorMessage(error, walletType);
+  if (trezorError) {
+    return trezorError;
   }
 
   // Fallback: use the error parser to create a HardwareWalletError
-  const fallbackMessage = getErrorMessage(error);
   return createHardwareWalletError(
     ErrorCode.Unknown,
     walletType,
-    fallbackMessage,
+    getErrorMessage(error),
   );
 }
