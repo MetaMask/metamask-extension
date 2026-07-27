@@ -336,7 +336,9 @@ function convertDataToHardwareWalletError(
     walletType === HardwareWalletType.Ledger
   ) {
     const numericCode =
-      typeof data.code === 'number' ? data.code : parseInt(data.code, 10);
+      typeof data.code === 'number'
+        ? data.code
+        : Number.parseInt(data.code, 10);
     if (!Number.isNaN(numericCode)) {
       const hexStatusCode = `0x${numericCode.toString(16).padStart(4, '0')}`;
       errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
@@ -400,7 +402,7 @@ function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
   // Try parsing as a number first (in case it's a numeric string like "3003")
   // This must come before checking for enum key names because numeric enums
   // have reverse mappings (e.g., ErrorCode["3003"] = "DeviceDisconnected")
-  const numericCode = parseInt(stringCode, 10);
+  const numericCode = Number.parseInt(stringCode, 10);
   if (!Number.isNaN(numericCode)) {
     return mapNumericCodeToErrorCode(numericCode);
   }
@@ -422,7 +424,7 @@ function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
  * @returns The hex status code if found (e.g., "0x5515"), null otherwise
  */
 function extractHexStatusCodeFromMessage(message: string): string | null {
-  const hexMatch = message.match(/0x[\da-fA-F]{4}/u);
+  const hexMatch = /0x[\da-fA-F]{4}/u.exec(message);
   return hexMatch ? hexMatch[0].toLowerCase() : null;
 }
 
@@ -495,20 +497,16 @@ export function hasUserRejectedMessage(error: unknown): boolean {
   let stack = '';
 
   if (rawStack !== null && rawStack !== undefined) {
-    if (
+    if (typeof rawStack === 'string') {
+      stack = rawStack;
+    } else if (
       typeof rawStack === 'number' ||
       typeof rawStack === 'boolean' ||
       typeof rawStack === 'bigint'
     ) {
       stack = String(rawStack);
-    } else if (typeof rawStack === 'string') {
-      stack = rawStack;
     } else {
-      const stringifiedStack = rawStack.toString();
-      stack =
-        stringifiedStack === '[object Object]'
-          ? extractMessageFromUnknownError(rawStack)
-          : stringifiedStack;
+      stack = extractMessageFromUnknownError(rawStack);
     }
   }
 
