@@ -162,7 +162,7 @@ describe('Settings', () => {
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-header-back-button',
+        'page-header-back-button',
       );
 
       fireEvent.click(backButton);
@@ -179,7 +179,7 @@ describe('Settings', () => {
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-header-back-button',
+        'page-header-back-button',
       );
 
       fireEvent.click(backButton);
@@ -196,7 +196,7 @@ describe('Settings', () => {
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-header-back-button',
+        'page-header-back-button',
       );
 
       fireEvent.click(backButton);
@@ -213,7 +213,7 @@ describe('Settings', () => {
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-header-back-button',
+        'page-header-back-button',
       );
 
       fireEvent.click(backButton);

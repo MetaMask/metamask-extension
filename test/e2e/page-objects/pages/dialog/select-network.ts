@@ -8,7 +8,7 @@ class SelectNetwork {
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton = '[data-testid="settings-header-back-button"]';
+  private readonly closeButton = '[data-testid="page-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton =
     '[data-testid="confirm-delete-network-modal-delete-button"]';
@@ -34,9 +34,9 @@ class SelectNetwork {
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
   private readonly searchButton =
-    '[data-testid="settings-header-search-button"]';
+    '[data-testid="page-header-search-button"]';
 
-  private readonly searchInput = '[data-testid="settings-header-search-input"]';
+  private readonly searchInput = '[data-testid="page-header-search-input"]';
 
   private readonly selectNetworkMessage = {
     text: 'Manage networks',

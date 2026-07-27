@@ -9,17 +9,17 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Header } from '../../../components/multichain/pages/page';
+import { Header } from '../../multichain/pages/page';
 import {
   HeaderSearch,
   HeaderSearchVariant,
-} from '../../../components/component-library';
+} from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-type SettingsHeaderProps = {
+type PageHeaderWithSearchProps = {
   title: string;
   isPopupOrSidepanel?: boolean;
-  isOnSettingsRoot?: boolean;
+  forceSearchButton?: boolean;
   onClose?: () => void;
   isSearchOpen?: boolean;
   onOpenSearch?: () => void;
@@ -31,10 +31,10 @@ type SettingsHeaderProps = {
   showSearchBorder?: boolean;
 };
 
-export const SettingsHeader = ({
+export const PageHeaderWithSearch = ({
   title,
   isPopupOrSidepanel = false,
-  isOnSettingsRoot = false,
+  forceSearchButton = false,
   onClose,
   isSearchOpen = false,
   onOpenSearch,
@@ -44,10 +44,10 @@ export const SettingsHeader = ({
   onSearchChange,
   onSearchClear,
   showSearchBorder = true,
-}: SettingsHeaderProps) => {
+}: PageHeaderWithSearchProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
+  const showSearchButton = !isPopupOrSidepanel || forceSearchButton;
 
   if (isSearchOpen) {
     return (
@@ -63,14 +63,12 @@ export const SettingsHeader = ({
         textFieldSearchProps={{
           value: searchValue,
           placeholder: searchPlaceholder ?? t('search'),
-          className: 'rounded-full border border-border-muted',
           onChangeText: onSearchChange,
           onClickClearButton: onSearchClear,
-          showClearButton: false,
           autoFocus: true,
           inputProps: {
-            'data-testid': 'settings-header-search-input',
-          },
+            'data-testid': 'page-header-search-input',
+          }  as React.ComponentPropsWithoutRef<'input'>,
         }}
       />
     );
@@ -88,7 +86,7 @@ export const SettingsHeader = ({
           ariaLabel={t('search')}
           size={ButtonIconSize.Md}
           onClick={onOpenSearch}
-          data-testid="settings-header-search-button"
+          data-testid="page-header-search-button"
         />
       ) : (
         <ButtonIcon
@@ -96,7 +94,7 @@ export const SettingsHeader = ({
           ariaLabel={t('close')}
           size={ButtonIconSize.Md}
           onClick={() => navigate(DEFAULT_ROUTE)}
-          data-testid="settings-header-close-button"
+          data-testid="page-header-close-button"
         />
       )}
     </Box>
@@ -112,7 +110,7 @@ export const SettingsHeader = ({
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
         onClick={onClose}
-        data-testid="settings-header-back-button"
+        data-testid="page-header-back-button"
       />
     </Box>
   );

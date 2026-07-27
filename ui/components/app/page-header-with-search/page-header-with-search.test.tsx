@@ -6,7 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { SettingsHeader } from './settings-header';
+import { PageHeaderWithSearch } from './page-header-with-search';
 
 const mockNavigate = jest.fn();
 
@@ -17,52 +17,50 @@ jest.mock('react-router-dom', () => ({
 
 const createMockStore = () => configureMockStore([thunk])(mockState);
 
-describe('SettingsHeader', () => {
+describe('PageHeaderWithSearch', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders title and search button at settings root', () => {
+  it('renders the title and search button when forceSearchButton is set in a popup', () => {
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isPopupOrSidepanel
-        isOnSettingsRoot
-        searchValue=""
+        forceSearchButton
       />,
       createMockStore(),
     );
 
     expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
-    expect(screen.getByTestId('settings-header-search-button')).toBeVisible();
+    expect(screen.getByTestId('page-header-search-button')).toBeVisible();
   });
 
-  it('renders close button in end accessory for popup subpages', () => {
+  it('renders the close button instead of the search button in a popup when forceSearchButton is not set', () => {
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isPopupOrSidepanel
-        isOnSettingsRoot={false}
       />,
       createMockStore(),
     );
 
+    expect(screen.getByTestId('page-header-close-button')).toBeVisible();
     expect(
-      screen.queryByTestId('settings-header-search-button'),
+      screen.queryByTestId('page-header-search-button'),
     ).not.toBeInTheDocument();
   });
 
-  it('navigates to default route when close button is clicked on popup subpage', () => {
+  it('navigates to the default route when the close button is clicked', () => {
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isPopupOrSidepanel
-        isOnSettingsRoot={false}
       />,
       createMockStore(),
     );
 
-    fireEvent.click(screen.getByTestId('settings-header-close-button'));
+    fireEvent.click(screen.getByTestId('page-header-close-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
@@ -70,16 +68,15 @@ describe('SettingsHeader', () => {
   it('calls onClose when back button is clicked', () => {
     const onClose = jest.fn();
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isPopupOrSidepanel
-        isOnSettingsRoot={false}
         onClose={onClose}
       />,
       createMockStore(),
     );
 
-    fireEvent.click(screen.getByTestId('settings-header-back-button'));
+    fireEvent.click(screen.getByTestId('page-header-back-button'));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -87,23 +84,23 @@ describe('SettingsHeader', () => {
   it('calls onOpenSearch when search button is clicked', () => {
     const onOpenSearch = jest.fn();
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isPopupOrSidepanel
-        isOnSettingsRoot
+        forceSearchButton
         onOpenSearch={onOpenSearch}
       />,
       createMockStore(),
     );
 
-    fireEvent.click(screen.getByTestId('settings-header-search-button'));
+    fireEvent.click(screen.getByTestId('page-header-search-button'));
 
     expect(onOpenSearch).toHaveBeenCalledTimes(1);
   });
 
   it('renders search input when isSearchOpen is true', () => {
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isSearchOpen
         searchValue=""
@@ -113,7 +110,7 @@ describe('SettingsHeader', () => {
       createMockStore(),
     );
 
-    expect(screen.getByTestId('settings-header-search-input')).toBeVisible();
+    expect(screen.getByTestId('page-header-search-input')).toBeVisible();
     expect(
       screen.queryByText(messages.settings.message),
     ).not.toBeInTheDocument();
@@ -123,7 +120,7 @@ describe('SettingsHeader', () => {
     const onCloseSearch = jest.fn();
     const onSearchClear = jest.fn();
     renderWithProvider(
-      <SettingsHeader
+      <PageHeaderWithSearch
         title={messages.settings.message}
         isSearchOpen
         searchValue="test"
