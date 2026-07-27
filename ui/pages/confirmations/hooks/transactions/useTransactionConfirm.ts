@@ -149,8 +149,6 @@ export function useTransactionConfirm() {
     isGaslessSupported,
     isGaslessSupportedSTX,
     isSponsorshipOptedOut,
-    transactionMeta?.isGasFeeSponsored,
-    transactionMeta?.isExternalSign,
     dispatch,
     showErrorModal,
     handleSmartTransaction,
