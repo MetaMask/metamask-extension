@@ -64,7 +64,10 @@ function serializeBackup(
 
   try {
     const backup = error.getBackup();
-    return backup == null ? undefined : backup;
+    if (backup === null || backup === undefined) {
+      return undefined;
+    }
+    return backup;
   } catch {
     return undefined;
   }
@@ -96,6 +99,6 @@ export function getErrorLike(error: unknown): ErrorLike {
     stack: getStringProperty(error, 'stack'),
     ...(cause ? { cause } : {}),
     ...(sentryTags && Object.keys(sentryTags).length > 0 ? { sentryTags } : {}),
-    ...(backup !== undefined ? { backup } : {}),
+    ...(backup === undefined ? {} : { backup }),
   };
 }

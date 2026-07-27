@@ -561,7 +561,6 @@ describe('repair button', () => {
     const error = Object.assign(new Error(MISSING_VAULT_ERROR), {
       backup: MOCK_BACKUP_WITH_VAULT,
     });
-    const mockPort = createMockPort();
 
     await expect(
       displayCriticalErrorMessage(
