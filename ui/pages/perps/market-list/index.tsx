@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
@@ -60,6 +60,12 @@ import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect } from './components/filter-select';
+
+/**
+ * Settle window before a typed query counts as a real search, matching mobile
+ * so the two clients report comparable search funnels.
+ */
+const SEARCH_QUERY_DEBOUNCE_MS = 500;
 
 /**
  * Check if a market is an uncategorized HIP-3 market (no market type mapping).
@@ -214,6 +220,95 @@ export const MarketListView = () => {
     sortDirection,
   ]);
 
+  // --- Market search funnel (query -> result tapped | abandoned) ------------
+  // Refs, not state: these only feed analytics and must never trigger a render.
+  const trackRef = useRef(track);
+  trackRef.current = track;
+  // Latest settled result set, read by the tap handler for rank/count.
+  const displayedMarketsRef = useRef(displayedMarkets);
+  displayedMarketsRef.current = displayedMarkets;
+  // Last query actually emitted, so abandonment reports what was measured.
+  const emittedQueryRef = useRef('');
+  const emittedResultsCountRef = useRef<number | undefined>(undefined);
+  const searchStartedAtRef = useRef<number | null>(null);
+  const queryCountRef = useRef(0);
+  const resultTappedRef = useRef(false);
+
+  const emitSearchAbandoned = useCallback(() => {
+    if (!emittedQueryRef.current || resultTappedRef.current) {
+      return;
+    }
+    trackRef.current(MetaMetricsEventName.PerpsSearchAbandoned, {
+      [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: emittedQueryRef.current,
+      ...(emittedResultsCountRef.current === undefined
+        ? {}
+        : {
+            [PERPS_EVENT_PROPERTY.RESULTS_COUNT]:
+              emittedResultsCountRef.current,
+          }),
+      [PERPS_EVENT_PROPERTY.QUERY_COUNT]: queryCountRef.current,
+      ...(searchStartedAtRef.current === null
+        ? {}
+        : {
+            [PERPS_EVENT_PROPERTY.TIME_IN_SEARCH_MS]:
+              Date.now() - searchStartedAtRef.current,
+          }),
+    });
+    emittedQueryRef.current = '';
+    emittedResultsCountRef.current = undefined;
+    searchStartedAtRef.current = null;
+    queryCountRef.current = 0;
+  }, []);
+
+  // Debounced PERPS_SEARCH_QUERY + the matching results/no-results screen view.
+  // Waits for markets to settle so the reported count is never a mid-load zero,
+  // and re-runs on count changes so the emitted count matches what is rendered.
+  const trimmedQuery = searchQuery.trim();
+  useEffect(() => {
+    if (!trimmedQuery || isLoading) {
+      return undefined;
+    }
+    const normalizedQuery = trimmedQuery.toLowerCase();
+    if (emittedQueryRef.current === normalizedQuery) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(() => {
+      const resultCount = displayedMarketsRef.current.length;
+      const hasResults = resultCount > 0;
+      if (searchStartedAtRef.current === null) {
+        searchStartedAtRef.current = Date.now();
+      }
+      emittedQueryRef.current = normalizedQuery;
+      emittedResultsCountRef.current = resultCount;
+      queryCountRef.current += 1;
+      resultTappedRef.current = false;
+
+      trackRef.current(MetaMetricsEventName.PerpsSearchQuery, {
+        [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
+        [PERPS_EVENT_PROPERTY.RESULTS_COUNT]: resultCount,
+        [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
+        // No search chips in the Extension, so `discovery` never applies: a
+        // short ticker-like token reads as intent, anything else as browse.
+        [PERPS_EVENT_PROPERTY.MODE]: /^[a-z0-9]{1,6}$/u.test(normalizedQuery)
+          ? 'intent'
+          : 'browse',
+        [PERPS_EVENT_PROPERTY.SOURCE]:
+          PERPS_EVENT_VALUE.SOURCE.PERP_MARKET_SEARCH,
+      });
+      trackRef.current(MetaMetricsEventName.PerpsScreenViewed, {
+        [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasResults
+          ? PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_RESULTS_SHOWN
+          : PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_NO_RESULTS,
+        [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
+        [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
+      });
+    }, SEARCH_QUERY_DEBOUNCE_MS);
+    return () => clearTimeout(timeoutId);
+  }, [trimmedQuery, isLoading, displayedMarkets.length]);
+
+  // Leaving the page with an unresolved search is an abandonment.
+  useEffect(() => emitSearchAbandoned, [emitSearchAbandoned]);
+
   // Handlers
   const handleBack = useCallback(() => {
     navigate(-1);
@@ -224,8 +319,10 @@ export const MarketListView = () => {
   }, []);
 
   const handleSearchClear = useCallback(() => {
+    // Clearing the box ends the search session without a result.
+    emitSearchAbandoned();
     setSearchQuery('');
-  }, []);
+  }, [emitSearchAbandoned]);
 
   const handleSortChange = useCallback(
     (field: SortField, direction: SortDirection) => {
@@ -269,6 +366,30 @@ export const MarketListView = () => {
         discoverySource: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
         entryPoint: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
       });
+      // A tap on a search result closes the search funnel: report the rank the
+      // user picked, and suppress the abandonment this navigation would emit.
+      if (emittedQueryRef.current) {
+        const resultRank =
+          displayedMarketsRef.current.findIndex(
+            (m) => m.symbol === market.symbol,
+          ) + 1;
+        resultTappedRef.current = true;
+        track(MetaMetricsEventName.PerpsSearchResultTapped, {
+          [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: emittedQueryRef.current,
+          [PERPS_EVENT_PROPERTY.RESULTS_COUNT]:
+            displayedMarketsRef.current.length,
+          ...(resultRank > 0
+            ? { [PERPS_EVENT_PROPERTY.RESULT_RANK]: resultRank }
+            : {}),
+          ...(searchStartedAtRef.current === null
+            ? {}
+            : {
+                [PERPS_EVENT_PROPERTY.TIME_TO_TAP_MS]:
+                  Date.now() - searchStartedAtRef.current,
+              }),
+          [PERPS_EVENT_PROPERTY.ASSET]: market.symbol,
+        });
+      }
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,

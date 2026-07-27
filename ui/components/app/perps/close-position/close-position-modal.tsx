@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
+import { Json } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -43,6 +50,7 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
+import { usePerpsAbandonOrderTracking } from '../../../../hooks/perps/usePerpsAbandonOrderTracking';
 import {
   getDisplayName,
   getPositionDirection,
@@ -294,12 +302,21 @@ export const ClosePositionModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Abandon-order tracking state: latest form snapshot, a stable reader for it,
+  // and the commit flag that suppresses the event once a close is submitted.
+  const latestAbandonPropsRef = useRef<Record<string, Json>>({});
+  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const hasConfirmedCloseRef = useRef(false);
+
   useEffect(() => {
     if (isOpen) {
       setClosePercent(100);
       setIsSubmitting(false);
       setError(null);
       setIsGeoBlockModalOpen(false);
+      // Reopening starts a fresh close session: a commit from the previous one
+      // must not suppress abandon tracking for this one.
+      hasConfirmedCloseRef.current = false;
     }
   }, [isOpen]);
 
@@ -320,6 +337,25 @@ export const ClosePositionModal = ({
     () => closeSize * currentPrice,
     [closeSize, currentPrice],
   );
+
+  // Emit when the modal closes without a confirmed close. Snapshot refreshed
+  // each render so the emit carries the latest size.
+  latestAbandonPropsRef.current = {
+    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+      PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+    [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+    [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+    [PERPS_EVENT_PROPERTY.DIRECTION]:
+      getPositionDirection(position.size) === 'long'
+        ? PERPS_EVENT_VALUE.DIRECTION.LONG
+        : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+    [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
+  };
+  usePerpsAbandonOrderTracking({
+    getAbandonProperties: getAbandonProperties.current,
+    hasCommittedRef: hasConfirmedCloseRef,
+    active: isOpen,
+  });
 
   const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
     usePerpsOrderFees({
@@ -401,6 +437,8 @@ export const ClosePositionModal = ({
 
       setIsSubmitting(true);
       setError(null);
+      // The user committed: closing the modal after this is not an abandonment.
+      hasConfirmedCloseRef.current = true;
 
       replacePerpsToastByKey(
         getCloseInProgressToastConfig({

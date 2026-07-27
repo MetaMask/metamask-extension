@@ -93,6 +93,15 @@ const mockPerpsEventPropertyKeys = {
   QUOTE_LATENCY_MS: 'quote_latency_ms',
   ORDER_EXECUTION_LATENCY_MS: 'order_execution_latency_ms',
   ERROR_REASON: 'error_reason',
+  LEVERAGE_USED: 'leverage_used',
+  // Market search funnel.
+  SEARCH_QUERY: 'search_query',
+  RESULTS_COUNT: 'results_count',
+  RESULT_COUNT: 'result_count',
+  RESULT_RANK: 'result_rank',
+  MODE: 'mode',
+  // Abandonment.
+  TIME_ON_SCREEN_MS: 'time_on_screen_ms',
   FROM_TOKEN: 'from_token',
   FROM_CHAIN: 'from_chain',
   TO_TOKEN: 'to_token',
@@ -115,6 +124,8 @@ const mockPerpsEventValueLiterals = {
     COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
     FLIP_POSITION: 'flip_position',
     ERROR: 'error',
+    SEARCH_RESULTS_SHOWN: 'search_results_shown',
+    SEARCH_NO_RESULTS: 'search_no_results',
   },
   SCREEN_NAME: {
     PERPS_HOME: 'perps_home',
@@ -130,6 +141,7 @@ const mockPerpsEventValueLiterals = {
     CANDLE_PERIOD_CHANGED: 'candle_period_changed',
     FAVORITE_TOGGLED: 'favorite_toggled',
     SEARCH_CLICKED: 'search_clicked',
+    SEARCH_RESULT_TAPPED: 'search_result_tapped',
     TUTORIAL_STARTED: 'tutorial_started',
     TUTORIAL_COMPLETED: 'tutorial_completed',
     TUTORIAL_NAVIGATION: 'tutorial_navigation',
@@ -198,6 +210,7 @@ const mockPerpsEventValueLiterals = {
     WALLET_HOME_PERPS_TAB: 'homescreen_tab',
     ASSET_DETAIL_SCREEN: 'asset_detail_screen',
     PERPS_MARKET_LIST_ALL: 'perps_market_list_all',
+    PERP_MARKET_SEARCH: 'perp_market_search',
   },
   ACTION: {
     CREATE_POSITION: 'create_position',
@@ -210,6 +223,7 @@ const mockPerpsEventValueLiterals = {
     EDIT_TP_SL: 'edit_tp_sl',
     TP: 'tp',
     SL: 'sl',
+    ABANDON_ORDER: 'abandon_order',
   },
   TRADE_ACTION: {
     CREATE_POSITION: 'create_position',

@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   Navigate,
@@ -81,6 +82,7 @@ import {
   usePerpsMaxSlippage,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
+import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
@@ -280,6 +282,11 @@ const PerpsOrderEntryPage = () => {
   // to gate PERPS_TRANSACTION_CONSIDERED so the seeded/default amount and any
   // pre-edit recomputation never count as a user "consideration".
   const hasUserEditedSizeRef = useRef(false);
+  // Abandon-order tracking: latest form snapshot, a stable reader for it, and
+  // the commit flag that suppresses the event once an order is submitted.
+  const latestAbandonPropsRef = useRef<Record<string, Json>>({});
+  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const hasSubmittedOrderRef = useRef(false);
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -603,6 +610,27 @@ const PerpsOrderEntryPage = () => {
     }, 1000);
     return () => clearTimeout(timeoutId);
   }, [orderMode, orderFormState, positionDirection]);
+
+  // Snapshot of the abandon-order props, refreshed each render so the unmount /
+  // page-hide emit carries the latest form state rather than a mount-time copy.
+  latestAbandonPropsRef.current = {
+    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+      PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+    [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+    [PERPS_EVENT_PROPERTY.ASSET]: orderFormState?.asset ?? decodedSymbol ?? '',
+    [PERPS_EVENT_PROPERTY.DIRECTION]:
+      orderDirection === 'long'
+        ? PERPS_EVENT_VALUE.DIRECTION.LONG
+        : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+    [PERPS_EVENT_PROPERTY.ORDER_SIZE]: Number.parseFloat(
+      orderFormState?.amount?.replace(/,/gu, '') || '0',
+    ),
+    [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: orderFormState?.leverage ?? 0,
+  };
+  usePerpsAbandonOrderTracking({
+    getAbandonProperties: getAbandonProperties.current,
+    hasCommittedRef: hasSubmittedOrderRef,
+  });
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
@@ -1219,6 +1247,8 @@ const PerpsOrderEntryPage = () => {
 
     setIsSubmitting(true);
     setSubmitError(null);
+    // The user committed: leaving after this point is not an abandonment.
+    hasSubmittedOrderRef.current = true;
 
     const tradeActionToastDescription = getTradeActionToastDescription();
     const closePartialToastDescription = getClosePartialToastDescription();

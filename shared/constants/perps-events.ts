@@ -28,6 +28,14 @@ export const PERPS_EVENT_PROPERTY = {
   MARKET_CATEGORY_FILTER: 'market_category_filter',
   /** Extension close-all summary property. */
   NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
+  /**
+   * Market-search funnel properties Mobile already emits but the controller
+   * contract does not export yet. Kept here (not inline) so the emitted keys
+   * stay snake_case without tripping the naming-convention lint rule.
+   */
+  QUERY_COUNT: 'query_count',
+  TIME_IN_SEARCH_MS: 'time_in_search_ms',
+  TIME_TO_TAP_MS: 'time_to_tap_ms',
 } as const;
 
 /**

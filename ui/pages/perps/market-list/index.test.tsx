@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -378,6 +378,114 @@ describe('MarketListView', () => {
           interaction_type: 'filter_applied',
           filter_category: 'crypto',
         }),
+      );
+    });
+  });
+
+  describe('search funnel analytics', () => {
+    const typeSearch = (value: string) => {
+      fireEvent.change(screen.getByTestId('search-input'), {
+        target: { value },
+      });
+    };
+
+    const eventsNamed = (name: MetaMetricsEventName) =>
+      mockTrack.mock.calls.filter(([eventName]) => eventName === name);
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    });
+
+    it('emits a debounced search query with the settled result count', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      // Nothing before the debounce elapses — mid-typing is not a search.
+      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(0);
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall[1]).toEqual(
+        expect.objectContaining({
+          search_query: 'btc',
+          mode: 'intent',
+          source: 'perp_market_search',
+        }),
+      );
+      expect(queryCall[1].results_count).toBeGreaterThan(0);
+      // The matching results screen view rides along with the query event.
+      expect(
+        mockTrack.mock.calls.filter(
+          ([name, props]) =>
+            name === MetaMetricsEventName.PerpsScreenViewed &&
+            props?.screen_type === 'search_results_shown',
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('reports a no-results screen view when nothing matches', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('xyznomatch123');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(
+        mockTrack.mock.calls.filter(
+          ([name, props]) =>
+            name === MetaMetricsEventName.PerpsScreenViewed &&
+            props?.screen_type === 'search_no_results',
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('emits search_result_tapped with the picked rank and no abandonment', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      const [tapCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchResultTapped,
+      );
+      expect(tapCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', result_rank: 1 }),
+      );
+      // A tapped result resolves the search: it was not abandoned.
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchAbandoned),
+      ).toHaveLength(0);
+    });
+
+    it('emits search_abandoned when the query is cleared without a tap', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      // Escape clears the box through the same onClear path as the clear button.
+      fireEvent.keyDown(screen.getByTestId('search-input'), { key: 'Escape' });
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
       );
     });
   });

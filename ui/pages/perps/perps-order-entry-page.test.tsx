@@ -1638,6 +1638,32 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('emits abandon_order with the form snapshot when the page is left uncommitted', () => {
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      enterAmount('100');
+      unmount();
+
+      const abandonCall = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsUiInteraction &&
+          arg?.properties?.action === 'abandon_order',
+      );
+      expect(abandonCall).toBeDefined();
+      expect(abandonCall?.[0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 100,
+        }),
+      );
+      expect(
+        abandonCall?.[0].properties[PERPS_EVENT_PROPERTY.TIME_ON_SCREEN_MS],
+      ).toBeGreaterThanOrEqual(0);
+    });
+
     it('emits exactly one error screen view and no trading view when the market is not found', () => {
       mockLiveMarketData.mockReturnValue({
         markets: [],
