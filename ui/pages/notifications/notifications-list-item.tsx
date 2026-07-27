@@ -39,7 +39,6 @@ export function NotificationsListItem({
   const handleNotificationClick = useCallback(() => {
     const otherNotificationProperties = () => {
       if (
-        'notification_type' in notification &&
         isOnChainNotification(notification) &&
         notification.payload.chain_id
       ) {
