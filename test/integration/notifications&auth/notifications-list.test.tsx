@@ -312,9 +312,7 @@ describe('Notifications List', () => {
         },
       ];
 
-      expect(metricsEvent?.name).toBe(
-        MetaMetricsEventName.NotificationClicked,
-      );
+      expect(metricsEvent?.name).toBe(MetaMetricsEventName.NotificationClicked);
       expect(metricsEvent?.properties?.category).toBe(
         MetaMetricsEventCategory.NotificationInteraction,
       );
