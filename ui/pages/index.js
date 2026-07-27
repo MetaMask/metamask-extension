@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import {
@@ -84,12 +84,6 @@ ErrorPage.propTypes = {
 
 function RouteErrorBoundary() {
   const error = useRouteError();
-  // Unlike the class-based `Index` boundary below, react-router's
-  // errorElement doesn't go through componentDidCatch, so nothing logs this
-  // error unless we do it explicitly here.
-  useEffect(() => {
-    captureException(error);
-  }, [error]);
   return <ErrorPage error={error} />;
 }
 
