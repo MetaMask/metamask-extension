@@ -127,7 +127,7 @@ function ensureMessageListener(): void {
  */
 async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
   if (mode === LedgerHandlerMode.DMK) {
-    const { LedgerDmkBridgeHandler } = await import('./ledger-dmk.ts');
+    const { LedgerDmkBridgeHandler } = await import('./ledger-dmk.js');
     const handler = new LedgerDmkBridgeHandler();
     // Pass true so DMK does not register a competing onMessage listener.
     await handler.init(true);
