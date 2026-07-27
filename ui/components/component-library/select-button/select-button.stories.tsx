@@ -21,7 +21,6 @@ import { SelectOption } from '../select-option';
 export default {
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
-  tags: ['autodocs'],
   argTypes: {},
   args: {
     startAccessory: <AvatarBase size={AvatarBaseSize.Sm} />,

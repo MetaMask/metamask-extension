@@ -25,7 +25,6 @@ export default {
   title: 'Components/ComponentLibrary/ButtonBase (deprecated)',
 
   component: ButtonBase,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

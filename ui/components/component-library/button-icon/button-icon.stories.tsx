@@ -6,7 +6,6 @@ import { IconName } from '../icon';
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon (deprecated)',
   component: ButtonIcon,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

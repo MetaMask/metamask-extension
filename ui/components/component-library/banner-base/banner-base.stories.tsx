@@ -6,7 +6,6 @@ import { Icon, IconName, IconSize } from '../icon';
 export default {
   title: 'Components/ComponentLibrary/BannerBase (deprecated)',
   component: BannerBase,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

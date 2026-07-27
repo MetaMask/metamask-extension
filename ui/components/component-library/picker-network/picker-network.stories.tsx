@@ -18,7 +18,6 @@ import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
   component: PickerNetwork,
-  tags: ['autodocs'],
   argTypes: {
     label: {
       control: 'text',

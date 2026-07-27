@@ -7,7 +7,6 @@ import { ButtonSize, ButtonVariant } from './button.types';
 export default {
   title: 'Components/ComponentLibrary/Button (deprecated)',
   component: Button,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

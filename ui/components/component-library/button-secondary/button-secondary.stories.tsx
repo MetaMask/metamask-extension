@@ -25,7 +25,6 @@ export default {
   title: 'Components/ComponentLibrary/ButtonSecondary (deprecated)',
 
   component: ButtonSecondary,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

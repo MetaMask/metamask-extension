@@ -14,7 +14,6 @@ import { ModalFooter } from '../modal-footer';
 export default {
   title: 'Components/ComponentLibrary/ModalContent (deprecated)',
   component: ModalContent,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

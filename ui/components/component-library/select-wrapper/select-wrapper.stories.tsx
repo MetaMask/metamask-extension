@@ -11,7 +11,6 @@ import { useSelectContext } from './select-wrapper.context';
 export default {
   title: 'Components/ComponentLibrary/SelectWrapper',
   component: SelectWrapper,
-  tags: ['autodocs'],
   argTypes: {
     placeholder: {
       control: {

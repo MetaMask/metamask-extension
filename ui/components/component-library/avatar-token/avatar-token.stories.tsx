@@ -7,7 +7,6 @@ import { AvatarTokenSize } from './avatar-token.types';
 export default {
   title: 'Components/ComponentLibrary/AvatarToken (deprecated)',
   component: AvatarToken,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

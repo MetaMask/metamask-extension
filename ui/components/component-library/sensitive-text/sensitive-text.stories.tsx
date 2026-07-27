@@ -5,7 +5,6 @@ import { SensitiveTextLength } from './sensitive-text.types';
 const meta: Meta<typeof SensitiveText> = {
   title: 'Components/ComponentLibrary/SensitiveText (deprecated)',
   component: SensitiveText,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

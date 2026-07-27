@@ -4,7 +4,6 @@ import { Skeleton } from './skeleton';
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/ComponentLibrary/Skeleton (deprecated)',
   component: Skeleton,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

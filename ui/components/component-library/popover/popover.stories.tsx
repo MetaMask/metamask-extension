@@ -12,7 +12,6 @@ import { Box } from '../box';
 export default {
   title: 'Components/ComponentLibrary/Popover (deprecated)',
   component: Popover,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
