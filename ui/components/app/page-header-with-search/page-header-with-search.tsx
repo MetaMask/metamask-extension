@@ -67,7 +67,7 @@ export const PageHeaderWithSearch = ({
           autoFocus: true,
           inputProps: {
             'data-testid': 'page-header-search-input',
-          } as React.ComponentPropsWithoutRef<'input'>,
+          },
         }}
       />
     );
