@@ -58,19 +58,6 @@ export function checkForLastErrorAndLog(): Error | undefined {
 }
 
 /**
- * @returns The last error, or undefined
- */
-export function checkForLastErrorAndWarn(): Error | undefined {
-  const error = checkForLastError();
-
-  if (error) {
-    console.warn(error);
-  }
-
-  return error;
-}
-
-/**
  * Returns true if the browser is affected by a regression that causes the
  * extension port stream established between the contentscript and background
  * to be broken when a prerendered (eagerly rendered, hidden) page becomes active (visible to the user).
@@ -117,26 +104,6 @@ export function isFirefoxBrowser(
   ...args: Parameters<typeof getBrowserName>
 ): boolean {
   return getBrowserName(...args) === PLATFORM_FIREFOX;
-}
-
-/**
- * Camera settings URL for Chromium-based browsers (Chrome, Brave, Edge).
- *
- * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
- * @returns `chrome://`, `brave://`, or `edge://` settings path for camera permissions.
- */
-export function getChromiumCameraSettingsUrl(
-  ...args: Parameters<typeof getBrowserName>
-): string {
-  const name = getBrowserName(...args);
-  if (name === PLATFORM_BRAVE) {
-    return 'brave://settings/content/camera';
-  }
-  // Bowser reports "Microsoft Edge"; PLATFORM_EDGE is the short analytics id "Edge".
-  if (name === PLATFORM_EDGE || name === 'Microsoft Edge') {
-    return 'edge://settings/content/camera';
-  }
-  return 'chrome://settings/content/camera';
 }
 
 /**

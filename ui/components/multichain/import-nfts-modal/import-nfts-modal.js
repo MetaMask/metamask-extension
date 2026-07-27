@@ -4,6 +4,11 @@ import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
@@ -42,8 +47,6 @@ import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-
 import {
   Box,
   ButtonPrimary,
-  ButtonSecondary,
-  ButtonSecondarySize,
   Icon,
   IconName,
   IconSize,
@@ -392,17 +395,18 @@ export const ImportNftsModal = ({ onClose }) => {
           gap={4}
           padding={4}
         >
-          <ButtonSecondary
-            size={ButtonSecondarySize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             onClick={() => {
               onClose();
               navigate(DEFAULT_ROUTE);
             }}
-            block
+            isFullWidth
             className="import-nfts-modal__cancel-button"
           >
             {t('cancel')}
-          </ButtonSecondary>
+          </Button>
           <ButtonPrimary
             size={Size.LG}
             onClick={() => handleAddNft()}

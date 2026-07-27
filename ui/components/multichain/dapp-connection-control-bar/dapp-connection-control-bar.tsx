@@ -339,7 +339,7 @@ export const DappConnectionControlBar = memo(() => {
                   <Icon
                     name={IconName.ArrowDown}
                     size={IconSize.Xs}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
               )}
@@ -361,7 +361,7 @@ export const DappConnectionControlBar = memo(() => {
                   <Icon
                     name={IconName.Setting}
                     size={IconSize.Sm}
-                    color={IconColor.IconDefault}
+                    color={IconColor.IconAlternative}
                   />
                 </button>
 

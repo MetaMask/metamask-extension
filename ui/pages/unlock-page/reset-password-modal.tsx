@@ -46,8 +46,6 @@ import { useBoolean } from '../../hooks/useBoolean';
 import { isPopupOrSidePanelEnvironment } from '../../../shared/lib/environment-type';
 import { useDispatch } from '../../store/hooks';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ResetPasswordModal({
   onClose,
 }: {

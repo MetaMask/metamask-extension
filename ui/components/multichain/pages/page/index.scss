@@ -4,21 +4,18 @@
 
 .multichain-page {
   $height-screen-sm-min: 720px;
+  // Match the fullscreen max width in base-styles.scss (`--width-max: 798px`).
+  // Keep the side shadow hidden until the viewport is wider than that container.
+  $fullscreen-max-width-with-side-shadow: 799px;
 
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 
-  &--has-app-header {
-    & .multichain-page__inner-container {
-      border-radius: 0 0 2px 2px;
-      border: 0;
+  // The inner container is the single direct child of the page wrapper.
+  @media screen and (min-width: $fullscreen-max-width-with-side-shadow) {
+    &--has-app-header > .mm-box {
       // Matches the box-shadow of the .main-container
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     }
-  }
-
-  &__inner-container {
-    border: 1px solid var(--color-border-muted);
-    border-radius: 2px;
   }
 }
 

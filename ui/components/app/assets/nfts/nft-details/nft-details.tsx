@@ -86,8 +86,6 @@ import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NftDetailsComponent({
   nft,
   nftChainId,
@@ -148,8 +146,6 @@ export function NftDetailsComponent({
     typeof nftSrcUrl === 'string' && nftSrcUrl.startsWith('ipfs:');
 
   const isImageHosted =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
 
@@ -190,8 +186,6 @@ export function NftDetailsComponent({
     }
     // return the one that is available
     const topBidValue =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.price?.amount?.native ||
       collection?.topBid?.price?.amount?.native;
     if (!topBidValue) {
@@ -203,8 +197,6 @@ export function NftDetailsComponent({
 
   const getTopBidSourceDomain = () => {
     return (
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       topBid?.source?.url ||
       (collection?.topBid?.sourceDomain
         ? `https://${collection.topBid?.sourceDomain}`
@@ -322,12 +314,8 @@ export function NftDetailsComponent({
     return getShortDateFormatterV2().format(date);
   };
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const hasPriceSection = getCurrentHighestBidValue() || lastSale?.timestamp;
   const hasCollectionSection =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     collection?.name || collection?.tokenCount || collection?.creator;
   const hasAttributesSection = attributes && attributes?.length !== 0;
 
@@ -365,8 +353,6 @@ export function NftDetailsComponent({
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
@@ -392,8 +378,6 @@ export function NftDetailsComponent({
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -417,8 +401,6 @@ export function NftDetailsComponent({
           </Box>
         </Box>
         <Box>
-          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || collection?.name ? (
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
@@ -429,8 +411,6 @@ export function NftDetailsComponent({
                 style={{ fontSize: '24px' }}
                 data-testid="nft-details__name"
               >
-                {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
                 {name || collection?.name}
               </Text>
               {collection?.openseaVerificationStatus === 'verified' ? (
@@ -850,8 +830,6 @@ export function NftDetailsComponent({
                 data-testid="nft-address-copy"
                 onClick={() => {
                   (handleAddressCopy as (text: string) => void)?.(
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                     collection?.creator || '',
                   );
                 }}
@@ -925,8 +903,6 @@ export function NftDetailsComponent({
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}
@@ -944,8 +920,6 @@ export function NftDetailsComponent({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NftDetails({ nft, nftChainId }: { nft: Nft; nftChainId?: string }) {
   return <NftDetailsComponent nft={nft} nftChainId={nftChainId ?? ''} />;
 }

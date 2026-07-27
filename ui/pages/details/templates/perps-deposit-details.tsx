@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   Button,
@@ -12,7 +11,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import { usePerpsDepositConfirmation } from '../../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { selectLocalTransactionsByHash } from '../../../selectors/activity';
+import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -36,16 +35,11 @@ type Props = {
   >;
 };
 
-function useTransactionMeta(hash: string | undefined) {
-  const localTransactions = useSelector(selectLocalTransactionsByHash);
-  return localTransactions.get(hash || '')?.initialTransaction;
-}
-
 export function PerpsDepositDetails({ item }: Readonly<Props>) {
   const t = useI18nContext();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
   const { formatDateTime, formatCurrencyWithMinThreshold } = useFormatters();
-  const transactionMeta = useTransactionMeta(item.hash);
+  const transactionMeta = useLocalTransactionMeta(item.hash);
   const { metamaskPay } = transactionMeta ?? {};
   const { targetFiat, networkFeeFiat, bridgeFeeFiat, totalFiat } =
     metamaskPay || {};

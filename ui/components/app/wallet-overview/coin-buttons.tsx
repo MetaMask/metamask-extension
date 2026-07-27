@@ -66,7 +66,7 @@ import IconButton from '../../ui/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { Toast, ToastContainer } from '../../multichain/toast';
+import { toast, ToastContent } from '../../ui/toast/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -196,25 +196,6 @@ const MoreButtonsGroup = ({
   );
 };
 
-const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
-  const t = useContext(I18nContext);
-
-  return (
-    <ToastContainer>
-      <Toast
-        startAdornment={
-          <Icon name={IconName.Export} color={IconColor.IconDefault} />
-        }
-        text={t('buyTabOpenedToastText')}
-        description={t('buyTabOpenedToastDescription')}
-        onClose={onClose}
-        autoHideTime={3000}
-        onAutoHideToast={onClose}
-      />
-    </ToastContainer>
-  );
-};
-
 type CoinButtonsProps = {
   account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
@@ -246,7 +227,6 @@ const CoinButtons = ({
 
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
-  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -430,7 +410,16 @@ const CoinButtons = ({
     // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
     // be misleading.
     if (!isRampsEnabled) {
-      setShowTabOpenedToast(true);
+      toast.success(
+        <ToastContent
+          title={t('buyTabOpenedToastText')}
+          description={t('buyTabOpenedToastDescription')}
+        />,
+        {
+          id: 'buy-tab-opened-toast',
+          icon: <Icon name={IconName.Export} color={IconColor.IconDefault} />,
+        },
+      );
     }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -623,10 +612,6 @@ const CoinButtons = ({
           },
         ]}
       />
-
-      {showTabOpenedToast && (
-        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
-      )}
     </Box>
   );
 };

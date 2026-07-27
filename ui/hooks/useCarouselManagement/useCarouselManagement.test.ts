@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { renderHook, act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';

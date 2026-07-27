@@ -29,8 +29,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useDispatch } from '../../../store/hooks';
 import NetworkListItem from './network-list-item/network-list-item';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();

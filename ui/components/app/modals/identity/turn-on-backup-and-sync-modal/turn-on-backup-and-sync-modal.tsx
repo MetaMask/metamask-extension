@@ -46,8 +46,6 @@ export const turnOnBackupAndSyncModalTestIds = {
   button: 'turn-on-backup-and-sync-button',
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
@@ -179,8 +177,6 @@ export function TurnOnBackupAndSyncModal() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnBackupAndSync()}
           containerProps={{
             flexDirection: FlexDirection.Column,

@@ -11,7 +11,6 @@ import { DeeplinkQRCode } from '../deeplink-qr-code';
 import { useDispatch } from '../../../store/hooks';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsQRCode() {
   const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);
   const t = useI18nContext();

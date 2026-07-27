@@ -80,4 +80,16 @@ describe('SignatureStatusIcon', () => {
 
     expect(getByText('1')).toBeDefined();
   });
+
+  it('does not render step number when status is Active', () => {
+    const { queryByText, container } = render(
+      <SignatureStatusIcon
+        status={SignatureStepStatus.Active}
+        stepNumber={2}
+      />,
+    );
+
+    expect(container.querySelector('svg')).not.toBeNull();
+    expect(queryByText('2')).toBeNull();
+  });
 });

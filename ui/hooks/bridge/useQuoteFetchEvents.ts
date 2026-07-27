@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {

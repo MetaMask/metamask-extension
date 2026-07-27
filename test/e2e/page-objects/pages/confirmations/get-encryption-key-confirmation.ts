@@ -11,6 +11,11 @@ class GetEncryptionKeyConfirmation {
     css: '.request-encryption-public-key__header__text',
   };
 
+  private readonly cancelEncryptionKeyButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
   private readonly provideEncryptionKeyButton = {
     text: 'Provide',
     tag: 'button',
@@ -34,6 +39,15 @@ class GetEncryptionKeyConfirmation {
       throw e;
     }
     console.log(`Get encryption key confirmation page is loaded`);
+  }
+
+  async clickToCancelProvideEncryptionKey(): Promise<void> {
+    console.log(
+      'Click to cancel provide encryption key on get encryption key confirmation page',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.cancelEncryptionKeyButton,
+    );
   }
 
   async clickToConfirmProvideEncryptionKey(): Promise<void> {

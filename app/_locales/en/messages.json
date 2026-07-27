@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Account options"
   },
-  "accountPermissionToast": {
-    "message": "Account permissions updated"
-  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -389,22 +386,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Deposit failed"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_deposit_pending_description": {
-    "message": "Depositing $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Depositing $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "Deposited $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Deposited $1",
@@ -1050,15 +1045,13 @@
     "message": ""
   },
   "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapping"
   },
   "activity_swap_success_description": {
     "message": ""
   },
   "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Swapped"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"
@@ -2075,12 +2068,6 @@
     "message": "Approve $1 for bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $3. This will require two separate confirmations."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Block explorer link copied"
   },
@@ -2529,9 +2516,6 @@
   },
   "clear": {
     "message": "Clear"
-  },
-  "clearActivity": {
-    "message": "Clear activity and nonce data"
   },
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
@@ -3183,9 +3167,6 @@
   "decimal": {
     "message": "Token decimal"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
-  },
   "decrypt": {
     "message": "Decrypt"
   },
@@ -3317,6 +3298,9 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
+  },
+  "deepLink_theTopTradersPage": {
+    "message": "the Follow Trading page"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
@@ -4267,9 +4251,6 @@
   "gotIt": {
     "message": "Got it"
   },
-  "grantExactAccess": {
-    "message": "Grant exact access"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -4334,6 +4315,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "The device is taking too long to respond or the connection timed out. Make sure your device is connected and unlocked, then try again."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
@@ -5758,6 +5742,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Not supported by this account."
+  },
   "networkOptions": {
     "message": "Network options"
   },
@@ -5802,9 +5789,6 @@
   },
   "networksSmallCase": {
     "message": "networks"
-  },
-  "nevermind": {
-    "message": "Nevermind"
   },
   "new": {
     "message": "New!"
@@ -7024,6 +7008,12 @@
   "perpsCloseAmount": {
     "message": "Close amount"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Price can't be more than 95% away from the market price"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Enter a valid limit price to continue."
+  },
   "perpsCloseLong": {
     "message": "Close long"
   },
@@ -7032,6 +7022,9 @@
   },
   "perpsClosePosition": {
     "message": "Close position"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Current price is unavailable. Try again in a moment."
   },
   "perpsCloseShort": {
     "message": "Close short"
@@ -7562,6 +7555,10 @@
     "message": "Your PnL is $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Failed to place close order",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Added $1 margin to $2 position",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7613,6 +7610,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Position partially closed",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Failed to place partial close order",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
@@ -8179,13 +8180,19 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBestRate": {
+    "message": "Best rate"
+  },
   "rampsBuyToken": {
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
   },
   "rampsBuyingViaProvider": {
-    "message": "Buying via $1",
+    "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Change provider."
   },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
@@ -8199,8 +8206,22 @@
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
   },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maximum purchase is $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Minimum purchase is $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Most reliable"
+  },
   "rampsNoPaymentMethodsAvailable": {
     "message": "No payment methods are available."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "No providers available."
   },
   "rampsNoTokensAvailable": {
     "message": "No tokens available"
@@ -8208,6 +8229,9 @@
   "rampsOnNetwork": {
     "message": "on $1",
     "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Other options"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "business day"
@@ -8245,8 +8269,21 @@
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "Previously used"
+  },
+  "rampsProviders": {
+    "message": "Providers"
+  },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Quote unavailable."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Quotes displayed for $1.",
+    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
@@ -10877,6 +10914,9 @@
   "tokenDecimal": {
     "message": "Token decimal"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Enter a whole number between 0 and 36."
+  },
   "tokenDetails": {
     "message": "Token details"
   },
@@ -11450,12 +11490,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Approves token for bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Approves token for swap."
   },
   "withdrawTo": {
     "message": "Receive",
