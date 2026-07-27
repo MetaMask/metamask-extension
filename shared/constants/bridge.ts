@@ -79,7 +79,7 @@ export type AllowedBridgeChainIds =
  */
 export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
   if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
-    return process.env.BRIDGE_USE_CUSTOM_BASE_URL
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
   }
 
   switch (process.env.METAMASK_ENVIRONMENT) {
