@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   checkAccountsPresence,
@@ -11,6 +11,7 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useDispatch } from '../../store/hooks';
 import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };

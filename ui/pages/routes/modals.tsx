@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { setEditedNetwork } from '../../store/actions';
 import { NetworkListMenu } from '../../components/multichain/network-list-menu';
 import { useModalState } from '../../hooks/useModalState';
