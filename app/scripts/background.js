@@ -2662,7 +2662,7 @@ if (process.env.IN_TEST) {
     return Promise.resolve();
   });
   // Load conditionally so this test-only package is excluded from production builds and policies.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  // eslint-disable-next-line n/global-require
   const { runDummyPackage } = require('@metamask/dummy-package');
   global.stateHooks.throwLavamoatError = () => runDummyPackage();
 }
