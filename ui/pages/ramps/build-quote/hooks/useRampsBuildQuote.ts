@@ -289,13 +289,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
-      // Open the provider checkout in a new tab; the widget is hosted by the
-      // provider, not rendered in the extension.
-      const openedTab = await global.platform.openTab({ url: widget.url });
+      // The widget is hosted by the provider, opened in a new tab rather than
+      // rendered in the extension.
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
       if (widget.orderId) {
-        // A provider that precreates the order returns its id — seed it so
-        // the details view can resolve and refresh it.
+        // A provider that precreates the order returns its id. Persist it and
+        // route to the details view BEFORE opening checkout: opening a tab can
+        // unload the extension popup, which would abort any work queued after
+        // it — so the durable state (order + route) must be set up first.
         await addPrecreatedOrder({
           orderId: widget.orderId,
           providerCode,
@@ -305,10 +306,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         navigate(
           `${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${widget.orderId}`,
         );
-      } else if (openedTab.id !== undefined) {
+        await global.platform.openTab({ url: widget.url });
+      } else {
         // Redirect-flow provider — no order exists yet, wait for checkout to
         // complete and resolve it from the callback URL instead.
-        watchForRedirectCallback(openedTab.id, providerCode);
+        const openedTab = await global.platform.openTab({ url: widget.url });
+        if (openedTab.id !== undefined) {
+          watchForRedirectCallback(openedTab.id, providerCode);
+        }
       }
     } catch (error) {
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));

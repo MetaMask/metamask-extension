@@ -39,6 +39,21 @@ describe('mapRampsOrderSafely', () => {
     expect(mapRampsOrderSafely(order)).toBeUndefined();
   });
 
+  it('seeds a missing chainId from the fallback (redirect order not yet populated)', () => {
+    const order = { ...baseOrder, network: undefined } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order, 'eip155:1')?.chainId).toBe('eip155:1');
+  });
+
+  it('prefers the order chainId over the fallback when present', () => {
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order, 'eip155:137')?.chainId).toBe('eip155:1');
+  });
+
   it('normalizes an upper-cased "BUY" orderType to rampBuy (the real API sends it upper-cased)', () => {
     const order = {
       ...baseOrder,

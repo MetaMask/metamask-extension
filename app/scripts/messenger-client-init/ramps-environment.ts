@@ -13,8 +13,8 @@ export function getRampsEnvironment(): RampsEnvironment {
     case 'rc':
       return RampsEnvironment.Production;
     case 'development':
-      return RampsEnvironment.Development;
     case 'dev':
+      return RampsEnvironment.Development;
     case 'test':
     default:
       return RampsEnvironment.Staging;

@@ -51,11 +51,13 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const transaction = useMemo(() => {
     // The ramps order is the authoritative source for its own activity —
     // takes precedence even if its settlement hash also resolves generically
-    // below (mirrors the dedupe precedence in the activity list). Falls
-    // through to the generic sources if the order can't be mapped yet (e.g.
-    // its network/chainId hasn't been populated right after a redirect).
+    // below (mirrors the dedupe precedence in the activity list). Pass the URL
+    // chainId as a fallback: a just-resolved redirect order may not have its
+    // `network.chainId` populated yet, which would otherwise map to undefined
+    // and render a blank page. Still falls through to the generic sources if
+    // the order can't be mapped at all.
     const mappedRampsOrder = rampsOrder
-      ? mapRampsOrderSafely(rampsOrder)
+      ? mapRampsOrderSafely(rampsOrder, chainId)
       : undefined;
     if (mappedRampsOrder) {
       return mappedRampsOrder;
@@ -100,6 +102,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     return undefined;
   }, [
     apiTransaction,
+    chainId,
     localActivityItem,
     nonEvmActivityItem,
     rampsOrder,

@@ -7,13 +7,28 @@ import type { RampsOrder } from '@metamask/ramps-controller';
  * string instead. Normalize that shape before mapping so real orders don't
  * get dropped over a provider quirk `mapRampsOrder` doesn't account for.
  *
- * @param order - The raw ramps order's `network` field.
+ * A `fallbackChainId` seeds the chainId when the order has none yet — right
+ * after a checkout redirect the callback order's `network.chainId` isn't
+ * populated, so the caller supplies the chain it already knows (e.g. the URL /
+ * user-selected token) to keep the details view from rendering blank.
+ *
+ * @param order - The raw ramps order.
+ * @param fallbackChainId - Chain to use when the order's is missing.
  * @returns The order with `network` coerced to `{ chainId }`.
  */
-function withNormalizedNetwork(order: RampsOrder): RampsOrder {
+function withNormalizedNetwork(
+  order: RampsOrder,
+  fallbackChainId?: string,
+): RampsOrder {
   const { network } = order;
   if (typeof network === 'string') {
     return { ...order, network: { name: '', chainId: network } };
+  }
+  if (!network?.chainId && fallbackChainId) {
+    return {
+      ...order,
+      network: { name: network?.name ?? '', chainId: fallbackChainId },
+    };
   }
   return order;
 }
@@ -39,14 +54,17 @@ function withNormalizedOrderType(order: RampsOrder): RampsOrder {
  * lists/pages that shouldn't crash over one unmappable order.
  *
  * @param order - The raw ramps order to map.
+ * @param fallbackChainId - Chain to use when the order has none yet (e.g. a
+ * just-resolved redirect order); passed through to network normalization.
  * @returns The mapped activity item, or undefined if the order can't be mapped.
  */
 export function mapRampsOrderSafely(
   order: RampsOrder,
+  fallbackChainId?: string,
 ): ReturnType<typeof mapRampsOrder> | undefined {
   try {
     const normalizedOrder = withNormalizedOrderType(
-      withNormalizedNetwork(order),
+      withNormalizedNetwork(order, fallbackChainId),
     );
     return mapRampsOrder(normalizedOrder as unknown as RampsOrderLike);
   } catch {
