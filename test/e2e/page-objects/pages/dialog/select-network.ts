@@ -33,8 +33,7 @@ class SelectNetwork {
 
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
-  private readonly searchButton =
-    '[data-testid="page-header-search-button"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
   private readonly searchInput = '[data-testid="page-header-search-input"]';
 

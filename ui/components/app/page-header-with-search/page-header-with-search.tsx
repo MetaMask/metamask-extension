@@ -10,10 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Header } from '../../multichain/pages/page';
-import {
-  HeaderSearch,
-  HeaderSearchVariant,
-} from '../../component-library';
+import { HeaderSearch, HeaderSearchVariant } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type PageHeaderWithSearchProps = {
@@ -68,7 +65,7 @@ export const PageHeaderWithSearch = ({
           autoFocus: true,
           inputProps: {
             'data-testid': 'page-header-search-input',
-          }  as React.ComponentPropsWithoutRef<'input'>,
+          } as React.ComponentPropsWithoutRef<'input'>,
         }}
       />
     );

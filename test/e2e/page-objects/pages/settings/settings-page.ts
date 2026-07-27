@@ -41,8 +41,7 @@ class SettingsPage {
   private readonly searchSettingsInput =
     '[data-testid="page-header-search-input"]';
 
-  private readonly searchButton =
-    '[data-testid="page-header-search-button"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
