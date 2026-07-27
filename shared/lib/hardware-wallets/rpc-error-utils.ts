@@ -891,7 +891,7 @@ function tryFromLedgerErrorMessage(
 
   const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
   return createHardwareWalletError(errorCode, walletType, errorMessage, {
-    cause: error instanceof Error ? error : undefined,
+    cause: getErrorCause(error),
   });
 }
 
@@ -914,7 +914,7 @@ function tryFromTrezorErrorMessage(
   const errorCode = mapTrezorErrorToErrorCode(error);
 
   return createHardwareWalletError(errorCode, walletType, errorMessage, {
-    cause: error instanceof Error ? error : undefined,
+    cause: getErrorCause(error),
   });
 }
 
