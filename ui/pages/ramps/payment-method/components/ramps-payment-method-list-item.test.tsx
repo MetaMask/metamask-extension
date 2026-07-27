@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import type { PaymentMethod } from '@metamask/ramps-controller';
+import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
@@ -46,6 +46,16 @@ const bankTransfer: PaymentMethod = {
   delay: [0, 0],
 };
 
+const mockQuote: Quote = {
+  provider: '/providers/test',
+  quote: {
+    amountIn: 500,
+    amountOut: '0.10596',
+    paymentMethod: debitCard.id,
+    amountOutInFiat: 499.97,
+  },
+};
+
 describe('RampsPaymentMethodListItem', () => {
   it('matches snapshot with delay and limits', () => {
     const { container } = renderWithProvider(
@@ -65,6 +75,75 @@ describe('RampsPaymentMethodListItem', () => {
     const { container } = renderWithProvider(
       <RampsPaymentMethodListItem
         paymentMethod={bankTransfer}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with quote amounts', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot while quote is loading', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteLoading
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with quote error', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when showQuote with no matched quote amounts', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
         onClick={jest.fn()}
       />,
       createStore(),

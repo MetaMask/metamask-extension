@@ -1417,7 +1417,7 @@ export const TokenManagementPage = () => {
 
     hasTrackedScreenOpenedRef.current = true;
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
           screen: TOKEN_MANAGEMENT_SCREEN,

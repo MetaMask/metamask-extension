@@ -7,6 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
+import { captureMessage } from '../../shared/lib/sentry';
 import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import {
@@ -14,6 +15,11 @@ import {
   MetaMetricsProvider,
   resetPreviousTrackedPagePathForTesting,
 } from './metametrics';
+
+jest.mock('../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
 
 jest.mock('../hooks/useSegmentContext', () => ({
   useSegmentContext: jest.fn(() => ({})),
@@ -29,6 +35,36 @@ jest.mock('../store/background-connection', () => ({
 }));
 
 const mockStore = configureMockStore([]);
+
+const renderProviderAtPath = (pathname: string) => {
+  const store = mockStore({
+    metamask: {
+      analyticsId: '0x123',
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
+    },
+  });
+
+  const router = createMemoryRouter(
+    [
+      {
+        path: '*',
+        element: (
+          <MetaMetricsProvider>
+            <div />
+          </MetaMetricsProvider>
+        ),
+      },
+    ],
+    { initialEntries: [pathname] },
+  );
+
+  return render(
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>,
+  );
+};
 
 const renderProvider = ({
   event,
@@ -84,6 +120,8 @@ describe('MetaMetricsProvider', () => {
   const mockedSubmitRequestToBackground = jest.mocked(
     submitRequestToBackground,
   );
+  const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
+  const mockedCaptureMessage = jest.mocked(captureMessage);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -192,7 +230,6 @@ describe('MetaMetricsProvider', () => {
   });
 
   it('tracks page views only once across provider remounts', async () => {
-    const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
     const store = mockStore({
       metamask: {
         analyticsId: '0x123',
@@ -235,6 +272,46 @@ describe('MetaMetricsProvider', () => {
 
     await waitFor(() => {
       expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('page route matching', () => {
+    it('reports unmatched routes to Sentry', async () => {
+      renderProviderAtPath('/definitely-not-a-real-route');
+
+      await waitFor(() => {
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'Segment page tracking found unmatched route',
+          expect.objectContaining({
+            extra: expect.objectContaining({
+              currentPath: '/definitely-not-a-real-route',
+            }),
+          }),
+        );
+      });
+
+      expect(mockedTrackMetaMetricsPage).not.toHaveBeenCalled();
+    });
+
+    it('does not report known untracked routes to Sentry', async () => {
+      renderProviderAtPath('/onboarding');
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      expect(mockedTrackMetaMetricsPage).not.toHaveBeenCalled();
+    });
+
+    it('tracks page views only for analytics-tracked routes', async () => {
+      renderProviderAtPath('/');
+
+      await waitFor(() => {
+        expect(mockedTrackMetaMetricsPage).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
     });
   });
 });

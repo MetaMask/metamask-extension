@@ -37,6 +37,8 @@ name: Upload extension to Firefox AMO
 #
 # Lambda invoke must use alias qualifier (dev | flask | production); unqualified invoke is denied.
 # AMO JWT secrets are read inside Lambda (assumes amo-submission-secrets-{env}), not by the runner.
+#
+# workflow_call: OIDC job_workflow_ref remains this file (callee); IAM trust pins match orchestrator callers.
 
 on:
   workflow_dispatch:
@@ -62,6 +64,24 @@ on:
         description: "Optional release asset override (default: main zip for dev/production, *-flask.0.zip for flask)"
         required: false
         type: string
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: "Release version — must match GitHub Release tag v{version}"
+      target:
+        required: true
+        type: string
+        description: "AMO target — production or flask (orchestrator); dev allowed for manual workflow_call"
+      expected_sha256:
+        required: false
+        type: string
+        description: "Optional SHA-256 of the release asset (64 lowercase hex)"
+      asset_name:
+        required: false
+        type: string
+        description: "Optional release asset override"
 
 permissions:
   contents: read

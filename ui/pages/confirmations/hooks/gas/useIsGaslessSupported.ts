@@ -1,8 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -16,6 +15,9 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  *
  * Hardware wallets are excluded from gasless support because they cannot sign
  * EIP-7702 authorization lists. They fall back to the standard "user pay gas" flow.
+ * Detection uses the confirmation's `txParams.from` account (not the globally
+ * selected account) so Non-EVM network selection cannot mis-classify a Ledger/
+ * Trezor send as gasless-eligible.
  *
  * Account downgrade (revoke delegation) transactions are excluded because gasless
  * requires an upgraded account, which conflicts with the downgrade intent.
@@ -30,7 +32,9 @@ export function useIsGaslessSupported() {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useIsHardwareWalletAccount(
+    transactionMeta?.txParams?.from,
+  );
 
   const isDowngradeTransaction =
     transactionMeta?.txParams?.authorizationList?.[0]?.address ===

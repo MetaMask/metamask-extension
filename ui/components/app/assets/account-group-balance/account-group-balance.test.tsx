@@ -8,11 +8,15 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getEnabledNetworksByNamespace,
+  getMultichainNetwork,
   getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getMultichainNativeTokenBalance,
+  selectBalanceBySelectedAccountGroup,
+} from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import {
   AccountGroupBalance,
@@ -23,6 +27,7 @@ const mockStore = configureMockStore()(mockState);
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
 const MAINNET_CHAIN_ID = '0x1';
+const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
 jest.mock('../../../../selectors/assets');
 jest.mock('../../../../selectors');
@@ -81,6 +86,16 @@ describe('AccountGroupBalance', () => {
     const mockGetShowFiatInTestnets = jest
       .mocked(getShowFiatInTestnets)
       .mockReturnValue(showFiatInTestnets);
+
+    jest.mocked(getMultichainNetwork).mockReturnValue({
+      network: {
+        ticker: 'SOL',
+      },
+    } as ReturnType<typeof getMultichainNetwork>);
+
+    jest.mocked(getMultichainNativeTokenBalance).mockReturnValue({
+      amount: '0',
+    } as ReturnType<typeof getMultichainNativeTokenBalance>);
 
     return {
       mockSelectBalanceBySelectedAccountGroup,
@@ -227,6 +242,23 @@ describe('AccountGroupBalance', () => {
   it('renders skeleton when no networks available and no balance', () => {
     arrange({ anyEnabledNetworksAreAvailable: false });
     actAssertSkeletonPresent();
+  });
+
+  it('renders known zero non-EVM fiat balance when no networks are available', () => {
+    arrange({
+      anyEnabledNetworksAreAvailable: false,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+      enabledNetworksByNamespace: { [SOLANA_CHAIN_ID]: true },
+    });
+
+    actAssertBalanceContent({
+      amount: '$0.00',
+      balance: '0',
+      chainId: SOLANA_CHAIN_ID,
+    });
   });
 
   it('applies cached balance class when balanceIsCached is true', () => {

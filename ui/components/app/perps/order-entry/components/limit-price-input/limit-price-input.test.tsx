@@ -257,6 +257,22 @@ describe('LimitPriceInput', () => {
   });
 
   describe('liquidation price warnings', () => {
+    it('does not show a liquidation warning before a limit price is entered', () => {
+      renderWithProvider(
+        <LimitPriceInput
+          {...defaultProps}
+          limitPrice=""
+          currentPrice={100}
+          liquidationPrice={200}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('limit-price-liquidation-warning'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows liquidation warning when current price is at or below liquidation price for long', () => {
       renderWithProvider(
         <LimitPriceInput

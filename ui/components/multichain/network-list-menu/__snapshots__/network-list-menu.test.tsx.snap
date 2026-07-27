@@ -1099,13 +1099,25 @@ exports[`NetworkListMenu renders properly 1`] = `
             class="mm-box mm-box--padding-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl pl-3 pr-4 gap-x-1 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+              role="button"
             >
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                />
+              </svg>
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/add.svg');"
-              />
-              Add a custom network
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Add a custom network
+              </span>
             </button>
           </div>
         </section>
@@ -2508,13 +2520,25 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
             class="mm-box mm-box--padding-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              class="inline-flex items-center justify-center rounded-xl pl-3 pr-4 gap-x-1 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+              role="button"
             >
+              <svg
+                aria-hidden="true"
+                class="inline-block w-5 h-5 shrink-0 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                />
+              </svg>
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/add.svg');"
-              />
-              Add a custom network
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Add a custom network
+              </span>
             </button>
           </div>
         </section>

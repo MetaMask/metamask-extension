@@ -171,6 +171,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     return () => {
       isMountedRef.current = false;
     };
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only runs on component mount and unmount
   }, []);
 
