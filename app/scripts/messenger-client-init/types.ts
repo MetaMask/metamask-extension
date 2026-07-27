@@ -149,16 +149,12 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
-  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
+  // TODO: Remove this once the remaining seedless onboarding migration to the
+  // LegacyBackgroundApiService is complete (e.g. changePasswordWithPasskeyVerification).
   /**
    * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
    */
   seedlessOperationMutex: Mutex;
-
-  /**
-   * The mutex used to serialize vault creation, seed export, and locking.
-   */
-  createVaultMutex: Mutex;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a

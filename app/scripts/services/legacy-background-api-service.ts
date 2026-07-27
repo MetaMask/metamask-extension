@@ -6,8 +6,21 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
+import {
+  add0x,
+  bytesToHex,
+  Hex,
+  hexToBytes,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { Mutex } from 'async-mutex';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import {
+  BtcAccountType,
+  SolAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
@@ -16,6 +29,7 @@ import {
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
   KeyringControllerGetKeyringsByTypeAction,
+  KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithKeyringV2Action,
@@ -36,6 +50,7 @@ import {
 } from '@metamask/accounts-controller';
 import {
   TransactionContainerType,
+  TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
@@ -72,16 +87,21 @@ import { SmartTransactionsControllerWipeSmartTransactionsAction } from '@metamas
 import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-status-controller';
 import {
   EncAccountDataType,
+  InvalidPrimarySecretDataTypeError,
+  RecoveryError,
+  SecretMetadata,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
-  SeedlessOnboardingControllerGetStateAction,
-  SeedlessOnboardingControllerRunMigrationsAction,
-  RecoveryError,
+  SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingControllerFetchAllSecretDataAction,
+  SeedlessOnboardingControllerGetSecretDataBackupStateAction,
+  SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerLoadKeyringEncryptionKeyAction,
   SeedlessOnboardingControllerRevokePendingRefreshTokensAction,
+  SeedlessOnboardingControllerRunMigrationsAction,
   SeedlessOnboardingControllerSetLockedAction,
   SeedlessOnboardingControllerStoreKeyringEncryptionKeyAction,
   SeedlessOnboardingControllerSubmitGlobalPasswordAction,
@@ -94,6 +114,7 @@ import {
   ExtractPermission,
   OriginString,
   PermissionControllerAcceptPermissionsRequestAction,
+  PermissionControllerClearStateAction,
   PermissionControllerRejectPermissionsRequestAction,
   PermissionControllerRevokePermissionsAction,
   PermissionControllerUpdatePermissionsByCaveatAction,
@@ -107,17 +128,27 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapInterfaceControllerDeleteInterfaceAction } from '@metamask/snaps-controllers';
+import {
+  SnapControllerClearStateAction,
+  SnapInterfaceControllerDeleteInterfaceAction,
+} from '@metamask/snaps-controllers';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  MultichainAccountServiceResyncAccountsAction,
   MultichainAccountServiceAlignWalletsAction,
+  MultichainAccountServiceCreateMultichainAccountWalletAction,
+  MultichainAccountServiceGetMultichainAccountWalletAction,
   MultichainAccountServiceInitAction,
+  MultichainAccountServiceRemoveMultichainAccountWalletAction,
+  MultichainAccountServiceResyncAccountsAction,
 } from '@metamask/multichain-account-service';
 import {
+  AccountTreeControllerClearStateAction,
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
+  AccountTreeControllerReinitAction,
+  AccountTreeControllerSyncWithUserStorageAction,
+  AccountTreeControllerSyncWithUserStorageAtLeastOnceAction,
 } from '@metamask/account-tree-controller';
 import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
 import {
@@ -142,7 +173,10 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import {
+  getIsAssetsUnifiedStateIncludedInBuild,
+  getIsSeedlessOnboardingFeatureEnabled,
+} from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
@@ -152,9 +186,11 @@ import {
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
+  MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
@@ -167,6 +203,7 @@ import {
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
 } from '../controllers/preferences-controller-method-action-types';
+import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
@@ -175,14 +212,26 @@ import {
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
 import {
   encodeDisabledDelegationsCheck,
   decodeDisabledDelegationsResult,
 } from '../../../shared/lib/delegation/delegation';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
-import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
+import {
+  endTrace,
+  getPerformanceTimestamp,
+  TraceName,
+  TraceOperation,
+  trace,
+} from '../../../shared/lib/trace';
+import {
+  AppStateControllerGetIsWalletResetInProgressAction,
+  AppStateControllerSetIsWalletResetInProgressAction,
+  AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
+} from '../controllers/app-state-controller-method-action-types';
+import { AccountOrderControllerUpdateHiddenAccountsListAction } from '../controllers/account-order-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
@@ -199,7 +248,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'changePassword',
   'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
+  'createNewVaultAndGetSeedPhrase',
+  'createNewVaultAndKeychain',
+  'createNewVaultAndRestore',
+  'createSeedPhraseBackup',
   'decodeTransactionData',
+  'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
@@ -212,6 +266,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'importAccountWithStrategy',
+  'importMnemonicToVault',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
@@ -224,16 +279,19 @@ const MESSENGER_EXPOSED_METHODS = [
   'removeAccount',
   'removePermissionsFor',
   'resetAccount',
+  'restoreSocialBackupAndGetSeedPhrase',
   'setAccountLabel',
   'setCurrentCurrency',
   'setLocked',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
-  'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'syncPasswordAndUnlockWallet',
+  'syncSeedPhrases',
   'throwTestError',
   'toggleExternalServices',
   'unMarkPasswordForgotten',
+  'unlockAndGetSeedPhrase',
   'upsertTransactionUIMetricsFragment',
 ] as const;
 
@@ -244,8 +302,13 @@ export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
 type AllowedActions =
+  | AccountOrderControllerUpdateHiddenAccountsListAction
+  | AccountTreeControllerClearStateAction
   | AccountTreeControllerGetSelectedAccountGroupAction
   | AccountTreeControllerInitAction
+  | AccountTreeControllerReinitAction
+  | AccountTreeControllerSyncWithUserStorageAction
+  | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
@@ -255,6 +318,8 @@ type AllowedActions =
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerGetIsWalletResetInProgressAction
+  | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
@@ -271,6 +336,7 @@ type AllowedActions =
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
   | KeyringControllerGetKeyringsByTypeAction
+  | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringV2Action
@@ -286,7 +352,10 @@ type AllowedActions =
   | MetaMetricsControllerBufferedTraceAction
   | MetaMetricsControllerBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
+  | MultichainAccountServiceCreateMultichainAccountWalletAction
+  | MultichainAccountServiceGetMultichainAccountWalletAction
   | MultichainAccountServiceInitAction
+  | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
@@ -295,17 +364,22 @@ type AllowedActions =
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PermissionControllerAcceptPermissionsRequestAction
+  | PermissionControllerClearStateAction
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerTestOriginAction
+  | PreferencesControllerGetStateAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
+  | SeedlessOnboardingControllerFetchAllSecretDataAction
+  | SeedlessOnboardingControllerGetSecretDataBackupStateAction
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerRunMigrationsAction
   | SeedlessOnboardingControllerLoadKeyringEncryptionKeyAction
@@ -319,11 +393,13 @@ type AllowedActions =
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
+  | SnapControllerClearStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
@@ -347,7 +423,6 @@ type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
   seedlessOperationMutex: Mutex;
-  createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   sendUpdate: () => void;
@@ -393,7 +468,6 @@ export class LegacyBackgroundApiService {
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
-   * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -403,7 +477,6 @@ export class LegacyBackgroundApiService {
     getOpenMetamaskTabsIds,
     sendUpdate,
     seedlessOperationMutex,
-    createVaultMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -413,10 +486,11 @@ export class LegacyBackgroundApiService {
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
-    // migrate the seedless onboarding functionality to this service.
+    // migrate the remaining seedless onboarding functionality to this service
+    // (e.g. changePasswordWithPasskeyVerification).
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
-    this.#createVaultMutex = createVaultMutex;
+    this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -1745,6 +1819,756 @@ export class LegacyBackgroundApiService {
    * @param chainId - The chain ID to check for relay support.
    * @returns `true` if the transaction relay supports the chain, `false` otherwise.
    */
+  /**
+   * Creates a PRIMARY seed phrase backup for the user.
+   *
+   * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
+   * Save the encrypted seed phrase in the metadata store.
+   *
+   * `createToprfKeyAndBackupSeedPhrase` already marks migration as V1 for new
+   * backups, so a separate `setMigrationVersion` call is unnecessary.
+   *
+   * @param password - The user's password.
+   * @param encodedSeedPhrase - The seed phrase to backup.
+   * @param keyringId - The keyring id of the backup seed phrase.
+   */
+  async createSeedPhraseBackup(
+    password: string,
+    encodedSeedPhrase: number[],
+    keyringId: string,
+  ): Promise<void> {
+    let createSeedPhraseBackupSuccess = false;
+    try {
+      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+      const seedPhrase =
+        this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+
+      await this.#messenger.call(
+        'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+        password,
+        seedPhrase,
+        keyringId,
+      );
+      createSeedPhraseBackupSuccess = true;
+
+      await this.syncKeyringEncryptionKey();
+    } catch (error) {
+      this.#messenger.captureException?.(
+        createSentryError(
+          TraceName.OnboardingCreateKeyAndBackupSrpError,
+          error,
+        ),
+      );
+
+      log.error('[createSeedPhraseBackup] error', error);
+      throw error;
+    } finally {
+      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        data: { success: createSeedPhraseBackupSuccess },
+      });
+    }
+  }
+
+  /**
+   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
+   *
+   * @param password - The user's password.
+   * @returns Array of secret metadata items.
+   */
+  async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
+    let fetchAllSeedPhrasesSuccess = false;
+    try {
+      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        name: TraceName.OnboardingFetchSrps,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+      const allSeedPhrases = await this.#messenger.call(
+        'SeedlessOnboardingController:fetchAllSecretData',
+        password,
+      );
+      fetchAllSeedPhrasesSuccess = true;
+
+      return allSeedPhrases;
+    } finally {
+      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        name: TraceName.OnboardingFetchSrps,
+        data: { success: fetchAllSeedPhrasesSuccess },
+      });
+    }
+  }
+
+  /**
+   * Syncs the seed phrases with the social login flow.
+   */
+  async syncSeedPhrases(): Promise<void> {
+    try {
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
+      );
+
+      if (!isSocialLoginFlow) {
+        throw new Error(
+          'Syncing seed phrases is only available for social login flow',
+        );
+      }
+
+      const [rootSecret, ...otherSecrets] = await this.#fetchAllSecretData();
+      if (!rootSecret) {
+        throw new Error('No root SRP found');
+      }
+
+      for (const secret of otherSecrets) {
+        const srpHash = this.#messenger.call(
+          'SeedlessOnboardingController:getSecretDataBackupState',
+          secret.data,
+          secret.type,
+        );
+
+        if (!srpHash) {
+          if (secret.type === SecretType.PrivateKey) {
+            await this.importAccountWithStrategy(
+              AccountImportStrategy.privateKey,
+              [bytesToHex(secret.data)],
+              {
+                shouldCreateSocialBackup: false,
+                shouldSelectAccount: false,
+              },
+            );
+            continue;
+          }
+
+          const encodedSrp = convertEnglishWordlistIndicesToCodepoints(
+            secret.data,
+          );
+          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+
+          await this.importMnemonicToVault(mnemonicToRestore, {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          });
+        }
+      }
+    } catch (error) {
+      log.error('error while syncing seed phrases', error);
+
+      this.#messenger.captureException?.(
+        createSentryError('Error while syncing seed phrases', error),
+      );
+
+      throw error;
+    }
+  }
+
+  /**
+   * Adds a new seed phrase backup for the user.
+   *
+   * If `syncWithSocial` is false, it will only update the local state,
+   * and not sync the seed phrase to the server.
+   *
+   * @param mnemonic - The mnemonic to derive the seed phrase from.
+   * @param keyringId - The keyring id of the backup seed phrase.
+   * @param syncWithSocial - whether to skip syncing with social login
+   */
+  async addNewSeedPhraseBackup(
+    mnemonic: string,
+    keyringId: string,
+    syncWithSocial = true,
+  ): Promise<void> {
+    const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
+    const seedPhraseAsUint8Array =
+      this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+
+    if (syncWithSocial) {
+      await this.#seedlessOperationMutex.runExclusive(async () => {
+        let addNewSeedPhraseBackupSuccess = false;
+        try {
+          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+            name: TraceName.OnboardingAddSrp,
+            op: TraceOperation.OnboardingSecurityOp,
+          });
+
+          await runSeedlessOnboardingMigrations(this.#messenger);
+
+          await this.#messenger.call(
+            'SeedlessOnboardingController:addNewSecretData',
+            seedPhraseAsUint8Array,
+            EncAccountDataType.ImportedSrp,
+            {
+              keyringId,
+            },
+          );
+          addNewSeedPhraseBackupSuccess = true;
+        } catch (err) {
+          this.#messenger.captureException?.(
+            createSentryError(TraceName.OnboardingAddSrpError, err),
+          );
+
+          throw err;
+        } finally {
+          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+            name: TraceName.OnboardingAddSrp,
+            data: { success: addNewSeedPhraseBackupSuccess },
+          });
+        }
+      });
+    } else {
+      this.#messenger.call(
+        'SeedlessOnboardingController:updateBackupMetadataState',
+        {
+          keyringId,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
+        },
+      );
+    }
+  }
+
+  /**
+   * Creates a new Vault and create a new keychain.
+   *
+   * @param password - The password used to encrypt the vault.
+   * @returns created keyring object
+   */
+  async createNewVaultAndKeychain(
+    password: string,
+  ): Promise<{ type: string; accounts: string[]; metadata: { id: string } }> {
+    const releaseLock = await this.#createVaultMutex.acquire();
+    try {
+      return await this.#createNewVaultAndKeychainUnderLock(password);
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Creates a new vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param password - The password used to encrypt the vault.
+   * @returns The seed phrase encoded as UTF-8 bytes.
+   */
+  async createNewVaultAndGetSeedPhrase(password: string): Promise<Buffer> {
+    const releaseLock = await this.#createVaultMutex.acquire();
+    try {
+      await this.#createNewVaultAndKeychainUnderLock(password);
+      return await this.getSeedPhrase(password);
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Unlocks the vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param password - The password used to unlock the vault.
+   * @returns The seed phrase encoded as UTF-8 bytes.
+   */
+  async unlockAndGetSeedPhrase(password: string): Promise<Buffer> {
+    const releaseLock = await this.#createVaultMutex.acquire();
+    try {
+      await this.submitPasswordOrEncryptionKey({
+        password,
+      });
+      return await this.getSeedPhrase(password);
+    } finally {
+      releaseLock();
+    }
+  }
+
+  async #createNewVaultAndKeychainUnderLock(
+    password: string,
+  ): Promise<{ type: string; accounts: string[]; metadata: { id: string } }> {
+    const isWalletResetInProgress = this.#messenger.call(
+      'AppStateController:getIsWalletResetInProgress',
+    );
+    if (isWalletResetInProgress) {
+      this.#messenger.call('PermissionController:clearState');
+
+      await this.#messenger.call('SnapController:clearState');
+
+      this.#messenger.call('AccountTreeController:clearState');
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.#messenger.call(
+        'AccountOrderController:updateHiddenAccountsList',
+        [],
+      );
+
+      this.#messenger.call('TransactionController:clearUnapprovedTransactions');
+    }
+
+    await this.#messenger.call(
+      'MultichainAccountService:createMultichainAccountWallet',
+      {
+        type: 'create',
+        password,
+      },
+    );
+
+    this.#messenger.call(
+      'AppStateController:setIsWalletResetInProgress',
+      false,
+    );
+
+    const { keyrings } = this.#messenger.call('KeyringController:getState');
+    const primaryKeyring = keyrings[0] as {
+      type: string;
+      accounts: string[];
+      metadata: { id: string };
+    };
+
+    await this.#messenger.call('AccountsController:updateAccounts');
+
+    this.#messenger.call('AccountTreeController:reinit');
+
+    return primaryKeyring;
+  }
+
+  /**
+   * Counts the number of accounts discovered by provider.
+   *
+   * @param accounts - The discovered accounts to count by provider.
+   * @returns Account counts by provider.
+   */
+  #getDiscoveryCountByProvider(
+    accounts: { type: string }[],
+  ): Record<'Bitcoin' | 'Solana' | 'Tron', number> {
+    const counts = {
+      Bitcoin: 0,
+      Solana: 0,
+      Tron: 0,
+    };
+
+    const solanaAccountTypes = Object.values(SolAccountType) as string[];
+    const bitcoinAccountTypes = Object.values(BtcAccountType) as string[];
+    const tronAccountTypes = Object.values(TrxAccountType) as string[];
+
+    for (const account of accounts) {
+      if (solanaAccountTypes.includes(account.type)) {
+        counts.Solana += 1;
+      }
+      if (bitcoinAccountTypes.includes(account.type)) {
+        counts.Bitcoin += 1;
+      }
+      if (tronAccountTypes.includes(account.type)) {
+        counts.Tron += 1;
+      }
+    }
+
+    return counts;
+  }
+
+  /**
+   * Discovers and creates accounts for the given keyring id.
+   *
+   * @param id - The keyring id to discover and create accounts for.
+   * @returns Discovered account counts by chain.
+   */
+  async discoverAndCreateAccounts(
+    id?: string,
+  ): Promise<Record<'Bitcoin' | 'Solana' | 'Tron', number>> {
+    const startTime = getPerformanceTimestamp();
+    try {
+      const { keyrings } = this.#messenger.call('KeyringController:getState');
+      const keyringIdToDiscover = id || keyrings[0]?.metadata.id;
+
+      if (!keyringIdToDiscover) {
+        throw new Error('No keyring id to discover accounts for');
+      }
+
+      const wallet = this.#messenger.call(
+        'MultichainAccountService:getMultichainAccountWallet',
+        {
+          entropySource: keyringIdToDiscover,
+        },
+      );
+
+      const result = await wallet.discoverAccounts();
+
+      const counts = this.#getDiscoveryCountByProvider(result);
+
+      if (result.length > 0) {
+        trace({
+          name: TraceName.DiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+          startTime,
+        });
+        endTrace({
+          name: TraceName.DiscoverAccounts,
+        });
+      }
+
+      return counts;
+    } catch (error) {
+      log.warn(`Failed to add accounts with balance. ${String(error)}`);
+      return {
+        Bitcoin: 0,
+        Solana: 0,
+        Tron: 0,
+      };
+    }
+  }
+
+  /**
+   * Returns the index of the HD keyring containing the selected account.
+   *
+   * @returns The index of the HD keyring containing the selected account.
+   */
+  #getHDEntropyIndex(): number | undefined {
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const { keyrings } = this.#messenger.call('KeyringController:getState');
+    const hdKeyrings = keyrings.filter(
+      (keyring: { type: string; accounts: string[] }) =>
+        keyring.type === KeyringTypes.hdKeyTree,
+    );
+    const index = hdKeyrings.findIndex(
+      (keyring: { type: string; accounts: string[] }) =>
+        keyring.accounts.includes(selectedAccount.address),
+    );
+
+    return index === -1 ? undefined : index;
+  }
+
+  /**
+   * Imports a new mnemonic to the vault.
+   *
+   * @param mnemonic - The mnemonic to import.
+   * @param options - The options for the import.
+   * @param options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+   * @param options.shouldSelectAccount - whether to select the new account in the wallet
+   */
+  async importMnemonicToVault(
+    mnemonic: string,
+    options: {
+      shouldCreateSocialBackup?: boolean;
+      shouldSelectAccount?: boolean;
+    } = {
+      shouldCreateSocialBackup: true,
+      shouldSelectAccount: true,
+    },
+  ): Promise<void> {
+    const { shouldCreateSocialBackup = true, shouldSelectAccount = true } =
+      options;
+    const releaseLock = await this.#createVaultMutex.acquire();
+    try {
+      const { entropySource: id } = await this.#messenger.call(
+        'MultichainAccountService:createMultichainAccountWallet',
+        {
+          type: 'import',
+          mnemonic: this.#convertMnemonicToWordlistIndices(
+            Buffer.from(mnemonic, 'utf8'),
+          ),
+        },
+      );
+
+      const [newAccount] = (await this.#messenger.call(
+        'KeyringController:withKeyringV2',
+        { id },
+        async ({ keyring }) => keyring.getAccounts(),
+      )) as { address: string }[];
+
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
+      );
+      if (isSocialLoginFlow) {
+        try {
+          await this.addNewSeedPhraseBackup(
+            mnemonic,
+            id,
+            shouldCreateSocialBackup,
+          );
+        } catch (err) {
+          await this.#messenger.call(
+            'MultichainAccountService:removeMultichainAccountWallet',
+            id,
+          );
+          throw err;
+        }
+      }
+
+      if (shouldSelectAccount) {
+        const account = this.#messenger.call(
+          'AccountsController:getAccountByAddress',
+          newAccount.address,
+        );
+        if (!account) {
+          throw new Error(
+            `No account found for address: ${newAccount.address}`,
+          );
+        }
+        this.#messenger.call(
+          'AccountsController:setSelectedAccount',
+          account.id,
+        );
+      }
+
+      const syncAndDiscoverAccounts = async () => {
+        await this.#messenger.call('AccountTreeController:syncWithUserStorage');
+
+        const discoveredAccounts = await this.discoverAndCreateAccounts(id);
+
+        const newHdEntropyIndex = this.#getHDEntropyIndex();
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
+            .addProperties({
+              status: 'completed',
+              // Metrics property names use snake_case by convention.
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: newHdEntropyIndex,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              number_of_bitcoin_accounts_discovered:
+                discoveredAccounts?.Bitcoin,
+            })
+            .build(),
+        );
+      };
+
+      const { completedOnboarding } = this.#messenger.call(
+        'OnboardingController:getState',
+      );
+      if (completedOnboarding) {
+        // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
+        // eslint-disable-next-line no-void
+        void syncAndDiscoverAccounts();
+      }
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Restores an array of seed phrases to the vault.
+   *
+   * @param secretDatas - The secret metadata items to restore.
+   */
+  async restoreSeedPhrasesToVault(
+    secretDatas: SecretMetadata[],
+  ): Promise<void> {
+    const isSocialLoginFlow = this.#messenger.call(
+      'OnboardingController:getIsSocialLoginFlow',
+    );
+
+    if (!isSocialLoginFlow) {
+      return;
+    }
+
+    const shouldCreateSocialBackup = false;
+    const shouldSetSelectedAccount = false;
+
+    for (const secret of secretDatas) {
+      const srpHash = this.#messenger.call(
+        'SeedlessOnboardingController:getSecretDataBackupState',
+        secret.data,
+        secret.type,
+      );
+      if (srpHash) {
+        continue;
+      }
+
+      if (secret.type === SecretType.PrivateKey) {
+        await this.importAccountWithStrategy(
+          AccountImportStrategy.privateKey,
+          [bytesToHex(secret.data)],
+          {
+            shouldCreateSocialBackup,
+            shouldSelectAccount: shouldSetSelectedAccount,
+          },
+        );
+        continue;
+      }
+
+      const encodedSrp = convertEnglishWordlistIndicesToCodepoints(secret.data);
+      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+
+      await this.importMnemonicToVault(mnemonicToRestore, {
+        shouldCreateSocialBackup,
+        shouldSelectAccount: shouldSetSelectedAccount,
+      });
+    }
+  }
+
+  /**
+   * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+   *
+   * @param password - The password.
+   * @returns The seed phrase.
+   */
+  async restoreSocialBackupAndGetSeedPhrase(password: string): Promise<string> {
+    try {
+      const [firstSecretData, ...remainingSecretData] =
+        await this.#fetchAllSecretData(password);
+
+      const firstSeedPhrase = convertEnglishWordlistIndicesToCodepoints(
+        firstSecretData.data,
+      );
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
+
+      if (remainingSecretData.length > 0) {
+        await this.restoreSeedPhrasesToVault(remainingSecretData);
+      }
+
+      return mnemonic;
+    } catch (error) {
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      if (error instanceof InvalidPrimarySecretDataTypeError) {
+        const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
+        log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
+        this.#messenger.captureException?.(
+          createSentryError(errorMessage, error),
+        );
+        throw error;
+      }
+
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to restore social backup and get seed phrase',
+          error,
+        ),
+      );
+
+      throw error;
+    }
+  }
+
+  /**
+   * Create a new Vault and restore an existent keyring.
+   *
+   * @param password - The password used to encrypt the vault.
+   * @param encodedSeedPhrase - The seed phrase, encoded as an array of UTF-8 bytes.
+   */
+  async createNewVaultAndRestore(
+    password: string,
+    encodedSeedPhrase: number[],
+  ): Promise<void> {
+    const releaseLock = await this.#createVaultMutex.acquire();
+    try {
+      const { completedOnboarding } = this.#messenger.call(
+        'OnboardingController:getState',
+      );
+
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+
+      this.#messenger.call('PermissionController:clearState');
+
+      await this.#messenger.call('SnapController:clearState');
+
+      this.#messenger.call('AccountTreeController:clearState');
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.#messenger.call(
+        'AccountOrderController:updateHiddenAccountsList',
+        [],
+      );
+
+      this.#messenger.call('TransactionController:clearUnapprovedTransactions');
+
+      if (completedOnboarding) {
+        this.#messenger.call('TokenDetectionController:enable');
+      }
+
+      const seedPhraseAsUint8Array =
+        this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+
+      const { entropySource: id } = await this.#messenger.call(
+        'MultichainAccountService:createMultichainAccountWallet',
+        {
+          type: 'restore',
+          password,
+          mnemonic: seedPhraseAsUint8Array,
+        },
+      );
+
+      this.#messenger.call(
+        'AppStateController:setIsWalletResetInProgress',
+        false,
+      );
+
+      await this.#messenger.call('AccountsController:updateAccounts');
+
+      await this.#messenger.call('MultichainAccountService:init');
+
+      this.#messenger.call('AccountTreeController:reinit');
+
+      if (completedOnboarding) {
+        const { useExternalServices } = this.#messenger.call(
+          'PreferencesController:getState',
+        );
+        if (useExternalServices) {
+          await this.#messenger.call(
+            'AccountTreeController:syncWithUserStorageAtLeastOnce',
+          );
+        }
+        await this.discoverAndCreateAccounts(id);
+      }
+
+      if (getIsSeedlessOnboardingFeatureEnabled()) {
+        const isSocialLoginFlow = this.#messenger.call(
+          'OnboardingController:getIsSocialLoginFlow',
+        );
+        if (isSocialLoginFlow) {
+          const { keyrings } = this.#messenger.call(
+            'KeyringController:getState',
+          );
+          const primaryKeyringId = keyrings[0].metadata.id;
+          this.#messenger.call(
+            'SeedlessOnboardingController:updateBackupMetadataState',
+            {
+              keyringId: primaryKeyringId,
+              data: seedPhraseAsUint8Array,
+              type: SecretType.Mnemonic,
+            },
+          );
+
+          await this.syncKeyringEncryptionKey();
+        }
+      }
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
+   *
+   * @param mnemonic - The BIP-39 mnemonic.
+   * @returns The Unicode code points for the seed phrase formed from the words in the wordlist.
+   */
+  #convertMnemonicToWordlistIndices(mnemonic: Buffer): Uint8Array {
+    const indices = mnemonic
+      .toString()
+      .split(' ')
+      .map((word) => wordlist.indexOf(word));
+    return new Uint8Array(new Uint16Array(indices).buffer);
+  }
+
   async isRelaySupported(chainId: Hex): Promise<boolean> {
     return isRelaySupported(chainId);
   }

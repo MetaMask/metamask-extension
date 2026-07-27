@@ -486,11 +486,115 @@ export type LegacyBackgroundApiServiceThrowTestErrorAction = {
 };
 
 /**
- * Determines if the transaction relay supports the given chain.
+ * Creates a PRIMARY seed phrase backup for the user.
  *
- * @param chainId - The chain ID to check for relay support.
- * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+ * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
+ * Save the encrypted seed phrase in the metadata store.
+ *
+ * `createToprfKeyAndBackupSeedPhrase` already marks migration as V1 for new
+ * backups, so a separate `setMigrationVersion` call is unnecessary.
+ *
+ * @param password - The user's password.
+ * @param encodedSeedPhrase - The seed phrase to backup.
+ * @param keyringId - The keyring id of the backup seed phrase.
  */
+export type LegacyBackgroundApiServiceCreateSeedPhraseBackupAction = {
+  type: `LegacyBackgroundApiService:createSeedPhraseBackup`;
+  handler: LegacyBackgroundApiService['createSeedPhraseBackup'];
+};
+
+/**
+ * Syncs the seed phrases with the social login flow.
+ */
+export type LegacyBackgroundApiServiceSyncSeedPhrasesAction = {
+  type: `LegacyBackgroundApiService:syncSeedPhrases`;
+  handler: LegacyBackgroundApiService['syncSeedPhrases'];
+};
+
+/**
+ * Creates a new Vault and create a new keychain.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @returns created keyring object
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndKeychainAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndKeychain`;
+  handler: LegacyBackgroundApiService['createNewVaultAndKeychain'];
+};
+
+/**
+ * Creates a new vault and returns the seed phrase in a single atomic operation.
+ * Holding the vault mutex through seed export avoids races where concurrent
+ * keyring mutations leave no HD keyring available for export.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @returns The seed phrase encoded as UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndGetSeedPhraseAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase`;
+  handler: LegacyBackgroundApiService['createNewVaultAndGetSeedPhrase'];
+};
+
+/**
+ * Unlocks the vault and returns the seed phrase in a single atomic operation.
+ * Holding the vault mutex through seed export avoids races where concurrent
+ * keyring mutations leave no HD keyring available for export.
+ *
+ * @param password - The password used to unlock the vault.
+ * @returns The seed phrase encoded as UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceUnlockAndGetSeedPhraseAction = {
+  type: `LegacyBackgroundApiService:unlockAndGetSeedPhrase`;
+  handler: LegacyBackgroundApiService['unlockAndGetSeedPhrase'];
+};
+
+/**
+ * Discovers and creates accounts for the given keyring id.
+ *
+ * @param id - The keyring id to discover and create accounts for.
+ * @returns Discovered account counts by chain.
+ */
+export type LegacyBackgroundApiServiceDiscoverAndCreateAccountsAction = {
+  type: `LegacyBackgroundApiService:discoverAndCreateAccounts`;
+  handler: LegacyBackgroundApiService['discoverAndCreateAccounts'];
+};
+
+/**
+ * Imports a new mnemonic to the vault.
+ *
+ * @param mnemonic - The mnemonic to import.
+ * @param options - The options for the import.
+ * @param options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+ * @param options.shouldSelectAccount - whether to select the new account in the wallet
+ */
+export type LegacyBackgroundApiServiceImportMnemonicToVaultAction = {
+  type: `LegacyBackgroundApiService:importMnemonicToVault`;
+  handler: LegacyBackgroundApiService['importMnemonicToVault'];
+};
+
+/**
+ * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export type LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction =
+  {
+    type: `LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase`;
+    handler: LegacyBackgroundApiService['restoreSocialBackupAndGetSeedPhrase'];
+  };
+
+/**
+ * Create a new Vault and restore an existent keyring.
+ *
+ * @param password - The password used to encrypt the vault.
+ * @param encodedSeedPhrase - The seed phrase, encoded as an array of UTF-8 bytes.
+ */
+export type LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction = {
+  type: `LegacyBackgroundApiService:createNewVaultAndRestore`;
+  handler: LegacyBackgroundApiService['createNewVaultAndRestore'];
+};
+
 export type LegacyBackgroundApiServiceIsRelaySupportedAction = {
   type: `LegacyBackgroundApiService:isRelaySupported`;
   handler: LegacyBackgroundApiService['isRelaySupported'];
@@ -541,4 +645,13 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceCaptureTestErrorAction
   | LegacyBackgroundApiServiceThrowTestErrorAction
+  | LegacyBackgroundApiServiceCreateSeedPhraseBackupAction
+  | LegacyBackgroundApiServiceSyncSeedPhrasesAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndKeychainAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceUnlockAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceDiscoverAndCreateAccountsAction
+  | LegacyBackgroundApiServiceImportMnemonicToVaultAction
+  | LegacyBackgroundApiServiceRestoreSocialBackupAndGetSeedPhraseAction
+  | LegacyBackgroundApiServiceCreateNewVaultAndRestoreAction
   | LegacyBackgroundApiServiceIsRelaySupportedAction;
