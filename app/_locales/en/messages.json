@@ -9121,12 +9121,6 @@
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
     "message": "This token is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
   },
-  "securityTrustMaliciousTokenDescription": {
-    "message": "$1 is a malicious token. Avoid interacting with it or trading it."
-  },
-  "securityTrustMaliciousTokenDescriptionNoSymbol": {
-    "message": "This is a malicious token. Avoid interacting with it or trading it."
-  },
   "securityTrustMaliciousTokenSheetDescription": {
     "message": "Serious risk signals detected on $1. We recommend not trading this token."
   },
