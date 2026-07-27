@@ -174,11 +174,6 @@
       "count": 1
     }
   },
-  "ui/hooks/bridge/useBridgeNavigation.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 6
-    }
-  },
   "ui/hooks/bridge/useInitialBridgeTokens.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
