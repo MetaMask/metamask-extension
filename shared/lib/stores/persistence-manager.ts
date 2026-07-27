@@ -526,27 +526,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
-   * Reports that the backup IndexedDB was force-closed by the browser. Emitted
-   * regardless of whether shutdown suspension is enabled, so we get a baseline
-   * of how often these events happen (and whether they are `close` vs
-   * `versionchange`) independent of the feature rollout. `IndexedDBStore` only
-   * fires this once per live connection, so it stays low-volume without extra
-   * deduplication here.
-   *
-   * @param reason - Which browser event triggered the forced close.
-   */
-  #reportBackupDbForcedClose(reason: 'close' | 'versionchange') {
-    captureMessage('MetaMask - backup IndexedDB force-closed', {
-      level: 'info',
-      tags: {
-        'persistence.event': 'backup-idb-forced-close',
-        'persistence.idbCloseReason': reason,
-      },
-      fingerprint: ['persistence-event', 'backup-idb-forced-close'],
-    });
-  }
-
-  /**
    * Resumes writes previously suspended by {@link suspendWrites}. Called when a
    * suspected shutdown is cancelled (e.g. `runtime.onSuspendCanceled`) or when a
    * recovery probe confirms the browser is still responsive.
@@ -846,7 +825,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // Wire before open() so a force-close during/just after open is observed
       // (and so we never assign `#open = true` after onForcedClose cleared it).
       db.onForcedClose = (reason) => {
-        this.#reportBackupDbForcedClose(reason);
+        // Emit regardless of whether shutdown suspension is enabled, so we get
+        // a baseline of how often these events happen (and whether they are
+        // `close` vs `versionchange`) independent of the feature rollout.
+        // IndexedDBStore only fires this once per live connection.
+        captureMessage('MetaMask - backup IndexedDB force-closed', {
+          level: 'info',
+          tags: {
+            'persistence.event': 'backup-idb-forced-close',
+            'persistence.idbCloseReason': reason,
+          },
+          fingerprint: ['persistence-event', 'backup-idb-forced-close'],
+        });
         this.#open = false;
         this.suspendWrites(ShutdownTrigger.IdbClose);
       };
