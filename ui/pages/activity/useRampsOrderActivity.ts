@@ -10,7 +10,10 @@ export function useRampsOrderActivity(filters: ActivityListFilter) {
   const networks = 'networks' in filters ? filters.networks : undefined;
 
   const items = useMemo(
-    () => orders.map(mapRampsOrderSafely).filter((item) => item !== undefined),
+    () =>
+      orders
+        .map((order) => mapRampsOrderSafely(order))
+        .filter((item) => item !== undefined),
     [orders],
   );
 
