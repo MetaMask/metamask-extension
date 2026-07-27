@@ -9,7 +9,7 @@ import {
   isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-// @eslint-disable-next-line import-x/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import * as sentinelApi from '../../../../app/scripts/lib/transaction/sentinel-api';
 import * as smartTransactionsSelectors from '../../../../shared/lib/selectors/smart-transactions';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
