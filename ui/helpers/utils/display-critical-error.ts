@@ -110,11 +110,16 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         ? (errorObj.sentryTags as Record<string, string>)
         : {};
 
-    // Create error_details without sentryTags to avoid duplication
-    // (sentryTags are sent as top-level tags)
+    // Create error_details without sentryTags (those are top-level tags) or
+    // backup. PersistenceError keeps vault data behind getBackup() so it is
+    // not serialized into reports; strip it here for the same reason.
     let errorDetails: Record<string, unknown>;
     if (error && typeof error === 'object') {
-      const { sentryTags: _omitted, ...rest } = errorObj;
+      const {
+        sentryTags: _omittedSentryTags,
+        backup: _omittedBackup,
+        ...rest
+      } = errorObj;
       errorDetails = rest;
     } else {
       errorDetails = { message: String(error) };

@@ -299,6 +299,73 @@ describe('displayCriticalError', () => {
     }
   });
 
+  it('omits vault backup from Sentry error_details when reporting', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    // Use a plain ErrorLike (as getErrorLike produces) so enumerable fields
+    // match the production serialization path.
+    const error = {
+      message: MOCK_ERROR_MESSAGE,
+      name: 'Error',
+      stack: 'Error: test error',
+      backup: MOCK_BACKUP_WITH_VAULT,
+      sentryTags: {
+        'corruption.backupShouldExist': 'true',
+      },
+    };
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
+      ),
+    ).rejects.toMatchObject({ message: MOCK_ERROR_MESSAGE });
+
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-button',
+    );
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+
+    expect(restartButton).toBeTruthy();
+    expect(checkbox).toBeTruthy();
+
+    if (restartButton && checkbox) {
+      checkbox.checked = true;
+
+      const flushPromises = () => new Promise(setImmediate);
+      await act(async () => {
+        restartButton.click();
+        await flushPromises();
+      });
+
+      const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+      expect(mockFetch).toHaveBeenCalled();
+      const requestBody = mockFetch.mock.calls[0]?.[1]?.body as string;
+      const [, , eventPayload] = requestBody.split('\n');
+      const parsedEventPayload = JSON.parse(eventPayload) as {
+        tags: Record<string, string>;
+        extra: { error_details: Record<string, unknown> };
+      };
+
+      expect(parsedEventPayload.tags).toStrictEqual({
+        'corruption.backupShouldExist': 'true',
+      });
+      expect(parsedEventPayload.extra.error_details.backup).toBeUndefined();
+      expect(parsedEventPayload.extra.error_details.message).toBe(
+        MOCK_ERROR_MESSAGE,
+      );
+    }
+  });
+
   it('does not send to Sentry if checkbox is unchecked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
     const mockPort = createMockPort();
