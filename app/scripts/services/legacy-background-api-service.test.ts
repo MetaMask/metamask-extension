@@ -2879,6 +2879,56 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
+        );
+
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('rejectPendingApproval', () => {
