@@ -1581,7 +1581,6 @@ export const TokenManagementPage = () => {
         <TextFieldSearch
           className="app-text-field-search"
           clearButtonOnClick={handleSearchClear}
-          clearButtonProps={{ ariaLabel: t('clear') }}
           inputProps={
             {
               'data-testid': 'token-management-search-input',

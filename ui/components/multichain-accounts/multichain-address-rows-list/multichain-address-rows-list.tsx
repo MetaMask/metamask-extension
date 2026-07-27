@@ -162,7 +162,6 @@ export const MultichainAddressRowsList = ({
         <TextFieldSearch
           className="app-text-field-search"
           clearButtonOnClick={handleClearSearch}
-          clearButtonProps={{ ariaLabel: t('clear') }}
           data-testid="multichain-address-rows-list-search"
           onChange={handleSearchChange}
           placeholder={t('searchNetworks')}

@@ -22,7 +22,6 @@ export const AssetFilterInput = ({
         autoFocus
         className="app-text-field-search"
         clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{ ariaLabel: t('clear') }}
         inputProps={
           {
             'data-testid': 'asset-filter-search-input',

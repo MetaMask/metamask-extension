@@ -162,7 +162,6 @@ export const AccountList = () => {
           <TextFieldSearch
             className="app-text-field-search"
             clearButtonOnClick={() => setSearchPattern('')}
-            clearButtonProps={{ ariaLabel: t('clear') }}
             data-testid="multichain-account-list-search"
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}

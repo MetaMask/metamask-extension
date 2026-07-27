@@ -19,7 +19,6 @@ export const RecipientFilterInput = ({
       <TextFieldSearch
         className="app-text-field-search"
         clearButtonOnClick={() => onChange('')}
-        clearButtonProps={{ ariaLabel: t('clear') }}
         inputProps={
           {
             'data-testid': 'recipient-filter-search-input',

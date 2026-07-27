@@ -20,7 +20,6 @@ const NetworkListSearch = ({
         autoFocus
         className="app-text-field-search"
         clearButtonOnClick={() => setSearchQuery('')}
-        clearButtonProps={{ ariaLabel: t('clear') }}
         data-testid="search-list"
         onBlur={() => setFocusSearch(false)}
         onFocus={() => setFocusSearch(true)}

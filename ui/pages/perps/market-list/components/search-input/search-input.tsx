@@ -49,7 +49,6 @@ export const SearchInput = ({
       autoFocus={autoFocus}
       className="app-text-field-search"
       clearButtonOnClick={onClear}
-      clearButtonProps={{ ariaLabel: t('clear') }}
       data-testid="search-input-container"
       inputProps={
         {
