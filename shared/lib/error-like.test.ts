@@ -55,4 +55,35 @@ describe('getErrorLike', () => {
       },
     });
   });
+
+  it('materializes PersistenceError getBackup into a backup property', () => {
+    const backup = {
+      KeyringController: { vault: 'encrypted-vault-data' },
+    };
+    const error = Object.assign(new Error('missing vault'), {
+      name: 'PersistenceError',
+      getBackup: () => backup,
+    });
+
+    expect(getErrorLike(error)).toStrictEqual({
+      message: 'missing vault',
+      name: 'PersistenceError',
+      stack: expect.any(String),
+      backup,
+    });
+  });
+
+  it('omits backup when getBackup throws or returns null', () => {
+    const throwingError = Object.assign(new Error('missing vault'), {
+      getBackup: () => {
+        throw new Error('no backup');
+      },
+    });
+    expect(getErrorLike(throwingError).backup).toBeUndefined();
+
+    const nullBackupError = Object.assign(new Error('missing vault'), {
+      getBackup: () => null,
+    });
+    expect(getErrorLike(nullBackupError).backup).toBeUndefined();
+  });
 });

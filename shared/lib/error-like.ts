@@ -46,6 +46,31 @@ function serializeSentryTags(
 }
 
 /**
+ * Copies a vault backup from PersistenceError-style errors for port messaging.
+ * Functions cannot cross postMessage, so we materialize getBackup() into data.
+ *
+ * @param error - The thrown object that may expose getBackup.
+ * @returns The backup object, or undefined when unavailable.
+ */
+function serializeBackup(
+  error: Record<PropertyKey, unknown>,
+): unknown | undefined {
+  if (
+    !hasProperty(error, 'getBackup') ||
+    typeof error.getBackup !== 'function'
+  ) {
+    return undefined;
+  }
+
+  try {
+    const backup = error.getBackup();
+    return backup == null ? undefined : backup;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Converts an unknown thrown value into the serializable error shape sent over
  * the raw startup port.
  *
@@ -63,6 +88,7 @@ export function getErrorLike(error: unknown): ErrorLike {
 
   const cause = serializeErrorCause(error);
   const sentryTags = serializeSentryTags(error);
+  const backup = serializeBackup(error);
 
   return {
     message: getStringProperty(error, 'message') ?? 'Unknown error',
@@ -70,5 +96,6 @@ export function getErrorLike(error: unknown): ErrorLike {
     stack: getStringProperty(error, 'stack'),
     ...(cause ? { cause } : {}),
     ...(sentryTags && Object.keys(sentryTags).length > 0 ? { sentryTags } : {}),
+    ...(backup !== undefined ? { backup } : {}),
   };
 }

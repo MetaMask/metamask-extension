@@ -539,6 +539,63 @@ describe('repair button', () => {
     );
   });
 
+  it('uses backup from the error without re-reading IndexedDB when it has a vault', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    const getBackupState = jest.fn().mockResolvedValue(null);
+    const previous = globalThis.stateHooks?.getBackupState;
+    globalThis.stateHooks = {
+      ...(globalThis.stateHooks ?? {}),
+      getBackupState,
+    };
+    restoreGetBackupState = () => {
+      if (previous) {
+        globalThis.stateHooks.getBackupState = previous;
+      } else {
+        delete globalThis.stateHooks.getBackupState;
+      }
+    };
+
+    const error = Object.assign(new Error(MISSING_VAULT_ERROR), {
+      backup: MOCK_BACKUP_WITH_VAULT,
+    });
+    const mockPort = createMockPort();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+        CriticalErrorType.MissingVaultInDatabase,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(getBackupState).not.toHaveBeenCalled();
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorType.MissingVaultInDatabase,
+    );
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: CRITICAL_ERROR_SCREEN_VIEWED,
+          params: expect.objectContaining({
+            backup: MOCK_BACKUP_WITH_VAULT,
+            repairAction: CriticalErrorRepairAction.Recover,
+          }),
+        }),
+      }),
+    );
+  });
+
   it('sends METHOD_REPAIR_DATABASE with reset action when repair button is clicked and user confirms', async () => {
     jest.useFakeTimers();
     jest

@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
+import { isObject } from '@metamask/utils';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import {
   getErrorHtml,
@@ -211,7 +212,17 @@ export async function displayCriticalErrorMessage(
   port?: browser.Runtime.Port,
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
-  const backup = port ? await safeGetVaultBackup() : null;
+  // Prefer a vault-bearing backup already serialized onto the error by
+  // getErrorLike (from PersistenceError.getBackup). Only fall back to IndexedDB
+  // when we do not already have one, so a timed-out UI re-read cannot flip
+  // Recover into Reset.
+  const backupFromError = isObject(error.backup)
+    ? (error.backup as Backup)
+    : null;
+  let backup = hasVault(backupFromError) ? backupFromError : null;
+  if (port && !hasVault(backup)) {
+    backup = await safeGetVaultBackup();
+  }
   let repairAction: CriticalErrorRepairAction = CriticalErrorRepairAction.None;
   if (port) {
     if (hasVault(backup)) {

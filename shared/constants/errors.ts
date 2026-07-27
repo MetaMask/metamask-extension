@@ -4,6 +4,12 @@ export type ErrorLike = {
   stack?: string;
   cause?: unknown;
   sentryTags?: Record<string, string>;
+  /**
+   * Optional vault backup copied from PersistenceError.getBackup() when the
+   * error is serialized for the critical-error UI port. Prefer this over
+   * re-reading IndexedDB when present.
+   */
+  backup?: unknown;
 };
 
 // This error is emitted from background.js and meant to be handled in the ui
