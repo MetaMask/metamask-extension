@@ -104,6 +104,7 @@ type AppState = {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
+  isAccessedFromOnboarding: boolean;
   errorInSettings: string | null;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
@@ -200,6 +201,7 @@ const initialState: AppState = {
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
+  isAccessedFromOnboarding: false,
   errorInSettings: null,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
@@ -587,6 +589,9 @@ export default function reduceApp(
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
         isAccessedFromDappConnectedSitePopover: Boolean(
           action.payload?.isAccessedFromDappConnectedSitePopover,
+        ),
+        isAccessedFromOnboarding: Boolean(
+          action.payload?.isAccessedFromOnboarding,
         ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
