@@ -6,7 +6,13 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
@@ -23,6 +29,8 @@ import {
   selectPerpsIsTestnet,
 } from '../../../selectors/perps-controller';
 import {
+  markTutorialAutoOpenAttempted,
+  selectTutorialAutoOpenAttempted,
   selectTutorialCompleted,
   setTutorialModalOpen,
 } from '../../../ducks/perps';
@@ -76,6 +84,7 @@ export const PerpsView = () => {
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
+  const autoOpenAttempted = useSelector(selectTutorialAutoOpenAttempted);
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
@@ -331,15 +340,49 @@ export const PerpsView = () => {
   // state propagates doesn't reopen the modal on the next effect run.
   // Explicitly skips when isFirstTimeUser is undefined so that unhydrated
   // controller state is never treated as "first-time user = true".
+  //
+  // `PerpsView` unmounts/remounts on every route change (e.g. navigating to
+  // Market Details and back), and isLoading/isFirstTimeUser can resolve
+  // *after* the user has already navigated away. Without a cross-mount
+  // guard, the effect below would re-evaluate on that later remount and
+  // pop the tutorial open right after the user hits "back" — see #43491.
+  // `canAttemptAutoOpen` is captured once per mount (via useRef, not
+  // useState) from the Redux flag as it existed when this component was
+  // created, so a fast remount whose predecessor already claimed the
+  // one-time attempt is permanently excluded, while the *current* mount
+  // keeps evaluating correctly across its own isLoading/isFirstTimeUser
+  // updates.
+  const canAttemptAutoOpenTutorial = useRef(!autoOpenAttempted).current;
+
   useEffect(() => {
-    if (isLoading || tutorialCompleted || isFirstTimeUser === undefined) {
+    if (canAttemptAutoOpenTutorial) {
+      dispatch(markTutorialAutoOpenAttempted());
+    }
+    // Only ever claim the one-time attempt once, on mount.
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (
+      !canAttemptAutoOpenTutorial ||
+      isLoading ||
+      tutorialCompleted ||
+      isFirstTimeUser === undefined
+    ) {
       return;
     }
     const networkKey = isTestnet ? 'testnet' : 'mainnet';
     if (isFirstTimeUser[networkKey]) {
       dispatch(setTutorialModalOpen(true));
     }
-  }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
+  }, [
+    canAttemptAutoOpenTutorial,
+    dispatch,
+    isFirstTimeUser,
+    isLoading,
+    isTestnet,
+    tutorialCompleted,
+  ]);
 
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here

@@ -8,3 +8,6 @@ export const selectTutorialActiveStep = (state: MetaMaskReduxState) =>
 
 export const selectTutorialCompleted = (state: MetaMaskReduxState) =>
   state.perpsTutorial.tutorialCompleted;
+
+export const selectTutorialAutoOpenAttempted = (state: MetaMaskReduxState) =>
+  state.perpsTutorial.autoOpenAttempted;

@@ -31,12 +31,14 @@ export type PerpsTutorialState = {
   tutorialModalOpen: boolean;
   activeStep: PerpsTutorialStep;
   tutorialCompleted: boolean;
+  autoOpenAttempted: boolean;
 };
 
 export const initialState: PerpsTutorialState = {
   tutorialModalOpen: false,
   activeStep: PerpsTutorialStep.WhatArePerps,
   tutorialCompleted: false,
+  autoOpenAttempted: false,
 };
 
 const perpsTutorialSlice = createSlice({
@@ -63,6 +65,16 @@ const perpsTutorialSlice = createSlice({
       state.tutorialModalOpen = false;
     },
 
+    // Marks that the Perps home tab has already made its one-time attempt to
+    // auto-open the tutorial for a first-time user. This is claimed
+    // immediately on mount (before isFirstTimeUser/isLoading resolve) so that
+    // remounting the Perps tab — e.g. after navigating back from Market
+    // Details — never gets a second chance to auto-open the modal. See
+    // PerpsView's auto-open effect.
+    markTutorialAutoOpenAttempted: (state) => {
+      state.autoOpenAttempted = true;
+    },
+
     resetTutorialState: () => {
       return { ...initialState };
     },
@@ -73,6 +85,7 @@ export const {
   setTutorialModalOpen,
   setTutorialActiveStep,
   markTutorialCompleted,
+  markTutorialAutoOpenAttempted,
   resetTutorialState,
 } = perpsTutorialSlice.actions;
 

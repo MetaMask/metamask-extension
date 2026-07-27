@@ -1621,7 +1621,8 @@
   "perpsTutorial": {
     "tutorialModalOpen": "boolean",
     "activeStep": "string",
-    "tutorialCompleted": "boolean"
+    "tutorialCompleted": "boolean",
+    "autoOpenAttempted": "boolean"
   },
   "platform": {
     "arch": "string",
