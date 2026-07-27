@@ -286,8 +286,10 @@ class Driver {
 
       const evaluationResult = evaluationResponse?.result ?? {};
       if (evaluationResult.exceptionDetails) {
+        const { description } = evaluationResult.exceptionDetails.exception ?? {};
         throw new Error(
-          evaluationResult.exceptionDetails.text ??
+          description ??
+            evaluationResult.exceptionDetails.text ??
             'Runtime evaluation failed in extension service worker',
         );
       }
