@@ -353,7 +353,6 @@
       "Reselect: Input stability warnings": 3
     },
     "ui/components/multichain/app-header/app-header.test.js": {
-      "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Input stability warnings": 3
     },
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
