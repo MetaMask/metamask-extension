@@ -1,9 +1,12 @@
 import { strict as assert } from 'assert';
 import { By, WebElement } from 'selenium-webdriver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
-import { veryLargeDelayMs } from '../../../helpers';
+import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import NetworkManager from '../network-manager';
 import HomePage from './homepage';
+
+/** Timeout for waiting on the import-confirm button to disappear after submit. */
+const TOKEN_IMPORT_CONFIRM_TIMEOUT_MS = 20_000;
 
 const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   BAT: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
@@ -32,27 +35,6 @@ class TokensTab extends HomePage {
     tag: 'p',
   };
 
-  private readonly customNetworkSelectedOption = (networkName: string) => {
-    return {
-      css: '.dropdown-editor__item-dropdown',
-      text: networkName,
-    };
-  };
-
-  private readonly customTokenModalOption =
-    '[data-testid="import-tokens-modal-custom-token-tab"]';
-
-  private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
-
-  private readonly importTokensButton = '[data-testid="importTokens-button"]';
-
-  private readonly importTokensLoading = {
-    testId: 'import-tokens-loading',
-  };
-
-  private readonly importTokensNextButton =
-    '[data-testid="import-tokens-button-next"]';
-
   private readonly currentNetworkOption =
     '[data-testid="network-filter-current__button"]';
 
@@ -76,6 +58,9 @@ class TokensTab extends HomePage {
   private readonly customTokenImportSymbolInput =
     '[data-testid="custom-token-import-symbol-input"]';
 
+  private readonly customTokenModalOption =
+    '[data-testid="import-tokens-modal-custom-token-tab"]';
+
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
   private readonly hideTokenConfirmationButton =
@@ -86,12 +71,30 @@ class TokensTab extends HomePage {
     css: '.hide-token-confirmation__title',
   };
 
-  private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
+  private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
+
+  private readonly importTokenNetworkDropdown = (networkName: string) => {
+    return {
+      css: this.tokenChainDropdown,
+      text: networkName,
+    };
+  };
+
+  private readonly importTokensButton = '[data-testid="importTokens-button"]';
+
+  private readonly importTokensLoading = {
+    testId: 'import-tokens-loading',
+  };
+
+  private readonly importTokensNextButton =
+    '[data-testid="import-tokens-button-next"]';
 
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
 
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
+
+  private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
@@ -121,18 +124,14 @@ class TokensTab extends HomePage {
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
-  private readonly selectedNetwork = (networkName: string) => {
-    return {
-      testId: 'test-import-tokens-drop-down-custom-import',
-      text: networkName,
-    };
-  };
-
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';
 
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
+
+  private readonly tokenChainDropdown =
+    '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly tokenImportedSuccessMessage = {
     text: 'Token imported',
@@ -206,9 +205,6 @@ class TokensTab extends HomePage {
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
-
-  private readonly tokenChainDropdown =
-    '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
 
@@ -496,10 +492,11 @@ class TokensTab extends HomePage {
    * Imports a custom token via the Import tokens modal confirm flow.
    * Prefer this for new assets E2E coverage; existing tests use
    * `importCustomTokenByChain` (Manage tokens / custom token import page).
-   * @param chainId
-   * @param tokenAddress
-   * @param symbol
-   * @param decimals
+   *
+   * @param chainId - Hex chain ID of the network to import the token on.
+   * @param tokenAddress - Contract address of the custom token.
+   * @param symbol - Optional token symbol override when metadata lookup is incomplete.
+   * @param decimals - Optional token decimals override when metadata lookup is incomplete.
    */
   async importCustomTokenByChainViaImportModal(
     chainId: string,
@@ -509,7 +506,7 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage via import modal`);
     await this.driver.waitForSelector(this.multichainTokenListButton, {
-      waitAtLeastGuard: 1000,
+      waitAtLeastGuard: largeDelayMs,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
@@ -526,11 +523,12 @@ class TokensTab extends HomePage {
     }
 
     await this.driver.waitForSelector(
-      this.customNetworkSelectedOption(networkName),
+      this.importTokenNetworkDropdown(networkName),
     );
-    // on chrome the test is going to fast so this can fail without a wait
-    await this.driver.delay(1000);
-    await this.driver.waitForSelector(this.customTokenModalOption);
+    await this.driver.waitForSelector(this.customTokenModalOption, {
+      state: 'enabled',
+    });
+    await this.driver.waitForElementToStopMoving(this.customTokenModalOption);
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
     // Wait for the input to be present and stable after modal content re-renders
@@ -543,7 +541,7 @@ class TokensTab extends HomePage {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
       await this.driver.waitForSelector(this.importTokensNextButton, {
         state: 'disabled',
-        waitAtLeastGuard: 1000,
+        waitAtLeastGuard: largeDelayMs,
       });
       await this.driver.fill(this.tokenSymbolInput, symbol);
     }
@@ -551,7 +549,7 @@ class TokensTab extends HomePage {
     if (decimals) {
       await this.driver.waitForSelector(this.importTokensNextButton, {
         state: 'disabled',
-        waitAtLeastGuard: 1000,
+        waitAtLeastGuard: largeDelayMs,
       });
       await this.driver.fill(this.tokenDecimalsInput, decimals);
     }
@@ -564,7 +562,7 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
-      20000,
+      TOKEN_IMPORT_CONFIRM_TIMEOUT_MS,
     );
 
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
@@ -574,9 +572,10 @@ class TokensTab extends HomePage {
    * Imports a token by search via the Import tokens modal confirm flow.
    * Prefer this for new assets E2E coverage; existing tests use
    * `importTokenBySearch` (Manage tokens page).
-   * @param options0
-   * @param options0.tokenName
-   * @param options0.networkName
+   *
+   * @param options - Search import options.
+   * @param options.tokenName - Token name to search for and select.
+   * @param options.networkName - Expected network name shown on the import modal dropdown.
    */
   async importTokenBySearchViaImportModal({
     tokenName,
@@ -592,7 +591,9 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
-    await this.driver.waitForSelector(this.selectedNetwork(networkName));
+    await this.driver.waitForSelector(
+      this.importTokenNetworkDropdown(networkName),
+    );
     await this.driver.assertElementNotPresent(this.importTokensLoading, {
       findElementGuard: this.importTokenModalTitle,
     });
@@ -610,13 +611,15 @@ class TokensTab extends HomePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   /**
    * Imports multiple tokens by search via the Import tokens modal confirm flow.
    * Prefer this for new assets E2E coverage; existing tests use
    * `importMultipleTokensBySearch` (Manage tokens page).
-   * @param tokenNames
+   *
+   * @param tokenNames - Token names to search for and select, in order.
    */
   async importMultipleTokensBySearchViaImportModal(tokenNames: string[]) {
     console.log(
@@ -626,7 +629,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle, {
-      waitAtLeastGuard: 2000,
+      waitAtLeastGuard: veryLargeDelayMs,
     });
 
     for (const name of tokenNames) {
@@ -642,6 +645,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   /**
