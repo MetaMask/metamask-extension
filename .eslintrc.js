@@ -9,7 +9,6 @@ const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const reactCompilerPlugin = require('eslint-plugin-react-compiler');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 
@@ -376,7 +375,7 @@ module.exports = defineConfig([
     ],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -387,10 +386,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'error',
@@ -447,7 +444,7 @@ module.exports = defineConfig([
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -458,10 +455,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'off',
