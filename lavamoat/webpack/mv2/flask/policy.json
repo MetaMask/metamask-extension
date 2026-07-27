@@ -1506,7 +1506,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-trezor-keyring>@metamask/hw-wallet-sdk": true,
+        "@metamask/hw-wallet-sdk": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
@@ -2104,7 +2104,7 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>await-semaphore": true,
         "buffer": true,
-        "@ledgerhq/context-module>crypto-js": true,
+        "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
@@ -3494,7 +3494,6 @@
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -3775,11 +3774,6 @@
       }
     },
     "ethers>@ethersproject/json-wallets>aes-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
       "globals": {
         "define": true
       }
@@ -4389,7 +4383,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@ledgerhq/context-module>crypto-js": {
+    "@metamask/ppom-validator>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
@@ -4738,7 +4732,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
+        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "crypto-browserify": true,
@@ -4790,6 +4784,11 @@
         "buffer": true,
         "eth-ens-namehash>js-sha3": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>events-universal": {
+      "packages": {
+        "webpack>events": true
       }
     },
     "webpack>events": {
@@ -5659,11 +5658,6 @@
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
-      "globals": {
-        "queueMicrotask": true
       }
     },
     "@hello-pangea/dnd>raf-schd": {
@@ -6574,10 +6568,14 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
+      "globals": {
+        "process.nextTick": true,
+        "queueMicrotask": true
+      },
       "packages": {
-        "webpack>events": true,
+        "@metamask/snaps-controllers>tar-stream>streamx>events-universal": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true
+        "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": true
       }
     },
     "browserify>string_decoder": {
@@ -6610,6 +6608,11 @@
         "@metamask/snaps-controllers>tar-stream>b4a": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
     "@ngraveio/bc-ur>sha.js>to-buffer": {

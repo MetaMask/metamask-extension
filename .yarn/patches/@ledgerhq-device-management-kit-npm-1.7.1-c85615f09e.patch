@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 908a7cdef1f245951f8ce047c72131c5968534a4..b2445457bb13ab0ce6de9b6e06410184b32794cf 100644
+--- a/package.json
++++ b/package.json
+@@ -24,6 +24,7 @@
+     "@ledgerhq/vitest-config-dmk": "^0.0.0",
+     "@ledgerhq/prettier-config-dsdk": "^0.0.2"
+   },
++  "main": "./lib/cjs/index.js",
+   "exports": {
+     ".": {
+       "import": "./lib/esm/index.js",

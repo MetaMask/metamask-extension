@@ -611,21 +611,6 @@
         "@hello-pangea/dnd>use-memo-one": true
       }
     },
-    "@ledgerhq/context-module>inversify>@inversifyjs/container": {
-      "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true,
-        "@ledgerhq/context-module>reflect-metadata": true
-      }
-    },
-    "@ledgerhq/context-module>inversify>@inversifyjs/core": {
-      "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/prototype-utils": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true
-      }
-    },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
@@ -705,116 +690,6 @@
         "react": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": {
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true,
-        "bs58": true,
-        "@ledgerhq/context-module>crypto-js": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
-        "@ledgerhq/context-module>inversify": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true
-      }
-    },
-    "@ledgerhq/device-management-kit": {
-      "globals": {
-        "AbortController": true,
-        "Blob": true,
-        "FormData": true,
-        "ReadableStream": true,
-        "TextEncoder": true,
-        "URL.createObjectURL": true,
-        "URLSearchParams": true,
-        "clearTimeout": true,
-        "console.debug": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.createElement": true,
-        "fetch.bind": true,
-        "setTimeout": true,
-        "vi.fn": true
-      },
-      "packages": {
-        "@ledgerhq/context-module>inversify": true,
-        "@ledgerhq/device-management-kit>isomorphic-ws": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
-        "rxjs": true,
-        "@ledgerhq/device-management-kit>semver": true,
-        "@ledgerhq/device-management-kit>uuid": true,
-        "@ledgerhq/device-management-kit>xstate": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": {
-      "globals": {
-        "AbortSignal.any": true,
-        "AbortSignal.timeout": true,
-        "Blob": true,
-        "Buffer.from": true,
-        "FormData": true,
-        "ReadableStream": true,
-        "TextEncoder": true,
-        "URL.createObjectURL": true,
-        "URLSearchParams": true,
-        "atob": true,
-        "clearTimeout": true,
-        "console.debug": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.createElement": true,
-        "fetch.bind": true,
-        "setTimeout": true,
-        "vi.fn": true
-      },
-      "packages": {
-        "buffer": true,
-        "@ledgerhq/context-module>inversify": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>isomorphic-ws": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
-        "rxjs": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>semver": true,
-        "browserify>url": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>uuid": true,
-        "@ledgerhq/device-management-kit>xstate": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
-        "@ledgerhq/context-module>inversify": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
-        "@ledgerhq/device-management-kit>xstate": true
-      }
-    },
-    "@ledgerhq/device-transport-kit-web-hid": {
-      "globals": {
-        "AbortController": true,
-        "DOMException": true,
-        "clearTimeout": true,
-        "event": true,
-        "navigator.hid": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ledgerhq/device-management-kit": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "rxjs": true,
-        "@ledgerhq/device-transport-kit-web-hid>uuid": true
-      }
-    },
     "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
       "globals": {
         "Buffer.alloc": true,
@@ -844,7 +719,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@ledgerhq/context-module>crypto-js": true
+        "@metamask/ppom-validator>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -919,18 +794,13 @@
         "console.warn": true
       },
       "packages": {
-        "rxjs": true
+        "wait-on>rxjs": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": {
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true
       }
     },
     "@metamask/passkey-controller>@levischuck/tiny-cbor": {
@@ -1608,8 +1478,6 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum": true,
         "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/hw-wallet-sdk": true,
@@ -1617,8 +1485,7 @@
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "buffer": true,
-        "@metamask/eth-qr-keyring>hdkey": true,
-        "rxjs": true
+        "@metamask/eth-qr-keyring>hdkey": true
       }
     },
     "@metamask/eth-qr-keyring": {
@@ -1725,7 +1592,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/eth-trezor-keyring>@metamask/hw-wallet-sdk": true,
+        "@metamask/hw-wallet-sdk": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
@@ -2323,7 +2190,7 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>await-semaphore": true,
         "buffer": true,
-        "@ledgerhq/context-module>crypto-js": true,
+        "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
@@ -3144,14 +3011,6 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/curves>@noble/hashes": true
-      }
-    },
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
@@ -3166,12 +3025,6 @@
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/curves>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3228,11 +3081,6 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -3614,36 +3462,6 @@
         "process": true
       }
     },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": {
-      "globals": {
-        "__SENTRY_DEBUG__": true
-      },
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal": {
-      "packages": {
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>tslib": true
-      }
-    },
-    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "Element": true,
-        "Event": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "module": true,
-        "process": true
-      },
-      "packages": {
-        "process": true,
-        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils>tslib": true
-      }
-    },
     "@simplewebauthn/browser": {
       "globals": {
         "AbortController": true,
@@ -3772,7 +3590,6 @@
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -4053,11 +3870,6 @@
       }
     },
     "ethers>@ethersproject/json-wallets>aes-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
       "globals": {
         "define": true
       }
@@ -4702,7 +4514,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@ledgerhq/context-module>crypto-js": {
+    "@metamask/ppom-validator>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
@@ -5051,7 +4863,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
+        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "crypto-browserify": true,
@@ -5094,15 +4906,6 @@
         "ethers>@ethersproject/wordlists": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/curves": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/hashes": true
-      }
-    },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
       "globals": {
         "Buffer": true
@@ -5112,6 +4915,11 @@
         "buffer": true,
         "eth-ens-namehash>js-sha3": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>events-universal": {
+      "packages": {
+        "webpack>events": true
       }
     },
     "webpack>events": {
@@ -5394,14 +5202,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "@ledgerhq/context-module>inversify": {
-      "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/container": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
-        "@ledgerhq/context-module>reflect-metadata": true
-      }
-    },
     "browserify>util>is-arguments": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
@@ -5501,18 +5301,6 @@
       },
       "packages": {
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@ledgerhq/device-management-kit>isomorphic-ws": {
-      "globals": {
-        "MozWebSocket": true,
-        "WebSocket": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>isomorphic-ws": {
-      "globals": {
-        "MozWebSocket": true,
-        "WebSocket": true
       }
     },
     "@segment/analytics-node>jose": {
@@ -6001,11 +5789,6 @@
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
-      "globals": {
-        "queueMicrotask": true
       }
     },
     "@hello-pangea/dnd>raf-schd": {
@@ -6603,12 +6386,6 @@
         "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": true
       }
     },
-    "@ledgerhq/context-module>reflect-metadata": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      }
-    },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
@@ -6703,11 +6480,9 @@
         "console": true
       }
     },
-    "rxjs": {
+    "wait-on>rxjs": {
       "globals": {
-        "clearInterval": true,
         "clearTimeout": true,
-        "setInterval.apply": true,
         "setTimeout.apply": true
       },
       "packages": {
@@ -6781,24 +6556,6 @@
       }
     },
     "semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
-    "@ledgerhq/device-management-kit>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>semver": {
       "globals": {
         "console.error": true,
         "process": true
@@ -6960,10 +6717,14 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
+      "globals": {
+        "process.nextTick": true,
+        "queueMicrotask": true
+      },
       "packages": {
-        "webpack>events": true,
+        "@metamask/snaps-controllers>tar-stream>streamx>events-universal": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true
+        "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": true
       }
     },
     "browserify>string_decoder": {
@@ -6996,6 +6757,11 @@
         "@metamask/snaps-controllers>tar-stream>b4a": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
     "@ngraveio/bc-ur>sha.js>to-buffer": {
@@ -7157,21 +6923,6 @@
         "msCrypto": true
       }
     },
-    "@ledgerhq/device-management-kit>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@ledgerhq/device-transport-kit-web-hid>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/eth-qr-keyring>uuid": {
       "globals": {
         "crypto": true
@@ -7321,14 +7072,6 @@
         "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
         "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
-      }
-    },
-    "@ledgerhq/device-management-kit>xstate": {
-      "globals": {
-        "AbortController": true,
-        "clearTimeout": true,
-        "console": true,
-        "setTimeout": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>zod": {
