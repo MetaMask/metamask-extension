@@ -5,7 +5,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { isRelaySupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
@@ -22,10 +22,7 @@ jest.mock('../../../../selectors', () => ({
 }));
 
 jest.mock('./useGaslessSupportedSmartTransactions');
-jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
-  isHardwareWallet: jest.fn(),
-}));
+jest.mock('../../../../hooks/useIsHardwareWalletAccount');
 
 async function runHook({
   authorizationList,
@@ -46,7 +43,9 @@ async function runHook({
 
 describe('useIsGaslessSupported', () => {
   const isRelaySupportedMock = jest.mocked(isRelaySupported);
-  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
+  const useIsHardwareWalletAccountMock = jest.mocked(
+    useIsHardwareWalletAccount,
+  );
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
@@ -55,7 +54,7 @@ describe('useIsGaslessSupported', () => {
     jest.resetAllMocks();
 
     isRelaySupportedMock.mockResolvedValue(false);
-    isHardwareWalletMock.mockReturnValue(false);
+    useIsHardwareWalletAccountMock.mockReturnValue(false);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
@@ -168,7 +167,7 @@ describe('useIsGaslessSupported', () => {
   });
 
   it('returns isSupported false for hardware wallets even when smart transactions are supported', async () => {
-    isHardwareWalletMock.mockReturnValue(true);
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
@@ -185,12 +184,27 @@ describe('useIsGaslessSupported', () => {
   });
 
   it('returns isSupported false for hardware wallets even when relay is supported', async () => {
-    isHardwareWalletMock.mockReturnValue(true);
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
     isRelaySupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
 
     expect(isRelaySupportedMock).not.toHaveBeenCalled();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+  });
+
+  it('returns isSupported false when confirmation from is hardware wallet after Non-EVM network selection', async () => {
+    // Selected account may be a non-HW Snap account after switching to Solana,
+    // but the confirmation still signs with a Ledger/Trezor from address.
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
+    isRelaySupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
 
     expect(result).toStrictEqual({
       isSupported: false,
