@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import type { UR } from '@ngraveio/bc-ur';
 import { completeQrCodeScan } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -7,6 +6,7 @@ import BaseQrReader, {
   CBOR_ENCODING,
   PAIRING_EXPECTED_UR_TYPES,
 } from '../base-qr-reader';
+import { useDispatch } from '../../../../store/hooks';
 import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importer.types';
 
 /**
