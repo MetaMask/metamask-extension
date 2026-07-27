@@ -6196,6 +6196,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/dummy-package@workspace:*, @metamask/dummy-package@workspace:test/fakes/dummy-package":
+  version: 0.0.0-use.local
+  resolution: "@metamask/dummy-package@workspace:test/fakes/dummy-package"
+  languageName: unknown
+  linkType: soft
+
 "@metamask/eip-5792-middleware@npm:3.0.3":
   version: 3.0.3
   resolution: "@metamask/eip-5792-middleware@npm:3.0.3"
@@ -23919,12 +23925,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dummy-package@workspace:*, dummy-package@workspace:test/fakes/dummy-package":
-  version: 0.0.0-use.local
-  resolution: "dummy-package@workspace:test/fakes/dummy-package"
-  languageName: unknown
-  linkType: soft
-
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -32842,6 +32842,7 @@ __metadata:
     "@metamask/design-system-shared": "npm:^0.28.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.10.0"
     "@metamask/design-tokens": "npm:^8.7.0"
+    "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.4"
@@ -33092,7 +33093,6 @@ __metadata:
     detect-port: "npm:^1.5.1"
     dompurify: "patch:dompurify@npm%3A3.4.12#~/.yarn/patches/dompurify-npm-3.4.12-9e2dc63475.patch"
     dotenv: "npm:^16.4.5"
-    dummy-package: "workspace:*"
     duplexify: "npm:^4.1.1"
     eciesjs: "npm:^0.5.0"
     eslint: "npm:^9.39.2"

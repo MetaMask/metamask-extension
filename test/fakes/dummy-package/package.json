@@ -1,5 +1,5 @@
 {
-  "name": "dummy-package",
+  "name": "@metamask/dummy-package",
   "private": true,
   "main": "./index.js"
 }

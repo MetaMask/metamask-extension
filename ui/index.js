@@ -398,7 +398,7 @@ function setupStateHooks(store) {
       await actions.captureTestBackgroundError(msg);
     };
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { runDummyPackage } = require('dummy-package');
+    const { runDummyPackage } = require('@metamask/dummy-package');
     /**
      * The following stateHook is a method intended to verify that LavaMoat is
      * applied correctly. If this throws, the protection is working as expected.

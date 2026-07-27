@@ -236,7 +236,7 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
     { validateVault: false },
   );
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { runDummyPackage } = require('dummy-package');
+  const { runDummyPackage } = require('@metamask/dummy-package');
   global.stateHooks.throwLavamoatError = () => runDummyPackage();
 }
 
