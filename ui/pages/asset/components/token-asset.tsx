@@ -9,7 +9,7 @@ import {
 } from '@metamask/utils';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -25,6 +25,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -56,11 +57,11 @@ const TokenAsset = ({
   const caipChainId = isCaipChainId(chainId)
     ? chainId
     : formatChainIdToCaip(chainId);
+  // Null when the selected account group has no account for this chain
+  // (e.g. Solana asset deeplink while an EVM-only imported account is selected).
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
-
-  const { address: walletAddress } = selectedAccount;
+  ) as InternalAccount | null;
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -90,6 +91,13 @@ const TokenAsset = ({
     tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
 
   const aggregators = tokenData?.aggregators;
+
+  // No matching account for this chain — redirect home (e.g. EVM-only + Solana asset).
+  if (!selectedAccount) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  const { address: walletAddress } = selectedAccount;
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,

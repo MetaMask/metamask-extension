@@ -5,6 +5,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { Navigate } from 'react-router-dom';
 import {
   getRpcPrefsForCurrentProvider,
   getNativeCurrencyForChain,
@@ -21,6 +22,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -35,14 +37,28 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     ? chainId
     : formatChainIdToCaip(chainId);
   // TODO BIP44: The new selector returns the accountId, when BIP44 is fully enabled we can fetch the asset higher up and ensure it's passed here
+  // Null when the selected account group has no account for this chain
+  // (e.g. non-EVM asset deeplink while an EVM-only imported account is selected).
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  ) as InternalAccount | null;
   const multichainNetworkForSelectedAccount = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
   const isEvm = isEvmChainId(chainId);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    symbol,
+    type,
+  );
+
+  // No matching account for this chain — redirect home (e.g. EVM-only + Solana asset).
+  if (!selectedAccount) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
   const addressLink = getMultichainAccountUrl(
     selectedAccount.address,
     multichainNetworkForSelectedAccount,
@@ -51,12 +67,6 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const accountLink = isEvm
     ? getAccountLink(address, chainId, rpcPrefs)
     : addressLink;
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
-    symbol,
-    type,
-  );
 
   return (
     <AssetPage
