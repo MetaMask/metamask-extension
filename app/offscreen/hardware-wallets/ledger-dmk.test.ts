@@ -133,7 +133,7 @@ describe('LedgerDmkBridgeHandler', () => {
     it('throws HardwareWalletError.DeviceDisconnected when device discovery times out', async () => {
       mockBridgeStartDiscovering.mockReturnValue(NEVER);
 
-      const actionPromise = handler.handleAction(LedgerAction.updateTransport);
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
       const expectation = expect(actionPromise).rejects.toMatchObject({
         name: 'HardwareWalletError',
         code: ErrorCode.DeviceDisconnected,
@@ -154,7 +154,7 @@ describe('LedgerDmkBridgeHandler', () => {
       );
 
       await expect(
-        handler.handleAction(LedgerAction.updateTransport),
+        handler.handleAction(LedgerAction.makeApp),
       ).rejects.toMatchObject({
         name: 'HardwareWalletError',
         code: ErrorCode.Unknown,
@@ -171,7 +171,7 @@ describe('LedgerDmkBridgeHandler', () => {
       );
 
       await expect(
-        handler.handleAction(LedgerAction.updateTransport),
+        handler.handleAction(LedgerAction.makeApp),
       ).rejects.toMatchObject({
         name: 'HardwareWalletError',
         code: ErrorCode.Unknown,
@@ -189,7 +189,7 @@ describe('LedgerDmkBridgeHandler', () => {
       mockBridgeStartDiscovering.mockReturnValue(throwError(() => hwError));
 
       await expect(
-        handler.handleAction(LedgerAction.updateTransport),
+        handler.handleAction(LedgerAction.makeApp),
       ).rejects.toBe(hwError);
     });
   });
@@ -206,10 +206,10 @@ describe('LedgerDmkBridgeHandler', () => {
     });
 
     describe('makeApp', () => {
-      it('routes to bridge.getAppNameAndVersion()', async () => {
+      it('verifies reachability and returns a boolean', async () => {
         const result = await handler.handleAction(LedgerAction.makeApp);
         expect(mockBridgeGetAppNameAndVersion).toHaveBeenCalledTimes(1);
-        expect(result).toEqual({ appName: 'Ethereum', version: '1.0.0' });
+        expect(result).toBe(true);
       });
     });
 
@@ -240,10 +240,12 @@ describe('LedgerDmkBridgeHandler', () => {
     });
 
     describe('updateTransport', () => {
-      it('returns true without touching the bridge', async () => {
+      it('returns true without constructing the bridge', async () => {
         const result = await handler.handleAction(LedgerAction.updateTransport);
         expect(result).toBe(true);
-        // Bridge should still have been created since handleAction calls ensureBridge
+        // Short-circuits before ensureBridge(), so no device discovery or
+        // bridge construction should occur.
+        expect(LedgerDmkBridge).not.toHaveBeenCalled();
         expect(mockBridgeGetAppNameAndVersion).not.toHaveBeenCalled();
       });
     });
@@ -454,11 +456,11 @@ describe('LedgerDmkBridgeHandler', () => {
       }, 0);
 
       // First action triggers bridge construction
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
 
       // Second action reuses the cached bridge
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
     });
 
@@ -469,8 +471,8 @@ describe('LedgerDmkBridgeHandler', () => {
       }, 0);
 
       // Fire two actions concurrently before the bridge finishes constructing
-      const promise1 = handler.handleAction(LedgerAction.updateTransport);
-      const promise2 = handler.handleAction(LedgerAction.updateTransport);
+      const promise1 = handler.handleAction(LedgerAction.makeApp);
+      const promise2 = handler.handleAction(LedgerAction.makeApp);
       await Promise.all([promise1, promise2]);
 
       // Only one bridge should have been constructed
@@ -483,7 +485,7 @@ describe('LedgerDmkBridgeHandler', () => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
 
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
       expect(mockBridgeDestroy).not.toHaveBeenCalled();
 
       // Simulate disconnect
@@ -499,7 +501,7 @@ describe('LedgerDmkBridgeHandler', () => {
       setTimeout(() => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
     });
 
@@ -520,7 +522,7 @@ describe('LedgerDmkBridgeHandler', () => {
       setTimeout(() => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
 
       // Simulate unplug
       mockOnSessionStateChangeSubject.next({ connected: false });
@@ -571,7 +573,7 @@ describe('LedgerDmkBridgeHandler', () => {
       mockBridgeConnect.mockRejectedValueOnce(new Error('Connection failed'));
 
       await expect(
-        handler.handleAction(LedgerAction.updateTransport),
+        handler.handleAction(LedgerAction.makeApp),
       ).rejects.toThrow('Connection failed');
 
       // bridgePromise should be cleared so the next call can retry
@@ -580,7 +582,7 @@ describe('LedgerDmkBridgeHandler', () => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
 
-      await handler.handleAction(LedgerAction.updateTransport);
+      await handler.handleAction(LedgerAction.makeApp);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         '[LedgerDMK] ensureBridge: connect failed',
@@ -646,7 +648,7 @@ describe('LedgerDmkBridgeHandler', () => {
           }),
       );
 
-      const actionPromise = handler.handleAction(LedgerAction.updateTransport);
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
 
       // Allow constructBridge to reach the deferred connect().
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -674,7 +676,7 @@ describe('LedgerDmkBridgeHandler', () => {
       }, 0);
 
       await expect(
-        handler.handleAction(LedgerAction.updateTransport),
+        handler.handleAction(LedgerAction.makeApp),
       ).resolves.toBe(true);
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
 

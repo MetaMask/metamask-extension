@@ -217,7 +217,7 @@ export class LedgerDmkBridgeHandler {
     if (this.bridge) {
       return this.bridge;
     }
-    if (this.bridgePromise) {
+    if (this.bridgePromise !== null) {
       return this.bridgePromise;
     }
 
@@ -476,18 +476,22 @@ export class LedgerDmkBridgeHandler {
   ): Promise<unknown> {
     console.log('[LedgerDMK] handleAction', action);
     try {
+      // updateTransport is a no-op in DMK (WebHID only). Short-circuit before
+      // ensureBridge() so it doesn't trigger device discovery/connection,
+      // matching the legacy handler's immediate `return true`.
+      if (action === LedgerAction.updateTransport) {
+        return true;
+      }
+
       const bridge = await this.ensureBridge();
 
       switch (action) {
         case LedgerAction.makeApp:
-          // DMK bridge auto-opens the ETH app on each signing operation, so
-          // makeApp is effectively a no-op. We route it to getAppNameAndVersion
-          // to preserve the semantic that makeApp verifies the device is
-          // reachable and the ETH app is open.
-          return await bridge.getAppNameAndVersion();
-
-        case LedgerAction.updateTransport:
-          // DMK uses WebHID exclusively; no transport switching.
+          // DMK auto-opens the ETH app on each signing operation, so makeApp
+          // only needs to verify the device is reachable and the ETH app is
+          // open. Returns a boolean to honor the Promise<boolean> contract
+          // shared with the legacy handler and the main-thread bridge.
+          await bridge.getAppNameAndVersion();
           return true;
 
         case LedgerAction.getAppNameAndVersion:
