@@ -235,9 +235,6 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
     persistenceManager,
     { validateVault: false },
   );
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { runDummyPackage } = require('@metamask/dummy-package');
-  global.stateHooks.throwLavamoatError = () => runDummyPackage();
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -2664,4 +2661,8 @@ if (process.env.IN_TEST) {
     }
     return Promise.resolve();
   });
+  // Load conditionally so this test-only package is excluded from production builds and policies.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { runDummyPackage } = require('@metamask/dummy-package');
+  global.stateHooks.throwLavamoatError = () => runDummyPackage();
 }

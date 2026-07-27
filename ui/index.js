@@ -397,15 +397,6 @@ function setupStateHooks(store) {
     ) {
       await actions.captureTestBackgroundError(msg);
     };
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { runDummyPackage } = require('@metamask/dummy-package');
-    /**
-     * The following stateHook is a method intended to verify that LavaMoat is
-     * applied correctly. If this throws, the protection is working as expected.
-     * If it does not throw, it indicates that LavaMoat is not protecting the
-     * app as expected.
-     */
-    window.stateHooks.throwLavamoatError = () => runDummyPackage();
   }
 
   /**
@@ -464,6 +455,13 @@ function setupStateHooks(store) {
     globalThis.stateHooks.store = store;
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { runDummyPackage } = require('@metamask/dummy-package');
+    window.stateHooks.throwLavamoatError = () => runDummyPackage();
   }
 }
 
