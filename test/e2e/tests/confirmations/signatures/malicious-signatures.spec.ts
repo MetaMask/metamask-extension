@@ -131,7 +131,6 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
 
         await alertModal.rejectFromAlertModal();
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await testDapp.assertUserRejectedRequest();
