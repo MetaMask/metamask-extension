@@ -34,9 +34,9 @@ function adaptTextFieldSearchProps(
       onChangeText?.(e.target.value);
       onChange?.(e);
     },
-    clearButtonOnClick: () => {
+    clearButtonOnClick: (e: React.MouseEvent<HTMLButtonElement>) => {
       onClickClearButton?.();
-      clearButtonOnClick?.();
+      clearButtonOnClick?.(e);
     },
   };
 }
