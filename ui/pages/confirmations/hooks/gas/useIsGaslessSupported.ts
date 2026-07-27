@@ -1,8 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useConfirmContext } from '../../context/confirm';
 import { isRelaySupported } from '../../../../store/actions';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -31,7 +30,9 @@ export function useIsGaslessSupported() {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useIsHardwareWalletAccount(
+    transactionMeta?.txParams?.from,
+  );
 
   const isDowngradeTransaction =
     transactionMeta?.txParams?.authorizationList?.[0]?.address ===
@@ -58,15 +59,15 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-    relaySupportsChain &&
-    // contract deployments can't be delegated
-    transactionMeta?.txParams?.to !== undefined,
+      relaySupportsChain &&
+      // contract deployments can't be delegated
+      transactionMeta?.txParams?.to !== undefined,
   );
 
   // sendBundle is open to all account types; is7702Supported already gates HW wallets
   const isSupported = Boolean(
     !isDowngradeTransaction &&
-    (isSmartTransactionAndBundleSupported || is7702Supported),
+      (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   // sendBundle pending state applies to all account types; 7702 pending stays HW-gated

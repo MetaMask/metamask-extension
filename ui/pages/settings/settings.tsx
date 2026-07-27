@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions */
 import React, {
   Fragment,
   Suspense,
@@ -50,12 +49,8 @@ import {
 } from '../../selectors';
 import { getSnapName } from '../../helpers/utils/util';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
 import {

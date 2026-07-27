@@ -5,6 +5,7 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -29,7 +30,6 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
   IconName,
   Modal,
   ModalBody,
@@ -265,8 +265,6 @@ export const TokenListItemComponent = ({
 
   return (
     <Box
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -329,8 +327,6 @@ export const TokenListItemComponent = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               src={tokenChainImage || undefined}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
@@ -509,22 +505,21 @@ export const TokenListItemComponent = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 nativeCurrencySymbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>
             <ModalFooter>
-              <ButtonSecondary
+              <Button
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
                   navigate(NETWORKS_ROUTE);
                 }}
-                block
+                isFullWidth
               >
                 {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

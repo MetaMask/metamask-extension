@@ -60,24 +60,6 @@
   mix-blend-mode: normal;
 }
 
-/*
-  The bottom nav is persistent across page transitions, so it should not animate —
-  keep it in its current state instead of crossfading it.
-*/
-::view-transition-group(bottom-nav-bar) {
-  animation-duration: 0s;
-}
-
-::view-transition-old(bottom-nav-bar),
-::view-transition-new(bottom-nav-bar) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-::view-transition-old(bottom-nav-bar) {
-  display: none;
-}
-
 /* Forward: old fades out, new fades in + scale up */
 :root[data-page-transition='forward']::view-transition-old(root) {
   animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
@@ -94,44 +76,6 @@
 
 :root[data-page-transition='back']::view-transition-new(root) {
   animation: fade-in var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-/* Slide forward: old slides out to the left, new slides in from the right */
-:root[data-page-transition='slide-forward']::view-transition-old(root) {
-  animation: slide-out-left var(--page-transition-duration) var(--page-transition-ease-in) both;
-}
-
-:root[data-page-transition='slide-forward']::view-transition-new(root) {
-  animation: slide-in-right var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-/* Slide back: old slides out to the right, new slides in from the left */
-:root[data-page-transition='slide-back']::view-transition-old(root) {
-  animation: slide-out-right var(--page-transition-duration) var(--page-transition-ease-in) both;
-}
-
-:root[data-page-transition='slide-back']::view-transition-new(root) {
-  animation: slide-in-left var(--page-transition-duration) var(--page-transition-ease-out) both;
-}
-
-@keyframes slide-in-right {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slide-out-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-
-@keyframes slide-in-left {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes slide-out-right {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
 }
 
 @keyframes fade-out {

@@ -548,7 +548,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.TokenScreenOpened,
+          name: MetaMetricsEventName.TokenScreenViewed,
           properties: {
             category: MetaMetricsEventCategory.Home,
             screen: 'manage_tokens',
@@ -573,7 +573,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.TokenScreenOpened,
+          name: MetaMetricsEventName.TokenScreenViewed,
           properties: {
             category: MetaMetricsEventCategory.Home,
             screen: 'manage_tokens',
