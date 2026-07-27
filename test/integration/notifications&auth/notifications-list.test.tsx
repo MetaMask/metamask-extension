@@ -284,12 +284,10 @@ describe('Notifications List', () => {
 
     fireEvent.click(await screen.findByTestId('account-options-menu-button'));
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByTestId('notifications-menu-item'),
-      ).toBeInTheDocument();
-      fireEvent.click(await screen.findByTestId('notifications-menu-item'));
-    });
+    const notificationsMenuItem = await screen.findByTestId(
+      'notifications-menu-item',
+    );
+    fireEvent.click(notificationsMenuItem);
 
     const notificationListItem = await screen.findByTestId(
       `notification-list-item-${unreadEthSentNotification.id}`,
