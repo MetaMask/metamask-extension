@@ -42,6 +42,7 @@ import { DecodedTransactionDataSource } from '../../../shared/types/transaction-
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import {
   LegacyBackgroundApiService,
@@ -55,6 +56,8 @@ jest.mock('../lib/transaction/containers/enforced-simulations');
 jest.mock('../../../shared/lib/manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
 }));
+
+const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
   ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
@@ -957,28 +960,33 @@ describe('LegacyBackgroundApiService', () => {
       });
 
       it('returns DMK when a manifest override enables ledgerDmk', async () => {
-        await withService(async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'RemoteFeatureFlagController:getState',
-            () => ({
-              remoteFeatureFlags: {},
-              cacheTimestamp: 0,
-            }),
-          );
-
-          const { getManifestFlags } = jest.requireMock(
-            '../../../shared/lib/manifestFlags',
-          );
-          getManifestFlags.mockReturnValueOnce({
-            remoteFeatureFlags: {
-              ledgerDmk: true,
+        mockGetManifestFlags.mockReturnValue({
+          remoteFeatureFlags: {
+            ledgerDmk: {
+              enabled: true,
+              featureVersion: '13.36.0',
+              minimumVersion: '13.36.0',
             },
-          });
-
-          expect(
-            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
-          ).toBe('dmk');
+          },
         });
+
+        try {
+          await withService(async ({ rootMessenger }) => {
+            rootMessenger.registerActionHandler(
+              'RemoteFeatureFlagController:getState',
+              () => ({
+                remoteFeatureFlags: {},
+                cacheTimestamp: 0,
+              }),
+            );
+
+            expect(
+              rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+            ).toBe('dmk');
+          });
+        } finally {
+          mockGetManifestFlags.mockReturnValue({});
+        }
       });
     });
 
