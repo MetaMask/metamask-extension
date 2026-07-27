@@ -219,7 +219,9 @@ export async function displayCriticalErrorMessage(
   const backupFromError = isObject(error.backup)
     ? (error.backup as Backup)
     : null;
-  let backup = hasVault(backupFromError) ? backupFromError : null;
+  let backup: Backup | null = hasVault(backupFromError)
+    ? backupFromError
+    : null;
   if (port && !hasVault(backup)) {
     backup = await safeGetVaultBackup();
   }
