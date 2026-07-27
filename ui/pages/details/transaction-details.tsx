@@ -35,18 +35,24 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
+  const { orders: rampsOrders, getOrderById } = useRampsOrders();
+  // A ramps order id (e.g. "c-28ac6e...") isn't a transaction hash — only
+  // treat txIdentifier as one when it isn't itself a known order code, or the
+  // generic activity API gets queried with an order code instead of a hash.
+  const rampsOrderById = txIdentifier ? getOrderById(txIdentifier) : undefined;
+  const rampsOrder =
+    rampsOrderById ??
+    (txIdentifier
+      ? rampsOrders.find(
+          (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
+        )
+      : undefined);
+
   const apiTransaction = useApiTransaction({
     chainId,
-    txHash: isEvm && selectedAddress ? txIdentifier : undefined,
+    txHash:
+      isEvm && selectedAddress && !rampsOrderById ? txIdentifier : undefined,
   });
-
-  const { orders: rampsOrders, getOrderById } = useRampsOrders();
-  const rampsOrder = txIdentifier
-    ? (getOrderById(txIdentifier) ??
-      rampsOrders.find(
-        (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
-      ))
-    : undefined;
 
   const transaction = useMemo(() => {
     // The ramps order is the authoritative source for its own activity —
