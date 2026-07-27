@@ -43,7 +43,8 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @returns The i18n key to pass to `t()`
  */
 export const getOrderStatusI18nKey = (statusText: string | undefined) =>
-  ORDER_STATUS_TO_I18N_KEY[statusText?.toLowerCase() ?? ''] ?? 'perpsStatusOpen';
+  ORDER_STATUS_TO_I18N_KEY[statusText?.toLowerCase() ?? ''] ??
+  'perpsStatusOpen';
 
 /**
  * Safely creates a BigNumber, returning null for empty/invalid values.
