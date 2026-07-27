@@ -52,7 +52,7 @@ export const PageHeaderWithSearch = ({
     return (
       <HeaderSearch
         variant={HeaderSearchVariant.Inline}
-        className={showSearchBorder ? 'border-b border-border-muted' : ''}
+        className='app-text-field-search'
         padding={3}
         paddingHorizontal={4}
         onClickCancelButton={() => {
@@ -67,7 +67,7 @@ export const PageHeaderWithSearch = ({
           autoFocus: true,
           inputProps: {
             'data-testid': 'page-header-search-input',
-          },
+          } as React.ComponentPropsWithoutRef<'input'>,
         }}
       />
     );
