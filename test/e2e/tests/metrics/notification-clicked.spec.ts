@@ -2,11 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import {
-  getEventPayloads,
-  isSidePanelEnabled,
-  withFixtures,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   MOCK_ANALYTICS_ID,
@@ -96,10 +92,6 @@ describe('Notification Clicked Event', function (this: Suite) {
         assert.equal(events.length, 1);
         assert.equal(events[0].event, 'Notification Clicked');
 
-        const expectedEnvironmentType = (await isSidePanelEnabled())
-          ? 'sidepanel'
-          : 'fullscreen';
-
         const {
           // Omit the full notification blob; assert identity fields separately.
           data,
@@ -113,7 +105,8 @@ describe('Notification Clicked Event', function (this: Suite) {
           notification_id: notificationId,
           notification_type: 'eth_sent',
           previously_read: false,
-          environment_type: expectedEnvironmentType,
+          // E2E opens home.html, so this is always fullscreen (not sidepanel).
+          environment_type: 'fullscreen',
           /* eslint-enable @typescript-eslint/naming-convention */
           ...MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES,
         });
