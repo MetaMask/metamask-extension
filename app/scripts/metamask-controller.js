@@ -119,6 +119,7 @@ import {
   RecoveryError,
   EncAccountDataType,
   SeedlessOnboardingMigrationVersion,
+  InvalidPrimarySecretDataTypeError,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -2921,6 +2922,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getLedgerAppConfiguration',
       ),
+      getLedgerMode: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerMode',
+      ),
       getTrezorFeatures: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getTrezorFeatures',
@@ -4575,7 +4580,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
 
@@ -4604,7 +4611,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
 
@@ -5137,6 +5146,15 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      if (error instanceof InvalidPrimarySecretDataTypeError) {
+        const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
+        log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
+        this.controllerMessenger?.captureException?.(
+          createSentryError(errorMessage, error),
+        );
+        throw error;
       }
 
       this.controllerMessenger?.captureException?.(

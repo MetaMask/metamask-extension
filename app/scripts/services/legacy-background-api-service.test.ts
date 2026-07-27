@@ -52,6 +52,10 @@ jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
 
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
+}));
+
 jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
   ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
   getIsShieldSubscriptionActive: jest.fn(),
@@ -315,7 +319,10 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:getAssets',
           accounts,
-          { ...options, forceUpdate: true },
+          {
+            ...options,
+            forceUpdate: true,
+          },
         );
       });
     });
@@ -870,6 +877,102 @@ describe('LegacyBackgroundApiService', () => {
           expect(updateTransportMethod).toHaveBeenCalledTimes(1);
           expect(getAppConfiguration).toHaveBeenCalledTimes(1);
           expect(result).toStrictEqual(mockConfiguration);
+        });
+      });
+    });
+
+    describe('getLedgerMode', () => {
+      it('returns Legacy when the ledgerDmk flag is missing', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {},
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns Legacy when ledgerDmk is disabled', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {
+                ledgerDmk: {
+                  enabled: false,
+                  featureVersion: null,
+                  minimumVersion: null,
+                },
+              },
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns DMK when ledgerDmk is enabled', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {
+                ledgerDmk: {
+                  enabled: true,
+                  featureVersion: '13.36.0',
+                  minimumVersion: '13.36.0',
+                },
+              },
+            }),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('dmk');
+        });
+      });
+
+      it('returns Legacy when RemoteFeatureFlagController state omits remoteFeatureFlags', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({}),
+          );
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('legacy');
+        });
+      });
+
+      it('returns DMK when a manifest override enables ledgerDmk', async () => {
+        await withService(async ({ rootMessenger }) => {
+          rootMessenger.registerActionHandler(
+            'RemoteFeatureFlagController:getState',
+            () => ({
+              remoteFeatureFlags: {},
+            }),
+          );
+
+          const { getManifestFlags } = jest.requireMock(
+            '../../../shared/lib/manifestFlags',
+          );
+          getManifestFlags.mockReturnValueOnce({
+            remoteFeatureFlags: {
+              ledgerDmk: true,
+            },
+          });
+
+          expect(
+            rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
+          ).toBe('dmk');
         });
       });
     });
@@ -1574,12 +1677,18 @@ describe('LegacyBackgroundApiService', () => {
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
-          { address: selectedAddress, chainId: '0x1' },
+          {
+            address: selectedAddress,
+            chainId: '0x1',
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
           'SmartTransactionsController:wipeSmartTransactions',
-          { address: selectedAddress, ignoreNetwork: false },
+          {
+            address: selectedAddress,
+            ignoreNetwork: false,
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
@@ -2344,7 +2453,9 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.call(
           'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
           '',
-          { properties: { foo: 'bar' } },
+          {
+            properties: { foo: 'bar' },
+          },
         );
 
         expect(callSpy).not.toHaveBeenCalled();
@@ -2704,7 +2815,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-            { captureSentryError: true },
+            {
+              captureSentryError: true,
+            },
           ),
         ).rejects.toThrow(error);
 
@@ -2736,7 +2849,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { encryptionKey: 'encryption-key' },
+            {
+              encryptionKey: 'encryption-key',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -2773,7 +2888,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { password: 'password' },
+            {
+              password: 'password',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -2813,7 +2930,9 @@ describe('LegacyBackgroundApiService', () => {
         await expect(
           rootMessenger.call(
             'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
-            { password: 'password' },
+            {
+              password: 'password',
+            },
           ),
         ).resolves.toBeUndefined();
 
@@ -3423,7 +3542,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:submitGlobalPassword',
-          { globalPassword: 'global-password', maxKeyChainLength: 20 },
+          {
+            globalPassword: 'global-password',
+            maxKeyChainLength: 20,
+          },
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
@@ -3700,7 +3822,11 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.call(
           'LegacyBackgroundApiService:rejectPendingApproval',
           'DUMMY_ID',
-          { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+          {
+            code: 1,
+            message: 'DUMMY_MESSAGE',
+            data: 'DUMMY_DATA',
+          },
         );
 
         expect(callSpy).toHaveBeenCalledWith(
@@ -3730,7 +3856,11 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.call(
             'LegacyBackgroundApiService:rejectPendingApproval',
             'DUMMY_ID',
-            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+            {
+              code: 1,
+              message: 'DUMMY_MESSAGE',
+              data: 'DUMMY_DATA',
+            },
           ),
         ).not.toThrow(error);
       });
@@ -3751,7 +3881,11 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.call(
             'LegacyBackgroundApiService:rejectPendingApproval',
             'DUMMY_ID',
-            { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
+            {
+              code: 1,
+              message: 'DUMMY_MESSAGE',
+              data: 'DUMMY_DATA',
+            },
           ),
         ).toThrow(error);
       });

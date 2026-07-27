@@ -155,7 +155,7 @@ import {
   GasFeeControllerEnableNonRPCGasFeeApisAction,
 } from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -170,6 +170,7 @@ import {
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
 import { MINUTE } from '../../../shared/constants/time';
 import {
   MetaMetricsEventCategory,
@@ -212,6 +213,9 @@ import {
   LedgerTransportTypes,
   LEDGER_LIVE_PATH,
 } from '../../../shared/constants/hardware-wallets';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   LatticeKeyringV2,
@@ -266,6 +270,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getGlobalChainId',
   'getHdPathForLedgerKeyring',
   'getLedgerAppConfiguration',
+  'getLedgerMode',
   'getLedgerPublicKey',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
@@ -1820,6 +1825,27 @@ export class LegacyBackgroundApiService {
       async (keyring) =>
         await (keyring as LedgerKeyringV2).bridge.getAppConfiguration(),
     );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns The Ledger handler mode.
+   */
+  getLedgerMode(): LedgerHandlerMode {
+    const state = this.#messenger.call('RemoteFeatureFlagController:getState');
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   }
 
   /**

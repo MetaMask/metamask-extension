@@ -492,6 +492,16 @@ export type LegacyBackgroundApiServiceGetLedgerAppConfigurationAction = {
 };
 
 /**
+ * Get the active Ledger handler mode based on the remote feature flag.
+ *
+ * @returns The Ledger handler mode.
+ */
+export type LegacyBackgroundApiServiceGetLedgerModeAction = {
+  type: `LegacyBackgroundApiService:getLedgerMode`;
+  handler: LegacyBackgroundApiService['getLedgerMode'];
+};
+
+/**
  * Fetch account list from a hardware device.
  *
  * @param deviceName - The device name to connect.
@@ -654,6 +664,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction
   | LegacyBackgroundApiServiceGetAppNameAndVersionAction
   | LegacyBackgroundApiServiceGetLedgerAppConfigurationAction
+  | LegacyBackgroundApiServiceGetLedgerModeAction
   | LegacyBackgroundApiServiceConnectHardwareAction
   | LegacyBackgroundApiServiceCheckHardwareStatusAction
   | LegacyBackgroundApiServiceGetHdPathForLedgerKeyringAction
