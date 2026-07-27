@@ -611,24 +611,24 @@
         "@hello-pangea/dnd>use-memo-one": true
       }
     },
-    "@ledgerhq/context-module>inversify>@inversifyjs/container": {
+    "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": {
       "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true,
-        "@ledgerhq/context-module>reflect-metadata": true
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/common": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true
       }
     },
-    "@ledgerhq/context-module>inversify>@inversifyjs/core": {
+    "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": {
       "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/prototype-utils": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/common": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core>@inversifyjs/prototype-utils": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true
       }
     },
-    "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": {
+    "@ledgerhq/device-management-kit>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": {
       "packages": {
-        "@ledgerhq/context-module>reflect-metadata": true
+        "@ledgerhq/device-management-kit>reflect-metadata": true
       }
     },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
@@ -714,11 +714,11 @@
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true,
         "bs58": true,
-        "@ledgerhq/context-module>crypto-js": true,
+        "@metamask/ppom-validator>crypto-js": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
-        "@ledgerhq/context-module>inversify": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true
+        "@ledgerhq/device-management-kit>inversify": true,
+        "@ledgerhq/device-management-kit>purify-ts": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true
       }
     },
     "@ledgerhq/device-management-kit": {
@@ -742,10 +742,10 @@
         "vi.fn": true
       },
       "packages": {
-        "@ledgerhq/context-module>inversify": true,
+        "@ledgerhq/device-management-kit>inversify": true,
         "@ledgerhq/device-management-kit>isomorphic-ws": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
+        "@ledgerhq/device-management-kit>purify-ts": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true,
         "rxjs": true,
         "@ledgerhq/device-management-kit>semver": true,
         "@ledgerhq/device-management-kit>uuid": true,
@@ -777,10 +777,10 @@
       },
       "packages": {
         "buffer": true,
-        "@ledgerhq/context-module>inversify": true,
+        "@ledgerhq/device-management-kit>inversify": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>isomorphic-ws": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
+        "@ledgerhq/device-management-kit>purify-ts": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true,
         "rxjs": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit>semver": true,
         "browserify>url": true,
@@ -797,9 +797,9 @@
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-management-kit": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers": true,
-        "@ledgerhq/context-module>inversify": true,
-        "@ledgerhq/context-module>purify-ts": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
+        "@ledgerhq/device-management-kit>inversify": true,
+        "@ledgerhq/device-management-kit>purify-ts": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true,
         "@ledgerhq/device-management-kit>xstate": true
       }
     },
@@ -815,7 +815,7 @@
       "packages": {
         "@ledgerhq/device-management-kit": true,
         "@ledgerhq/device-management-kit>@sentry/minimal": true,
-        "@ledgerhq/context-module>purify-ts": true,
+        "@ledgerhq/device-management-kit>purify-ts": true,
         "rxjs": true,
         "@ledgerhq/device-transport-kit-web-hid>uuid": true
       }
@@ -849,7 +849,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "wait-on>axios": true,
-        "@ledgerhq/context-module>crypto-js": true
+        "@metamask/ppom-validator>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -2328,7 +2328,7 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>await-semaphore": true,
         "buffer": true,
-        "@ledgerhq/context-module>crypto-js": true,
+        "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
@@ -4061,11 +4061,6 @@
         "define": true
       }
     },
-    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
-      "globals": {
-        "define": true
-      }
-    },
     "eth-lattice-keyring>gridplus-sdk>aes-js": {
       "globals": {
         "define": true
@@ -4706,7 +4701,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@ledgerhq/context-module>crypto-js": {
+    "@metamask/ppom-validator>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
@@ -5055,7 +5050,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
+        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "crypto-browserify": true,
@@ -5403,12 +5398,12 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "@ledgerhq/context-module>inversify": {
+    "@ledgerhq/device-management-kit>inversify": {
       "packages": {
-        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/container": true,
-        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
-        "@ledgerhq/context-module>reflect-metadata": true
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/common": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
+        "@ledgerhq/device-management-kit>reflect-metadata": true
       }
     },
     "browserify>util>is-arguments": {
@@ -6607,7 +6602,7 @@
         "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": true
       }
     },
-    "@ledgerhq/context-module>reflect-metadata": {
+    "@ledgerhq/device-management-kit>reflect-metadata": {
       "globals": {
         "crypto": true,
         "msCrypto": true
