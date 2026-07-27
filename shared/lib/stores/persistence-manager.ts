@@ -588,7 +588,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     if (this.#shutdownRecoveryTimer !== null) {
       return;
     }
-    const delay =
+    const recoveryDelayMs =
       trigger === ShutdownTrigger.OnSuspend
         ? SHUTDOWN_RECOVERY_ON_SUSPEND_MS
         : SHUTDOWN_RECOVERY_INFERRED_MS;
@@ -597,7 +597,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // Best-effort: the probe handles its own errors and reschedules, so any
       // unexpected rejection here is swallowed rather than left floating.
       this.#attemptShutdownRecovery().catch(() => undefined);
-    }, delay);
+    }, recoveryDelayMs);
   }
 
   /**
