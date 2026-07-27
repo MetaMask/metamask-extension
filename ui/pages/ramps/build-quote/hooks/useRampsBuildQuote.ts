@@ -7,7 +7,7 @@ import {
   type ChangeEvent,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
@@ -25,6 +25,7 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { forceUpdateMetamaskState } from '../../../../store/actions';
 import {
   findSelectedQuote,
   isTokenStateSettled,
@@ -67,6 +68,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -234,6 +236,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         getOrderFromCallback(providerCode, candidateUrl, walletAddress)
           .then(async (order) => {
             await addOrder(order);
+            // addOrder resolves once the background has processed it, but the
+            // Redux store's copy of controller state is patched over a
+            // separate channel — force it in before navigating, or the
+            // details view can render with the not-yet-updated order list.
+            await forceUpdateMetamaskState(dispatch);
             const orderId = getInternalOrderCode(order);
             // Use the token the user picked rather than re-deriving chainId
             // from the callback order — its `network.chainId` isn't always
@@ -269,6 +276,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     },
     [
       addOrder,
+      dispatch,
       getOrderFromCallback,
       navigate,
       selectedToken?.chainId,
@@ -293,6 +301,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       // rendered in the extension.
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
       if (widget.orderId) {
+        // widget.orderId can be a full path (e.g.
+        // "providers/moonpay-staging/orders/c-abc123"), not just the bare
+        // code — normalize it before it ends up in the route, or react-router
+        // sees extra path segments and 404s ("No route matches URL").
+        const orderCode = getInternalOrderCode(widget.orderId);
         // A provider that precreates the order returns its id. Persist it and
         // route to the details view BEFORE opening checkout: opening a tab can
         // unload the extension popup, which would abort any work queued after
@@ -303,9 +316,12 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           walletAddress,
           chainId: selectedToken?.chainId,
         });
-        navigate(
-          `${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${widget.orderId}`,
-        );
+        // addPrecreatedOrder resolves once the background has processed it,
+        // but the Redux store's copy of controller state is patched over a
+        // separate channel — force it in before navigating, or the details
+        // view can render with the not-yet-updated order list.
+        await forceUpdateMetamaskState(dispatch);
+        navigate(`${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderCode}`);
         await global.platform.openTab({ url: widget.url });
       } else {
         // Redirect-flow provider — no order exists yet, wait for checkout to
@@ -323,6 +339,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   }, [
     addPrecreatedOrder,
     canContinue,
+    dispatch,
     getBuyWidgetData,
     isContinuing,
     navigate,

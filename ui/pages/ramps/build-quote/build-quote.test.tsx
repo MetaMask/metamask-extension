@@ -4,6 +4,7 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
+import * as storeActions from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { RampsBuildQuoteScreen } from './build-quote';
@@ -133,6 +134,9 @@ describe('RampsBuildQuoteScreen', () => {
       loading: false,
       error: null,
     });
+    jest
+      .spyOn(storeActions, 'forceUpdateMetamaskState')
+      .mockResolvedValue(undefined as never);
   });
 
   afterEach(() => {
@@ -251,7 +255,36 @@ describe('RampsBuildQuoteScreen', () => {
         chainId: 'eip155:1',
       }),
     );
+    // The Redux copy of controller state is patched over a separate channel
+    // from the addPrecreatedOrder response — force it in before navigating,
+    // or the details view can render with the not-yet-updated order list.
+    expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-123');
+  });
+
+  it('normalizes a full-path orderId before routing to order details', async () => {
+    // Some providers (e.g. MoonPay) return orderId as a full path
+    // ("providers/moonpay-staging/orders/c-abc123") rather than a bare code.
+    // Routing with the raw value produces extra path segments that
+    // react-router can't match against `/tx/:caipChainId/:txIdentifier`,
+    // 404ing with "No route matches URL".
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'providers/moonpay-staging/orders/c-abc123',
+    });
+    mockAddPrecreatedOrder.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/c-abc123');
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {
