@@ -118,8 +118,8 @@ describe('LavamoatPlugin', () => {
       assert.ok(snowResult.staticShims[1].endsWith('/app/scripts/use-snow.js'));
     });
 
-    it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
-      for (const name of ['scripts/inpage.js', 'bootstrap']) {
+    it('keeps null_unsafe mode for the host-realm entries', () => {
+      for (const name of ['scripts/inpage.js', 'init-state-hooks']) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,
@@ -127,6 +127,10 @@ describe('LavamoatPlugin', () => {
           `${name} should remain null_unsafe`,
         );
       }
+
+      assert.deepStrictEqual(runtimeConfig(mockChunk('bootstrap')), {
+        mode: 'safe',
+      });
     });
 
     it('uses safe mode for unrecognised chunks', () => {
@@ -170,6 +174,9 @@ describe('LavamoatPlugin', () => {
       const unsafeEntry = {
         options: { layer: undefined as string | undefined },
       };
+      const stateHooksEntry = {
+        options: { layer: undefined as string | undefined },
+      };
       const safeEntry = { options: { layer: undefined as string | undefined } };
       const compilation = {
         hooks: {
@@ -187,6 +194,7 @@ describe('LavamoatPlugin', () => {
         },
         entries: new Map([
           ['scripts/inpage.js', unsafeEntry],
+          ['init-state-hooks', stateHooksEntry],
           ['safe-entry', safeEntry],
         ]),
       };
@@ -195,10 +203,18 @@ describe('LavamoatPlugin', () => {
       thisCompilationCallback(compilation);
       assert.ok(addEntryCallback);
       addEntryCallback({ request: './inpage' }, { name: 'scripts/inpage.js' });
+      addEntryCallback(
+        { request: './init-state-hooks' },
+        { name: 'init-state-hooks' },
+      );
       addEntryCallback({ request: './safe' }, { name: 'safe-entry' });
 
       assert.strictEqual(
         unsafeEntry.options.layer,
+        lavamoatUnsafeLayerRule.issuerLayer,
+      );
+      assert.strictEqual(
+        stateHooksEntry.options.layer,
         lavamoatUnsafeLayerRule.issuerLayer,
       );
       assert.strictEqual(safeEntry.options.layer, undefined);
