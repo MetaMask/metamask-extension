@@ -13,30 +13,51 @@ import {
   BoxJustifyContent,
   twMerge,
 } from '@metamask/design-system-react';
-import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { isViewTransitionSupported } from '../transition';
 import { TabsProps, TabChild } from './tabs.types';
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(value, max));
 }
 
+// Identifies the most recently started tab transition so a superseded one's
+// cleanup doesn't tear down state the newer transition just set up.
+let latestTabTransitionId = 0;
+
 async function startTransition(
   direction: 'forward' | 'backward',
   update: () => void,
+  panel: HTMLElement | null,
 ) {
-  if (document.startViewTransition && getBrowserName() !== PLATFORM_FIREFOX) {
-    document.documentElement.dataset.tabTransitionDirection = direction;
-
-    const transition = document.startViewTransition(update);
-
-    try {
-      await transition.finished;
-    } finally {
-      delete document.documentElement.dataset.tabTransitionDirection;
-    }
-  } else {
+  if (!isViewTransitionSupported()) {
     update();
+    return;
+  }
+
+  latestTabTransitionId += 1;
+  const transitionId = latestTabTransitionId;
+  document.documentElement.dataset.tabTransitionDirection = direction;
+  // Name the panel only during the tab switch; a persistent name would also be
+  // captured by unrelated (e.g. page) transitions, where it overflows.
+  if (panel) {
+    panel.style.viewTransitionName = 'tab-content';
+  }
+
+  const transition = document.startViewTransition(update);
+
+  try {
+    await transition.finished;
+  } catch {
+    // A rapid switch aborts the in-flight transition, rejecting
+    // `finished`. That's expected — swallow it to avoid unhandled rejection.
+  } finally {
+    // Skip cleanup if a newer transition has taken over
+    if (transitionId === latestTabTransitionId) {
+      delete document.documentElement.dataset.tabTransitionDirection;
+      if (panel) {
+        panel.style.viewTransitionName = '';
+      }
+    }
   }
 }
 
@@ -52,6 +73,7 @@ export const Tabs = <TKey extends string = string>({
   ...props
 }: TabsProps<TKey>) => {
   const tabListRef = useRef<HTMLDivElement>(null);
+  const tabContentRef = useRef<HTMLDivElement>(null);
 
   // Helper function to get valid children, filtering out null/undefined/false values
   const getValidChildren = useMemo((): TabChild<TKey>[] => {
@@ -118,7 +140,7 @@ export const Tabs = <TKey extends string = string>({
       };
 
       if (animated) {
-        startTransition(direction, applyUpdate);
+        startTransition(direction, applyUpdate, tabContentRef.current);
       } else {
         applyUpdate();
       }
@@ -167,14 +189,7 @@ export const Tabs = <TKey extends string = string>({
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box
-        role="tabpanel"
-        {...tabContentProps}
-        style={{
-          ...tabContentProps?.style,
-          ...(animated ? { viewTransitionName: 'tab-content' } : undefined),
-        }}
-      >
+      <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
         {renderActiveTabContent()}
       </Box>
     </Box>

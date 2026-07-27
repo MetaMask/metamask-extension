@@ -15,7 +15,7 @@ module.exports = {
     './node_modules/@metamask/design-system-shared/**/*.{mjs,cjs}',
   ],
   theme: {
-    // Keep essential semantic colors, remove default palette colors. We want to rely on the colors provided by @metamask-previews/design-system-tailwind-preset
+    // Keep essential semantic colors, remove default palette colors. We want to rely on the colors provided by @metamask/design-system-tailwind-preset
     colors: {
       inherit: 'inherit',
       current: 'currentColor',

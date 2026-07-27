@@ -377,9 +377,6 @@
   "decimal": {
     "message": "Decimal do token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
-  },
   "decrypt": {
     "message": "Descriptografar"
   },
@@ -936,9 +933,6 @@
   },
   "networks": {
     "message": "Redes"
-  },
-  "nevermind": {
-    "message": "Não importa"
   },
   "newAccountNumberName": {
     "message": "Conta $1",

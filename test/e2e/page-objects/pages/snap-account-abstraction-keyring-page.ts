@@ -1,6 +1,5 @@
 import { ERC_4337_ACCOUNT_SNAP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import SnapInstall from './dialog/snap-install';
 
 class SnapAccountAbstractionKeyringPage {
   private readonly addAccountButton = {
@@ -75,18 +74,6 @@ class SnapAccountAbstractionKeyringPage {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
   }
 
-  async install(snapUrl: string = ERC_4337_ACCOUNT_SNAP_URL): Promise<void> {
-    console.log('Install Account Abstraction Snap');
-    await this.driver.openNewPage(snapUrl);
-    await this.driver.clickElement(this.connectButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    const snapInstall = new SnapInstall(this.driver);
-    await snapInstall.clickConnectButton();
-    await snapInstall.clickConfirmButton();
-    await snapInstall.clickOkButton();
-  }
-
   async setChainConfig({
     bundlerUrl,
     entrypoint,
@@ -123,6 +110,15 @@ class SnapAccountAbstractionKeyringPage {
     }
 
     await this.driver.clickElement(this.setChainConfigButton);
+  }
+
+  async startInstall(
+    snapUrl: string = ERC_4337_ACCOUNT_SNAP_URL,
+  ): Promise<void> {
+    console.log('Start Account Abstraction Snap install');
+    await this.driver.openNewPage(snapUrl);
+    await this.driver.clickElement(this.connectButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 }
 

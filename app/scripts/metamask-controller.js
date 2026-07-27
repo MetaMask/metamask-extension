@@ -11,7 +11,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, uniq } from 'lodash';
+import { debounce, merge, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
@@ -124,6 +124,7 @@ import {
   RecoveryError,
   EncAccountDataType,
   SeedlessOnboardingMigrationVersion,
+  InvalidPrimarySecretDataTypeError,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -151,6 +152,10 @@ import {
   KEYRING_DEVICE_PROPERTY_MAP,
   LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -907,10 +912,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
 
@@ -992,7 +993,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: walletFundsObtainedMonitorMessenger,
       events: ['NotificationServicesController:notificationsListUpdated'],
       actions: [
-        'MetaMetricsController:trackEvent',
         'AppStateController:setCanTrackWalletFundsObtained',
         'OnboardingController:getState',
         'NotificationServicesController:getState',
@@ -2918,6 +2918,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getLedgerMode: this.getLedgerMode.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -3639,7 +3640,6 @@ export default class MetamaskController extends EventEmitter {
               excludeMetaMetricsId: options?.excludeMetaMetricsId,
               matomoEvent: options?.matomoEvent,
             }),
-          options,
         );
       },
       trackAnalyticsEvent: trackEvent,
@@ -5016,11 +5016,8 @@ export default class MetamaskController extends EventEmitter {
           createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
             .addProperties({
               status: 'completed',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: newHdEntropyIndex,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_bitcoin_accounts_discovered:
                 discoveredAccounts?.Bitcoin,
             })
@@ -5135,6 +5132,15 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      if (error instanceof InvalidPrimarySecretDataTypeError) {
+        const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
+        log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
+        this.controllerMessenger?.captureException?.(
+          createSentryError(errorMessage, error),
+        );
+        throw error;
       }
 
       this.controllerMessenger?.captureException?.(
@@ -5386,6 +5392,29 @@ export default class MetamaskController extends EventEmitter {
       { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.bridge.getAppConfiguration(),
     );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns {LedgerHandlerMode}
+   */
+  getLedgerMode() {
+    const state = this.controllerMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   }
 
   /**
@@ -7609,10 +7638,15 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           startTrace: (options) => {
-            // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-            // eslint-disable-next-line no-unused-vars
-            const { _isStandaloneSpan, ...result } = trace(options);
-            return result;
+            // Must return a JSON-serializable TraceContext: spreading the raw
+            // Sentry Span leaks internal `undefined` fields that fail the snap
+            // response's JSON validation, and only the `SerializedTraceContext`
+            // shape round-trips into a later `startTrace` `parentContext`.
+            const span = trace(options);
+            const spanContext = span?.spanContext?.();
+            return spanContext
+              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
+              : {};
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
