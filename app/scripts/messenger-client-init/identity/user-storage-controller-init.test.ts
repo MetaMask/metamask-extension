@@ -15,10 +15,6 @@ import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  isProduction: () => false,
-}));
-
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
     UserStorageControllerMessenger,
@@ -66,7 +62,7 @@ describe('UserStorageControllerInit', () => {
           onContactDeleted: expect.any(Function),
           onContactSyncErroneousSituation: expect.any(Function),
         },
-        env: Env.PRD,
+        env: Env.DEV,
       },
     });
   });

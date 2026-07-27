@@ -39,14 +39,11 @@ describe('Backup And Sync Selectors', () => {
   });
 
   it('defaults Ramps Syncing to true when absent', () => {
+    const { isRampsSyncingEnabled: _unused, ...metamaskWithoutRamps } =
+      mockState.metamask;
     expect(
       selectIsRampsSyncingEnabled({
-        metamask: {
-          isBackupAndSyncEnabled: true,
-          isBackupAndSyncUpdateLoading: false,
-          isAccountSyncingEnabled: true,
-          isContactSyncingEnabled: true,
-        },
+        metamask: metamaskWithoutRamps as typeof mockState.metamask,
       }),
     ).toBe(true);
   });

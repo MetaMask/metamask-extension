@@ -38,7 +38,7 @@ describe('ProfileMetricsServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       fetch: expect.any(Function),
-      env: SDK.Env.PRD,
+      env: SDK.Env.DEV,
     });
   });
 });

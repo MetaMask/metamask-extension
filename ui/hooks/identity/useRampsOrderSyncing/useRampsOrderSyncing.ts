@@ -30,11 +30,11 @@ export const useShouldDispatchRampsOrderSyncing = () => {
 
   const shouldDispatchRampsOrderSyncing: boolean = Boolean(
     basicFunctionality &&
-      isBackupAndSyncEnabled &&
-      isRampsSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding,
+    isBackupAndSyncEnabled &&
+    isRampsSyncingEnabled &&
+    isUnlocked &&
+    isSignedIn &&
+    completedOnboarding,
   );
 
   return shouldDispatchRampsOrderSyncing;
