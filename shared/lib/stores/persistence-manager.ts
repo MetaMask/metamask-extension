@@ -197,9 +197,10 @@ const STATE_LOCK = 'state-lock';
  * What detected a suspected browser shutdown. {@link ShutdownTrigger.OnSuspend}
  * is the proactive MV3 lifecycle signal (paired with `onSuspendCanceled`);
  * {@link ShutdownTrigger.Reactive} and {@link ShutdownTrigger.IdbClose} are
- * inferred heuristics that can be false positives, so they are recoverable
- * (see {@link SHUTDOWN_RECOVERY_RETRY_MS}). {@link ShutdownTrigger.Unknown} is
- * the default when a caller omits the trigger.
+ * inferred heuristics that can be false positives. Every trigger is
+ * recoverable by re-probing storage (see {@link SHUTDOWN_RECOVERY_INFERRED_MS}
+ * and {@link SHUTDOWN_RECOVERY_ON_SUSPEND_MS}). {@link ShutdownTrigger.Unknown}
+ * is the default when a caller omits the trigger.
  */
 export enum ShutdownTrigger {
   Reactive = 'reactive',
@@ -208,15 +209,28 @@ export enum ShutdownTrigger {
   Unknown = 'unknown',
 }
 /**
- * How often to re-probe storage after suspending writes due to an inferred
- * shutdown signal ({@link ShutdownTrigger.Reactive} /
+ * How long to wait before re-probing storage after an inferred shutdown
+ * suspension ({@link ShutdownTrigger.Reactive} /
  * {@link ShutdownTrigger.IdbClose}). Set to a quarter of the shared
  * {@link PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS} so a false
  * positive recovers quickly. A genuine shutdown tears down the service worker,
  * so probing stops on its own.
  */
-const SHUTDOWN_RECOVERY_RETRY_MS =
+const SHUTDOWN_RECOVERY_INFERRED_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 4;
+
+/**
+ * How long to wait before re-probing storage after an
+ * {@link ShutdownTrigger.OnSuspend} suspension. That signal normally clears via
+ * `onSuspendCanceled`, but the extension would stay silently suspended if that
+ * event never arrives or is missed (e.g. it fires before the background script
+ * registers its listener). This time-based safety net bounds that window.
+ *
+ * Much longer than {@link SHUTDOWN_RECOVERY_INFERRED_MS} because `onSuspend` is
+ * a reliable signal: still being alive and able to reach storage this long
+ * after it is strong evidence the shutdown did not happen.
+ */
+const SHUTDOWN_RECOVERY_ON_SUSPEND_MS = 10_000;
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling
@@ -277,7 +291,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * start also clears it (new instance).
    *
    * `OnSuspend` is authoritative: inferred triggers (`Reactive`/`IdbClose`)
-   * must not overwrite it or schedule recovery while it is set.
+   * must not overwrite it or take over its recovery schedule while it is set.
    */
   #shutdownTrigger: ShutdownTrigger | null = null;
 
@@ -305,9 +319,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #pendingShutdownTrigger: ShutdownTrigger | null = null;
 
   /**
-   * Pending recovery-probe timer for an inferred shutdown suspension
-   * (`reactive`/`idb-close`). Non-null while a probe is scheduled; cleared once
-   * writes resume, are reset, or suspension is disabled.
+   * Pending recovery-probe timer for the current suspension. Non-null while a
+   * probe is scheduled; cleared once writes resume, are reset, or suspension is
+   * disabled. The delay depends on which trigger owns the suspension.
    */
   #shutdownRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -442,6 +456,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * `evacuate`): a write started during shutdown is exactly what we want to
    * avoid, since it can be interrupted mid-flight and corrupt the database.
    *
+   * Suspension is never permanent: a recovery probe is scheduled for every
+   * trigger, so writes resume on their own if the shutdown turns out not to
+   * happen and no cancellation signal arrives.
+   *
    * @param trigger - What detected the shutdown, for telemetry only. Defaults
    * to {@link ShutdownTrigger.Unknown} when the caller does not specify one.
    */
@@ -463,11 +481,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     // `OnSuspend` is authoritative: inferred triggers must not demote it.
     // Otherwise record the latest trigger so recovery knows which path owns
     // the suspension.
+    const owner =
+      previousTrigger === ShutdownTrigger.OnSuspend
+        ? ShutdownTrigger.OnSuspend
+        : trigger;
+    this.#shutdownTrigger = owner;
     if (trigger === ShutdownTrigger.OnSuspend) {
-      this.#shutdownTrigger = ShutdownTrigger.OnSuspend;
+      // Restart the recovery window on the authoritative signal, dropping any
+      // shorter probe an inferred trigger had scheduled.
       this.#clearShutdownRecoveryTimer();
-    } else if (this.#shutdownTrigger !== ShutdownTrigger.OnSuspend) {
-      this.#shutdownTrigger = trigger;
     }
 
     // Drop any write that is queued in the state lock but hasn't started yet,
@@ -480,12 +502,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       this.#shutdownReported = true;
       // Low-volume, deduplicated telemetry so we can measure how often
       // shutdown-suspension triggers without the noise/severity of an exception.
-      // Tag the effective owner (`#shutdownTrigger`), not merely the caller.
+      // Tag the effective owner, not merely the caller.
       captureMessage('MetaMask - writes suspended: browser shutting down', {
         level: 'info',
         tags: {
           'persistence.event': 'writes-suspended-shutdown',
-          'persistence.shutdownTrigger': this.#shutdownTrigger,
+          'persistence.shutdownTrigger': owner,
         },
         fingerprint: ['persistence-event', 'writes-suspended-shutdown'],
       });
@@ -510,19 +532,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
-    // `Reactive` and `IdbClose` are inferred heuristics that can misfire (e.g.
-    // a transient write error or a spurious IndexedDB `versionchange`). If they
-    // do, nothing would ever resume writes, leaving the extension stuck. So we
-    // periodically probe storage and resume once the browser proves responsive.
-    // Skip while `OnSuspend` owns the suspension: that path recovers via
-    // `onSuspendCanceled` only.
-    if (
-      (trigger === ShutdownTrigger.Reactive ||
-        trigger === ShutdownTrigger.IdbClose) &&
-      this.#shutdownTrigger !== ShutdownTrigger.OnSuspend
-    ) {
-      this.#scheduleShutdownRecovery(trigger);
-    }
+    // Every suspension gets a recovery probe, because no signal is guaranteed
+    // to be followed by either a real shutdown or a cancellation: `Reactive`
+    // and `IdbClose` are heuristics that can misfire, and an `onSuspend` whose
+    // `onSuspendCanceled` never arrives (or is missed) would leave the
+    // extension silently stuck. The probe resumes writes once the browser
+    // proves responsive; a genuine shutdown tears down the service worker
+    // first, so it stops on its own.
+    this.#scheduleShutdownRecovery(owner);
   }
 
   /**
@@ -559,47 +576,40 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
-   * Schedules a one-shot recovery probe for an inferred shutdown suspension.
+   * Schedules a one-shot recovery probe for the current shutdown suspension.
    * No-op if a probe is already pending, so repeated `suspendWrites` calls do
    * not stack timers.
    *
-   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   * @param trigger - The trigger that owns the suspension. Chooses between
+   * {@link SHUTDOWN_RECOVERY_INFERRED_MS} and
+   * {@link SHUTDOWN_RECOVERY_ON_SUSPEND_MS}.
    */
   #scheduleShutdownRecovery(trigger: ShutdownTrigger) {
-    if (
-      this.#shutdownTrigger === ShutdownTrigger.OnSuspend ||
-      this.#shutdownRecoveryTimer !== null
-    ) {
+    if (this.#shutdownRecoveryTimer !== null) {
       return;
     }
+    const delay =
+      trigger === ShutdownTrigger.OnSuspend
+        ? SHUTDOWN_RECOVERY_ON_SUSPEND_MS
+        : SHUTDOWN_RECOVERY_INFERRED_MS;
     this.#shutdownRecoveryTimer = setTimeout(() => {
       this.#shutdownRecoveryTimer = null;
       // Best-effort: the probe handles its own errors and reschedules, so any
       // unexpected rejection here is swallowed rather than left floating.
-      this.#attemptShutdownRecovery(trigger).catch(() => undefined);
-    }, SHUTDOWN_RECOVERY_RETRY_MS);
+      this.#attemptShutdownRecovery().catch(() => undefined);
+    }, delay);
   }
 
   /**
-   * Probes storage once. If the probe succeeds the suspension was a false
-   * positive, so writes resume; if it fails the browser is likely really
-   * shutting down, so another probe is scheduled. A genuine shutdown tears down
-   * the service worker before the next probe, so this stops on its own.
-   *
-   * @param trigger - The inferred trigger that suspended writes, for telemetry.
+   * Probes storage once. If the probe succeeds the shutdown never happened, so
+   * writes resume; if it fails the browser is likely really shutting down, so
+   * another probe is scheduled. A genuine shutdown tears down the service
+   * worker before the next probe, so this stops on its own.
    */
-  async #attemptShutdownRecovery(trigger: ShutdownTrigger) {
-    // Writes were already resumed, reset, or suspension disabled; nothing to do.
-    // Also bail if `onSuspend` took ownership after this probe was scheduled:
-    // that lifecycle signal recovers only via `onSuspendCanceled`.
-    // Read `#shutdownTrigger` into a local so TypeScript does not narrow the
-    // field across the await below (OnSuspend can still take ownership then).
-    const triggerBeforeProbe = this.#shutdownTrigger;
-    if (
-      triggerBeforeProbe === null ||
-      !this.#shutdownSuspensionEnabled ||
-      triggerBeforeProbe === ShutdownTrigger.OnSuspend
-    ) {
+  async #attemptShutdownRecovery() {
+    // Writes were already resumed, reset, or suspension disabled: nothing to do.
+    const trigger = this.#shutdownTrigger;
+    if (trigger === null || !this.#shutdownSuspensionEnabled) {
       return;
     }
 
@@ -611,13 +621,16 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
-    // Re-check after the async probe: `onSuspend` may have taken ownership
-    // while we were waiting on storage.
+    // Re-check after the async probe: writes may have resumed, or a newer
+    // shutdown signal may have arrived while we were waiting on storage. In
+    // the latter case the probe result is stale evidence, so probe again
+    // rather than resume on it.
     const triggerAfterProbe = this.#shutdownTrigger;
-    if (
-      triggerAfterProbe === null ||
-      triggerAfterProbe === ShutdownTrigger.OnSuspend
-    ) {
+    if (triggerAfterProbe === null) {
+      return;
+    }
+    if (triggerAfterProbe !== trigger) {
+      this.#scheduleShutdownRecovery(triggerAfterProbe);
       return;
     }
 
@@ -636,9 +649,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   }
 
   /**
-   * Checks whether storage is responsive again after an inferred shutdown
-   * suspension. Every store we can reach must respond before we resume, so we
-   * never restart writes to one store while another is still unresponsive.
+   * Checks whether storage is responsive again after a shutdown suspension.
+   * Every store we can reach must respond before we resume, so we never
+   * restart writes to one store while another is still unresponsive.
    *
    * The backup IndexedDB (when available) is checked first: reopening reconnects
    * after an `idb-close` (the store nulls its handle on forced close), and the

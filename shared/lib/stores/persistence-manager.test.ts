@@ -71,6 +71,9 @@ describe('PersistenceManager', () => {
   });
 
   afterEach(() => {
+    // Disabling also cancels any pending shutdown-recovery probe, so a timer
+    // scheduled by a suspension does not outlive the test.
+    manager.setShutdownSuspensionEnabled(false);
     jest.useRealTimers();
   });
 
@@ -1409,10 +1412,13 @@ describe('PersistenceManager', () => {
       });
     });
 
-    describe('recovery for inferred triggers', () => {
-      // How often the recovery probe runs; mirrors SHUTDOWN_RECOVERY_RETRY_MS
-      // in the implementation.
-      const RETRY_MS = 250;
+    describe('recovery', () => {
+      // How long the recovery probe waits; mirrors
+      // SHUTDOWN_RECOVERY_INFERRED_MS in the implementation.
+      const INFERRED_MS = 250;
+      // How long the recovery probe waits; mirrors
+      // SHUTDOWN_RECOVERY_ON_SUSPEND_MS in the implementation.
+      const ON_SUSPEND_MS = 10_000;
 
       beforeEach(() => {
         jest.useFakeTimers();
@@ -1430,7 +1436,7 @@ describe('PersistenceManager', () => {
         manager.suspendWrites(ShutdownTrigger.Reactive);
         expect(manager.writesSuspended()).toBe(true);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         expect(mockStoreGet).toHaveBeenCalled();
         expect(manager.writesSuspended()).toBe(false);
@@ -1460,7 +1466,7 @@ describe('PersistenceManager', () => {
         manager.suspendWrites(ShutdownTrigger.IdbClose);
         expect(manager.writesSuspended()).toBe(true);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         // Both stores are probed before resuming.
         expect(openSpy).toHaveBeenCalledWith('metamask-backup', 1);
@@ -1488,11 +1494,11 @@ describe('PersistenceManager', () => {
 
         manager.suspendWrites(ShutdownTrigger.IdbClose);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
         // storage.local still failing: stay suspended despite a healthy backup DB.
         expect(manager.writesSuspended()).toBe(true);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
         // storage.local recovered: now writes resume.
         expect(manager.writesSuspended()).toBe(false);
 
@@ -1507,43 +1513,75 @@ describe('PersistenceManager', () => {
 
         manager.suspendWrites(ShutdownTrigger.Reactive);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
         // First probe failed: still suspended and scheduled again.
         expect(manager.writesSuspended()).toBe(true);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
         // Second probe succeeded: writes resume.
         expect(manager.writesSuspended()).toBe(false);
         expect(mockStoreGet).toHaveBeenCalledTimes(2);
       });
 
-      it('does not schedule a recovery probe for the onSuspend lifecycle trigger', async () => {
+      it('resumes writes after an onSuspend suspension whose cancellation never arrives', async () => {
+        mockStoreGet.mockResolvedValue(MOCK_DATA);
+
         manager.suspendWrites(ShutdownTrigger.OnSuspend);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
-
+        // The lifecycle signal gets a much longer grace period than an
+        // inferred trigger, so nothing happens on the inferred schedule.
+        await jest.advanceTimersByTimeAsync(INFERRED_MS * 4);
         expect(mockStoreGet).not.toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(ON_SUSPEND_MS);
+
+        expect(mockStoreGet).toHaveBeenCalled();
+        expect(manager.writesSuspended()).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'MetaMask - writes resumed: shutdown recovered',
+          expect.objectContaining({
+            level: 'info',
+            tags: expect.objectContaining({
+              'persistence.event': 'writes-resumed-recovery',
+              'persistence.shutdownTrigger': ShutdownTrigger.OnSuspend,
+            }),
+          }),
+        );
+      });
+
+      it('keeps writes suspended while storage stays unresponsive after onSuspend', async () => {
+        mockStoreGet.mockRejectedValue(
+          new Error('The browser is shutting down.'),
+        );
+
+        manager.suspendWrites(ShutdownTrigger.OnSuspend);
+
+        await jest.advanceTimersByTimeAsync(ON_SUSPEND_MS * 3);
+
         expect(manager.writesSuspended()).toBe(true);
       });
 
-      it('cancels a pending inferred recovery when onSuspend takes ownership', async () => {
+      it('replaces a pending inferred recovery with the longer window when onSuspend takes ownership', async () => {
         mockStoreGet.mockResolvedValue(MOCK_DATA);
         manager.suspendWrites(ShutdownTrigger.Reactive);
         manager.suspendWrites(ShutdownTrigger.OnSuspend);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
-
+        await jest.advanceTimersByTimeAsync(INFERRED_MS * 4);
         expect(mockStoreGet).not.toHaveBeenCalled();
         expect(manager.writesSuspended()).toBe(true);
+
+        await jest.advanceTimersByTimeAsync(ON_SUSPEND_MS);
+        expect(manager.writesSuspended()).toBe(false);
       });
 
-      it('does not let a later inferred trigger resume an onSuspend suspension', async () => {
+      it('does not let a later inferred trigger shorten an onSuspend suspension', async () => {
         mockStoreGet.mockResolvedValue(MOCK_DATA);
         manager.suspendWrites(ShutdownTrigger.OnSuspend);
         manager.suspendWrites(ShutdownTrigger.Reactive);
         manager.suspendWrites(ShutdownTrigger.IdbClose);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS * 4);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS * 4);
 
         expect(mockStoreGet).not.toHaveBeenCalled();
         expect(manager.writesSuspended()).toBe(true);
@@ -1555,7 +1593,7 @@ describe('PersistenceManager', () => {
         manager.resumeWrites();
 
         manager.suspendWrites(ShutdownTrigger.Reactive);
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         expect(mockStoreGet).toHaveBeenCalled();
         expect(manager.writesSuspended()).toBe(false);
@@ -1565,7 +1603,7 @@ describe('PersistenceManager', () => {
         manager.suspendWrites(ShutdownTrigger.Reactive);
         manager.resumeWrites();
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         expect(mockStoreGet).not.toHaveBeenCalled();
       });
@@ -1574,7 +1612,7 @@ describe('PersistenceManager', () => {
         manager.suspendWrites(ShutdownTrigger.Reactive);
         await manager.reset();
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         expect(mockStoreGet).not.toHaveBeenCalled();
       });
@@ -1583,7 +1621,7 @@ describe('PersistenceManager', () => {
         manager.suspendWrites(ShutdownTrigger.Reactive);
         manager.setShutdownSuspensionEnabled(false);
 
-        await jest.advanceTimersByTimeAsync(RETRY_MS);
+        await jest.advanceTimersByTimeAsync(INFERRED_MS);
 
         expect(mockStoreGet).not.toHaveBeenCalled();
       });
