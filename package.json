@@ -315,7 +315,10 @@
     "@metamask/bridge-controller@npm:^77.7.0": "patch:@metamask/bridge-controller@npm%3A77.8.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch",
     "@metamask/bridge-controller@npm:^77.8.0": "patch:@metamask/bridge-controller@npm%3A77.8.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch",
     "@ledgerhq/device-management-kit@npm:^1.7.1": "patch:@ledgerhq/device-management-kit@npm%3A1.7.1#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.7.1-c85615f09e.patch",
-    "@ledgerhq/device-transport-kit-web-hid@npm:^1.2.4": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch"
+    "@ledgerhq/device-transport-kit-web-hid@npm:^1.2.4": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.4#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.4-7ca2cdd5a7.patch",
+    "reflect-metadata@npm:0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
+    "reflect-metadata@npm:^0.2.2": "patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch",
+    "@inversifyjs/reflect-metadata-utils@npm:1.1.0": "patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

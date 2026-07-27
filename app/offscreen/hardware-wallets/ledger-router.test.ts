@@ -126,26 +126,31 @@ function flushAsync() {
 }
 
 describe('LedgerRouter', () => {
-  beforeEach(() => {
-    // Re-require the router (and its mocked deps) inside an isolated module
-    // registry so each test starts with fresh singleton state
-    // (activeHandler, currentMode, messageListener, initInProgress) without
-    // any test-only reset hook on the production module.
-    jest.isolateModules(() => {
+  beforeEach(async () => {
+    // Re-require the router inside an isolated module registry so each test
+    // starts with fresh singleton state (activeHandler, currentMode, etc.)
+    // without any test-only reset hook on the production module.
+    //
+    // Dynamic `import('./ledger-dmk')` inside createHandler resolves against
+    // the global Jest registry (isolation only applies during this callback),
+    // so handler mocks are read from the global registry below — not from
+    // inside the isolated block.
+    await jest.isolateModulesAsync(async () => {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const router = require('./ledger-router') as RouterModule;
       initLedger = router.default;
       switchLedgerHandler = router.switchLedgerHandler;
       bootstrapLedger = router.bootstrapLedger;
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const dmkModule = require('./ledger-dmk') as DmkModule;
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const legacyModule = require('./ledger') as LegacyModule;
-      mockedDmkCtor = jest.mocked(
-        dmkModule.LedgerDmkBridgeHandler,
-      ) as jest.Mock;
-      mockedLegacyCtor = jest.mocked(legacyModule.default) as jest.Mock;
     });
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const dmkModule = require('./ledger-dmk') as DmkModule;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const legacyModule = require('./ledger') as LegacyModule;
+    mockedDmkCtor = jest.mocked(
+      dmkModule.LedgerDmkBridgeHandler,
+    ) as jest.Mock;
+    mockedLegacyCtor = jest.mocked(legacyModule.default) as jest.Mock;
 
     jest.clearAllMocks();
     capturedListener = null;
@@ -364,7 +369,11 @@ describe('LedgerRouter', () => {
       );
 
       const switchToDmk = switchLedgerHandler(LedgerHandlerMode.DMK);
-      await Promise.resolve();
+      // Dynamic import('./ledger-dmk') must settle before DMK init is invoked.
+      await flushAsync();
+      await flushAsync();
+      expect(resolveDmkInit).toBeDefined();
+
       const switchBackToLegacy = switchLedgerHandler(LedgerHandlerMode.Legacy);
 
       resolveDmkInit?.();

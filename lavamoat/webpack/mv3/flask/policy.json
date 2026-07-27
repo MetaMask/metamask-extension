@@ -626,6 +626,11 @@
         "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true
       }
     },
+    "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": {
+      "packages": {
+        "@ledgerhq/context-module>reflect-metadata": true
+      }
+    },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,

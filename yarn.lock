@@ -4317,6 +4317,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@inversifyjs/reflect-metadata-utils@patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch":
+  version: 1.1.0
+  resolution: "@inversifyjs/reflect-metadata-utils@patch:@inversifyjs/reflect-metadata-utils@npm%3A1.1.0#~/.yarn/patches/@inversifyjs-reflect-metadata-utils-npm-1.1.0-5839e1aa6d.patch::version=1.1.0&hash=e334f1"
+  peerDependencies:
+    reflect-metadata: 0.2.2
+  checksum: 10/1ecea4fea8e8fcb9a5296d950bcca3d454d4c647cbc7a7d955a248211607d18449fd72593b92d4becb2a4de8af769b33f2667fb2a63d1a402c942a0f19a91c65
+  languageName: node
+  linkType: hard
+
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -38345,10 +38354,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reflect-metadata@npm:0.2.2, reflect-metadata@npm:^0.2.2":
+"reflect-metadata@npm:0.2.2":
   version: 0.2.2
   resolution: "reflect-metadata@npm:0.2.2"
   checksum: 10/1c93f9ac790fea1c852fde80c91b2760420069f4862f28e6fae0c00c6937a56508716b0ed2419ab02869dd488d123c4ab92d062ae84e8739ea7417fae10c4745
+  languageName: node
+  linkType: hard
+
+"reflect-metadata@patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch":
+  version: 0.2.2
+  resolution: "reflect-metadata@patch:reflect-metadata@npm%3A0.2.2#~/.yarn/patches/reflect-metadata-npm-0.2.2-5e0bfac201.patch::version=0.2.2&hash=ddd64c"
+  checksum: 10/4d07cdf841293565dd16fa01d2b3232ca70c37a0bad0c331714829e48266258f90e321a8751acd96e6c0bd146239fa14c7bc913a2eae54034610fd3e924b6c81
   languageName: node
   linkType: hard
 

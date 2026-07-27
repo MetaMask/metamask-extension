@@ -4,7 +4,6 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDmkBridgeHandler } from './ledger-dmk';
 import { serializeLedgerError } from './ledger-utils';
 import initLegacy from './ledger';
 
@@ -117,6 +116,10 @@ function ensureMessageListener(): void {
  * own. DMK's `init(true)` skips its standalone listener; Legacy never had
  * one under the router model.
  *
+ * DMK is loaded via dynamic `import()` so a module-eval failure in the DMK
+ * dependency graph (e.g. under LavaMoat) cannot take down the whole offscreen
+ * document (snaps, Trezor, Lattice, legacy Ledger).
+ *
  * @param mode - The handler implementation to construct. `DMK` instantiates
  * `LedgerDMKBridgeHandler`, any other value instantiates the legacy
  * `LedgerLegacyHandler`.
@@ -124,6 +127,7 @@ function ensureMessageListener(): void {
  */
 async function createHandler(mode: LedgerHandlerMode): Promise<LedgerHandler> {
   if (mode === LedgerHandlerMode.DMK) {
+    const { LedgerDmkBridgeHandler } = await import('./ledger-dmk');
     const handler = new LedgerDmkBridgeHandler();
     // Pass true so DMK does not register a competing onMessage listener.
     await handler.init(true);
