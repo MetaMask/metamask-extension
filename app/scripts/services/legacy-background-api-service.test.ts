@@ -19,6 +19,11 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  BtcAccountType,
+  SolAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
@@ -61,6 +66,11 @@ jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
 jest.mock('../../../shared/lib/sentry');
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -3498,6 +3508,247 @@ describe('LegacyBackgroundApiService', () => {
         expect(captureException).toHaveBeenCalledWith(
           expect.objectContaining({ name: 'TestError', message: 'boom' }),
         );
+      });
+    });
+  });
+
+  describe('createSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(mnemonic, 'utf8').values(),
+    );
+
+    it('captures the error and rethrows when backup creation fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('backup failed');
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        const captureExceptionSpy = jest.spyOn(
+          rootMessenger,
+          'captureException',
+        );
+
+        await expect(
+          service.createSeedPhraseBackup(
+            'password',
+            encodedSeedPhrase,
+            'keyring-id',
+          ),
+        ).rejects.toThrow('backup failed');
+
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            TraceName.OnboardingCreateKeyAndBackupSrpError,
+            error,
+          ),
+        );
+      });
+    });
+  });
+
+  describe('createNewVaultAndKeychain', () => {
+    it('clears wallet state when a wallet reset is in progress', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const clearPermissionState = jest.fn();
+        const clearSnapState = jest.fn().mockResolvedValue(undefined);
+        const clearAccountTreeState = jest.fn();
+        const updateHiddenAccountsList = jest.fn();
+        const clearUnapprovedTransactions = jest.fn();
+        const createWallet = jest.fn().mockResolvedValue(undefined);
+        const setIsWalletResetInProgress = jest.fn();
+        const updateAccounts = jest.fn().mockResolvedValue(undefined);
+        const reinit = jest.fn();
+        const primaryKeyring = {
+          type: 'HD Key Tree',
+          accounts: ['0xabc'],
+          metadata: { id: 'kr1' },
+        };
+
+        rootMessenger.registerActionHandler(
+          'AppStateController:getIsWalletResetInProgress',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'PermissionController:clearState',
+          clearPermissionState,
+        );
+        rootMessenger.registerActionHandler(
+          'SnapController:clearState',
+          clearSnapState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:clearState',
+          clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountOrderController:updateHiddenAccountsList',
+          updateHiddenAccountsList,
+        );
+        rootMessenger.registerActionHandler(
+          'TransactionController:clearUnapprovedTransactions',
+          clearUnapprovedTransactions,
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createMultichainAccountWallet',
+          createWallet,
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setIsWalletResetInProgress',
+          setIsWalletResetInProgress,
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({ keyrings: [primaryKeyring] }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:updateAccounts',
+          updateAccounts,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:reinit',
+          reinit,
+        );
+
+        const result = await service.createNewVaultAndKeychain('password');
+
+        expect(clearPermissionState).toHaveBeenCalled();
+        expect(clearSnapState).toHaveBeenCalled();
+        expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
+        expect(clearUnapprovedTransactions).toHaveBeenCalled();
+        expect(createWallet).toHaveBeenCalledWith({
+          type: 'create',
+          password: 'password',
+        });
+        expect(setIsWalletResetInProgress).toHaveBeenCalledWith(false);
+        expect(result).toStrictEqual(primaryKeyring);
+      });
+    });
+  });
+
+  describe('syncSeedPhrases', () => {
+    it('imports private key secrets that are not backed up locally', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const privateKeyData = new Uint8Array(32).fill(1);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:fetchAllSecretData',
+          jest.fn().mockResolvedValue([
+            { data: new Uint8Array([1]), type: SecretType.Mnemonic },
+            { data: privateKeyData, type: SecretType.PrivateKey },
+          ]),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getSecretDataBackupState',
+          jest.fn().mockReturnValue(null),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+
+        const importSpy = jest
+          .spyOn(service, 'importAccountWithStrategy')
+          .mockResolvedValue(undefined);
+
+        await service.syncSeedPhrases();
+
+        expect(importSpy).toHaveBeenCalledWith(
+          AccountImportStrategy.privateKey,
+          [expect.any(String)],
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
+      });
+    });
+  });
+
+  describe('addNewSeedPhraseBackup', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+    it('captures the error and rethrows when adding secret data fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('add failed');
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:addNewSecretData',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        const captureExceptionSpy = jest.spyOn(
+          rootMessenger,
+          'captureException',
+        );
+
+        await expect(
+          service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
+        ).rejects.toThrow('add failed');
+
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(TraceName.OnboardingAddSrpError, error),
+        );
+      });
+    });
+  });
+
+  describe('discoverAndCreateAccounts', () => {
+    it('counts discovered accounts by provider', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [{ metadata: { id: 'kr1' } }],
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:getMultichainAccountWallet',
+          jest.fn().mockReturnValue({
+            discoverAccounts: jest
+              .fn()
+              .mockResolvedValue([
+                { type: SolAccountType.DataAccount },
+                { type: BtcAccountType.P2wpkh },
+                { type: TrxAccountType.Eoa },
+              ]),
+          }),
+        );
+
+        const counts = await service.discoverAndCreateAccounts();
+
+        expect(counts).toStrictEqual({ Bitcoin: 1, Solana: 1, Tron: 1 });
       });
     });
   });
