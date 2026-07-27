@@ -3520,41 +3520,43 @@ describe('LegacyBackgroundApiService', () => {
     );
 
     it('captures the error and rethrows when backup creation fails', async () => {
-      await withService(async ({ rootMessenger, service, serviceMessenger }) => {
-        const error = new Error('backup failed');
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
-          jest.fn().mockRejectedValue(error),
-        );
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('backup failed');
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
+            jest.fn().mockRejectedValue(error),
+          );
 
-        const captureExceptionSpy = jest.spyOn(
-          serviceMessenger,
-          'captureException',
-        );
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
 
-        await expect(
-          service.createSeedPhraseBackup(
-            'password',
-            encodedSeedPhrase,
-            'keyring-id',
-          ),
-        ).rejects.toThrow('backup failed');
+          await expect(
+            service.createSeedPhraseBackup(
+              'password',
+              encodedSeedPhrase,
+              'keyring-id',
+            ),
+          ).rejects.toThrow('backup failed');
 
-        expect(captureExceptionSpy).toHaveBeenCalledWith(
-          createSentryError(
-            TraceName.OnboardingCreateKeyAndBackupSrpError,
-            error,
-          ),
-        );
-      });
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(
+              TraceName.OnboardingCreateKeyAndBackupSrpError,
+              error,
+            ),
+          );
+        },
+      );
     });
   });
 
@@ -3689,38 +3691,40 @@ describe('LegacyBackgroundApiService', () => {
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
     it('captures the error and rethrows when adding secret data fails', async () => {
-      await withService(async ({ rootMessenger, service, serviceMessenger }) => {
-        const error = new Error('add failed');
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: false }),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:addNewSecretData',
-          jest.fn().mockRejectedValue(error),
-        );
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const error = new Error('add failed');
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getState',
+            jest.fn().mockReturnValue({ completedOnboarding: false }),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'MetaMetricsController:bufferedEndTrace',
+            jest.fn(),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:addNewSecretData',
+            jest.fn().mockRejectedValue(error),
+          );
 
-        const captureExceptionSpy = jest.spyOn(
-          serviceMessenger,
-          'captureException',
-        );
+          const captureExceptionSpy = jest.spyOn(
+            serviceMessenger,
+            'captureException',
+          );
 
-        await expect(
-          service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
-        ).rejects.toThrow('add failed');
+          await expect(
+            service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
+          ).rejects.toThrow('add failed');
 
-        expect(captureExceptionSpy).toHaveBeenCalledWith(
-          createSentryError(TraceName.OnboardingAddSrpError, error),
-        );
-      });
+          expect(captureExceptionSpy).toHaveBeenCalledWith(
+            createSentryError(TraceName.OnboardingAddSrpError, error),
+          );
+        },
+      );
     });
   });
 
