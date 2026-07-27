@@ -9,9 +9,74 @@ import {
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { mockSegment } from './mocks/segment';
 
+async function mockWalletImportedSegment(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track', event: 'Wallet Imported' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
 describe('Wallet Created Events - Imported Account', function () {
+  it('sends Wallet Imported with expected properties when importing a wallet', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withMetaMetricsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockWalletImportedSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await completeImportSRPOnboardingFlow({
+          driver,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
+        });
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.equal(events[0].event, 'Wallet Imported');
+
+        const {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          profile_id: _profileId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          canonical_profile_id: _canonicalProfileId,
+          ...eventProperties
+        } = events[0].properties;
+
+        assert.deepStrictEqual(eventProperties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+          category: 'Onboarding',
+          locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: 'fullscreen',
+        });
+      },
+    );
+  });
+
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const expectedEvents = [

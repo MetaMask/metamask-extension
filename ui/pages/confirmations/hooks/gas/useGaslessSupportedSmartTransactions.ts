@@ -6,8 +6,8 @@ import {
   SmartTransactionsState,
 } from '../../../../../shared/lib/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { isSendBundleSupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useGaslessSupportedSmartTransactions(): {
@@ -19,7 +19,9 @@ export function useGaslessSupportedSmartTransactions(): {
     useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta ?? {};
-  const isHardwareWalletAccount = useSelector(isHardwareWallet);
+  const isHardwareWalletAccount = useIsHardwareWalletAccount(
+    transactionMeta?.txParams?.from,
+  );
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, chainId),
   );
