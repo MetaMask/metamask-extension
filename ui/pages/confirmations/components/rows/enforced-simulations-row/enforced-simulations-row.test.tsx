@@ -30,11 +30,13 @@ function render({
   containerTypes,
   origin,
   delegationAddress,
+  component = <EnforcedSimulationsRow />,
 }: {
   isEligible?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
+  component?: React.ReactElement;
 } = {}) {
   useIsEnforcedSimulationsEligibleMock.mockReturnValue(isEligible);
 
@@ -61,10 +63,7 @@ function render({
     metamask: {},
   });
 
-  return renderWithConfirmContextProvider(
-    <EnforcedSimulationsRow />,
-    mockStore(state),
-  );
+  return renderWithConfirmContextProvider(component, mockStore(state));
 }
 
 describe('EnforcedSimulationsRow', () => {
@@ -73,7 +72,10 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders nothing when enforced simulations is not eligible', async () => {
-    const { container } = render({ isEligible: false });
+    const { container } = render({
+      isEligible: false,
+      containerTypes: undefined,
+    });
 
     await waitFor(() => {
       expect(container).toBeEmptyDOMElement();
@@ -81,15 +83,77 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the component when enforced simulations is supported', async () => {
-    const { getByTestId } = render();
+    const { getByTestId } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();
     });
   });
 
+  it('hides the component when the simulation estimate fails', async () => {
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockRejectedValueOnce(new Error('No simulated gas returned'));
+
+    const { container } = render({ containerTypes: undefined });
+
+    expect(container).toBeEmptyDOMElement();
+
+    await waitFor(() => {
+      expect(container).toBeEmptyDOMElement();
+    });
+  });
+
+  it('ignores stale auto-enable failures', async () => {
+    let rejectFirstRequest: (error: Error) => void;
+    const firstRequest = new Promise<void>((_, reject) => {
+      rejectFirstRequest = reject;
+    });
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    function RerenderableRow() {
+      const [renderCount, setRenderCount] = React.useState(0);
+
+      React.useEffect(() => {
+        if (renderCount < 2) {
+          setRenderCount((count) => count + 1);
+        }
+      }, [renderCount]);
+
+      return <EnforcedSimulationsRow />;
+    }
+
+    useIsEnforcedSimulationsEligibleMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValue(true);
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockImplementationOnce(() => firstRequest)
+      .mockResolvedValueOnce(undefined);
+
+    render({
+      containerTypes: undefined,
+      component: <RerenderableRow />,
+    });
+
+    await waitFor(() => {
+      expect(applyTransactionContainersExisting).toHaveBeenCalledTimes(2);
+    });
+
+    consoleError.mockClear();
+    await act(async () => {
+      rejectFirstRequest(new Error('Stale request failed'));
+    });
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
   it('renders the optional badge', async () => {
-    const { getByTestId, getByText } = render();
+    const { getByTestId, getByText } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -103,7 +167,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the title and description', async () => {
-    const { getByText } = render();
+    const { getByText } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -117,7 +181,7 @@ describe('EnforcedSimulationsRow', () => {
   });
 
   it('renders the learn more link', async () => {
-    const { getByTestId } = render();
+    const { getByTestId } = render({ containerTypes: [] });
 
     await waitFor(() => {
       expect(
@@ -170,6 +234,28 @@ describe('EnforcedSimulationsRow', () => {
       expect.any(String),
       [],
     );
+  });
+
+  it('keeps the row available when a toggle update fails', async () => {
+    jest
+      .mocked(applyTransactionContainersExisting)
+      .mockRejectedValueOnce(new Error('Toggle update failed'));
+
+    const { getByTestId } = render({
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    const input = await waitFor(() =>
+      getByTestId('enforced-simulations-toggle-input'),
+    );
+    input.click();
+
+    await waitFor(() => {
+      expect(getByTestId('enforced-simulations-row')).toBeInTheDocument();
+      expect(
+        getByTestId('enforced-simulations-toggle-input'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('shows a loading spinner while the container types are updating', async () => {

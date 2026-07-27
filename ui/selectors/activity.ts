@@ -28,7 +28,6 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
-import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
@@ -66,9 +65,6 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
-
-const selectIsHardwareWallet = (state: MetaMaskReduxState) =>
-  isHardwareWallet(state as never);
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -423,7 +419,6 @@ export const selectLocalActivityItems = createSelector(
   getNetworkConfigurationsByChainId,
   selectEvmAddress,
   getTokensControllerAllTokens,
-  selectIsHardwareWallet,
   (
     transactionGroups,
     getBridgeHistory,
@@ -431,7 +426,6 @@ export const selectLocalActivityItems = createSelector(
     networkConfigurationsByChainId,
     evmAddress,
     allTokens,
-    isHardwareWalletAccount,
   ) => {
     const selectedAddress = evmAddress?.toLowerCase();
 
@@ -530,9 +524,7 @@ export const selectLocalActivityItems = createSelector(
           transactionGroup.initialTransaction,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
-        const fees = getLocalTransactionFees(transactionGroup, {
-          isHardwareWalletAccount,
-        });
+        const fees = getLocalTransactionFees(transactionGroup);
 
         const prepared = {
           ...transactionGroup,
