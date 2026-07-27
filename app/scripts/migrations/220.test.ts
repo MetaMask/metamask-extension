@@ -69,7 +69,7 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.has('MetaMetricsController')).toBe(true);
   });
 
-  it('sets consentDecisionMade=false when the user opted out', async () => {
+  it('sets consentDecisionMade=false when the user is undecided', async () => {
     const oldStorage: VersionedData = {
       meta: { version: OLD_VERSION },
       data: {
@@ -86,6 +86,27 @@ describe(`migration #${VERSION}`, () => {
       unknown
     >;
     expect(ac.consentDecisionMade).toBe(false);
+    expect(ac.optedIn).toBe(false);
+  });
+
+  it('sets consentDecisionMade=true when the user opted out', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        MetaMetricsController: { completedMetaMetricsOnboarding: true },
+        AnalyticsController: { analyticsId: '0xabc123', optedIn: false },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    await migrate(versionedData, new Set<string>());
+
+    const ac = versionedData.data.AnalyticsController as Record<
+      string,
+      unknown
+    >;
+    expect(ac.consentDecisionMade).toBe(true);
+    expect(ac.optedIn).toBe(false);
   });
 
   it('transforms a normal buffered event into a single preConsentEventQueue entry', async () => {
