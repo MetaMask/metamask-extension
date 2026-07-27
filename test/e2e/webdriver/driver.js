@@ -286,7 +286,8 @@ class Driver {
 
       const evaluationResult = evaluationResponse?.result ?? {};
       if (evaluationResult.exceptionDetails) {
-        const { description } = evaluationResult.exceptionDetails.exception ?? {};
+        const { description } =
+          evaluationResult.exceptionDetails.exception ?? {};
         throw new Error(
           description ??
             evaluationResult.exceptionDetails.text ??
