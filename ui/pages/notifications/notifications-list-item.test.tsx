@@ -1,6 +1,10 @@
 import React from 'react';
 import { fireEvent, screen, within } from '@testing-library/react';
-import { processNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  processNotification,
+  TRIGGER_TYPES,
+  type INotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { createMockNotificationEthSent } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -48,7 +52,7 @@ describe('NotificationsListItem', () => {
   const notification = {
     ...processNotification(createMockNotificationEthSent()),
     isRead: false,
-  };
+  } as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
 
   beforeEach(() => {
     jest.clearAllMocks();
