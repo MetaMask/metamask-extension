@@ -1,147 +1,152 @@
-import { strict as assert } from 'assert';
-import { By, WebElement } from 'selenium-webdriver';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
-import { veryLargeDelayMs } from '../../../helpers';
-import NetworkManager from '../network-manager';
-import HomePage from './homepage';
+import { strict as assert } from "assert";
+import { By, WebElement } from "selenium-webdriver";
+import { NETWORK_TO_NAME_MAP } from "../../../../../shared/constants/network";
+import { veryLargeDelayMs } from "../../../helpers";
+import NetworkManager from "../network-manager";
+import HomePage from "./homepage";
+
+const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
+  BAT: "eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+  CHAI: "eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215",
+  CHAIN: "eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4",
+  CHANGE: "eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754",
+  DAI: "eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f",
+  "MUSICAL TOKEN": "eip155:1/erc20:0x0994206dfe8de6ec6920ff4d779b0d950605fb53",
+  MUSD: "eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA",
+};
 
 class TokensTab extends HomePage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly assetPriceInDetailsModal =
-    '[data-testid="asset-hovered-price"]';
+  private readonly assetPriceInDetailsModal = '[data-testid="asset-hovered-price"]';
 
-  private readonly assetMarketCapInDetailsModal =
-    '[data-testid="asset-market-cap"]';
+  private readonly assetMarketCapInDetailsModal = '[data-testid="asset-market-cap"]';
 
-  private readonly confirmImportTokenButton =
-    '[data-testid="import-tokens-modal-import-button"]';
+  private readonly confirmImportTokenButton = '[data-testid="import-tokens-modal-import-button"]';
 
   private readonly confirmImportTokenMessage = {
-    text: 'Would you like to import this token?',
-    tag: 'p',
+    text: "Would you like to import this token?",
+    tag: "p",
   };
-
-  private readonly currentNetworkOption =
-    '[data-testid="network-filter-current__button"]';
 
   private readonly customNetworkSelectedOption = (networkName: string) => {
     return {
-      css: '.dropdown-editor__item-dropdown',
+      css: ".dropdown-editor__item-dropdown",
       text: networkName,
     };
   };
 
-  private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
+  private readonly customTokenModalOption = '[data-testid="import-tokens-modal-custom-token-tab"]';
 
-  private readonly customTokenModalOption =
-    '[data-testid="import-tokens-modal-custom-token-tab"]';
-
-  private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
-
-  private readonly hideTokenConfirmationButton =
-    '[data-testid="hide-token-confirmation__hide"]';
-
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
-  };
-
-  private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
+  private readonly importTokenModalTitle = { text: "Import tokens", tag: "h4" };
 
   private readonly importTokensButton = '[data-testid="importTokens-button"]';
 
   private readonly importTokensLoading = {
-    testId: 'import-tokens-loading',
+    testId: "import-tokens-loading",
   };
 
-  private readonly importTokensNextButton =
-    '[data-testid="import-tokens-button-next"]';
+  private readonly importTokensNextButton = '[data-testid="import-tokens-button-next"]';
+
+  private readonly currentNetworkOption = '[data-testid="network-filter-current__button"]';
+
+  private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
+
+  private readonly customTokenImportAddressInput =
+    '[data-testid="custom-token-import-address-input"]';
+
+  private readonly customTokenImportDecimalInput =
+    '[data-testid="custom-token-import-decimal-input"]';
+
+  private readonly customTokenImportNetworkSelector = '[data-testid="network-selector"]';
+
+  private readonly customTokenImportPage = '[data-testid="custom-token-import-page"]';
+
+  private readonly customTokenImportSubmitButton =
+    '[data-testid="custom-token-import-submit-button"]';
+
+  private readonly customTokenImportSymbolInput =
+    '[data-testid="custom-token-import-symbol-input"]';
+
+  private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
+
+  private readonly hideTokenConfirmationButton = '[data-testid="hide-token-confirmation__hide"]';
+
+  private readonly hideTokenConfirmationModalTitle = {
+    text: "Hide token",
+    css: ".hide-token-confirmation__title",
+  };
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
-  private readonly lowValueAssetsToggle =
-    '[data-testid="low-value-assets-toggle"]';
+  private readonly lowValueAssetsToggle = '[data-testid="low-value-assets-toggle"]';
 
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly multichainTokenListButton = {
-    testId: 'multichain-token-list-button',
+    testId: "multichain-token-list-button",
   };
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
-  private readonly sortByAlphabetically =
-    '[data-testid="sortByAlphabetically"]';
+  private readonly sortByAlphabetically = '[data-testid="sortByAlphabetically"]';
 
-  private readonly sortByDecliningBalance =
-    '[data-testid="sortByDecliningBalance"]';
+  private readonly sortByDecliningBalance = '[data-testid="sortByDecliningBalance"]';
 
-  private readonly sortByPopoverToggle =
-    '[data-testid="sort-by-popover-toggle"]';
+  private readonly sortByPopoverToggle = '[data-testid="sort-by-popover-toggle"]';
 
   private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
-  private readonly coinOverviewSendButton =
-    '[data-testid="coin-overview-send"]';
+  private readonly coinOverviewSendButton = '[data-testid="coin-overview-send"]';
 
-  private readonly coinOverviewSwapButton =
-    '[data-testid="coin-overview-swap"]';
+  private readonly coinOverviewSwapButton = '[data-testid="coin-overview-swap"]';
 
-  private readonly tokenFiatAmount =
-    '[data-testid="multichain-token-list-item-secondary-value"]';
+  private readonly tokenFiatAmount = '[data-testid="multichain-token-list-item-secondary-value"]';
 
   private readonly selectedNetwork = (networkName: string) => {
     return {
-      testId: 'test-import-tokens-drop-down-custom-import',
+      testId: "test-import-tokens-drop-down-custom-import",
       text: networkName,
     };
   };
 
-  private readonly tokenAddressInput =
-    '[data-testid="import-tokens-modal-custom-address"]';
+  private readonly tokenAddressInput = '[data-testid="import-tokens-modal-custom-address"]';
 
-  private readonly tokenAmountValue =
-    '[data-testid="multichain-token-list-item-value"]';
+  private readonly tokenAmountValue = '[data-testid="multichain-token-list-item-value"]';
 
   private readonly tokenImportedSuccessMessage = {
-    text: 'Token imported',
-    tag: 'h6',
+    text: "Token imported",
+    tag: "h6",
   };
 
-  private readonly tokenAddressInDetails =
-    '[data-testid="address-copy-button-text"]';
+  private readonly tokenAddressInDetails = '[data-testid="address-copy-button-text"]';
 
-  private readonly tokenConfirmListItem =
-    '.import-tokens-modal__confirm-token-list-item-wrapper';
+  private readonly tokenConfirmListItem = ".import-tokens-modal__confirm-token-list-item-wrapper";
 
   private readonly tokenDecimalsTitle = {
-    css: '.mm-label',
-    text: 'Token decimal',
+    css: ".mm-label",
+    text: "Token decimal",
   };
 
-  private readonly tokenNameInDetails =
-    '[data-testid="multichain-token-list-item-token-name"]';
+  private readonly tokenNameInDetails = '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
 
-  private readonly tokenSearchResults = '.token-list__token_component';
+  private readonly tokenSearchResults = ".token-list__token_component";
 
-  private readonly tokenListItem =
-    '[data-testid="multichain-token-list-button"]';
+  private readonly tokenListItem = '[data-testid="multichain-token-list-button"]';
 
-  private readonly tokenOptionsButton =
-    '[data-testid="asset-list-control-bar-action-button"]';
+  private readonly tokenOptionsButton = '[data-testid="asset-list-control-bar-action-button"]';
 
   private readonly tokenSearchSelected =
-    '.token-list__tokens-container .mm-checkbox__input--checked';
+    ".token-list__tokens-container .mm-checkbox__input--checked";
 
   private readonly tokenSymbolTitle = {
-    css: '.mm-label',
-    text: 'Token symbol',
+    css: ".mm-label",
+    text: "Token symbol",
   };
 
   private tokenImportSelectNetwork(chainId: string): string {
@@ -152,35 +157,53 @@ class TokensTab extends HomePage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
+  private tokenManagementSearchToggleControl(tokenName: string): string {
+    const assetId = SEARCH_TOKEN_ASSET_IDS[tokenName.toUpperCase()];
+
+    if (!assetId) {
+      throw new Error(`No e2e token-management search asset ID for ${tokenName}`);
+    }
+
+    return `[data-testid="token-management-cell-search-${assetId.toLowerCase()}-toggle-control"]`;
+  }
+
+  private readonly tokenManagementAddCustomTokenButton =
+    '[data-testid="token-management-add-custom-token-button"]';
+
+  private readonly tokenManagementBackButton =
+    '[data-testid="token-management-header-back-button"]';
+
+  private readonly tokenManagementCustomTokenSuccessToast =
+    '[data-testid="token-management-custom-token-success-toast"]';
+
+  private readonly tokenManagementPage = '[data-testid="token-management-page"]';
+
+  private readonly tokenManagementSearchInput = '[data-testid="token-management-search-input"]';
+
   private readonly tokenChainDropdown =
     '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
 
-  private readonly tokenSymbolInput =
-    '[data-testid="import-tokens-modal-custom-symbol"]';
+  private readonly tokenSymbolInput = '[data-testid="import-tokens-modal-custom-symbol"]';
 
-  private readonly tokenDecimalsInput =
-    '[data-testid="import-tokens-modal-custom-decimals"]';
+  private readonly tokenDecimalsInput = '[data-testid="import-tokens-modal-custom-decimals"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
 
-  private readonly tokenName =
-    '[data-testid="multichain-token-list-item-token-name"]';
+  private readonly tokenName = '[data-testid="multichain-token-list-item-token-name"]';
 
-  private readonly tokenIncreaseDecreaseValue =
-    '[data-testid="token-increase-decrease-value"]';
+  private readonly tokenIncreaseDecreaseValue = '[data-testid="token-increase-decrease-value"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
-    text: '—',
+    text: "—",
   };
 
-  private readonly modalCloseButton =
-    '[data-testid="modal-header-close-button"]';
+  private readonly modalCloseButton = '[data-testid="modal-header-close-button"]';
 
   private readonly refreshErc20Tokens = {
-    testId: 'refreshList',
+    testId: "refreshList",
   };
 
   async clickNetworkSelectorDropdown(): Promise<void> {
@@ -195,7 +218,7 @@ class TokensTab extends HomePage {
       async () => {
         const toggle = await this.driver.findElement(this.sortByPopoverToggle);
         const label = await toggle.getText();
-        return label !== 'Popular networks';
+        return label !== "Popular networks";
       },
       { timeout: 5000, interval: 100 },
     );
@@ -207,7 +230,7 @@ class TokensTab extends HomePage {
     await this.driver.waitUntil(
       async () => {
         const label = await this.getNetworksFilterLabel();
-        return label !== 'Popular networks';
+        return label !== "Popular networks";
       },
       { timeout: 5000, interval: 100 },
     );
@@ -223,7 +246,7 @@ class TokensTab extends HomePage {
   }
 
   async clickMultichainTokenListButton(): Promise<void> {
-    console.log('Clicking on multichain token list button');
+    console.log("Clicking on multichain token list button");
     await this.driver.clickElement(this.multichainTokenListButton);
   }
 
@@ -231,9 +254,14 @@ class TokensTab extends HomePage {
    * Dismisses the "Token imported" success message by clicking the close button
    */
   async dismissTokenImportedMessage(): Promise<void> {
-    console.log('Dismissing token imported success message');
-    await this.driver.clickElement(this.tokenImportedMessageCloseButton);
+    console.log("Dismissing token imported success message");
+    await this.driver.clickElementSafe(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  private async returnFromTokenManagementToHome(): Promise<void> {
+    await this.driver.clickElement(this.tokenManagementBackButton);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
   }
 
   /**
@@ -257,11 +285,14 @@ class TokensTab extends HomePage {
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
+  private async clickTokenManagementToggle(toggleControlSelector: string) {
+    await this.driver.clickElementSafe(`${toggleControlSelector} .toggle-button--off`);
+    await this.driver.waitForSelector(`${toggleControlSelector} .toggle-button--on`);
+  }
+
   async getCurrentNetworksOptionTotal(): Promise<string> {
     console.log(`Retrieving the "Current network" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.currentNetworksTotal,
-    );
+    const allNetworksValueElement = await this.driver.findElement(this.currentNetworksTotal);
     const value = await allNetworksValueElement.getText();
     return value;
   }
@@ -284,15 +315,13 @@ class TokensTab extends HomePage {
     return assets.length;
   }
 
-  async sortTokenList(
-    sortBy: 'alphabetically' | 'decliningBalance',
-  ): Promise<void> {
+  async sortTokenList(sortBy: "alphabetically" | "decliningBalance"): Promise<void> {
     console.log(`Sorting the token list by ${sortBy}`);
     await this.driver.clickElement(this.sortByPopoverToggle);
-    if (sortBy === 'alphabetically') {
+    if (sortBy === "alphabetically") {
       await this.driver.clickElement(this.sortByAlphabetically);
       await this.driver.assertElementNotPresent(this.lowValueAssetsToggle);
-    } else if (sortBy === 'decliningBalance') {
+    } else if (sortBy === "decliningBalance") {
       await this.driver.clickElement(this.sortByDecliningBalance);
     }
   }
@@ -304,22 +333,20 @@ class TokensTab extends HomePage {
    */
   async hideToken(tokenName: string): Promise<void> {
     console.log(`Hide token ${tokenName} on homepage`);
-    await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.clickElement({ text: tokenName, tag: "p" });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
     await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.hideTokenConfirmationButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.hideTokenConfirmationButton);
   }
 
   async clickTokenOptionsButton(): Promise<void> {
-    console.log('Click the token options button');
+    console.log("Click the token options button");
     await this.driver.clickElement(this.tokenOptionsButton);
   }
 
   async clickManageTokens(): Promise<void> {
-    console.log('Click Manage tokens in the token options menu');
+    console.log("Click Manage tokens in the token options menu");
     await this.driver.clickElement(this.manageTokensButton);
   }
 
@@ -334,22 +361,112 @@ class TokensTab extends HomePage {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage);
+    await this.driver.clickElement(this.tokenManagementAddCustomTokenButton);
+    await this.driver.waitForSelector(this.customTokenImportPage);
+    await this.driver.clickElement(this.customTokenImportNetworkSelector);
+    await this.driver.clickElementAndWaitToDisappear(
+      `[data-testid="network-list-item-${chainId}"]`,
+    );
+
+    await this.driver.waitForSelector(this.customTokenImportAddressInput);
+
+    await this.driver.fill(this.customTokenImportAddressInput, tokenAddress);
+    await this.driver.waitForSelector(this.customTokenImportSymbolInput);
+
+    if (symbol) {
+      // Do not fill until the button is disabled because metadata lookup can
+      // re-render and clear the field in Chromium e2e.
+      await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
+        state: "disabled",
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.customTokenImportSymbolInput, symbol);
+    }
+
+    if (decimals) {
+      await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
+        state: "disabled",
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.customTokenImportDecimalInput, decimals);
+    }
+
+    await this.driver.waitForSelector(this.customTokenImportSubmitButton, {
+      state: "enabled",
+    });
+    await this.driver.clickElementAndWaitToDisappear(this.customTokenImportSubmitButton, 20000);
+
+    await this.driver.waitForSelector(this.tokenManagementCustomTokenSuccessToast);
+    await this.returnFromTokenManagementToHome();
+  }
+
+  async importTokenBySearch({
+    tokenName,
+    networkName,
+  }: {
+    tokenName: string;
+    networkName: string;
+  }) {
+    console.log(`Import token ${tokenName} on homepage by search`);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage);
+    await this.driver.waitForSelector(this.tokenManagementSearchInput);
+    // Keep paste to avoid flakiness because fill each word separately will cause the search to be triggered multiple times,
+    // and the list will be re-rendered multiple times, leading to flakiness.
+    await this.driver.pasteIntoField(this.tokenManagementSearchInput, tokenName);
+    const toggleControl = this.tokenManagementSearchToggleControl(tokenName);
+    await this.clickTokenManagementToggle(toggleControl);
+    await this.returnFromTokenManagementToHome();
+  }
+
+  async importMultipleTokensBySearch(tokenNames: string[]) {
+    console.log(`Importing tokens ${tokenNames.join(", ")} on homepage by search`);
+    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.manageTokensButton);
+    await this.driver.waitForSelector(this.tokenManagementPage, {
+      waitAtLeastGuard: 2000,
+    });
+
+    for (const name of tokenNames) {
+      await this.driver.pasteIntoField(this.tokenManagementSearchInput, name);
+      const toggleControl = this.tokenManagementSearchToggleControl(name);
+      await this.clickTokenManagementToggle(toggleControl);
+    }
+    await this.returnFromTokenManagementToHome();
+  }
+
+  /**
+   * Imports a custom token via the Import tokens modal confirm flow.
+   * Prefer this for new assets E2E coverage; existing tests use
+   * `importCustomTokenByChain` (Manage tokens / custom token import page).
+   */
+  async importCustomTokenByChainViaImportModal(
+    chainId: string,
+    tokenAddress: string,
+    symbol?: string,
+    decimals?: string,
+  ): Promise<void> {
+    console.log(`Creating custom token ${symbol} on homepage via import modal`);
+    await this.driver.waitForSelector(this.multichainTokenListButton, {
+      waitAtLeastGuard: 1000,
+    });
+    await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.clickElement(this.tokenChainDropdown);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.tokenImportSelectNetwork(chainId),
-    );
-    const networkName =
-      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
+    await this.driver.clickElementAndWaitToDisappear(this.tokenImportSelectNetwork(chainId));
+    const networkName = NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
 
     if (!networkName) {
       throw new Error(`Network name not found for chain ID ${chainId}`);
     }
 
-    await this.driver.waitForSelector(
-      this.customNetworkSelectedOption(networkName),
-    );
+    await this.driver.waitForSelector(this.customNetworkSelectedOption(networkName));
     // on chrome the test is going to fast so this can fail without a wait
     await this.driver.delay(1000);
     await this.driver.waitForSelector(this.customTokenModalOption);
@@ -364,7 +481,7 @@ class TokensTab extends HomePage {
     if (symbol) {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
       await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
+        state: "disabled",
         waitAtLeastGuard: 1000,
       });
       await this.driver.fill(this.tokenSymbolInput, symbol);
@@ -372,7 +489,7 @@ class TokensTab extends HomePage {
 
     if (decimals) {
       await this.driver.waitForSelector(this.importTokensNextButton, {
-        state: 'disabled',
+        state: "disabled",
         waitAtLeastGuard: 1000,
       });
       await this.driver.fill(this.tokenDecimalsInput, decimals);
@@ -381,25 +498,27 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
-    // Same readiness condition as `importTokenBySearch`: confirm copy means
+    // Same readiness condition as `importTokenBySearchViaImportModal`: confirm copy means
     // `pendingTokens` is populated and the confirm step finished rendering before Import.
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
-      20000,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.confirmImportTokenButton, 20000);
 
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
-  async importTokenBySearch({
+  /**
+   * Imports a token by search via the Import tokens modal confirm flow.
+   * Prefer this for new assets E2E coverage; existing tests use
+   * `importTokenBySearch` (Manage tokens page).
+   */
+  async importTokenBySearchViaImportModal({
     tokenName,
     networkName,
   }: {
     tokenName: string;
     networkName: string;
   }) {
-    console.log(`Import token ${tokenName} on homepage by search`);
+    console.log(`Import token ${tokenName} on homepage by search via import modal`);
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
@@ -414,20 +533,21 @@ class TokensTab extends HomePage {
     await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
-    await this.driver.waitForElementToStopMoving({ text: tokenName, tag: 'p' });
-    await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.waitForElementToStopMoving({ text: tokenName, tag: "p" });
+    await this.driver.clickElement({ text: tokenName, tag: "p" });
     await this.driver.waitForSelector(this.tokenSearchSelected);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.confirmImportTokenButton);
   }
 
-  async importMultipleTokensBySearch(tokenNames: string[]) {
-    console.log(
-      `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
-    );
+  /**
+   * Imports multiple tokens by search via the Import tokens modal confirm flow.
+   * Prefer this for new assets E2E coverage; existing tests use
+   * `importMultipleTokensBySearch` (Manage tokens page).
+   */
+  async importMultipleTokensBySearchViaImportModal(tokenNames: string[]) {
+    console.log(`Importing tokens ${tokenNames.join(", ")} on homepage by search via import modal`);
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
@@ -438,16 +558,14 @@ class TokensTab extends HomePage {
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
       // Wait for the async search results to fully settle before interacting,
-      // mirroring the guard in importTokenBySearch.
+      // mirroring the guard in importTokenBySearchViaImportModal.
       await this.waitUntilTokenSearchMatch(1);
-      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
-      await this.driver.clickElement({ text: name, tag: 'p' });
+      await this.driver.waitForElementToStopMoving({ text: name, tag: "p" });
+      await this.driver.clickElement({ text: name, tag: "p" });
       await this.driver.waitForSelector(this.tokenSearchSelected);
     }
     await this.driver.clickElement(this.importTokensNextButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.confirmImportTokenButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.confirmImportTokenButton);
   }
 
   /**
@@ -481,23 +599,21 @@ class TokensTab extends HomePage {
    * list to a single network.
    */
   async selectOnlyTronInNetworkFilter(): Promise<void> {
-    console.log('Selecting only Tron in the asset list network filter');
+    console.log("Selecting only Tron in the asset list network filter");
     await this.openNetworksFilter();
     const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
-    await networkManager.selectNetworkByNameWithWait('Tron');
+    await networkManager.selectTab("Popular");
+    await networkManager.selectNetworkByNameWithWait("Tron");
   }
 
   /**
    * Opens the Network Manager modal and selects all popular networks.
    */
   async selectAllNetworksInNetworkFilter(): Promise<void> {
-    console.log(
-      'Selecting all popular networks in the asset list network filter',
-    );
+    console.log("Selecting all popular networks in the asset list network filter");
     await this.openNetworksFilter();
     const networkManager = new NetworkManager(this.driver);
-    await networkManager.selectTab('Popular');
+    await networkManager.selectTab("Popular");
     await networkManager.selectAllNetworks();
   }
 
@@ -540,10 +656,10 @@ class TokensTab extends HomePage {
   async checkSendAndSwapButtonsArePresentAndEnabled(): Promise<void> {
     console.log(`Verify the Send and Swap buttons are present and enabled`);
     await this.driver.waitForSelector(this.coinOverviewSendButton, {
-      state: 'enabled',
+      state: "enabled",
     });
     await this.driver.waitForSelector(this.coinOverviewSwapButton, {
-      state: 'enabled',
+      state: "enabled",
     });
   }
 
@@ -553,9 +669,7 @@ class TokensTab extends HomePage {
   }
 
   async checkNetworkFilterText(expectedText: string): Promise<void> {
-    console.log(
-      `Verify the displayed account label in header is: ${expectedText}`,
-    );
+    console.log(`Verify the displayed account label in header is: ${expectedText}`);
     await this.driver.waitForSelector({
       css: this.networksToggle,
       text: expectedText,
@@ -610,7 +724,7 @@ class TokensTab extends HomePage {
    * and clicking the refresh button.
    */
   async refreshErc20TokenList(): Promise<void> {
-    console.log('Refresh the ERC20 token list');
+    console.log("Refresh the ERC20 token list");
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.refreshErc20Tokens);
   }
@@ -621,16 +735,13 @@ class TokensTab extends HomePage {
    * @param tokenName - The name of the token to check for.
    * @param tokenAmount - The token amount to be checked for.
    */
-  async checkTokenAmountInTokenDetailsModal(
-    tokenName: string,
-    tokenAmount: string,
-  ): Promise<void> {
+  async checkTokenAmountInTokenDetailsModal(tokenName: string, tokenAmount: string): Promise<void> {
     console.log(
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
-      testId: 'multichain-token-list-item-token-name',
+      testId: "multichain-token-list-item-token-name",
       text: tokenName,
     });
     await this.driver.waitForSelector({
@@ -639,12 +750,8 @@ class TokensTab extends HomePage {
     });
   }
 
-  async checkTokenFiatAmountIsDisplayed(
-    tokenFiatAmount: string,
-  ): Promise<void> {
-    console.log(
-      `Waiting for token fiat amount ${tokenFiatAmount} to be displayed`,
-    );
+  async checkTokenFiatAmountIsDisplayed(tokenFiatAmount: string): Promise<void> {
+    console.log(`Waiting for token fiat amount ${tokenFiatAmount} to be displayed`);
     await this.driver.waitForSelector({
       css: this.tokenFiatAmount,
       text: tokenFiatAmount,
@@ -691,19 +798,13 @@ class TokensTab extends HomePage {
     }
   }
 
-  async checkTokenRowContainsAllText(
-    tokenName: string,
-    expectedTexts: string[],
-  ): Promise<void> {
+  async checkTokenRowContainsAllText(tokenName: string, expectedTexts: string[]): Promise<void> {
     for (const expectedText of expectedTexts) {
       await this.checkTokenRowContainsText(tokenName, expectedText);
     }
   }
 
-  async checkTokenRowContainsText(
-    tokenName: string,
-    expectedText: string,
-  ): Promise<void> {
+  async checkTokenRowContainsText(tokenName: string, expectedText: string): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
     const row = await this.findTokenRowByName(tokenName);
     assert.ok(
@@ -715,11 +816,8 @@ class TokensTab extends HomePage {
   async checkTokenRowHasVisibleLogo(tokenName: string): Promise<void> {
     console.log(`Checking token row "${tokenName}" has a visible logo`);
     const row = await this.findTokenRowByName(tokenName);
-    const logo = await row.findElement(By.css('.mm-avatar-token'));
-    assert.ok(
-      await logo.isDisplayed(),
-      `Expected "${tokenName}" row to display a token logo`,
-    );
+    const logo = await row.findElement(By.css(".mm-avatar-token"));
+    assert.ok(await logo.isDisplayed(), `Expected "${tokenName}" row to display a token logo`);
   }
 
   /**
@@ -729,9 +827,7 @@ class TokensTab extends HomePage {
    * @param symbols - Token name texts to require, in any order.
    */
   async checkOnlyAssetsArePresent(symbols: string[]): Promise<void> {
-    console.log(
-      `Checking only these assets are present: ${symbols.join(', ')}`,
-    );
+    console.log(`Checking only these assets are present: ${symbols.join(", ")}`);
     await this.expandLowValueAssetsIfPresent();
     for (const symbol of symbols) {
       await this.driver.waitForSelector({
@@ -747,12 +843,8 @@ class TokensTab extends HomePage {
    *
    * @param expectedCount - Number of tokens in the collapsed low-value section.
    */
-  async checkLowValueAssetsToggleIsPresent(
-    expectedCount: number,
-  ): Promise<void> {
-    console.log(
-      `Checking low-value assets toggle is present with count ${expectedCount}`,
-    );
+  async checkLowValueAssetsToggleIsPresent(expectedCount: number): Promise<void> {
+    console.log(`Checking low-value assets toggle is present with count ${expectedCount}`);
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
       text: `Low value tokens (${expectedCount})`,
@@ -765,9 +857,7 @@ class TokensTab extends HomePage {
    * @param expectedNumber - Visible token rows in the main list.
    */
   async checkCollapsedTokenItemNumber(expectedNumber: number): Promise<void> {
-    console.log(
-      `Waiting for ${expectedNumber} collapsed token items to be displayed`,
-    );
+    console.log(`Waiting for ${expectedNumber} collapsed token items to be displayed`);
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
@@ -819,9 +909,7 @@ class TokensTab extends HomePage {
     position: number;
     tokenName: string;
   }): Promise<void> {
-    console.log(
-      `Waiting for token at position ${position} to be "${tokenName}"`,
-    );
+    console.log(`Waiting for token at position ${position} to be "${tokenName}"`);
     await this.expandLowValueAssetsIfPresent();
     const index = position - 1;
     await this.driver.waitUntil(
@@ -850,9 +938,7 @@ class TokensTab extends HomePage {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
     }, 10000);
-    console.log(
-      `Expected number of token items ${expectedNumber} is displayed.`,
-    );
+    console.log(`Expected number of token items ${expectedNumber} is displayed.`);
   }
 
   /**
@@ -861,14 +947,9 @@ class TokensTab extends HomePage {
    * @param address - The token address to check
    * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
    */
-  async checkTokenGeneralChangePercentage(
-    address: string,
-    expectedChange: string,
-  ): Promise<void> {
+  async checkTokenGeneralChangePercentage(address: string, expectedChange: string): Promise<void> {
     try {
-      console.log(
-        `Checking token general change percentage for address ${address}`,
-      );
+      console.log(`Checking token general change percentage for address ${address}`);
       await this.expandLowValueAssetsIfPresent();
       await this.driver.waitForSelector({
         css: this.tokenPercentage(address),
@@ -886,12 +967,8 @@ class TokensTab extends HomePage {
    *
    * @param address - The token address to check
    */
-  async checkTokenGeneralChangePercentageNotPresent(
-    address: string,
-  ): Promise<void> {
-    console.log(
-      `Checking token general change percentage is not present for address ${address}`,
-    );
+  async checkTokenGeneralChangePercentageNotPresent(address: string): Promise<void> {
+    console.log(`Checking token general change percentage is not present for address ${address}`);
     const isPresent = await this.driver.isElementPresent({
       css: this.tokenPercentage(address),
     });
@@ -907,22 +984,16 @@ class TokensTab extends HomePage {
    *
    * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
    */
-  async checkTokenGeneralChangeValue(
-    expectedChangeValue: string,
-  ): Promise<void> {
+  async checkTokenGeneralChangeValue(expectedChangeValue: string): Promise<void> {
     try {
       console.log(`Checking token general change value ${expectedChangeValue}`);
       await this.driver.waitForSelector({
         css: this.tokenIncreaseDecreaseValue,
         text: expectedChangeValue,
       });
-      console.log(
-        `Token general change value ${expectedChangeValue} was found`,
-      );
+      console.log(`Token general change value ${expectedChangeValue} was found`);
     } catch (error) {
-      throw new Error(
-        `Token general change value ${expectedChangeValue} not found`,
-      );
+      throw new Error(`Token general change value ${expectedChangeValue} not found`);
     }
   }
 
@@ -967,10 +1038,7 @@ class TokensTab extends HomePage {
    * @param tokenAddress - The expected token address
    * @throws Error if the token details don't match the expected values
    */
-  async checkTokenSymbolAndAddressDetails(
-    symbol: string,
-    tokenAddress: string,
-  ): Promise<void> {
+  async checkTokenSymbolAndAddressDetails(symbol: string, tokenAddress: string): Promise<void> {
     console.log(`Verifying token details for ${symbol}`);
 
     await this.driver.waitForSelector({
@@ -978,10 +1046,7 @@ class TokensTab extends HomePage {
       text: symbol,
     });
 
-    const expectedAddressFormat = `${tokenAddress.slice(
-      0,
-      7,
-    )}...${tokenAddress.slice(37)}`;
+    const expectedAddressFormat = `${tokenAddress.slice(0, 7)}...${tokenAddress.slice(37)}`;
 
     await this.driver.waitForSelector({
       css: this.tokenAddressInDetails,
@@ -999,7 +1064,7 @@ class TokensTab extends HomePage {
     try {
       await this.driver.waitForSelector(this.tokenListItem);
     } catch (e) {
-      console.log('Token list is not displayed', e);
+      console.log("Token list is not displayed", e);
       throw e;
     }
   }
@@ -1011,10 +1076,7 @@ class TokensTab extends HomePage {
    * @param tokenName - The name of the token to wait for
    * @param timeout
    */
-  async waitForTokenToBeDisplayed(
-    tokenName: string,
-    timeout: number = 10000,
-  ): Promise<void> {
+  async waitForTokenToBeDisplayed(tokenName: string, timeout: number = 10000): Promise<void> {
     await this.driver.waitForSelector(
       {
         css: this.tokenListItem,
@@ -1050,21 +1112,16 @@ class TokensTab extends HomePage {
     );
   }
 
-  async selectOnlyNetworkInFilter(
-    networkName: string,
-    tab: string = 'Popular',
-  ): Promise<void> {
-    console.log(
-      `Selecting only ${networkName} in the asset list network filter`,
-    );
+  async selectOnlyNetworkInFilter(networkName: string, tab: string = "Popular"): Promise<void> {
+    console.log(`Selecting only ${networkName} in the asset list network filter`);
     await this.openNetworksFilter();
     const networkManager = new NetworkManager(this.driver);
     await networkManager.selectTab(tab);
     await networkManager.selectNetworkByNameWithWait(networkName);
   }
 
-  async selectAllNetworksInFilter(tab: string = 'Popular'): Promise<void> {
-    console.log('Selecting all networks in the asset list network filter');
+  async selectAllNetworksInFilter(tab: string = "Popular"): Promise<void> {
+    console.log("Selecting all networks in the asset list network filter");
     await this.openNetworksFilter();
     const networkManager = new NetworkManager(this.driver);
     await networkManager.selectTab(tab);
