@@ -6,6 +6,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { runDummyPackage } from 'dummy-package';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -397,6 +398,13 @@ function setupStateHooks(store) {
     ) {
       await actions.captureTestBackgroundError(msg);
     };
+    /**
+     * The following stateHook is a method intended to verify that LavaMoat is
+     * applied correctly. If this throws, the protection is working as expected.
+     * If it does not throw, it indicates that LavaMoat is not protecting the
+     * app as expected.
+     */
+    window.stateHooks.throwLavamoatError = () => runDummyPackage();
   }
 
   /**

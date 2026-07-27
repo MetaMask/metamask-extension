@@ -203,6 +203,101 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
+  async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
+    const cdpConnection = await this.driver.createCDPConnection('browser');
+    let attachedSessionId = null;
+    let targetInfo;
+
+    try {
+      await this.waitUntil(
+        async () => {
+          const { result } = await cdpConnection.send('Target.getTargets');
+          const targetInfos = result?.targetInfos ?? [];
+          targetInfo = targetInfos.find(
+            (info) =>
+              info.type === 'service_worker' &&
+              typeof info.url === 'string' &&
+              info.url.startsWith(this.extensionUrl),
+          );
+          return Boolean(targetInfo);
+        },
+        { interval: 250, timeout },
+      );
+    } catch (error) {
+      const { result } = await cdpConnection.send('Target.getTargets');
+      const knownTargets = result?.targetInfos ?? [];
+
+      const errorMessage =
+        error instanceof Error && error.message ? `${error.message}. ` : '';
+
+      throw new Error(
+        `Failed to resolve extension service worker target for ${this.extensionUrl}. ${errorMessage}Known targets: ${JSON.stringify(knownTargets, null, 2)}`,
+      );
+    }
+
+    const { result: attachResult } = await cdpConnection.send(
+      'Target.attachToTarget',
+      {
+        targetId: targetInfo.targetId,
+        flatten: true,
+      },
+    );
+
+    attachedSessionId = attachResult?.sessionId ?? null;
+    if (!attachedSessionId) {
+      throw new Error(
+        `Failed to attach to extension service worker target ${targetInfo.targetId}`,
+      );
+    }
+
+    cdpConnection.sessionId = attachedSessionId;
+
+    return {
+      cdpConnection,
+      async closeServiceWorkerConnection() {
+        if (!attachedSessionId) {
+          return;
+        }
+
+        cdpConnection.sessionId = null;
+        try {
+          await cdpConnection.send('Target.detachFromTarget', {
+            sessionId: attachedSessionId,
+          });
+        } catch (_) {
+          // Best-effort cleanup.
+        }
+      },
+    };
+  }
+
+  async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
+    const { cdpConnection, closeServiceWorkerConnection } =
+      await this.#createServiceWorkerConnection({ timeout });
+
+    try {
+      await cdpConnection.send('Runtime.enable');
+
+      const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+        expression: `(async () => {\n${script}\n})()`,
+        awaitPromise: true,
+        returnByValue: true,
+      });
+
+      const evaluationResult = evaluationResponse?.result ?? {};
+      if (evaluationResult.exceptionDetails) {
+        throw new Error(
+          evaluationResult.exceptionDetails.text ??
+            'Runtime evaluation failed in extension service worker',
+        );
+      }
+
+      return evaluationResult.result?.value;
+    } finally {
+      await closeServiceWorkerConnection();
+    }
+  }
+
   /**
    * In web automation testing, locators are crucial commands that guide the framework to identify
    * and select HTML elements on a webpage for interaction. They play a vital role in executing various
