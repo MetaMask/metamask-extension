@@ -59,7 +59,7 @@ const QRHardwarePopover = () => {
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const [errorTitle, setErrorTitle] = useState('');
   const [errorActive, setErrorActive] = useState(false);
-  const cameraPermissionDeniedRef = useRef(false);
+  const cameraPermissionErrorCodeRef = useRef<ErrorCode | null>(null);
 
   const { txData } = useSelector(
     (state: { confirmTransaction: ConfirmTransactionSlice }) => {
@@ -80,22 +80,23 @@ const QRHardwarePopover = () => {
   }
 
   const dispatch = useDispatch();
-  const setCameraPermissionDenied = useCallback((denied: boolean) => {
-    cameraPermissionDeniedRef.current = denied;
-  }, []);
+  const setCameraPermissionErrorCode = useCallback(
+    (errorCode: ErrorCode | null) => {
+      cameraPermissionErrorCodeRef.current = errorCode;
+    },
+    [],
+  );
 
-  const getCameraPermissionDeniedError = useCallback(() => {
-    return cameraPermissionDeniedRef.current
-      ? createHardwareWalletError(
-          ErrorCode.PermissionCameraDenied,
-          HardwareWalletType.Qr,
-        )
+  const getCameraPermissionCancelError = useCallback(() => {
+    const errorCode = cameraPermissionErrorCodeRef.current;
+    return errorCode
+      ? createHardwareWalletError(errorCode, HardwareWalletType.Qr)
       : undefined;
   }, []);
 
   const walletImporterCancel = useCallback(() => {
-    dispatch(cancelQrCodeScan(getCameraPermissionDeniedError()));
-  }, [dispatch, getCameraPermissionDeniedError]);
+    dispatch(cancelQrCodeScan(getCameraPermissionCancelError()));
+  }, [dispatch, getCameraPermissionCancelError]);
 
   const signRequestCancel = useCallback(() => {
     // txData may not be populated yet if the user cancels before Redux
@@ -109,8 +110,8 @@ const QRHardwarePopover = () => {
       );
       dispatch(cancelTx(txDataRef.current));
     }
-    dispatch(cancelQrCodeScan(getCameraPermissionDeniedError()));
-  }, [dispatch, getCameraPermissionDeniedError]);
+    dispatch(cancelQrCodeScan(getCameraPermissionCancelError()));
+  }, [dispatch, getCameraPermissionCancelError]);
 
   // Error-specific title takes priority. When the child is showing error
   // content (errorActive) without a specific title, suppress the flow heading
@@ -176,14 +177,14 @@ const QRHardwarePopover = () => {
             handleCancel={walletImporterCancel}
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
-            setCameraPermissionDenied={setCameraPermissionDenied}
+            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
           />
         )}
         {activeScanRequest.type === QrScanRequestType.SIGN && (
           <QRHardwareSignRequest
             setErrorTitle={setErrorTitle}
             setErrorActive={setErrorActive}
-            setCameraPermissionDenied={setCameraPermissionDenied}
+            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
             handleCancel={signRequestCancel}
             request={activeScanRequest.request}
           />

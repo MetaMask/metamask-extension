@@ -2,6 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import type { QrSignatureRequest } from '@metamask/eth-qr-keyring';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -19,6 +20,9 @@ jest.mock('../../../../../store/actions', () => ({
 
 jest.mock('../qr-reader', () => {
   const { UrType: MockUrType } = jest.requireActual('../../base-qr-reader');
+  const { ErrorCode: MockErrorCode } = jest.requireActual(
+    '@metamask/hw-wallet-sdk',
+  );
   const MockQrReader = (props: QrReaderProps) => (
     <div data-testid="mock-qr-reader">
       <span data-testid="qr-reader-request-id">{props.requestId}</span>
@@ -44,8 +48,12 @@ jest.mock('../qr-reader', () => {
         onClick={() => props.setErrorActive(true)}
       />
       <button
-        data-testid="qr-reader-set-camera-permission-denied"
-        onClick={() => props.setCameraPermissionDenied?.(true)}
+        data-testid="qr-reader-set-camera-permission-error-code"
+        onClick={() =>
+          props.setCameraPermissionErrorCode?.(
+            MockErrorCode.PermissionCameraDenied,
+          )
+        }
       />
     </div>
   );
@@ -94,7 +102,7 @@ describe('QRHardwareSignRequest', () => {
     handleCancel: jest.fn(),
     setErrorTitle: jest.fn(),
     setErrorActive: jest.fn(),
-    setCameraPermissionDenied: jest.fn(),
+    setCameraPermissionErrorCode: jest.fn(),
   };
 
   beforeEach(() => {
@@ -260,8 +268,8 @@ describe('QRHardwareSignRequest', () => {
     });
   });
 
-  describe('setCameraPermissionDenied propagation', () => {
-    it('passes setCameraPermissionDenied through to QrReader', async () => {
+  describe('setCameraPermissionErrorCode propagation', () => {
+    it('passes setCameraPermissionErrorCode through to QrReader', async () => {
       renderWithProvider(
         <QRHardwareSignRequest {...defaultProps} />,
         buildStore(),
@@ -269,10 +277,12 @@ describe('QRHardwareSignRequest', () => {
 
       await userEvent.click(screen.getByTestId('qr-player-to-read'));
       await userEvent.click(
-        screen.getByTestId('qr-reader-set-camera-permission-denied'),
+        screen.getByTestId('qr-reader-set-camera-permission-error-code'),
       );
 
-      expect(defaultProps.setCameraPermissionDenied).toHaveBeenCalledWith(true);
+      expect(defaultProps.setCameraPermissionErrorCode).toHaveBeenCalledWith(
+        ErrorCode.PermissionCameraDenied,
+      );
     });
   });
 });

@@ -298,7 +298,10 @@ const ConnectHardwareForm = () => {
         if (deviceName === HardwareDeviceNames.qr) {
           const hwError = toHardwareWalletError(e, HardwareWalletType.Qr);
 
-          if (hwError.code === ErrorCode.PermissionCameraDenied) {
+          if (
+            hwError.code === ErrorCode.PermissionCameraDenied ||
+            hwError.code === ErrorCode.PermissionCameraPromptDismissed
+          ) {
             setError(t('youNeedToAllowCameraAccess') as string);
             return;
           }

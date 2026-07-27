@@ -68,9 +68,9 @@ import {
  * @param options0.setErrorTitle - Sets the popover title to an error-specific heading.
  * @param options0.setErrorActive - Signals the parent that BaseQrReader is
  * showing error content so the flow-specific title can be hidden.
- * @param options0.setCameraPermissionDenied - Reports whether the scanner is
- * showing a camera-permission recovery state so cancel can reject with a
- * permission-denied error.
+ * @param options0.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state so cancel can reject with the
+ * matching hardware-wallet error.
  */
 const BaseQrReader = ({
   isReadingWallet,
@@ -79,7 +79,7 @@ const BaseQrReader = ({
   handleSuccess,
   setErrorTitle,
   setErrorActive,
-  setCameraPermissionDenied,
+  setCameraPermissionErrorCode,
 }: BaseQrReaderProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -118,18 +118,15 @@ const BaseQrReader = ({
   }, [isErrorActive, setErrorActive]);
 
   // Signal camera-permission screens to the parent so modal dismiss can reject
-  // with a PermissionCameraDenied HardwareWalletError rather than a generic
-  // "Scan cancelled".
+  // with the matching HardwareWalletError (denied vs prompt dismissed) rather
+  // than a generic "Scan cancelled".
   useEffect(() => {
-    if (!setCameraPermissionDenied) {
+    if (!setCameraPermissionErrorCode) {
       return undefined;
     }
-    const denied =
-      readyState === CameraReadyState.CameraAccessNeeded ||
-      readyState === CameraReadyState.CameraAccessBlocked;
-    setCameraPermissionDenied(denied);
-    return () => setCameraPermissionDenied(false);
-  }, [readyState, setCameraPermissionDenied]);
+    setCameraPermissionErrorCode(cameraReadyStateToErrorCode(readyState));
+    return () => setCameraPermissionErrorCode(null);
+  }, [readyState, setCameraPermissionErrorCode]);
 
   // ---- MetaMetrics tracking -----------------------------------------------
 

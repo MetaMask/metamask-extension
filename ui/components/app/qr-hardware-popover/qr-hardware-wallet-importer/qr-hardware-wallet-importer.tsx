@@ -20,13 +20,14 @@ import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importe
  * @param props.handleCancel - Called when the user cancels the wallet import.
  * @param props.setErrorTitle - Sets the popover title to an error heading.
  * @param props.setErrorActive - Signals the parent that the scanner is showing error content.
- * @param props.setCameraPermissionDenied - Signals the parent that camera permission was denied.
+ * @param props.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state.
  */
 const QRHardwareWalletImporter = ({
   handleCancel,
   setErrorTitle,
   setErrorActive,
-  setCameraPermissionDenied,
+  setCameraPermissionErrorCode,
 }: QRHardwareWalletImporterProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const QRHardwareWalletImporter = ({
       handleSuccess={handleSuccess}
       setErrorTitle={setErrorTitle}
       setErrorActive={setErrorActive}
-      setCameraPermissionDenied={setCameraPermissionDenied}
+      setCameraPermissionErrorCode={setCameraPermissionErrorCode}
     />
   );
 };

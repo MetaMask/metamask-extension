@@ -23,14 +23,15 @@ import {
  * @param props.handleCancel - Called when the user cancels.
  * @param props.setErrorTitle - Sets the popover error heading.
  * @param props.setErrorActive - Signals the parent that the scanner is showing error content.
- * @param props.setCameraPermissionDenied - Signals the parent that camera permission was denied.
+ * @param props.setCameraPermissionErrorCode - Reports the camera-permission
+ * ErrorCode for the current recovery state.
  */
 const QRHardwareSignRequest = ({
   request,
   handleCancel,
   setErrorTitle,
   setErrorActive,
-  setCameraPermissionDenied,
+  setCameraPermissionErrorCode,
 }: QRHardwareSignRequestProps) => {
   const dispatch = useDispatch();
   const [status, setStatus] = useState<FlowStatusValue>(FlowStatus.Play);
@@ -66,7 +67,7 @@ const QRHardwareSignRequest = ({
       requestId={request.requestId}
       setErrorTitle={setErrorTitle}
       setErrorActive={setErrorActive}
-      setCameraPermissionDenied={setCameraPermissionDenied}
+      setCameraPermissionErrorCode={setCameraPermissionErrorCode}
     />
   );
 };

@@ -1,3 +1,4 @@
+import type { ErrorCode } from '@metamask/hw-wallet-sdk';
 import type { UR } from '@ngraveio/bc-ur';
 
 /**
@@ -70,10 +71,12 @@ export type BaseQrReaderProps = {
   /** Signals the parent that BaseQrReader is showing error content. */
   setErrorActive: (active: boolean) => void;
   /**
-   * Reports whether the scanner is currently showing a camera-permission
-   * recovery state so the parent can cancel with a permission-denied error.
+   * Reports the camera-permission ErrorCode for the current recovery state
+   * (`PermissionCameraDenied` or `PermissionCameraPromptDismissed`), or `null`
+   * when not on a permission screen, so the parent can cancel with the
+   * matching hardware-wallet error.
    */
-  setCameraPermissionDenied?: (denied: boolean) => void;
+  setCameraPermissionErrorCode?: (errorCode: ErrorCode | null) => void;
 };
 
 /**

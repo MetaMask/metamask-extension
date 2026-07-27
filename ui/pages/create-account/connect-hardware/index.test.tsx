@@ -676,6 +676,25 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
+    it('displays youNeedToAllowCameraAccess when QR camera permission prompt was dismissed', async () => {
+      mockConnectHardware.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          HardwareWalletType.Qr,
+        ),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice('QRCode');
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(tEn('youNeedToAllowCameraAccess')),
+        ).toBeInTheDocument();
+      });
+    });
+
     it('ignores "Window closed" error silently', async () => {
       mockConnectHardware.mockRejectedValue(new Error('Window closed'));
       const mockStore = configureMockStore([thunk])(createMockState());

@@ -1,3 +1,5 @@
+import type { ErrorCode } from '@metamask/hw-wallet-sdk';
+
 /** Props for the QRHardwareWalletImporter component. */
 export type QRHardwareWalletImporterProps = {
   /** Called when the user cancels the QR wallet import flow. */
@@ -7,8 +9,8 @@ export type QRHardwareWalletImporterProps = {
   /** Signals the parent that the scanner is showing error content. */
   setErrorActive: (active: boolean) => void;
   /**
-   * Reports whether the scanner is showing a camera-permission recovery
-   * state so cancel can reject with a permission-denied error.
+   * Reports the camera-permission ErrorCode for the current recovery state,
+   * or `null` when not on a permission screen.
    */
-  setCameraPermissionDenied?: (denied: boolean) => void;
+  setCameraPermissionErrorCode?: (errorCode: ErrorCode | null) => void;
 };
