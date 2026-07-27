@@ -880,7 +880,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/assets-controllers>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -943,7 +943,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -977,6 +977,25 @@
         "uuid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "URLSearchParams": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "buffer": true
+      }
+    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -988,7 +1007,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-controller": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
@@ -2204,7 +2223,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@metamask/react-data-query>@tanstack/query-core": true
+        "@tanstack/react-query>@tanstack/query-core": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -3469,15 +3488,16 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+    "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
+        "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
+        "console.error": true,
+        "document.visibilityState": true,
         "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       }
     },
@@ -3494,24 +3514,13 @@
         "setTimeout": true
       }
     },
-    "@metamask/react-data-query>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -4804,11 +4813,6 @@
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
       }
     },
-    "@metamask/snaps-controllers>tar-stream>streamx>events-universal": {
-      "packages": {
-        "webpack>events": true
-      }
-    },
     "webpack>events": {
       "globals": {
         "console": true
@@ -5676,6 +5680,11 @@
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>side-channel": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
+      "globals": {
+        "queueMicrotask": true
       }
     },
     "@hello-pangea/dnd>raf-schd": {
@@ -6586,14 +6595,10 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
-      "globals": {
-        "process.nextTick": true,
-        "queueMicrotask": true
-      },
       "packages": {
-        "@metamask/snaps-controllers>tar-stream>streamx>events-universal": true,
+        "webpack>events": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": true
+        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true
       }
     },
     "browserify>string_decoder": {
@@ -6626,11 +6631,6 @@
         "@metamask/snaps-controllers>tar-stream>b4a": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": {
-      "packages": {
-        "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
     "@ngraveio/bc-ur>sha.js>to-buffer": {
