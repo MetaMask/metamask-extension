@@ -747,14 +747,6 @@
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 14
     },
-    "ui/pages/confirmations/components/send/asset-filter-input/asset-filter-input.test.tsx": {
-      "error: Warning: React does not recognize": 7,
-      "error: Warning: Received `false` for a": 2
-    },
-    "ui/pages/confirmations/components/send/recipient-filter-input/recipient-filter-input.test.tsx": {
-      "error: Warning: React does not recognize": 6,
-      "error: Warning: Received `false` for a": 2
-    },
     "ui/pages/confirmations/components/smart-transactions-banner-alert/smart-transactions-banner-alert.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
