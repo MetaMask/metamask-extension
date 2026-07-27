@@ -81,7 +81,8 @@ export const addMultipleAccounts = async ({
  * @param driver - The WebDriver instance.
  * @param privateKey - The private key to import.
  * @param options - Optional flow configuration.
- * @param options.accountListTimeout - Timeout while waiting for the account list.
+ * @param options.accountListTimeout - Timeout while waiting for the account list
+ * (including account syncing) to be ready.
  */
 export async function importPrivateKeyAccount(
   driver: Driver,

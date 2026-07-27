@@ -108,3 +108,7 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
+
+; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
+; To enable for all users, change the corresponding entry in builds.yml to `true`.
+MM_PURE_BLACK_PREVIEW=true

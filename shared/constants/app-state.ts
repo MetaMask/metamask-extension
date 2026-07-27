@@ -1,7 +1,6 @@
 import { NetworkClientId } from '@metamask/network-controller';
 import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
-import { MetaMetricsEventName } from './metametrics';
 
 export enum AccountOverviewTabKey {
   Tokens = 'tokens',
@@ -12,12 +11,6 @@ export enum AccountOverviewTabKey {
 }
 
 export type AccountOverviewTab = `${AccountOverviewTabKey}`;
-
-export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
-  [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
-  [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
-  [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
-} as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,

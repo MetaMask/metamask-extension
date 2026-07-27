@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import * as useBridgingModule from '../../../../hooks/bridge/useBridging';
 import { buildBatchSellAsset } from '../../../../../test/data/batch-sell';
 import { BatchSellSelectPage } from './batch-sell-select-page';
 
 const CHAIN_ID = 'eip155:1' as CaipChainId;
 const NATIVE_ASSET_ID = 'eip155:1/slip44:60' as CaipAssetType;
-const ERC20_TOKEN_ADDRESS =
-  '0xdAC17F958D2ee523a2206206994597C13D831ec7' as `0x${string}`;
-const ERC20_ASSET_ID = `eip155:1/erc20:${ERC20_TOKEN_ADDRESS}` as CaipAssetType;
+const ERC20_ASSET_ID =
+  'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7' as CaipAssetType;
 const STABLECOIN_ASSET_ID =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
+const OTHER_STABLECOIN_ASSET_ID =
+  'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F' as CaipAssetType;
 
 const makeAsset = (overrides: Record<string, unknown> = {}) =>
   buildBatchSellAsset({
@@ -35,38 +35,28 @@ const mockHarness = {
 };
 
 const mockFns = {
-  openBridgeExperience: jest.fn(),
   navigateToBatchSellConfirmPage: jest.fn(),
-  openModal: jest.fn(),
-  closeModal: jest.fn(),
+  openHighAlertModal: jest.fn(),
 };
 
-// Router & i18n: minimal stubs so hooks resolve.
+// Router: minimal stub so hooks resolve.
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ state: null, pathname: '/batch-sell/select' }),
   useNavigate: () => jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
 // Hooks under integration: forwarded to `mockFns` so tests can assert on them.
-// `useBridging` has a default export, so we auto-mock the module and re-bind
-// it inside `beforeEach` via `jest.spyOn` (see below).
-jest.mock('../../../../hooks/bridge/useBridging');
-
 jest.mock('../../../../hooks/batch-sell/useBatchSellNavigation', () => ({
   useBatchSellNavigation: () => ({
     navigateToBatchSellConfirmPage: mockFns.navigateToBatchSellConfirmPage,
   }),
 }));
 
-jest.mock('../../hooks/useBatchSellInfoModal', () => ({
-  useBatchSellInfoModal: () => ({
-    openModal: mockFns.openModal,
-    closeModal: mockFns.closeModal,
+jest.mock('../../hooks/useBatchSellHighRateAlertModal', () => ({
+  useBatchSellHighRateAlertModal: () => ({
+    openHighAlertModal: mockFns.openHighAlertModal,
+    closeHighAlertModal: jest.fn(),
   }),
 }));
 
@@ -100,7 +90,7 @@ jest.mock('react-redux', () => ({
 // Sub-components: rendered as nulls because their real implementations pull
 // in more redux/selector wiring than this test needs. The Footer is replaced
 // with a button that always fires onSubmit, regardless of selection count,
-// because every test exercises the < MIN_SELECTED_ALLOWED_TOKENS branch.
+// so each test only needs to control `mockHarness.initialAssetsId`.
 jest.mock('./components/header', () => ({ Header: () => null }));
 jest.mock('./components/network-toolbar', () => ({
   NetworkToolbar: () => null,
@@ -121,99 +111,85 @@ jest.mock('./components/footer', () => ({
 }));
 
 /**
- * Renders the page, clicks the (mocked) Footer submit button, then invokes
- * the CTA callback that the page registers with `openModal`. Returns nothing
- * because every assertion is made against the `mockFns` jest functions.
+ * Renders the page and clicks the (mocked) Footer submit button, triggering
+ * `onSubmit`. Returns nothing because every assertion is made against the
+ * `mockFns` jest functions.
  */
-function renderAndTriggerBridgeNavigation() {
+function renderAndSubmit() {
   const { getByTestId } = render(<BatchSellSelectPage />);
   fireEvent.click(getByTestId('footer-submit'));
-  mockFns.openModal.mock.calls[0]?.[0]?.ctaProps?.onClick?.();
 }
 
-describe('BatchSellSelectPage – navigateToBridgePageAndPreselect', () => {
+describe('BatchSellSelectPage – onSubmit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockHarness.initialAssetsId = [];
     mockHarness.assetList = [makeAsset()];
     mockHarness.destStablecoins = [STABLECOIN_ASSET_ID];
-    jest
-      .spyOn(useBridgingModule, 'default')
-      .mockReturnValue({ openBridgeExperience: mockFns.openBridgeExperience });
   });
 
-  it('passes the first batchSellDestStablecoin as destTokenAssetId when the list is non-empty', () => {
-    renderAndTriggerBridgeNavigation();
+  describe('when fewer than MIN_SELECTED_ALLOWED_TOKENS assets are selected', () => {
+    it('opens the high alert modal instead of navigating to the confirm page', () => {
+      renderAndSubmit();
 
-    expect(mockFns.openBridgeExperience).toHaveBeenCalledTimes(1);
-    expect(mockFns.openBridgeExperience.mock.calls[0][2]).toBe(
-      STABLECOIN_ASSET_ID,
-    );
-  });
-
-  it('passes undefined as destTokenAssetId when batchSellDestStablecoins is empty', () => {
-    mockHarness.destStablecoins = [];
-
-    renderAndTriggerBridgeNavigation();
-
-    expect(mockFns.openBridgeExperience).toHaveBeenCalledTimes(1);
-    expect(mockFns.openBridgeExperience.mock.calls[0][2]).toBeUndefined();
-  });
-
-  it('calls closeModal before navigating to the bridge page', () => {
-    renderAndTriggerBridgeNavigation();
-
-    expect(mockFns.closeModal).toHaveBeenCalledTimes(1);
-    expect(mockFns.openBridgeExperience).toHaveBeenCalledTimes(1);
-    expect(mockFns.closeModal.mock.invocationCallOrder[0]).toBeLessThan(
-      mockFns.openBridgeExperience.mock.invocationCallOrder[0],
-    );
-  });
-
-  it('passes the source token derived from the selected native asset', () => {
-    mockHarness.initialAssetsId = [NATIVE_ASSET_ID];
-
-    renderAndTriggerBridgeNavigation();
-
-    expect(mockFns.openBridgeExperience).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        symbol: 'ETH',
-        // Native EVM assets resolve to the canonical zero address.
-        address: '0x0000000000000000000000000000000000000000',
-        name: 'Ether',
-        chainId: CHAIN_ID,
-      }),
-      expect.anything(),
-    );
-  });
-
-  it('passes the contract address as source token address for an ERC-20 asset', () => {
-    const erc20 = makeAsset({
-      assetId: ERC20_ASSET_ID,
-      symbol: 'USDT',
-      name: 'Tether USD',
+      expect(mockFns.openHighAlertModal).toHaveBeenCalledTimes(1);
+      expect(mockFns.navigateToBatchSellConfirmPage).not.toHaveBeenCalled();
     });
-    mockHarness.assetList = [erc20];
-    mockHarness.initialAssetsId = [ERC20_ASSET_ID];
 
-    renderAndTriggerBridgeNavigation();
+    it('passes the asset matching the first selected asset id as the source asset', () => {
+      mockHarness.initialAssetsId = [NATIVE_ASSET_ID];
 
-    expect(mockFns.openBridgeExperience).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        symbol: 'USDT',
-        address: ERC20_TOKEN_ADDRESS,
-        name: 'Tether USD',
-        chainId: CHAIN_ID,
-      }),
-      expect.anything(),
-    );
+      renderAndSubmit();
+
+      expect(mockFns.openHighAlertModal).toHaveBeenCalledWith(
+        mockHarness.assetList[0],
+        STABLECOIN_ASSET_ID,
+      );
+    });
+
+    it('passes undefined as the source asset when no asset is selected', () => {
+      renderAndSubmit();
+
+      expect(mockFns.openHighAlertModal).toHaveBeenCalledWith(
+        undefined,
+        STABLECOIN_ASSET_ID,
+      );
+    });
+
+    it('passes the first batchSellDestStablecoin as the destination asset id', () => {
+      mockHarness.destStablecoins = [
+        STABLECOIN_ASSET_ID,
+        OTHER_STABLECOIN_ASSET_ID,
+      ];
+
+      renderAndSubmit();
+
+      expect(mockFns.openHighAlertModal).toHaveBeenCalledWith(
+        undefined,
+        STABLECOIN_ASSET_ID,
+      );
+    });
+
+    it('passes undefined as the destination asset id when batchSellDestStablecoins is empty', () => {
+      mockHarness.destStablecoins = [];
+
+      renderAndSubmit();
+
+      expect(mockFns.openHighAlertModal).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+      );
+    });
   });
 
-  it('passes undefined as source token when no asset is selected', () => {
-    renderAndTriggerBridgeNavigation();
+  describe('when at least MIN_SELECTED_ALLOWED_TOKENS assets are selected', () => {
+    it('navigates to the confirm page instead of opening the high alert modal', () => {
+      mockHarness.initialAssetsId = [NATIVE_ASSET_ID, ERC20_ASSET_ID];
 
-    expect(mockFns.openBridgeExperience.mock.calls[0][1]).toBeUndefined();
+      renderAndSubmit();
+
+      expect(mockFns.navigateToBatchSellConfirmPage).toHaveBeenCalledTimes(1);
+      expect(mockFns.openHighAlertModal).not.toHaveBeenCalled();
+    });
   });
 });
