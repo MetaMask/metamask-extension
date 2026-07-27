@@ -304,6 +304,17 @@ const PerpsOrderEntryPage = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  // Computed before the screen-view tracking below so the trading event can be
+  // gated on the market existing (an unknown symbol renders the error state).
+  const market = useMemo(() => {
+    if (!decodedSymbol) {
+      return undefined;
+    }
+    return allMarkets.find(
+      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
+    );
+  }, [decodedSymbol, allMarkets]);
+
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
@@ -347,7 +358,13 @@ const PerpsOrderEntryPage = () => {
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
+    // Gate on `market` so an unknown symbol emits only the error screen view
+    // below (not both trading and error for one rendered error screen).
+    conditions:
+      !marketsLoading &&
+      Boolean(decodedSymbol) &&
+      account !== null &&
+      Boolean(market),
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
@@ -456,14 +473,6 @@ const PerpsOrderEntryPage = () => {
     return !cleaned || Number.isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
-  const market = useMemo(() => {
-    if (!decodedSymbol) {
-      return undefined;
-    }
-    return allMarkets.find(
-      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
-    );
-  }, [decodedSymbol, allMarkets]);
   const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
 
   // Market-not-found renders a displayed error state (see the `!market` branch
@@ -477,6 +486,9 @@ const PerpsOrderEntryPage = () => {
       [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
         PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
     },
+    // Re-arm per symbol so navigating between distinct invalid symbols tracks
+    // each one (otherwise the one-shot guard suppresses the second).
+    resetKey: decodedSymbol,
   });
 
   useEffect(() => {

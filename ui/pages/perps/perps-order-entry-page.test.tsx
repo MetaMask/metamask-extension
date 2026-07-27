@@ -1638,6 +1638,56 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('emits exactly one error screen view and no trading view when the market is not found', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      const screenViews = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
+      );
+
+      // One rendered error screen => one screen-view event: the trading view is
+      // gated on the market existing so it must not also fire.
+      expect(
+        screenViews.filter(
+          ([arg]) => arg?.properties?.screen_type === 'error',
+        ),
+      ).toHaveLength(1);
+      expect(
+        screenViews.filter(
+          ([arg]) => arg?.properties?.screen_type === 'trading',
+        ),
+      ).toHaveLength(0);
+    });
+
+    it('re-arms the error screen view for a second unknown symbol', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'BADONE' });
+      const { rerender } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      mockUseParams.mockReturnValue({ symbol: 'BADTWO' });
+      rerender(<PerpsOrderEntryPage />);
+
+      const errorCalls = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+          arg?.properties?.screen_type === 'error',
+      );
+
+      // resetKey keyed on the symbol lets consecutive invalid symbols each track.
+      expect(errorCalls).toHaveLength(2);
+    });
+
     it('tracks has_perp_balance as true when unified funds are tradeable but not withdrawable', () => {
       mockLiveAccount.mockReturnValue({
         account: {
