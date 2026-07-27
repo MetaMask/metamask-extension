@@ -188,9 +188,9 @@ describe('LedgerDmkBridgeHandler', () => {
       });
       mockBridgeStartDiscovering.mockReturnValue(throwError(() => hwError));
 
-      await expect(
-        handler.handleAction(LedgerAction.makeApp),
-      ).rejects.toBe(hwError);
+      await expect(handler.handleAction(LedgerAction.makeApp)).rejects.toBe(
+        hwError,
+      );
     });
   });
 
@@ -572,9 +572,9 @@ describe('LedgerDmkBridgeHandler', () => {
       // First construction fails
       mockBridgeConnect.mockRejectedValueOnce(new Error('Connection failed'));
 
-      await expect(
-        handler.handleAction(LedgerAction.makeApp),
-      ).rejects.toThrow('Connection failed');
+      await expect(handler.handleAction(LedgerAction.makeApp)).rejects.toThrow(
+        'Connection failed',
+      );
 
       // bridgePromise should be cleared so the next call can retry
       mockBridgeConnect.mockResolvedValueOnce('new-session-id');
@@ -675,9 +675,9 @@ describe('LedgerDmkBridgeHandler', () => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
 
-      await expect(
-        handler.handleAction(LedgerAction.makeApp),
-      ).resolves.toBe(true);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
       expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
 
       consoleErrorSpy.mockRestore();
