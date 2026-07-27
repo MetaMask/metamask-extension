@@ -6,7 +6,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 
 import * as environmentTypeUtils from '../../../shared/lib/environment-type';
-import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { usePrefillFromBridgeState } from './usePrefillFromBridgeState';
 

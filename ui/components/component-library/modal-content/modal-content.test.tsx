@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Modal } from '../modal';
