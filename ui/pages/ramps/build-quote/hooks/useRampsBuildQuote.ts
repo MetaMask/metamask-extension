@@ -210,12 +210,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   // orderId) only create the order once the user finishes checkout on their
   // hosted page and it navigates to our callback URL. Watch the tab we just
   // opened for that navigation, then resolve the order via the callback URL.
-  //
-  // ponytail: this listener lives for as long as this hook is mounted. If the
-  // user closes the wallet UI before the checkout tab redirects, the order
-  // never resolves client-side. Move this into a background service
-  // (mirroring app/scripts/services/subscription/subscription-service.ts) if
-  // that gap needs closing — see docs/superpowers/specs for the write-up.
   const watchForRedirectCallback = useCallback(
     (openedTabId: number, providerCode: string) => {
       // Tear down any watch still active from a prior Continue click before
@@ -292,7 +286,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
       if (widget.orderId) {
         // A provider that precreates the order returns its id — seed it so
-        // the order-details page can resolve and refresh it.
+        // the details view can resolve and refresh it.
         await addPrecreatedOrder({
           orderId: widget.orderId,
           providerCode,

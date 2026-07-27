@@ -2,8 +2,6 @@ const RAMP_CALLBACK_URL_PRODUCTION =
   'https://on-ramp-content.api.cx.metamask.io/regions/fake-callback';
 const RAMP_CALLBACK_URL_STAGING =
   'https://on-ramp-content.uat-api.cx.metamask.io/regions/fake-callback';
-// ponytail: unconfirmed host, guessed from the on-ramp(-cache).dev-api naming
-// convention - verify against the ramps team before relying on this in dev.
 const RAMP_CALLBACK_URL_DEVELOPMENT =
   'https://on-ramp-content.dev-api.cx.metamask.io/regions/fake-callback';
 
