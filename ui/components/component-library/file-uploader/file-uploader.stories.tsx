@@ -4,7 +4,6 @@ import { FileUploader } from './file-uploader';
 export default {
   title: 'Components/ComponentLibrary/FileUploader',
   component: FileUploader,
-  tags: ['autodocs'],
   argTypes: {
     label: {
       control: 'text',

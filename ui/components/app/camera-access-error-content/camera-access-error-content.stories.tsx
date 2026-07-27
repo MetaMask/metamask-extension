@@ -15,7 +15,6 @@ const MOZ_EXTENSION_DISPLAY_MOCK = 'moz-extension://ab5f75ae…d4aa03';
 const meta = {
   title: 'Components/App/CameraAccessErrorContent',
   component: CameraAccessErrorContent,
-  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {

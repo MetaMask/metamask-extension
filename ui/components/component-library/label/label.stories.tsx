@@ -7,7 +7,6 @@ export default {
   title: 'Components/ComponentLibrary/Label (deprecated)',
 
   component: Label,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
@@ -36,4 +35,3 @@ export const DefaultStory: StoryObj<typeof Label> = {
   render: (args) => <Label {...args} />,
   name: 'Default',
 };
-

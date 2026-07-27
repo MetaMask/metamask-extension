@@ -14,7 +14,6 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
-  tags: ['autodocs'],
   parameters: {
     backgrounds: { default: 'alternative' },
   },

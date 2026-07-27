@@ -13,7 +13,6 @@ import { IconName } from '../icon';
 export default {
   title: 'Components/ComponentLibrary/HeaderBase (deprecated)',
   component: HeaderBase,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

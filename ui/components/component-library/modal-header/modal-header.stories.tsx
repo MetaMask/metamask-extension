@@ -6,7 +6,6 @@ import { ModalHeader } from './modal-header';
 export default {
   title: 'Components/ComponentLibrary/ModalHeader (deprecated)',
   component: ModalHeader,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

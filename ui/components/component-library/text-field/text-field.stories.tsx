@@ -8,7 +8,6 @@ import { TextField } from './text-field';
 export default {
   title: 'Components/ComponentLibrary/TextField (deprecated)',
   component: TextField,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
