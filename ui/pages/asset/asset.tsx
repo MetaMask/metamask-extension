@@ -49,11 +49,15 @@ const Asset = () => {
   });
 
   const displayChainId = getRouteAssetChainId(token, chainId);
-  const caipChainId = displayChainId
-    ? isCaipChainId(displayChainId)
-      ? displayChainId
-      : formatChainIdToCaip(displayChainId)
-    : undefined;
+  const caipChainId = (() => {
+    if (!displayChainId) {
+      return undefined;
+    }
+    if (isCaipChainId(displayChainId)) {
+      return displayChainId;
+    }
+    return formatChainIdToCaip(displayChainId);
+  })();
 
   // Null when the selected account group has no account for this chain
   // (e.g. Solana asset deeplink while an EVM-only account is selected).
