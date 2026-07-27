@@ -242,9 +242,7 @@ const TokenDistributionSection = ({
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Box
-            className={`w-3 h-3 rounded-full ${otherHoldersBarClassName}`}
-          />
+          <Box className={`w-3 h-3 rounded-full ${otherHoldersBarClassName}`} />
           <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
             {otherLabel}
           </Text>
@@ -444,9 +442,7 @@ const OfficialLinksSection = ({
           iconName={IconName.Telegram}
           label={telegramLabel}
           onClick={() =>
-            openLink(
-              `https://t.me/${metadata.externalLinks.telegramChannelId}`,
-            )
+            openLink(`https://t.me/${metadata.externalLinks.telegramChannelId}`)
           }
           testId="security-trust-link-telegram"
         />
