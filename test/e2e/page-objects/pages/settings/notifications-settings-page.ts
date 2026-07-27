@@ -48,8 +48,7 @@ class NotificationsSettingsPage {
     section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
   ) => `[data-testid="${section}-in-app-notifications-toggle-input"]`;
 
-  private readonly headerBackButton =
-    '[data-testid="settings-header-back-button"]';
+  private readonly headerBackButton = '[data-testid="page-header-back-button"]';
 
   private readonly notificationsPerAccountSection =
     '[data-testid="notifications-settings-per-account"]';

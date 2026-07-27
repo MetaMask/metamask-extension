@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
@@ -55,6 +55,7 @@ import { getCaip25CaveatValueFromPermissions } from '../../../helpers/utils/caip
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
+import { useDispatch } from '../../../store/hooks';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 /**

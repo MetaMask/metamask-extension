@@ -271,9 +271,9 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
 
-    await userEvent.click(screen.getByTestId('settings-header-search-button'));
+    await userEvent.click(screen.getByTestId('page-header-search-button'));
     await userEvent.type(
-      screen.getByTestId('settings-header-search-input'),
+      screen.getByTestId('page-header-search-input'),
       'ugtfvh',
     );
 
