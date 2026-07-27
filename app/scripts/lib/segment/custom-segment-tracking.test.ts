@@ -172,7 +172,6 @@ describe('trackSegmentEventWhileOptedOut', () => {
           version: '1.0.0',
         },
         userAgent: '',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         marketingCampaignCookieId: null,
       },
     });
