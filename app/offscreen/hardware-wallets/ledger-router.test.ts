@@ -22,23 +22,18 @@ type MockHandler = {
 let mockDmkInstance: MockHandler;
 let mockLegacyInstance: MockHandler;
 
-// Virtual: source file is `.ts`; production dynamic-imports `./ledger-dmk.js`.
-jest.mock(
-  './ledger-dmk.js',
-  () => {
-    return {
-      LedgerDmkBridgeHandler: jest.fn().mockImplementation(() => {
-        mockDmkInstance = {
-          init: mockDmkInit,
-          destroy: mockDmkDestroy,
-          handleAction: mockDmkHandleAction,
-        };
-        return mockDmkInstance;
-      }),
-    };
-  },
-  { virtual: true },
-);
+jest.mock('./ledger-dmk.ts', () => {
+  return {
+    LedgerDmkBridgeHandler: jest.fn().mockImplementation(() => {
+      mockDmkInstance = {
+        init: mockDmkInit,
+        destroy: mockDmkDestroy,
+        handleAction: mockDmkHandleAction,
+      };
+      return mockDmkInstance;
+    }),
+  };
+});
 
 jest.mock('./ledger-utils', () => ({
   serializeLedgerError: jest.fn((error: unknown) =>
@@ -65,7 +60,7 @@ jest.mock('./ledger', () => ({
 // beforeEach (via jest.isolateModules) so each test starts from a clean
 // module registry.
 type RouterModule = typeof import('./ledger-router');
-type DmkModule = typeof import('./ledger-dmk.js');
+type DmkModule = typeof import('./ledger-dmk.ts');
 type LegacyModule = typeof import('./ledger');
 
 let initLedger: RouterModule['default'];
@@ -136,7 +131,7 @@ describe('LedgerRouter', () => {
     // starts with fresh singleton state (activeHandler, currentMode, etc.)
     // without any test-only reset hook on the production module.
     //
-    // Dynamic `import('./ledger-dmk.js')` inside createHandler resolves against
+    // Dynamic `import('./ledger-dmk.ts')` inside createHandler resolves against
     // the global Jest registry (isolation only applies during this callback),
     // so handler mocks are read from the global registry below — not from
     // inside the isolated block.
@@ -148,8 +143,8 @@ describe('LedgerRouter', () => {
       bootstrapLedger = router.bootstrapLedger;
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const dmkModule = require('./ledger-dmk.js') as DmkModule;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, import-x/extensions
+    const dmkModule = require('./ledger-dmk.ts') as DmkModule;
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const legacyModule = require('./ledger') as LegacyModule;
     mockedDmkCtor = jest.mocked(dmkModule.LedgerDmkBridgeHandler) as jest.Mock;
@@ -372,7 +367,7 @@ describe('LedgerRouter', () => {
       );
 
       const switchToDmk = switchLedgerHandler(LedgerHandlerMode.DMK);
-      // Dynamic import('./ledger-dmk.js') must settle before DMK init is invoked.
+      // Dynamic import('./ledger-dmk.ts') must settle before DMK init is invoked.
       await flushAsync();
       await flushAsync();
       expect(resolveDmkInit).toBeDefined();
