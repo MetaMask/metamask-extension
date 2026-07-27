@@ -16,8 +16,8 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
+import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),

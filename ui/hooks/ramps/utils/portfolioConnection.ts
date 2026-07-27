@@ -25,10 +25,21 @@ function getConfiguredPortfolioOrigin(): string | null {
  * eth_accounts history). Used to send returning Portfolio buyers back to
  * Portfolio while in-app Buy rolls out — never-connected wallets use in-app.
  * Includes `PORTFOLIO_URL` origin so local Portfolio (e.g. localhost:3000) works.
+ *
+ * @param state - Redux root state (or metamask slice wrapper used by selectors).
+ * @returns True when any known Portfolio origin appears in subjects or history.
  */
-export function hasEverConnectedToPortfolio(state: unknown): boolean {
-  const subjects = getPermissionSubjects(state) ?? {};
-  const history = getLastConnectedInfo(state) ?? {};
+export function hasEverConnectedToPortfolio(
+  state: Record<string, unknown>,
+): boolean {
+  const subjects = (getPermissionSubjects(state) ?? {}) as Record<
+    string,
+    unknown
+  >;
+  const history = (getLastConnectedInfo(state) ?? {}) as Record<
+    string,
+    unknown
+  >;
   const configuredOrigin = getConfiguredPortfolioOrigin();
   const origins = configuredOrigin
     ? [...PORTFOLIO_ORIGINS, configuredOrigin]

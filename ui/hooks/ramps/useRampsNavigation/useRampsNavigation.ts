@@ -104,12 +104,12 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
  * When `rampsEnabled` is on:
- * - Wallets that have **never** connected to Portfolio → in-app Buy (geo gates).
- * - Wallets that **have** connected to Portfolio → open Portfolio (hedge while
- *   order-history Profile Sync is still rolling out; returning buyers keep
- *   Portfolio until migration lands).
+ * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
+ * - Wallets that have connected to Portfolio open Portfolio (hedge while
+ * order-history Profile Sync is still rolling out; returning buyers keep
+ * Portfolio until migration lands).
  *
- * When the flag is off → unchanged Portfolio redirect for everyone.
+ * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
