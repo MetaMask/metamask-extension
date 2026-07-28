@@ -12,7 +12,12 @@ import { useFetchDeFiPositions } from './useFetchDeFiPositions';
 export type UseDeFiPositionsV2Result = {
   /** Protocol groups for the selected account group, merged across accounts. */
   positions: DeFiProtocolPositionGroup[];
-  /** True while the initial fetch is in flight and no positions exist yet. */
+  /**
+   * True until Redux has an entry for the selected group (including an empty
+   * list) or the fetch failed. Derived from store presence — not the messenger
+   * promise — so the empty state does not flash between the background write
+   * and the UI store update.
+   */
   isLoading: boolean;
   /** True when the background fetch failed. */
   isError: boolean;
@@ -42,6 +47,8 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
     () => groupAccounts.map((account) => account.id),
     [groupAccounts],
   );
+  // Same signal as the V1 list: `undefined` means not yet written to the UI
+  // store (still loading). An empty array means fetched with no positions.
   const hasPositions = accountIds.some(
     (id) => positionsByAccount[id] !== undefined,
   );
@@ -50,26 +57,18 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
     [positionsByAccount, accountIds],
   );
 
-  const [isFetching, setIsFetching] = useState(false);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
-    setIsFetching(true);
     setIsError(false);
 
-    fetchDeFiPositions()
-      .catch(() => {
-        if (!cancelled) {
-          setIsError(true);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsFetching(false);
-        }
-      });
+    fetchDeFiPositions().catch(() => {
+      if (!cancelled) {
+        setIsError(true);
+      }
+    });
 
     return () => {
       cancelled = true;
@@ -87,7 +86,7 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
 
   return {
     positions,
-    isLoading: isFetching && !hasPositions,
+    isLoading: !hasPositions && !isError,
     isError,
     refresh,
   };

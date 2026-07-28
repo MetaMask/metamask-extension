@@ -54,7 +54,7 @@ describe('useDeFiPositionsV2', () => {
     expect(mockFetchDeFiPositions).toHaveBeenCalledWith();
   });
 
-  it('reports loading until positions exist', async () => {
+  it('reports loading until positions exist in the store', async () => {
     let resolveFetch: (() => void) | undefined;
     mockFetchDeFiPositions.mockImplementation(
       () =>
@@ -63,16 +63,33 @@ describe('useDeFiPositionsV2', () => {
         }),
     );
 
-    const { result } = renderHook(() => useDeFiPositionsV2());
+    const { result, rerender } = renderHook(() => useDeFiPositionsV2());
 
     expect(result.current.isLoading).toBe(true);
 
+    // Messenger resolve alone must not clear loading — that races the UI
+    // store update and flashes the empty state.
     await act(async () => {
       resolveFetch?.();
       await Promise.resolve();
     });
 
+    expect(result.current.isLoading).toBe(true);
+
+    mockPositionsByAccount = { 'account-1': [{ protocolId: 'lido' }] };
+    rerender();
+
     expect(result.current.isLoading).toBe(false);
+    expect(result.current.positions).toEqual([{ protocolId: 'lido' }]);
+  });
+
+  it('clears loading when the store has an empty positions list', () => {
+    mockPositionsByAccount = { 'account-1': [] };
+
+    const { result } = renderHook(() => useDeFiPositionsV2());
+
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.positions).toEqual([]);
   });
 
   it('sets isError when the fetch fails', async () => {
@@ -134,7 +151,7 @@ describe('useDeFiPositionsV2', () => {
 
     expect(result.current.positions).toEqual([{ protocolId: 'lido' }]);
 
-    // Flush the mount-time fetch so setIsFetching(false) is wrapped in act.
+    // Flush the mount-time fetch so its state updates are wrapped in act.
     await act(async () => {
       await Promise.resolve();
     });
