@@ -13,7 +13,6 @@ import {
 } from '@metamask/user-operation-controller';
 import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-import { PPOMController } from '@metamask/ppom-validator';
 
 import { KeyringController } from '@metamask/keyring-controller';
 import log from 'loglevel';
@@ -56,7 +55,6 @@ export type AddTransactionOptions = NonNullable<
 type BaseAddTransactionRequest = {
   chainId: Hex;
   networkClientId: string;
-  ppomController: PPOMController;
   securityAlertsEnabled: boolean;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
@@ -401,7 +399,6 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
 async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
-    ppomController,
     securityAlertsEnabled,
     transactionOptions,
     transactionParams,
@@ -459,7 +456,6 @@ async function validateSecurity(request: AddTransactionRequest) {
 
     // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
-      ppomController,
       request: ppomRequest,
       securityAlertId,
       chainId,

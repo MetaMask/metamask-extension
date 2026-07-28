@@ -460,11 +460,6 @@ describe('Setup Sentry', () => {
       expect(
         shouldCreateSpanForRequest('chrome-extension://abc/home.html'),
       ).toStrictEqual(true);
-      expect(
-        shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
-        ),
-      ).toStrictEqual(true);
       // A non-hex-named root json (e.g. a config file) is also still traced.
       expect(
         shouldCreateSpanForRequest('chrome-extension://abc/manifest.json'),

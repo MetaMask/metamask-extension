@@ -185,7 +185,6 @@
       "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": { "storageMetadata": "object" },
     "PasskeyController": { "passkeyRecord": null },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
@@ -319,5 +318,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 219 }
+  "meta": { "storageKind": "split", "version": 220 }
 }

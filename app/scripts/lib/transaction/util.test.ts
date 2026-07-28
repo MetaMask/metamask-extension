@@ -209,10 +209,6 @@ describe('Transaction Utils', () => {
       label: 'Safe address',
     });
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    request.ppomController = {} as any;
-
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
       transactionMeta: TRANSACTION_META_MOCK,

@@ -13,7 +13,6 @@ import {
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
-import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
@@ -49,10 +48,7 @@ export function createTrustSignalsMiddleware(
     try {
       req.requestUrl = requestUrl;
 
-      if (
-        !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled()
-      ) {
+      if (!isSecurityAlertsEnabledByUser(preferencesController)) {
         return;
       }
 
