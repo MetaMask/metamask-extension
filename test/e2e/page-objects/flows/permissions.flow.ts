@@ -1,4 +1,6 @@
 import { Driver } from '../../webdriver/driver';
+import EditConnectedAccountsModal from '../pages/dialog/edit-connected-accounts-modal';
+import NetworkPermissionSelectModal from '../pages/dialog/network-permission-select-modal';
 import HeaderNavbar from '../pages/header-navbar';
 import GatorPermissionsPage from '../pages/permission/gator-permissions-page';
 import PermissionListPage from '../pages/permission/permission-list-page';
@@ -39,6 +41,37 @@ export const openPermissionsPageFlow = async (
     await gatorPermissionsPage.clickSites();
   }
 };
+
+/**
+ * Opens the network and account permission modals from the site permission
+ * page and asserts that the expected networks and accounts are displayed.
+ *
+ * @param driver - The webdriver instance.
+ * @param sitePermissionPage - The site permission page already navigated to.
+ * @param hostname - The hostname shown on the site permission page,
+ * e.g. '127.0.0.1:8080'.
+ * @param networks - Network display names expected to be selected.
+ * @param accounts - Account labels expected to be displayed.
+ */
+export async function checkAccountsAndNetworksDisplayed(
+  driver: Driver,
+  sitePermissionPage: SitePermissionPage,
+  hostname: string,
+  networks: string[],
+  accounts: string[],
+): Promise<void> {
+  await sitePermissionPage.checkPageIsLoaded(hostname);
+  await sitePermissionPage.openNetworkPermissionsModal();
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await networkPermissionSelectModal.checkNetworkStatus(networks);
+  await networkPermissionSelectModal.clickConfirmEditButton();
+
+  await sitePermissionPage.openAccountPermissionsModal();
+  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
+  await editConnectedAccountsModal.checkPageIsLoaded();
+  await editConnectedAccountsModal.checkAccountsAreDisplayed(accounts);
+}
 
 /**
  * Navigate to the permissions page for a specific host origin and return a
