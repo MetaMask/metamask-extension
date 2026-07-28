@@ -682,6 +682,7 @@ describe('rpc-error-utils', () => {
       expect(result.message).toBe('Canceled');
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       {
         walletType: HardwareWalletType.Trezor,
@@ -700,7 +701,15 @@ describe('rpc-error-utils', () => {
       },
     ])(
       'returns Unknown for KeyringControllerError cause text without explicit code ($walletType: $causeMessage)',
-      ({ walletType, message, causeMessage }) => {
+      ({
+        walletType,
+        message,
+        causeMessage,
+      }: {
+        walletType: HardwareWalletType;
+        message: string;
+        causeMessage: string;
+      }) => {
         const error = Object.assign(
           Object.create(KeyringControllerError.prototype),
           {
