@@ -91,7 +91,7 @@ describe('useRampsOrderActivity', () => {
       network: null,
       cryptoCurrency: null,
       status: 'PRECREATED',
-    } as never;
+    };
     const store = createRampsMockStore({
       orders: [buyOrder, precreatedOrder],
     });

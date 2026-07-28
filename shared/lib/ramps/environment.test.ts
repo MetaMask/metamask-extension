@@ -1,6 +1,6 @@
 import { RampsEnvironment } from '@metamask/ramps-controller';
 
-import { getRampsEnvironment } from './ramps-environment';
+import { getRampsEnvironment } from './environment';
 
 describe('getRampsEnvironment', () => {
   const originalEnv = process.env.METAMASK_ENVIRONMENT;
@@ -29,7 +29,7 @@ describe('getRampsEnvironment', () => {
     expect(getRampsEnvironment()).toBe(RampsEnvironment.Development);
   });
 
-  it('returns Staging for METAMASK_ENVIRONMENT=dev', () => {
+  it('returns Development for METAMASK_ENVIRONMENT=dev', () => {
     process.env.METAMASK_ENVIRONMENT = 'dev';
     expect(getRampsEnvironment()).toBe(RampsEnvironment.Development);
   });
