@@ -3,7 +3,9 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import {
   type CaipAssetType,
   type CaipChainId,
+  type Hex,
   isCaipChainId,
+  isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
@@ -11,6 +13,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
@@ -25,7 +28,7 @@ import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import type { SecurityTrustLocationState } from '../types/security-trust';
 
 const getCaipChainIdForLookup = (
-  chainId: string | undefined,
+  chainId: Hex | CaipChainId | undefined,
 ): CaipChainId | undefined => {
   if (!chainId) {
     return undefined;
@@ -36,7 +39,7 @@ const getCaipChainIdForLookup = (
   }
 
   if (isEvmChainId(chainId)) {
-    return toEvmCaipChainId(chainId as `0x${string}`);
+    return toEvmCaipChainId(chainId);
   }
 
   return undefined;
@@ -122,7 +125,11 @@ export const useSecurityTrustPageData = () => {
       return allMultichainNetworkConfigurations[caipChainIdForLookup]?.name;
     }
 
-    return evmNetworkConfigurations[chainId]?.name;
+    if (isStrictHexString(chainId)) {
+      return evmNetworkConfigurations[chainId]?.name;
+    }
+
+    return undefined;
   }, [
     allMultichainNetworkConfigurations,
     caipChainIdForLookup,
@@ -189,14 +196,25 @@ export const useSecurityTrustPageData = () => {
       return null;
     }
 
-    const networkConfig = caipChainIdForLookup
+    const evmHexChainId = isStrictHexString(chainId)
+      ? chainId
+      : caipChainIdForLookup
+        ? convertCaipToHexChainId(caipChainIdForLookup)
+        : undefined;
+
+    const evmNetworkConfig = evmHexChainId
+      ? evmNetworkConfigurations[evmHexChainId]
+      : undefined;
+
+    const multichainNetworkConfig = caipChainIdForLookup
       ? allMultichainNetworkConfigurations[caipChainIdForLookup]
-      : evmNetworkConfigurations[chainId];
-    const defaultIdx = networkConfig?.defaultBlockExplorerUrlIndex;
+      : undefined;
+
+    const defaultIdx = evmNetworkConfig?.defaultBlockExplorerUrlIndex;
     const blockExplorerUrl =
       defaultIdx === undefined
         ? ''
-        : (networkConfig?.blockExplorerUrls?.[defaultIdx] ?? '');
+        : (evmNetworkConfig?.blockExplorerUrls?.[defaultIdx] ?? '');
 
     const contractAddress = isCaipChainId(tokenAddress)
       ? parseCaipAssetType(tokenAddress as CaipAssetType).assetReference
@@ -206,7 +224,10 @@ export const useSecurityTrustPageData = () => {
       url: getTokenTrackerLink(contractAddress, chainId, '', '', {
         blockExplorerUrl,
       }),
-      name: networkConfig?.name ?? t('securityTrustEtherscan'),
+      name:
+        multichainNetworkConfig?.name ??
+        evmNetworkConfig?.name ??
+        t('securityTrustEtherscan'),
     };
   }, [
     allMultichainNetworkConfigurations,

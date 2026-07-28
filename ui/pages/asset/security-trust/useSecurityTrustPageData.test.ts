@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import type { Token } from '../../../components/app/assets/types';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
@@ -81,10 +82,12 @@ const multichainNetworks = {
   },
 };
 
-const routeAsset = {
+const routeAsset: Token = {
   symbol: 'AAVE',
   decimals: 18,
   address: '0xabc',
+  image: '',
+  chainId: '0x1',
   isNative: false,
 };
 
