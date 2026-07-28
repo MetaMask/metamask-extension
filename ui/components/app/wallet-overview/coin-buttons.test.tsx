@@ -24,6 +24,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 });
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
     goToBuy: jest.fn(),
@@ -32,6 +33,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
 }));
 
 jest.mock('../../../hooks/bridge/useBridging', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
     openBridgeExperience: jest.fn(),
