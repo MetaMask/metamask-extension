@@ -60,7 +60,7 @@ jest.mock('../../app/assets/nfts/nfts-tab', () => ({
   default: () => null,
 }));
 
-jest.mock('../../../pages/defi/defi-tab', () => ({
+jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
