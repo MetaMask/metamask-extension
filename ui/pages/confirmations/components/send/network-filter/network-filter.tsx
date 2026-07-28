@@ -257,10 +257,7 @@ export const NetworkFilter = ({
           sections={sharedModalSections}
         />
       ) : (
-        <Modal
-          isOpen={isNetworkFilterPopoverOpen}
-          onClose={closePopover}
-        >
+        <Modal isOpen={isNetworkFilterPopoverOpen} onClose={closePopover}>
           <ModalOverlay />
           <ModalContent size={ModalContentSize.Md}>
             <ModalHeader
