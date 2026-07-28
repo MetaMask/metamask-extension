@@ -91,7 +91,12 @@ export function SurveyToast() {
     return () => {
       controller.abort();
     };
-  }, [lastViewedUserSurvey, basicFunctionality, analyticsId, isMetaMetricsEnabled]);
+  }, [
+    lastViewedUserSurvey,
+    basicFunctionality,
+    analyticsId,
+    isMetaMetricsEnabled,
+  ]);
 
   function handleActionClick() {
     if (!survey) {

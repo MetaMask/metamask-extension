@@ -1,4 +1,3 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -21,7 +20,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -502,7 +500,7 @@ window.logState = async function (toClipboard) {
   try {
     const result = await window.logStateString();
     if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
+      await navigator.clipboard.writeText(result);
       console.log('State log copied');
     } else {
       console.log(result);

@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import classnames from 'clsx';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
   Icon,
   IconName,
-  IconColor,
   IconSize,
   Text,
-  TextColor,
   TextVariant,
   TextAlign,
 } from '@metamask/design-system-react';
@@ -55,7 +53,6 @@ export const MultichainAggregatedAddressListRow = ({
   const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
   const [copyIcon, setCopyIcon] = useState<IconName>(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -86,38 +83,6 @@ export const MultichainAggregatedAddressListRow = ({
       : networks[0]?.name;
   }, [chainIds, t, networks]);
 
-  // Helper function to get text color based on state
-  const getTextColor = () => {
-    if (addressCopied) {
-      return TextColor.SuccessDefault;
-    }
-    if (isHovered) {
-      return TextColor.PrimaryDefaultHover;
-    }
-    return TextColor.TextAlternative;
-  };
-
-  // Helper function to get icon color based on state
-  const getIconColor = () => {
-    if (addressCopied) {
-      return IconColor.SuccessDefault;
-    }
-    if (isHovered) {
-      return IconColor.PrimaryDefault;
-    }
-    return IconColor.IconAlternative;
-  };
-
-  const getBackgroundColor = useMemo(() => {
-    if (addressCopied) {
-      return BoxBackgroundColor.SuccessMuted;
-    }
-    if (isHovered) {
-      return BoxBackgroundColor.BackgroundMuted;
-    }
-    return BoxBackgroundColor.BackgroundDefault;
-  }, [addressCopied, isHovered]);
-
   // Handle "Copy" button click events
   const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -144,7 +109,14 @@ export const MultichainAggregatedAddressListRow = ({
 
   return (
     <Box
-      className={`multichain-aggregated-address-row ${className}`}
+      className={classnames(
+        'multichain-aggregated-address-row group',
+        className,
+        {
+          'hover:bg-muted': !addressCopied,
+          'bg-success-muted': addressCopied,
+        },
+      )}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
@@ -152,10 +124,7 @@ export const MultichainAggregatedAddressListRow = ({
       paddingTop={1}
       paddingBottom={1}
       data-testid="multichain-address-row"
-      backgroundColor={getBackgroundColor}
       onClick={handleCopyClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <Box
         gap={2}
@@ -177,17 +146,23 @@ export const MultichainAggregatedAddressListRow = ({
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Right}
-          color={getTextColor()}
-          style={{
-            minWidth: '100px',
-          }}
+          className={classnames({
+            'text-alternative group-hover:text-primary-default-hover':
+              !addressCopied,
+            'text-success-default': addressCopied,
+          })}
+          style={{ minWidth: '100px' }}
         >
           {displayText}
         </Text>
         <Icon
           name={copyIcon}
           size={IconSize.Sm}
-          color={getIconColor()}
+          className={classnames({
+            'text-icon-alternative group-hover:text-primary-default':
+              !addressCopied,
+            'text-success-default': addressCopied,
+          })}
           aria-label={t('copyAddressShort')}
         />
       </Box>
