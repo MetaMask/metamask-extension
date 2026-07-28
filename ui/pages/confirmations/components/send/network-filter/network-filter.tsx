@@ -248,7 +248,7 @@ export const NetworkFilter = ({
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
-          className="bg-transparent hover:bg-hover active:bg-pressed"
+          className="!bg-transparent hover:bg-hover active:bg-pressed"
           borderRadius={BorderRadius.LG}
           color={
             isSingleNetworkSelected
