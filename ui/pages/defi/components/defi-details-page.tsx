@@ -20,7 +20,7 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 
 import { getSelectedAccount } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -29,6 +29,8 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { getDefiPositions } from '../../../selectors/assets';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
+import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
@@ -166,8 +168,18 @@ const DeFiDetailsPageV1 = () => {
 const DeFiDetailsPage = () => {
   const isDefiControllerV2Enabled = useSelector(getIsDefiControllerV2Enabled);
 
+  // V2 needs a route messenger for `fetchDeFiPositions`. Legacy V1 does not —
+  // wrap only the V2 branch so integration tests without a UI messenger keep
+  // working when the V2 flag is off.
   if (isDefiControllerV2Enabled) {
-    return <DeFiDetailsPageV2 />;
+    return (
+      <RouteWithMessenger
+        path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+      >
+        <DeFiDetailsPageV2 />
+      </RouteWithMessenger>
+    );
   }
 
   return <DeFiDetailsPageV1 />;
