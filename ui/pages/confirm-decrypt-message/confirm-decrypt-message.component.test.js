@@ -182,7 +182,7 @@ describe('ConfirmDecryptMessage Component', () => {
     const { getByText } = renderWithProvider(<ConfirmDecryptMessage />, store);
 
     const confirmButton = getByText(messages.decrypt.message);
-    confirmButton.click();
+    fireEvent.click(confirmButton);
     await flushPromises();
 
     expect(mockDecryptMsg).toHaveBeenCalled();
@@ -193,7 +193,7 @@ describe('ConfirmDecryptMessage Component', () => {
     const { getByText } = renderWithProvider(<ConfirmDecryptMessage />, store);
 
     const confirmButton = getByText(messages.cancel.message);
-    confirmButton.click();
+    fireEvent.click(confirmButton);
     await flushPromises();
 
     expect(mockCancelDecryptMsg).toHaveBeenCalled();
@@ -213,10 +213,13 @@ describe('ConfirmDecryptMessage Component', () => {
     const copyButton = getByTestId('message-copy');
     expect(copyButton).toBeInTheDocument();
 
-    copyButton.click();
+    fireEvent.click(copyButton);
+    await flushPromises();
     await waitFor(() => {
       expect(mockWriteText).toHaveBeenCalledWith(mockRawSignatureMessage);
     });
+    // Settle useCopyToClipboard's setCopied(true) from writeText().then(...)
+    await flushPromises();
     expect(mockTrackEvent).toHaveBeenCalled();
   });
 
@@ -262,7 +265,7 @@ describe('ConfirmDecryptMessage Component', () => {
       const { getByTestId } = await renderAndUnlockMessage();
 
       const scrollToBottomButton = getByTestId('scroll-to-bottom');
-      scrollToBottomButton.click();
+      fireEvent.click(scrollToBottomButton);
 
       expect(spyScrollToBottomAction).toHaveBeenCalled();
     });

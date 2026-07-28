@@ -613,7 +613,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
-      "React: Act warnings (component updates not wrapped)": 17
+      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
