@@ -57,7 +57,6 @@ export const SelectableListItem = ({
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >
