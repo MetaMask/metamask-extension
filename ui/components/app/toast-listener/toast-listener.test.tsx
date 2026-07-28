@@ -41,10 +41,6 @@ jest.mock('./transaction-event-toast-listener', () => ({
   TransactionEventToastListener: () => null,
 }));
 
-jest.mock('./ramps-order-toast-listener', () => ({
-  RampsOrderToastListener: () => null,
-}));
-
 describe('ToastListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();

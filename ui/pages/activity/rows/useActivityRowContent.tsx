@@ -201,30 +201,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      case 'rampBuy':
-      case 'rampSell': {
-        const { token, fiat } = activity.data;
-        const symbol = token?.symbol ?? '';
-        const fiatAmount =
-          fiat?.amount === undefined ? undefined : Number(fiat.amount);
-        const orderFiat =
-          fiatAmount !== undefined &&
-          Number.isFinite(fiatAmount) &&
-          fiat?.currency
-            ? formatCurrencyWithMinThreshold(fiatAmount, fiat.currency)
-            : undefined;
-
-        return {
-          avatarTokens: [token?.assetId],
-          title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [symbol]),
-          primaryAmount: formatTokenAmount(token),
-          primaryDirection: token?.direction,
-          // Prefer the order's own fiat amount — market-rate conversion of the
-          // token amount is lossy when human units are mistaken for base units.
-          secondaryAmount: orderFiat ?? formatAsFiat(token),
-        };
-      }
       case 'perpsAddFunds':
       case 'perpsWithdraw': {
         const { fiat, token } = activity.data;

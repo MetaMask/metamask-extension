@@ -24,10 +24,6 @@ jest.mock('./useNonEvmTransactions', () => ({
   useNonEvmTransactions: () => [],
 }));
 
-jest.mock('./useRampsOrderActivity', () => ({
-  useRampsOrderActivity: () => [],
-}));
-
 jest.mock('../../hooks/useAnalytics', () => ({
   useAnalytics: () => ({
     trackEvent: jest.fn(),

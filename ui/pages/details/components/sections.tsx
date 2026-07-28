@@ -43,11 +43,9 @@ export function TokensSection({
 export function MetadataSection({
   item,
   addressRows,
-  statusDescription,
 }: {
   item: ActivityListItem;
   addressRows?: { from?: string; to?: string };
-  statusDescription?: string;
 }) {
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
@@ -63,16 +61,7 @@ export function MetadataSection({
     <Section>
       <Row
         label={t('status')}
-        value={
-          <div className="flex flex-col items-end gap-0.5">
-            <TransactionStatus status={item.status} />
-            {statusDescription ? (
-              <span className="text-right text-s-body-sm text-alternative">
-                {statusDescription}
-              </span>
-            ) : null}
-          </div>
-        }
+        value={<TransactionStatus status={item.status} />}
       />
 
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />
