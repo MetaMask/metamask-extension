@@ -160,8 +160,6 @@ export const NetworkFilter = ({
     return networkName || `Chain ${selectedChainId}`;
   }, [getChainNetworkDetails, selectedChainId, t]);
 
-  const isSingleNetworkSelected = selectedChainId !== null;
-
   const handleNetworkFilterClick = useCallback(() => {
     setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
   }, []);
@@ -237,8 +235,8 @@ export const NetworkFilter = ({
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          startIconProps={{ className: 'me-1', 'data-testid': 'icon-filter' }}
-          className={`bg-transparent border border-border-muted hover:bg-hover active:bg-pressed ${isSingleNetworkSelected ? 'text-primary-default' : 'text-default'}`}
+          startIconProps={{ 'data-testid': 'icon-filter' }}
+          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed"
         >
           {displayName}
         </ButtonBase>
