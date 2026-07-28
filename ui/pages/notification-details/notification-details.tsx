@@ -21,7 +21,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../notifications/notification-components';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector } from '../../store/hooks';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';

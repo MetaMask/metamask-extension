@@ -157,21 +157,21 @@ export const GlobalMenuDrawer = ({
       return;
     }
 
-     const findRootLayout = (): HTMLElement | null => {
-       if (
-         rootLayoutRef.current &&
-         document.body.contains(rootLayoutRef.current)
-       ) {
-         return rootLayoutRef.current;
-       }
-       const el = document.querySelector<HTMLElement>(
-         '[data-testid="app-root-layout"]',
-       );
-       if (el) {
-         rootLayoutRef.current = el;
-       }
-       return el;
-     };
+    const findRootLayout = (): HTMLElement | null => {
+      if (
+        rootLayoutRef.current &&
+        document.body.contains(rootLayoutRef.current)
+      ) {
+        return rootLayoutRef.current;
+      }
+      const el = document.querySelector<HTMLElement>(
+        '[data-testid="app-root-layout"]',
+      );
+      if (el) {
+        rootLayoutRef.current = el;
+      }
+      return el;
+    };
 
     const updatePosition = () => {
       const rootLayout = findRootLayout();
