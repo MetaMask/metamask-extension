@@ -2158,13 +2158,15 @@ async function triggerUi() {
       ?.useSidePanelAsDefault ?? true;
   const sidepanelSupported = Boolean(browser?.sidePanel?.open);
 
-  // triggerUi only fires once a real confirmation exists, so this is where we
-  // know the panel is worth opening. Ask the active dapp tab to open it from its
-  // user-gesture context; if it opens (user-driven), the panel shows the
-  // confirmation and we skip the notification window. If the round-trip fails
-  // (gesture expired, or not user-driven), we fall through to the notification.
+  // Confirmation exists: try opening the side panel from the focused window's
+  // active tab (not getActiveTabs()[0], which can be another window). Fallback
+  // to the notification window if the round-trip fails or there is no gesture.
   if (sidepanelPreferred && sidepanelSupported) {
-    const activeTabId = tabs[0]?.id;
+    const [focusedWindowActiveTab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    const activeTabId = focusedWindowActiveTab?.id;
     if (activeTabId && (await requestSidePanelOpenFromTab(activeTabId))) {
       return;
     }
