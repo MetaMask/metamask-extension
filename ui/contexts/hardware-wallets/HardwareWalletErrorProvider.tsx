@@ -8,7 +8,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
@@ -18,6 +18,7 @@ import {
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
+import { useDispatch } from '../../store/hooks';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,

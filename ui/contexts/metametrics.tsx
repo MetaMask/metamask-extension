@@ -31,7 +31,6 @@ import {
   MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
@@ -189,6 +188,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
 
       if (
         canTrackImmediately ||
+        canMaybeTrackLater ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
         let builder = createEventBuilder(fullPayload.event);
@@ -212,13 +212,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
           matomoEvent: options?.matomoEvent,
         } satisfies Parameters<typeof trackAnalyticsEvent>[1];
 
-        const built = builder.build();
-
-        trackAnalyticsEvent(built, trackOptions);
-      } else if (canMaybeTrackLater) {
-        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          fullPayload as MetaMetricsEventPayload,
-        ]);
+        trackAnalyticsEvent(builder.build(), trackOptions);
       }
     },
     [
