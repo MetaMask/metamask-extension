@@ -17,6 +17,10 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
+// Non-EVM account icons can take longer than the default 10s selector wait
+// while Snap discovery / account tree setup finishes.
+const NON_EVM_ICON_TIMEOUT = 20_000;
+
 class HomePage {
   protected driver: Driver;
 
@@ -218,8 +222,12 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    await this.driver.waitForSelector(this.solanaAccountIcon);
-    await this.driver.waitForSelector(this.bitcoinAccountIcon);
+    await this.driver.waitForSelector(this.solanaAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
+    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
+      timeout: NON_EVM_ICON_TIMEOUT,
+    });
   }
 
   async checkPageIsNotLoaded(): Promise<void> {
