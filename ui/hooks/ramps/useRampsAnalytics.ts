@@ -54,6 +54,15 @@ export type RampsCheckoutCallbackDetectedArgs = {
   timeSinceOpenMs: number;
 };
 
+export type RampsCheckoutClosedArgs = {
+  checkoutSessionId: string;
+  closeSource: 'user_close_button' | 'callback_success';
+  callbackReached: boolean;
+  stepIndex: number;
+  timeOnScreenMs: number;
+  orderId?: string;
+};
+
 /**
  * Analytics for the in-app ramps buy flow. Wraps `useAnalytics` and injects the
  * shared context (region, currency source, ramp type) every `ramps-*` event
@@ -162,11 +171,28 @@ export function useRampsAnalytics() {
     [track],
   );
 
+  const trackCheckoutClosed = useCallback(
+    (args: RampsCheckoutClosedArgs) => {
+      track(MetaMetricsEventName.RampsCheckoutClosed, {
+        location: 'Checkout',
+        region: regionRef.current,
+        checkout_session_id: args.checkoutSessionId,
+        close_source: args.closeSource,
+        callback_reached: args.callbackReached,
+        step_index: args.stepIndex,
+        time_on_screen_ms: args.timeOnScreenMs,
+        order_id: args.orderId,
+      });
+    },
+    [track],
+  );
+
   return {
     trackScreenViewed,
     trackTokenSelected,
     trackProviderSelected,
     trackCheckoutOpened,
     trackCheckoutCallbackDetected,
+    trackCheckoutClosed,
   };
 }

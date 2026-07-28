@@ -48,3 +48,19 @@ export function buildRampsTransactionCompletedProperties(
     provider_onramp: order.provider?.name ?? '',
   };
 }
+
+/**
+ * `ramps-transaction-failed` shares the completed field set (mobile parity)
+ * plus `error_message`.
+ *
+ * @param order - The failed RampsOrder.
+ * @returns The `ramps-transaction-failed` event properties.
+ */
+export function buildRampsTransactionFailedProperties(
+  order: RampsOrder,
+): Record<string, unknown> {
+  return {
+    ...buildRampsTransactionCompletedProperties(order),
+    error_message: order.statusDescription || 'transaction_failed',
+  };
+}

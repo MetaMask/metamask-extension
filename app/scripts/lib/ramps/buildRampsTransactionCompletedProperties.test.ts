@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RampsOrder } from '@metamask/ramps-controller';
-import { buildRampsTransactionCompletedProperties } from './buildRampsTransactionCompletedProperties';
+import {
+  buildRampsTransactionCompletedProperties,
+  buildRampsTransactionFailedProperties,
+} from './buildRampsTransactionCompletedProperties';
 
 function makeOrder(overrides: Partial<RampsOrder> = {}): RampsOrder {
   return {
@@ -82,5 +85,23 @@ describe('buildRampsTransactionCompletedProperties', () => {
     expect(props.currency_destination).toBe('');
     expect(props.currency_source).toBe('');
     expect(props.provider_onramp).toBe('');
+  });
+});
+
+describe('buildRampsTransactionFailedProperties', () => {
+  it('reuses the completed shape and adds error_message from statusDescription', () => {
+    const props = buildRampsTransactionFailedProperties(
+      makeOrder({ statusDescription: 'card_declined' }),
+    );
+    expect(props.amount_source).toBe(100);
+    expect(props.provider_onramp).toBe('Transak');
+    expect(props.error_message).toBe('card_declined');
+  });
+
+  it('falls back to a generic error_message when statusDescription is empty', () => {
+    const props = buildRampsTransactionFailedProperties(
+      makeOrder({ statusDescription: '' }),
+    );
+    expect(props.error_message).toBe('transaction_failed');
   });
 });

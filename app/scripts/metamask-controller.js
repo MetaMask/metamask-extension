@@ -268,7 +268,7 @@ import {
   trackPage,
 } from './controllers/analytics';
 import Backup from './lib/backup';
-import { buildRampsTransactionCompletedProperties } from './lib/ramps/buildRampsTransactionCompletedProperties';
+import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -928,28 +928,14 @@ export default class MetamaskController extends EventEmitter {
       this._onLock(),
     );
 
-    // Ramps buy-flow completion KPI. Fires in the background (not the UI) so a
-    // completion is captured even when the popup is closed — the common case,
-    // since the order polls to COMPLETED after the user finishes on the
-    // provider's page. `orderStatusChanged` only fires on a status change, so
-    // this emits once on the transition into COMPLETED.
-    // ponytail: COMPLETED only (failed/canceled deferred); an order added
-    // already-terminal via the callback path isn't polled and won't emit here
-    // — mirror mobile's callback emit if that gap needs closing.
+    // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
+    // background (not the UI) so the outcome is captured even when the popup is
+    // closed — the common case, since the order polls to a terminal status
+    // after the user finishes on the provider's page.
     this.controllerMessenger.subscribe(
       'RampsController:orderStatusChanged',
-      ({ order }) => {
-        // 'COMPLETED' === RampsOrderStatus.Completed from @metamask/ramps-controller.
-        if (order?.status !== 'COMPLETED') {
-          return;
-        }
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.RampsTransactionCompleted)
-            .addCategory(MetaMetricsEventCategory.Ramps)
-            .addProperties(buildRampsTransactionCompletedProperties(order))
-            .build(),
-        );
-      },
+      (event) =>
+        handleRampsOrderStatusChanged(event, { trackEvent, createEventBuilder }),
     );
 
     // on/off shield controller based on shield subscription
