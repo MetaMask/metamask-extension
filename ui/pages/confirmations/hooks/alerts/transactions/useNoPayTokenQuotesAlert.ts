@@ -7,8 +7,8 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
-  useHasTransactionPayResolvedQuotes,
   useIsTransactionPayLoading,
+  useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
@@ -17,7 +17,7 @@ import { AlertsName } from '../constants';
 export function useNoPayTokenQuotesAlert(): Alert[] {
   const t = useI18nContext();
   const { payToken } = useTransactionPayToken();
-  const hasResolvedQuotes = useHasTransactionPayResolvedQuotes();
+  const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
@@ -29,13 +29,11 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
       )?.skipIfBalance,
   );
 
-  // Use resolved quotes (including no-op None quotes) so direct routes that
-  // need no conversion are not treated as missing quotes.
   const showAlert =
     payToken &&
     !isQuotesLoading &&
     sourceAmounts?.length &&
-    !hasResolvedQuotes &&
+    !quotes?.length &&
     !isOptionalOnly;
 
   return useMemo(() => {

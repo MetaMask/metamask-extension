@@ -1,11 +1,9 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
-  isNoOpQuote,
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
-  selectHasTransactionPayResolvedQuotesByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPayTokensByTransactionId,
   selectTransactionPaymentTokenByTransactionId,
@@ -130,18 +128,6 @@ describe('transactionPayController selectors', () => {
     });
   });
 
-  describe('isNoOpQuote', () => {
-    it('returns true for none strategy quotes', () => {
-      expect(isNoOpQuote({ strategy: TransactionPayStrategy.None })).toBe(true);
-    });
-
-    it('returns false for relay strategy quotes', () => {
-      expect(isNoOpQuote({ strategy: TransactionPayStrategy.Relay })).toBe(
-        false,
-      );
-    });
-  });
-
   describe('selectTransactionPayQuotesByTransactionId', () => {
     it('returns quotes for given transaction ID', () => {
       const state = createMockState({ quotes: MOCK_QUOTES });
@@ -183,32 +169,6 @@ describe('transactionPayController selectors', () => {
       );
 
       expect(result).toBeUndefined();
-    });
-  });
-
-  describe('selectHasTransactionPayResolvedQuotesByTransactionId', () => {
-    it('returns true when only a no-op quote exists', () => {
-      const state = createMockState({
-        quotes: [{ strategy: TransactionPayStrategy.None }],
-      });
-
-      expect(
-        selectHasTransactionPayResolvedQuotesByTransactionId(
-          state,
-          TRANSACTION_ID,
-        ),
-      ).toBe(true);
-    });
-
-    it('returns false when no quotes exist', () => {
-      const state = createMockState();
-
-      expect(
-        selectHasTransactionPayResolvedQuotesByTransactionId(
-          state,
-          TRANSACTION_ID,
-        ),
-      ).toBe(false);
     });
   });
 

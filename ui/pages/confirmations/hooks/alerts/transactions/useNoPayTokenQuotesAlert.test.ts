@@ -8,8 +8,8 @@ import { getMockConfirmState } from '../../../../../../test/data/confirmations/h
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
-  useHasTransactionPayResolvedQuotes,
   useIsTransactionPayLoading,
+  useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
@@ -49,9 +49,7 @@ function runHook() {
 
 describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-  const useHasTransactionPayResolvedQuotesMock = jest.mocked(
-    useHasTransactionPayResolvedQuotes,
-  );
+  const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
   const useTransactionPaySourceAmountsMock = jest.mocked(
     useTransactionPaySourceAmounts,
   );
@@ -72,7 +70,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     });
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
-    useHasTransactionPayResolvedQuotesMock.mockReturnValue(false);
+    useTransactionPayQuotesMock.mockReturnValue([]);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
   });
@@ -94,15 +92,7 @@ describe('useNoPayTokenQuotesAlert', () => {
   });
 
   it('returns no alerts if quotes available', () => {
-    useHasTransactionPayResolvedQuotesMock.mockReturnValue(true);
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual([]);
-  });
-
-  it('returns no alerts if only a no-op quote resolved', () => {
-    useHasTransactionPayResolvedQuotesMock.mockReturnValue(true);
+    useTransactionPayQuotesMock.mockReturnValue([{ id: 'quote-1' }] as never);
 
     const { result } = runHook();
 

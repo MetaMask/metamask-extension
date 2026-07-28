@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
-  selectHasTransactionPayResolvedQuotesByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayQuotesByTransactionId,
@@ -15,12 +14,6 @@ import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
-}
-
-export function useHasTransactionPayResolvedQuotes() {
-  return useTransactionPayData(
-    selectHasTransactionPayResolvedQuotesByTransactionId,
-  );
 }
 
 export function useTransactionPayRequiredTokens() {
