@@ -92,6 +92,7 @@ type TestRenderProps = Partial<{
   selectedTabOriginInDomainsState?: boolean;
   isAddingNewNetwork?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
+  isAccessedFromOnboarding?: boolean;
   editedNetwork?: { chainId: string };
   neNetworkDiscoverButton?: Record<string, boolean>;
   additionalNetworkConfigurationsByChainId?: Record<string, unknown>;
@@ -106,6 +107,7 @@ const render = ({
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
   isAccessedFromDappConnectedSitePopover = false,
+  isAccessedFromOnboarding = false,
   editedNetwork = undefined,
   neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
   additionalNetworkConfigurationsByChainId = {},
@@ -116,6 +118,7 @@ const render = ({
       isAddingNewNetwork,
       editedNetwork,
       isAccessedFromDappConnectedSitePopover,
+      isAccessedFromOnboarding,
     },
     metamask: {
       ...mockState.metamask,
@@ -280,6 +283,23 @@ describe('NetworkListMenu', () => {
       editedNetwork: { chainId: 'eip155:1' },
     });
     expect(baseElement).toMatchSnapshot();
+  });
+
+  describe('back button', () => {
+    const backButtonTestId = 'network-list-menu-back-button';
+
+    it('shows the back button when adding a network outside of onboarding', () => {
+      const { queryByTestId } = render({ isAddingNewNetwork: true });
+      expect(queryByTestId(backButtonTestId)).toBeInTheDocument();
+    });
+
+    it('hides the back button when adding a network from onboarding', () => {
+      const { queryByTestId } = render({
+        isAddingNewNetwork: true,
+        isAccessedFromOnboarding: true,
+      });
+      expect(queryByTestId(backButtonTestId)).not.toBeInTheDocument();
+    });
   });
 
   it('displays important controls', () => {
