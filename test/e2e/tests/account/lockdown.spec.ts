@@ -7,6 +7,8 @@ import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
+// Firefox executes scripts in a mutable sandbox, so `window` is the
+// original page global while `globalThis` points at the sandbox global.
 const lockdownTarget = isFirefox ? 'window' : 'globalThis';
 
 // Detect scuttling by prodding globals until found
