@@ -128,9 +128,7 @@ describe('DefiDetailsListV2', () => {
     );
 
     expect(
-      screen.getAllByTestId(
-        `defi-details-position-cell-stub-${sharedAssetId}`,
-      ),
+      screen.getAllByTestId(`defi-details-position-cell-stub-${sharedAssetId}`),
     ).toHaveLength(2);
   });
 });
