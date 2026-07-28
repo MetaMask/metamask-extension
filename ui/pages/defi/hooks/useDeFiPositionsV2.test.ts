@@ -125,7 +125,7 @@ describe('useDeFiPositionsV2', () => {
     });
   });
 
-  it('returns merged positions from state', () => {
+  it('returns merged positions from state', async () => {
     mockPositionsByAccount = {
       'account-1': [{ protocolId: 'lido' }],
     };
@@ -133,5 +133,10 @@ describe('useDeFiPositionsV2', () => {
     const { result } = renderHook(() => useDeFiPositionsV2());
 
     expect(result.current.positions).toEqual([{ protocolId: 'lido' }]);
+
+    // Flush the mount-time fetch so setIsFetching(false) is wrapped in act.
+    await act(async () => {
+      await Promise.resolve();
+    });
   });
 });
