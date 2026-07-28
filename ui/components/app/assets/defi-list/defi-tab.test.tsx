@@ -8,13 +8,21 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { DEFI_CONTROLLER_V2_FLAG } from '../../../../../shared/lib/defi-controller-v2/remote-feature-flag';
-import { fetchDeFiPositions } from '../../../../hooks/defi/defiActions';
+import { useDeFiPositionsV2 } from '../../../../hooks/defi/useDeFiPositionsV2';
 import DeFiTab from './defi-tab';
 
-// Named imports (DefiTab / useDeFiPositionsV2) are not reliably intercepted by
-// jest.spyOn on the namespace module.
-jest.mock('../../../../hooks/defi/defiActions', () => ({
-  fetchDeFiPositions: jest.fn().mockResolvedValue(undefined),
+jest.mock('../../../../hooks/defi/useDeFiPositionsV2', () => ({
+  useDeFiPositionsV2: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value),
+  }),
 }));
 
 // AssetListControlBar mounts with effects that call setTokenNetworkFilter →
@@ -25,7 +33,8 @@ jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-const mockFetchDeFiPositions = jest.mocked(fetchDeFiPositions);
+const mockRefresh = jest.fn().mockResolvedValue(undefined);
+const mockUseDeFiPositionsV2 = jest.mocked(useDeFiPositionsV2);
 
 const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const selectedAccountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
@@ -82,23 +91,24 @@ const allDeFiPositions = {
   },
 };
 
+const allDeFiPositionsV2List = [
+  {
+    protocolId: 'lido',
+    productName: 'Lido',
+    protocolIconUrl: stEthIconUrl,
+    chainId: 'eip155:1',
+    marketValue: 20000,
+    iconGroup: [
+      {
+        symbol: 'stETH',
+        avatarValue: stEthIconUrl,
+      },
+    ],
+    sections: [],
+  },
+];
 const allDeFiPositionsV2 = {
-  [selectedAccountId]: [
-    {
-      protocolId: 'lido',
-      productName: 'Lido',
-      protocolIconUrl: stEthIconUrl,
-      chainId: 'eip155:1',
-      marketValue: 20000,
-      iconGroup: [
-        {
-          symbol: 'stETH',
-          avatarValue: stEthIconUrl,
-        },
-      ],
-      sections: [],
-    },
-  ],
+  [selectedAccountId]: allDeFiPositionsV2List,
 };
 const loadingDefiPositions = {
   [selectedAddress]: undefined,
@@ -155,8 +165,14 @@ const render = (
 
 describe('DefiList', () => {
   beforeEach(() => {
-    mockFetchDeFiPositions.mockClear();
-    mockFetchDeFiPositions.mockResolvedValue(undefined);
+    mockRefresh.mockClear();
+    mockRefresh.mockResolvedValue(undefined);
+    mockUseDeFiPositionsV2.mockReturnValue({
+      positions: [],
+      isLoading: false,
+      isError: false,
+      refresh: mockRefresh,
+    });
   });
 
   it('renders DeFiList component and shows control bar', async () => {
@@ -246,6 +262,13 @@ describe('DefiList', () => {
   });
 
   it('renders DefiListV2 when defiControllerV2 is enabled', async () => {
+    mockUseDeFiPositionsV2.mockReturnValue({
+      positions: allDeFiPositionsV2List,
+      isLoading: false,
+      isError: false,
+      refresh: mockRefresh,
+    });
+
     await act(async () => {
       render('with-positions', { defiControllerV2Enabled: true });
     });
@@ -258,8 +281,19 @@ describe('DefiList', () => {
   });
 
   it('shows a refresh-only menu that fetches DeFi positions', async () => {
+    mockUseDeFiPositionsV2.mockReturnValue({
+      positions: allDeFiPositionsV2List,
+      isLoading: false,
+      isError: false,
+      refresh: mockRefresh,
+    });
+
     await act(async () => {
-      render('with-positions');
+      render('with-positions', { defiControllerV2Enabled: true });
+    });
+
+    expect(mockUseDeFiPositionsV2).toHaveBeenCalledWith({
+      enabled: true,
     });
 
     const actionButton = await screen.findByTestId(
@@ -273,9 +307,8 @@ describe('DefiList', () => {
       screen.queryByTestId('manageTokens__button'),
     ).not.toBeInTheDocument();
 
-    mockFetchDeFiPositions.mockClear();
+    mockRefresh.mockClear();
     fireEvent.click(refreshListButton);
-    expect(mockFetchDeFiPositions).toHaveBeenCalledTimes(1);
-    expect(mockFetchDeFiPositions).toHaveBeenCalledWith({ forceRefresh: true });
+    expect(mockRefresh).toHaveBeenCalledTimes(1);
   });
 });

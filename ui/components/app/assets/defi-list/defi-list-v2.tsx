@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
 import {
   Box,
   BoxAlignItems,
@@ -15,7 +16,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { ASSET_CELL_HEIGHT } from '../constants';
-import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DeFiProtocolCellV2, {
@@ -24,20 +24,24 @@ import DeFiProtocolCellV2, {
 
 type DefiListV2Props = {
   onClick: (chainId: string, protocolId: string) => void;
+  positions: DeFiProtocolPositionGroup[];
+  isLoading: boolean;
+  isError: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function DefiListV2({ onClick }: DefiListV2Props) {
+export default function DefiListV2({
+  onClick,
+  positions,
+  isLoading,
+  isError,
+}: DefiListV2Props) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedCurrency = useSelector(getSelectedCurrency);
   const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
-
-  // Dispatches the fetch when the user enters the DeFi tab and reads the
-  // resulting positions straight from the controller state.
-  const { positions, isLoading, isError } = useDeFiPositionsV2();
 
   const sortedFilteredDefi = useMemo(():
     | DeFiProtocolListItem[]

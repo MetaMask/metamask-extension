@@ -23,7 +23,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import DefiDetailsListV2 from '../../../components/app/assets/defi-list/defi-details-list-v2';
-import { useDeFiPositionsV2 } from '../../../components/app/assets/defi-list/hooks/useDeFiPositionsV2';
+import { useDeFiPositionsV2 } from '../../../hooks/defi/useDeFiPositionsV2';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
