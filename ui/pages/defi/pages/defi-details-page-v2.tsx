@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
+  BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
   ButtonIcon,
@@ -112,7 +113,11 @@ export default function DeFiDetailsPageV2() {
         </SensitiveText>
       </Box>
       <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
-        <hr style={{ border: '1px solid var(--border-muted, #858B9A33)' }} />
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-px border border-b-0"
+          data-testid="defi-details-page-v2-separator"
+        />
       </Box>
       <Box className="flex" flexDirection={BoxFlexDirection.Column}>
         <DefiDetailsListV2 sections={protocolDetails.sections} />

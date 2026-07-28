@@ -90,11 +90,10 @@ describe('DefiDetailsListV2', () => {
   });
 
   it('renders a separator between sections but not after the last section', () => {
-    const { container } = renderWithProvider(
-      <DefiDetailsListV2 sections={sections} />,
-      store,
-    );
+    renderWithProvider(<DefiDetailsListV2 sections={sections} />, store);
 
-    expect(container.querySelectorAll('hr')).toHaveLength(1);
+    expect(
+      screen.getAllByTestId('defi-details-list-v2-section-separator'),
+    ).toHaveLength(1);
   });
 });

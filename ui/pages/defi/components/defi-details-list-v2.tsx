@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  BoxBorderColor,
   FontWeight,
   Text,
   TextColor,
@@ -11,10 +12,6 @@ import DefiDetailsPositionCellV2 from './defi-details-position-cell-v2';
 
 type DefiDetailsListV2Props = {
   sections: DeFiPositionDetailsSection[];
-};
-
-const separatorStyle = {
-  border: '1px solid var(--border-muted, #858B9A33)',
 };
 
 export default function DefiDetailsListV2({
@@ -47,7 +44,11 @@ export default function DefiDetailsListV2({
               paddingBottom={4}
               paddingRight={4}
             >
-              <hr style={separatorStyle} />
+              <Box
+                borderColor={BoxBorderColor.BorderMuted}
+                className="w-full h-px border border-b-0"
+                data-testid="defi-details-list-v2-section-separator"
+              />
             </Box>
           )}
         </Box>
