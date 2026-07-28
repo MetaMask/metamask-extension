@@ -284,9 +284,9 @@ export const MarketListView = () => {
   return (
     <Box
       className={twMerge(
-          'flex h-full flex-col',
-          isPureBlack ? 'bg-transparent' : 'bg-background-default',
-        )}
+        'flex h-full flex-col',
+        isPureBlack ? 'bg-transparent' : 'bg-background-default',
+      )}
       flexDirection={BoxFlexDirection.Column}
       data-testid="market-list-view"
     >
