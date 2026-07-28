@@ -338,5 +338,6 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
 
 export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
   // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
-  'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  // Arc's native asset (USDC) now has a real SLIP-44 registry entry (slip44:5042).
+  'eip155:5042/slip44:5042',
 ]);
