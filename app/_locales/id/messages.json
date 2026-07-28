@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Deposit gagal"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Deposit gagal"
   },
   "activity_deposit_pending_description": {
-    "message": "Mendeposit $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Mendeposit $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "$1 dideposit",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 dideposit",
@@ -1996,12 +1994,6 @@
   "bridgeApproval": {
     "message": "Setujui bridge $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "Anda mengizinkan akses ke $1 $2. Kontrak ini tidak akan mengakses dana tambahan."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Anda perlu mengizinkan akses ke $1 $2 untuk bridge, lalu menyetujui bridge ke $3. Ini akan membutuhkan dua konfirmasi terpisah."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Tautan block explorer disalin"
@@ -4163,9 +4155,6 @@
   },
   "gotIt": {
     "message": "Mengerti"
-  },
-  "grantExactAccess": {
-    "message": "Berikan akses yang tepat"
   },
   "gwei": {
     "message": "GWEI"
@@ -11260,12 +11249,6 @@
   },
   "whatsThis": {
     "message": "Apa ini?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Menyetujui token untuk bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Menyetujui token untuk swap."
   },
   "withdrawTo": {
     "message": "Terima",

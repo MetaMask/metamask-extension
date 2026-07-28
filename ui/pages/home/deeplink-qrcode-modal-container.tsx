@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   JustifyContent,
@@ -18,6 +18,7 @@ import {
   selectCanShowLowPriorityModal,
 } from '../../selectors/home-modals';
 import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
+import { useDispatch } from '../../store/hooks';
 
 export function DeeplinkQrCodeModalContainer() {
   const t = useI18nContext();

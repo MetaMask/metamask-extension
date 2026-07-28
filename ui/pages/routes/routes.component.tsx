@@ -2,14 +2,13 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -707,7 +706,8 @@ export default function Routes() {
       }
     };
     globalThis.chrome?.storage?.onChanged?.addListener(listener);
-    return () => globalThis.chrome?.storage?.onChanged?.removeListener(listener);
+    return () =>
+      globalThis.chrome?.storage?.onChanged?.removeListener(listener);
   }, [navigate]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
