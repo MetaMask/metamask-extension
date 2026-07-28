@@ -7,7 +7,7 @@ jest.mock('./useFetchDeFiPositions', () => ({
   useFetchDeFiPositions: () => mockFetchDeFiPositions,
 }));
 
-const mockSelectedAccountGroup = 'entropy:1/0';
+let mockSelectedAccountGroup = 'entropy:1/0';
 let mockGroupAccounts: { id: string }[] = [{ id: 'account-1' }];
 let mockPositionsByAccount: Record<string, unknown> = {};
 
@@ -39,6 +39,7 @@ describe('useDeFiPositionsV2', () => {
   beforeEach(() => {
     mockFetchDeFiPositions.mockClear();
     mockFetchDeFiPositions.mockResolvedValue(undefined);
+    mockSelectedAccountGroup = 'entropy:1/0';
     mockGroupAccounts = [{ id: 'account-1' }];
     mockPositionsByAccount = {};
   });
@@ -103,6 +104,36 @@ describe('useDeFiPositionsV2', () => {
 
     expect(result.current.isError).toBe(true);
     expect(result.current.isLoading).toBe(false);
+  });
+
+  it('shows loading for a new account group after a prior fetch failure', async () => {
+    mockFetchDeFiPositions.mockRejectedValue(new Error('network'));
+
+    const { result, rerender } = renderHook(() => useDeFiPositionsV2());
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.isError).toBe(true);
+    expect(result.current.isLoading).toBe(false);
+
+    // Switch groups before the effect clears the stale error. The first render
+    // for the new group must treat this as loading, not as another error.
+    mockSelectedAccountGroup = 'entropy:1/1';
+    mockGroupAccounts = [{ id: 'account-2' }];
+    mockPositionsByAccount = {};
+    mockFetchDeFiPositions.mockImplementation(
+      () =>
+        new Promise<void>(() => {
+          // Leave pending so loading stays true.
+        }),
+    );
+
+    rerender();
+
+    expect(result.current.isError).toBe(false);
+    expect(result.current.isLoading).toBe(true);
   });
 
   it('refresh force-fetches positions', async () => {

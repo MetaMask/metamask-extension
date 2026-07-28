@@ -19,7 +19,7 @@ export type UseDeFiPositionsV2Result = {
    * and the UI store update.
    */
   isLoading: boolean;
-  /** True when the background fetch failed. */
+  /** True when the background fetch failed for the selected account group. */
   isError: boolean;
   /** User-initiated refresh that bypasses the controller cache. */
   refresh: () => Promise<void>;
@@ -57,16 +57,22 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
     [positionsByAccount, accountIds],
   );
 
-  const [isError, setIsError] = useState(false);
+  // Tie the error to the group that failed so a stale failure cannot suppress
+  // loading (or flash the error UI / bounce details home) on the first render
+  // after switching to a different group with no cached rows.
+  const [failedAccountGroup, setFailedAccountGroup] = useState<
+    typeof selectedAccountGroup | null
+  >(null);
+  const isError = failedAccountGroup === selectedAccountGroup;
 
   useEffect(() => {
     let cancelled = false;
 
-    setIsError(false);
+    setFailedAccountGroup(null);
 
     fetchDeFiPositions().catch(() => {
       if (!cancelled) {
-        setIsError(true);
+        setFailedAccountGroup(selectedAccountGroup);
       }
     });
 
@@ -76,13 +82,13 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   }, [selectedAccountGroup, fetchDeFiPositions]);
 
   const refresh = useCallback(async () => {
-    setIsError(false);
+    setFailedAccountGroup(null);
     try {
       await fetchDeFiPositions({ forceRefresh: true });
     } catch {
-      setIsError(true);
+      setFailedAccountGroup(selectedAccountGroup);
     }
-  }, [fetchDeFiPositions]);
+  }, [fetchDeFiPositions, selectedAccountGroup]);
 
   return {
     positions,
