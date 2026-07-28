@@ -5,7 +5,7 @@ type DisableConfirmationProps = {
   onConfirm: () => void;
 };
 
-function WarningIcon() {
+const WarningIcon = () => {
   return (
     <svg
       className="disable-modal-warning"
@@ -15,14 +15,14 @@ function WarningIcon() {
       fill="none"
       aria-hidden="true"
     >
-      <circle cx="12" cy="12" r="9" stroke="#f5c518" strokeWidth="2" />
-      <rect x="11" y="6.5" width="2" height="7.5" rx="1" fill="#f5c518" />
-      <rect x="11" y="15.5" width="2" height="2" rx="1" fill="#f5c518" />
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+      <rect x="11" y="6.5" width="2" height="7.5" rx="1" fill="currentColor" />
+      <rect x="11" y="15.5" width="2" height="2" rx="1" fill="currentColor" />
     </svg>
   );
-}
+};
 
-function CloseIcon() {
+const CloseIcon = () => {
   return (
     <svg
       width="20"
@@ -39,7 +39,7 @@ function CloseIcon() {
       />
     </svg>
   );
-}
+};
 
 export function DisableConfirmation({
   onCancel,

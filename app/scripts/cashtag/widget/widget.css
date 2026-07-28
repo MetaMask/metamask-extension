@@ -296,6 +296,7 @@
 .disable-modal-warning {
   display: block;
   flex-shrink: 0;
+  color: #f5c518;
 }
 
 .disable-modal-title {
