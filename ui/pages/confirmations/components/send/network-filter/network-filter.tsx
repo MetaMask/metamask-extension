@@ -235,6 +235,7 @@ export const NetworkFilter = ({
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
           isActive={isSingleNetworkSelected}
+          className="bg-transparent"
           startIconName={IconName.Filter}
           startIconProps={{ className: 'me-1', 'data-testid': 'icon-filter' }}
         >
