@@ -33,7 +33,7 @@ module.exports = defineConfig([
     ignores: readFileSync('.prettierignore', 'utf8')
       .trim()
       .split('\n')
-      .map((path) => (path.startsWith('/') ? `.${path}` : path)),
+      .map((path) => (path.startsWith('/') ? path.slice(1) : `**/${path}`)),
   },
   {
     languageOptions: {

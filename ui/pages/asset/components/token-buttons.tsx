@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
@@ -28,6 +28,7 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetPageSecurityTrustCtaGate } from './security-trust';
+import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
   token,
@@ -180,7 +181,7 @@ const TokenButtons = ({
           onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.Send}
+              name={IconName.Arrow2UpRight}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
