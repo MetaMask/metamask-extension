@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { v4 as uuidV4 } from 'uuid';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
@@ -14,6 +15,7 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRampsAnalytics } from '../../../../hooks/ramps/useRampsAnalytics';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -62,10 +64,21 @@ export type RampsBuildQuoteViewModel =
   | { kind: 'redirect' }
   | RampsBuildQuoteReadyViewModel;
 
+// Provider checkout URLs carry query params (provider codes, wallet address);
+// log only the pathname so analytics never captures that PII.
+function sanitizeUrlPath(url: string): string {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return '';
+  }
+}
+
 export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const { trackCheckoutOpened } = useRampsAnalytics();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -214,6 +227,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
+      const checkoutSessionId = uuidV4();
 
       // Durable work first — opening a tab can unload the popup.
       if (widget.orderId && orderCode) {
@@ -249,6 +263,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         removePendingOrderPreview(seededOrderCode);
         await removeOrder(seededOrderId);
       };
+
+      trackCheckoutOpened({
+        checkoutSessionId,
+        providerName: selectedProvider?.name,
+        initialUrlPath: sanitizeUrlPath(widget.url),
+        hasCallbackFlow: !orderAlreadyPrecreated,
+        orderId: orderCode,
+      });
 
       const openedTab = await global.platform.openTab({ url: widget.url });
       if (openedTab.id === undefined) {
@@ -296,9 +318,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     navigate,
     removeOrder,
     selectedProvider?.id,
+    selectedProvider?.name,
     selectedQuote,
     selectedToken,
     t,
+    trackCheckoutOpened,
     walletAddress,
   ]);
 

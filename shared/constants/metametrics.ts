@@ -968,6 +968,14 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  // Ramps (in-app buy flow) — values must match the `metamask-ramps`
+  // segment-schema event `name:` fields exactly.
+  RampsScreenViewed = 'Ramps Screen Viewed',
+  RampsTokenSelected = 'Ramps Token Selected',
+  RampsProviderSelected = 'Ramps Provider Selected',
+  RampsCheckoutOpened = 'Ramps Checkout Opened',
+  RampsCheckoutCallbackDetected = 'Ramps Checkout Callback Detected',
+  RampsTransactionCompleted = 'Ramps Transaction Completed',
   PasswordChanged = 'Password Changed',
   PasswordChangeWithPasskey = 'Password Change With Passkey',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -1317,6 +1325,7 @@ export enum MetaMetricsEventCategory {
   Permissions = 'Permissions',
   Perps = 'Perps',
   Phishing = 'Phishing',
+  Ramps = 'Ramps',
   Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',

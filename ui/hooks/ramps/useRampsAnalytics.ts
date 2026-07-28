@@ -1,0 +1,172 @@
+/*
+ * This file is the single place that maps the ramps buy flow onto the
+ * `metamask-ramps` Segment schema, so it owns the schema's snake_case property
+ * names. Call sites pass camelCase; the mapping to snake_case lives here.
+ */
+/* eslint-disable @typescript-eslint/naming-convention */
+import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
+import { useAnalytics } from '../useAnalytics';
+import { useRampsUserRegion } from './useRampsUserRegion';
+
+// The `metamask-ramps` schema requires `ramp_type` on every event. The
+// extension in-app buy flow mirrors mobile's Unified Buy v2.
+// ponytail: single const; promote to a param if the flow ever emits other
+// ramp types (deposit/sell/headless).
+export const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
+
+// The extension buy flow routes through third-party (aggregator) providers.
+// `AGGREGATOR` is valid on every event's optional `ramp_routing` enum.
+export const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
+
+export type RampsTokenSelectedArgs = {
+  tokenCaip19?: string;
+  tokenSymbol?: string;
+  // CAIP-2 chain_id of the destination currency (per schema).
+  currencyDestination: string;
+  currencyDestinationSymbol?: string;
+  currencyDestinationNetwork?: string;
+};
+
+export type RampsProviderSelectedArgs = {
+  provider: string;
+  previousProvider?: string;
+  location: string;
+};
+
+export type RampsCheckoutOpenedArgs = {
+  checkoutSessionId: string;
+  providerName?: string;
+  initialUrlPath: string;
+  hasCallbackFlow: boolean;
+  orderId?: string;
+};
+
+export type RampsCheckoutCallbackDetectedArgs = {
+  checkoutSessionId: string;
+  urlPath: string;
+  stepIndex: number;
+  timeSinceOpenMs: number;
+};
+
+/**
+ * Analytics for the in-app ramps buy flow. Wraps `useAnalytics` and injects the
+ * shared context (region, currency source, ramp type) every `ramps-*` event
+ * needs, so call sites only pass event-specific properties.
+ *
+ * All tracking is a no-op when the `rampsEnabled` flag is off — the flow is
+ * already unreachable in that case, this is belt-and-suspenders for the AC
+ * "no events fire when the flag is off".
+ */
+export function useRampsAnalytics() {
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
+  const { userRegion } = useRampsUserRegion();
+
+  // Region/currency load asynchronously. Read them through refs so the track
+  // callbacks keep a stable identity as the region resolves — otherwise a
+  // callback listed in a mount `useEffect` dep array (screen-viewed) would
+  // re-fire on every region change and double-count. Refs always hold the
+  // latest value for the handler-invoked events.
+  const regionRef = useRef('');
+  regionRef.current = userRegion?.regionCode ?? '';
+  const currencySourceRef = useRef('');
+  currencySourceRef.current = userRegion?.country?.currency ?? '';
+
+  const track = useCallback(
+    (name: MetaMetricsEventName, properties: Record<string, unknown>) => {
+      if (!isRampsEnabled) {
+        return;
+      }
+      trackEvent(
+        createEventBuilder(name)
+          .addCategory(MetaMetricsEventCategory.Ramps)
+          .addProperties({
+            ramp_type: RAMPS_RAMP_TYPE,
+            ramp_routing: RAMPS_RAMP_ROUTING,
+            ...properties,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, isRampsEnabled, trackEvent],
+  );
+
+  const trackScreenViewed = useCallback(
+    (locationName: string) => {
+      track(MetaMetricsEventName.RampsScreenViewed, {
+        location: locationName,
+        region: regionRef.current,
+      });
+    },
+    [track],
+  );
+
+  const trackTokenSelected = useCallback(
+    (args: RampsTokenSelectedArgs) => {
+      track(MetaMetricsEventName.RampsTokenSelected, {
+        region: regionRef.current,
+        currency_source: currencySourceRef.current,
+        token_caip19: args.tokenCaip19,
+        token_symbol: args.tokenSymbol,
+        currency_destination: args.currencyDestination,
+        currency_destination_symbol: args.currencyDestinationSymbol,
+        currency_destination_network: args.currencyDestinationNetwork,
+      });
+    },
+    [track],
+  );
+
+  const trackProviderSelected = useCallback(
+    (args: RampsProviderSelectedArgs) => {
+      track(MetaMetricsEventName.RampsProviderSelected, {
+        provider: args.provider,
+        previous_provider: args.previousProvider,
+        location: args.location,
+      });
+    },
+    [track],
+  );
+
+  const trackCheckoutOpened = useCallback(
+    (args: RampsCheckoutOpenedArgs) => {
+      track(MetaMetricsEventName.RampsCheckoutOpened, {
+        location: 'Checkout',
+        region: regionRef.current,
+        checkout_session_id: args.checkoutSessionId,
+        provider_name: args.providerName,
+        initial_url_path: args.initialUrlPath,
+        has_callback_flow: args.hasCallbackFlow,
+        order_id: args.orderId,
+      });
+    },
+    [track],
+  );
+
+  const trackCheckoutCallbackDetected = useCallback(
+    (args: RampsCheckoutCallbackDetectedArgs) => {
+      track(MetaMetricsEventName.RampsCheckoutCallbackDetected, {
+        location: 'Checkout',
+        region: regionRef.current,
+        checkout_session_id: args.checkoutSessionId,
+        url_path: args.urlPath,
+        step_index: args.stepIndex,
+        time_since_open_ms: args.timeSinceOpenMs,
+      });
+    },
+    [track],
+  );
+
+  return {
+    trackScreenViewed,
+    trackTokenSelected,
+    trackProviderSelected,
+    trackCheckoutOpened,
+    trackCheckoutCallbackDetected,
+  };
+}

@@ -2,11 +2,13 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { RAMPS_TOKEN_SELECTION_ROUTE } from '../../../helpers/constants/routes';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import RampsBuildQuoteView from './components/ramps-build-quote-view';
 import { useRampsBuildQuote } from './hooks/useRampsBuildQuote';
 
 export function RampsBuildQuoteScreen() {
   const view = useRampsBuildQuote();
+  useRampsScreenViewed('Amount Input');
 
   if (view.kind === 'loading') {
     return <LoadingScreen />;
