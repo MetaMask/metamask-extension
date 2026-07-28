@@ -1553,8 +1553,17 @@ export function forgetDevice(
  * Lists Trezor devices currently connected over USB, regardless of whether
  * they have already been paired to a keyring. Used to let the user choose
  * which physical device to pair when more than one is plugged in.
+ *
+ * @param deviceName - Must match the type the caller intends to pair
+ * (Trezor vs OneKey): a keyring created here (when none exists yet) is
+ * reused for whichever device the user picks, but only if it was created
+ * with the right type.
  */
-export function listTrezorDevices(): ThunkAction<
+export function listTrezorDevices(
+  deviceName:
+    | HardwareDeviceNames.trezor
+    | HardwareDeviceNames.oneKey = HardwareDeviceNames.trezor,
+): ThunkAction<
   Promise<TrezorDevice[]>,
   MetaMaskReduxState,
   unknown,
@@ -1564,7 +1573,7 @@ export function listTrezorDevices(): ThunkAction<
     try {
       return await submitRequestToBackground<TrezorDevice[]>(
         'listTrezorDevices',
-        [],
+        [deviceName],
       );
     } catch (error) {
       logErrorWithMessage(error);

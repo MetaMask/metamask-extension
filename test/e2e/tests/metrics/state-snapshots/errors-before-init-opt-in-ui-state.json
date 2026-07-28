@@ -79,7 +79,7 @@
       "showShieldEntryModalOnce": null,
       "slides": "object",
       "termsOfUseLastAgreed": "number",
-      "trezorModel": null,
+      "trezorModels": {},
       "updateModalLastDismissedAt": null
     },
     "AssetsController": "object",

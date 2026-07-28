@@ -412,7 +412,7 @@
     "transactionBatches": "object",
     "transactionData": "object",
     "transactions": "object",
-    "trezorModel": null,
+    "trezorModels": {},
     "trialedProducts": "object",
     "txHistory": "object",
     "unapprovedDecryptMsgCount": 0,

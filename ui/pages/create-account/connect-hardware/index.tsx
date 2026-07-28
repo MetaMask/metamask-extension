@@ -175,6 +175,7 @@ const ConnectHardwareForm = () => {
   );
   const latestHardwareAccounts = useRef(hardwareAccounts);
   const latestDevice = useRef(device);
+  const latestConnectedDeviceId = useRef(connectedDeviceId);
   const latestPendingDevice = useRef<string | null>(null);
   const latestGetPageRequestId = useRef(0);
 
@@ -185,6 +186,10 @@ const ConnectHardwareForm = () => {
   useEffect(() => {
     latestDevice.current = device;
   }, [device]);
+
+  useEffect(() => {
+    latestConnectedDeviceId.current = connectedDeviceId;
+  }, [connectedDeviceId]);
 
   const setCurrentDevice = useCallback((nextDevice: string | null) => {
     latestDevice.current = nextDevice;
@@ -241,6 +246,12 @@ const ConnectHardwareForm = () => {
       shouldShowConnectedAlert = true,
       deviceId?: string,
     ) => {
+      // Callers that operate on the already-connected device (pagination,
+      // HD path changes) omit `deviceId`; fall back to the device already
+      // selected so they keep targeting that physical device instead of
+      // silently reverting to the first keyring of the type.
+      const effectiveDeviceId = deviceId ?? latestConnectedDeviceId.current;
+
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
       const requestId = latestGetPageRequestId.current + 1;
@@ -255,7 +266,7 @@ const ConnectHardwareForm = () => {
             hdPath,
             loadHid ?? false,
             t as (key: string) => string,
-            deviceId,
+            effectiveDeviceId,
           ),
         )) as { address: string; index?: number }[];
 
@@ -289,7 +300,7 @@ const ConnectHardwareForm = () => {
           setHardwareAccounts(newAccounts);
           setUnlocked(true);
           setCurrentDevice(deviceName);
-          setConnectedDeviceId(deviceId);
+          setConnectedDeviceId(effectiveDeviceId);
           setError(null);
         }
       } catch (e: unknown) {
@@ -443,11 +454,35 @@ const ConnectHardwareForm = () => {
         // Multiple physical Trezor/OneKey devices can be connected at
         // once; let the user choose which one to pair instead of leaving
         // it to whichever one TrezorConnect happens to pick.
-        const connectedDevices = await dispatch(actions.listTrezorDevices());
+        const connectedDevices = await dispatch(
+          actions.listTrezorDevices(
+            nextDevice as
+              | HardwareDeviceNames.trezor
+              | HardwareDeviceNames.oneKey,
+          ),
+        );
         if (connectedDevices.length > 1) {
           setTrezorDevicePickerOptions(connectedDevices);
           return;
         }
+        if (connectedDevices.length === 1) {
+          // Always pass the single connected device's id explicitly: if a
+          // *different* device of this type is already paired, omitting it
+          // would silently reuse that other device's keyring instead of
+          // pairing (or reconnecting to) the one currently plugged in.
+          getPage(
+            nextDevice,
+            0,
+            defaultHdPaths[nextDevice],
+            true,
+            true,
+            connectedDevices[0].deviceId,
+          );
+          return;
+        }
+        // No device detected yet (e.g. the bridge hasn't initialized
+        // because no keyring exists yet) — fall through and let the
+        // keyring learn the device's identity lazily on first unlock.
       }
 
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);

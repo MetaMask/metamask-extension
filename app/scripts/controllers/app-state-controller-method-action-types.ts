@@ -338,9 +338,12 @@ export type AppStateControllerSetCurrentExtensionPopupIdAction = {
 };
 
 /**
- * Sets a property indicating the model of the user's Trezor hardware wallet
+ * Records the model of a paired Trezor/OneKey hardware wallet, keyed by
+ * its stable `device_id` so multiple simultaneously-paired devices don't
+ * overwrite each other's recorded model.
  *
- * @param trezorModel - The Trezor model.
+ * @param deviceId - The device's stable `device_id`.
+ * @param model - The Trezor model.
  */
 export type AppStateControllerSetTrezorModelAction = {
   type: `AppStateController:setTrezorModel`;

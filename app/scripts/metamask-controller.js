@@ -5524,11 +5524,18 @@ export default class MetamaskController extends EventEmitter {
    * already-paired device's id simply reconnects to its existing keyring
    * (see `connectHardware`).
    *
+   * @param {HardwareDeviceNames.trezor | HardwareDeviceNames.oneKey} deviceName -
+   * Which keyring type to use for the query. Both share the same
+   * underlying device registry, but this must match the type the caller
+   * intends to pair so a keyring created here (when none exists yet) can
+   * be reused for that device instead of left behind as an empty orphan
+   * once a different-typed keyring is created for it (see
+   * `#findOrCreateHardwareKeyringForDevice`).
    * @returns {Promise<Array<{deviceId: string, path: string, label?: string, model?: string}>>}
    */
-  async listTrezorDevices() {
+  async listTrezorDevices(deviceName = HardwareDeviceNames.trezor) {
     return this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.trezor, create: true, deviceRead: true },
+      { name: deviceName, create: true, deviceRead: true },
       async (keyring) => {
         if (typeof keyring.bridge.listDevices !== 'function') {
           return [];
@@ -9202,6 +9209,11 @@ export default class MetamaskController extends EventEmitter {
         deviceId: options.deviceId,
         create: Boolean(options.create),
       });
+      if (!keyringId) {
+        throw new Error(
+          `MetamaskController:#withKeyringForDevice - No ${options.name} keyring found for device: ${options.deviceId}`,
+        );
+      }
       keyringSelector = { id: keyringId };
     } else if (options.create) {
       // `withKeyringV2` has no `createIfMissing` option. The connect-device
@@ -9356,27 +9368,41 @@ export default class MetamaskController extends EventEmitter {
       .filter(({ type }) => type === keyringType)
       .map((entry, index) => ({ ...entry, index }));
 
+    // Tracks the first keyring of this type that has never unlocked (e.g.
+    // one created solely to list currently-connected devices via
+    // `listTrezorDevices`, before the user picked one). Claiming it below
+    // avoids leaving it behind as a permanent empty orphan once a different
+    // keyring is created for the chosen device.
+    let unboundEntry;
+
     for (const entry of entries) {
       // Reading `deviceId` lock-free is safe here: it is set at most once,
       // the first time a keyring unlocks, and never changes afterwards, so
       // there is no mutable state for a concurrent locked operation to race
       // with.
-      const isBoundToDevice = await this.keyringController.withKeyringV2Unsafe(
+      const entryDeviceId = await this.keyringController.withKeyringV2Unsafe(
         { type: v2KeyringType, index: entry.index },
-        async ({ keyring }) => keyring.deviceId === deviceId,
+        async ({ keyring }) => keyring.deviceId,
       );
-      if (isBoundToDevice) {
+      if (entryDeviceId === deviceId) {
         return entry.metadata.id;
       }
+      if (!entryDeviceId && !unboundEntry) {
+        unboundEntry = entry;
+      }
+    }
+
+    if (unboundEntry) {
+      return unboundEntry.metadata.id;
     }
 
     if (!create) {
       return undefined;
     }
 
-    // No existing keyring is bound to this device yet; create a new one so
-    // it gets its own wallet section instead of colliding with another
-    // device's keyring.
+    // No existing keyring is bound to this device (or free to claim) yet;
+    // create a new one so it gets its own wallet section instead of
+    // colliding with another device's keyring.
     return this.keyringController.withController(async (controller) => {
       const metadata = await controller.addNewKeyring(keyringType);
       return metadata.id;

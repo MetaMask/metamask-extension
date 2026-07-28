@@ -75,7 +75,12 @@ let initPromise: Promise<void> | undefined;
 // sharing this document has disposed.
 let activeKeyringCount = 0;
 
-function initTrezorConnect(params: object) {
+// `params` is the caller-provided (untyped) init settings forwarded as-is
+// from the bridge; it includes internal-only fields (e.g. `env`) that
+// `InitFullSettings<ConnectSettingsWeb>` does not model.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function initTrezorConnect(params: any) {
   if (!initPromise) {
     initPromise = Promise.resolve()
       .then(() => {
