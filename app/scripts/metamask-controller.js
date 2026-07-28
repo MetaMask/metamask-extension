@@ -2637,7 +2637,6 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      deFiPositionsControllerV2,
       multichainAssetsRatesController,
       staticAssetsController,
     } = this;
@@ -3764,10 +3763,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
         deFiPositionsController,
-      ),
-
-      fetchDeFiPositions: deFiPositionsControllerV2.fetchDeFiPositions.bind(
-        deFiPositionsControllerV2,
       ),
 
       // GasFeeController
