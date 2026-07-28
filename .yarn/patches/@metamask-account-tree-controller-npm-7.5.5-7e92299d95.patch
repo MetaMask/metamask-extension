@@ -1,0 +1,270 @@
+diff --git a/dist/rules/keyring.cjs b/dist/rules/keyring.cjs
+index c703e6e72fa0daddb8835bc27d6de6e22e24a24b..ec257153d00e4aa836370d3d721eefe6121dbed6 100644
+--- a/dist/rules/keyring.cjs
++++ b/dist/rules/keyring.cjs
+@@ -105,6 +105,71 @@ function getAccountGroupPrefixFromKeyringType(type) {
+     }
+ }
+ exports.getAccountGroupPrefixFromKeyringType = getAccountGroupPrefixFromKeyringType;
++
++/**
++ * Keyring types that support multiple simultaneous hardware devices, each
++ * as its own `KeyringController` keyring instance (see
++ * `@metamask/eth-trezor-keyring`). Every other keyring type still groups by
++ * bare type string, matching the pre-existing single-shared-wallet
++ * behavior.
++ */
++const HARDWARE_MULTI_INSTANCE_KEYRING_TYPES = new Set([
++    v2_1.KeyringType.Trezor,
++    keyring_controller_1.KeyringTypes.trezor,
++    v2_1.KeyringType.OneKey,
++    keyring_controller_1.KeyringTypes.oneKey,
++]);
++/**
++ * Finds the `KeyringController` metadata (`{ id, name }`) for the keyring
++ * instance of the given type that owns `address`. Used to give each
++ * multi-instance hardware keyring (one per paired physical device) its own
++ * wallet section instead of collapsing every device of the same type into a
++ * single shared wallet.
++ *
++ * @param messenger - The rule's restricted messenger.
++ * @param keyringType - The keyring type to search within.
++ * @param address - The account address to look up.
++ * @returns The owning keyring's metadata, or `undefined` if not found.
++ */
++function getOwningKeyringMetadata(messenger, keyringType, address) {
++    const { keyrings } = messenger.call('KeyringController:getState');
++    const normalizedAddress = address.toLowerCase();
++    return keyrings.find((keyringEntry) => keyringEntry.type === keyringType &&
++        keyringEntry.accounts.some((account) => account.toLowerCase() === normalizedAddress))?.metadata;
++}
++/**
++ * Resolves the display name for a multi-instance hardware wallet section:
++ * the device's own name if the keyring's metadata was given one (see the
++ * `metamask-extension` connect-hardware flow, which sets it from the
++ * device's user-set label or model), falling back to `"<Type> N"` using
++ * this keyring's position among same-type keyrings. Disambiguates two
++ * devices that report the same name by falling back to the same
++ * `"<Type> N"` scheme.
++ *
++ * @param messenger - The rule's restricted messenger.
++ * @param keyringType - The keyring type being named.
++ * @param keyringId - The specific keyring instance's id.
++ * @returns The wallet's display name.
++ */
++function getHardwareWalletDisplayName(messenger, keyringType, keyringId) {
++    const { keyrings } = messenger.call('KeyringController:getState');
++    const sameType = keyrings.filter((keyringEntry) => keyringEntry.type === keyringType);
++    const thisEntry = sameType.find((keyringEntry) => keyringEntry.metadata.id === keyringId);
++    const name = thisEntry?.metadata.name;
++    if (name) {
++        const sharesName = sameType.filter((keyringEntry) => keyringEntry.metadata.name === name);
++        if (sharesName.length <= 1) {
++            return name;
++        }
++    }
++    const baseName = getAccountWalletNameFromKeyringType(keyringType);
++    if (sameType.length <= 1) {
++        return baseName;
++    }
++    const index = sameType.findIndex((keyringEntry) => keyringEntry.metadata.id === keyringId);
++    return `${baseName} ${index + 1}`;
++}
++
+ class KeyringRule extends rule_1.BaseRule {
+     constructor() {
+         super(...arguments);
+@@ -114,7 +179,19 @@ class KeyringRule extends rule_1.BaseRule {
+     match(account) {
+         // We assume that `type` is really a `KeyringTypes`.
+         const keyringType = account.metadata.keyring.type;
+-        const walletId = (0, account_api_3.toAccountWalletId)(this.walletType, keyringType);
++        // Multi-instance hardware wallets (one keyring per paired physical
++        // device) get their own wallet section keyed by the owning keyring
++        // instance's id, instead of collapsing every device of the same
++        // type into a single shared wallet.
++        let walletDiscriminator = keyringType;
++        let keyringMetadata;
++        if (HARDWARE_MULTI_INSTANCE_KEYRING_TYPES.has(keyringType)) {
++            keyringMetadata = getOwningKeyringMetadata(this.messenger, keyringType, account.address);
++            if (keyringMetadata) {
++                walletDiscriminator = `${keyringType}:${keyringMetadata.id}`;
++            }
++        }
++        const walletId = (0, account_api_3.toAccountWalletId)(this.walletType, walletDiscriminator);
+         const groupId = (0, account_api_3.toAccountGroupId)(walletId, account.address);
+         return {
+             wallet: {
+@@ -123,6 +200,7 @@ class KeyringRule extends rule_1.BaseRule {
+                 metadata: {
+                     keyring: {
+                         type: keyringType,
++                        ...(keyringMetadata ? { id: keyringMetadata.id } : {}),
+                     },
+                 },
+             },
+@@ -138,7 +216,11 @@ class KeyringRule extends rule_1.BaseRule {
+         };
+     }
+     getDefaultAccountWalletName(wallet) {
+-        return getAccountWalletNameFromKeyringType(wallet.metadata.keyring.type);
++        const { type, id } = wallet.metadata.keyring;
++        if (id && HARDWARE_MULTI_INSTANCE_KEYRING_TYPES.has(type)) {
++            return getHardwareWalletDisplayName(this.messenger, type, id);
++        }
++        return getAccountWalletNameFromKeyringType(type);
+     }
+     getComputedAccountGroupName(group) {
+         return super.getComputedAccountGroupName(group);
+diff --git a/dist/rules/keyring.d.cts b/dist/rules/keyring.d.cts
+index a7d743e60b9d29ef74d3d560908d2ba3c6308b95..a85cc784eb51927576871873cc43bbca623514e7 100644
+--- a/dist/rules/keyring.d.cts
++++ b/dist/rules/keyring.d.cts
+@@ -22,6 +22,12 @@ export declare function getAccountWalletNameFromKeyringType(type: KeyringTypes |
+  */
+ export declare function getAccountGroupPrefixFromKeyringType(type: KeyringTypes | KeyringType): string;
+ export declare class KeyringRule extends BaseRule implements Rule<AccountWalletType.Keyring, AccountGroupType.SingleAccount> {
++    /**
++     * For multi-instance hardware wallet types (Trezor/OneKey), the
++     * returned wallet's `metadata.keyring` also carries the owning
++     * keyring instance's `id`, so each paired physical device resolves
++     * to its own wallet section instead of a single shared one.
++     */
+     readonly walletType = AccountWalletType.Keyring;
+     readonly groupType = AccountGroupType.SingleAccount;
+     match(account: InternalAccount): RuleResult<AccountWalletType.Keyring, AccountGroupType.SingleAccount>;
+diff --git a/dist/rules/keyring.d.mts b/dist/rules/keyring.d.mts
+index 2e56fc5d88f89ecab74b4acb4398e62bf1ce8270..6468bfd80a7880dd9285e165685a81ee92268970 100644
+--- a/dist/rules/keyring.d.mts
++++ b/dist/rules/keyring.d.mts
+@@ -22,6 +22,12 @@ export declare function getAccountWalletNameFromKeyringType(type: KeyringTypes |
+  */
+ export declare function getAccountGroupPrefixFromKeyringType(type: KeyringTypes | KeyringType): string;
+ export declare class KeyringRule extends BaseRule implements Rule<AccountWalletType.Keyring, AccountGroupType.SingleAccount> {
++    /**
++     * For multi-instance hardware wallet types (Trezor/OneKey), the
++     * returned wallet's `metadata.keyring` also carries the owning
++     * keyring instance's `id`, so each paired physical device resolves
++     * to its own wallet section instead of a single shared one.
++     */
+     readonly walletType = AccountWalletType.Keyring;
+     readonly groupType = AccountGroupType.SingleAccount;
+     match(account: InternalAccount): RuleResult<AccountWalletType.Keyring, AccountGroupType.SingleAccount>;
+diff --git a/dist/rules/keyring.mjs b/dist/rules/keyring.mjs
+index 287b0f0b6f0c44009b3dcacd7d24de83fd89ce50..df08ab79ac33ae3f8d5cf16779ddc128104eea79 100644
+--- a/dist/rules/keyring.mjs
++++ b/dist/rules/keyring.mjs
+@@ -100,6 +100,71 @@ export function getAccountGroupPrefixFromKeyringType(type) {
+         }
+     }
+ }
++
++/**
++ * Keyring types that support multiple simultaneous hardware devices, each
++ * as its own `KeyringController` keyring instance (see
++ * `@metamask/eth-trezor-keyring`). Every other keyring type still groups by
++ * bare type string, matching the pre-existing single-shared-wallet
++ * behavior.
++ */
++const HARDWARE_MULTI_INSTANCE_KEYRING_TYPES = new Set([
++    KeyringType.Trezor,
++    KeyringTypes.trezor,
++    KeyringType.OneKey,
++    KeyringTypes.oneKey,
++]);
++/**
++ * Finds the `KeyringController` metadata (`{ id, name }`) for the keyring
++ * instance of the given type that owns `address`. Used to give each
++ * multi-instance hardware keyring (one per paired physical device) its own
++ * wallet section instead of collapsing every device of the same type into a
++ * single shared wallet.
++ *
++ * @param messenger - The rule's restricted messenger.
++ * @param keyringType - The keyring type to search within.
++ * @param address - The account address to look up.
++ * @returns The owning keyring's metadata, or `undefined` if not found.
++ */
++function getOwningKeyringMetadata(messenger, keyringType, address) {
++    const { keyrings } = messenger.call('KeyringController:getState');
++    const normalizedAddress = address.toLowerCase();
++    return keyrings.find((keyringEntry) => keyringEntry.type === keyringType &&
++        keyringEntry.accounts.some((account) => account.toLowerCase() === normalizedAddress))?.metadata;
++}
++/**
++ * Resolves the display name for a multi-instance hardware wallet section:
++ * the device's own name if the keyring's metadata was given one (see the
++ * `metamask-extension` connect-hardware flow, which sets it from the
++ * device's user-set label or model), falling back to `"<Type> N"` using
++ * this keyring's position among same-type keyrings. Disambiguates two
++ * devices that report the same name by falling back to the same
++ * `"<Type> N"` scheme.
++ *
++ * @param messenger - The rule's restricted messenger.
++ * @param keyringType - The keyring type being named.
++ * @param keyringId - The specific keyring instance's id.
++ * @returns The wallet's display name.
++ */
++function getHardwareWalletDisplayName(messenger, keyringType, keyringId) {
++    const { keyrings } = messenger.call('KeyringController:getState');
++    const sameType = keyrings.filter((keyringEntry) => keyringEntry.type === keyringType);
++    const thisEntry = sameType.find((keyringEntry) => keyringEntry.metadata.id === keyringId);
++    const name = thisEntry?.metadata.name;
++    if (name) {
++        const sharesName = sameType.filter((keyringEntry) => keyringEntry.metadata.name === name);
++        if (sharesName.length <= 1) {
++            return name;
++        }
++    }
++    const baseName = getAccountWalletNameFromKeyringType(keyringType);
++    if (sameType.length <= 1) {
++        return baseName;
++    }
++    const index = sameType.findIndex((keyringEntry) => keyringEntry.metadata.id === keyringId);
++    return `${baseName} ${index + 1}`;
++}
++
+ export class KeyringRule extends BaseRule {
+     constructor() {
+         super(...arguments);
+@@ -109,7 +174,19 @@ export class KeyringRule extends BaseRule {
+     match(account) {
+         // We assume that `type` is really a `KeyringTypes`.
+         const keyringType = account.metadata.keyring.type;
+-        const walletId = toAccountWalletId(this.walletType, keyringType);
++        // Multi-instance hardware wallets (one keyring per paired physical
++        // device) get their own wallet section keyed by the owning keyring
++        // instance's id, instead of collapsing every device of the same
++        // type into a single shared wallet.
++        let walletDiscriminator = keyringType;
++        let keyringMetadata;
++        if (HARDWARE_MULTI_INSTANCE_KEYRING_TYPES.has(keyringType)) {
++            keyringMetadata = getOwningKeyringMetadata(this.messenger, keyringType, account.address);
++            if (keyringMetadata) {
++                walletDiscriminator = `${keyringType}:${keyringMetadata.id}`;
++            }
++        }
++        const walletId = toAccountWalletId(this.walletType, walletDiscriminator);
+         const groupId = toAccountGroupId(walletId, account.address);
+         return {
+             wallet: {
+@@ -118,6 +195,7 @@ export class KeyringRule extends BaseRule {
+                 metadata: {
+                     keyring: {
+                         type: keyringType,
++                        ...(keyringMetadata ? { id: keyringMetadata.id } : {}),
+                     },
+                 },
+             },
+@@ -133,7 +211,11 @@ export class KeyringRule extends BaseRule {
+         };
+     }
+     getDefaultAccountWalletName(wallet) {
+-        return getAccountWalletNameFromKeyringType(wallet.metadata.keyring.type);
++        const { type, id } = wallet.metadata.keyring;
++        if (id && HARDWARE_MULTI_INSTANCE_KEYRING_TYPES.has(type)) {
++            return getHardwareWalletDisplayName(this.messenger, type, id);
++        }
++        return getAccountWalletNameFromKeyringType(type);
+     }
+     getComputedAccountGroupName(group) {
+         return super.getComputedAccountGroupName(group);

@@ -16,6 +16,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
   TrezorAction,
+  TrezorDevice,
 } from '../../../../shared/constants/offscreen-communication';
 import { withTrezorDeviceTimeout } from './with-trezor-device-timeout';
 
@@ -34,6 +35,15 @@ export class TrezorOffscreenBridge implements TrezorBridge {
 
   minorVersion: number | undefined;
 
+  /**
+   * Stable per-device identity (Trezor's `features.device_id`). Unset until
+   * the owning keyring learns it (see `TrezorKeyring#captureDeviceId`), at
+   * which point every subsequent call below is routed to this specific
+   * physical device by the offscreen document, even while other devices are
+   * connected at the same time.
+   */
+  deviceId: string | undefined;
+
   init(
     settings: {
       manifest: Manifest;
@@ -41,12 +51,26 @@ export class TrezorOffscreenBridge implements TrezorBridge {
   ) {
     chrome.runtime.onMessage.addListener((msg) => {
       if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
+        msg.target !== OffscreenCommunicationTarget.extension ||
+        msg.event !== OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
-        this.model = msg.payload.model;
-        this.minorVersion = msg.payload.minorVersion;
+        return;
       }
+
+      const payload = msg.payload as TrezorDevice;
+      // Every bridge instance (one per paired device) registers this same
+      // listener, and `chrome.runtime.onMessage` broadcasts every event to
+      // every listener regardless of which device it concerns. Only update
+      // this bridge's model/version hint from events for its own device
+      // (once known), or from any device while pairing (deviceId not yet
+      // known), so a second device connecting cannot clobber the model
+      // shown for this one.
+      if (this.deviceId && payload.deviceId !== this.deviceId) {
+        return;
+      }
+
+      this.model = payload.model;
+      this.minorVersion = payload.minorVersion;
     });
 
     return new Promise<void>((resolve) => {
@@ -94,9 +118,12 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     params?: unknown;
   }): Promise<ResponseType> {
     const responsePromise = new Promise<ResponseType>((resolve) => {
-      chrome.runtime.sendMessage(message, (response) => {
-        resolve(response as ResponseType);
-      });
+      chrome.runtime.sendMessage(
+        { ...message, deviceId: this.deviceId },
+        (response) => {
+          resolve(response as ResponseType);
+        },
+      );
     });
 
     return withTrezorDeviceTimeout(responsePromise);
@@ -142,6 +169,22 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     return this.#sendDeviceMessage({
       target: OffscreenCommunicationTarget.trezorOffscreen,
       action: TrezorAction.getFeatures,
+    }) as TrezorResponse<Features>;
+  }
+
+  /**
+   * Identifies the physical device the user picks in TrezorConnect's popup /
+   * the browser's WebUSB chooser, via an *unpinned* `getFeatures` call
+   * (`this.deviceId` is deliberately not applied). This is the pairing entry
+   * point: a never-paired device is invisible to the offscreen registry, so
+   * identity must be established by contacting it first — the returned
+   * `features.device_id` then decides whether it maps to an existing keyring
+   * or a new one.
+   */
+  identifyDevice() {
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.identifyDevice,
     }) as TrezorResponse<Features>;
   }
 }

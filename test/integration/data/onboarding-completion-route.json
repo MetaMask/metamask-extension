@@ -460,7 +460,7 @@
   "tracesBeforeMetricsOptIn": [],
   "traits": {},
   "transactions": [],
-  "trezorModel": null,
+  "trezorModels": {},
   "unapprovedDecryptMsgCount": 0,
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,

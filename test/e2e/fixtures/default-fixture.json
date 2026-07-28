@@ -215,7 +215,7 @@
       "slides": [],
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
-      "trezorModel": null,
+      "trezorModels": {},
       "updateModalLastDismissedAt": null
     },
     "AssetsController": {

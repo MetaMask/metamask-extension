@@ -1849,6 +1849,7 @@ describe('Actions', () => {
         HardwareDeviceNames.trezor,
         null,
         '',
+        undefined,
       ]);
     });
 

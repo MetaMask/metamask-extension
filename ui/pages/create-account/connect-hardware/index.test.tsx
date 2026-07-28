@@ -51,6 +51,11 @@ const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 const mockForgetDevice = jest.fn().mockResolvedValue(undefined);
 const mockUnlockHardwareWalletAccountsAction = jest.fn();
 const mockUnlockHardwareWalletAccounts = jest.fn().mockResolvedValue(undefined);
+// Only relevant for Trezor/OneKey: resolving `undefined` mirrors a bridge
+// that cannot identify devices, so existing single-device flows behave
+// exactly as before this mock existed. Tests exercising multi-device
+// routing override this with a `{ deviceId }` resolution.
+const mockIdentifyTrezorDevice = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
   connectHardware: (...args: unknown[]) => {
@@ -68,6 +73,7 @@ jest.mock('../../../store/actions', () => ({
   setHardwareWalletDefaultHdPath: () => ({
     type: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   }),
+  identifyTrezorDevice: () => mockIdentifyTrezorDevice,
 }));
 
 const mockGetActiveQrCodeScanRequest = jest.fn().mockReturnValue(null);
@@ -810,6 +816,7 @@ describe('ConnectHardwareForm', () => {
             HardwareDeviceNames.trezor,
             null,
             '',
+            undefined,
           );
         });
       });

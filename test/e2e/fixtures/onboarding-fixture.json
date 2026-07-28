@@ -90,7 +90,7 @@
       "showShieldEntryModalOnce": null,
       "slides": [],
       "timeoutMinutes": 0,
-      "trezorModel": null,
+      "trezorModels": {},
       "updateModalLastDismissedAt": null
     },
     "AssetsController": {

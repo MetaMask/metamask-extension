@@ -15,7 +15,56 @@ import type {
   Features,
 } from '@trezor/connect-web';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../../../shared/constants/hardware-wallets';
+import { TrezorDevice } from '../../../../shared/constants/offscreen-communication';
 import { withTrezorDeviceTimeout } from './with-trezor-device-timeout';
+
+/**
+ * Devices currently known to be connected, keyed by their stable
+ * `features.device_id`. Shared at module scope (mirroring the MV3 offscreen
+ * document's registry) because every `TrezorMv2Bridge` instance in this
+ * background page talks to the same `SuiteDesktopConnect` singleton and
+ * would otherwise see every other bridge's `DEVICE_EVENT`s.
+ */
+const devices = new Map<string, TrezorDevice>();
+
+function upsertDevice(features: Features, path: string) {
+  if (!features.device_id) {
+    return;
+  }
+
+  devices.set(features.device_id, {
+    deviceId: features.device_id,
+    path,
+    label: features.label ?? undefined,
+    model: features.model,
+  });
+}
+
+function removeDeviceByPath(path: string) {
+  for (const [deviceId, device] of devices) {
+    if (device.path === path) {
+      devices.delete(deviceId);
+      break;
+    }
+  }
+}
+
+function deviceParam(deviceId?: string) {
+  const device = deviceId ? devices.get(deviceId) : undefined;
+  return device ? { device: { path: device.path } } : {};
+}
+
+// `SuiteDesktopConnect` is a singleton shared by every Trezor/OneKey keyring
+// instance (one per paired device). It is initialized once and the
+// `DEVICE_EVENT` listener registered once, so pairing or using a second
+// device never disposes or duplicates another device's session.
+let initPromise: Promise<void> | undefined;
+let listenerAdded = false;
+// KeyringController calls `bridge.dispose()` once per keyring instance (on
+// removal or wallet lock); the real teardown is deferred until every
+// keyring sharing this singleton has disposed, for the same reason as the
+// MV3 offscreen document (see `app/offscreen/hardware-wallets/trezor.ts`).
+let activeBridgeCount = 0;
 
 // The resolved value type of TrezorResponse<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
 // `.then()` callbacks receive this type, not the Promise itself.
@@ -81,60 +130,102 @@ function createSuiteDesktopMissingError(): Error {
  * clear error response.
  */
 export class TrezorMv2Bridge implements TrezorBridge {
-  model: string | undefined;
+  /**
+   * Stable per-device identity (Trezor's `features.device_id`). Unset until
+   * the owning keyring learns it (see `TrezorKeyring#captureDeviceId`), at
+   * which point every subsequent call below is routed to this specific
+   * physical device, even while other devices are connected at the same
+   * time.
+   */
+  deviceId: string | undefined;
 
-  #initiated = false;
-
-  #listenerAdded = false;
+  /**
+   * The model reported by this bridge's own device once `deviceId` is
+   * known. Before pairing (deviceId unset), falls back to the sole
+   * currently-connected device's model as a display hint while the user
+   * is connecting it — `SuiteDesktopConnect` is a shared singleton, so this
+   * cannot be derived per-instance any other way.
+   */
+  get model(): string | undefined {
+    if (this.deviceId) {
+      return devices.get(this.deviceId)?.model;
+    }
+    return devices.size === 1 ? [...devices.values()][0].model : undefined;
+  }
 
   async init(
     settings: { manifest: Manifest } & Partial<ConnectSettings>,
   ): Promise<void> {
-    if (!this.#listenerAdded) {
+    activeBridgeCount += 1;
+
+    if (!listenerAdded) {
       // SuiteDesktopConnect properties resolve to `any` via the & Record<string, any>
       // intersection in its type, so the event listener is untyped here.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       SuiteDesktopConnect.on(DEVICE_EVENT as any, (event: any) => {
-        if (event?.type !== DEVICE.CONNECT) {
-          return;
+        switch (event?.type) {
+          case DEVICE.CONNECT:
+          case DEVICE.CHANGED: {
+            const features = event?.payload?.features;
+            const path = event?.payload?.path;
+            if (features?.device_id && path) {
+              upsertDevice(features, path);
+            }
+            break;
+          }
+          case DEVICE.DISCONNECT:
+            if (event?.payload?.path) {
+              removeDeviceByPath(event.payload.path);
+            }
+            break;
+          default:
+            break;
         }
-        this.model = event?.payload?.features?.model;
       });
-      this.#listenerAdded = true;
+      listenerAdded = true;
     }
 
-    if (this.#initiated) {
-      return;
+    if (!initPromise) {
+      initPromise = (async () => {
+        try {
+          // init() on CoreInSuiteDesktop opens a WebSocket to Suite Desktop.
+          // It throws Desktop_ConnectionMissing if the connection cannot be made.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (SuiteDesktopConnect as any).init(settings);
+        } catch (err: unknown) {
+          // Allow a future `init` call to retry after a hard failure
+          // (e.g. once the user opens Suite Desktop) instead of getting
+          // stuck on a rejected promise forever.
+          initPromise = undefined;
+          if (
+            typeof err === 'object' &&
+            err !== null &&
+            (err as { code?: unknown }).code ===
+              TREZOR_DESKTOP_CONNECTION_MISSING_CODE
+          ) {
+            throw createSuiteDesktopMissingError();
+          }
+          if (err instanceof Error) {
+            throw err;
+          }
+          throw new Error(String(err));
+        }
+      })();
     }
 
-    try {
-      // init() on CoreInSuiteDesktop opens a WebSocket to Suite Desktop.
-      // It throws Desktop_ConnectionMissing if the connection cannot be made.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (SuiteDesktopConnect as any).init(settings);
-      this.#initiated = true;
-    } catch (err: unknown) {
-      // #initiated stays false so a retry after the user opens Suite Desktop
-      // will re-attempt the connection.
-      if (
-        typeof err === 'object' &&
-        err !== null &&
-        (err as { code?: unknown }).code ===
-          TREZOR_DESKTOP_CONNECTION_MISSING_CODE
-      ) {
-        throw createSuiteDesktopMissingError();
-      }
-      if (err instanceof Error) {
-        throw err;
-      }
-      throw new Error(String(err));
-    }
+    return initPromise;
   }
 
   async dispose(): Promise<void> {
-    this.#initiated = false;
+    activeBridgeCount = Math.max(0, activeBridgeCount - 1);
+    if (activeBridgeCount > 0) {
+      return;
+    }
+
+    initPromise = undefined;
+    devices.clear();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (SuiteDesktopConnect as any).dispose();
+    await (SuiteDesktopConnect as any).dispose();
   }
 
   getPublicKey(params: {
@@ -144,7 +235,7 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
-        .getPublicKey(params)
+        .getPublicKey({ ...params, ...deviceParam(this.deviceId) })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<{ publicKey: string; chainCode: string }>(r),
@@ -158,7 +249,7 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
-        .ethereumSignTransaction(params)
+        .ethereumSignTransaction({ ...params, ...deviceParam(this.deviceId) })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) => mapError<EthereumSignedTx>(r)),
     ) as unknown as TrezorResponse<EthereumSignedTx>;
@@ -170,7 +261,7 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
-        .ethereumSignMessage(params)
+        .ethereumSignMessage({ ...params, ...deviceParam(this.deviceId) })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) => mapError<PROTO.MessageSignature>(r)),
     ) as unknown as TrezorResponse<PROTO.MessageSignature>;
@@ -182,13 +273,31 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
-        .ethereumSignTypedData(params)
+        .ethereumSignTypedData({ ...params, ...deviceParam(this.deviceId) })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) => mapError<PROTO.EthereumTypedDataSignature>(r)),
     ) as unknown as TrezorResponse<PROTO.EthereumTypedDataSignature>;
   }
 
   getFeatures(): TrezorResponse<Features> {
+    return withTrezorDeviceTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .getFeatures(deviceParam(this.deviceId))
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<Features>(r)),
+    ) as unknown as TrezorResponse<Features>;
+  }
+
+  /**
+   * Identifies the physical device the user selects in Suite Desktop, via
+   * an *unpinned* `getFeatures` call (`this.deviceId` is deliberately not
+   * applied). This is the pairing entry point: a never-paired device may be
+   * absent from the registry, so identity must be established by contacting
+   * it first — the returned `features.device_id` then decides whether it
+   * maps to an existing keyring or a new one.
+   */
+  identifyDevice(): TrezorResponse<Features> {
     return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)

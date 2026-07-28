@@ -1567,7 +1567,7 @@
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
-    "trezorModel": "null",
+    "trezorModels": {},
     "trialedProducts": [],
     "txHistory": {},
     "unapprovedDecryptMsgCount": "number",

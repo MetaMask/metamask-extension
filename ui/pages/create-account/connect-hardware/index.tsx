@@ -155,11 +155,19 @@ const ConnectHardwareForm = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
   const [isFirefox, setIsFirefox] = useState(false);
+  // The deviceId of the Trezor/OneKey device whose accounts are currently
+  // shown, if any (undefined for every other hardware wallet type, or if
+  // no explicit device was chosen). Threaded back into `forgetDevice` so
+  // forgetting only removes this device's keyring.
+  const [connectedDeviceId, setConnectedDeviceId] = useState<
+    string | undefined
+  >(undefined);
   const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
     activeQrCodeScanRequest,
   );
   const latestHardwareAccounts = useRef(hardwareAccounts);
   const latestDevice = useRef(device);
+  const latestConnectedDeviceId = useRef(connectedDeviceId);
   const latestPendingDevice = useRef<string | null>(null);
   const latestGetPageRequestId = useRef(0);
 
@@ -170,6 +178,10 @@ const ConnectHardwareForm = () => {
   useEffect(() => {
     latestDevice.current = device;
   }, [device]);
+
+  useEffect(() => {
+    latestConnectedDeviceId.current = connectedDeviceId;
+  }, [connectedDeviceId]);
 
   const setCurrentDevice = useCallback((nextDevice: string | null) => {
     latestDevice.current = nextDevice;
@@ -224,7 +236,14 @@ const ConnectHardwareForm = () => {
       hdPath: string,
       loadHid?: boolean,
       shouldShowConnectedAlert = true,
+      deviceId?: string,
     ) => {
+      // Callers that operate on the already-connected device (pagination,
+      // HD path changes) omit `deviceId`; fall back to the device already
+      // selected so they keep targeting that physical device instead of
+      // silently reverting to the first keyring of the type.
+      const effectiveDeviceId = deviceId ?? latestConnectedDeviceId.current;
+
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
       const requestId = latestGetPageRequestId.current + 1;
@@ -239,6 +258,7 @@ const ConnectHardwareForm = () => {
             hdPath,
             loadHid ?? false,
             t as (key: string) => string,
+            effectiveDeviceId,
           ),
         )) as { address: string; index?: number }[];
 
@@ -272,6 +292,7 @@ const ConnectHardwareForm = () => {
           setHardwareAccounts(newAccounts);
           setUnlocked(true);
           setCurrentDevice(deviceName);
+          setConnectedDeviceId(effectiveDeviceId);
           setError(null);
         }
       } catch (e: unknown) {
@@ -397,7 +418,7 @@ const ConnectHardwareForm = () => {
   ]);
 
   const connectToHardwareWallet = useCallback(
-    (nextDevice: string) => {
+    async (nextDevice: string) => {
       if (latestPendingDevice.current === nextDevice) {
         return;
       }
@@ -418,10 +439,58 @@ const ConnectHardwareForm = () => {
           .build(),
       );
 
+      if (
+        nextDevice === HardwareDeviceNames.trezor ||
+        nextDevice === HardwareDeviceNames.oneKey
+      ) {
+        // Identify which physical device the user intends to connect
+        // *before* choosing a keyring. The probe opens TrezorConnect's
+        // popup and the browser's own WebUSB chooser — the only way to
+        // reach a never-paired device, since no enumeration can see it
+        // until permission is granted. The resolved stable `device_id`
+        // then routes to that device's existing keyring (already paired)
+        // or a new one (fresh pairing).
+        let identified;
+        try {
+          identified = await dispatch(
+            actions.identifyTrezorDevice(
+              nextDevice as
+                | HardwareDeviceNames.trezor
+                | HardwareDeviceNames.oneKey,
+            ),
+          );
+        } catch (e: unknown) {
+          // Never fall through to an unidentified connect: with another
+          // device already paired, it would silently open that device's
+          // wallet — the exact mis-routing this probe exists to prevent.
+          const errorMessage = toErrorMessage(e);
+          if (
+            errorMessage !== 'Window closed' &&
+            errorMessage !== 'Popup closed'
+          ) {
+            setError(errorMessage);
+          }
+          return;
+        }
+
+        // `identified` is undefined only when the bridge cannot identify
+        // devices (e.g. test stubs); fall back to single-device behavior.
+        getPage(
+          nextDevice,
+          0,
+          defaultHdPaths[nextDevice],
+          true,
+          true,
+          identified?.deviceId,
+        );
+        return;
+      }
+
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
       defaultHdPaths,
+      dispatch,
       getPage,
       hardwareAccounts.length,
       hardwareWalletKeyrings.length,
@@ -463,7 +532,12 @@ const ConnectHardwareForm = () => {
   const onForgetDevice = useCallback(
     async (deviceName: string, hdPath: string) => {
       try {
-        await dispatch(actions.forgetDevice(deviceName as HardwareDeviceNames));
+        await dispatch(
+          actions.forgetDevice(
+            deviceName as HardwareDeviceNames,
+            connectedDeviceId,
+          ),
+        );
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.HardwareWalletForgotten)
@@ -480,6 +554,7 @@ const ConnectHardwareForm = () => {
         latestHardwareAccounts.current = [];
         setHardwareAccounts([]);
         setCurrentDevice(null);
+        setConnectedDeviceId(undefined);
         setUnlocked(false);
       } catch (e) {
         const errorMessage = toErrorMessage(e);
@@ -499,7 +574,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [connectedDeviceId, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -532,6 +607,7 @@ const ConnectHardwareForm = () => {
             deviceName as HardwareDeviceNames,
             path || null,
             description,
+            connectedDeviceId,
           ),
         );
 
@@ -601,6 +677,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      connectedDeviceId,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,

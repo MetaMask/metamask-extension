@@ -102,7 +102,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     termsOfUseLastAgreed: true,
     throttledOrigins: false,
     timeoutMinutes: true,
-    trezorModel: true,
+    trezorModels: true,
     pendingExtensionVersion: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,

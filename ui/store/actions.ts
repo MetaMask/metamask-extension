@@ -151,6 +151,7 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import type { TrezorDeviceIdentity } from '../../shared/constants/offscreen-communication';
 import {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
@@ -1500,8 +1501,11 @@ export function importNewAccount(
 export function checkHardwareStatus(
   deviceName: HardwareDeviceNames,
   hdPath: string,
+  // For Trezor/OneKey only: check the specific paired device's keyring
+  // instead of the first (or only) one of the type.
+  deviceId?: string,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.checkHardwareStatus`, deviceName, hdPath);
+  log.debug(`background.checkHardwareStatus`, deviceName, hdPath, deviceId);
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
@@ -1509,7 +1513,7 @@ export function checkHardwareStatus(
     try {
       unlocked = await submitRequestToBackground<boolean>(
         'checkHardwareStatus',
-        [deviceName, hdPath],
+        [deviceName, hdPath, deviceId],
       );
     } catch (error) {
       logErrorWithMessage(error);
@@ -1525,12 +1529,15 @@ export function checkHardwareStatus(
 
 export function forgetDevice(
   deviceName: HardwareDeviceNames,
+  // For Trezor/OneKey only: forget only the keyring bound to this specific
+  // device, leaving any other paired device intact.
+  deviceId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.forgetDevice`, deviceName);
+  log.debug(`background.forgetDevice`, deviceName, deviceId);
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      await submitRequestToBackground('forgetDevice', [deviceName]);
+      await submitRequestToBackground('forgetDevice', [deviceName, deviceId]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1542,6 +1549,42 @@ export function forgetDevice(
   };
 }
 
+/**
+ * Identifies which physical Trezor/OneKey device the user intends to
+ * connect: an unpinned probe that opens TrezorConnect's popup (and the
+ * browser's own WebUSB chooser) so the user picks the device — including a
+ * never-paired one, which no enumeration can see until it has been granted
+ * permission. Returns the device's stable identity, or `undefined` when the
+ * bridge does not support identification.
+ *
+ * @param deviceName - Must match the type the caller intends to pair
+ * (Trezor vs OneKey): a keyring created here (when none exists yet) is
+ * reused for whichever device the user picks, but only if it was created
+ * with the right type.
+ */
+export function identifyTrezorDevice(
+  deviceName:
+    | HardwareDeviceNames.trezor
+    | HardwareDeviceNames.oneKey = HardwareDeviceNames.trezor,
+): ThunkAction<
+  Promise<TrezorDeviceIdentity | undefined>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      return await submitRequestToBackground<TrezorDeviceIdentity | undefined>(
+        'identifyTrezorDevice',
+        [deviceName],
+      );
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
 // TODO: Define an Account Type for the return type of this method and anywhere
 // else dealing with accounts.
 export function connectHardware(
@@ -1550,13 +1593,17 @@ export function connectHardware(
   hdPath: string,
   loadHid: boolean,
   t: (key: string) => string,
+  // For Trezor/OneKey only: pair or reconnect to this specific device (see
+  // `identifyTrezorDevice`). Omit to use (or create, if none exists yet)
+  // the first keyring of the type.
+  deviceId?: string,
 ): ThunkAction<
   Promise<{ address: string }[]>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  log.debug(`background.connectHardware`, deviceName, page, hdPath);
+  log.debug(`background.connectHardware`, deviceName, page, hdPath, deviceId);
   return async (dispatch, getState) => {
     const { ledgerTransportType } = getState().metamask;
 
@@ -1599,7 +1646,7 @@ export function connectHardware(
 
       accounts = await submitRequestToBackground<{ address: string }[]>(
         'connectHardware',
-        [deviceName, page, hdPath],
+        [deviceName, page, hdPath, deviceId],
       );
     } catch (error) {
       logErrorWithMessage(error);
@@ -1635,6 +1682,8 @@ export function unlockHardwareWalletAccounts(
   deviceName: HardwareDeviceNames,
   hdPath: string | null,
   hdPathDescription: string,
+  // For Trezor/OneKey only, see `connectHardware`.
+  deviceId?: string,
 ): ThunkAction<Promise<undefined>, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(
     `background.unlockHardwareWalletAccount`,
@@ -1642,6 +1691,7 @@ export function unlockHardwareWalletAccounts(
     deviceName,
     hdPath,
     hdPathDescription,
+    deviceId,
   );
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -1653,6 +1703,7 @@ export function unlockHardwareWalletAccounts(
           deviceName,
           hdPath,
           hdPathDescription,
+          deviceId,
         ]);
       } catch (err) {
         logErrorWithMessage(err);

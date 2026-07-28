@@ -140,7 +140,12 @@ export type AppStateControllerState = {
   termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
   timeoutMinutes: number;
-  trezorModel: string | null;
+  /**
+   * Trezor/OneKey device models, keyed by the device's stable `device_id`
+   * (one bridge/keyring per paired device, so a single scalar field would
+   * have one device's model overwrite another's).
+   */
+  trezorModels: Record<string, string>;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   perpsTabBadgeSeen: boolean;
@@ -309,7 +314,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
-  trezorModel: null,
+  trezorModels: {},
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   perpsTabBadgeSeen: false,
@@ -589,7 +594,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
-  trezorModel: {
+  trezorModels: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -1399,13 +1404,22 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets a property indicating the model of the user's Trezor hardware wallet
+   * Records the model of a paired Trezor/OneKey hardware wallet, keyed by
+   * its stable `device_id` so multiple simultaneously-paired devices don't
+   * overwrite each other's recorded model.
    *
-   * @param trezorModel - The Trezor model.
+   * @param deviceId - The device's stable `device_id`.
+   * @param model - The Trezor model.
    */
-  setTrezorModel(trezorModel: string | null): void {
+  setTrezorModel(
+    deviceId: string | undefined,
+    model: string | undefined,
+  ): void {
+    if (!deviceId || !model) {
+      return;
+    }
     this.update((state) => {
-      state.trezorModel = trezorModel;
+      state.trezorModels[deviceId] = model;
     });
   }
 

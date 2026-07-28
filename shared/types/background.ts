@@ -109,7 +109,7 @@ export type ControllerStatePropertiesEnumerated = {
   outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
   productTour?: AppStateControllerState['productTour'];
   showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
-  trezorModel: AppStateControllerState['trezorModel'];
+  trezorModels: AppStateControllerState['trezorModels'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
   onboardingDate: AppStateControllerState['onboardingDate'];
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];

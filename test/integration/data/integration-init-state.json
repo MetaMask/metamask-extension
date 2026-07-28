@@ -2123,7 +2123,7 @@
       "origin": "tmashuang.github.io"
     }
   ],
-  "trezorModel": null,
+  "trezorModels": {},
   "txHistory": {},
   "unapprovedDecryptMsgCount": 0,
   "unapprovedDecryptMsgs": {},

@@ -87,7 +87,7 @@
     "storageWriteErrorType": null,
     "termsOfUseLastAgreed": "number",
     "throttledOrigins": "object",
-    "trezorModel": null,
+    "trezorModels": {},
     "updateModalLastDismissedAt": null
   },
   "ApprovalController": {
