@@ -198,6 +198,35 @@ export type LegacyBackgroundApiServiceResetAccountAction = {
 };
 
 /**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
+ * Enables the given network, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ *
+ * @param chainId - The chain ID of the network to enable.
+ */
+export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledNetworks'];
+};
+
+/**
+ * Enables all popular networks, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ */
+export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
+};
+
+/**
  * @deprecated Avoid new references to the global network.
  * Will be removed once multi-chain support is fully implemented.
  *
@@ -516,6 +545,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction

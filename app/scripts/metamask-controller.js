@@ -200,7 +200,6 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -1747,23 +1746,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  /**
-   * Gathers metadata (primarily connectivity status) about the globally selected
-   * network as well as each enabled network and persists it to state.
-   */
-  async lookupSelectedNetworks() {
-    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
-      this._getMetaMaskState(),
-    );
-
-    await Promise.allSettled([
-      this.networkController.lookupNetwork(),
-      ...enabledNetworkClientIds.map(async (networkClientId) => {
-        return await this.networkController.lookupNetwork(networkClientId);
-      }),
-    ]);
-  }
-
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
@@ -2578,7 +2560,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       const addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      await this.lookupSelectedNetworks();
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      );
       return addedNetwork;
     } catch (error) {
       // `addNetwork` rejected, so `networkAdded` was not published
@@ -3524,9 +3508,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'AccountOrderController:updateAccountsList',
       ),
-      setEnabledNetworks: this.setEnabledNetworks.bind(this),
-      setEnabledAllPopularNetworks:
-        this.setEnabledAllPopularNetworks.bind(this),
+      setEnabledNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledNetworks',
+      ),
+      setEnabledAllPopularNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+      ),
       updateHiddenAccountsList: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'AccountOrderController:updateHiddenAccountsList',
@@ -3978,7 +3967,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:applyTransactionContainersExisting',
       ),
-      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
+      lookupSelectedNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      ),
       resetWallet: this.resetWallet.bind(this),
     };
   }
@@ -8584,28 +8576,6 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
-  };
-
-  setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  setEnabledAllPopularNetworks = async () => {
-    try {
-      this.networkEnablementController.enableAllPopularNetworks();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
   };
 
   /**
