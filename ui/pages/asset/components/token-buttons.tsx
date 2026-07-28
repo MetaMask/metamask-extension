@@ -9,6 +9,7 @@ import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
@@ -31,7 +32,6 @@ import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
 } from './security-trust';
-import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
   token,
