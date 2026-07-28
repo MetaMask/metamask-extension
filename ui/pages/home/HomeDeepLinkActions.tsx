@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   BATCH_SELL_SELECT_ROUTE,
   DEFAULT_ROUTE,
@@ -9,6 +9,8 @@ import { selectIsNetworkMenuOpen } from '../../selectors';
 import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
+import { useDispatch } from '../../store/hooks';
+
 import {
   DEEP_LINK_ORIGIN,
   HomeQueryParams,

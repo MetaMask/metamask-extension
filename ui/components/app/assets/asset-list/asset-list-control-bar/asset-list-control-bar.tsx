@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon as DsButtonIcon,
@@ -92,6 +92,7 @@ import {
   getSelectedAccountGroup,
 } from '../../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
+import { useDispatch } from '../../../../../store/hooks';
 import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
@@ -354,6 +355,7 @@ const AssetListControlBar = ({
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
+    closePopover();
   };
 
   return (

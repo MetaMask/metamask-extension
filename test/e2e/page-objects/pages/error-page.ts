@@ -77,8 +77,11 @@ class ErrorPage {
 
   async consentDataToMetamaskSupport(): Promise<void> {
     await this.driver.waitForSelector(this.visitSupportDataConsentModal);
+    // Accept awaits getCustomerServiceToken (up to 5s product timeout).
+    // Default clickElementAndWaitToDisappear timeout (3s) is too short.
     await this.driver.clickElementAndWaitToDisappear(
       this.visitSupportDataConsentModalAcceptButton,
+      10000,
     );
     // metamask, help page
     await this.driver.waitUntilXWindowHandles(2);
