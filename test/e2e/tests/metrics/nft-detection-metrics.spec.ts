@@ -100,7 +100,7 @@ describe('Nft detection event', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withPreferencesController({
@@ -114,7 +114,7 @@ describe('Nft detection event', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);

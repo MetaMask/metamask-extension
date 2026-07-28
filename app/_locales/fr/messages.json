@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Le dépôt a échoué"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Le dépôt a échoué"
   },
   "activity_deposit_pending_description": {
-    "message": "Déposer en $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Déposer en $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "Déposé en $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 déposé",
@@ -1996,12 +1994,6 @@
   "bridgeApproval": {
     "message": "Approuver $1 pour la passerelle",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "Vous autorisez l’accès à $1 $2. Le contrat n’aura pas accès à d’autres fonds."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Vous devrez autoriser l’accès à $1 $2 pour l’établissement d’une passerelle, puis approuver l’établissement d’une passerelle vers $3, ce qui nécessitera deux confirmations distinctes."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Le lien de l’explorateur de blocs a été copié"
@@ -4159,9 +4151,6 @@
   },
   "gotIt": {
     "message": "D’accord"
-  },
-  "grantExactAccess": {
-    "message": "Accorder un accès exact"
   },
   "gwei": {
     "message": "GWEI"
@@ -11252,12 +11241,6 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Approuve le jeton pour l’établissement d’une passerelle."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Approuve le jeton pour le swap."
   },
   "withdrawTo": {
     "message": "Recevoir",

@@ -9,6 +9,13 @@ import useStaticTokensPollingHook from './useStaticTokensPolling';
 const mockSelectedAccountId = 'mock-account-uuid';
 const mockSelectedAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
 const mockEnabledChainIds = ['0x1', '0x89'];
+const mockInternalAccounts = [
+  {
+    id: mockSelectedAccountId,
+    address: mockSelectedAccountAddress,
+    type: 'eip155:eoa',
+  },
+];
 let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
@@ -27,13 +34,7 @@ jest.mock('../selectors', () => ({
 
 jest.mock('../selectors/multichain-accounts/account-tree', () => ({
   getSelectedAccountGroup: jest.fn(() => 'mock-group-id'),
-  getInternalAccountsFromGroupById: jest.fn(() => [
-    {
-      id: mockSelectedAccountId,
-      address: mockSelectedAccountAddress,
-      type: 'eip155:eoa',
-    },
-  ]),
+  getInternalAccountsFromGroupById: jest.fn(() => mockInternalAccounts),
 }));
 
 const state = {

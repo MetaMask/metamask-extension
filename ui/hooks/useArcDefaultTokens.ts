@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -10,6 +10,7 @@ import {
   isAssetInAccountCustomAssets,
 } from '../selectors/assets-unify-state/asset-preferences';
 import { importCustomAssetsBatch } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 const ARC_USDC_ASSET_ID =
   'eip155:5042/erc20:0x3600000000000000000000000000000000000000';

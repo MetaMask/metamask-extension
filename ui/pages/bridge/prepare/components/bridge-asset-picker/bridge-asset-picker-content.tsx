@@ -9,27 +9,22 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  Box,
   ButtonBase,
   ButtonBaseSize,
   FontWeight,
-  Icon,
-  IconColor,
   IconName,
   IconSize,
   Text,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
-import { TextField } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  BorderColor,
-  BorderRadius,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
@@ -167,6 +162,22 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
+          <Box className="mx-4">
+            <TextFieldSearch
+              autoFocus
+              className="app-text-field-search"
+              clearButtonOnClick={() => setSearchQuery('')}
+              inputProps={
+                {
+                  'data-testid': 'bridge-asset-picker-search-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={t('enterTokenNameOrAddress')}
+              size={TextFieldSize.Lg}
+              value={searchQuery}
+            />
+          </Box>
           <ButtonBase
             ref={networkPickerButtonRef}
             onClick={() =>
@@ -211,38 +222,6 @@ export const BridgeAssetPickerContent = forwardRef<
             }}
             onClose={() => setIsNetworkPickerOpen(false)}
             testId="bridge-network-picker-popover"
-          />
-          <TextField
-            autoFocus
-            testId={'bridge-asset-picker-search-input'}
-            placeholder={t('enterTokenNameOrAddress')}
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-            }}
-            borderRadius={BorderRadius.XL}
-            borderWidth={1}
-            borderColor={BorderColor.borderMuted}
-            inputProps={{
-              disableStateStyles: true,
-              textVariant: TextVariant.bodyMd,
-              paddingRight: 2,
-              borderColor: BorderColor.borderMuted,
-            }}
-            style={{
-              minHeight: 48,
-              paddingRight: 8,
-              outline: 'none',
-              borderColor: BorderColor.borderMuted,
-            }}
-            marginInline={4}
-            startAccessory={
-              <Icon
-                color={IconColor.IconAlternative}
-                name={IconName.Search}
-                size={IconSize.Md}
-              />
-            }
           />
         </div>
 
