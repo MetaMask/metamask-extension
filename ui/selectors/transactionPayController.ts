@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 
 export type TransactionPayState = {
   metamask: TransactionPayControllerState;
@@ -23,16 +22,9 @@ export const selectIsTransactionPayLoadingByTransactionId = createSelector(
   (transactionData) => transactionData?.isLoading ?? false,
 );
 
-// Executable quotes only. No-op quotes mark direct routes and must not
-// surface in fee, duration, or step UI, so they are filtered here for all
-// consumers.
 export const selectTransactionPayQuotesByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
-  (transactionData) =>
-    transactionData?.quotes &&
-    transactionData.quotes.filter(
-      (quote) => quote.strategy !== TransactionPayStrategy.None,
-    ),
+  (transactionData) => transactionData?.quotes,
 );
 
 export const selectTransactionPayTokensByTransactionId = createSelector(

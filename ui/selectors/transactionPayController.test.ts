@@ -1,5 +1,4 @@
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectTransactionDataByTransactionId,
   selectTransactionPayTotalsByTransactionId,
@@ -138,26 +137,6 @@ describe('transactionPayController selectors', () => {
       );
 
       expect(result).toStrictEqual(MOCK_QUOTES);
-    });
-
-    it('filters out no-op quotes', () => {
-      const executableQuote = {
-        id: 'quote-1',
-        strategy: TransactionPayStrategy.Relay,
-      };
-      const state = createMockState({
-        quotes: [
-          executableQuote,
-          { id: 'noop', strategy: TransactionPayStrategy.None },
-        ],
-      });
-
-      const result = selectTransactionPayQuotesByTransactionId(
-        state,
-        TRANSACTION_ID,
-      );
-
-      expect(result).toStrictEqual([executableQuote]);
     });
 
     it('returns undefined when no quotes exist', () => {
