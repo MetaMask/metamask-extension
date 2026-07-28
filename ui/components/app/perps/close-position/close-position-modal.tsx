@@ -452,7 +452,12 @@ export const ClosePositionModal = ({
           ? PERPS_EVENT_VALUE.DIRECTION.LONG
           : PERPS_EVENT_VALUE.DIRECTION.SHORT,
       [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
-      [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: position.leverage?.value ?? 0,
+      // Omitted rather than zeroed when leverage is unknown: a real position
+      // never has 0x, so a fallback would be indistinguishable from a reading.
+      // Matches mobile, which passes `leverage?.value` through undefined.
+      ...(position.leverage?.value === undefined
+        ? {}
+        : { [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: position.leverage.value }),
     };
   }, [
     position.symbol,

@@ -93,6 +93,7 @@ const mockPerpsEventPropertyKeys = {
   ORDER_EXECUTION_LATENCY_MS: 'order_execution_latency_ms',
   ERROR_REASON: 'error_reason',
   LEVERAGE_USED: 'leverage_used',
+  MARGIN_USED: 'margin_used',
   // Market search funnel.
   SEARCH_QUERY: 'search_query',
   RESULTS_COUNT: 'results_count',
@@ -126,6 +127,8 @@ const mockPerpsEventValueLiterals = {
     GEO_BLOCK_NOTIF: 'geo_block_notif',
     SEARCH_RESULTS_SHOWN: 'search_results_shown',
     SEARCH_NO_RESULTS: 'search_no_results',
+    CREATE_TPSL: 'create_tpsl',
+    EDIT_TPSL: 'edit_tpsl',
   },
   SCREEN_NAME: {
     PERPS_HOME: 'perps_home',

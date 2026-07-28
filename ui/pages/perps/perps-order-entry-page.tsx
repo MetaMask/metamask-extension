@@ -634,7 +634,10 @@ const PerpsOrderEntryPage = () => {
       [PERPS_EVENT_PROPERTY.ORDER_SIZE]: Number.parseFloat(
         orderFormState?.amount?.replace(/,/gu, '') || '0',
       ),
-      [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: orderFormState?.leverage ?? 0,
+      // Same rule as the close modal: omit rather than report a 0x reading.
+      ...(orderFormState?.leverage === undefined
+        ? {}
+        : { [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: orderFormState.leverage }),
     };
   }, [
     orderFormState?.asset,
