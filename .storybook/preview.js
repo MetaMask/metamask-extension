@@ -74,6 +74,18 @@ export const globalTypes = {
       dynamicTitle: true,
     },
   },
+  pureBlack: {
+    name: 'Pure Black',
+    description: 'Enable pure black dark mode (data-pure-black="true")',
+    defaultValue: false,
+    toolbar: {
+      items: [
+        { value: false, title: 'Off', icon: 'circlehollow' },
+        { value: true, title: 'On', icon: 'circle' },
+      ],
+      dynamicTitle: true,
+    },
+  },
 };
 
 export const getNewState = (state, props) => {
@@ -95,7 +107,7 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const { theme } = context.globals;
+  const { theme, pureBlack } = context.globals;
   const systemPrefersDark = window.matchMedia(
     '(prefers-color-scheme: dark)',
   ).matches;
@@ -116,7 +128,13 @@ const metamaskDecorator = (story, context) => {
     } else if (currentTheme === 'dark' && !isDark) {
       document.documentElement.setAttribute('data-theme', 'light');
     }
-  }, [isDark]);
+
+    if (pureBlack) {
+      document.documentElement.setAttribute('data-pure-black', 'true');
+    } else {
+      document.documentElement.removeAttribute('data-pure-black');
+    }
+  }, [isDark, pureBlack]);
 
   // Get initial entries from story parameters, default to ['/'] if not provided
   const initialEntries = context.parameters?.initialEntries || ['/'];
