@@ -75,16 +75,19 @@ export default function DeFiTab({
   useScreenViewedEvent(MetaMetricsEventName.DeFiScreenViewed, entryPoint);
   const isDefiControllerV2Enabled = useSelector(getIsDefiControllerV2Enabled);
 
-  return (
-    <RouteWithMessenger
-      path="defi-tab"
-      capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
-    >
-      {isDefiControllerV2Enabled ? (
+  // V2 needs a route messenger for `fetchDeFiPositions`. Legacy V1 does not —
+  // wrap only the V2 branch so integration tests (and other trees without a
+  // UI messenger) keep working when the V2 flag is off.
+  if (isDefiControllerV2Enabled) {
+    return (
+      <RouteWithMessenger
+        path="defi-tab"
+        capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
+      >
         <DeFiTabContentV2 onClickAsset={onClickAsset} />
-      ) : (
-        <DeFiTabContentV1 onClickAsset={onClickAsset} />
-      )}
-    </RouteWithMessenger>
-  );
+      </RouteWithMessenger>
+    );
+  }
+
+  return <DeFiTabContentV1 onClickAsset={onClickAsset} />;
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mergePositionsForAccounts } from '@metamask/assets-controllers';
 import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
@@ -38,11 +38,17 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   const positionsByAccount = useSelector(getDeFiPositionsV2);
   const fetchDeFiPositions = useFetchDeFiPositions();
 
-  const accountIds = groupAccounts.map((account) => account.id);
+  const accountIds = useMemo(
+    () => groupAccounts.map((account) => account.id),
+    [groupAccounts],
+  );
   const hasPositions = accountIds.some(
     (id) => positionsByAccount[id] !== undefined,
   );
-  const positions = mergePositionsForAccounts(positionsByAccount, accountIds);
+  const positions = useMemo(
+    () => mergePositionsForAccounts(positionsByAccount, accountIds),
+    [positionsByAccount, accountIds],
+  );
 
   const [isFetching, setIsFetching] = useState(false);
   const [isError, setIsError] = useState(false);

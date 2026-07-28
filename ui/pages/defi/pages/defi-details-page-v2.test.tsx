@@ -128,6 +128,22 @@ describe('DeFiDetailsPageV2', () => {
     expect(screen.getByTestId('default-route-page')).toBeInTheDocument();
   });
 
+  it('keeps rendering cached protocol data when a background refresh fails', () => {
+    mockUseDeFiPositionsV2.mockReturnValue({
+      positions: [protocolPosition],
+      isLoading: false,
+      isError: true,
+      refresh: jest.fn().mockResolvedValue(undefined),
+    });
+
+    renderPage('/defi/eip155:1/lido');
+
+    expect(screen.queryByTestId('default-route-page')).not.toBeInTheDocument();
+    expect(screen.getByTestId('defi-details-page-title')).toHaveTextContent(
+      'lido',
+    );
+  });
+
   it('redirects to the default route when the protocol is missing', () => {
     renderPage('/defi/eip155:1/unknown');
 

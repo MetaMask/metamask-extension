@@ -51,7 +51,11 @@ export default function DefiListV2({
       return undefined;
     }
 
-    if (isError) {
+    // Only show the full error state when there is nothing cached to display.
+    // A transient background-refresh failure must not hide already-fetched
+    // positions (consistent with the details page, which keeps rendering
+    // cached data on error).
+    if (isError && positions.length === 0) {
       return null;
     }
 

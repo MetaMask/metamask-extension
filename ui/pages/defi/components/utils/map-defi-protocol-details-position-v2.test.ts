@@ -1,4 +1,5 @@
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { mapDefiProtocolDetailsPositionV2ToToken } from './map-defi-protocol-details-position-v2';
 
 describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
@@ -55,6 +56,51 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
       mapDefiProtocolDetailsPositionV2ToToken(positionWithoutPrice),
     ).toMatchObject({
       tokenFiatAmount: null,
+    });
+  });
+
+  it('returns a checksummed hex address for an ERC-20 asset', () => {
+    const lowercaseAddress = '0xae7ab96520de3a18e5e111b5eaab095312d7fe84';
+    const erc20Position: DeFiUnderlyingPosition = {
+      ...position,
+      assetId: `eip155:1/erc20:${lowercaseAddress}`,
+      chainId: 'eip155:1',
+    };
+
+    const { address } = mapDefiProtocolDetailsPositionV2ToToken(erc20Position);
+
+    expect(address).toBe(toChecksumHexAddress(lowercaseAddress));
+    // Checksumming must actually mix case, not pass the input through as-is.
+    expect(address).not.toBe(lowercaseAddress);
+    expect(address).toMatch(/[A-F]/u);
+  });
+
+  it('falls back to 0 when the balance is not a valid number', () => {
+    const invalidBalancePosition: DeFiUnderlyingPosition = {
+      ...position,
+      balance: 'not-a-number',
+    };
+
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(invalidBalancePosition),
+    ).toMatchObject({
+      balance: '0',
+      string: '0',
+    });
+  });
+
+  it('passes a non-EVM CAIP chain id through unchanged', () => {
+    const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+    const solanaPosition: DeFiUnderlyingPosition = {
+      ...position,
+      assetId: `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+      chainId: solanaChainId,
+    };
+
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(solanaPosition),
+    ).toMatchObject({
+      chainId: solanaChainId,
     });
   });
 });

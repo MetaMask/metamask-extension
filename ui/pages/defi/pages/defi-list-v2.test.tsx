@@ -115,8 +115,8 @@ describe('DefiListV2', () => {
     expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
   });
 
-  it('renders error message when positions fail to load', () => {
-    render({ isError: true });
+  it('renders error message when positions fail to load and none are cached', () => {
+    render({ isError: true, positions: [] });
 
     expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
       messages.defiTabErrorTitle.message,
@@ -124,6 +124,15 @@ describe('DefiListV2', () => {
     expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
       messages.defiTabErrorContent.message,
     );
+  });
+
+  it('keeps rendering cached rows when a background refresh fails', () => {
+    render({ isError: true, positions: [lidoPosition] });
+
+    expect(screen.getByText('lido')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('defi-tab-error-message'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders empty state when there are no positions', () => {

@@ -35,7 +35,7 @@ export default function DeFiDetailsPageV2() {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
   const selectedCurrency = useSelector(getSelectedCurrency);
-  const { positions, isLoading, isError } = useDeFiPositionsV2();
+  const { positions, isLoading } = useDeFiPositionsV2();
 
   const protocolDetails = useMemo(() => {
     if (!chainId || !protocolId) {
@@ -56,7 +56,10 @@ export default function DeFiDetailsPageV2() {
     );
   }
 
-  if (isError || !protocolDetails) {
+  // Only redirect when there is genuinely nothing to render. A transient
+  // background-refresh failure (`isError`) must not bounce the user home while
+  // cached protocol data is still available.
+  if (!protocolDetails) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 

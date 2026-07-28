@@ -53,11 +53,9 @@ export default function DefiDetailsPositionCellV2({
       headerLeftDisplay={
         <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
           <AssetCellTitle title={position.name} />
-          {position.positionType ? (
-            <Tag data-testid="defi-details-position-type-tag">
-              {position.positionType}
-            </Tag>
-          ) : null}
+          <Tag data-testid="defi-details-position-type-tag">
+            {position.positionType}
+          </Tag>
         </Box>
       }
       headerRightDisplay={
