@@ -78,13 +78,14 @@ export class PerpsMarketListPage {
   /**
    * Navigates to the Perps Market List by clicking the "Explore markets" row.
    * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
-   * Waits for the row to stop moving (watchlist mount can shift layout), dismisses
-   * any visible toast that may cover the row, then clicks with {@link Driver.clickElement}.
+   * Dismisses any visible toast that may cover the row, waits for the row to stop
+   * moving (watchlist mount / toast dismiss can shift layout), then clicks with
+   * {@link Driver.clickElement}.
    */
   async navigateToMarketList(): Promise<void> {
     await this.driver.waitForSelector(this.exploreMarketsRow);
-    await this.driver.waitForElementToStopMoving(this.exploreMarketsRow);
     await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+    await this.driver.waitForElementToStopMoving(this.exploreMarketsRow);
     await this.driver.clickElement(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
   }
