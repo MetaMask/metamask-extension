@@ -752,8 +752,10 @@
     },
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
       "MetaMask: Background connection not initialized": 163,
-      "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 1
+    },
+    "ui/pages/confirmations/confirmation/templates/error.test.js": {
+      "React: PropTypes validation failures": 5
     },
     "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
       "Test errors: Uncaught Errors": 1

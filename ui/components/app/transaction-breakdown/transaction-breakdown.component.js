@@ -13,7 +13,11 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import Name from '../name/name';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
-function RecipientWithAddress({ checksummedRecipientAddress, chainId, className = '' }) {
+function RecipientWithAddress({
+  checksummedRecipientAddress,
+  chainId,
+  className = '',
+}) {
   return (
     <div
       className={classnames(
