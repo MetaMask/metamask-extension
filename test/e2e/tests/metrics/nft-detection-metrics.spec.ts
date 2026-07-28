@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Mockttp, MockedEndpoint } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -8,41 +8,7 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-
-type IdentifyEvent = { traits: Record<string, unknown> };
-
-function mergeTraits(events: IdentifyEvent[]): Record<string, unknown> {
-  return events.reduce(
-    (acc, event) => ({ ...acc, ...event.traits }),
-    {} as Record<string, unknown>,
-  );
-}
-
-async function waitForExpectedTraits(
-  driver: {
-    wait: (condition: () => Promise<boolean>, timeout: number) => Promise<void>;
-  },
-  mockedEndpoints: MockedEndpoint[],
-  expected: Record<string, unknown>,
-  timeout = 30_000,
-): Promise<Record<string, unknown>> {
-  let events: IdentifyEvent[] = [];
-  await driver.wait(async () => {
-    try {
-      events = await getEventPayloads(driver, mockedEndpoints, false);
-    } catch {
-      return false;
-    }
-    if (events.length === 0) {
-      return false;
-    }
-    const traits = mergeTraits(events);
-    return Object.entries(expected).every(
-      ([key, value]) => traits[key] === value,
-    );
-  }, timeout);
-  return mergeTraits(events);
-}
+import { waitForExpectedTraits } from './helpers';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to

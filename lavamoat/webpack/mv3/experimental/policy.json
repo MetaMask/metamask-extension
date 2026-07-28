@@ -809,6 +809,12 @@
         "TextEncoder": true
       }
     },
+    "@metamask/7715-permission-types": {
+      "packages": {
+        "@metamask/delegation-core": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -2147,7 +2153,7 @@
         "@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
-        "webpack-cli>fastest-levenshtein": true,
+        "stylelint>fastest-levenshtein": true,
         "punycode": true
       }
     },
