@@ -23,7 +23,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
-import DefiDetailsListV2 from './defi-details-list-v2';
+import DefiDetailsListV2 from '../components/defi-details-list-v2';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 

@@ -7,7 +7,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { DeFiPositionDetailsSection } from '@metamask/assets-controllers';
-import DefiDetailsPositionCellV2 from './cells/defi-details-position-cell-v2';
+import DefiDetailsPositionCellV2 from './defi-details-position-cell-v2';
 
 type DefiDetailsListV2Props = {
   sections: DeFiPositionDetailsSection[];
@@ -16,8 +16,6 @@ type DefiDetailsListV2Props = {
 const separatorStyle = {
   border: '1px solid var(--border-muted, #858B9A33)',
 };
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 
 export default function DefiDetailsListV2({
   sections,

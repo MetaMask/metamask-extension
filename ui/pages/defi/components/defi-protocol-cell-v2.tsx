@@ -7,16 +7,16 @@ import {
   AvatarGroupVariant,
   SensitiveText,
 } from '@metamask/design-system-react';
-import GenericAssetCellLayout from '../../../../components/app/assets/asset-list/cells/generic-asset-cell-layout';
-import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { AssetCellBadge } from '../../../../components/app/assets/asset-list/cells/asset-cell-badge';
-import { AssetCellTitle } from '../../../../components/app/assets/asset-list/cells/asset-title';
+import GenericAssetCellLayout from '../../../components/app/assets/asset-list/cells/generic-asset-cell-layout';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { AssetCellTitle } from '../../../components/app/assets/asset-list/cells/asset-title';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { DeFiSymbolGroup } from '../../../../components/app/assets/defi-list/cells/defi-grouped-symbol-cell';
+} from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { DeFiSymbolGroup } from '../../../components/app/assets/defi-list/cells/defi-grouped-symbol-cell';
 
 /**
  * Extension UI row for the DeFi tab list: core protocol-group fields plus

@@ -2,14 +2,15 @@ import React from 'react';
 import { screen, act, waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import mockState from '../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { DEFI_CONTROLLER_V2_FLAG } from '../../../shared/lib/defi-controller-v2/remote-feature-flag';
-import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { DEFI_CONTROLLER_V2_FLAG } from '../../../../shared/lib/defi-controller-v2/remote-feature-flag';
+import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import DeFiTab from './defi-tab';
+import { CaipChainId } from '@metamask/utils';
 
 jest.mock('./hooks/useDeFiPositionsV2', () => ({
   useDeFiPositionsV2: jest.fn(),
@@ -96,7 +97,7 @@ const allDeFiPositionsV2List = [
     protocolId: 'lido',
     productName: 'Lido',
     protocolIconUrl: stEthIconUrl,
-    chainId: 'eip155:1',
+    chainId: 'eip155:1' as CaipChainId,
     marketValue: 20000,
     iconGroup: [
       {

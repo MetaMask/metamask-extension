@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsDefiControllerV2Enabled } from '../../selectors/defi-controller-v2/feature-flags';
-import { RouteWithMessenger } from '../../layouts/route-with-messenger';
-import { AssetListProps } from '../../components/app/assets/asset-list/asset-list';
-import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar';
-import { useScreenViewedEvent } from '../../hooks/useScreenViewedEvent';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
-import DefiList from '../../components/app/assets/defi-list/defi-list';
-import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
-import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from './messenger';
-import DefiListV2 from './components/defi-list-v2';
+import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
+import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
+import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
+import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import DefiList from '../../../components/app/assets/defi-list/defi-list';
+import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
+import DefiListV2 from './defi-list-v2';
 
 /**
  * V2 DeFi tab content. Mounts only when the V2 controller flag is enabled so

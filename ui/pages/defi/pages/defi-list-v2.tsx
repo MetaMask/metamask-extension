@@ -20,7 +20,7 @@ import { DeFiErrorMessage } from '../../../components/app/assets/defi-list/cells
 import { DeFiEmptyStateMessage } from '../../../components/app/assets/defi-list/cells/defi-empty-state';
 import DeFiProtocolCellV2, {
   type DeFiProtocolListItem,
-} from './cells/defi-protocol-cell-v2';
+} from '../components/defi-protocol-cell-v2';
 
 type DefiListV2Props = {
   onClick: (chainId: string, protocolId: string) => void;

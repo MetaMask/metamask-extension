@@ -1,1 +1,1 @@
-export { default } from '../../../../pages/defi/defi-tab';
+export { default } from '../../../../pages/defi/pages/defi-tab';

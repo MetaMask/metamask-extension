@@ -34,7 +34,7 @@ import DefiDetailsList, {
   PositionTypeLabels,
   ProtocolTokenWithMarketValue,
 } from './defi-details-list';
-import DeFiDetailsPageV2 from './defi-details-page-v2';
+import DeFiDetailsPageV2 from '../pages/defi-details-page-v2';
 
 const useExtractUnderlyingTokens = (
   positions?: ProtocolTokenWithMarketValue[][],

@@ -2,23 +2,21 @@ import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection, Tag } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
-import GenericAssetCellLayout from '../../../../components/app/assets/asset-list/cells/generic-asset-cell-layout';
-import { AssetCellBadge } from '../../../../components/app/assets/asset-list/cells/asset-cell-badge';
-import { AssetCellTitle } from '../../../../components/app/assets/asset-list/cells/asset-title';
-import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { useTokenDisplayInfo } from '../../../../components/app/assets/hooks/useTokenDisplayInfo';
+import GenericAssetCellLayout from '../../../components/app/assets/asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { AssetCellTitle } from '../../../components/app/assets/asset-list/cells/asset-title';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { useTokenDisplayInfo } from '../../../components/app/assets/hooks/useTokenDisplayInfo';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
-} from '../../../../components/app/assets/token-cell/cells';
-import { mapDefiProtocolDetailsPositionV2ToToken } from '../utils/map-defi-protocol-details-position-v2';
+} from '../../../components/app/assets/token-cell/cells';
+import { mapDefiProtocolDetailsPositionV2ToToken } from './utils/map-defi-protocol-details-position-v2';
 
 type DefiDetailsPositionCellV2Props = {
   position: DeFiUnderlyingPosition;
 };
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 
 export default function DefiDetailsPositionCellV2({
   position,
