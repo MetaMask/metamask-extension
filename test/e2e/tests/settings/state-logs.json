@@ -90,9 +90,9 @@
     "fromTokenExchangeRate": "null",
     "fromTokenInputValue": "null",
     "isDestAssetPickerOpen": "boolean",
+    "isSlippageUserOverride": "boolean",
     "isSrcAssetPickerOpen": "boolean",
     "selectedQuote": "null",
-    "slippage": "number",
     "sortOrder": "string",
     "toToken": "null",
     "txAlert": "null",
@@ -762,7 +762,6 @@
       "eip155:137": "string",
       "eip155:6343": "string"
     },
-    "enableMV3TimestampSave": "boolean",
     "ensEntries": {
       "0x1": {
         ".": {

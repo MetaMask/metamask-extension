@@ -88,9 +88,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -109,9 +107,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
     });
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
@@ -165,9 +161,7 @@ describe('Settings', () => {
     it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -182,9 +176,7 @@ describe('Settings', () => {
       mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -199,9 +191,7 @@ describe('Settings', () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -216,9 +206,7 @@ describe('Settings', () => {
       mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 

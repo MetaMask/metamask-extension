@@ -1,8 +1,8 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -30,6 +30,17 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
+
+export const assetIdsMatch = (
+  left?: string | null,
+  right?: string | null,
+): boolean =>
+  left === right ||
+  Boolean(
+    left?.startsWith('eip155:') &&
+    right?.startsWith('eip155:') &&
+    left.toLowerCase() === right.toLowerCase(),
+  );
 
 /**
  *
@@ -99,8 +110,6 @@ const fetchTokenExchangeRates = async (
     includeMarketData: 'true',
     vsCurrency: currency,
   });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',

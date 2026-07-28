@@ -190,6 +190,27 @@ class HeaderNavbar {
     });
   }
 
+  /**
+   * Verifies the notification count in the open global menu, waits for the
+   * drawer to settle after React re-renders, then opens the notifications list.
+   * @param count
+   */
+  async checkNotificationCountAndOpenNotifications(
+    count: number,
+  ): Promise<void> {
+    console.log(
+      `Verify notification count is ${count} and open notifications list`,
+    );
+    await this.openGlobalMenu();
+    await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+    await this.driver.waitForElementToStopMoving(this.drawerBackButton);
+    await this.driver.waitForElementToStopMoving(this.notificationsButton);
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
   async clickNotificationCount(count: number): Promise<void> {
     await this.openGlobalMenu();
     await this.driver.clickElement({

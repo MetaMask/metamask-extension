@@ -5,7 +5,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
 jest.mock('../../../../../shared/lib/selectors');
@@ -17,10 +17,7 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
 }));
-jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
-  isHardwareWallet: jest.fn(),
-}));
+jest.mock('../../../../hooks/useIsHardwareWalletAccount');
 
 const CHAIN_ID_MOCK = '0x5';
 
@@ -44,13 +41,15 @@ async function runHook() {
 describe('useGaslessSupportedSmartTransactions', () => {
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
   const isSendBundleSupportedMock = jest.mocked(isSendBundleSupported);
-  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
+  const useIsHardwareWalletAccountMock = jest.mocked(
+    useIsHardwareWalletAccount,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
     getIsSmartTransactionMock.mockReturnValue(false);
     isSendBundleSupportedMock.mockResolvedValue(false);
-    isHardwareWalletMock.mockReturnValue(false);
+    useIsHardwareWalletAccountMock.mockReturnValue(false);
   });
 
   it('returns isSupported = true when smart transactions enabled and sendBundle supported', async () => {
@@ -154,7 +153,7 @@ describe('useGaslessSupportedSmartTransactions', () => {
   });
 
   it('returns isSupported false for hardware wallets even when smart transactions and sendBundle are supported', async () => {
-    isHardwareWalletMock.mockReturnValue(true);
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
     getIsSmartTransactionMock.mockReturnValue(true);
     isSendBundleSupportedMock.mockResolvedValue(true);
 

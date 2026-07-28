@@ -5,7 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Navigate,
   createSearchParams,
@@ -92,7 +92,7 @@ import {
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
-  getDisplayName,
+  getDisplaySymbol,
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
@@ -135,6 +135,7 @@ import {
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
+import { useDispatch } from '../../store/hooks';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -1098,7 +1099,7 @@ const PerpsMarketDetailPage = () => {
               color={TextColor.TextAlternative}
             >
               {t('perpsMarketNotFoundDescription', [
-                getDisplayName(safeDecodeURIComponent(symbol) ?? symbol),
+                getDisplaySymbol(safeDecodeURIComponent(symbol) ?? symbol),
               ])}
             </Text>
           </Box>
@@ -1107,7 +1108,7 @@ const PerpsMarketDetailPage = () => {
     );
   }
 
-  const displayName = getDisplayName(market.symbol);
+  const displayName = getDisplaySymbol(market.symbol);
   // Full market name (e.g. "Bitcoin"), gated behind the feature flag and falling
   // back to the ticker when disabled or unavailable.
   const fullName = showFullAssetNames
@@ -1458,7 +1459,7 @@ const PerpsMarketDetailPage = () => {
                       : `${formatPositionSize(
                           Math.abs(parseFloat(position.size)),
                           marketInfo?.szDecimals,
-                        )} ${getDisplayName(position.symbol)}`}
+                        )} ${getDisplaySymbol(position.symbol)}`}
                   </SensitiveText>
                 </Box>
 
@@ -2160,9 +2161,12 @@ const PerpsMarketDetailPage = () => {
           onClose={() => setIsCloseModalOpen(false)}
           position={position}
           currentPrice={currentPrice}
+          markPrice={livePrice?.markPrice}
           sizeDecimals={marketInfo?.szDecimals}
           buttonClicked={closeButtonClicked}
           buttonLocation={PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS}
+          displayPrice={displayPrice}
+          displayChange={displayChange}
         />
       )}
 

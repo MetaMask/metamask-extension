@@ -175,9 +175,6 @@
   "decimal": {
     "message": "Decimalprecision"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
-  },
   "delete": {
     "message": "Radera"
   },
@@ -340,9 +337,6 @@
   "networks": {
     "message": "Nätverk"
   },
-  "nevermind": {
-    "message": "Strunt i det"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -499,9 +493,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signatureRequest": {
-    "message": "Signaturbegäran"
   },
   "signed": {
     "message": "Signerat"

@@ -55,7 +55,7 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../hooks/perps';
 import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
-import { MarketRow } from './components/market-row';
+import { MarketRow } from '../../../components/app/perps/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';

@@ -1,12 +1,6 @@
-import React, {
-  FormEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Text,
@@ -34,7 +28,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextFieldSize,
@@ -64,6 +58,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useDispatch } from '../../../store/hooks';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -90,18 +85,16 @@ function getSrpExportEventProperties(
   };
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RevealRecoveryPhrase({
   setSecretRecoveryPhrase,
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
@@ -152,26 +145,26 @@ export default function RevealRecoveryPhrase({
       fetchSeedPhrase: () => Promise<string>,
       onFailure: (error: Error) => void,
     ) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportRequested,
-        properties: getSrpExportEventProperties(
-          hdEntropyIndex,
-          verificationMethod,
-        ),
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportRequested)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties(
+            getSrpExportEventProperties(hdEntropyIndex, verificationMethod),
+          )
+          .build(),
+      );
 
       try {
         const seedPhrase = await fetchSeedPhrase();
 
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportRevealed,
-          properties: getSrpExportEventProperties(
-            hdEntropyIndex,
-            verificationMethod,
-          ),
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties(
+              getSrpExportEventProperties(hdEntropyIndex, verificationMethod),
+            )
+            .build(),
+        );
 
         setSecretRecoveryPhrase(seedPhrase);
         navigateToReviewSrp();
@@ -182,19 +175,26 @@ export default function RevealRecoveryPhrase({
             ? getPasskeyErrorCode(revealError)
             : revealError.message;
 
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.KeyExportFailed,
-          properties: getSrpExportEventProperties(
-            hdEntropyIndex,
-            verificationMethod,
-            { reason },
-          ),
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.KeyExportFailed)
+            .addCategory(MetaMetricsEventCategory.Keys)
+            .addProperties(
+              getSrpExportEventProperties(hdEntropyIndex, verificationMethod, {
+                reason,
+              }),
+            )
+            .build(),
+        );
         onFailure(revealError);
       }
     },
-    [trackEvent, hdEntropyIndex, setSecretRecoveryPhrase, navigateToReviewSrp],
+    [
+      createEventBuilder,
+      trackEvent,
+      hdEntropyIndex,
+      setSecretRecoveryPhrase,
+      navigateToReviewSrp,
+    ],
   );
 
   const handleRevealWithPasskey = useCallback(

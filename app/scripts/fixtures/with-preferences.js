@@ -31,7 +31,6 @@ export const FIXTURES_PREFERENCES = {
   theme: 'light',
   useExternalNameSources: true,
   useTransactionSimulations: true,
-  enableMV3TimestampSave: true,
   useExternalServices: true,
   isBackupAndSyncEnabled: true,
   isAccountSyncingEnabled: true,

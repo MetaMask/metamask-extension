@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -132,11 +132,11 @@ function getClientOptions() {
     // Must be a top-level init option.
     ...(SENTRY_DISTRIBUTED_TRACING_ENABLED && {
       tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
-      // TODO(sentry-v10, #42867): Once the v10 upgrade ships, enable
-      // `propagateTraceparent: true` here so the SDK attaches `traceparent` to
-      // these targets natively. Then remove the manual traceparent injection
-      // from `consensysTracePropagationIntegration` (keep the RAPID baggage and
-      // the `consensys-request-id` correlation).
+      // Gated here so the kill switch also disables native `traceparent`
+      // injection; when enabled the SDK attaches it to the backend targets
+      // above. `consensysTracePropagationIntegration` appends the Consensys
+      // `baggage` segment (`consensys-request-id`).
+      propagateTraceparent: true,
     }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
@@ -184,7 +184,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.0075;
+  return 0.005;
 }
 
 /**
@@ -248,14 +248,6 @@ function getSentryTarget() {
 function setSentryClient() {
   const clientOptions = getClientOptions();
   const { dsn, environment, release, tracesSampleRate } = clientOptions;
-
-  /**
-   * Sentry throws on initialization as it wants to avoid polluting the global namespace and
-   * potentially clashing with a website also using Sentry, but this could only happen in the content script.
-   * This emulates NW.js which disables these validations.
-   * https://docs.sentry.io/platforms/javascript/best-practices/shared-environments/
-   */
-  globalThis.nw = {};
 
   /**
    * Sentry checks session tracking support by looking for global history object and functions inside it.
@@ -327,6 +319,11 @@ export function beforeBreadcrumb() {
  * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
  * extension reads (snap manifests / locale files, and content-hashed
  * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
+ *
+ * Never filter a URL matching
+ * `BACKEND_TRACE_PROPAGATION_TARGETS` — the SDK propagates the request span's
+ * id as the W3C `traceparent` parent, so dropping that span client-side
+ * orphans the backend's subtree of the trace.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
@@ -708,8 +705,12 @@ function integrateLogging() {
     return;
   }
 
+  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
+  // override its methods so SDK-internal logs flow through our module logger.
+  const sentrySdkLogger = logger;
+
   for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
+    sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
       internalLog(message, ...args.slice(1));
     };

@@ -9,7 +9,6 @@ import {
 } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import { getRegistryBooleanFlag } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -244,6 +243,14 @@ async function mockHistoricalPrices(mockServer: Mockttp) {
 
 const MUSD_ASSET_ID =
   'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+
+const BRIDGE_ASSETS_CONTROLLER_BALANCES = {
+  'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+    'eip155:1/slip44:60': { amount: '25' },
+    'eip155:59144/slip44:60': { amount: '25' },
+    'eip155:42161/slip44:60': { amount: '25' },
+  },
+};
 
 /**
  * Overrides the popular and search token endpoints so the MUSD token includes
@@ -577,10 +584,6 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionUxActivityListRedesign =
-    additionalFlags.extensionUxActivityListRedesign ??
-    getRegistryBooleanFlag('extensionUxActivityListRedesign');
-
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -590,7 +593,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],

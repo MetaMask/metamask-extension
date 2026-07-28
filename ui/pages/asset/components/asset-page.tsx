@@ -47,12 +47,11 @@ import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
+import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -72,7 +71,6 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import {
   getImageForChainId,
   getMultichainIsTestnet,
@@ -159,10 +157,6 @@ const AssetPage = ({
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
-
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -360,6 +354,7 @@ const AssetPage = ({
               isBridgeChain,
               chainId,
               disableSendForNonEvm: true,
+              buyAssetId: caipAssetId,
             }}
           />
         ) : null}
@@ -586,23 +581,10 @@ const AssetPage = ({
             >
               {t('yourActivity')}
             </Text>
-            {isActivityListRedesignEnabled && caipAssetId ? (
-              <ActivityListV3
+            {caipAssetId && (
+              <ActivityList
                 filter={{
                   assetId: caipAssetId,
-                }}
-              />
-            ) : (
-              <ActivityListV2
-                filter={{
-                  chainId: caipChainId,
-                  assetScope:
-                    type === AssetType.native
-                      ? {
-                          kind: 'native',
-                          ...(!isEvm && { caipAssetType: address }),
-                        }
-                      : { kind: 'token', tokenAddress: address },
                 }}
               />
             )}

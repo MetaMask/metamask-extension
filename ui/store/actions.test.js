@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
@@ -35,6 +36,11 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+
+const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
+  type: 'Buffer',
+  data: actions.encodeSeedPhraseForBackground(seedPhrase),
+});
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -177,23 +183,19 @@ describe('Actions', () => {
     });
 
     it('should create KeyChain, vault and Backup in the background', async () => {
-      const store = mockStore();
-      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
       const mockSeedPhrase = 'mock seed phrase';
-      const mockEncodedSeedPhrase = Array.from(
-        Buffer.from(mockSeedPhrase).values(),
-      );
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+      const store = mockStore();
 
       const createSeedPhraseBackupStub = sinon.stub().resolves();
-      const createNewVaultAndKeychainStub = sinon
+      const createNewVaultAndGetSeedPhraseStub = sinon
         .stub()
-        .resolves(mockKeyrings[0]);
-      const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
+        .resolves(mockSerializedSeedPhrase);
 
       background.getApi.returns({
         createSeedPhraseBackup: createSeedPhraseBackupStub,
-        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
-        getSeedPhrase: getSeedPhraseStub,
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -201,13 +203,12 @@ describe('Actions', () => {
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
-      expect(getSeedPhraseStub.callCount).toStrictEqual(1);
-      expect(createNewVaultAndKeychainStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
       expect(
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
-          mockEncodedSeedPhrase,
-          mockKeyrings[0].metadata.id,
+          mockSerializedSeedPhrase.data,
+          mockUlid,
         ),
       ).toStrictEqual(true);
     });
@@ -823,6 +824,102 @@ describe('Actions', () => {
     });
   });
 
+  describe('encodeSeedPhraseForBackground', () => {
+    it('encodes a seed phrase as UTF-8 byte values', () => {
+      const seedPhrase = 'abandon abandon abandon';
+
+      expect(actions.encodeSeedPhraseForBackground(seedPhrase)).toStrictEqual(
+        Array.from(stringToBytes(seedPhrase)),
+      );
+    });
+  });
+
+  describe('decodeSeedPhraseFromBackground', () => {
+    const seedPhrase = 'abandon abandon abandon';
+
+    it('decodes a JSON-serialized Buffer from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          toSerializedSeedPhraseBuffer(seedPhrase),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
+
+    it('decodes a Uint8Array from the background', () => {
+      expect(
+        actions.decodeSeedPhraseFromBackground(
+          new Uint8Array(actions.encodeSeedPhraseForBackground(seedPhrase)),
+        ),
+      ).toStrictEqual(seedPhrase);
+    });
+  });
+
+  describe('#createNewVaultAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls createNewVaultAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+
+      const createNewVaultAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockSerializedSeedPhrase);
+
+      background.getApi.returns({
+        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.createNewVaultAndGetSeedPhrase('password'),
+      );
+
+      expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(createNewVaultAndGetSeedPhraseStub.calledWith('password')).toBe(
+        true,
+      );
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
+  describe('#unlockAndGetSeedPhrase', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls unlockAndGetSeedPhrase in a single background request', async () => {
+      const store = mockStore();
+      const mockSeedPhrase = 'test seed phrase';
+      const mockSerializedSeedPhrase =
+        toSerializedSeedPhraseBuffer(mockSeedPhrase);
+
+      const unlockAndGetSeedPhraseStub = sinon
+        .stub()
+        .resolves(mockSerializedSeedPhrase);
+
+      background.getApi.returns({
+        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.unlockAndGetSeedPhrase('password'),
+      );
+
+      expect(unlockAndGetSeedPhraseStub.callCount).toStrictEqual(1);
+      expect(unlockAndGetSeedPhraseStub.calledWith('password')).toBe(true);
+      expect(seedPhrase).toStrictEqual(mockSeedPhrase);
+    });
+  });
+
   describe('#createNewVaultAndRestore', () => {
     afterEach(() => {
       sinon.restore();
@@ -902,7 +999,7 @@ describe('Actions', () => {
       const verifyPassword = sinon.stub().resolves();
       const getSeedPhrase = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test'));
 
       background.getApi.returns({ verifyPassword, getSeedPhrase });
       setBackgroundConnection(background.getApi());
@@ -956,7 +1053,7 @@ describe('Actions', () => {
 
       const exportSeedPhraseWithPasskey = sinon
         .stub()
-        .resolves(Array.from(Buffer.from('test seed').values()));
+        .resolves(toSerializedSeedPhraseBuffer('test seed'));
 
       background.getApi.returns({ exportSeedPhraseWithPasskey });
       setBackgroundConnection(background.getApi());
@@ -2344,7 +2441,6 @@ describe('Actions', () => {
 
     it('calls hideAsset in background with the assetId', async () => {
       const store = mockStore();
-      // eslint-disable-next-line prettier/prettier
       const assetId =
         'eip155:1:erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
       const hideAssetStub = sinon.stub().resolves();
@@ -3180,50 +3276,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setServiceWorkerKeepAlivePreference', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('sends a value to background', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon.stub().resolves();
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
-      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
-        1,
-      );
-      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
-        true,
-      );
-    });
-
-    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
-      const store = mockStore();
-      const setServiceWorkerKeepAlivePreferenceStub = sinon
-        .stub()
-        .rejects(new Error('error'));
-
-      setBackgroundConnection({
-        setServiceWorkerKeepAlivePreference:
-          setServiceWorkerKeepAlivePreferenceStub,
-      });
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setParticipateInMetaMetrics', () => {
     it('calls background with true when opting in', async () => {
       const store = mockStore();
@@ -3761,6 +3813,68 @@ describe('Actions', () => {
 
       await actions.getUserProfileLineage();
       expect(getUserProfileLineageStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#getCustomerServiceToken', () => {
+    it('calls AuthenticationController:getCustomerServiceToken through the background messenger', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .resolves('customer-service-token');
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBe('customer-service-token');
+      expect(
+        messengerCallStub.calledOnceWith(
+          'AuthenticationController:getCustomerServiceToken',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('returns undefined when the background messenger call fails', async () => {
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('AuthenticationController:getCustomerServiceToken', [])
+        .rejects(new Error('auth failed'));
+
+      background.getApi.returns({
+        messengerCall: messengerCallStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const result = await actions.getCustomerServiceToken();
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when the background messenger call times out', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const messengerCallStub = sinon
+          .stub()
+          .withArgs('AuthenticationController:getCustomerServiceToken', [])
+          .returns(new Promise(() => undefined));
+
+        background.getApi.returns({
+          messengerCall: messengerCallStub,
+        });
+        setBackgroundConnection(background.getApi());
+
+        const resultPromise = actions.getCustomerServiceToken();
+        await jest.advanceTimersByTimeAsync(5000);
+        const result = await resultPromise;
+
+        expect(result).toBeUndefined();
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 

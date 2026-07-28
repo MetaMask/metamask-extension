@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Täpsuse kümnendkohad"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
-  },
   "delete": {
     "message": "Kustuta"
   },
@@ -346,9 +343,6 @@
   "networks": {
     "message": "Võrgud"
   },
-  "nevermind": {
-    "message": "Unusta"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -505,9 +499,6 @@
   },
   "sign": {
     "message": "Allkirjasta"
-  },
-  "signatureRequest": {
-    "message": "Allkirja taotlus"
   },
   "signed": {
     "message": "Allkirjastatud"

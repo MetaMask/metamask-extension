@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
@@ -17,10 +18,33 @@ import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
 
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn().mockReturnValue((action: unknown) => {
+    if (typeof action === 'function') {
+      return action(jest.fn(), jest.fn());
+    }
+    return action;
+  }),
+}));
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -34,6 +58,7 @@ describe('DeleteMetaMetricsDataButton', () => {
   const mockDispatch = jest.fn();
 
   beforeEach(() => {
+    mockTrackEvent.mockClear();
     useDispatchMock.mockReturnValue(mockDispatch);
     (createMetaMetricsDataDeletionTask as jest.Mock).mockResolvedValue(
       undefined,

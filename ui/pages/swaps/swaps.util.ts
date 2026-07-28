@@ -420,8 +420,6 @@ export function getRenderableNetworkFeesForQuote({
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -461,8 +459,6 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
@@ -763,20 +759,6 @@ export const getSwapsLivenessForNetwork = (
   return {
     swapsFeatureIsLive: swapsFeatureFlags[networkName].fallbackToV1,
   };
-};
-
-/**
- * @param value
- * @returns number
- */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const countDecimals = (value: any): number => {
-  if (!value || Math.floor(value) === value) {
-    return 0;
-  }
-  return value.toString().split('.')[1]?.length || 0;
 };
 
 export const showRemainingTimeInMinAndSec = (

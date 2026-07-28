@@ -1,14 +1,19 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
@@ -37,12 +42,11 @@ import {
   ignoreTokens,
   updateNftDropDownState,
 } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   Box,
   ButtonPrimary,
-  ButtonSecondary,
-  ButtonSecondarySize,
   Icon,
   IconName,
   IconSize,
@@ -89,7 +93,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const existingNfts = useNftsCollections();
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_NFT);
 
@@ -174,18 +178,19 @@ export const ImportNftsModal = ({ onClose }) => {
       ),
     ]).catch(() => ({}));
 
-    trackEvent({
-      event: MetaMetricsEventName.TokenAdded,
-      category: 'Wallet',
-      sensitiveProperties: {
-        token_contract_address: nftAddress,
-        token_symbol: tokenDetails?.symbol,
-        tokenId: tokenId.toString(),
-        asset_type: AssetType.NFT,
-        token_standard: tokenDetails?.standard,
-        source_connection_method: MetaMetricsTokenEventSource.Custom,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenAdded)
+        .addCategory('Wallet')
+        .addSensitiveProperties({
+          token_contract_address: nftAddress,
+          token_symbol: tokenDetails?.symbol,
+          tokenId: tokenId.toString(),
+          asset_type: AssetType.NFT,
+          token_standard: tokenDetails?.standard,
+          source_connection_method: MetaMetricsTokenEventSource.Custom,
+        })
+        .build(),
+    );
 
     onClose();
   };
@@ -390,17 +395,18 @@ export const ImportNftsModal = ({ onClose }) => {
           gap={4}
           padding={4}
         >
-          <ButtonSecondary
-            size={ButtonSecondarySize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             onClick={() => {
               onClose();
               navigate(DEFAULT_ROUTE);
             }}
-            block
+            isFullWidth
             className="import-nfts-modal__cancel-button"
           >
             {t('cancel')}
-          </ButtonSecondary>
+          </Button>
           <ButtonPrimary
             size={Size.LG}
             onClick={() => handleAddNft()}

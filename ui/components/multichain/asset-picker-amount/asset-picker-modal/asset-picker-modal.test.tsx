@@ -18,7 +18,6 @@ import {
   getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
-  getTokenList,
 } from '../../../../selectors';
 import {
   getNativeCurrency,
@@ -81,15 +80,6 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => {
-    const debouncedFn = fn;
-    debouncedFn.cancel = jest.fn();
-    return debouncedFn;
-  }),
-}));
-
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
@@ -146,20 +136,6 @@ describe('AssetPickerModal', () => {
       if (selector === getTokenExchangeRates) {
         return {};
       }
-      if (selector === getTokenList) {
-        return {
-          '0xAddress': { ...defaultProps.asset, symbol: 'TOKEN' },
-          '0xtoken1': {
-            address: '0xToken1',
-            symbol: 'TOKEN1',
-            type: AssetType.token,
-            image: 'image1.png',
-            string: '10',
-            decimals: 18,
-            balance: '0',
-          },
-        };
-      }
       if (selector === getConversionRate) {
         return 1;
       }
@@ -205,6 +181,30 @@ describe('AssetPickerModal', () => {
   });
 
   it('filters tokens based on search query', () => {
+    mockUseMultichainBalances.mockReturnValue({
+      assetsWithBalance: [
+        {
+          address: 'token-1',
+          assetId: 'eip155:1/erc20:token-1',
+          balance: '0',
+          chainId: '0x1',
+          decimals: 18,
+          isNative: false,
+          symbol: 'TOKEN',
+          type: AssetType.token,
+        },
+        {
+          address: 'token-2',
+          assetId: 'eip155:1/erc20:token-2',
+          balance: '0',
+          chainId: '0x1',
+          decimals: 18,
+          isNative: false,
+          symbol: 'TOKEN1',
+          type: AssetType.token,
+        },
+      ],
+    });
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
     fireEvent.change(
@@ -667,7 +667,7 @@ describe('AssetPickerModal token filtering', () => {
 
     renderWithProvider(<AssetPickerModal {...defaultProps} />);
 
-    expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
+    expect(mockAssetList.mock.calls.at(-1)?.[0].tokenList).toHaveLength(30);
   });
 
   it('should fetch metadata for unlisted tokens', async () => {

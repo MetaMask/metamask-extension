@@ -1,14 +1,11 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-import copyToClipboard from 'copy-to-clipboard';
-import { COPY_OPTIONS } from '../../shared/constants/copy';
 import { DEFAULT_UI_DELAY, useCopyToClipboard } from './useCopyToClipboard';
 
-// Mock dependencies
-jest.mock('copy-to-clipboard');
-const mockCopyToClipboard = jest.mocked(copyToClipboard);
-
 describe('useCopyToClipboard', () => {
+  const mockCopyToClipboard = globalThis.navigator.clipboard
+    .writeText as unknown as jest.Mock;
+
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
@@ -27,11 +24,7 @@ describe('useCopyToClipboard', () => {
 
     // Act/Assert - Copy
     act(() => handleCopy('test'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(
-      1,
-      'test',
-      COPY_OPTIONS,
-    );
+    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
     expect(result.current[0]).toBe(true);
 
     // Act/Assert - Expiry (clipboard is cleared)
@@ -39,7 +32,7 @@ describe('useCopyToClipboard', () => {
       jest.advanceTimersByTime(clearDelay + 1);
     });
     expect(mockCopyToClipboard).toHaveBeenCalledTimes(2);
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(2, ' ', COPY_OPTIONS);
+    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(2, ' ');
     expect(result.current[0]).toBe(false);
   });
 
@@ -51,11 +44,7 @@ describe('useCopyToClipboard', () => {
 
     // Act/Assert - Copy
     act(() => handleCopy('test'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(
-      1,
-      'test',
-      COPY_OPTIONS,
-    );
+    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
     expect(result.current[0]).toBe(true);
 
     // Act/Assert - Expiry (clipboard is not cleared)
@@ -75,11 +64,7 @@ describe('useCopyToClipboard', () => {
 
     // Act/Assert - Copy
     act(() => handleCopy('test'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(
-      1,
-      'test',
-      COPY_OPTIONS,
-    );
+    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
     expect(result.current[0]).toBe(true);
 
     // Act/Assert - Copy State Reset

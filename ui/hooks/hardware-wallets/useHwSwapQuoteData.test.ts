@@ -18,19 +18,15 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUseSelector = jest.requireMock('react-redux').useSelector;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetBridgeQuotes = jest.requireMock(
   '../../ducks/bridge/selectors',
 ).getBridgeQuotes;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetFromToken = jest.requireMock(
   '../../ducks/bridge/selectors',
 ).getFromToken;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetToToken = jest.requireMock(
   '../../ducks/bridge/selectors',
 ).getToToken;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetHardwareWalletType = jest.requireMock(
   '../../../shared/lib/selectors/keyring',
 ).getHardwareWalletType;

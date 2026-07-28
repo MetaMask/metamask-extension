@@ -1,6 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
 import {
-  getDisplayName,
   getPositionDirection,
   formatOrderType,
   formatStatus,
@@ -48,24 +47,6 @@ const createMockMarket = (
 });
 
 describe('Perps Utils', () => {
-  describe('getDisplayName', () => {
-    it('returns the symbol unchanged for regular assets', () => {
-      expect(getDisplayName('BTC')).toBe('BTC');
-      expect(getDisplayName('ETH')).toBe('ETH');
-    });
-
-    it('extracts the asset name from HIP-3 prefixed symbols', () => {
-      expect(getDisplayName('xyz:TSLA')).toBe('TSLA');
-      expect(getDisplayName('abc:AAPL')).toBe('AAPL');
-    });
-
-    it('handles edge cases with colons', () => {
-      expect(getDisplayName(':INVALID')).toBe(':INVALID');
-      expect(getDisplayName('INVALID:')).toBe('INVALID:');
-      expect(getDisplayName(':')).toBe(':');
-    });
-  });
-
   describe('getPositionDirection', () => {
     it('returns long for positive sizes', () => {
       expect(getPositionDirection('100')).toBe('long');
@@ -214,6 +195,13 @@ describe('Perps Utils', () => {
     it('handles edge cases with colons', () => {
       expect(getDisplaySymbol(':INVALID')).toBe(':INVALID');
       expect(getDisplaySymbol('INVALID:')).toBe('INVALID:');
+      expect(getDisplaySymbol(':')).toBe(':');
+    });
+
+    it('handles null/undefined/non-string input safely', () => {
+      expect(getDisplaySymbol(null as unknown as string)).toBeNull();
+      expect(getDisplaySymbol(undefined as unknown as string)).toBeUndefined();
+      expect(getDisplaySymbol('')).toBe('');
     });
   });
 

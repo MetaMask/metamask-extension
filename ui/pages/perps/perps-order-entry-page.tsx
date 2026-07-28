@@ -22,7 +22,6 @@ import {
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -98,8 +97,7 @@ import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
-  getDisplayName,
-  getChangeColor,
+  getDisplaySymbol,
   getPositionPnlRatio,
   normalizeTpslPrices,
   safeDecodeURIComponent,
@@ -126,6 +124,7 @@ import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skelet
 import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import {
   OrderEntry,
+  OrderEntryHeader,
   DirectionTabs,
   OrderSummary,
   type OrderDirection,
@@ -1074,7 +1073,7 @@ const PerpsOrderEntryPage = () => {
           : t('perpsShort');
     }
     const rawAssetSymbol = orderFormState.asset;
-    const displayAssetSymbol = getDisplayName(rawAssetSymbol);
+    const displayAssetSymbol = getDisplaySymbol(rawAssetSymbol);
     const formattedPositionSize = orderCalculations?.positionSize?.trim();
     if (!formattedPositionSize) {
       return undefined;
@@ -1123,7 +1122,7 @@ const PerpsOrderEntryPage = () => {
         minimumFractionDigits: 0,
         maximumFractionDigits: 4,
       }),
-      getDisplayName(orderFormState.asset),
+      getDisplaySymbol(orderFormState.asset),
     ]);
   }, [formatNumber, orderFormState, orderMode, position, t]);
 
@@ -1745,7 +1744,7 @@ const PerpsOrderEntryPage = () => {
     );
   }
 
-  const displayName = getDisplayName(market.symbol);
+  const displayName = getDisplaySymbol(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
     if (hasNoAvailableBalance) {
@@ -1781,66 +1780,12 @@ const PerpsOrderEntryPage = () => {
       data-testid="perps-order-entry-page"
       onSubmit={handleFormSubmit}
     >
-      {/* Header: Back (left) + Asset symbol, price, % gain (centered) + spacer (right) */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        paddingBottom={4}
-      >
-        <Box
-          data-testid="perps-order-entry-back-button"
-          onClick={() => handleBackClick()}
-          aria-label={t('back')}
-          className="w-9 shrink-0 cursor-pointer"
-        >
-          <Icon
-            name={IconName.ArrowLeft}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          className="flex-1 min-w-0"
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Bold}
-            color={TextColor.TextDefault}
-            data-testid="perps-order-entry-asset-symbol"
-          >
-            {displayName}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Baseline}
-            gap={1}
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-              data-testid="perps-order-entry-price"
-            >
-              {displayPrice}
-            </Text>
-            {displayChange && (
-              <Text
-                variant={TextVariant.BodySm}
-                color={getChangeColor(displayChange)}
-                data-testid="perps-order-entry-change"
-              >
-                {displayChange}
-              </Text>
-            )}
-          </Box>
-        </Box>
-        <Box className="w-9 shrink-0" aria-hidden="true" />
-      </Box>
+      <OrderEntryHeader
+        displayName={displayName}
+        displayPrice={displayPrice}
+        displayChange={displayChange}
+        onBack={() => handleBackClick()}
+      />
 
       {/* Scrollable form */}
       <Box

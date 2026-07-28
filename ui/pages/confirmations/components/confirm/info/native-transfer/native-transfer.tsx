@@ -1,5 +1,8 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionContainerType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionPaySection } from '../../../rows/transaction-pay-section/transaction-pay-section';
@@ -17,6 +20,9 @@ const NativeTransferInfo = () => {
   useMaxValueRefresher();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
+  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
 
   return (
     <>
@@ -27,6 +33,7 @@ const NativeTransferInfo = () => {
         isTransactionsRedesign
         enableMetrics
         metricsOnly={isWalletInitiated}
+        sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
       />
       <EnforcedSimulationsRow />
       <TokenDetailsSection />
