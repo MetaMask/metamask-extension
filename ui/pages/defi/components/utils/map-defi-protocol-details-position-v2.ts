@@ -14,10 +14,10 @@ function toTokenCellChainId(
   chainId: DeFiUnderlyingPosition['chainId'],
 ): TokenWithFiatAmount['chainId'] {
   if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
-    return decimalToPrefixedHex(parseCaipChainId(chainId).reference) as Hex;
+    return decimalToPrefixedHex(parseCaipChainId(chainId).reference);
   }
 
-  return chainId as TokenWithFiatAmount['chainId'];
+  return chainId;
 }
 
 function toTokenCellAddress(
@@ -28,11 +28,10 @@ function toTokenCellAddress(
   );
 
   if (assetNamespace === 'slip44') {
-    return assetReference as TokenWithFiatAmount['address'];
+    return assetReference;
   }
 
-  return (toChecksumHexAddress(assetReference) ??
-    assetReference) as TokenWithFiatAmount['address'];
+  return toChecksumHexAddress(assetReference) ?? assetReference;
 }
 
 /**
@@ -74,5 +73,5 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     chainId: toTokenCellChainId(position.chainId),
     assetId: position.assetId,
     isNative,
-  } as TokenWithFiatAmount;
+  };
 }
