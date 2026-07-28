@@ -45,7 +45,7 @@ describe('PreferencesAndDisplayTab', () => {
 
   describe('show web widget on X setting', () => {
     it('hides the setting when the cashtagInjection feature flag is off', async () => {
-      let view: ReturnType<typeof renderWithProvider>;
+      let view!: ReturnType<typeof renderWithProvider>;
       await act(async () => {
         view = renderWithProvider(
           <PreferencesAndDisplayTab />,
@@ -54,12 +54,12 @@ describe('PreferencesAndDisplayTab', () => {
       });
 
       expect(
-        view!.queryByTestId('show-metamask-widget-on-x'),
+        view.queryByTestId('show-metamask-widget-on-x'),
       ).not.toBeInTheDocument();
     });
 
     it('shows the setting when the cashtagInjection feature flag is on', async () => {
-      let view: ReturnType<typeof renderWithProvider>;
+      let view!: ReturnType<typeof renderWithProvider>;
       await act(async () => {
         view = renderWithProvider(
           <PreferencesAndDisplayTab />,
@@ -68,7 +68,7 @@ describe('PreferencesAndDisplayTab', () => {
       });
 
       expect(
-        view!.getByTestId('show-metamask-widget-on-x'),
+        view.getByTestId('show-metamask-widget-on-x'),
       ).toBeInTheDocument();
     });
   });

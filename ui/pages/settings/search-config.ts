@@ -57,6 +57,7 @@ export const PREFERENCES_ITEMS = {
   'local-currency': 'localCurrency',
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
+  'show-x-widget': 'showWebWidgetOnX',
   'show-extension': 'showExtensionInFullSizeView',
   'show-x-widget': 'showWebWidgetOnX',
   'manage-institutional-wallet': 'manageInstitutionalWallets',
