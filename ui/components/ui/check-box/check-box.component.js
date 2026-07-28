@@ -8,7 +8,6 @@ const CHECKBOX_STATE = {
   UNCHECKED: 'UNCHECKED',
 };
 
-
 /**
  * @deprecated The `<CheckBox />` component has been deprecated in favor of the new `<Checkbox>` component from the component-library.
  * Please update your code to use the new `<Checkbox>` component instead, which can be found at ui/components/component-library/checkbox/checkbox.tsx.
