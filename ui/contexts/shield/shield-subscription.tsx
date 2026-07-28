@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
   COHORT_NAMES,
@@ -22,7 +22,7 @@ import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -77,7 +77,7 @@ export const useShieldSubscriptionContext = () => {
 export const ShieldSubscriptionProvider = ({
   children,
 }: React.PropsWithChildren<unknown>) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );

@@ -107,6 +107,8 @@ describe('Onboarding Create Password', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(true);
+    jest.mocked(useIsFirefox).mockReturnValue(false);
   });
 
   describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
@@ -569,7 +571,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('navigates to review SRP when passkey feature is unavailable after wallet creation', async () => {
-      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -794,7 +796,7 @@ describe('Onboarding Create Password', () => {
     });
 
     it('navigates to MetaMetrics after import when passkey feature is unavailable', async () => {
-      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);
       const mockStore = configureMockStore([thunk])(importMockState);
 
       const props = {
@@ -937,7 +939,7 @@ describe('Onboarding Create Password', () => {
 
   describe('Uncovered routing branches', () => {
     it('routes to completion when keyring present and flow is socialImport (non-Firefox, no passkey)', () => {
-      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);
       const store = configureMockStore([thunk])({
         ...initializedMockState,
         metamask: {
@@ -1069,7 +1071,7 @@ describe('Onboarding Create Password', () => {
 
   describe('handleWalletImport Firefox / social login path', () => {
     it('routes to completion after import when running on Firefox', async () => {
-      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);
       jest.mocked(useIsFirefox).mockReturnValue(true);
 
       const store = configureMockStore([thunk])({
@@ -1122,7 +1124,7 @@ describe('Onboarding Create Password', () => {
     };
 
     it('routes to download-app route after wallet creation in social login flow', async () => {
-      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);
       const store = configureMockStore([thunk])(socialLoginState);
       const { queryByTestId } = renderWithProvider(
         <CreatePassword
