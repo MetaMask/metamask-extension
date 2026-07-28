@@ -35,7 +35,7 @@ export const useBridgeExchangeRates = () => {
   useEffect(() => {
     fromAbortController.current?.abort();
     fromAbortController.current = new AbortController();
-    if (fromToken && !cachedFromTokenExchangeRate) {
+    if (fromToken) {
       dispatch(
         setSrcTokenExchangeRates({
           assetId: fromToken.assetId,
@@ -44,5 +44,5 @@ export const useBridgeExchangeRates = () => {
         }),
       );
     }
-  }, [currency, dispatch, fromToken, cachedFromTokenExchangeRate]);
+  }, [currency, dispatch, fromToken]);
 };
