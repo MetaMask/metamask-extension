@@ -5,6 +5,7 @@ Instead, use export const parameters = {}; and export const decorators = []; in 
   * */
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { PureBlackProvider } from '@metamask/design-system-react';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
@@ -144,29 +145,31 @@ const metamaskDecorator = (story, context) => {
   const StoryComponent = () => story();
 
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={initialEntries}>
-          <AlertMetricsProvider
-            metrics={{
-              trackAlertActionClicked: () => undefined,
-              trackAlertRender: () => undefined,
-              trackInlineAlertClicked: () => undefined,
-            }}
-          >
-            <I18nProvider
-              currentLocale={currentLocale}
-              current={current}
-              en={allLocales.en}
+    <PureBlackProvider isPureBlack={Boolean(pureBlack)}>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={initialEntries}>
+            <AlertMetricsProvider
+              metrics={{
+                trackAlertActionClicked: () => undefined,
+                trackAlertRender: () => undefined,
+                trackInlineAlertClicked: () => undefined,
+              }}
             >
-              <Routes>
-                <Route path={path} element={<StoryComponent />} />
-              </Routes>
-            </I18nProvider>
-          </AlertMetricsProvider>
-        </MemoryRouter>
-      </QueryClientProvider>
-    </Provider>
+              <I18nProvider
+                currentLocale={currentLocale}
+                current={current}
+                en={allLocales.en}
+              >
+                <Routes>
+                  <Route path={path} element={<StoryComponent />} />
+                </Routes>
+              </I18nProvider>
+            </AlertMetricsProvider>
+          </MemoryRouter>
+        </QueryClientProvider>
+      </Provider>
+    </PureBlackProvider>
   );
 };
 
