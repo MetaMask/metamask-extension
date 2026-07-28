@@ -103,44 +103,48 @@ describe('WebcamUtils', () => {
         });
       });
 
-      describe.each([
+      const restrictedEnvironments = [
         ['popup', ENVIRONMENT_TYPE_POPUP],
         ['sidepanel', ENVIRONMENT_TYPE_SIDEPANEL],
-      ])('in %s mode', (_name, environmentType) => {
-        beforeEach(() => {
-          mockGetEnvironmentType.mockReturnValue(environmentType);
-        });
+      ] as const;
 
-        it('returns environmentReady true when permission is granted', async () => {
-          mockQueryPermission.mockResolvedValue({ state: 'granted' });
-
-          const result = await WebcamUtils.checkStatus();
-
-          expect(result).toStrictEqual({
-            permissions: true,
-            environmentReady: true,
+      restrictedEnvironments.forEach(([name, environmentType]) => {
+        describe(`in ${name} mode`, () => {
+          beforeEach(() => {
+            mockGetEnvironmentType.mockReturnValue(environmentType);
           });
-        });
 
-        it('returns environmentReady false when permission is not yet granted (prompt)', async () => {
-          mockQueryPermission.mockResolvedValue({ state: 'prompt' });
+          it('returns environmentReady true when permission is granted', async () => {
+            mockQueryPermission.mockResolvedValue({ state: 'granted' });
 
-          const result = await WebcamUtils.checkStatus();
+            const result = await WebcamUtils.checkStatus();
 
-          expect(result).toStrictEqual({
-            permissions: false,
-            environmentReady: false,
+            expect(result).toStrictEqual({
+              permissions: true,
+              environmentReady: true,
+            });
           });
-        });
 
-        it('returns environmentReady false when permission is denied', async () => {
-          mockQueryPermission.mockResolvedValue({ state: 'denied' });
+          it('returns environmentReady false when permission is not yet granted (prompt)', async () => {
+            mockQueryPermission.mockResolvedValue({ state: 'prompt' });
 
-          const result = await WebcamUtils.checkStatus();
+            const result = await WebcamUtils.checkStatus();
 
-          expect(result).toStrictEqual({
-            permissions: false,
-            environmentReady: false,
+            expect(result).toStrictEqual({
+              permissions: false,
+              environmentReady: false,
+            });
+          });
+
+          it('returns environmentReady false when permission is denied', async () => {
+            mockQueryPermission.mockResolvedValue({ state: 'denied' });
+
+            const result = await WebcamUtils.checkStatus();
+
+            expect(result).toStrictEqual({
+              permissions: false,
+              environmentReady: false,
+            });
           });
         });
       });

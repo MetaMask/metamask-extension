@@ -65,7 +65,9 @@ class WebcamUtils {
     // so redirect those to fullscreen whenever the grant isn't already in
     // place. Once granted, the origin-scoped permission is reused in place —
     // this is what lets the user sign entirely within the side panel.
-    const environmentReady = !(isRestrictedEnvironment && !hasWebcamPermissions);
+    const environmentReady = !(
+      isRestrictedEnvironment && !hasWebcamPermissions
+    );
 
     return {
       permissions: hasWebcamPermissions,
