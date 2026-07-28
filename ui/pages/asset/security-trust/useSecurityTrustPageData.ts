@@ -196,11 +196,14 @@ export const useSecurityTrustPageData = () => {
       return null;
     }
 
-    const evmHexChainId = isStrictHexString(chainId)
-      ? chainId
-      : caipChainIdForLookup
-        ? convertCaipToHexChainId(caipChainIdForLookup)
-        : undefined;
+    let evmHexChainId: Hex | undefined;
+    if (isStrictHexString(chainId)) {
+      evmHexChainId = chainId;
+    } else if (caipChainIdForLookup) {
+      evmHexChainId = convertCaipToHexChainId(caipChainIdForLookup);
+    } else {
+      evmHexChainId = undefined;
+    }
 
     const evmNetworkConfig = evmHexChainId
       ? evmNetworkConfigurations[evmHexChainId]
