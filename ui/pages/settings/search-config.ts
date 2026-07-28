@@ -59,7 +59,6 @@ export const PREFERENCES_ITEMS = {
   'show-default-address': 'showDefaultAddress',
   'show-x-widget': 'showWebWidgetOnX',
   'show-extension': 'showExtensionInFullSizeView',
-  'show-x-widget': 'showWebWidgetOnX',
   'manage-institutional-wallet': 'manageInstitutionalWallets',
 } as const;
 
