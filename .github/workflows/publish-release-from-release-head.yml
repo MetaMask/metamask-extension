@@ -266,9 +266,11 @@ jobs:
           subject-path: build-flask-mv2-webpack/builds/metamask-firefox-*.zip
 
       # Publish each Sigstore bundle as a release asset so the AMO submission
-      # Lambda can verify provenance without a GitHub token (INFRA-3786). Each
-      # attest step writes its bundle to a path that the next step overwrites,
-      # so the copy has to happen once per step rather than in a single pass.
+      # Lambda can verify provenance without a GitHub token (INFRA-3786).
+      # actions/attest (pinned via attest-build-provenance) writes each bundle
+      # under a unique RUNNER_TEMP/<mkdtemp>/attestation.json, so the four
+      # bundle-path outputs point at four distinct files and can be collected
+      # in one pass after the last attest step.
       - name: Collect attestation bundles
         env:
           CHROME_BUNDLE: ${{ steps.attest-chrome.outputs.bundle-path }}
