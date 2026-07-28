@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { merge } from 'lodash';
-import copyToClipboard from 'copy-to-clipboard';
+import { waitFor } from '@testing-library/react';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -86,11 +86,6 @@ jest.mock('../../store/actions', () => ({
   decryptMsgInline: jest.fn(),
 }));
 
-jest.mock('copy-to-clipboard', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
 const state = merge({}, mockState, {
   history: {
     mostRecentOverviewPage: '/',
@@ -101,7 +96,7 @@ const state = merge({}, mockState, {
 });
 
 describe('ConfirmDecryptMessage Component', () => {
-  const mockCopyToClipboard = jest.mocked(copyToClipboard);
+  const mockWriteText = globalThis.navigator.clipboard.writeText;
   const mockCancelDecryptMsg = jest.mocked(cancelDecryptMsg);
   const mockDecryptMsgInline = jest.mocked(decryptMsgInline);
   const mockDecryptMsg = jest.mocked(decryptMsg);
@@ -204,7 +199,9 @@ describe('ConfirmDecryptMessage Component', () => {
     expect(copyButton).toBeInTheDocument();
 
     copyButton.click();
-    expect(mockCopyToClipboard).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockWriteText).toHaveBeenCalledWith(mockRawSignatureMessage);
+    });
     expect(mockTrackEvent).toHaveBeenCalled();
   });
 

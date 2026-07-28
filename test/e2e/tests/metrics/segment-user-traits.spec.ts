@@ -43,7 +43,7 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: true,
         });
@@ -73,7 +73,7 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: false,
         });
@@ -103,7 +103,7 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
           dataCollectionForMarketing: false,
         });
@@ -127,7 +127,7 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -166,7 +166,7 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);

@@ -5479,16 +5479,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@metamask/analytics-controller@npm:1.1.1"
+"@metamask/analytics-controller@npm:^1.1.1, @metamask/analytics-controller@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@metamask/analytics-controller@npm:1.2.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/2a64ac0e397a27ac029a324646ebd91c8f9afa6ae2d1b5786042eaf5ad9b4b946c85b6d311ad75319562f8952649c54e80a9e8efb37879bef82ee1b5afe3513b
+  checksum: 10/378bdfe9663c532587fc397f0e80368d02a51b443b0af89ef7c0b78dd158ad59531415a2ad26673bfde1d302954655561e00fa16d41e3099f67fd3a5bdec3d04
   languageName: node
   linkType: hard
 
@@ -22230,15 +22230,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.3.3":
-  version: 3.3.3
-  resolution: "copy-to-clipboard@npm:3.3.3"
-  dependencies:
-    toggle-selection: "npm:^1.0.6"
-  checksum: 10/e0a325e39b7615108e6c1c8ac110ae7b829cdc4ee3278b1df6a0e4228c490442cc86444cd643e2da344fbc424b3aab8909e2fec82f8bc75e7e5b190b7c24eecf
-  languageName: node
-  linkType: hard
-
 "copy-webpack-plugin@npm:^13.0.1":
   version: 13.0.1
   resolution: "copy-webpack-plugin@npm:13.0.1"
@@ -32856,7 +32847,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/address-book-controller": "npm:^7.1.2"
-    "@metamask/analytics-controller": "npm:^1.1.1"
+    "@metamask/analytics-controller": "npm:^1.2.1"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
@@ -33125,7 +33116,6 @@ __metadata:
     cockatiel: "npm:^3.1.2"
     commander: "npm:^14.0.0"
     concurrently: "npm:^8.2.2"
-    copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^13.0.1"
     core-js-pure: "npm:^3.38.0"
     cron-parser: "npm:^4.5.0"
@@ -41968,13 +41958,6 @@ __metadata:
   version: 4.21.2
   resolution: "tocbot@npm:4.21.2"
   checksum: 10/eec4703be87d010c47bc9d596c9cc111e74e33856d40a5a9847e696dfadf8d0bfea7ce63fac514f2bb2f208662d3f0a28d9dd02ec2e459d7ee1d6e175bc06c51
-  languageName: node
-  linkType: hard
-
-"toggle-selection@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "toggle-selection@npm:1.0.6"
-  checksum: 10/9a0ed0ecbaac72b4944888dacd79fe0a55eeea76120a4c7e46b3bb3d85b24f086e90560bb22f5a965654a25ab43d79ec47dfdb3f1850ba740b14c5a50abc7040
   languageName: node
   linkType: hard
 

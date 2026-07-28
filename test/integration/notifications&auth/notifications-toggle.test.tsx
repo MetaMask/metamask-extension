@@ -95,7 +95,7 @@ describe('Notifications Toggle', () => {
       preloadedState: {
         ...mockedState,
         analyticsId: 'test-metametrics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         dataCollectionForMarketing: false,
       },
@@ -169,7 +169,7 @@ describe('Notifications Toggle', () => {
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: true,
         dataCollectionForMarketing: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
       backgroundConnection: backgroundConnectionMocked,
