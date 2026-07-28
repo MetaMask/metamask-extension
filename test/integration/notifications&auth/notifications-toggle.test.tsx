@@ -42,8 +42,9 @@ const selectors = {
 };
 
 const clickElement = async (testId: string) => {
+  const element = await screen.findByTestId(testId);
   await act(async () => {
-    fireEvent.click(await screen.findByTestId(testId));
+    fireEvent.click(element);
   });
 };
 
