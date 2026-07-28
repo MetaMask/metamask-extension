@@ -67,7 +67,7 @@ export function TransactionStatus({
         type="button"
         className="border-0 bg-transparent p-0"
         // @ts-expect-error We need to update React types
-        interestfor={id}
+        interestfor={id} // eslint-disable-line react/no-unknown-property
       >
         {label}
       </button>
