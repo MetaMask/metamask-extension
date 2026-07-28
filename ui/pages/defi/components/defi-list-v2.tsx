@@ -30,7 +30,7 @@ type DefiListV2Props = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
- 
+
 export default function DefiListV2({
   onClick,
   positions,

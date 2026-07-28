@@ -19,7 +19,7 @@ type DefiDetailsPositionCellV2Props = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
- 
+
 export default function DefiDetailsPositionCellV2({
   position,
 }: DefiDetailsPositionCellV2Props) {

@@ -40,7 +40,7 @@ type DeFiProtocolCellV2Props = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
- 
+
 export default function DeFiProtocolCellV2({
   onClick,
   position,

@@ -18,7 +18,7 @@ const separatorStyle = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
- 
+
 export default function DefiDetailsListV2({
   sections,
 }: DefiDetailsListV2Props) {
