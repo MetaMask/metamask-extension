@@ -19,23 +19,9 @@ describe('trackPerpsErrorScreenViewed', () => {
     expect(track).toHaveBeenCalledWith(MetaMetricsEventName.PerpsScreenViewed, {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
       [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-      [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
-        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+      // Pinned as a literal too: the emitted value is an analytics contract, so
+      // a change to the constant must fail here rather than pass silently.
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]: 'perps_market_details',
     });
-  });
-
-  it('carries a non-null, human-readable screen_name', () => {
-    const track = jest.fn();
-
-    trackPerpsErrorScreenViewed(
-      track,
-      PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-      PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
-    );
-
-    const [, properties] = track.mock.calls[0];
-    expect(properties[PERPS_EVENT_PROPERTY.SCREEN_NAME]).toBe(
-      'perps_market_details',
-    );
   });
 });

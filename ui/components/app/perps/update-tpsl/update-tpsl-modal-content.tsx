@@ -72,6 +72,13 @@ import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
 } from '../utils/tpslInput';
+import { captureException } from '../../../../../shared/lib/sentry';
+
+/**
+ * How long after a successful TP/SL update the positions stream is reconciled
+ * against the backend, giving the exchange time to settle the order.
+ */
+const TPSL_RECONCILE_DELAY_MS = 2500;
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
@@ -529,17 +536,22 @@ export const UpdateTPSLModalContent = ({
         // is meant to run ~2.5s AFTER the modal closes (see the "runs delayed
         // refetch reconciliation after modal closes" test), and it only pushes
         // into the global stream manager — no React state is touched, so there
-        // is no unmounted-component update to guard against.
+        // is no unmounted-component update to guard against. Tests must drain
+        // it with fake timers rather than let a real one outlive them.
         setTimeout(async () => {
           try {
             const freshPositions = await submitRequestToBackground<
               PerpsPosition[]
             >('perpsGetPositions', [{ skipCache: true }]);
             streamManager.pushPositionsWithOverrides(freshPositions);
-          } catch (e) {
-            console.warn('[Perps] Delayed TP/SL refetch failed:', e);
+          } catch (error) {
+            // Non-critical: the optimistic push already updated the UI and the
+            // stream reconciles on its own cadence. Surface it rather than
+            // swallow, matching the sibling refresh failures in perps-view and
+            // perps-market-detail-page.
+            captureException(error);
           }
-        }, 2500);
+        }, TPSL_RECONCILE_DELAY_MS);
 
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,

@@ -406,7 +406,9 @@ describe('MarketListView', () => {
 
       typeSearch('BTC');
       // Nothing before the debounce elapses — mid-typing is not a search.
-      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(0);
+      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(
+        0,
+      );
 
       act(() => {
         jest.advanceTimersByTime(500);
@@ -487,6 +489,55 @@ describe('MarketListView', () => {
       expect(abandonCall[1]).toEqual(
         expect.objectContaining({ search_query: 'btc', query_count: 1 }),
       );
+    });
+
+    it('emits the query then the tap when a result is picked inside the debounce window', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      // A fast tap flushes the pending query first, so the funnel is never a
+      // tap with no preceding search.
+      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(
+        1,
+      );
+      const [tapCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchResultTapped,
+      );
+      expect(tapCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', result_rank: 1 }),
+      );
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchAbandoned),
+      ).toHaveLength(0);
+    });
+
+    it('abandons and resets the session when the query is backspaced to empty', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      typeSearch('');
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+
+      // Session is fully reset: tapping a row from the now-unfiltered list must
+      // not report a tap against the previous query.
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchResultTapped),
+      ).toHaveLength(0);
     });
   });
 });

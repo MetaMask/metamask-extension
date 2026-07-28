@@ -230,6 +230,9 @@ const FULL_CLOSE_PERCENT = 100;
 /** Leverage ceiling assumed when the market is unknown or not yet loaded. */
 const DEFAULT_MAX_LEVERAGE = 50;
 
+/** Leverage the form seeds when the user has no saved configuration. */
+const DEFAULT_LEVERAGE = 3;
+
 /**
  * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
  * emitted, so a burst of keystrokes reports one considered event.
@@ -333,8 +336,6 @@ const PerpsOrderEntryPage = () => {
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
-
-  const DEFAULT_LEVERAGE = 3;
 
   // Saved trade-configuration defaults surfaced on the trading screen view.
   // `default_payment_token` is intentionally omitted — the Extension
@@ -492,7 +493,8 @@ const PerpsOrderEntryPage = () => {
     conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
-      [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+        PERPS_EVENT_VALUE.ERROR_TYPE.MARKET_NOT_FOUND,
       [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
         PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
     },
@@ -589,7 +591,8 @@ const PerpsOrderEntryPage = () => {
     );
     const timeoutId = setTimeout(() => {
       trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
-        [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]: 'trade',
+        [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]:
+          PERPS_EVENT_VALUE.ORDER_CONTEXT.TRADE,
         [PERPS_EVENT_PROPERTY.ACTION]: action,
         [PERPS_EVENT_PROPERTY.ORDER_SIZE]: orderSize,
         [PERPS_EVENT_PROPERTY.ORDER_SIZE_PERCENT]:
@@ -622,7 +625,8 @@ const PerpsOrderEntryPage = () => {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
       [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
-      [PERPS_EVENT_PROPERTY.ASSET]: orderFormState?.asset ?? decodedSymbol ?? '',
+      [PERPS_EVENT_PROPERTY.ASSET]:
+        orderFormState?.asset ?? decodedSymbol ?? '',
       [PERPS_EVENT_PROPERTY.DIRECTION]:
         orderDirection === 'long'
           ? PERPS_EVENT_VALUE.DIRECTION.LONG
@@ -1301,6 +1305,10 @@ const PerpsOrderEntryPage = () => {
     // Controller `{ success: false }` already ran submitted/terminal analytics —
     // surface UI only. Transport throws still use catch + client PerpsError.
     const surfaceControllerFailure = (error: unknown) => {
+      // The submission did not go through and the user stays on the form, so
+      // this is no longer a committed flow: re-arm abandon tracking, otherwise
+      // one failed submit suppresses every later abandonment on this page.
+      hasSubmittedOrderRef.current = false;
       if (inProgressToastKey) {
         hidePerpsToast();
       }

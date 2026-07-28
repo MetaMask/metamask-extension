@@ -469,16 +469,30 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
-    it('includes watchlisted on the asset_detail screen view', async () => {
+    it('reports watchlisted false on the asset_detail screen view for an unwatchlisted market', async () => {
       await renderPage(mockStore(createMockState(true)));
 
       const assetDetailView = mockPerpsScreenViewedOptions.find(
         (option) => option.properties?.screen_type === 'asset_details',
       );
 
-      expect(assetDetailView).toBeDefined();
-      expect(assetDetailView?.properties).toHaveProperty('watchlisted');
-      expect(typeof assetDetailView?.properties?.watchlisted).toBe('boolean');
+      expect(assetDetailView?.properties?.watchlisted).toBe(false);
+    });
+
+    it('reports watchlisted true when the market is in the watchlist', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).watchlistMarkets = {
+        testnet: [],
+        mainnet: ['ETH'],
+      };
+
+      await renderPage(mockStore(state));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView?.properties?.watchlisted).toBe(true);
     });
 
     it('emits the error screen view when the market is not found', async () => {

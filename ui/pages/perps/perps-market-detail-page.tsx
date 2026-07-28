@@ -487,7 +487,8 @@ const PerpsMarketDetailPage = () => {
     conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
-      [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'market_not_found',
+      [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+        PERPS_EVENT_VALUE.ERROR_TYPE.MARKET_NOT_FOUND,
       [PERPS_EVENT_PROPERTY.SCREEN_NAME]:
         PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
     },

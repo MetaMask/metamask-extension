@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
@@ -66,6 +72,41 @@ import { FilterSelect } from './components/filter-select';
  * so the two clients report comparable search funnels.
  */
 const SEARCH_QUERY_DEBOUNCE_MS = 500;
+
+/**
+ * `mode` values reported on the market-search funnel events. Values match
+ * mobile's inline literals in `PerpsMarketListView` so both clients report the
+ * same vocabulary.
+ */
+const SEARCH_MODE = {
+  DISCOVERY: 'discovery',
+  INTENT: 'intent',
+  BROWSE: 'browse',
+} as const;
+
+/** A short ticker-like token ("btc", "hype2") reads as a targeted lookup. */
+const TICKER_LIKE_QUERY = /^[a-z0-9]{1,6}$/u;
+
+/**
+ * Classify a search for the funnel `mode` property: chips/category narrow the
+ * browse context → discovery; a short ticker-like token → intent; anything else
+ * → browse.
+ *
+ * @param activeChips - Chips currently narrowing the list (category filter).
+ * @param normalizedQuery - The lowercased, trimmed search query.
+ * @returns The reported search mode.
+ */
+const deriveSearchMode = (
+  activeChips: string[],
+  normalizedQuery: string,
+): (typeof SEARCH_MODE)[keyof typeof SEARCH_MODE] => {
+  if (activeChips.length) {
+    return SEARCH_MODE.DISCOVERY;
+  }
+  return TICKER_LIKE_QUERY.test(normalizedQuery)
+    ? SEARCH_MODE.INTENT
+    : SEARCH_MODE.BROWSE;
+};
 
 /**
  * Check if a market is an uncategorized HIP-3 market (no market type mapping).
@@ -238,6 +279,10 @@ export const MarketListView = () => {
   const pendingQueryRef = useRef<string | null>(null);
   const isLoadingRef = useRef(isLoading);
   isLoadingRef.current = isLoading;
+  // What is in the box right now, so a tap can be attributed to a search that
+  // is still inside the debounce window.
+  const trimmedQueryRef = useRef('');
+  trimmedQueryRef.current = searchQuery.trim();
 
   // Chips narrowing the browse context. The Extension exposes only the category
   // filter; mobile also counts its watchlist chip.
@@ -275,13 +320,7 @@ export const MarketListView = () => {
               [PERPS_EVENT_PROPERTY.HAS_RESULTS]: hasResults,
             }
           : {}),
-        // Chips/category narrow the browse context → discovery; a short
-        // ticker-like token → intent; anything else → browse.
-        [PERPS_EVENT_PROPERTY.MODE]: chips.length
-          ? 'discovery'
-          : /^[a-z0-9]{1,6}$/u.test(normalizedQuery)
-            ? 'intent'
-            : 'browse',
+        [PERPS_EVENT_PROPERTY.MODE]: deriveSearchMode(chips, normalizedQuery),
         [PERPS_EVENT_PROPERTY.ACTIVE_CHIPS]: chips,
         [PERPS_EVENT_PROPERTY.SOURCE]:
           PERPS_EVENT_VALUE.SOURCE.PERP_MARKET_SEARCH,
@@ -309,6 +348,18 @@ export const MarketListView = () => {
     emitSearchQuery(pendingQueryRef.current, !isLoadingRef.current);
     pendingQueryRef.current = null;
   }, [emitSearchQuery]);
+
+  /**
+   * Clear the whole search session so the next one never inherits a prior
+   * session's query, count or start time (mobile's `resetSearchSession`).
+   */
+  const resetSearchSession = useCallback(() => {
+    pendingQueryRef.current = null;
+    emittedQueryRef.current = '';
+    emittedResultsCountRef.current = undefined;
+    searchStartedAtRef.current = null;
+    queryCountRef.current = 0;
+  }, []);
 
   const emitSearchAbandoned = useCallback(() => {
     if (!emittedQueryRef.current || resultTappedRef.current) {
@@ -342,10 +393,12 @@ export const MarketListView = () => {
   const trimmedQuery = searchQuery.trim();
   useEffect(() => {
     if (!trimmedQuery) {
-      // Emptying the box ends the session: drop anything still pending and
-      // restart the clock for the next one.
-      pendingQueryRef.current = null;
-      searchStartedAtRef.current = null;
+      // Emptying the box (backspace or the clear affordance) ends the session
+      // exactly like leaving the page: report the unresolved search, then wipe
+      // the whole session so the next one starts clean. Mirrors mobile, where
+      // the empty branch calls emitSearchAbandoned() then resetSearchSession().
+      emitSearchAbandoned();
+      resetSearchSession();
       return undefined;
     }
     // The clock starts at the first keystroke, not at the first emitted query,
@@ -370,7 +423,14 @@ export const MarketListView = () => {
       pendingQueryRef.current = null;
     }, SEARCH_QUERY_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
-  }, [trimmedQuery, isLoading, displayedMarkets.length, emitSearchQuery]);
+  }, [
+    trimmedQuery,
+    isLoading,
+    displayedMarkets.length,
+    emitSearchQuery,
+    emitSearchAbandoned,
+    resetSearchSession,
+  ]);
 
   // Leaving the page flushes a query still inside the debounce window (so the
   // session is measured rather than dropped), then reports the unresolved
@@ -393,10 +453,11 @@ export const MarketListView = () => {
   }, []);
 
   const handleSearchClear = useCallback(() => {
-    // Clearing the box ends the search session without a result.
-    emitSearchAbandoned();
+    // Emptying the box is the single abandonment path: the debounce effect's
+    // empty branch reports and resets the session, so clearing, backspacing to
+    // empty and Escape all behave identically.
     setSearchQuery('');
-  }, [emitSearchAbandoned]);
+  }, []);
 
   const handleSortChange = useCallback(
     (field: SortField, direction: SortDirection) => {
@@ -442,14 +503,20 @@ export const MarketListView = () => {
       });
       // A tap on a search result closes the search funnel: report the rank the
       // user picked, and suppress the abandonment this navigation would emit.
-      if (emittedQueryRef.current) {
+      // Gated on what is in the box (not on what has been emitted) so a tap
+      // inside the 500 ms debounce still counts; the pending query is flushed
+      // first so the stream is always query -> tap, never tap -> query. The
+      // flush re-arms `resultTappedRef`, so it is set after it, not before.
+      const tappedQuery = trimmedQueryRef.current.toLowerCase();
+      if (tappedQuery) {
         const resultRank =
           displayedMarketsRef.current.findIndex(
             (m) => m.symbol === market.symbol,
           ) + 1;
+        flushPendingSearchQuery();
         resultTappedRef.current = true;
         track(MetaMetricsEventName.PerpsSearchResultTapped, {
-          [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: emittedQueryRef.current,
+          [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: tappedQuery,
           [PERPS_EVENT_PROPERTY.RESULTS_COUNT]:
             displayedMarketsRef.current.length,
           ...(resultRank > 0
@@ -473,7 +540,7 @@ export const MarketListView = () => {
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
       );
     },
-    [navigate, setFlowAttribution, track],
+    [navigate, setFlowAttribution, track, flushPendingSearchQuery],
   );
 
   const handleSearchClick = useCallback(() => {

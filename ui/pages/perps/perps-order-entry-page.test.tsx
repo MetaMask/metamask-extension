@@ -1664,6 +1664,48 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeGreaterThanOrEqual(0);
     });
 
+    it('still reports abandonment after a failed submit leaves the user on the form', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({ success: false, error: 'Order failed' });
+        }
+        return Promise.resolve(undefined);
+      });
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      enterAmount('100');
+      const submitButton = screen.getByTestId('submit-order-button');
+      await waitFor(() => expect(submitButton).not.toBeDisabled());
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+      // Precondition: the submit really ran and failed, so the commit flag was
+      // set and then re-armed. Without this the assertion below would pass even
+      // if the click never reached the controller.
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      // The failure re-arms the commit flag, so leaving now is a real
+      // abandonment rather than the tail of a committed order.
+      unmount();
+
+      const abandonCall = mockAnalyticsTrackEvent.mock.calls.find(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsUiInteraction &&
+          arg?.properties?.action === 'abandon_order',
+      );
+      expect(abandonCall?.[0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 100,
+        }),
+      );
+    });
+
     it('emits exactly one error screen view and no trading view when the market is not found', () => {
       mockLiveMarketData.mockReturnValue({
         markets: [],
@@ -1679,9 +1721,7 @@ describe('PerpsOrderEntryPage', () => {
       // One rendered error screen => one screen-view event: the trading view is
       // gated on the market existing so it must not also fire.
       expect(
-        screenViews.filter(
-          ([arg]) => arg?.properties?.screen_type === 'error',
-        ),
+        screenViews.filter(([arg]) => arg?.properties?.screen_type === 'error'),
       ).toHaveLength(1);
       expect(
         screenViews.filter(

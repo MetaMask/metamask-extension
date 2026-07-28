@@ -68,6 +68,11 @@ const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
  * Build the margin-adjustment failure toast, swapping unhelpful backend strings
  * ("unknown error", empty) for the localized fallback copy. Shared by the
  * `{ success: false }` branch and the transport `catch`.
+ *
+ * @param errorMessage - The raw error text from the controller or transport.
+ * @param fallbackDescription - Localized copy used when the raw text is empty
+ * or one of the known unhelpful strings.
+ * @returns The toast key and description to display.
  */
 const getMarginAdjustmentFailedToast = (
   errorMessage: string,

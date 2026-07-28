@@ -105,6 +105,22 @@ export const PERPS_EVENT_VALUE = {
     CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
   },
+  ERROR_TYPE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,
+    /**
+     * Extension-only: a perps route opened with a symbol the market stream does
+     * not know. The controller contract has no equivalent yet.
+     */
+    MARKET_NOT_FOUND: 'market_not_found',
+  },
+  /**
+   * Extension-only: which flow a PERPS_TRANSACTION_CONSIDERED belongs to. Only
+   * the trade flow emits it today; the controller contract does not export the
+   * value set.
+   */
+  ORDER_CONTEXT: {
+    TRADE: 'trade',
+  },
   /** @deprecated Prefer ACTION from the controller contract. */
   TRADE_ACTION: {
     CREATE_POSITION: CONTROLLER_PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,

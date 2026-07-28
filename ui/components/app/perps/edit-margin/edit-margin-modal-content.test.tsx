@@ -3,7 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import messages from '../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions, mockAccountState } from '../mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../utils/formatPerpsDisplayPrice';
 import { EditMarginModalContent } from './edit-margin-modal-content';
@@ -265,7 +265,8 @@ describe('EditMarginModalContent', () => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastMarginAdjustmentFailed',
           description:
-            messages.perpsToastMarginAdjustmentFailedDescriptionFallback.message,
+            messages.perpsToastMarginAdjustmentFailedDescriptionFallback
+              .message,
         });
       });
       expect(defaultProps.onClose).not.toHaveBeenCalled();
