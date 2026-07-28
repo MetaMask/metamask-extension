@@ -47,7 +47,7 @@ export const MultipleBlockSizes = PropTypes.oneOfType([
 ]);
 
 const ArrayOfValidSizesAndAuto = PropTypes.arrayOf(ValidSizeAndAuto);
-export const MultipleSizesAndAuto = PropTypes.oneOfType([
+const MultipleSizesAndAuto = PropTypes.oneOfType([
   ValidSizeAndAuto,
   ArrayOfValidSizesAndAuto,
 ]);

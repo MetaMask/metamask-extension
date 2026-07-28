@@ -8,7 +8,6 @@ const CHECKBOX_STATE = {
   UNCHECKED: 'UNCHECKED',
 };
 
-export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
 
 /**
  * @deprecated The `<CheckBox />` component has been deprecated in favor of the new `<Checkbox>` component from the component-library.
