@@ -286,6 +286,36 @@ describe('ClosePositionModal', () => {
     });
   });
 
+  describe('abandon tracking', () => {
+    it('reports leverage_used when the modal is dismissed without submitting', () => {
+      const { unmount } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      // Dismissing without submitting is the real abandonment path: the host
+      // unmounts the modal and the hook's cleanup emits.
+      unmount();
+
+      const abandonCall = mockCloseImperativeTrack.mock.calls.find(
+        ([event, properties]) =>
+          event === 'Perp UI Interaction' &&
+          properties?.action === 'abandon_order',
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({
+          asset: basePosition.symbol,
+          leverage_used: basePosition.leverage.value,
+        }),
+      );
+    });
+  });
+
   describe('position_close screen view', () => {
     it('surfaces button_clicked and button_location from props', () => {
       renderWithProvider(
@@ -479,7 +509,7 @@ describe('ClosePositionModal', () => {
         error: 'ORDER_SIZE_MIN',
       });
 
-      const { rerender } = renderWithProvider(
+      renderWithProvider(
         <ClosePositionModal
           isOpen
           onClose={jest.fn()}
@@ -507,29 +537,6 @@ describe('ClosePositionModal', () => {
           screen_name: 'perps_market_details',
         }),
       );
-
-      // The close never went through and the modal stayed open on an
-      // uncommitted form, so dismissing it now is a real abandonment. Asserted
-      // in this test rather than a second one so the failing submit is only
-      // driven once.
-      await act(async () => {
-        rerender(
-          <ClosePositionModal
-            isOpen={false}
-            onClose={jest.fn()}
-            position={basePosition}
-            currentPrice={2900}
-          />,
-        );
-      });
-
-      expect(
-        mockCloseImperativeTrack.mock.calls.some(
-          ([event, properties]) =>
-            event === 'Perp UI Interaction' &&
-            properties?.action === 'abandon_order',
-        ),
-      ).toBe(true);
     });
   });
 
