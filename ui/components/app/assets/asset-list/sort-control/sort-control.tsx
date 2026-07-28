@@ -6,7 +6,6 @@ import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   TextVariant,
