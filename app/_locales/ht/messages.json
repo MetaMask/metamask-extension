@@ -247,9 +247,6 @@
     "message": "Kont $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Nouvo Kontra"
-  },
   "newPassword": {
     "message": "Nouvo modpas (minit 8)"
   },

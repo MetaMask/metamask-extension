@@ -5699,9 +5699,6 @@
     "message": "अकाउंट $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "नया कॉन्ट्रैक्ट"
-  },
   "newCustomTokenAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
   },

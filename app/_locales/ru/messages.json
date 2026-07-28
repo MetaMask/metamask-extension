@@ -5699,9 +5699,6 @@
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Новый контракт"
-  },
   "newCustomTokenAdded": {
     "message": "«$1» успешно добавлен!"
   },

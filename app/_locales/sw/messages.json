@@ -335,9 +335,6 @@
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Mkataba Mpya"
-  },
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },

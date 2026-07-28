@@ -649,9 +649,6 @@
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "建立新合約"
-  },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
   },

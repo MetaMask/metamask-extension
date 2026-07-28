@@ -353,9 +353,6 @@
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Jauns līgums"
-  },
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
   },

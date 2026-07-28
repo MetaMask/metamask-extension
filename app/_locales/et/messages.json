@@ -347,9 +347,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Uus kontakt"
-  },
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
   },

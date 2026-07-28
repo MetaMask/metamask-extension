@@ -220,9 +220,6 @@
     "message": "கணக்கு $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "புதிய ஒப்பந்தம்"
-  },
   "newPassword": {
     "message": "புதிய கடவுச்சொல் (min 8 எழுத்துகள்)"
   },

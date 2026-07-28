@@ -177,9 +177,6 @@
     "message": "Účet $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Nový kontrakt"
-  },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },

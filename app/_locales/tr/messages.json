@@ -5703,9 +5703,6 @@
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Yeni sözleşme"
-  },
   "newCustomTokenAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
   },

@@ -5699,9 +5699,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Νέο συμβόλαιο"
-  },
   "newCustomTokenAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },

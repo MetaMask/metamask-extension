@@ -5703,9 +5703,6 @@
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Hợp đồng mới"
-  },
   "newCustomTokenAdded": {
     "message": "“$1” đã được thêm thành công!"
   },

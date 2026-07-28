@@ -5699,9 +5699,6 @@
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "新合约"
-  },
   "newCustomTokenAdded": {
     "message": "成功添加了 “$1”！"
   },

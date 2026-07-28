@@ -156,9 +156,6 @@
   "networks": {
     "message": "netwerken"
   },
-  "newContract": {
-    "message": "Nieuw contract"
-  },
   "newPassword": {
     "message": "Nieuw wachtwoord (min 8 tekens)"
   },

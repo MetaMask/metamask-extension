@@ -353,9 +353,6 @@
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "ಹೊಸ ಒಪ್ಪಂದ"
-  },
   "newPassword": {
     "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
   },

@@ -5703,9 +5703,6 @@
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "新しいコントラクト"
-  },
   "newCustomTokenAdded": {
     "message": "「$1」が追加されました！"
   },

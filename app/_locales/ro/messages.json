@@ -344,9 +344,6 @@
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "Contract nou"
-  },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
   },

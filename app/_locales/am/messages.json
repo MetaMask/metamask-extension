@@ -338,9 +338,6 @@
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "አዲስ ኮንትራት"
-  },
   "newPassword": {
     "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
   },

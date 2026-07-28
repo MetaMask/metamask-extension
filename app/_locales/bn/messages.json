@@ -350,9 +350,6 @@
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newContract": {
-    "message": "নতুন কন্ট্র্যাক্ট"
-  },
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
   },
