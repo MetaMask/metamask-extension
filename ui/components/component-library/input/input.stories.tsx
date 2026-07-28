@@ -7,6 +7,7 @@ import { Input } from './input';
 export default {
   title: 'Components/ComponentLibrary/Input (deprecated)',
   component: Input,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

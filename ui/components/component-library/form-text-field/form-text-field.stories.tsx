@@ -7,6 +7,7 @@ import { FormTextField } from './form-text-field';
 export default {
   title: 'Components/ComponentLibrary/FormTextField (deprecated)',
   component: FormTextField,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

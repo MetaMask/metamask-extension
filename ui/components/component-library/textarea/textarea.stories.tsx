@@ -7,6 +7,7 @@ import { Textarea } from './textarea';
 export default {
   title: 'Components/ComponentLibrary/Textarea (deprecated)',
   component: Textarea,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

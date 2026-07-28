@@ -5,6 +5,7 @@ import { Tag } from './tag';
 export default {
   title: 'Components/ComponentLibrary/Tag (deprecated)',
   component: Tag,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
