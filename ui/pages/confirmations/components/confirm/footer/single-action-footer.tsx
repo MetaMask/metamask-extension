@@ -20,6 +20,7 @@ type ButtonState = {
 };
 
 const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
+  [TransactionType.moneyAccountDeposit]: 'addFunds',
   [TransactionType.musdConversion]: 'musdConvert',
   [TransactionType.perpsDeposit]: 'addFunds',
   [TransactionType.perpsWithdraw]: 'perpsWithdraw',
