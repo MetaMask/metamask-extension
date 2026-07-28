@@ -145,6 +145,13 @@ class FirefoxDriver {
       path.join(process.cwd(), 'test-artifacts', 'downloads'),
     );
 
+    // Firefox 153 restricts WebDriver navigation to privileged pages (most
+    // `about:` pages, `chrome://`, `resource://`) unless the browser is
+    // launched with system access allowed. `getInternalId` reads the extension
+    // UUID from `about:debugging#addons`, so without this the session cannot
+    // start. See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    options.addArguments('--remote-allow-system-access');
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
