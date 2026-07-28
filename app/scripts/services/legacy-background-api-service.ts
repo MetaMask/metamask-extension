@@ -558,7 +558,7 @@ export class LegacyBackgroundApiService {
    * reload. Used when an update is available.
    */
   async openUpdateTabAndReload(): Promise<void> {
-    return openUpdateTabAndReload(this.#requestSafeReload);
+    return openUpdateTabAndReload(this.#requestSafeReload);return openUpdateTabAndReload(this.#requestSafeReload.bind(this));
   }
 
   /**
