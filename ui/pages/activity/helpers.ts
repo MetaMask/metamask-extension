@@ -15,9 +15,11 @@ import {
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import type { LocalActivityListItem } from './types';
 
+export type ActivityKindFilter = 'buySell';
+
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
-  | { networks: string[] };
+  | { networks: string[]; kindFilter?: ActivityKindFilter };
 
 export function activityMatchesAssetId(
   item: ActivityListItem,

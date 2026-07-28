@@ -27,12 +27,23 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 }));
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => ({ goToBuy: mockGoToBuy }),
 }));
 
+jest.mock('../../../hooks/ramps/useRampsOrders', () => ({
+  useRampsOrders: () => ({
+    getOrderById: () => ({
+      paymentMethod: { name: 'VISA **** 4242' },
+    }),
+  }),
+}));
+
 jest.mock('../components/sections', () => ({
-  MetadataSection: () => <div data-testid="metadata-section" />,
+  MetadataSection: ({ statusDescription }: { statusDescription?: string }) => (
+    <div data-testid="metadata-section">{statusDescription}</div>
+  ),
   TokensSection: ({
     tokens,
   }: {
@@ -136,10 +147,21 @@ describe('RampOrderDetails', () => {
     );
 
     const feeRow = getAllByTestId('row').find(
-      (row) => row.getAttribute('data-label') === 'rampsOrderDetailsFees',
+      (row) =>
+        row.getAttribute('data-label') ===
+        'rampsOrderDetailsProviderFee:Transak',
     );
     expect(feeRow).toHaveTextContent('0.98 USD');
     expect(feeRow?.textContent?.match(/USD/gu)).toHaveLength(1);
+  });
+
+  it('shows the payment method from the raw order', () => {
+    const { getAllByTestId } = render(<RampOrderDetails item={buildItem()} />);
+
+    const paidWithRow = getAllByTestId('row').find(
+      (row) => row.getAttribute('data-label') === 'rampsOrderDetailsPaidWith',
+    );
+    expect(paidWithRow).toHaveTextContent('VISA **** 4242');
   });
 
   it('shows a shortened, copyable order id', () => {

@@ -167,6 +167,14 @@
   "activity": {
     "message": "Activity"
   },
+  "activityFilterAll": {
+    "message": "All",
+    "description": "Activity list filter chip that shows all activity types"
+  },
+  "activityFilterBuySell": {
+    "message": "Buy/Sell",
+    "description": "Activity list filter chip that shows only ramp buy and sell orders"
+  },
   "activityEmptyDescription": {
     "message": "Swap your first token today."
   },
@@ -8286,6 +8294,14 @@
   "rampsOrderDetailsFees": {
     "message": "Fees"
   },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Paid with",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 fee",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
   "rampsOrderDetailsOrderId": {
     "message": "Order ID"
   },
@@ -8294,6 +8310,34 @@
   },
   "rampsOrderDetailsViewOnProvider": {
     "message": "View on $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Something went wrong with your order.",
+    "description": "Description for the failed ramp order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Buy failed",
+    "description": "Title for the failed ramp order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Your order is being processed.",
+    "description": "Description for the pending ramp order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Buy in progress",
+    "description": "Title for the pending ramp order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Your crypto is on the way.",
+    "description": "Description for the successful ramp order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Buy successful",
+    "description": "Title for the successful ramp order toast"
+  },
+  "rampsOrderToastView": {
+    "message": "View",
+    "description": "Action button on ramp order status toasts that opens Activity"
   },
   "rampsOtherOptions": {
     "message": "Other options"

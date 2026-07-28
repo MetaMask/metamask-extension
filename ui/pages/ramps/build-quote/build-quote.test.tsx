@@ -4,7 +4,6 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import * as storeActions from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getPendingOrderPreview } from '../../../hooks/ramps/utils/pendingOrderPreview';
@@ -16,6 +15,7 @@ const mockNavigate = jest.fn();
 const mockGetBuyWidgetData = jest.fn();
 const mockAddPrecreatedOrder = jest.fn();
 const mockOpenTab = jest.fn();
+const mockWatchRampsCheckoutTab = jest.fn();
 let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -40,6 +40,15 @@ jest.mock('../../../hooks/ramps/useRampsController', () => ({
 
 jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: jest.fn(),
+}));
+
+jest.mock('../../../store/controller-actions/ramps-controller', () => ({
+  watchRampsCheckoutTab: (...args: unknown[]) =>
+    mockWatchRampsCheckoutTab(...args),
+}));
+
+jest.mock('./utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: jest.fn(),
 }));
 
 const { useRampsController } = jest.requireMock(
@@ -135,9 +144,6 @@ describe('RampsBuildQuoteScreen', () => {
       loading: false,
       error: null,
     });
-    jest
-      .spyOn(storeActions, 'forceUpdateMetamaskState')
-      .mockResolvedValue(undefined as never);
   });
 
   afterEach(() => {
@@ -225,12 +231,14 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
   });
 
-  it('opens the provider widget and routes to order details on continue', async () => {
+  it('opens the provider widget, watches the tab, and returns home on continue', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
     });
     mockAddPrecreatedOrder.mockResolvedValue(undefined);
+    mockOpenTab.mockResolvedValue({ id: 42 });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
 
     renderWithProvider(
       <RampsBuildQuoteScreen />,
@@ -246,9 +254,6 @@ describe('RampsBuildQuoteScreen', () => {
       provider: 'transak',
       id: 'quote-1',
     });
-    expect(mockOpenTab).toHaveBeenCalledWith({
-      url: 'https://provider.example/checkout',
-    });
     expect(mockAddPrecreatedOrder).toHaveBeenCalledWith(
       expect.objectContaining({
         orderId: 'order-123',
@@ -256,11 +261,16 @@ describe('RampsBuildQuoteScreen', () => {
         chainId: 'eip155:1',
       }),
     );
-    // The Redux copy of controller state is patched over a separate channel
-    // from the addPrecreatedOrder response — force it in before navigating,
-    // or the details view can render with the not-yet-updated order list.
-    expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-123');
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: 'https://provider.example/checkout',
+    });
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      tabId: 42,
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderAlreadyPrecreated: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   it('stashes the selected token/fiat amount as a best-effort preview for the pending order', async () => {
@@ -271,6 +281,7 @@ describe('RampsBuildQuoteScreen', () => {
       orderId: 'order-123',
     });
     mockAddPrecreatedOrder.mockResolvedValue(undefined);
+    mockOpenTab.mockResolvedValue({ id: 42 });
 
     renderWithProvider(
       <RampsBuildQuoteScreen />,
@@ -292,17 +303,12 @@ describe('RampsBuildQuoteScreen', () => {
     });
   });
 
-  it('normalizes a full-path orderId before routing to order details', async () => {
-    // Some providers (e.g. MoonPay) return orderId as a full path
-    // ("providers/moonpay-staging/orders/c-abc123") rather than a bare code.
-    // Routing with the raw value produces extra path segments that
-    // react-router can't match against `/tx/:caipChainId/:txIdentifier`,
-    // 404ing with "No route matches URL".
+  it('watches redirect-only checkouts without precreating an order', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
-      orderId: 'providers/moonpay-staging/orders/c-abc123',
     });
-    mockAddPrecreatedOrder.mockResolvedValue(undefined);
+    mockOpenTab.mockResolvedValue({ id: 7 });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
 
     renderWithProvider(
       <RampsBuildQuoteScreen />,
@@ -314,7 +320,40 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
-    expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/c-abc123');
+    expect(mockAddPrecreatedOrder).not.toHaveBeenCalled();
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
+      tabId: 7,
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderAlreadyPrecreated: false,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('normalizes a full-path orderId when stashing the pending-order preview', async () => {
+    // Some providers (e.g. MoonPay) return orderId as a full path
+    // ("providers/moonpay-staging/orders/c-abc123") rather than a bare code.
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'providers/moonpay-staging/orders/c-abc123',
+    });
+    mockAddPrecreatedOrder.mockResolvedValue(undefined);
+    mockOpenTab.mockResolvedValue({ id: 42 });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(getPendingOrderPreview('c-abc123')).toMatchObject({
+      fiatCurrency: { symbol: 'USD' },
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {

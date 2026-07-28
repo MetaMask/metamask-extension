@@ -3,7 +3,10 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { mapRampsOrderSafely } from './mapRampsOrderSafely';
 import { setPendingOrderPreview } from './pendingOrderPreview';
 
-type RampOrderItem = Extract<ActivityListItem, { type: 'rampBuy' | 'rampSell' }>;
+type RampOrderItem = Extract<
+  ActivityListItem,
+  { type: 'rampBuy' | 'rampSell' }
+>;
 
 const baseOrder = {
   provider: { id: 'mockprovider-staging', name: 'MockProvider (Staging)' },

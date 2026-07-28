@@ -27,6 +27,7 @@ import {
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
+  type ActivityKindFilter,
   type ActivityListFilter,
 } from './helpers';
 import { useActivityScreenViewed } from './useActivityScreenViewed';
@@ -37,11 +38,17 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 62;
 const headerHeight = 40;
+const BUY_SELL_TYPES = new Set(['rampBuy', 'rampSell']);
 
 export function ActivityList({
   filter,
   entryPoint,
-}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
+  kindFilter,
+}: {
+  filter?: ActivityListFilter;
+  entryPoint?: ScreenViewedEntryPoint;
+  kindFilter?: ActivityKindFilter;
+} = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
@@ -53,7 +60,10 @@ export function ActivityList({
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: deferredNetworks ?? [] };
+  const filters: ActivityListFilter = filter ?? {
+    networks: deferredNetworks ?? [],
+    kindFilter,
+  };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
@@ -71,10 +81,13 @@ export function ActivityList({
     // also surface as a generic local/API tx — dedupeItems keeps whichever
     // source it saw first for a given hash, and the ramp-specific view is
     // strictly more informative than the generic classification.
-    const items = dedupeItems(rampsItems, localItems, evmItems, nonEvmItems);
+    let items = dedupeItems(rampsItems, localItems, evmItems, nonEvmItems);
+    if (kindFilter === 'buySell') {
+      items = items.filter((item) => BUY_SELL_TYPES.has(item.type));
+    }
 
     return groupActivityListItems(items);
-  }, [evmItems, localItems, nonEvmItems, rampsItems]);
+  }, [evmItems, kindFilter, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),

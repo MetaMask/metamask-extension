@@ -1,5 +1,8 @@
 import { mapRampsOrder, type RampsOrderLike } from '@metamask/client-utils';
-import { getInternalOrderCode, type RampsOrder } from '@metamask/ramps-controller';
+import {
+  getInternalOrderCode,
+  type RampsOrder,
+} from '@metamask/ramps-controller';
 import { getPendingOrderPreview } from './pendingOrderPreview';
 
 /**
@@ -78,9 +81,7 @@ function withStableOrderType(order: RampsOrder): RampsOrder {
     }
     return order;
   }
-  return currentType === knownType
-    ? order
-    : { ...order, orderType: knownType };
+  return currentType === knownType ? order : { ...order, orderType: knownType };
 }
 
 /**

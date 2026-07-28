@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { useRampsOrders } from '../../../hooks/ramps/useRampsOrders';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 import { Footer, Row, Section } from '../components/shared';
@@ -39,27 +40,28 @@ export function RampOrderDetails({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const { goToBuy } = useRampsNavigation();
+  const { getOrderById } = useRampsOrders();
 
   const { fiat, token, provider, statusDescription, paymentDetails } =
     item.data;
   const orderId = item.id ? getInternalOrderCode(item.id) : undefined;
-  // Redundant on a completed order (the amount is already the hero); useful
-  // context for a pending/failed one (thread: providers often disclose why).
-  const showStatusDescription = statusDescription && item.status !== 'success';
+  const rawOrder = orderId ? getOrderById(orderId) : undefined;
+  const paidWith =
+    rawOrder?.paymentMethod?.name ?? rawOrder?.paymentMethod?.shortName;
+  const showStatusDescription =
+    Boolean(statusDescription) && item.status !== 'success';
   const fiatTotal =
     fiat?.amount && fiat.currency && Number.isFinite(Number(fiat.amount))
       ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
       : null;
-  // The order's fee is already a fiat amount (not a crypto token amount like
-  // every other FeesRows caller), so format it directly here rather than
-  // through FeesRows/TokenFiatValue+TokenLabel — that pairing is built to
-  // show a token's fiat estimate next to its symbol/badge, and doubles up
-  // the currency text ("0.98 USD USD") when there's no token to badge.
   const fee = item.data.fees?.[0];
   const feeTotal =
     fee?.amount && fee.symbol && Number.isFinite(Number(fee.amount))
       ? formatCurrencyWithMinThreshold(Number(fee.amount), fee.symbol)
       : null;
+  const providerFeeLabel = provider?.name
+    ? t('rampsOrderDetailsProviderFee', [provider.name])
+    : t('rampsOrderDetailsFees');
 
   const handleViewOnProvider = () => {
     if (provider?.orderLink) {
@@ -79,8 +81,16 @@ export function RampOrderDetails({
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
         <TokensSection tokens={[{ token }]} />
-        <MetadataSection item={item} />
+        <MetadataSection
+          item={item}
+          statusDescription={
+            showStatusDescription ? statusDescription : undefined
+          }
+        />
         <Section>
+          {paidWith ? (
+            <Row label={t('rampsOrderDetailsPaidWith')} value={paidWith} />
+          ) : null}
           {orderId ? (
             <Row
               label={t('rampsOrderDetailsOrderId')}
@@ -89,7 +99,7 @@ export function RampOrderDetails({
                   type="button"
                   onClick={() => handleCopy(orderId)}
                   aria-label={t('copyToClipboard')}
-                  className="inline-flex items-center gap-1"
+                  className="inline-flex items-center gap-1 rounded-full bg-background-alternative px-2 py-0.5"
                 >
                   {shortenOrderId(orderId)}
                   <Icon name={IconName.Copy} size={IconSize.Sm} />
@@ -98,17 +108,8 @@ export function RampOrderDetails({
             />
           ) : null}
         </Section>
-        {showStatusDescription ? (
-          <Section>
-            <Text className="text-alternative @compact:text-s-body-sm">
-              {statusDescription}
-            </Text>
-          </Section>
-        ) : null}
         <Section>
-          {feeTotal ? (
-            <Row label={t('rampsOrderDetailsFees')} value={feeTotal} />
-          ) : null}
+          {feeTotal ? <Row label={providerFeeLabel} value={feeTotal} /> : null}
           {fiatTotal ? (
             <Row
               label={t('rampsOrderDetailsTotal')}

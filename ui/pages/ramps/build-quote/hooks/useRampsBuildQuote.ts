@@ -1,13 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ChangeEvent,
-} from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getInternalOrderCode,
   normalizeProviderCode,
@@ -15,8 +8,8 @@ import {
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
+  DEFAULT_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
-  TX_DETAILS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -26,7 +19,7 @@ import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCal
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
 import { setPendingOrderPreview } from '../../../../hooks/ramps/utils/pendingOrderPreview';
-import { forceUpdateMetamaskState } from '../../../../store/actions';
+import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
   isTokenStateSettled,
@@ -35,6 +28,7 @@ import {
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
+import { showBuyTabOpenedToast } from '../utils/show-buy-tab-opened-toast';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -69,7 +63,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const networksByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -84,9 +77,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     paymentMethods,
     paymentMethodsStatus,
     getBuyWidgetData,
-    addOrder,
     addPrecreatedOrder,
-    getOrderFromCallback,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -198,94 +189,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const [isContinuing, setIsContinuing] = useState(false);
   const [continueError, setContinueError] = useState<string | null>(null);
 
-  // Tears down the tab listeners registered below. Kept in a ref so the
-  // unmount effect can always reach the latest pair without re-running.
-  const cleanupRedirectWatchRef = useRef<(() => void) | null>(null);
-
-  useEffect(
-    () => () => {
-      cleanupRedirectWatchRef.current?.();
-    },
-    [],
-  );
-
-  // Providers using the classic redirect/checkout flow (no precreated
-  // orderId) only create the order once the user finishes checkout on their
-  // hosted page and it navigates to our callback URL. Watch the tab we just
-  // opened for that navigation, then resolve the order via the callback URL.
-  const watchForRedirectCallback = useCallback(
-    (openedTabId: number, providerCode: string) => {
-      // Tear down any watch still active from a prior Continue click before
-      // registering a new one, so listeners never accumulate.
-      cleanupRedirectWatchRef.current?.();
-
-      const onTabUpdated = (
-        tabId: number,
-        changeInfo: { url?: string; pendingUrl?: string },
-        tab?: { url?: string },
-      ) => {
-        if (tabId !== openedTabId) {
-          return;
-        }
-        const candidateUrl =
-          changeInfo.url ?? changeInfo.pendingUrl ?? tab?.url;
-        if (!candidateUrl?.startsWith(getRampCallbackBaseUrl())) {
-          return;
-        }
-        cleanupRedirectWatchRef.current?.();
-        global.platform.closeTab(tabId);
-        getOrderFromCallback(providerCode, candidateUrl, walletAddress)
-          .then(async (order) => {
-            await addOrder(order);
-            // addOrder resolves once the background has processed it, but the
-            // Redux store's copy of controller state is patched over a
-            // separate channel — force it in before navigating, or the
-            // details view can render with the not-yet-updated order list.
-            await forceUpdateMetamaskState(dispatch);
-            const orderId = getInternalOrderCode(order);
-            // Use the token the user picked rather than re-deriving chainId
-            // from the callback order — its `network.chainId` isn't always
-            // populated yet at this point, and mapRampsOrder's CAIP
-            // conversion throws on an undefined chainId.
-            navigate(
-              `${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderId}`,
-            );
-          })
-          .catch((error) => {
-            setContinueError(
-              parseUserFacingError(error, t('rampsBuyWidgetError')),
-            );
-          });
-      };
-
-      const onTabRemoved = (tabId: number) => {
-        if (tabId !== openedTabId) {
-          return;
-        }
-        // User closed the checkout tab without finishing — not an error.
-        cleanupRedirectWatchRef.current?.();
-      };
-
-      cleanupRedirectWatchRef.current = () => {
-        global.platform.removeTabUpdatedListener(onTabUpdated);
-        global.platform.removeTabRemovedListener(onTabRemoved);
-        cleanupRedirectWatchRef.current = null;
-      };
-
-      global.platform.addTabUpdatedListener(onTabUpdated);
-      global.platform.addTabRemovedListener(onTabRemoved);
-    },
-    [
-      addOrder,
-      dispatch,
-      getOrderFromCallback,
-      navigate,
-      selectedToken?.chainId,
-      t,
-      walletAddress,
-    ],
-  );
-
   const handleContinue = useCallback(async () => {
     if (!canContinue || !selectedQuote || isContinuing) {
       return;
@@ -298,19 +201,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
-      // The widget is hosted by the provider, opened in a new tab rather than
-      // rendered in the extension.
+
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      const orderAlreadyPrecreated = Boolean(widget.orderId);
+
+      // Durable work first — opening a tab can unload the popup.
       if (widget.orderId) {
-        // widget.orderId can be a full path (e.g.
-        // "providers/moonpay-staging/orders/c-abc123"), not just the bare
-        // code — normalize it before it ends up in the route, or react-router
-        // sees extra path segments and 404s ("No route matches URL").
         const orderCode = getInternalOrderCode(widget.orderId);
         if (selectedToken) {
-          // The precreated order's own payload has no token/amount/fees yet —
-          // stash what the user picked here so the details view can show a
-          // best-effort preview until the provider fills the real order in.
           setPendingOrderPreview(orderCode, {
             cryptoAmount: selectedQuote.quote?.amountOut ?? '0',
             cryptoCurrency: {
@@ -325,31 +223,29 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
             totalFeesFiat: Number(selectedQuote.quote?.totalFees ?? 0),
           });
         }
-        // A provider that precreates the order returns its id. Persist it and
-        // route to the details view BEFORE opening checkout: opening a tab can
-        // unload the extension popup, which would abort any work queued after
-        // it — so the durable state (order + route) must be set up first.
         await addPrecreatedOrder({
           orderId: widget.orderId,
           providerCode,
           walletAddress,
           chainId: selectedToken?.chainId,
         });
-        // addPrecreatedOrder resolves once the background has processed it,
-        // but the Redux store's copy of controller state is patched over a
-        // separate channel — force it in before navigating, or the details
-        // view can render with the not-yet-updated order list.
-        await forceUpdateMetamaskState(dispatch);
-        navigate(`${TX_DETAILS_ROUTE}/${selectedToken?.chainId}/${orderCode}`);
-        await global.platform.openTab({ url: widget.url });
-      } else {
-        // Redirect-flow provider — no order exists yet, wait for checkout to
-        // complete and resolve it from the callback URL instead.
-        const openedTab = await global.platform.openTab({ url: widget.url });
-        if (openedTab.id !== undefined) {
-          watchForRedirectCallback(openedTab.id, providerCode);
-        }
       }
+
+      const openedTab = await global.platform.openTab({ url: widget.url });
+      if (openedTab.id !== undefined) {
+        await watchRampsCheckoutTab({
+          tabId: openedTab.id,
+          providerCode,
+          walletAddress,
+          orderAlreadyPrecreated,
+        });
+      }
+
+      navigate(DEFAULT_ROUTE);
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
+      );
     } catch (error) {
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
     } finally {
@@ -360,7 +256,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     canContinue,
     currency,
     debouncedAmount,
-    dispatch,
     getBuyWidgetData,
     isContinuing,
     navigate,
@@ -369,7 +264,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedToken,
     t,
     walletAddress,
-    watchForRedirectCallback,
   ]);
 
   const viewKind = resolveBuildQuoteViewKind({
@@ -412,8 +306,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
     displayedQuoteError: continueError ?? displayedQuoteError,
-    // Keep the known provider visible while quotes refresh; loading is shown
-    // on the Continue button instead of replacing this label.
     providerStatusLabel: providerLabel,
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,
