@@ -33,6 +33,7 @@ import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 const mockGetEnvironmentType = jest.fn();
+const mockUseIsHardwareWalletAccount = jest.fn();
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment-type'),
@@ -61,6 +62,10 @@ jest.mock('../../../../../shared/lib/selectors');
 jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
   isHardwareWallet: jest.fn(),
+}));
+jest.mock('../../../../hooks/useIsHardwareWalletAccount', () => ({
+  useIsHardwareWalletAccount: (...args: unknown[]) =>
+    mockUseIsHardwareWalletAccount(...args),
 }));
 
 jest.mock('../../../../store/actions', () => ({
@@ -202,6 +207,7 @@ describe('useTransactionConfirm', () => {
     attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     isHardwareWalletMock.mockReturnValue(false);
+    mockUseIsHardwareWalletAccount.mockReturnValue(false);
     mockNavigateToHwSigningPage.mockReset();
     mockUseSendBundleAmountSymbol.mockReset();
     mockUseSendBundleAmountSymbol.mockReturnValue({
@@ -283,6 +289,7 @@ describe('useTransactionConfirm', () => {
 
   it('routes hardware wallet sendBundle sends to hardware wallet signing page', async () => {
     isHardwareWalletMock.mockReturnValue(true);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
@@ -296,6 +303,8 @@ describe('useTransactionConfirm', () => {
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      isExternalSign: true,
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
       type: TransactionType.simpleSend,
     });
@@ -322,6 +331,7 @@ describe('useTransactionConfirm', () => {
                 type: TransactionType.gasPayment,
               }),
             ],
+            isExternalSign: false,
             type: TransactionType.simpleSend,
           }),
         }),
@@ -331,6 +341,7 @@ describe('useTransactionConfirm', () => {
 
   it('routes hardware wallet sends to signing page even when STX is disabled', async () => {
     isHardwareWalletMock.mockReturnValue(true);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
 
     const { onTransactionConfirm } = runHook({
       type: TransactionType.simpleSend,
