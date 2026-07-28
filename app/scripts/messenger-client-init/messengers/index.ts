@@ -115,10 +115,6 @@ import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
 } from './static-assets-controller-messenger';
-import {
-  getStellarAssetsControllerInitMessenger,
-  getStellarAssetsControllerMessenger,
-} from './stellar-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -316,11 +312,6 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export {
-  getStellarAssetsControllerMessenger,
-  getStellarAssetsControllerInitMessenger,
-} from './stellar-assets-controller-messenger';
-export type { StellarAssetsControllerInitMessenger } from './stellar-assets-controller-messenger';
 export type { TokenDetectionControllerInitMessenger } from './token-detection-controller-messenger';
 export {
   getTokenDetectionControllerMessenger,
@@ -622,10 +613,6 @@ export const MESSENGER_FACTORIES = {
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,
     getInitMessenger: getStaticAssetsControllerInitMessenger,
-  },
-  StellarAssetsController: {
-    getMessenger: getStellarAssetsControllerMessenger,
-    getInitMessenger: getStellarAssetsControllerInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,

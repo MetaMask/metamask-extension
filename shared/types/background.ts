@@ -62,7 +62,6 @@ import type { ConnectivityControllerState } from '@metamask/connectivity-control
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
-import type { StellarAssetsControllerState } from '../../app/scripts/controllers/stellar-assets-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -205,7 +204,6 @@ export type ControllerStatePropertiesEnumerated = {
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   balances: MultichainBalancesControllerState['balances'];
-  accountAssets: StellarAssetsControllerState['accountAssets'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
   historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
@@ -387,7 +385,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SelectedNetworkControllerState &
   SignatureControllerState &
   SmartTransactionsControllerState &
-  StellarAssetsControllerState &
   SnapControllerState &
   SnapInterfaceControllerState &
   SnapInsightsControllerState &

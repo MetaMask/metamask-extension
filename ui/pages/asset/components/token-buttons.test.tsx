@@ -146,12 +146,13 @@ const stellarMockState = {
       },
     },
     selectedAccountGroup: STELLAR_GROUP_ID,
-    accountAssets: {
+    assetsBalance: {
       [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
         [PUBNET_USDC_ASSET]: {
-          limit: '10',
-          authorized: true,
-          sponsored: false,
+          amount: '0',
+          metadata: {
+            limit: '10',
+          },
         },
       },
     },

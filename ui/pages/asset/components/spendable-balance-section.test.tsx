@@ -14,7 +14,8 @@ jest.mock('../../../hooks/useFiatFormatter', () => ({
 }));
 
 jest.mock('../../../selectors/stellar-assets', () => ({
-  getStellarBaseReserveForAccountAsset: jest.fn(),
+  ...jest.requireActual('../../../selectors/stellar-assets'),
+  getSpendableForAccount: jest.fn(),
 }));
 
 const STELLAR_NATIVE_ASSET_ID =
@@ -37,15 +38,18 @@ const renderWithProviders = (component: React.ReactElement) =>
   );
 
 describe('SpendableBalanceSection', () => {
-  const getStellarBaseReserveForAccountAssetMock =
-    stellarAssetsSelectors.getStellarBaseReserveForAccountAsset as jest.Mock;
+  const getSpendableForAccountMock =
+    stellarAssetsSelectors.getSpendableForAccount as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders total, spendable, and reserved balances', () => {
-    getStellarBaseReserveForAccountAssetMock.mockReturnValue('2.5');
+    getSpendableForAccountMock.mockReturnValue({
+      minimumReserveBalance: '2.5',
+      spendableBalance: '247.5',
+    });
 
     renderWithProviders(
       <SpendableBalanceSection
@@ -73,8 +77,8 @@ describe('SpendableBalanceSection', () => {
     ).toHaveTextContent('$105.00');
   });
 
-  it('returns null when base reserve is unavailable', () => {
-    getStellarBaseReserveForAccountAssetMock.mockReturnValue(undefined);
+  it('returns null when spendable info is unavailable', () => {
+    getSpendableForAccountMock.mockReturnValue(undefined);
 
     const { container } = renderWithProviders(
       <SpendableBalanceSection
@@ -89,7 +93,9 @@ describe('SpendableBalanceSection', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('returns null for assets that do not support base reserve', () => {
+  it('returns null for assets that do not support spendable balance', () => {
+    getSpendableForAccountMock.mockReturnValue(undefined);
+
     const { container } = renderWithProviders(
       <SpendableBalanceSection
         accountId={ACCOUNT_ID}
@@ -100,7 +106,7 @@ describe('SpendableBalanceSection', () => {
       />,
     );
 
-    expect(getStellarBaseReserveForAccountAssetMock).not.toHaveBeenCalled();
+    expect(getSpendableForAccountMock).toHaveBeenCalled();
     expect(container).toBeEmptyDOMElement();
   });
 });

@@ -127,7 +127,6 @@ import { EncryptionPublicKeyController } from '../controllers/encryption-public-
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
-import { StellarAssetsController } from '../controllers/stellar-assets-controller';
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
@@ -246,7 +245,6 @@ export type MessengerClient =
   | ConfigRegistryController
   | ConfigRegistryApiService
   | StaticAssetsController
-  | StellarAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
   | ProofOfOwnershipService
@@ -325,7 +323,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
-  StellarAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &

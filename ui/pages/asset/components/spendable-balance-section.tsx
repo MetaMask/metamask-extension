@@ -40,19 +40,18 @@ export function SpendableBalanceSection({
 }: SpendableBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
-  const { baseReserve, spendableBalance } = useSpendableBalance({
+  const { minimumReserveBalance, spendableBalance } = useSpendableBalance({
     accountId,
     assetId,
-    totalBalance,
   });
 
-  if (baseReserve === undefined || spendableBalance === undefined) {
+  if (minimumReserveBalance === undefined || spendableBalance === undefined) {
     return null;
   }
 
   const totalDisplay = `${totalBalance} ${symbol}`;
   const spendableDisplay = `${spendableBalance} ${symbol}`;
-  const reservedDisplay = `${baseReserve} ${symbol}`;
+  const reservedDisplay = `${minimumReserveBalance} ${symbol}`;
   const fiatValueDisplay =
     fiatValue !== null && Number.isFinite(fiatValue)
       ? formatFiat(fiatValue)
