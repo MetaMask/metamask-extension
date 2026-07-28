@@ -111,4 +111,4 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 
 ; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
 ; To enable for all users, change the corresponding entry in builds.yml to `true`.
-MM_PURE_BLACK_PREVIEW=false
+MM_PURE_BLACK_PREVIEW=true

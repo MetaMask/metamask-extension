@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -25,6 +25,8 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
+  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -95,11 +97,9 @@ import {
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
-import {
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../components/component-library';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -1417,7 +1417,7 @@ export const TokenManagementPage = () => {
 
     hasTrackedScreenOpenedRef.current = true;
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+      createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
           screen: TOKEN_MANAGEMENT_SCREEN,
@@ -1581,16 +1581,18 @@ export const TokenManagementPage = () => {
         paddingBottom={2}
       >
         <TextFieldSearch
-          value={searchQuery}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          onChange={handleSearchChange}
+          className="app-text-field-search"
           clearButtonOnClick={handleSearchClear}
-          size={TextFieldSearchSize.Lg}
-          className="w-full"
-          inputProps={{
-            'data-testid': 'token-management-search-input',
-            spellCheck: false,
-          }}
+          inputProps={
+            {
+              'data-testid': 'token-management-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={handleSearchChange}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          size={TextFieldSize.Lg}
+          value={searchQuery}
         />
       </Box>
 

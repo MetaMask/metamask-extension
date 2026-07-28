@@ -293,8 +293,6 @@ export const getTokenBalancesEvm = createSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -324,8 +322,6 @@ export const getTokenBalancesEvm = createSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -665,7 +661,7 @@ const defaultAccountTreeState = getDefaultAccountTreeControllerState();
  *
  * @param state
  */
-const selectAccountTreeStateForBalances = createSelector(
+const selectAccountTreeStateForBalances = createDeepEqualSelector(
   [
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
@@ -868,7 +864,7 @@ const selectAssetsControllerStateForBalances = createSelector(
  * @param state - Redux state from which the required slices are derived.
  * @returns Aggregated balances structure for all wallets and groups.
  */
-export const selectBalanceForAllWallets = createSelector(
+export const selectBalanceForAllWallets = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     selectAssetsControllerStateForBalances,

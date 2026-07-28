@@ -606,7 +606,7 @@
         "@hello-pangea/dnd>raf-schd": true,
         "react": true,
         "react-dom": true,
-        "@hello-pangea/dnd>react-redux": true,
+        "react-redux": true,
         "redux": true,
         "@hello-pangea/dnd>use-memo-one": true
       }
@@ -936,7 +936,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -967,7 +966,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1030,7 +1029,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -1127,6 +1126,10 @@
       }
     },
     "@metamask/client-utils": {
+      "globals": {
+        "Intl.DateTimeFormat": true,
+        "Intl.NumberFormat": true
+      },
       "packages": {
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
@@ -2287,7 +2290,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true
+        "@metamask/react-data-query>@tanstack/query-core": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -2597,7 +2600,6 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
@@ -3545,16 +3547,15 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
-        "clearInterval": true,
         "clearTimeout": true,
-        "console.error": true,
-        "document.visibilityState": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
         "removeEventListener": true,
-        "setInterval": true,
         "setTimeout": true
       }
     },
@@ -3571,13 +3572,24 @@
         "setTimeout": true
       }
     },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
+    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -3592,7 +3604,7 @@
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
         "react": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "react-redux>use-sync-external-store": true
       }
     },
     "@tanstack/react-virtual": {
@@ -4905,6 +4917,11 @@
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
       }
     },
+    "@metamask/snaps-controllers>tar-stream>streamx>events-universal": {
+      "packages": {
+        "webpack>events": true
+      }
+    },
     "webpack>events": {
       "globals": {
         "console": true
@@ -5774,11 +5791,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
-      "globals": {
-        "queueMicrotask": true
-      }
-    },
     "@hello-pangea/dnd>raf-schd": {
       "globals": {
         "cancelAnimationFrame": true,
@@ -5987,19 +5999,6 @@
     },
     "react-redux": {
       "globals": {
-        "document": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-redux>hoist-non-react-statics": true,
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux>react-is": true
-      }
-    },
-    "@hello-pangea/dnd>react-redux": {
-      "globals": {
         "console.warn": true,
         "document": true
       },
@@ -6008,8 +6007,8 @@
         "react-redux>hoist-non-react-statics": true,
         "react": true,
         "react-dom": true,
-        "@metamask/snap-simple-keyring-site>react-is": true,
-        "@tanstack/react-query>use-sync-external-store": true
+        "react-redux>react-is": true,
+        "react-redux>use-sync-external-store": true
       }
     },
     "react-router-dom": {
@@ -6705,10 +6704,14 @@
       }
     },
     "@metamask/snaps-controllers>tar-stream>streamx": {
+      "globals": {
+        "process.nextTick": true,
+        "queueMicrotask": true
+      },
       "packages": {
-        "webpack>events": true,
+        "@metamask/snaps-controllers>tar-stream>streamx>events-universal": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true
+        "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": true
       }
     },
     "browserify>string_decoder": {
@@ -6741,6 +6744,11 @@
         "@metamask/snaps-controllers>tar-stream>b4a": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
+      }
+    },
+    "@metamask/snaps-controllers>tar-stream>streamx>text-decoder": {
+      "packages": {
+        "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
     "@ngraveio/bc-ur>sha.js>to-buffer": {
@@ -6859,7 +6867,7 @@
         "tslib": true
       }
     },
-    "@tanstack/react-query>use-sync-external-store": {
+    "react-redux>use-sync-external-store": {
       "globals": {
         "document": true
       },
