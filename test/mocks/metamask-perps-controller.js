@@ -225,18 +225,6 @@ const mockPerpsEventValueLiterals = {
     SL: 'sl',
     ABANDON_ORDER: 'abandon_order',
   },
-  TRADE_ACTION: {
-    CREATE_POSITION: 'create_position',
-    INCREASE_POSITION: 'increase_exposure',
-    FLIP_LONG_TO_SHORT: 'flip_long_to_short',
-    FLIP_SHORT_TO_LONG: 'flip_short_to_long',
-  },
-  RISK_MANAGEMENT_TYPE: {
-    ADD_MARGIN: 'add_margin',
-    REMOVE_MARGIN: 'remove_margin',
-    CREATE_TPSL: 'create_tp_sl',
-    UPDATE_TPSL: 'edit_tp_sl',
-  },
   BUTTON_LOCATION: {
     MARKET_LIST: 'market_list',
     ASSET_DETAILS: 'asset_details',

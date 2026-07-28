@@ -662,6 +662,9 @@ export const ClosePositionModal = ({
           error?: string;
         }>('perpsClosePosition', [closeRequestParams]);
         if (!result.success) {
+          // The close did not go through and the modal stays open on an
+          // uncommitted form, so dismissing it now IS an abandonment.
+          hasConfirmedCloseRef.current = false;
           const message = result.error || 'Failed to close position';
           const { errorMessage, toast } = getCloseFailureToastConfig({
             error: new Error(message),
@@ -694,6 +697,9 @@ export const ClosePositionModal = ({
               }),
         );
       } catch (err) {
+        // Same re-arm as the `{ success: false }` branch: the modal stays open
+        // on an uncommitted form, so a dismissal from here is an abandonment.
+        hasConfirmedCloseRef.current = false;
         // Transport/background throws never reach the controller close
         // submitted/terminal pipeline — keep client PerpsError for that gap.
         const raw =

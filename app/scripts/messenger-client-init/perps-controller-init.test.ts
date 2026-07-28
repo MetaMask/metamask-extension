@@ -1030,42 +1030,6 @@ describe('PerpsControllerInit', () => {
       );
     });
 
-    it('exposes perpsGetAttributionContext on the background API', () => {
-      const { api, messengerClient } = initWithApi();
-      (messengerClient.getAttributionContext as jest.Mock).mockReturnValue({
-        utmCampaign: 'spring',
-      });
-
-      expect(api.perpsGetAttributionContext()).toEqual({
-        utmCampaign: 'spring',
-      });
-    });
-
-    it('exposes perpsClearAttributionContext on the background API', () => {
-      const { api, messengerClient } = initWithApi();
-
-      api.perpsClearAttributionContext();
-
-      expect(messengerClient.clearAttributionContext).toHaveBeenCalled();
-    });
-
-    it('exposes perpsMergeAttributionContext on the background API', () => {
-      const { api, messengerClient } = initWithApi();
-      const properties = { asset: 'BTC' };
-      (messengerClient.mergeAttributionContext as jest.Mock).mockReturnValue({
-        asset: 'BTC',
-        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'email',
-      });
-
-      expect(api.perpsMergeAttributionContext(properties)).toEqual({
-        asset: 'BTC',
-        [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'email',
-      });
-      expect(messengerClient.mergeAttributionContext).toHaveBeenCalledWith(
-        properties,
-      );
-    });
-
     it('wires mergeAttributionContext into createPerpsInfrastructure so metrics can merge UTM', () => {
       let capturedDeps: InfrastructureDeps | undefined;
       jest

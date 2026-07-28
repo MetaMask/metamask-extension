@@ -502,6 +502,50 @@ describe('ClosePositionModal', () => {
         }),
       );
     });
+
+    it('reports abandonment when the modal is dismissed after a failed close', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'ORDER_SIZE_MIN',
+      });
+
+      const { rerender } = renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
+      await waitFor(() => {
+        expect(
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
+        ).toBeInTheDocument();
+      });
+
+      // The close never went through, so the user is back on an uncommitted
+      // form: dismissing the modal now is a real abandonment.
+      rerender(
+        <ClosePositionModal
+          isOpen={false}
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+      );
+
+      expect(
+        mockCloseImperativeTrack.mock.calls.some(
+          ([event, properties]) =>
+            event === 'Perp UI Interaction' &&
+            properties?.action === 'abandon_order',
+        ),
+      ).toBe(true);
+    });
   });
 
   describe('invalid current price', () => {

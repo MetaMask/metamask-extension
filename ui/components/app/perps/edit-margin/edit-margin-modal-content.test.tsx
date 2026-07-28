@@ -4,6 +4,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import { mockPositions, mockAccountState } from '../mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../utils/formatPerpsDisplayPrice';
 import { EditMarginModalContent } from './edit-margin-modal-content';
@@ -12,6 +17,7 @@ const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockUsePerpsMarginCalculations = jest.fn();
+const mockTrack = jest.fn();
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -40,7 +46,7 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarginCalculations', () => ({
@@ -270,6 +276,39 @@ describe('EditMarginModalContent', () => {
         });
       });
       expect(defaultProps.onClose).not.toHaveBeenCalled();
+    });
+
+    it('emits a failed risk-management event when perpsUpdateMargin returns success false', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'Insufficient balance for margin addition',
+      });
+
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const amountInput = screen.getByPlaceholderText('0.00');
+      fireEvent.change(amountInput, { target: { value: '100' } });
+      fireEvent.click(screen.getByTestId('perps-edit-margin-confirm'));
+
+      // The provider returns `{ success: false }` rather than throwing, and
+      // perps-controller 9.2.1 tracks nothing on that path, so the client has to
+      // report the terminal failure or it is lost entirely.
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith(
+          MetaMetricsEventName.PerpsRiskManagement,
+          expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.ASSET]: basePosition.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ADD_MARGIN,
+            [PERPS_EVENT_PROPERTY.MARGIN_USED]: 100,
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]:
+              'Insufficient balance for margin addition',
+          }),
+        );
+      });
     });
 
     it('shows controller error message when perpsUpdateMargin returns a specific failure', async () => {

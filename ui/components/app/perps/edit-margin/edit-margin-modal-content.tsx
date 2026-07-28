@@ -338,12 +338,28 @@ export const EditMarginModalContent = ({
         );
 
         if (!result.success) {
-          // Surface UI only; do not throw into catch or re-emit a client
-          // PerpsRiskManagement here. The controller emits the terminal margin
-          // risk "failed" event for the `{ success: false }` branch from the
-          // next perps-controller release (core #9471) — a client fallback
-          // would double-emit once that ships.
           const errorMessage = result.error || 'Failed to update margin';
+
+          // Client fallback, deliberately kept: perps-controller 9.2.1 tracks
+          // RiskManagement only inside `if (result.success)` and in its catch,
+          // and HyperLiquidProvider.updateMargin RETURNS `{ success: false }`
+          // instead of throwing — so every provider-rejected margin adjustment
+          // ("No position found", "Insufficient balance") would otherwise emit
+          // no terminal risk event at all. Shaped like the controller's own
+          // margin event so the two match once core #9471 ships.
+          // REMOVE when the controller bump lands, or this double-emits.
+          track(MetaMetricsEventName.PerpsRiskManagement, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.ACTION]:
+              marginMode === 'add'
+                ? PERPS_EVENT_VALUE.ACTION.ADD_MARGIN
+                : PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
+            [PERPS_EVENT_PROPERTY.MARGIN_USED]: Math.abs(
+              Number.parseFloat(rawMarginAmount) || 0,
+            ),
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+          });
 
           replacePerpsToastByKey(
             getMarginAdjustmentFailedToast(
@@ -383,8 +399,10 @@ export const EditMarginModalContent = ({
           error instanceof Error ? error.message : 'An unknown error occurred';
 
         // Transport/background throws never reach the controller margin
-        // pipeline — keep client PerpsError for that gap. Do not re-emit
-        // client PerpsRiskManagement (controller owns risk margin events).
+        // pipeline — keep client PerpsError for that gap. Unlike the
+        // `{ success: false }` branch above, no client PerpsRiskManagement is
+        // needed here: a throw that DOES reach the controller is caught by
+        // TradingService.updateMargin, which emits the failed risk event itself.
         track(MetaMetricsEventName.PerpsError, {
           [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,

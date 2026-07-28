@@ -1,6 +1,5 @@
 import {
   PerpsController,
-  type PerpsAnalyticsProperties,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
   type UserHistoryItem,
@@ -200,10 +199,7 @@ type PerpsActionName =
   | 'perpsIsWatchlistMarket'
   | 'perpsReconnect'
   | 'perpsGetConnectionState'
-  | 'perpsSetAttributionContext'
-  | 'perpsGetAttributionContext'
-  | 'perpsClearAttributionContext'
-  | 'perpsMergeAttributionContext';
+  | 'perpsSetAttributionContext';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -526,13 +522,11 @@ function getApi(
       messengerClient.getWebSocketConnectionState(),
 
     // -- Analytics attribution --
+    // Only the setter is exposed: the UI writes the UTM context here, and the
+    // merge back into controller-emitted events happens through the
+    // `mergeAttributionContext` closure passed to createPerpsInfrastructure
+    // above, not through a background action.
     perpsSetAttributionContext:
       messengerClient.setAttributionContext.bind(messengerClient),
-    perpsGetAttributionContext:
-      messengerClient.getAttributionContext.bind(messengerClient),
-    perpsClearAttributionContext:
-      messengerClient.clearAttributionContext.bind(messengerClient),
-    perpsMergeAttributionContext: (properties?: PerpsAnalyticsProperties) =>
-      messengerClient.mergeAttributionContext(properties),
   };
 }
