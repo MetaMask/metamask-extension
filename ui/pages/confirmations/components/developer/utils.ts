@@ -71,6 +71,12 @@ export type DeveloperTransferTransactionOptions = {
  * error message, so those are provided via options.
  *
  * @param options - Per-flow configuration.
+ * @param options.chainId - Chain the transaction is created on.
+ * @param options.tokenAddress - ERC-20 token contract the transfer is sent to.
+ * @param options.decimals - Token decimals used when encoding the amount.
+ * @param options.type - Transaction type applied to the created confirmation.
+ * @param options.errorMessage - Message logged if creating the transaction fails.
+ * @param options.getRecipient - Resolves the transfer recipient from the sender.
  * @returns The loading state and the click handler for the developer button.
  */
 export function useDeveloperTransferTransaction({
