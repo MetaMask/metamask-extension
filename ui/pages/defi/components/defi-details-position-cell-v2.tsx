@@ -8,7 +8,6 @@ import { AssetCellTitle } from '../../../components/app/assets/asset-list/cells/
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { useTokenDisplayInfo } from '../../../components/app/assets/hooks/useTokenDisplayInfo';
 import {
-  TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from '../../../components/app/assets/token-cell/cells';
@@ -65,7 +64,7 @@ export default function DefiDetailsPositionCellV2({
           privacyMode={privacyMode}
         />
       }
-      footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+      footerLeftDisplay={null}
       footerRightDisplay={
         <TokenCellPrimaryDisplay
           token={displayToken}

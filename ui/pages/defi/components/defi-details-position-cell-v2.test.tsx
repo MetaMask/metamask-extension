@@ -20,10 +20,6 @@ jest.mock('../../../components/app/assets/hooks/useTokenDisplayInfo', () => ({
 jest.mock('../../../components/app/assets/token-cell/cells', () => {
   const ReactActual = jest.requireActual<typeof import('react')>('react');
   return {
-    TokenCellPercentChange: () =>
-      ReactActual.createElement('div', {
-        'data-testid': 'token-cell-percent-change-stub',
-      }),
     TokenCellPrimaryDisplay: () =>
       ReactActual.createElement('div', {
         'data-testid': 'token-cell-primary-display-stub',
