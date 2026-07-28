@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
@@ -473,7 +479,7 @@ describe('ClosePositionModal', () => {
         error: 'ORDER_SIZE_MIN',
       });
 
-      renderWithProvider(
+      const { rerender } = renderWithProvider(
         <ClosePositionModal
           isOpen
           onClose={jest.fn()}
@@ -501,42 +507,21 @@ describe('ClosePositionModal', () => {
           screen_name: 'perps_market_details',
         }),
       );
-    });
 
-    it('reports abandonment when the modal is dismissed after a failed close', async () => {
-      const user = userEvent.setup();
-      mockSubmitRequestToBackground.mockResolvedValue({
-        success: false,
-        error: 'ORDER_SIZE_MIN',
+      // The close never went through and the modal stayed open on an
+      // uncommitted form, so dismissing it now is a real abandonment. Asserted
+      // in this test rather than a second one so the failing submit is only
+      // driven once.
+      await act(async () => {
+        rerender(
+          <ClosePositionModal
+            isOpen={false}
+            onClose={jest.fn()}
+            position={basePosition}
+            currentPrice={2900}
+          />,
+        );
       });
-
-      const { rerender } = renderWithProvider(
-        <ClosePositionModal
-          isOpen
-          onClose={jest.fn()}
-          position={basePosition}
-          currentPrice={2900}
-        />,
-        mockStore,
-      );
-
-      await user.click(screen.getByTestId('perps-close-position-modal-submit'));
-      await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
-        ).toBeInTheDocument();
-      });
-
-      // The close never went through, so the user is back on an uncommitted
-      // form: dismissing the modal now is a real abandonment.
-      rerender(
-        <ClosePositionModal
-          isOpen={false}
-          onClose={jest.fn()}
-          position={basePosition}
-          currentPrice={2900}
-        />,
-      );
 
       expect(
         mockCloseImperativeTrack.mock.calls.some(
