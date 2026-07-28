@@ -380,6 +380,7 @@ import { AuthenticationControllerInit } from './messenger-client-init/identity/a
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
@@ -732,6 +733,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
@@ -880,6 +882,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
       messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
@@ -1476,6 +1480,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -1543,6 +1548,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -2631,6 +2637,7 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
+      deFiPositionsControllerV2,
       multichainAssetsRatesController,
       staticAssetsController,
     } = this;
@@ -3756,6 +3763,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
         deFiPositionsController,
+      ),
+
+      fetchDeFiPositions: deFiPositionsControllerV2.fetchDeFiPositions.bind(
+        deFiPositionsControllerV2,
       ),
 
       // GasFeeController

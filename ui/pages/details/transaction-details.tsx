@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
-import { mergeActivityItemSponsoredFees } from '../../../shared/lib/activity/fees';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -88,10 +87,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
         apiActivityItem &&
         (hasMatchingActivityType || isLocalUncategorized)
       ) {
-        return mergeActivityItemSponsoredFees(
-          localActivityItem,
-          apiActivityItem,
-        );
+        return apiActivityItem;
       }
 
       return localActivityItem;
