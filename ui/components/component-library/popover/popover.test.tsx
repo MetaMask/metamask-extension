@@ -336,7 +336,25 @@ describe('Popover', () => {
     expect(queryByText('Click outside to close')).not.toBeInTheDocument();
   });
 
-  it('applies background-section when pure black mode is active', () => {
+  it('applies background-section when pure black mode is active in dark theme', () => {
+    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
+    usePureBlack.mockReturnValue(true);
+    document.documentElement.setAttribute('data-theme', 'dark');
+
+    const { getByTestId } = render(
+      <Popover data-testid="popover" isOpen={true} isPortal={false}>
+        Popover
+      </Popover>,
+    );
+
+    expect(getByTestId('popover')).toHaveClass(
+      'mm-box--background-color-background-section',
+    );
+
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('applies background-default when pure black mode is active in light theme', () => {
     const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
     usePureBlack.mockReturnValue(true);
 
@@ -347,7 +365,7 @@ describe('Popover', () => {
     );
 
     expect(getByTestId('popover')).toHaveClass(
-      'mm-box--background-color-background-section',
+      'mm-box--background-color-background-default',
     );
   });
 });
