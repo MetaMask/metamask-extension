@@ -2441,7 +2441,7 @@
     "tailwindcss>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "mockttp>express>proxy-addr": {
