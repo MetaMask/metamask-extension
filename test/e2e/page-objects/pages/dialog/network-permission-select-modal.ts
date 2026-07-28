@@ -8,8 +8,7 @@ class NetworkPermissionSelectModal {
   private readonly checkBox = 'input[type="checkbox"]';
 
   private readonly confirmEditButton = {
-    text: 'Update',
-    tag: 'button',
+    testId: 'connect-more-chains-button',
   };
 
   private readonly editNetworksModalTitle = {

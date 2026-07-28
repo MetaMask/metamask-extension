@@ -21,7 +21,6 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
-  Size,
   TextAlign,
   TextVariant,
   BlockSize,
@@ -46,7 +45,6 @@ import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   Box,
-  ButtonPrimary,
   Icon,
   IconName,
   IconSize,
@@ -407,15 +405,16 @@ export const ImportNftsModal = ({ onClose }) => {
           >
             {t('cancel')}
           </Button>
-          <ButtonPrimary
-            size={Size.LG}
+          <Button
+            size={ButtonSize.Lg}
             onClick={() => handleAddNft()}
-            disabled={isFormDisabled}
-            block
+            isDisabled={isFormDisabled}
+            variant={ButtonVariant.Primary}
+            isFullWidth
             data-testid="import-nfts-modal-import-button"
           >
             {t('import')}
-          </ButtonPrimary>
+          </Button>
         </Box>
       </ModalContent>
     </Modal>

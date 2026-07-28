@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
@@ -40,6 +40,9 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 const mockOnActionComplete = jest.fn();
+
+const getImportButton = () =>
+  screen.getByRole('button', { name: messages.import.message });
 
 const renderImportAccount = (storeState: typeof mockState = mockState) => {
   const store = mockStore(storeState);
@@ -113,7 +116,7 @@ describe('ImportAccount', () => {
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
       // Ensure error is shown
       await waitFor(() => {
@@ -143,7 +146,7 @@ describe('ImportAccount', () => {
 
       fireEvent.change(privateKeyInput, { target: { value: testPrivateKey } });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -168,7 +171,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -189,7 +192,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -212,7 +215,7 @@ describe('ImportAccount', () => {
         target: { value: 'invalid-key' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -232,7 +235,7 @@ describe('ImportAccount', () => {
         target: { value: 'invalid-key' },
       });
 
-      fireEvent.click(getByText(messages.import.message));
+      fireEvent.click(getImportButton());
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
@@ -274,10 +277,10 @@ describe('ImportAccount', () => {
       });
 
       await waitFor(() => {
-        expect(getByText(messages.import.message)).not.toBeDisabled();
+        expect(getImportButton()).not.toBeDisabled();
       });
 
-      fireEvent.click(getByText(messages.import.message));
+      fireEvent.click(getImportButton());
 
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
@@ -303,7 +306,7 @@ describe('ImportAccount', () => {
     it('disables import button when private key input is empty', () => {
       const { getByText } = renderImportAccount();
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       expect(importButton).toBeDisabled();
     });
 
@@ -315,7 +318,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       expect(importButton).not.toBeDisabled();
     });
   });
@@ -348,7 +351,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -372,7 +375,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
@@ -396,7 +399,7 @@ describe('ImportAccount', () => {
         target: { value: '0xabcdef1234567890' },
       });
 
-      const importButton = getByText(messages.import.message);
+      const importButton = getImportButton();
       fireEvent.click(importButton);
 
       await waitFor(() => {
