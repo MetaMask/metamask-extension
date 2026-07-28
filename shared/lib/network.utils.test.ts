@@ -560,5 +560,19 @@ describe('network utils', () => {
 
       expect(result).toStrictEqual([]);
     });
+
+    it('skips enabled chain IDs that have no network configuration', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual(['mainnet']);
+    });
   });
 });

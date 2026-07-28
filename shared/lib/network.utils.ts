@@ -246,10 +246,11 @@ export function getAllEnabledNetworkClientIds(
     .filter(([_chainId, isEnabled]) => isEnabled)
     .map(([chainId, _isEnabled]) => chainId) as Hex[];
 
-  return chainIds.map((chainId) => {
-    const networkConfiguration = networkConfigurationsByChainId[chainId];
-    return networkConfiguration.rpcEndpoints[
-      networkConfiguration.defaultRpcEndpointIndex
-    ].networkClientId;
-  });
+  return chainIds
+    .map((chainId) => networkConfigurationsByChainId[chainId])
+    .filter((config) => config !== undefined)
+    .map(
+      (config) =>
+        config.rpcEndpoints[config.defaultRpcEndpointIndex].networkClientId,
+    );
 }
