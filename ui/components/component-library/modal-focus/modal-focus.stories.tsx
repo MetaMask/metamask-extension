@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Box,
   BoxFlexDirection,
-  BorderColor,
+  BoxBorderColor,
 } from '@metamask/design-system-react';
 
 import { ModalFocus } from './modal-focus';
@@ -46,7 +46,7 @@ export const DefaultStory: StoryObj<typeof ModalFocus> = {
           <ModalFocus {...args}>
             <Box
               padding={4}
-              borderColor={BorderColor.borderDefault}
+              borderColor={BoxBorderColor.BorderDefault}
               flexDirection={BoxFlexDirection.Column}
               gap={4}
             >
