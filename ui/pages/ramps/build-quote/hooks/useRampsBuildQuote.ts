@@ -204,10 +204,12 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
       const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
       const orderAlreadyPrecreated = Boolean(widget.orderId);
+      const orderCode = widget.orderId
+        ? getInternalOrderCode(widget.orderId)
+        : undefined;
 
       // Durable work first — opening a tab can unload the popup.
-      if (widget.orderId) {
-        const orderCode = getInternalOrderCode(widget.orderId);
+      if (widget.orderId && orderCode) {
         if (selectedToken) {
           setPendingOrderPreview(orderCode, {
             cryptoAmount: selectedQuote.quote?.amountOut ?? '0',
@@ -238,6 +240,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           providerCode,
           walletAddress,
           orderAlreadyPrecreated,
+          orderCode,
         });
       }
 

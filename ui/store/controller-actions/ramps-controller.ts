@@ -132,6 +132,7 @@ export async function watchRampsCheckoutTab(params: {
   providerCode: string;
   walletAddress: string;
   orderAlreadyPrecreated: boolean;
+  orderCode?: string;
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
 }

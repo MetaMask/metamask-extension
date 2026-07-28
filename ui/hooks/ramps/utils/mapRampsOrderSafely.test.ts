@@ -105,6 +105,30 @@ describe('mapRampsOrderSafely', () => {
     expect(mapped?.data.fiat).toMatchObject({ amount: '100', currency: 'USD' });
   });
 
+  it('keeps cryptoAmount human-readable by omitting decimals on the mapped token', () => {
+    // Activity formatters treat TokenAmount.amount as base units when decimals
+    // is set. Ramps amounts are already human (e.g. 5 USDC), so leaving
+    // decimals: 6 would render as 0.000005 → "0 USDC".
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+      cryptoAmount: 5,
+      cryptoCurrency: {
+        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 6,
+      },
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.data.token).toMatchObject({
+      symbol: 'USDC',
+      amount: '5',
+    });
+    expect(mapped?.data.token?.decimals).toBeUndefined();
+  });
+
   it('leaves the order untouched when no preview was stashed for it', () => {
     const order = {
       ...baseOrder,

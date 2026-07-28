@@ -5,6 +5,7 @@ import {
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -43,6 +44,7 @@ function createRampsLifecycleManager(
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;
         }
+        removeStalePrecreatedOrders(messengerClient);
         messengerClient.startOrderPolling();
       })
       .catch((error) => {

@@ -269,6 +269,7 @@ describe('RampsBuildQuoteScreen', () => {
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderAlreadyPrecreated: true,
+      orderCode: 'order-123',
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -326,6 +327,7 @@ describe('RampsBuildQuoteScreen', () => {
       providerCode: 'transak',
       walletAddress: '0xabc123',
       orderAlreadyPrecreated: false,
+      orderCode: undefined,
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });

@@ -85,6 +85,37 @@ function withStableOrderType(order: RampsOrder): RampsOrder {
 }
 
 /**
+ * Ramps orders report `cryptoAmount` in human units (e.g. `0.01176` ETH), but
+ * activity formatters treat `TokenAmount.amount` as base units whenever
+ * `decimals` is set — so `5` USDC with 6 decimals becomes `0.000005` and
+ * renders as `0 USDC`. Drop decimals so the human amount is shown as-is.
+ *
+ * @param mapped - The activity item produced by mapRampsOrder.
+ * @returns The same item with human-readable token amounts preserved.
+ */
+function withHumanReadableTokenAmount(
+  mapped: NonNullable<ReturnType<typeof mapRampsOrder>>,
+): NonNullable<ReturnType<typeof mapRampsOrder>> {
+  if (mapped.type !== 'rampBuy' && mapped.type !== 'rampSell') {
+    return mapped;
+  }
+
+  const { token } = mapped.data;
+  if (!token || token.decimals === undefined) {
+    return mapped;
+  }
+
+  const { decimals: _decimals, ...tokenWithoutDecimals } = token;
+  return {
+    ...mapped,
+    data: {
+      ...mapped.data,
+      token: tokenWithoutDecimals,
+    },
+  };
+}
+
+/**
  * A precreated order's own payload is still empty (no token/amount/fees)
  * until the provider fills it in — overlay what the user picked on the
  * build-quote screen (stashed via `setPendingOrderPreview`) so the activity
@@ -137,7 +168,9 @@ export function mapRampsOrderSafely(
         withNormalizedNetwork(withPendingOrderPreview(order), fallbackChainId),
       ),
     );
-    return mapRampsOrder(normalizedOrder as unknown as RampsOrderLike);
+    return withHumanReadableTokenAmount(
+      mapRampsOrder(normalizedOrder as unknown as RampsOrderLike),
+    );
   } catch {
     return undefined;
   }
