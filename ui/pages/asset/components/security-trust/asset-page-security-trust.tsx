@@ -54,6 +54,7 @@ type AssetPageSecurityTrustContextValue = {
   securityConfig: ResultTypeConfig;
   securityData: TokenSecurityData | null;
   isLoading: boolean;
+  isCtaGateReady: boolean;
   entryCardToken: SecurityTrustEntryCardToken | null;
   showVerifiedBadge: boolean;
   showSecurityBanner: boolean;
@@ -76,6 +77,15 @@ const useAssetPageSecurityTrustContext = () =>
 export const useAssetPageSecurityTrustCtaGate = () => {
   const context = useAssetPageSecurityTrustContext();
   return context?.gateCtaAction;
+};
+
+/**
+ * Returns whether Buy/Swap CTAs are allowed (security data resolved without error).
+ * Defaults to true outside the provider tree.
+ */
+export const useAssetPageSecurityTrustCtaGateReady = () => {
+  const context = useAssetPageSecurityTrustContext();
+  return context?.isCtaGateReady ?? true;
 };
 
 /**
@@ -165,6 +175,10 @@ export const AssetPageSecurityTrustProvider = ({
 
   const gateCtaAction = useCallback(
     (action: () => void, source: SecurityTrustCtaSource) => {
+      if (isSecurityDataLoading || securityDataError) {
+        return;
+      }
+
       if (
         !securityData ||
         !shouldGateSecurityTrustCta(securityData.resultType)
@@ -189,7 +203,13 @@ export const AssetPageSecurityTrustProvider = ({
       setPendingProceed(() => action);
       setSheetParams(params);
     },
-    [securityConfig, securityData, tokenDisplaySymbol],
+    [
+      isSecurityDataLoading,
+      securityConfig,
+      securityData,
+      securityDataError,
+      tokenDisplaySymbol,
+    ],
   );
 
   const handleProceed = useCallback(() => {
@@ -197,16 +217,25 @@ export const AssetPageSecurityTrustProvider = ({
     closeSheet();
   }, [closeSheet, pendingProceed]);
 
+  const isCtaGateReady = !isSecurityDataLoading && !securityDataError;
+
   const contextValue = useMemo<AssetPageSecurityTrustContextValue>(
     () => ({
       isEnabled,
       securityConfig,
       securityData,
       isLoading: isSecurityDataLoading,
+      isCtaGateReady,
       entryCardToken,
-      showVerifiedBadge: isEnabled && securityData?.resultType === 'Verified',
+      showVerifiedBadge:
+        isEnabled &&
+        !isSecurityDataLoading &&
+        !securityDataError &&
+        securityData?.resultType === 'Verified',
       showSecurityBanner:
         isEnabled &&
+        !isSecurityDataLoading &&
+        !securityDataError &&
         (securityData?.resultType === 'Malicious' ||
           securityData?.resultType === 'Warning' ||
           securityData?.resultType === 'Spam'),
@@ -221,6 +250,7 @@ export const AssetPageSecurityTrustProvider = ({
     [
       entryCardToken,
       gateCtaAction,
+      isCtaGateReady,
       isEnabled,
       isSecurityDataLoading,
       openInfoSheet,

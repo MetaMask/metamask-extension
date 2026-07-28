@@ -27,7 +27,7 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
-import { useAssetPageSecurityTrustCtaGate } from './security-trust';
+import { useAssetPageSecurityTrustCtaGate, useAssetPageSecurityTrustCtaGateReady } from './security-trust';
 import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
@@ -47,6 +47,7 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const gateCtaAction = useAssetPageSecurityTrustCtaGate();
+  const isCtaGateReady = useAssetPageSecurityTrustCtaGateReady();
   const isEvm = isEvmChainId(token.chainId);
   const shouldShowSendButton = Boolean(
     token.balance?.value && token.balance.value !== '0',
@@ -172,7 +173,7 @@ const TokenButtons = ({
         label={t('buy')}
         data-testid="token-overview-buy"
         onClick={handleBuyAndSellOnClick}
-        disabled={token.isERC721}
+        disabled={token.isERC721 || !isCtaGateReady}
       />
 
       {shouldShowSendButton ? (
@@ -207,7 +208,7 @@ const TokenButtons = ({
         onClick={handleSwapOnClick}
         data-testid="token-overview-swap"
         label={t('swap')}
-        disabled={!isExternalServicesEnabled || isMarketClosed}
+        disabled={!isExternalServicesEnabled || isMarketClosed || !isCtaGateReady}
       />
     </Box>
   );

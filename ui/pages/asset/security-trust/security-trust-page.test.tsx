@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
 
@@ -28,6 +29,10 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../hooks/useTokenSecurityData', () => ({
   useTokenSecurityData: jest.fn(),
+}));
+
+jest.mock('../../../selectors/assets', () => ({
+  getFungibleAssetForRoute: jest.fn(() => null),
 }));
 
 jest.mock('../../../hooks/useTheme', () => ({
@@ -95,6 +100,20 @@ const createStore = () =>
     reducer: (
       state = {
         metamask: {
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+            },
+          },
+          remoteFeatureFlags: {
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            solanaTestnetsEnabled: false,
+            bitcoinTestnetsEnabled: false,
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            tronAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            tronTestnetsEnabled: false,
+          },
           networkConfigurationsByChainId: {
             '0x1': {
               chainId: '0x1',
@@ -106,6 +125,10 @@ const createStore = () =>
             },
           },
           multichainNetworkConfigurationsByChainId: {},
+          isEvmSelected: true,
+          selectedNetworkClientId: 'mainnet',
+          networksMetadata: {},
+          networksWithTransactionActivity: {},
         },
       },
     ) => state,

@@ -89,6 +89,94 @@ describe('useTokenSecurityData', () => {
     expect(mockFetchCachedTokenAssets).toHaveBeenCalledWith([assetId]);
     expect(result.current.securityData).toBe(mockSecurityData);
     expect(result.current.error).toBeNull();
+    expect(result.current.symbol).toBe('TEST');
+    expect(result.current.decimals).toBe(18);
+    expect(result.current.address).toBe('0x1234');
+    expect(result.current.isNative).toBe(false);
+  });
+
+  it('clears stale data when assetId changes', async () => {
+    const firstAssetId = 'eip155:1/erc20:0x1111' as CaipAssetType;
+    const secondAssetId = 'eip155:1/erc20:0x2222' as CaipAssetType;
+    const secondSecurityData: TokenSecurityData = {
+      ...mockSecurityData,
+      resultType: 'Warning',
+    };
+
+    mockFetchCachedTokenAssets.mockImplementation(async (assetIds) => {
+      const assetId = assetIds[0];
+      if (assetId === firstAssetId) {
+        return [
+          {
+            assetId: firstAssetId,
+            name: 'First Token',
+            symbol: 'FIRST',
+            decimals: 18,
+            securityData: mockSecurityData,
+          },
+        ];
+      }
+
+      return [
+        {
+          assetId: secondAssetId,
+          name: 'Second Token',
+          symbol: 'SECOND',
+          decimals: 6,
+          securityData: secondSecurityData,
+        },
+      ];
+    });
+
+    const { result, rerender } = renderHook(
+      ({ assetId }: { assetId: CaipAssetType }) =>
+        useTokenSecurityData({ assetId }),
+      { initialProps: { assetId: firstAssetId } },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.securityData).toBe(mockSecurityData);
+    expect(result.current.symbol).toBe('FIRST');
+
+    rerender({ assetId: secondAssetId });
+
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.securityData).toBeNull();
+    expect(result.current.error).toBeNull();
+    expect(result.current.address).toBe('0x2222');
+    expect(result.current.isNative).toBe(false);
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.securityData).toBe(secondSecurityData);
+    expect(result.current.symbol).toBe('SECOND');
+  });
+
+  it('derives native asset metadata from slip44 asset id', async () => {
+    const assetId = 'eip155:1/slip44:60' as CaipAssetType;
+    mockFetchCachedTokenAssets.mockResolvedValue([
+      {
+        assetId,
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+        securityData: mockSecurityData,
+      },
+    ]);
+
+    const { result } = renderHook(() => useTokenSecurityData({ assetId }));
+
+    expect(result.current.isNative).toBe(true);
+    expect(result.current.address).toBe('60');
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
   });
 
   it('sets error when fetch fails', async () => {

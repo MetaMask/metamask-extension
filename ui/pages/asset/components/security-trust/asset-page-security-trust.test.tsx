@@ -9,6 +9,8 @@ import {
   AssetPageSecurityTrustHeaderBadge,
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
+  useAssetPageSecurityTrustCtaGate,
+  useAssetPageSecurityTrustCtaGateReady,
 } from './asset-page-security-trust';
 
 jest.mock('../../../../hooks/useTokenSecurityData', () => ({
@@ -72,14 +74,18 @@ const createStore = (useExternalServices: boolean) =>
 const renderSlots = ({
   securityData = mockSecurityData,
   useExternalServices = true,
+  isLoading = false,
+  error = null,
 }: {
   securityData?: TokenSecurityData | null;
   useExternalServices?: boolean;
+  isLoading?: boolean;
+  error?: Error | null;
 } = {}) => {
   useTokenSecurityData.mockReturnValue({
     securityData,
-    isLoading: false,
-    error: null,
+    isLoading,
+    error,
   });
 
   return renderWithProvider(
@@ -90,6 +96,24 @@ const renderSlots = ({
     </AssetPageSecurityTrustProvider>,
     createStore(useExternalServices),
   );
+};
+
+const CtaGateProbe = ({
+  onGate,
+}: {
+  onGate: (gate: {
+    gateCtaAction: ReturnType<typeof useAssetPageSecurityTrustCtaGate>;
+    isCtaGateReady: boolean;
+  }) => void;
+}) => {
+  const gateCtaAction = useAssetPageSecurityTrustCtaGate();
+  const isCtaGateReady = useAssetPageSecurityTrustCtaGateReady();
+
+  React.useEffect(() => {
+    onGate({ gateCtaAction, isCtaGateReady });
+  }, [gateCtaAction, isCtaGateReady, onGate]);
+
+  return null;
 };
 
 describe('AssetPageSecurityTrust', () => {
@@ -148,5 +172,73 @@ describe('AssetPageSecurityTrust', () => {
 
     expect(queryByTestId('security-badge-verified')).not.toBeInTheDocument();
     expect(queryByTestId('security-trust-section')).not.toBeInTheDocument();
+  });
+
+  it('hides badge and banner while security data is loading', () => {
+    const { queryByTestId } = renderSlots({
+      securityData: null,
+      isLoading: true,
+    });
+
+    expect(queryByTestId('security-badge-verified')).not.toBeInTheDocument();
+    expect(queryByTestId('security-banner-malicious')).not.toBeInTheDocument();
+    expect(queryByTestId('security-banner-warning')).not.toBeInTheDocument();
+  });
+
+  it('hides badge and banner when security data fetch fails', () => {
+    const { queryByTestId } = renderSlots({
+      securityData: null,
+      isLoading: false,
+      error: new Error('Fetch failed'),
+    });
+
+    expect(queryByTestId('security-badge-verified')).not.toBeInTheDocument();
+    expect(queryByTestId('security-banner-malicious')).not.toBeInTheDocument();
+  });
+
+  it('blocks CTA gating while security data is loading', () => {
+    const onGate = jest.fn();
+    useTokenSecurityData.mockReturnValue({
+      securityData: { ...mockSecurityData, resultType: 'Malicious' },
+      isLoading: true,
+      error: null,
+    });
+
+    renderWithProvider(
+      <AssetPageSecurityTrustProvider assetId={assetId} token={token}>
+        <CtaGateProbe onGate={onGate} />
+      </AssetPageSecurityTrustProvider>,
+      createStore(true),
+    );
+
+    const gate = onGate.mock.calls.at(-1)?.[0];
+    const action = jest.fn();
+    gate?.gateCtaAction(action, 'buy');
+
+    expect(gate?.isCtaGateReady).toBe(false);
+    expect(action).not.toHaveBeenCalled();
+  });
+
+  it('blocks CTA gating when security data fetch fails', () => {
+    const onGate = jest.fn();
+    useTokenSecurityData.mockReturnValue({
+      securityData: { ...mockSecurityData, resultType: 'Malicious' },
+      isLoading: false,
+      error: new Error('Fetch failed'),
+    });
+
+    renderWithProvider(
+      <AssetPageSecurityTrustProvider assetId={assetId} token={token}>
+        <CtaGateProbe onGate={onGate} />
+      </AssetPageSecurityTrustProvider>,
+      createStore(true),
+    );
+
+    const gate = onGate.mock.calls.at(-1)?.[0];
+    const action = jest.fn();
+    gate?.gateCtaAction(action, 'swap');
+
+    expect(gate?.isCtaGateReady).toBe(false);
+    expect(action).not.toHaveBeenCalled();
   });
 });

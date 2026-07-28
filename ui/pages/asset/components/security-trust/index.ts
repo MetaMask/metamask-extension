@@ -4,6 +4,7 @@ export {
   AssetPageSecurityTrustBanner,
   AssetPageSecurityTrustSection,
   useAssetPageSecurityTrustCtaGate,
+  useAssetPageSecurityTrustCtaGateReady,
 } from './asset-page-security-trust';
 export type { AssetPageSecurityTrustToken } from './asset-page-security-trust';
 export { SecurityBanner } from './security-banner';

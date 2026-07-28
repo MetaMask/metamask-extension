@@ -2,16 +2,19 @@ import { useMemo } from 'react';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import {
   type CaipAssetType,
+  type CaipChainId,
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
+import { getFungibleAssetForRoute } from '../../../selectors/assets';
+import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import {
   getFeatureTags,
   getResultTypeConfig,
@@ -21,6 +24,24 @@ import {
 import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import type { SecurityTrustLocationState } from '../types/security-trust';
 
+const getCaipChainIdForLookup = (
+  chainId: string | undefined,
+): CaipChainId | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+
+  if (isCaipChainId(chainId)) {
+    return chainId;
+  }
+
+  if (isEvmChainId(chainId)) {
+    return toEvmCaipChainId(chainId as `0x${string}`);
+  }
+
+  return undefined;
+};
+
 export const useSecurityTrustPageData = () => {
   const t = useI18nContext();
   const location = useLocation();
@@ -29,40 +50,85 @@ export const useSecurityTrustPageData = () => {
     | SecurityTrustLocationState
     | undefined;
 
-  const { chainId, assetId } = resolveAssetRouteLookup(
+  const { chainId, assetId, decodedAsset } = resolveAssetRouteLookup(
     processAssetParams(params),
   );
 
-  const { securityData: fetchedSecurityData, isLoading } = useTokenSecurityData(
-    {
-      assetId: (assetId ?? null) as CaipAssetType | null,
-      prefetchedData: locationState?.securityData ?? undefined,
-    },
+  const routeAsset = useSelector((state) =>
+    getFungibleAssetForRoute(state, { assetId, chainId, decodedAsset }),
   );
+
+  const {
+    securityData: fetchedSecurityData,
+    isLoading,
+    symbol: fetchedSymbol,
+    decimals: fetchedDecimals,
+    address: fetchedAddress,
+    isNative: fetchedIsNative,
+  } = useTokenSecurityData({
+    assetId: (assetId ?? null) as CaipAssetType | null,
+    prefetchedData: locationState?.securityData ?? undefined,
+  });
+
+  const parsedAssetMetadata = useMemo(() => {
+    if (!assetId) {
+      return null;
+    }
+
+    try {
+      const { assetReference, assetNamespace } = parseCaipAssetType(assetId);
+      return {
+        address: assetReference,
+        isNative: assetNamespace === 'slip44',
+      };
+    } catch {
+      return null;
+    }
+  }, [assetId]);
 
   const securityData =
     fetchedSecurityData ?? locationState?.securityData ?? null;
-  const symbol = locationState?.symbol ?? '';
-  const decimals = locationState?.decimals;
-  const isNative = locationState?.isNative ?? false;
-  const tokenAddress = locationState?.address;
+  const symbol =
+    locationState?.symbol ?? fetchedSymbol ?? routeAsset?.symbol ?? '';
+  const decimals =
+    locationState?.decimals ?? fetchedDecimals ?? routeAsset?.decimals;
+  const isNative =
+    locationState?.isNative ??
+    fetchedIsNative ??
+    routeAsset?.isNative ??
+    parsedAssetMetadata?.isNative ??
+    false;
+  const tokenAddress =
+    locationState?.address ??
+    fetchedAddress ??
+    routeAsset?.address ??
+    parsedAssetMetadata?.address;
 
   const evmNetworkConfigurations = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const multichainNetworkConfigurations = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const allMultichainNetworkConfigurations = useSelector(
+    getAllMultichainNetworkConfigurations,
   );
+
+  const caipChainIdForLookup = getCaipChainIdForLookup(chainId);
 
   const networkName = useMemo(() => {
     if (!chainId) {
       return undefined;
     }
-    if (isCaipChainId(chainId)) {
-      return multichainNetworkConfigurations[chainId]?.name;
+
+    if (caipChainIdForLookup) {
+      return allMultichainNetworkConfigurations[caipChainIdForLookup]?.name;
     }
+
     return evmNetworkConfigurations[chainId]?.name;
-  }, [chainId, evmNetworkConfigurations, multichainNetworkConfigurations]);
+  }, [
+    allMultichainNetworkConfigurations,
+    caipChainIdForLookup,
+    chainId,
+    evmNetworkConfigurations,
+  ]);
 
   const translate = t as (key: string, substitutions?: string[]) => string;
   const config = getResultTypeConfig(securityData?.resultType, translate);
@@ -122,8 +188,9 @@ export const useSecurityTrustPageData = () => {
     if (!tokenAddress || isNative || !chainId || !isEvmChainId(chainId)) {
       return null;
     }
-    const networkConfig = isCaipChainId(chainId)
-      ? multichainNetworkConfigurations[chainId]
+
+    const networkConfig = caipChainIdForLookup
+      ? allMultichainNetworkConfigurations[caipChainIdForLookup]
       : evmNetworkConfigurations[chainId];
     const defaultIdx = networkConfig?.defaultBlockExplorerUrlIndex;
     const blockExplorerUrl =
@@ -142,12 +209,13 @@ export const useSecurityTrustPageData = () => {
       name: networkConfig?.name ?? t('securityTrustEtherscan'),
     };
   }, [
-    tokenAddress,
-    isNative,
+    allMultichainNetworkConfigurations,
+    caipChainIdForLookup,
     chainId,
     evmNetworkConfigurations,
-    multichainNetworkConfigurations,
+    isNative,
     t,
+    tokenAddress,
   ]);
 
   return {

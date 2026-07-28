@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
-import type { CaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { fetchCachedTokenAssets } from '../pages/bridge/utils/token-security';
 
 type UseTokenSecurityDataOpts = {
@@ -10,10 +10,32 @@ type UseTokenSecurityDataOpts = {
   prefetchedData?: TokenSecurityData;
 };
 
+export type TokenSecurityAssetMetadata = {
+  symbol?: string;
+  name?: string;
+  decimals?: number;
+  address?: string;
+  isNative?: boolean;
+};
+
 type UseTokenSecurityDataResult = {
   securityData: TokenSecurityData | null;
   isLoading: boolean;
   error: Error | null;
+} & TokenSecurityAssetMetadata;
+
+const getAssetMetadataFromAssetId = (
+  assetId: CaipAssetType,
+): TokenSecurityAssetMetadata => {
+  try {
+    const { assetReference, assetNamespace } = parseCaipAssetType(assetId);
+    return {
+      address: assetReference,
+      isNative: assetNamespace === 'slip44',
+    };
+  } catch {
+    return {};
+  }
 };
 
 const isValidTokenSecurityData = (data: unknown): data is TokenSecurityData =>
@@ -41,6 +63,9 @@ export const useTokenSecurityData = ({
     !prefetchedData && Boolean(assetId),
   );
   const [error, setError] = useState<Error | null>(null);
+  const [assetMetadata, setAssetMetadata] = useState<TokenSecurityAssetMetadata>(
+    {},
+  );
   const isMountedRef = useRef(true);
 
   const fetchData = useCallback(async () => {
@@ -54,6 +79,16 @@ export const useTokenSecurityData = ({
       }
       const asset = assets?.[0];
       setSecurityData(asset?.securityData ?? null);
+      setAssetMetadata(
+        asset
+          ? {
+              symbol: asset.symbol,
+              name: asset.name,
+              decimals: asset.decimals,
+              ...getAssetMetadataFromAssetId(assetId),
+            }
+          : getAssetMetadataFromAssetId(assetId),
+      );
       setError(null);
     } catch (err) {
       if (!isMountedRef.current) {
@@ -72,15 +107,22 @@ export const useTokenSecurityData = ({
 
     if (prefetchedData) {
       setSecurityData(prefetchedData);
+      setError(null);
       setIsLoading(false);
       return undefined;
     }
 
     if (!assetId) {
+      setSecurityData(null);
+      setError(null);
+      setAssetMetadata({});
       setIsLoading(false);
       return undefined;
     }
 
+    setSecurityData(null);
+    setError(null);
+    setAssetMetadata(getAssetMetadataFromAssetId(assetId));
     setIsLoading(true);
     fetchData();
 
@@ -89,5 +131,5 @@ export const useTokenSecurityData = ({
     };
   }, [assetId, prefetchedData, fetchData]);
 
-  return { securityData, isLoading, error };
+  return { securityData, isLoading, error, ...assetMetadata };
 };
