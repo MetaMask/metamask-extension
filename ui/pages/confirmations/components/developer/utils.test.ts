@@ -59,9 +59,9 @@ describe('generateERC20TransferData', () => {
 
     expect(data).toBe(
       `${TRANSFER_SELECTOR}` +
-      `000000000000000000000000${MOCK_RECIPIENT.slice(
-        2,
-      ).toLowerCase()}0000000000000000000000000000000000000000000000000000000000000000`,
+        `000000000000000000000000${MOCK_RECIPIENT.slice(
+          2,
+        ).toLowerCase()}0000000000000000000000000000000000000000000000000000000000000000`,
     );
   });
 
@@ -121,7 +121,9 @@ describe('useDeveloperTransferTransaction', () => {
   };
 
   function renderTransferHook(
-    options: Partial<Parameters<typeof useDeveloperTransferTransaction>[0]> = {},
+    options: Partial<
+      Parameters<typeof useDeveloperTransferTransaction>[0]
+    > = {},
   ) {
     return renderHookWithProvider(
       () => useDeveloperTransferTransaction({ ...BASE_OPTIONS, ...options }),
@@ -177,7 +179,9 @@ describe('useDeveloperTransferTransaction', () => {
     });
 
     const [txParams] = addTransactionMock.mock.calls[0];
-    expect(txParams.data).toBe(generateERC20TransferData(MOCK_RECIPIENT, '0', 6));
+    expect(txParams.data).toBe(
+      generateERC20TransferData(MOCK_RECIPIENT, '0', 6),
+    );
   });
 
   it('does not create a transaction when there is no selected account', async () => {
