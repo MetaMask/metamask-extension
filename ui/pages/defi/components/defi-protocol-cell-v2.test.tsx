@@ -9,7 +9,7 @@ import DeFiProtocolCellV2, {
   type DeFiProtocolListItem,
 } from './defi-protocol-cell-v2';
 
-jest.mock('../../../../hooks/useAnalytics', () => ({
+jest.mock('../../../hooks/useAnalytics', () => ({
   useAnalytics: () => ({
     trackEvent: jest.fn(),
     createEventBuilder: jest.fn(() => ({
@@ -35,6 +35,28 @@ describe('DeFiProtocolCellV2', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders protocol id and market value', () => {
+    renderWithProvider(
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DeFiProtocolCellV2 position={position} onClick={jest.fn()} />
+          }
+        />
+      </Routes>,
+      store,
+      '/',
+    );
+
+    expect(
+      screen.getByTestId('multichain-token-list-item-token-name'),
+    ).toHaveTextContent('curve');
+    expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
+      '$10.00',
+    );
   });
 
   it('calls onClick with chain and protocol ids when clicked', () => {
