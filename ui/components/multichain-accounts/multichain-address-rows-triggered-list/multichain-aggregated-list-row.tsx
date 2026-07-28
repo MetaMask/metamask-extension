@@ -83,8 +83,6 @@ export const MultichainAggregatedAddressListRow = ({
       : networks[0]?.name;
   }, [chainIds, t, networks]);
 
-
-
   // Handle "Copy" button click events
   const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
