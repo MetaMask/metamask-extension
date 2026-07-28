@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
+import { NameType } from '@metamask/name-controller';
+import { TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SuccessPill } from '../../component-library';
 import CurrencyDisplay from '../../ui/currency-display';
@@ -8,8 +10,33 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import HexToDecimal from '../../ui/hex-to-decimal';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
+import Name from '../name/name';
 import TransactionBreakdownRow from './transaction-breakdown-row';
+
+function RecipientWithAddress({ checksummedRecipientAddress, chainId, className = '' }) {
+  return (
+    <div
+      className={classnames(
+        'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
+        className,
+      )}
+    >
+      <Name
+        value={checksummedRecipientAddress}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={chainId}
+        variant={TextVariant.BodyXs}
+        disableNameClick
+      />
+    </div>
+  );
+}
+
+RecipientWithAddress.propTypes = {
+  checksummedRecipientAddress: PropTypes.string,
+  chainId: PropTypes.string,
+  className: PropTypes.string,
+};
 
 function TransactionBreakdown({
   showFiat = true,
