@@ -32,8 +32,11 @@ export default function DefiDetailsListV2({
           </Text>
           {section.positions.map((position) => (
             // Isolate each cell so sibling `h-full` rows don't stretch under
-            // the flex `.main-container`.
-            <Box key={`${position.assetId}-${position.positionType}`}>
+            // the flex `.main-container`. Include groupId and poolAddress so
+            // same-asset/type rows in different pools stay unique.
+            <Box
+              key={`${position.groupId}-${position.poolAddress}-${position.assetId}-${position.positionType}`}
+            >
               <DefiDetailsPositionCellV2 position={position} />
             </Box>
           ))}

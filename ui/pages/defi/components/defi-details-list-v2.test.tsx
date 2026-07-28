@@ -96,4 +96,41 @@ describe('DefiDetailsListV2', () => {
       screen.getAllByTestId('defi-details-list-v2-section-separator'),
     ).toHaveLength(1);
   });
+
+  it('renders same-asset positions from different pools as distinct rows', () => {
+    const sharedAssetId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CaipAssetType;
+    const poolOnePosition: DeFiUnderlyingPosition = {
+      ...usdcPosition,
+      assetId: sharedAssetId,
+      positionType: 'deposit',
+      poolAddress: '0xpool-a',
+      groupId: 'group-pool-a',
+    };
+    const poolTwoPosition: DeFiUnderlyingPosition = {
+      ...usdcPosition,
+      assetId: sharedAssetId,
+      positionType: 'deposit',
+      poolAddress: '0xpool-b',
+      groupId: 'group-pool-b',
+    };
+
+    renderWithProvider(
+      <DefiDetailsListV2
+        sections={[
+          {
+            productName: 'Multi Pool Supply',
+            positions: [poolOnePosition, poolTwoPosition],
+          },
+        ]}
+      />,
+      store,
+    );
+
+    expect(
+      screen.getAllByTestId(
+        `defi-details-position-cell-stub-${sharedAssetId}`,
+      ),
+    ).toHaveLength(2);
+  });
 });
