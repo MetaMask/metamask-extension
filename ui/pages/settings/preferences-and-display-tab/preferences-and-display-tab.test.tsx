@@ -67,9 +67,7 @@ describe('PreferencesAndDisplayTab', () => {
         );
       });
 
-      expect(
-        view.getByTestId('show-metamask-widget-on-x'),
-      ).toBeInTheDocument();
+      expect(view.getByTestId('show-metamask-widget-on-x')).toBeInTheDocument();
     });
   });
 });
