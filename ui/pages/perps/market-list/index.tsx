@@ -2,8 +2,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import {
-  twMerge,
-  usePureBlack,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
@@ -159,9 +157,6 @@ export const MarketListView = () => {
   const [selectedFilter, setSelectedFilter] =
     useState<MarketFilter>(initialFilter);
 
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
-
   // Use stream loading state
   const isLoading = marketsLoading;
 
@@ -283,10 +278,7 @@ export const MarketListView = () => {
 
   return (
     <Box
-      className={twMerge(
-        'flex h-full flex-col',
-        isPureBlack ? 'bg-transparent' : 'bg-background-default',
-      )}
+      className="flex h-full flex-col bg-background-default"
       flexDirection={BoxFlexDirection.Column}
       data-testid="market-list-view"
     >

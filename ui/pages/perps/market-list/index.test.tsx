@@ -19,12 +19,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockUsePureBlack = jest.fn().mockReturnValue(false);
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: () => mockUsePureBlack(),
-}));
-
 const mockUsePerpsLiveMarketListData = jest.fn();
 jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
@@ -43,7 +37,6 @@ const mockStore = configureStore({
 describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUsePureBlack.mockReturnValue(false);
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
@@ -334,36 +327,6 @@ describe('MarketListView', () => {
       await waitFor(() => {
         expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
-    });
-  });
-
-  describe('pure black mode', () => {
-    beforeEach(() => {
-      mockUsePureBlack.mockReturnValue(false);
-    });
-
-    it('uses bg-background-default for the container in normal dark mode', () => {
-      renderWithProvider(<MarketListView />, mockStore);
-
-      expect(screen.getByTestId('market-list-view')).toHaveClass(
-        'bg-background-default',
-      );
-      expect(screen.getByTestId('market-list-view')).not.toHaveClass(
-        'bg-transparent',
-      );
-    });
-
-    it('uses bg-transparent for the container in pure black mode', () => {
-      mockUsePureBlack.mockReturnValue(true);
-
-      renderWithProvider(<MarketListView />, mockStore);
-
-      expect(screen.getByTestId('market-list-view')).toHaveClass(
-        'bg-transparent',
-      );
-      expect(screen.getByTestId('market-list-view')).not.toHaveClass(
-        'bg-background-default',
-      );
     });
   });
 });
