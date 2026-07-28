@@ -3,27 +3,16 @@ import { useSelector } from 'react-redux';
 
 import {
   Box,
-  ButtonBase,
-  ButtonBaseSize,
+  ButtonFilter,
+  IconName,
   Modal,
   ModalOverlay,
   ModalContent,
+  ModalContentSize,
   ModalHeader,
   ModalBody,
-  ModalContentSize,
-  IconName,
-  IconSize,
-  Text,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-  BorderColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { IconSize as LegacyIconSize } from '../../../../../components/component-library';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
@@ -241,39 +230,16 @@ export const NetworkFilter = ({
 
   return (
     <>
-      <Box marginLeft={4} marginBottom={2}>
-        <ButtonBase
+      <Box className="ml-4 mb-2">
+        <ButtonFilter
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
-          size={ButtonBaseSize.Sm}
+          isActive={isSingleNetworkSelected}
           startIconName={IconName.Filter}
-          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
-          className="!bg-transparent hover:bg-hover active:bg-pressed"
-          borderRadius={BorderRadius.LG}
-          color={
-            isSingleNetworkSelected
-              ? TextColor.primaryDefault
-              : TextColor.textDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          paddingLeft={2}
-          paddingRight={2}
-          marginBottom={2}
-          marginTop={2}
-          ellipsis
+          startIconProps={{ className: 'me-1' }}
         >
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={
-              isSingleNetworkSelected
-                ? TextColor.primaryDefault
-                : TextColor.textDefault
-            }
-            ellipsis
-          >
-            {displayName}
-          </Text>
-        </ButtonBase>
+          {displayName}
+        </ButtonFilter>
       </Box>
       {isNetworkManagementEnabled ? (
         <NetworkSelectionModal
@@ -294,29 +260,23 @@ export const NetworkFilter = ({
         <Modal
           isOpen={isNetworkFilterPopoverOpen}
           onClose={closePopover}
-          isClosedOnOutsideClick={true}
-          isClosedOnEscapeKey={true}
         >
           <ModalOverlay />
           <ModalContent size={ModalContentSize.Md}>
             <ModalHeader
-              endAccessory={
-                <ButtonIcon
-                  ariaLabel="Close recipient modal"
-                  data-testid="close-recipient-modal-btn"
-                  iconName={IconName.Close}
-                  onClick={closePopover}
-                  size={ButtonIconSize.Sm}
-                />
-              }
+              onClose={closePopover}
+              closeButtonProps={{
+                ariaLabel: t('close'),
+                'data-testid': 'close-recipient-modal-btn',
+              }}
             >
               {t('selectNetworkToFilter')}
             </ModalHeader>
-            <ModalBody paddingLeft={0} paddingRight={0}>
+            <ModalBody className="px-0">
               <NetworkListItem
                 name={t('allNetworks')}
                 iconSrc={IconName.Global}
-                iconSize={IconSize.Xl}
+                iconSize={LegacyIconSize.Xl}
                 selected={selectedChainId === null}
                 onClick={() => handleNetworkSelection(null)}
                 focus={false}
