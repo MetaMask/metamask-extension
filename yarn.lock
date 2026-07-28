@@ -36191,17 +36191,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:7.0.36":
-  version: 7.0.36
-  resolution: "postcss@npm:7.0.36"
-  dependencies:
-    chalk: "npm:^2.4.2"
-    source-map: "npm:^0.6.1"
-    supports-color: "npm:^6.1.0"
-  checksum: 10/bb1bfc6fd0b6aef7587a4f8867eed3c441529725131266f6c0e40bd0f3c8c40096a1391646989b82e78ee40f2bb930dc441fa413bec3325250727fd0a554bedc
-  languageName: node
-  linkType: hard
-
 "postcss@npm:7.0.39":
   version: 7.0.39
   resolution: "postcss@npm:7.0.39"
@@ -36223,24 +36212,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@patch:postcss@npm%3A7.0.36#~/.yarn/patches/postcss-npm-7.0.36-de66d123d0.patch":
-  version: 7.0.36
-  resolution: "postcss@patch:postcss@npm%3A7.0.36#~/.yarn/patches/postcss-npm-7.0.36-de66d123d0.patch::version=7.0.36&hash=88415e"
-  dependencies:
-    chalk: "npm:^2.4.2"
-    source-map: "npm:^0.6.1"
-    supports-color: "npm:^6.1.0"
-  checksum: 10/8c2b877778653be9c2c4ace438298fc172f14c971144343cb30aa0a5916221a1d9e14646e2c33068fb4c32f568943c80927e5dfcda87804c7223af6985a73f36
-  languageName: node
-  linkType: hard
-
 "postcss@patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch":
   version: 7.0.39
-  resolution: "postcss@patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch::version=7.0.39&hash=88415e"
+  resolution: "postcss@patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch::version=7.0.39&hash=182c70"
   dependencies:
     picocolors: "npm:^0.2.1"
     source-map: "npm:^0.6.1"
-  checksum: 10/1371cceb9b7f27c6ba18b6b051c31e1e954b7e66fa1af6e04db84102ba2965f01337064d2630e0566683e31c995c51107f0d69773c8d6386bd09164a3aeafabd
+  checksum: 10/889eda9e5760606bdfff586a7fad8ecc27ed31af6a55347e60719ad35bc4fe0a03ff71e437b6c45413d654ebac46a9eeb9f27d1255454b0c056dfee4c14c3870
   languageName: node
   linkType: hard
 
@@ -41023,15 +41001,6 @@ __metadata:
   dependencies:
     has-flag: "npm:^3.0.0"
   checksum: 10/5f505c6fa3c6e05873b43af096ddeb22159831597649881aeb8572d6fe3b81e798cc10840d0c9735e0026b250368851b7f77b65e84f4e4daa820a4f69947f55b
-  languageName: node
-  linkType: hard
-
-"supports-color@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "supports-color@npm:6.1.0"
-  dependencies:
-    has-flag: "npm:^3.0.0"
-  checksum: 10/78a5c43b9e478966ed41ed923a942dfd6209bf3bcc826a01435cfec98d5a17ca5d866effd2b6be438c16cd73b99f4a4397fcbb282e6f653e39046e1335334189
   languageName: node
   linkType: hard
 
