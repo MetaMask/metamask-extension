@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
-import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
+import { useIsHardwareWalletAccount } from '../useIsHardwareWalletAccount';
 import { BUNDLE_SEND_TRANSACTION_TYPES } from './hw-sign-tracker/constants';
 import { useSendBundleAmountSymbol } from './useSendBundleAmountSymbol';
 
@@ -16,10 +15,10 @@ export type UseSendBundleHwNavigationArgs = {
  * Determines whether the current send transaction should redirect to the
  * hardware-wallet signing page (sendBundle flow), and performs the redirect.
  *
- * Redirects when the current account is a hardware wallet and the transaction
- * type is a bundle send type (fungible sends only; contract interactions go
- * through the bridge flow). Applies to all hardware-wallet sends regardless of
- * Smart Transactions (STX) / gasless support.
+ * Redirects when the confirmation account is a hardware wallet and the
+ * transaction type is a bundle send type (fungible sends only; contract
+ * interactions go through the bridge flow). Applies to all hardware-wallet
+ * sends regardless of Smart Transactions (STX) / gasless support.
  *
  * transactionMeta is the only injected input; the send amount/symbol are
  * derived internally via useSendBundleAmountSymbol, keeping this hook free of
@@ -34,7 +33,9 @@ export type UseSendBundleHwNavigationArgs = {
 export function useSendBundleHwNavigation({
   transactionMeta,
 }: UseSendBundleHwNavigationArgs) {
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletUsed = useIsHardwareWalletAccount(
+    transactionMeta?.txParams.from,
+  );
   const { navigateToHwSigningPage } = useBridgeNavigation();
   // Derive the send amount/symbol internally so the HW signing page label
   // matches what the user saw on the send screen.
