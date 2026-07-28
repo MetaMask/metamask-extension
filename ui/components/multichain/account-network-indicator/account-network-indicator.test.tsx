@@ -25,9 +25,7 @@ describe('AccountNetworkIndicator', () => {
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeTruthy();
 
-    const networkImages = container.querySelectorAll(
-      '.mm-avatar-network__network-image',
-    );
+    const networkImages = container.querySelectorAll('img');
     expect(networkImages.length).toBeGreaterThan(0);
 
     expect(container).toMatchSnapshot('account-network-indicator');

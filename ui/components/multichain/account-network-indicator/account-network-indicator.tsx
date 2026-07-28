@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
-  BorderStyle,
   Display,
   FlexDirection,
   TextAlign,
@@ -12,13 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarType } from '../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../avatar-group';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarTokenSize,
-  Box,
-  Text,
-} from '../../component-library';
+import { AvatarTokenSize, Box, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
@@ -61,7 +58,7 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
                       size={AvatarNetworkSize.Xs}
                       src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
                       name={network.name}
-                      borderStyle={BorderStyle.none}
+                      className="border-none"
                     />
                     <Text variant={TextVariant.bodyMdMedium} ellipsis>
                       {network.name}

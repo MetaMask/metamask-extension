@@ -6,6 +6,8 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
@@ -20,10 +22,6 @@ import {
   AvatarToken,
 } from '../../component-library/avatar-token';
 import { Box } from '../../component-library/box';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../component-library/avatar-network';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 export const AvatarGroup = ({

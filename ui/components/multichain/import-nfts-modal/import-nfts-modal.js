@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  AvatarNetworkSize,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -57,7 +58,6 @@ import {
   ModalHeader,
   ModalBody,
   Text,
-  AvatarNetworkSize,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';

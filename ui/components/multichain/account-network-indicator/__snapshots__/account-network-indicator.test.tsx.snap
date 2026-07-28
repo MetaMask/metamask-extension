@@ -27,11 +27,11 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: 0px;"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
               >
                 <img
-                  alt="Polygon logo"
-                  class="mm-avatar-network__network-image"
+                  alt="Polygon"
+                  class="size-full object-contain"
                   src="./images/pol-token.svg"
                 />
               </div>
@@ -41,11 +41,11 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
               >
                 <img
-                  alt="BNB Chain logo"
-                  class="mm-avatar-network__network-image"
+                  alt="BNB Chain"
+                  class="size-full object-contain"
                   src="./images/bnb.svg"
                 />
               </div>
@@ -55,9 +55,13 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
               >
-                G
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  G
+                </span>
               </div>
             </div>
             <div
@@ -65,11 +69,11 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               style="margin-left: -8px;"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-4 w-4"
               >
                 <img
-                  alt="Custom Mainnet RPC logo"
-                  class="mm-avatar-network__network-image"
+                  alt="Custom Mainnet RPC"
+                  class="size-full object-contain"
                   src="./images/eth_logo.svg"
                 />
               </div>
