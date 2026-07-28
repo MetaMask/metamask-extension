@@ -26,9 +26,7 @@ function toTokenCellAddress(
     return assetReference as TokenWithFiatAmount['address'];
   }
 
-  return toChecksumHexAddress(
-    assetReference,
-  ) as TokenWithFiatAmount['address'];
+  return toChecksumHexAddress(assetReference) as TokenWithFiatAmount['address'];
 }
 
 /**
