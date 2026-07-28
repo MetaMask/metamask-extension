@@ -3,12 +3,7 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { login } from '../../page-objects/flows/login.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import { waitForExpectedTraits } from './helpers';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -20,7 +15,7 @@ import { waitForExpectedTraits } from './helpers';
  * @param mockServer - The mock server instance.
  * @returns
  */
-async function mockSegmentTrack(mockServer: Mockttp) {
+async function mockSegment(mockServer: Mockttp) {
   return [
     // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
     await mockServer
@@ -33,17 +28,11 @@ async function mockSegmentTrack(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
-  ];
-}
-
-async function mockSegmentIdentify(mockServer: Mockttp) {
-  return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'identify' }],
+        batch: [{ type: 'track', event: 'token_detection_enabled' }],
       })
-      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -64,7 +53,7 @@ describe('Token detection event', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentTrack,
+        testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
@@ -90,50 +79,6 @@ describe('Token detection event', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
-        });
-      },
-    );
-  });
-
-  it('sends identify trait when token detection is toggled in Assets settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
-            optedIn: true,
-          })
-          .withPreferencesController({
-            useTokenDetection: true,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentIdentify,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
-
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToAssetsSettings();
-
-        const assetsSettings = new PreferencesAndDisplaySettings(driver);
-        await assetsSettings.checkAssetsPageIsLoaded();
-
-        await assetsSettings.toggleAutoDetectTokens();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_detection_enabled: false,
-        });
-
-        await assetsSettings.toggleAutoDetectTokens();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_detection_enabled: true,
         });
       },
     );

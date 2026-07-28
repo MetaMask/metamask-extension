@@ -44,8 +44,8 @@ class PreferencesAndDisplaySettings {
   private readonly showNativeTokenAsMainBalanceToggleLabel =
     "label.toggle-button:has([data-testid='show-native-token-as-main-balance'])";
 
-  private readonly autoDetectTokensToggleLabel =
-    "label.toggle-button:has([data-testid='autodetect-tokens'])";
+  private readonly autodetectNftsToggleLabel =
+    "label.toggle-button:has([data-testid='use-nft-detection-input'])";
 
   private readonly showDefaultAddressToggle =
     '[data-testid="show-default-address-toggle"]';
@@ -153,11 +153,11 @@ class PreferencesAndDisplaySettings {
     );
   }
 
-  async toggleAutoDetectTokens(): Promise<void> {
-    console.log('Toggle auto detect tokens on Assets settings page');
+  async toggleAutodetectNfts(): Promise<void> {
+    console.log('Toggle autodetect NFTs on Assets settings page');
     await this.checkAssetsPageIsLoaded();
-    await this.driver.waitForSelector(this.autoDetectTokensToggleLabel);
-    await this.driver.clickElement(this.autoDetectTokensToggleLabel);
+    await this.driver.waitForSelector(this.autodetectNftsToggleLabel);
+    await this.driver.clickElement(this.autodetectNftsToggleLabel);
   }
 
   async toggleShowDefaultAddress(): Promise<void> {
