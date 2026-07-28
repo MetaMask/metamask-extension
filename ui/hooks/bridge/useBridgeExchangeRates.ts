@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
 
 export const useBridgeExchangeRates = () => {
   const dispatch = useDispatch();

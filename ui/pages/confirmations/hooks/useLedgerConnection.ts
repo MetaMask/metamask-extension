@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   HardwareTransportStates,
@@ -21,6 +21,7 @@ import type { MetaMaskSlice } from '../../../ducks/metamask/types';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();
