@@ -14,7 +14,7 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
-import { HardwareWalletType } from '../../ui/contexts/hardware-wallets/types';
+import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
@@ -525,14 +525,14 @@ describe('MetaMaskController', function () {
           txId: 42,
           txMeta,
           actionId,
-          walletType: HardwareWalletType.Ledger,
+          walletType: HardwareKeyringNames.ledger,
         },
       );
 
       expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
         '42',
         { txMeta, actionId },
-        { waitForResult: true, walletType: HardwareWalletType.Ledger },
+        { waitForResult: true, walletType: HardwareKeyringNames.ledger },
       );
     });
   });

@@ -40,7 +40,10 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
-import { HardwareWalletType } from '../../../ui/contexts/hardware-wallets/types';
+import {
+  HardwareWalletType,
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../../ui/contexts/hardware-wallets';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
