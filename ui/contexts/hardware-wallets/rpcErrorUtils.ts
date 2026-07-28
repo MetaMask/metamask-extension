@@ -609,6 +609,44 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
+ * Free-form text patterns that indicate the user rejected a hardware wallet
+ * action. Matched case-insensitively as substrings of error message/stack text
+ * when a serialized error has lost its structured `code` field.
+ *
+ * TODO: These patterns belong in `@metamask/hw-wallet-sdk` so all MetaMask
+ * clients classify rejection-like errors from a single source of truth. The SDK
+ * already exposes shared helpers (`resolveUserRejectionErrorCode` /
+ * `isUserRejectionLikeError`, added in v0.10.0), but its patterns do not yet
+ * cover the "rejected by the user" phrasings below. Contribute these phrasings
+ * upstream, then consume the SDK helpers and drop this local fallback.
+ */
+const USER_REJECTED_TEXT_PATTERNS: readonly string[] = [
+  'user rejected',
+  'rejected by the user',
+  'rejected by user',
+];
+
+/**
+ * Free-form text patterns that indicate the user cancelled a hardware wallet
+ * action. Matched case-insensitively as substrings of error message/stack text
+ * when a serialized error has lost its structured `code` field.
+ *
+ * TODO: Upstream these patterns to `@metamask/hw-wallet-sdk` alongside
+ * `USER_REJECTED_TEXT_PATTERNS` and consume the SDK's shared helpers. The SDK's
+ * current `\bcancelled\b`/`\bcanceled\b` matching is intentionally broader than
+ * these user-attributed phrasings, so the migration must avoid reclassifying
+ * non-user cancellations (e.g. timeouts) as user cancellations.
+ */
+const USER_CANCELLED_TEXT_PATTERNS: readonly string[] = [
+  'user cancelled',
+  'user canceled',
+  'cancelled by the user',
+  'canceled by the user',
+  'cancelled by user',
+  'canceled by user',
+];
+
+/**
  * Infer user action error codes from free-form error text.
  * This is a fallback for cases where serialized causes lose their code field.
  *
@@ -618,30 +656,18 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 function inferUserActionErrorCodeFromText(text: string): ErrorCode | null {
   const normalizedText = text.toLowerCase();
 
-  if (normalizedText.includes('user rejected')) {
-    return ErrorCode.UserRejected;
-  }
-
-  if (normalizedText.includes('rejected by the user')) {
-    return ErrorCode.UserRejected;
-  }
-
-  if (normalizedText.includes('rejected by user')) {
-    return ErrorCode.UserRejected;
-  }
-
   if (
-    normalizedText.includes('user cancelled') ||
-    normalizedText.includes('user canceled')
+    USER_REJECTED_TEXT_PATTERNS.some((pattern) =>
+      normalizedText.includes(pattern),
+    )
   ) {
-    return ErrorCode.UserCancelled;
+    return ErrorCode.UserRejected;
   }
 
   if (
-    normalizedText.includes('cancelled by the user') ||
-    normalizedText.includes('canceled by the user') ||
-    normalizedText.includes('cancelled by user') ||
-    normalizedText.includes('canceled by user')
+    USER_CANCELLED_TEXT_PATTERNS.some((pattern) =>
+      normalizedText.includes(pattern),
+    )
   ) {
     return ErrorCode.UserCancelled;
   }
