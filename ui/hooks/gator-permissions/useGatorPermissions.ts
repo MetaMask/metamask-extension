@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
 import { AppState } from '../../selectors/gator-permissions/gator-permissions';
+import { useDispatch } from '../../store/hooks';
 
 export type UseGatorPermissionsOptions = {
   /**

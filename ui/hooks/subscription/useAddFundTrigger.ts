@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
@@ -11,11 +10,13 @@ import {
   getSubscriptions,
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/types';
+import { useDispatch } from '../../store/hooks';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useAsyncCallback } from '../useAsync';
 import { MINUTE } from '../../../shared/constants/time';
 import { useThrottle } from '../useThrottle';
+
 import {
   useAvailableTokenBalances,
   useSubscriptionPaymentMethods,
@@ -108,7 +109,7 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
  *
  */
 export const useHandleShieldAddFundTrigger = () => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
