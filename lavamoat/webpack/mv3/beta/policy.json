@@ -2961,6 +2961,7 @@
         "EventTarget": true,
         "MessageEvent": true,
         "TextEncoder": true,
+        "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
