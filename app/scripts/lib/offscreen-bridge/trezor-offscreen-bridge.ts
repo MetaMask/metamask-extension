@@ -173,15 +173,18 @@ export class TrezorOffscreenBridge implements TrezorBridge {
   }
 
   /**
-   * Lists every Trezor device currently connected, regardless of whether it
-   * has been paired to a keyring yet. Used by the connect-hardware flow to
-   * find newly-attached devices to pair, and to recognize a device that is
-   * already bound to an existing keyring.
+   * Identifies the physical device the user picks in TrezorConnect's popup /
+   * the browser's WebUSB chooser, via an *unpinned* `getFeatures` call
+   * (`this.deviceId` is deliberately not applied). This is the pairing entry
+   * point: a never-paired device is invisible to the offscreen registry, so
+   * identity must be established by contacting it first — the returned
+   * `features.device_id` then decides whether it maps to an existing keyring
+   * or a new one.
    */
-  listDevices() {
-    return this.#sendDeviceMessage<TrezorDevice[]>({
+  identifyDevice() {
+    return this.#sendDeviceMessage({
       target: OffscreenCommunicationTarget.trezorOffscreen,
-      action: TrezorAction.listDevices,
-    });
+      action: TrezorAction.identifyDevice,
+    }) as TrezorResponse<Features>;
   }
 }

@@ -2927,7 +2927,7 @@ export default class MetamaskController extends EventEmitter {
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
       getLedgerMode: this.getLedgerMode.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
-      listTrezorDevices: this.listTrezorDevices.bind(this),
+      identifyTrezorDevice: this.identifyTrezorDevice.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5426,9 +5426,9 @@ export default class MetamaskController extends EventEmitter {
    * @param page
    * @param hdPath
    * @param deviceId - For Trezor/OneKey only: the physical device's stable
-   * `device_id` (see `listTrezorDevices`) to pair or reconnect to. Omit to
-   * use (or create, if none exists) the first keyring of the type, matching
-   * every other hardware wallet's single-device behavior.
+   * `device_id` (see `identifyTrezorDevice`) to pair or reconnect to. Omit
+   * to use (or create, if none exists) the first keyring of the type,
+   * matching every other hardware wallet's single-device behavior.
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath, deviceId) {
@@ -5517,31 +5517,49 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Lists every Trezor device currently connected over USB, regardless of
-   * whether it has already been paired to a keyring. Used by the
-   * connect-hardware UI to let the user choose which physical device to
-   * pair when more than one is plugged in at once; selecting an
-   * already-paired device's id simply reconnects to its existing keyring
-   * (see `connectHardware`).
+   * Identifies which physical Trezor/OneKey device the user intends to
+   * connect, via an unpinned `getFeatures` probe: TrezorConnect's popup and
+   * the browser's own WebUSB chooser let the user pick the device — this is
+   * the only way to reach a never-paired device, which is invisible to any
+   * enumeration until it has been granted WebUSB permission. The returned
+   * stable `device_id` is then fed to `connectHardware`, which routes it to
+   * the device's existing keyring (already paired) or a new one (fresh
+   * pairing).
    *
    * @param {HardwareDeviceNames.trezor | HardwareDeviceNames.oneKey} deviceName -
-   * Which keyring type to use for the query. Both share the same
-   * underlying device registry, but this must match the type the caller
-   * intends to pair so a keyring created here (when none exists yet) can
-   * be reused for that device instead of left behind as an empty orphan
-   * once a different-typed keyring is created for it (see
+   * Which keyring type the caller intends to pair. This must match so a
+   * keyring created here (when none exists yet) can be claimed for the
+   * identified device instead of left behind as an empty orphan (see
    * `#findOrCreateHardwareKeyringForDevice`).
-   * @returns {Promise<Array<{deviceId: string, path: string, label?: string, model?: string}>>}
+   * @returns {Promise<{deviceId: string, label?: string, model?: string} | undefined>}
+   * The identified device, or `undefined` when the bridge does not support
+   * identification (e.g. test stubs) — callers then fall back to the
+   * single-device (first keyring of the type) behavior.
    */
-  async listTrezorDevices(deviceName = HardwareDeviceNames.trezor) {
+  async identifyTrezorDevice(deviceName = HardwareDeviceNames.trezor) {
     return this.#withKeyringForDevice(
       { name: deviceName, create: true, deviceRead: true },
       async (keyring) => {
-        if (typeof keyring.bridge.listDevices !== 'function') {
-          return [];
+        if (typeof keyring.bridge.identifyDevice !== 'function') {
+          return undefined;
         }
 
-        return keyring.bridge.listDevices();
+        const response = await keyring.bridge.identifyDevice();
+        if (!response.success) {
+          throw new Error(
+            response.payload?.error ?? 'Failed to identify Trezor device',
+          );
+        }
+
+        if (!response.payload.device_id) {
+          return undefined;
+        }
+
+        return {
+          deviceId: response.payload.device_id,
+          label: response.payload.label ?? undefined,
+          model: response.payload.model,
+        };
       },
     );
   }
@@ -9193,10 +9211,10 @@ export default class MetamaskController extends EventEmitter {
     // devices, each as its own keyring instance (every other hardware
     // wallet here still has exactly one keyring per type). When the caller
     // knows which device it wants — `options.deviceId`, learned once a
-    // keyring has unlocked at least once, or chosen from
-    // `listTrezorDevices` — resolve or create the keyring instance bound to
-    // that specific device instead of always operating on the first
-    // keyring of the type.
+    // keyring has unlocked at least once, or resolved by an
+    // `identifyTrezorDevice` probe — resolve or create the keyring instance
+    // bound to that specific device instead of always operating on the
+    // first keyring of the type.
     const supportsMultipleDevices =
       options.name === HardwareDeviceNames.trezor ||
       options.name === HardwareDeviceNames.oneKey;
@@ -9244,6 +9262,15 @@ export default class MetamaskController extends EventEmitter {
       }
 
       if (supportsMultipleDevices) {
+        if (options.deviceId && !keyring.deviceId) {
+          // First contact with a just-identified device (see
+          // `identifyTrezorDevice`): the keyring has not unlocked yet, so
+          // it has no persisted identity of its own. Pin the bridge to the
+          // identified device so the initial unlock targets it even while
+          // other devices are plugged in; the keyring then captures and
+          // persists the same id itself on unlock.
+          keyring.bridge.deviceId = options.deviceId;
+        }
         this.appStateController.setTrezorModel(
           keyring.deviceId,
           keyring.getModel(),
@@ -9369,10 +9396,10 @@ export default class MetamaskController extends EventEmitter {
       .map((entry, index) => ({ ...entry, index }));
 
     // Tracks the first keyring of this type that has never unlocked (e.g.
-    // one created solely to list currently-connected devices via
-    // `listTrezorDevices`, before the user picked one). Claiming it below
-    // avoids leaving it behind as a permanent empty orphan once a different
-    // keyring is created for the chosen device.
+    // one created solely to run the `identifyTrezorDevice` probe, before
+    // the user picked a device). Claiming it below avoids leaving it behind
+    // as a permanent empty orphan once a different keyring is created for
+    // the chosen device.
     let unboundEntry;
 
     for (const entry of entries) {

@@ -60,7 +60,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
-import type { TrezorDevice } from '../../../../shared/constants/offscreen-communication';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -156,13 +155,6 @@ const ConnectHardwareForm = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
   const [isFirefox, setIsFirefox] = useState(false);
-  // Only populated when more than one Trezor/OneKey device is connected at
-  // once and none has been chosen yet — lets the user pick which physical
-  // device to pair instead of leaving it to whichever one TrezorConnect
-  // happens to pick.
-  const [trezorDevicePickerOptions, setTrezorDevicePickerOptions] = useState<
-    TrezorDevice[]
-  >([]);
   // The deviceId of the Trezor/OneKey device whose accounts are currently
   // shown, if any (undefined for every other hardware wallet type, or if
   // no explicit device was chosen). Threaded back into `forgetDevice` so
@@ -451,38 +443,47 @@ const ConnectHardwareForm = () => {
         nextDevice === HardwareDeviceNames.trezor ||
         nextDevice === HardwareDeviceNames.oneKey
       ) {
-        // Multiple physical Trezor/OneKey devices can be connected at
-        // once; let the user choose which one to pair instead of leaving
-        // it to whichever one TrezorConnect happens to pick.
-        const connectedDevices = await dispatch(
-          actions.listTrezorDevices(
-            nextDevice as
-              | HardwareDeviceNames.trezor
-              | HardwareDeviceNames.oneKey,
-          ),
-        );
-        if (connectedDevices.length > 1) {
-          setTrezorDevicePickerOptions(connectedDevices);
-          return;
-        }
-        if (connectedDevices.length === 1) {
-          // Always pass the single connected device's id explicitly: if a
-          // *different* device of this type is already paired, omitting it
-          // would silently reuse that other device's keyring instead of
-          // pairing (or reconnecting to) the one currently plugged in.
-          getPage(
-            nextDevice,
-            0,
-            defaultHdPaths[nextDevice],
-            true,
-            true,
-            connectedDevices[0].deviceId,
+        // Identify which physical device the user intends to connect
+        // *before* choosing a keyring. The probe opens TrezorConnect's
+        // popup and the browser's own WebUSB chooser — the only way to
+        // reach a never-paired device, since no enumeration can see it
+        // until permission is granted. The resolved stable `device_id`
+        // then routes to that device's existing keyring (already paired)
+        // or a new one (fresh pairing).
+        let identified;
+        try {
+          identified = await dispatch(
+            actions.identifyTrezorDevice(
+              nextDevice as
+                | HardwareDeviceNames.trezor
+                | HardwareDeviceNames.oneKey,
+            ),
           );
+        } catch (e: unknown) {
+          // Never fall through to an unidentified connect: with another
+          // device already paired, it would silently open that device's
+          // wallet — the exact mis-routing this probe exists to prevent.
+          const errorMessage = toErrorMessage(e);
+          if (
+            errorMessage !== 'Window closed' &&
+            errorMessage !== 'Popup closed'
+          ) {
+            setError(errorMessage);
+          }
           return;
         }
-        // No device detected yet (e.g. the bridge hasn't initialized
-        // because no keyring exists yet) — fall through and let the
-        // keyring learn the device's identity lazily on first unlock.
+
+        // `identified` is undefined only when the bridge cannot identify
+        // devices (e.g. test stubs); fall back to single-device behavior.
+        getPage(
+          nextDevice,
+          0,
+          defaultHdPaths[nextDevice],
+          true,
+          true,
+          identified?.deviceId,
+        );
+        return;
       }
 
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
@@ -496,17 +497,6 @@ const ConnectHardwareForm = () => {
       setCurrentDevice,
       trackEvent,
     ],
-  );
-
-  const connectToSelectedTrezorDevice = useCallback(
-    (selectedDeviceId: string) => {
-      if (!device) {
-        return;
-      }
-      setTrezorDevicePickerOptions([]);
-      getPage(device, 0, defaultHdPaths[device], true, true, selectedDeviceId);
-    },
-    [defaultHdPaths, device, getPage],
   );
 
   const onPathChange = useCallback(
@@ -781,27 +771,6 @@ const ConnectHardwareForm = () => {
 
   const renderContent = () => {
     if (!hardwareAccounts.length) {
-      if (trezorDevicePickerOptions.length > 0) {
-        // Minimal picker: more than one Trezor/OneKey device is connected
-        // and none has been chosen yet.
-        return (
-          <Box marginHorizontal={5} marginBottom={2}>
-            <Box marginBottom={2}>
-              <Text>{t('selectHardwareWalletDevice')}</Text>
-            </Box>
-            {trezorDevicePickerOptions.map((option) => (
-              <TextButton
-                key={option.deviceId}
-                onClick={() => connectToSelectedTrezorDevice(option.deviceId)}
-                className="hw-connect__device-option"
-              >
-                {option.label || option.model || option.deviceId}
-              </TextButton>
-            ))}
-          </Box>
-        );
-      }
-
       return (
         <SelectHardware
           connectToHardwareWallet={connectToHardwareWallet}

@@ -72,7 +72,7 @@ export enum TrezorAction {
   getFeatures = 'trezor-get-features',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  listDevices = 'trezor-list-devices',
+  identifyDevice = 'trezor-identify-device',
 }
 
 /**
@@ -89,6 +89,17 @@ export type TrezorDevice = {
   model?: string;
   minorVersion?: number;
 };
+
+/**
+ * The stable identity of a Trezor device, as resolved by an
+ * `identifyDevice` probe: an *unpinned* `getFeatures` call that lets the
+ * TrezorConnect popup (and the browser's own WebUSB device chooser) select
+ * the physical device — including one that has never been paired and is
+ * therefore invisible to the device registry. Unlike {@link TrezorDevice}
+ * there is no `path`: the probe answers "which device did the user pick",
+ * not "where is it right now".
+ */
+export type TrezorDeviceIdentity = Omit<TrezorDevice, 'path'>;
 
 /**
  * Defines actions intended to be sent to the Trezor Offscreen iframe.

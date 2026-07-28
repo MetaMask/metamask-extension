@@ -185,8 +185,16 @@ export default function init() {
 
           break;
 
-        case TrezorAction.listDevices:
-          sendResponse(Array.from(devices.values()));
+        case TrezorAction.identifyDevice:
+          // Deliberately unpinned (no `device` param): TrezorConnect's popup
+          // and the browser's WebUSB chooser let the user pick the physical
+          // device — including one that has never been paired and is
+          // therefore invisible to the registry. The resulting DEVICE.CONNECT
+          // event also teaches the registry the device's current path, so
+          // subsequent pinned calls can target it.
+          TrezorConnectSDK.getFeatures().then((result) => {
+            sendResponse(result);
+          });
 
           break;
 

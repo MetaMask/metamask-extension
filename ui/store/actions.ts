@@ -151,7 +151,7 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
-import type { TrezorDevice } from '../../shared/constants/offscreen-communication';
+import type { TrezorDeviceIdentity } from '../../shared/constants/offscreen-communication';
 import {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
@@ -1550,29 +1550,32 @@ export function forgetDevice(
 }
 
 /**
- * Lists Trezor devices currently connected over USB, regardless of whether
- * they have already been paired to a keyring. Used to let the user choose
- * which physical device to pair when more than one is plugged in.
+ * Identifies which physical Trezor/OneKey device the user intends to
+ * connect: an unpinned probe that opens TrezorConnect's popup (and the
+ * browser's own WebUSB chooser) so the user picks the device — including a
+ * never-paired one, which no enumeration can see until it has been granted
+ * permission. Returns the device's stable identity, or `undefined` when the
+ * bridge does not support identification.
  *
  * @param deviceName - Must match the type the caller intends to pair
  * (Trezor vs OneKey): a keyring created here (when none exists yet) is
  * reused for whichever device the user picks, but only if it was created
  * with the right type.
  */
-export function listTrezorDevices(
+export function identifyTrezorDevice(
   deviceName:
     | HardwareDeviceNames.trezor
     | HardwareDeviceNames.oneKey = HardwareDeviceNames.trezor,
 ): ThunkAction<
-  Promise<TrezorDevice[]>,
+  Promise<TrezorDeviceIdentity | undefined>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async () => {
     try {
-      return await submitRequestToBackground<TrezorDevice[]>(
-        'listTrezorDevices',
+      return await submitRequestToBackground<TrezorDeviceIdentity | undefined>(
+        'identifyTrezorDevice',
         [deviceName],
       );
     } catch (error) {
@@ -1591,8 +1594,8 @@ export function connectHardware(
   loadHid: boolean,
   t: (key: string) => string,
   // For Trezor/OneKey only: pair or reconnect to this specific device (see
-  // `listTrezorDevices`). Omit to use (or create, if none exists yet) the
-  // first keyring of the type.
+  // `identifyTrezorDevice`). Omit to use (or create, if none exists yet)
+  // the first keyring of the type.
   deviceId?: string,
 ): ThunkAction<
   Promise<{ address: string }[]>,

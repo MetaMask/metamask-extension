@@ -308,44 +308,56 @@ describe('Trezor Offscreen', () => {
     });
   });
 
-  describe('listDevices', () => {
-    it('returns an empty list before any device has connected', () => {
+  describe('identifyDevice', () => {
+    it('calls getFeatures unpinned and passes the result through', async () => {
+      const sdkResult = {
+        success: true,
+        payload: featuresFixture('device-b', { label: 'My Trezor' }),
+      };
+      mockGetFeatures.mockResolvedValue(sdkResult);
       const sendResponse = jest.fn();
+
       capturedMessageListener(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.listDevices,
+          action: TrezorAction.identifyDevice,
         },
         undefined,
         sendResponse,
       );
+      await flush();
 
-      expect(sendResponse).toHaveBeenCalledWith([]);
+      expect(mockGetFeatures).toHaveBeenCalledWith();
+      expect(sendResponse).toHaveBeenCalledWith(sdkResult);
     });
 
-    it('lists every currently-connected device', async () => {
+    it('stays unpinned even when the sender bridge has a deviceId', async () => {
+      // A bridge always attaches its own deviceId to outgoing messages; the
+      // identify probe must ignore it, otherwise it could never surface a
+      // *different* (e.g. never-paired) device the user picks in the
+      // browser chooser.
       sendInit();
       await flush();
       connectDevice('device-a', '1');
-      connectDevice('device-b', '2');
 
+      mockGetFeatures.mockResolvedValue({ success: true, payload: {} });
       const sendResponse = jest.fn();
+
       capturedMessageListener(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.listDevices,
+          action: TrezorAction.identifyDevice,
+          deviceId: 'device-a',
         },
         undefined,
         sendResponse,
       );
+      await flush();
 
-      expect(sendResponse).toHaveBeenCalledWith([
-        expect.objectContaining({ deviceId: 'device-a', path: '1' }),
-        expect.objectContaining({ deviceId: 'device-b', path: '2' }),
-      ]);
+      expect(mockGetFeatures).toHaveBeenCalledWith();
     });
 
-    it('removes a device on disconnect', async () => {
+    it('drops a disconnected device from pinned routing', async () => {
       sendInit();
       await flush();
       connectDevice('device-a', '1');
@@ -356,17 +368,25 @@ describe('Trezor Offscreen', () => {
         payload: { path: '1' },
       });
 
+      mockGetPublicKey.mockResolvedValue({ success: true, payload: {} });
       const sendResponse = jest.fn();
+      const params = { path: "m/44'/60'/0'/0", coin: 'ETH' };
+
       capturedMessageListener(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.listDevices,
+          action: TrezorAction.getPublicKey,
+          deviceId: 'device-a',
+          params,
         },
         undefined,
         sendResponse,
       );
+      await flush();
 
-      expect(sendResponse).toHaveBeenCalledWith([]);
+      // The registry no longer knows the device, so no stale `device`
+      // param is attached.
+      expect(mockGetPublicKey).toHaveBeenCalledWith(params);
     });
   });
 
@@ -486,16 +506,24 @@ describe('Trezor Offscreen', () => {
 
       sendDispose();
 
+      // The registry was cleared, so a pinned call no longer resolves the
+      // device's path and goes out without a `device` param.
+      mockGetPublicKey.mockResolvedValue({ success: true, payload: {} });
       const sendResponse = jest.fn();
+      const params = { path: "m/44'/60'/0'/0", coin: 'ETH' };
       capturedMessageListener(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.listDevices,
+          action: TrezorAction.getPublicKey,
+          deviceId: 'device-a',
+          params,
         },
         undefined,
         sendResponse,
       );
-      expect(sendResponse).toHaveBeenCalledWith([]);
+      await flush();
+
+      expect(mockGetPublicKey).toHaveBeenCalledWith(params);
     });
   });
 

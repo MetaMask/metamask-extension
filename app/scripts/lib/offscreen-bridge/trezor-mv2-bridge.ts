@@ -290,10 +290,20 @@ export class TrezorMv2Bridge implements TrezorBridge {
   }
 
   /**
-   * Lists every Trezor device currently connected to Suite Desktop,
-   * regardless of whether it has been paired to a keyring yet.
+   * Identifies the physical device the user selects in Suite Desktop, via
+   * an *unpinned* `getFeatures` call (`this.deviceId` is deliberately not
+   * applied). This is the pairing entry point: a never-paired device may be
+   * absent from the registry, so identity must be established by contacting
+   * it first — the returned `features.device_id` then decides whether it
+   * maps to an existing keyring or a new one.
    */
-  async listDevices(): Promise<TrezorDevice[]> {
-    return Array.from(devices.values());
+  identifyDevice(): TrezorResponse<Features> {
+    return withTrezorDeviceTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .getFeatures()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<Features>(r)),
+    ) as unknown as TrezorResponse<Features>;
   }
 }
