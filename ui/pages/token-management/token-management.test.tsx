@@ -403,7 +403,7 @@ describe('TokenManagementPage', () => {
     metamask: {
       ...mockState.metamask,
       analyticsId: 'test-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedMultichainNetworkChainId,
       useExternalServices: true,
