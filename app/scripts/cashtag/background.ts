@@ -85,7 +85,7 @@ export function registerBackgroundBridge({
       const sidePanelApi = globalThis.chrome?.sidePanel;
       const caipAssetId = bodyString(message, 'caipAssetId');
 
-      if (!sidePanelApi?.open) {
+      if (!sidePanelApi?.open || !sidePanelApi?.setOptions) {
         return Promise.resolve({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
           body: { ok: false, reason: 'sidepanel-unavailable' },
@@ -106,26 +106,26 @@ export function registerBackgroundBridge({
         });
       }
 
-      if (caipAssetId) {
-        globalThis.chrome?.storage?.session?.set({
-          pendingCashtagSwapTo: caipAssetId,
-        });
-      }
+      // Aim the panel at sidepanel.html?to= so Routes can navigate the hash
+      // router to Swap. Changing path also remounts an already-open panel.
+      const path = caipAssetId
+        ? `sidepanel.html?to=${encodeURIComponent(caipAssetId)}`
+        : 'sidepanel.html';
 
-      return Promise.resolve(sidePanelApi.open(openOptions)).then(
-        () => ({
+      return Promise.resolve(sidePanelApi.setOptions({ path }))
+        .then(() => sidePanelApi.open(openOptions))
+        .then(() => ({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
           body: { ok: true, caipAssetId },
-        }),
-        (error: unknown) => ({
+        }))
+        .catch((error: unknown) => ({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
           body: {
             ok: false,
             reason: 'sidepanel-open-failed',
             error: error instanceof Error ? error.message : String(error),
           },
-        }),
-      );
+        }));
     }
 
     return undefined;

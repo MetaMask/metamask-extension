@@ -674,40 +674,25 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
 
-  // Cashtag swap redirect — written by the background script via
-  // chrome.storage.session so we avoid Redux / AppStateController entirely.
-  // Covers two cases:
-  //   1. Sidepanel was already open when BG wrote the value → caught by .get()
-  //   2. Sidepanel just opened/focused → caught by onChanged listener
+  // Cashtag Swap: background opens sidepanel.html?to=<caip> via setOptions.
+  // Read that HTML query once, navigate the hash router to Swap, then reset
+  // the panel path so normal sidepanel opens are not stuck on this entry.
   useEffect(() => {
-    const handlePending = (caip: string) => {
-      globalThis.chrome?.storage?.session?.remove('pendingCashtagSwapTo');
-      navigate(
-        `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
-      );
-    };
+    const caip = new URLSearchParams(window.location.search).get('to');
+    if (!caip) {
+      return;
+    }
 
-    globalThis.chrome?.storage?.session?.get(
-      'pendingCashtagSwapTo',
-      (result) => {
-        const caip = result?.pendingCashtagSwapTo;
-        if (typeof caip === 'string') {
-          handlePending(caip);
-        }
-      },
+    navigate(
+      `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
     );
 
-    const listener = (
-      changes: Record<string, chrome.storage.StorageChange>,
-    ) => {
-      const caip = changes.pendingCashtagSwapTo?.newValue;
-      if (typeof caip === 'string') {
-        handlePending(caip);
-      }
-    };
-    globalThis.chrome?.storage?.onChanged?.addListener(listener);
-    return () =>
-      globalThis.chrome?.storage?.onChanged?.removeListener(listener);
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${window.location.hash}`,
+    );
+    globalThis.chrome?.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
   }, [navigate]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
