@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import {
   Box,
-  ButtonFilter,
+  ButtonBase,
+  ButtonBaseSize,
   IconName,
   Modal,
   ModalOverlay,
@@ -231,16 +232,16 @@ export const NetworkFilter = ({
   return (
     <>
       <Box className="ml-4 mb-2">
-        <ButtonFilter
+        <ButtonBase
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
-          isActive={isSingleNetworkSelected}
-          className="bg-transparent"
+          size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ className: 'me-1', 'data-testid': 'icon-filter' }}
+          className={`bg-transparent border border-border-muted hover:bg-hover active:bg-pressed ${isSingleNetworkSelected ? 'text-primary-default' : 'text-default'}`}
         >
           {displayName}
-        </ButtonFilter>
+        </ButtonBase>
       </Box>
       {isNetworkManagementEnabled ? (
         <NetworkSelectionModal
