@@ -155,15 +155,13 @@ export const Popover: PopoverComponent = React.forwardRef(
 
     // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
     const isPureBlack = usePureBlack();
-    const isDarkTheme =
-      document.documentElement.getAttribute('data-theme') === 'dark';
 
     const PopoverContent = (
       <Box
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.LG}
         backgroundColor={
-          isPureBlack && isDarkTheme
+          isPureBlack
             ? BackgroundColor.backgroundSection
             : BackgroundColor.backgroundDefault
         }

@@ -145,7 +145,7 @@ const metamaskDecorator = (story, context) => {
   const StoryComponent = () => story();
 
   return (
-    <PureBlackProvider isPureBlack={Boolean(pureBlack)}>
+    <PureBlackProvider isPureBlack={Boolean(pureBlack) && isDark}>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={initialEntries}>
