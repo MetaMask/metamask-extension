@@ -1,4 +1,3 @@
-import { it } from '@jest/globals';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   HardwareWalletError,
