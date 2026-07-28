@@ -164,13 +164,7 @@ const AssetListControlBar = ({
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
 
   const allNetworkClientIds = useMemo(() => {
-    const filteredChainIds = Object.keys(tokenNetworkFilter);
-    const chainIdsToRefresh =
-      filteredChainIds.length > 0
-        ? filteredChainIds
-        : [currentMultichainNetwork.network.chainId];
-
-    return chainIdsToRefresh.flatMap((chainId) => {
+    return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
       const entry = allNetworks[chainId as `0x${string}`];
       if (!entry) {
         return [];
@@ -179,11 +173,7 @@ const AssetListControlBar = ({
       const endpoint = entry.rpcEndpoints[index];
       return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
     });
-  }, [
-    tokenNetworkFilter,
-    allNetworks,
-    currentMultichainNetwork.network.chainId,
-  ]);
+  }, [tokenNetworkFilter, allNetworks]);
   const currentNamespaceNetworkCount = Object.keys(
     enabledNetworksByNamespace,
   ).length;
