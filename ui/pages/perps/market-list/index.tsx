@@ -394,9 +394,12 @@ export const MarketListView = () => {
   useEffect(() => {
     if (!trimmedQuery) {
       // Emptying the box (backspace or the clear affordance) ends the session
-      // exactly like leaving the page: report the unresolved search, then wipe
-      // the whole session so the next one starts clean. Mirrors mobile, where
-      // the empty branch calls emitSearchAbandoned() then resetSearchSession().
+      // exactly like leaving the page: flush anything still inside the debounce
+      // window so a typed-then-cleared query is measured rather than dropped,
+      // report the unresolved search, then wipe the session so the next one
+      // starts clean. The flush matches the fast-tap and unmount paths — all
+      // three would otherwise lose the whole funnel for a sub-500ms search.
+      flushPendingSearchQuery();
       emitSearchAbandoned();
       resetSearchSession();
       return undefined;
@@ -428,6 +431,7 @@ export const MarketListView = () => {
     isLoading,
     displayedMarkets.length,
     emitSearchQuery,
+    flushPendingSearchQuery,
     emitSearchAbandoned,
     resetSearchSession,
   ]);

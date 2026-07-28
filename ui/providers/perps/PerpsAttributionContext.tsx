@@ -172,6 +172,12 @@ export function readScreenViewedHashAttribution(): Record<string, Json> {
 // perps entry reports its actual source while still carrying the last-touch UTM.
 let sessionUtmAttribution: ControllerAttributionContext = {};
 
+// Whether this UI session has already reconciled the controller's attribution
+// context. The controller singleton lives in the background and outlives the
+// popup, so a campaign from a PREVIOUS session would otherwise keep stamping
+// controller-emitted events while this session's client events carry none.
+let hasReconciledControllerAttribution = false;
+
 // Module-level writer so the store update is not a variable reassignment inside
 // the component/hook body (react-compiler purity rule) — it runs from effects.
 // Returns the merged accumulated context so callers can forward the full
@@ -189,6 +195,22 @@ function rememberSessionUtm(
  */
 export function resetPerpsSessionAttribution(): void {
   sessionUtmAttribution = {};
+  hasReconciledControllerAttribution = false;
+}
+
+/**
+ * Mark the controller attribution as reconciled for this UI session. Module-level
+ * writer so the flag update is not a reassignment inside the component body
+ * (react-compiler purity rule) — it runs from an effect.
+ *
+ * @returns True when this call is the one that claimed the reconciliation.
+ */
+function claimControllerAttributionReconcile(): boolean {
+  if (hasReconciledControllerAttribution) {
+    return false;
+  }
+  hasReconciledControllerAttribution = true;
+  return true;
 }
 
 /**
@@ -305,6 +327,27 @@ export function PerpsAttributionProvider({
       syncUtmAttributionFromSearch(locationSearch);
     }
   }, [locationSearch, syncUtmAttributionFromSearch]);
+
+  // A fresh UI session that carries no UTM anywhere must not inherit the
+  // previous session's campaign from the background singleton: replace the
+  // stored context with an empty one, once per session. Skipped as soon as this
+  // session has any UTM of its own (deeplink entry, or an earlier provider in
+  // the same page load), so in-app navigation to a bare URL keeps the campaign.
+  useEffect(() => {
+    if (Object.keys(sessionUtmAttribution).length > 0) {
+      return;
+    }
+    if (parseUtmAttribution(locationSearch ?? '')) {
+      return;
+    }
+    if (!claimControllerAttributionReconcile()) {
+      return;
+    }
+    // fire-and-forget, same rationale as the setter above
+    submitRequestToBackground('perpsSetAttributionContext', [{}]).catch(
+      captureException,
+    );
+  }, [locationSearch]);
 
   // UTM (keyed by PERPS_EVENT_PROPERTY) plus a deeplink source override, merged
   // into every client PERPS_SCREEN_VIEWED event.

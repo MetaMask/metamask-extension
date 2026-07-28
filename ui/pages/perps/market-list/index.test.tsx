@@ -514,6 +514,30 @@ describe('MarketListView', () => {
       ).toHaveLength(0);
     });
 
+    it('flushes a pending query when the box is cleared inside the debounce window', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+      // Cleared before the 500ms debounce fires. The query was still typed and
+      // the results were shown, so the funnel must record it rather than drop
+      // it — the fast-tap and unmount paths already flush.
+      typeSearch('');
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc' }),
+      );
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
     it('abandons and resets the session when the query is backspaced to empty', () => {
       renderWithProvider(<MarketListView />, mockStore);
 

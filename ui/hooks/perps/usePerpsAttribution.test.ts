@@ -4,6 +4,12 @@ import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { usePerpsAttribution } from './usePerpsAttribution';
 
+// The provider reconciles the controller's attribution context on mount, so the
+// background connection has to be stubbed here as it is in the sibling suites.
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
 function wrapper({ children }: { children: React.ReactNode }) {
   return React.createElement(PerpsAttributionProvider, null, children);
 }

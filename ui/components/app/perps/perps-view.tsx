@@ -209,21 +209,35 @@ export const PerpsView = () => {
 
       if (successCount > 0 && failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
+        // Client-owned until the controller emits the count: 9.2.1's batch close
+        // event carries status/duration/bulk_action_id but NOT
+        // number_positions_closed. REMOVE together with the other client close
+        // emitters when the controller version that emits it is checked in —
+        // gate that on the dependency bump, not on the plan.
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
           messageParams: [successCount, positionCount],
         });
       } else if (!result?.success || failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
         });
         return;
       } else {
-        // No client close-all summary event here (would carry
-        // number_positions_closed): the controller emits the batch-close
-        // summary with number_positions_closed from the next perps-controller
-        // release (core #9471). Emitting it client-side would double-count.
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            successCount || positionCount,
+        });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
         });
@@ -243,6 +257,10 @@ export const PerpsView = () => {
     } catch (error) {
       captureException(error);
       setBatchActionError(t('somethingWentWrong'));
+      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+      });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
       });

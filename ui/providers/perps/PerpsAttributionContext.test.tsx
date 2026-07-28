@@ -224,10 +224,15 @@ describe('PerpsAttributionContext', () => {
       result.current.syncUtmAttributionFromSearch('?source=market_list');
     });
 
-    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-      'perpsSetAttributionContext',
-      expect.anything(),
+    // A non-UTM search must never push a UTM context. The only permitted write
+    // is the once-per-session `{}` reconcile that clears a previous session's
+    // campaign off the background singleton.
+    const utmWrites = mockSubmitRequestToBackground.mock.calls.filter(
+      ([method, args]) =>
+        method === 'perpsSetAttributionContext' &&
+        Object.keys((args as [Record<string, unknown>])[0] ?? {}).length > 0,
     );
+    expect(utmWrites).toHaveLength(0);
     expect(result.current.flowAttribution.discoverySource).toBe(
       PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
     );
@@ -245,6 +250,51 @@ describe('PerpsAttributionContext', () => {
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsSetAttributionContext',
       [{ utmSource: 'ads' }],
+    );
+  });
+
+  it('clears stale controller attribution when a fresh un-attributed session starts', async () => {
+    // The controller singleton outlives the UI: a campaign deeplink in a
+    // PREVIOUS popup session leaves its UTM on the background. Reopening the
+    // popup normally must not let that campaign stamp this session's trades,
+    // since the client-side screen views (session-scoped) no longer carry it.
+    renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper(''),
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsSetAttributionContext',
+      [{}],
+    );
+  });
+
+  it('does not clear controller attribution for a later provider in an attributed session', async () => {
+    // Provider A — the deeplink entry that seeds the campaign.
+    const entry = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper('?utm_source=ads'),
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    entry.unmount();
+    mockSubmitRequestToBackground.mockClear();
+
+    // Provider B — deeper in-app route on a bare URL, same UI session. The
+    // campaign is still live here, so nothing may be cleared.
+    renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper(''),
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+      'perpsSetAttributionContext',
+      [{}],
     );
   });
 

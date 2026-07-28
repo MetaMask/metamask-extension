@@ -618,14 +618,23 @@ describe('PerpsView', () => {
         });
       });
 
+      // 9.2.1's batch close event carries status/duration/bulk_action_id but not
+      // number_positions_closed, so the client stays the only source of the
+      // count until the controller version that emits it is checked in.
       const closeTxCalls = mockAnalyticsTrackEvent.mock.calls.filter(
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
-      expect(closeTxCalls).toHaveLength(0);
+      expect(closeTxCalls).toHaveLength(1);
+      expect(closeTxCalls[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 1,
+        }),
+      );
     });
 
-    it('shows failed toast when all positions fail to close without duplicate analytics', async () => {
+    it('shows failed toast when all positions fail to close and still reports the count', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsClosePositions') {
           return Promise.resolve({
@@ -654,7 +663,13 @@ describe('PerpsView', () => {
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsPositionCloseTransaction,
       );
-      expect(closeTxCalls).toHaveLength(0);
+      expect(closeTxCalls).toHaveLength(1);
+      expect(closeTxCalls[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+        }),
+      );
     });
   });
 
