@@ -132,7 +132,7 @@ const NotificationDetailNetworkFee_ = ({
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */
             notification_id: notification.id,
-            notification_type: notification.type,
+            notification_type: notification.notification_type,
             notification_subtype: getNotificationSubtype(notification),
             chain_id: notification.payload.chain_id,
             clicked_item: 'fee_details',

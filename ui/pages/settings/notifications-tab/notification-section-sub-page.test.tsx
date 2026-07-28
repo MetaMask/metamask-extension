@@ -631,6 +631,25 @@ describe('NotificationSectionSubPage', () => {
       });
     });
 
+    it('enables only the toggled account when turning on the first account from all-off', async () => {
+      renderAggPage([
+        { address: address1, enabled: false },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+      });
+      expect(mockSwitchAccountNotifications).toHaveBeenCalledWith(
+        [address1],
+        true,
+      );
+    });
+
     it('tracks aggregate wallet_activity disabled when the last enabled account is toggled off', async () => {
       renderAggPage([
         { address: address1, enabled: true },
@@ -652,6 +671,25 @@ describe('NotificationSectionSubPage', () => {
           }),
         );
       });
+    });
+
+    it('disables only the toggled account when turning off the last enabled account', async () => {
+      renderAggPage([
+        { address: address1, enabled: true },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+      });
+      expect(mockSwitchAccountNotifications).toHaveBeenCalledWith(
+        [address1],
+        false,
+      );
     });
   });
   /* eslint-enable @typescript-eslint/naming-convention */

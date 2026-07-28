@@ -58,7 +58,7 @@ export function NotificationsListItem({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         /* eslint-disable @typescript-eslint/naming-convention */
         notification_id: notification.id,
-        notification_type: notification.type,
+        notification_type: notification.notification_type,
         notification_subtype: notification.notification_subtype,
         ...otherNotificationProperties(),
         /* eslint-enable @typescript-eslint/naming-convention */
