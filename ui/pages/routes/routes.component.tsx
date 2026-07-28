@@ -4,10 +4,12 @@ import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
+import extension from 'webextension-polyfill';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -674,26 +676,53 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
 
-  // Cashtag Swap: background opens sidepanel.html?to=<caip> via setOptions.
-  // Read that HTML query once, navigate the hash router to Swap, then reset
-  // the panel path so normal sidepanel opens are not stuck on this entry.
+  // Cashtag Swap: sidePanel.setOptions cannot take a route/query, so the
+  // background holds a one-shot pending caip and also broadcasts a navigate
+  // message for an already-open panel. Wait until unlocked so unlock/home
+  // redirects do not wipe the destination.
   useEffect(() => {
-    const caip = new URLSearchParams(window.location.search).get('to');
-    if (!caip) {
-      return;
+    if (!isUnlocked) {
+      return undefined;
     }
 
-    navigate(
-      `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
-    );
+    const goToSwap = (caip: string) => {
+      navigate(
+        `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
+      );
+    };
 
-    window.history.replaceState(
-      null,
-      '',
-      `${window.location.pathname}${window.location.hash}`,
-    );
-    globalThis.chrome?.sidePanel?.setOptions?.({ path: 'sidepanel.html' });
-  }, [navigate]);
+    extension.runtime
+      .sendMessage({ type: EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP })
+      .then((response) => {
+        const caip = response?.body?.caipAssetId;
+        if (typeof caip === 'string' && caip.length > 0) {
+          goToSwap(caip);
+        }
+      })
+      .catch(() => undefined);
+
+    const onMessage = (message: {
+      type?: string;
+      body?: { caipAssetId?: unknown };
+    }) => {
+      if (message?.type !== EXTENSION_MESSAGES.CASHTAG_SWAP_NAVIGATE) {
+        return undefined;
+      }
+      const caip = message.body?.caipAssetId;
+      if (typeof caip === 'string' && caip.length > 0) {
+        goToSwap(caip);
+        extension.runtime
+          .sendMessage({ type: EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP })
+          .catch(() => undefined);
+      }
+      return undefined;
+    };
+
+    extension.runtime.onMessage.addListener(onMessage);
+    return () => {
+      extension.runtime.onMessage.removeListener(onMessage);
+    };
+  }, [isUnlocked, navigate]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
