@@ -114,6 +114,18 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
 };
 
 /**
+ * Marks the notification popup as having been automatically closed.
+ *
+ * This lets us differentiate between the cases where we close the
+ * notification popup v.s. when the user closes the popup window directly.
+ */
+export type LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction =
+  {
+    type: `LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed`;
+    handler: LegacyBackgroundApiService['markNotificationPopupAsAutomaticallyClosed'];
+  };
+
+/**
  * Marks the password as forgotten.
  */
 export type LegacyBackgroundApiServiceMarkPasswordForgottenAction = {
@@ -527,6 +539,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRequestSafeReloadAction
   | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction

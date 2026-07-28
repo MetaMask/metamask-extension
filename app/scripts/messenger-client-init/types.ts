@@ -239,6 +239,11 @@ export type MessengerClientInitRequest<
   getOpenMetamaskTabsIds: () => Record<string, number>;
 
   /**
+   * Marks the notification popup as having been automatically closed.
+   */
+  markNotificationPopupAsAutomaticallyClosed: () => void;
+
+  /**
    * Triggers a safe reload of the extension without disrupting user state.
    */
   requestSafeReload: () => Promise<void>;
