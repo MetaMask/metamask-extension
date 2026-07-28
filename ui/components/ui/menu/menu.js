@@ -44,18 +44,12 @@ const Menu = ({
         onClick={onHide}
       />
       <div
-        className={classnames('menu__container', className)}
+        className={classnames('menu__container', className, {
+          'bg-alternative border border-muted': isPureBlack,
+        })}
         data-testid={className}
         ref={setPopperElement}
-        style={{
-          ...styles.popper,
-          ...(isPureBlack
-            ? {
-                background: 'var(--color-background-alternative)',
-                border: '1px solid var(--color-border-muted)',
-              }
-            : {}),
-        }}
+        style={styles.popper}
         {...attributes.popper}
       >
         {children}

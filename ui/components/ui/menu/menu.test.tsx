@@ -80,12 +80,9 @@ describe('Menu Component', () => {
       const menuContainer = document.body.querySelector(
         '.menu__container',
       ) as HTMLElement;
-      expect(menuContainer.style.background).toBe(
-        'var(--color-background-alternative)',
-      );
-      expect(menuContainer.style.border).toBe(
-        '1px solid var(--color-border-muted)',
-      );
+      expect(menuContainer).toHaveClass('bg-alternative');
+      expect(menuContainer).toHaveClass('border');
+      expect(menuContainer).toHaveClass('border-muted');
     });
 
     it('does not apply pure black styles when isPureBlack is false', () => {
@@ -94,8 +91,9 @@ describe('Menu Component', () => {
       const menuContainer = document.body.querySelector(
         '.menu__container',
       ) as HTMLElement;
-      expect(menuContainer.style.background).toBe('');
-      expect(menuContainer.style.border).toBe('');
+      expect(menuContainer).not.toHaveClass('bg-alternative');
+      expect(menuContainer).not.toHaveClass('border');
+      expect(menuContainer).not.toHaveClass('border-muted');
     });
   });
 });
