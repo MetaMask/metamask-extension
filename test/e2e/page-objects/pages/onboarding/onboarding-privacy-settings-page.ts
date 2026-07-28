@@ -67,9 +67,6 @@ class OnboardingPrivacySettingsPage {
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
-  private readonly networkMenuBackButton =
-    '[data-testid="network-list-menu-back-button"]';
-
   // Assets settings
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
@@ -188,16 +185,6 @@ class OnboardingPrivacySettingsPage {
       this.chainIdInput,
       this.addRpcUrlDropDown,
     ]);
-  }
-
-  /**
-   * Assert that the network menu back button is not displayed. When the network
-   * menu is opened from onboarding it renders directly in the add/edit view with
-   * no preceding list, so there should be no back button.
-   */
-  async checkNetworkMenuBackButtonIsNotDisplayed(): Promise<void> {
-    console.log('Check that the network menu back button is not displayed');
-    await this.driver.assertElementNotPresent(this.networkMenuBackButton);
   }
 
   /**

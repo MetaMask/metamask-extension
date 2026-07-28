@@ -25,6 +25,9 @@ class AddEditNetworkModal {
 
   private readonly backButton = '[data-testid="page-header-back-button"]';
 
+  private readonly networkMenuBackButton =
+    '[data-testid="network-list-menu-back-button"]';
+
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
   };
@@ -156,6 +159,16 @@ class AddEditNetworkModal {
   async clickBackButton(): Promise<void> {
     console.log('Click back button in add/edit network modal');
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
+  }
+
+  /**
+   * Assert that the network menu back button is not displayed. When the network
+   * menu is opened from onboarding it renders directly in the add/edit view with
+   * no preceding list, so there should be no back button.
+   */
+  async checkNetworkMenuBackButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that the network menu back button is not displayed');
+    await this.driver.assertElementNotPresent(this.networkMenuBackButton);
   }
 
   /**

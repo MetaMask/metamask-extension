@@ -9,6 +9,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -354,7 +355,9 @@ describe('MetaMask onboarding', function () {
         // Opening a network to edit from onboarding goes straight to the
         // add/edit view, so the network menu must not show a back button.
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
-        await onboardingPrivacySettingsPage.checkNetworkMenuBackButtonIsNotDisplayed();
+        const editNetworkModal = new AddEditNetworkModal(driver);
+        await editNetworkModal.checkPageIsLoaded();
+        await editNetworkModal.checkNetworkMenuBackButtonIsNotDisplayed();
       },
     );
   });
@@ -381,7 +384,9 @@ describe('MetaMask onboarding', function () {
         // Adding a network from onboarding also opens the add/edit view
         // directly, so the network menu must not show a back button.
         await onboardingPrivacySettingsPage.openAddNetworkForm();
-        await onboardingPrivacySettingsPage.checkNetworkMenuBackButtonIsNotDisplayed();
+        const addNetworkModal = new AddEditNetworkModal(driver);
+        await addNetworkModal.checkPageIsLoaded();
+        await addNetworkModal.checkNetworkMenuBackButtonIsNotDisplayed();
       },
     );
   });
