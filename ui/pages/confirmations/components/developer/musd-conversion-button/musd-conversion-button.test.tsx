@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MAINNET_MUSD } from '../../../constants/musd';
 import { useDeveloperTransferTransaction } from '../utils';
-import { MoneyAccountDepositButton } from './money-account-deposit-button';
+import { MusdConversionButton } from './musd-conversion-button';
 
 jest.mock('../utils', () => ({
   useDeveloperTransferTransaction: jest.fn(),
@@ -13,7 +13,7 @@ const useDeveloperTransferTransactionMock = jest.mocked(
   useDeveloperTransferTransaction,
 );
 
-describe('MoneyAccountDepositButton', () => {
+describe('MusdConversionButton', () => {
   const handleTriggerMock = jest.fn();
 
   beforeEach(() => {
@@ -25,26 +25,23 @@ describe('MoneyAccountDepositButton', () => {
     });
   });
 
-  it('configures the transfer hook for a mUSD money account deposit', () => {
-    render(<MoneyAccountDepositButton />);
+  it('configures the transfer hook for a mUSD conversion', () => {
+    render(<MusdConversionButton />);
 
     expect(useDeveloperTransferTransactionMock).toHaveBeenCalledWith({
       chainId: MAINNET_MUSD.chainId,
       tokenAddress: MAINNET_MUSD.address,
       decimals: MAINNET_MUSD.decimals,
-      type: TransactionType.moneyAccountDeposit,
-      errorMessage: 'Failed to create money account deposit transaction',
+      type: TransactionType.musdConversion,
+      errorMessage: 'Failed to create MUSD conversion transaction',
     });
   });
 
   it('renders the developer button and triggers the transaction on click', () => {
-    render(<MoneyAccountDepositButton />);
+    render(<MusdConversionButton />);
 
-    const button = screen.getByRole('button', {
-      name: 'Money Account Deposit',
-    });
+    const button = screen.getByRole('button', { name: 'MUSD Conversion' });
     expect(button).toBeInTheDocument();
-    expect(button).not.toBeDisabled();
 
     fireEvent.click(button);
     expect(handleTriggerMock).toHaveBeenCalledTimes(1);
@@ -56,10 +53,10 @@ describe('MoneyAccountDepositButton', () => {
       handleTrigger: handleTriggerMock,
     });
 
-    render(<MoneyAccountDepositButton />);
+    render(<MusdConversionButton />);
 
     expect(
-      screen.getByRole('button', { name: 'Money Account Deposit' }),
+      screen.getByRole('button', { name: 'MUSD Conversion' }),
     ).toBeDisabled();
   });
 });

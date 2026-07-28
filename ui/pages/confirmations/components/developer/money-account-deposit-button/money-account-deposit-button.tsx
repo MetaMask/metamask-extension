@@ -1,70 +1,18 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
+import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-} from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { DeveloperButton } from '../developer-button';
 import { MAINNET_MUSD } from '../../../constants/musd';
-import {
-  ConfirmationLoader,
-  useConfirmationNavigation,
-} from '../../../hooks/useConfirmationNavigation';
-import { generateERC20TransferData } from '../utils';
+import { useDeveloperTransferTransaction } from '../utils';
 
 export const MoneyAccountDepositButton = () => {
-  const { navigateToTransaction } = useConfirmationNavigation();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleTrigger = useCallback(async () => {
-    if (!selectedAccount?.address) {
-      console.error('No selected account');
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const networkClientId = await findNetworkClientIdByChainId(
-        MAINNET_MUSD.chainId,
-      );
-
-      const transferData = generateERC20TransferData(
-        selectedAccount.address as Hex,
-        '0',
-        MAINNET_MUSD.decimals,
-      );
-
-      const txMeta = await addTransaction(
-        {
-          from: selectedAccount.address as Hex,
-          to: MAINNET_MUSD.address,
-          data: transferData,
-          value: '0x0',
-        },
-        {
-          networkClientId,
-          type: TransactionType.moneyAccountDeposit,
-        },
-      );
-
-      navigateToTransaction(txMeta.id, {
-        loader: ConfirmationLoader.CustomAmount,
-      });
-    } catch (error) {
-      console.error(
-        'Failed to create money account deposit transaction',
-        error,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigateToTransaction, selectedAccount?.address]);
+  const { isLoading, handleTrigger } = useDeveloperTransferTransaction({
+    chainId: MAINNET_MUSD.chainId,
+    tokenAddress: MAINNET_MUSD.address,
+    decimals: MAINNET_MUSD.decimals,
+    type: TransactionType.moneyAccountDeposit,
+    errorMessage: 'Failed to create money account deposit transaction',
+  });
 
   return (
     <DeveloperButton
