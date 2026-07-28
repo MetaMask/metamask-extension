@@ -157,7 +157,7 @@ import {
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { selectAllEnabledNetworkClientIds } from '../../../shared/lib/selectors/multichain';
+import { getAllEnabledNetworkClientIds } from '../../../shared/lib/selectors/multichain';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -781,12 +781,10 @@ export class LegacyBackgroundApiService {
       'NetworkController:getState',
     );
 
-    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds({
-      metamask: {
-        enabledNetworkMap,
-        networkConfigurationsByChainId,
-      },
-    });
+    const enabledNetworkClientIds = getAllEnabledNetworkClientIds(
+      enabledNetworkMap,
+      networkConfigurationsByChainId,
+    );
 
     await Promise.allSettled([
       this.#messenger.call('NetworkController:lookupNetwork'),
