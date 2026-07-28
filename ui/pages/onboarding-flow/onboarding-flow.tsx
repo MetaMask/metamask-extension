@@ -16,6 +16,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  usePureBlack,
 } from '@metamask/design-system-react';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import Unlock from '../unlock-page';
@@ -382,6 +383,9 @@ export default function OnboardingFlow() {
     pathname === ONBOARDING_UNLOCK_ROUTE ||
     (isFlask() && pathname === ONBOARDING_EXPERIMENTAL_AREA);
 
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
+
   const backgroundColorForWelcomePage = useMemo(() => {
     if (isWelcomePage) {
       return theme === ThemeType.light
@@ -390,6 +394,20 @@ export default function OnboardingFlow() {
     }
     return 'var(--color-background-default)';
   }, [isWelcomePage, theme]);
+
+  const isTransparentContainer =
+    [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(pathname) ||
+    isPopup;
+
+  // In pure black (OLED) mode the muted card looks gray against #000; use
+  // background-default so pages like Back up SRP match the pure black schema.
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  let containerBackgroundColor = 'var(--color-background-muted)';
+  if (isTransparentContainer) {
+    containerBackgroundColor = 'transparent';
+  } else if (isPureBlack) {
+    containerBackgroundColor = 'var(--color-background-default)';
+  }
 
   return (
     <Box
@@ -428,13 +446,9 @@ export default function OnboardingFlow() {
         }
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         style={{
-          backgroundColor:
-            [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(
-              pathname,
-            ) || isPopup
-              ? 'transparent'
-              : 'var(--color-background-muted)',
+          backgroundColor: containerBackgroundColor,
         }}
+        data-testid="onboarding-flow-container"
       >
         <ErrorBoundary>
           <Suspense fallback={null}>

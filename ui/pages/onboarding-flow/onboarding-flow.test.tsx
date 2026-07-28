@@ -192,6 +192,11 @@ jest.mock('../../hooks/useSidePanelEnabled', () => ({
   useSidePanelEnabled: jest.fn(() => false),
 }));
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
+
 function createDeferred<ResolvedValue = void>() {
   let resolvePromise: (
     value: ResolvedValue | PromiseLike<ResolvedValue>,
@@ -653,5 +658,48 @@ describe('Onboarding Flow', () => {
 
     // Restore build type
     process.env.METAMASK_BUILD_TYPE = 'main';
+  });
+
+  describe('pure black theme', () => {
+    afterEach(() => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(false);
+    });
+
+    it('applies background-default to the container in pure black mode on Back up SRP page', () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(true);
+
+      const { getByTestId } = renderWithProvider(
+        <OnboardingFlowWithRouteContext />,
+        store,
+        ONBOARDING_REVEAL_SRP_ROUTE,
+      );
+
+      expect(getByTestId('onboarding-flow-container')).toHaveStyle({
+        backgroundColor: 'var(--color-background-default)',
+      });
+    });
+
+    it('applies background-muted to the container when pure black is off', () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(false);
+
+      const { getByTestId } = renderWithProvider(
+        <OnboardingFlowWithRouteContext />,
+        store,
+        ONBOARDING_REVEAL_SRP_ROUTE,
+      );
+
+      expect(getByTestId('onboarding-flow-container')).toHaveStyle({
+        backgroundColor: 'var(--color-background-muted)',
+      });
+    });
   });
 });
