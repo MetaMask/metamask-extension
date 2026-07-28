@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column } from '../../../layout';
 import { useInitialBridgeTokens } from '../../../../../hooks/bridge/useInitialBridgeTokens';
 import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
-import { filterOutArcNativeAsset } from '../../../../../components/app/assets/enablement/arc';
+import { filterOutArcERC20USDAsset } from '../../../../../components/app/assets/enablement/arc';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -57,7 +57,7 @@ export const BridgeAssetList = ({
    */
   const filteredTokenList = useMemo(
     () =>
-      filterOutArcNativeAsset(
+      filterOutArcERC20USDAsset(
         searchQuery.length > 0 ? searchResults : popularTokensList,
       ),
     [searchQuery.length, searchResults, popularTokensList],

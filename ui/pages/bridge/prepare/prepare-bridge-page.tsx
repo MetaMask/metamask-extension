@@ -76,7 +76,6 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import {
@@ -167,9 +166,7 @@ const PrepareBridgePage = ({
   const effectiveGasIncluded7702 = !isUsingHardwareWallet && gasIncluded7702;
 
   const shouldShowMaxButton =
-    fromToken &&
-    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
+    fromToken && isNativeAddress(fromToken.assetId)
       ? !isSolanaChainId(fromToken.chainId) &&
         (effectiveGasIncluded || effectiveGasIncluded7702)
       : true;
