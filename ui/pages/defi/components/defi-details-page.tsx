@@ -31,12 +31,12 @@ import { getDefiPositions } from '../../../selectors/assets';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
 import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
+import DeFiDetailsPageV2 from '../pages/defi-details-page-v2';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
   ProtocolTokenWithMarketValue,
 } from './defi-details-list';
-import DeFiDetailsPageV2 from '../pages/defi-details-page-v2';
 
 const useExtractUnderlyingTokens = (
   positions?: ProtocolTokenWithMarketValue[][],

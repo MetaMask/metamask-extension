@@ -110,7 +110,9 @@ describe('DeFiProtocolCellV2', () => {
     expect(mockAddCategory).toHaveBeenCalledWith(MetaMetricsEventCategory.DeFi);
     expect(mockAddProperties).toHaveBeenCalledWith({
       location: 'Home',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       chain_id: 'eip155:1',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       protocol_id: 'curve',
     });
     expect(mockTrackEvent).toHaveBeenCalledWith({ event: 'built' });

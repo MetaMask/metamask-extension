@@ -21,8 +21,6 @@ import DefiListV2 from './defi-list-v2';
  * @param props - Component props.
  * @param props.onClickAsset - Handler when an asset row is clicked.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
   const { positions, isLoading, isError, refresh } = useDeFiPositionsV2();
 
@@ -55,8 +53,6 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
  * @param props - Component props.
  * @param props.onClickAsset - Handler when an asset row is clicked.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
   return (
     <>
@@ -65,8 +61,6 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
     </>
   );
 }
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 
 export default function DeFiTab({
   onClickAsset,

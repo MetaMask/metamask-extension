@@ -26,8 +26,6 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import DefiDetailsListV2 from '../components/defi-details-list-v2';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-
 export default function DeFiDetailsPageV2() {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId, protocolId } = useParams();
