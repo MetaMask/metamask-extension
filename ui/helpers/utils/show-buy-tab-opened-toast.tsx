@@ -1,10 +1,10 @@
 import React from 'react';
 import { Icon, IconColor, IconName } from '@metamask/design-system-react';
-import { ToastContent, toast } from '../../../../components/ui/toast/toast';
+import { ToastContent, toast } from '../../components/ui/toast/toast';
 
 /**
- * Shows the same "Continue in your browser tab" toast used by the Portfolio
- * buy path when a provider checkout tab is opened.
+ * Shows the "Continue in your browser tab" toast used whenever a buy flow
+ * opens a checkout tab (native ramps checkout or the Portfolio buy path).
  *
  * @param title - Toast title (buyTabOpenedToastText).
  * @param description - Toast description (buyTabOpenedToastDescription).

@@ -16,6 +16,7 @@ const mockGetBuyWidgetData = jest.fn();
 const mockAddPrecreatedOrder = jest.fn();
 const mockOpenTab = jest.fn();
 const mockWatchRampsCheckoutTab = jest.fn();
+const mockShowBuyTabOpenedToast = jest.fn();
 let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -47,8 +48,9 @@ jest.mock('../../../store/controller-actions/ramps-controller', () => ({
     mockWatchRampsCheckoutTab(...args),
 }));
 
-jest.mock('./utils/show-buy-tab-opened-toast', () => ({
-  showBuyTabOpenedToast: jest.fn(),
+jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: (...args: unknown[]) =>
+    mockShowBuyTabOpenedToast(...args),
 }));
 
 const { useRampsController } = jest.requireMock(
@@ -356,6 +358,32 @@ describe('RampsBuildQuoteScreen', () => {
       fiatCurrency: { symbol: 'USD' },
     });
     expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('surfaces an error and does not navigate when the opened tab has no id', async () => {
+    // Without a tab id the background watcher cannot resolve the order, so the
+    // user must not be sent home believing checkout is being tracked.
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+    });
+    mockOpenTab.mockResolvedValue({});
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
+    expect(mockShowBuyTabOpenedToast).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsBuyWidgetError.message,
+    );
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {

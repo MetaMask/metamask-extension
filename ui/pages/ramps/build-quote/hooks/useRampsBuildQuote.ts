@@ -12,6 +12,7 @@ import {
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
+import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
@@ -28,7 +29,6 @@ import {
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
-import { showBuyTabOpenedToast } from '../utils/show-buy-tab-opened-toast';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -234,15 +234,20 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       }
 
       const openedTab = await global.platform.openTab({ url: widget.url });
-      if (openedTab.id !== undefined) {
-        await watchRampsCheckoutTab({
-          tabId: openedTab.id,
-          providerCode,
-          walletAddress,
-          orderAlreadyPrecreated,
-          orderCode,
-        });
+      if (openedTab.id === undefined) {
+        // Without a tab id the background watcher cannot detect the callback
+        // redirect, so the order would never resolve.
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
       }
+
+      await watchRampsCheckoutTab({
+        tabId: openedTab.id,
+        providerCode,
+        walletAddress,
+        orderAlreadyPrecreated,
+        orderCode,
+      });
 
       navigate(DEFAULT_ROUTE);
       showBuyTabOpenedToast(
