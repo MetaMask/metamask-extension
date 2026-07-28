@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
@@ -8,6 +7,8 @@ import {
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   BackgroundColor,
   IconColor,

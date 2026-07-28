@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "デポジット失敗"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "デポジット失敗"
   },
   "activity_deposit_pending_description": {
-    "message": "$1をデポジットしています",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1をデポジットしています",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "$1をデポジットしました",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1をデポジットしました",
@@ -1996,12 +1994,6 @@
   "bridgeApproval": {
     "message": "$1のブリッジを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2へのアクセスを許可しようとしています。このコントラクトが他の資金にアクセスすることはありません。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$3へのブリッジを承認する必要があります。これには2回の承認が必要です。"
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
@@ -4163,9 +4155,6 @@
   },
   "gotIt": {
     "message": "了解"
-  },
-  "grantExactAccess": {
-    "message": "正確なアクセスを許可する"
   },
   "gwei": {
     "message": "gwei"
@@ -11256,12 +11245,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ブリッジ用にトークンを承認します。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "トークンのスワップを承認"
   },
   "withdrawTo": {
     "message": "受取",
