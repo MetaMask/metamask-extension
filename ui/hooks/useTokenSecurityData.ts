@@ -63,9 +63,8 @@ export const useTokenSecurityData = ({
     !prefetchedData && Boolean(assetId),
   );
   const [error, setError] = useState<Error | null>(null);
-  const [assetMetadata, setAssetMetadata] = useState<TokenSecurityAssetMetadata>(
-    {},
-  );
+  const [assetMetadata, setAssetMetadata] =
+    useState<TokenSecurityAssetMetadata>({});
   const isMountedRef = useRef(true);
 
   const fetchData = useCallback(async () => {

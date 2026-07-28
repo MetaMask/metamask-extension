@@ -27,7 +27,10 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
-import { useAssetPageSecurityTrustCtaGate, useAssetPageSecurityTrustCtaGateReady } from './security-trust';
+import {
+  useAssetPageSecurityTrustCtaGate,
+  useAssetPageSecurityTrustCtaGateReady,
+} from './security-trust';
 import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
@@ -208,7 +211,9 @@ const TokenButtons = ({
         onClick={handleSwapOnClick}
         data-testid="token-overview-swap"
         label={t('swap')}
-        disabled={!isExternalServicesEnabled || isMarketClosed || !isCtaGateReady}
+        disabled={
+          !isExternalServicesEnabled || isMarketClosed || !isCtaGateReady
+        }
       />
     </Box>
   );
