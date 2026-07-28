@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem, createSelectItem } from '../shared';
 import {
+  getIsWebWidgetOnXFeatureEnabled,
   getManageInstitutionalWallets,
   getShowExtensionInFullSizeView,
   getShowWebWidgetOnX,
@@ -86,29 +88,33 @@ const ManageInstitutionalWalletItem = createToggleItem({
   trackEventProperty: 'manage_institutional_wallets',
 });
 
-/** Registry of setting items for the Preferences and Display page. Add new items here */
-const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'theme', component: ThemeItem },
-  { id: 'language', component: LanguageItem },
-  { id: 'local-currency', component: LocalCurrencyItem },
-  { id: 'account-identicon', component: AccountIdenticonItem },
-  { id: 'show-default-address', component: ShowDefaultAddressItem },
-  {
-    id: 'show-x-widget',
-    component: ShowWebWidgetOnXItem,
-  },
-  {
-    id: 'show-extension',
-    component: ShowExtensionItem,
-  },
-  {
-    id: 'manage-institutional-wallet',
-    component: ManageInstitutionalWalletItem,
-  },
-];
+const PreferencesAndDisplayTab = () => {
+  // The X.com widget setting is only shown when its remote feature flag is on.
+  const isWebWidgetOnXFeatureEnabled = useSelector(
+    getIsWebWidgetOnXFeatureEnabled,
+  );
 
-const PreferencesAndDisplayTab = () => (
-  <SettingsTab items={PREFERENCES_AND_DISPLAY_SETTING_ITEMS} />
-);
+  /** Registry of setting items for the page. Add new items here. */
+  const items = useMemo<SettingItemConfig[]>(
+    () => [
+      { id: 'theme', component: ThemeItem },
+      { id: 'language', component: LanguageItem },
+      { id: 'local-currency', component: LocalCurrencyItem },
+      { id: 'account-identicon', component: AccountIdenticonItem },
+      { id: 'show-default-address', component: ShowDefaultAddressItem },
+      ...(isWebWidgetOnXFeatureEnabled
+        ? [{ id: 'show-x-widget', component: ShowWebWidgetOnXItem }]
+        : []),
+      { id: 'show-extension', component: ShowExtensionItem },
+      {
+        id: 'manage-institutional-wallet',
+        component: ManageInstitutionalWalletItem,
+      },
+    ],
+    [isWebWidgetOnXFeatureEnabled],
+  );
+
+  return <SettingsTab items={items} />;
+};
 
 export default PreferencesAndDisplayTab;

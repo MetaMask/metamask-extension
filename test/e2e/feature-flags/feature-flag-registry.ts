@@ -114,6 +114,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  cashtagInjection: {
+    name: 'cashtagInjection',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   ledgerDmk: {
     name: 'ledgerDmk',
     type: FeatureFlagType.Remote,
