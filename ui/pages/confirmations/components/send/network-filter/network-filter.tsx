@@ -229,14 +229,14 @@ export const NetworkFilter = ({
 
   return (
     <>
-      <Box className="ml-4 mb-2">
+      <Box marginLeft={4} marginBottom={2}>
         <ButtonBase
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
           startIconProps={{ 'data-testid': 'icon-filter' }}
-          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed"
+          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed my-2"
         >
           {displayName}
         </ButtonBase>
