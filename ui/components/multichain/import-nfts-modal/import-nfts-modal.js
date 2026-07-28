@@ -400,7 +400,7 @@ export const ImportNftsModal = ({ onClose }) => {
               onClose();
               navigate(DEFAULT_ROUTE);
             }}
-            className="import-nfts-modal__cancel-button flex-1 rounded-xl border border-border-default"
+            className="import-nfts-modal__cancel-button flex-1 rounded-xl"
           >
             {t('cancel')}
           </Button>
