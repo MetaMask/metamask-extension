@@ -16,8 +16,15 @@ describe('preventScssFileAdditions()', (): void => {
   it('should pass when modifying an existing SCSS file', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('ui/components/app/button/button.scss', 'color: red', undefined),
-      generateCreateFileDiff('ui/components/app/button/button.tsx', 'export default Button;'),
+      generateModifyFilesDiff(
+        'ui/components/app/button/button.scss',
+        'color: red',
+        undefined,
+      ),
+      generateCreateFileDiff(
+        'ui/components/app/button/button.tsx',
+        'export default Button;',
+      ),
     ].join('');
 
     const hasRulePassed = preventScssFileAdditions(testDiff);
@@ -28,8 +35,15 @@ describe('preventScssFileAdditions()', (): void => {
   it('should pass when creating a new TS file', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('ui/components/app/button/button.scss', undefined, 'color: red'),
-      generateCreateFileDiff('ui/components/app/button/button.tsx', 'export default Button;'),
+      generateModifyFilesDiff(
+        'ui/components/app/button/button.scss',
+        undefined,
+        'color: red',
+      ),
+      generateCreateFileDiff(
+        'ui/components/app/button/button.tsx',
+        'export default Button;',
+      ),
     ].join('');
 
     const hasRulePassed = preventScssFileAdditions(testDiff);
@@ -40,8 +54,15 @@ describe('preventScssFileAdditions()', (): void => {
   it('should not pass when creating a new SCSS file in the ui directory', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
-      generateModifyFilesDiff('ui/components/app/button/button.scss', undefined, 'color: red'),
-      generateCreateFileDiff('ui/components/app/button/button.scss', '.button { color: red; }'),
+      generateModifyFilesDiff(
+        'ui/components/app/button/button.scss',
+        undefined,
+        'color: red',
+      ),
+      generateCreateFileDiff(
+        'ui/components/app/button/button.scss',
+        '.button { color: red; }',
+      ),
     ].join('');
 
     const hasRulePassed = preventScssFileAdditions(testDiff);
@@ -53,7 +74,10 @@ describe('preventScssFileAdditions()', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateModifyFilesDiff('old-file.scss', undefined, 'color: blue'),
-      generateCreateFileDiff('app/styles/new-component.scss', '.component { display: flex; }'),
+      generateCreateFileDiff(
+        'app/styles/new-component.scss',
+        '.component { display: flex; }',
+      ),
     ].join('');
 
     const hasRulePassed = preventScssFileAdditions(testDiff);
@@ -65,7 +89,10 @@ describe('preventScssFileAdditions()', (): void => {
     const testDiff = [
       generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
       generateModifyFilesDiff('old-file.scss', undefined, 'color: blue'),
-      generateCreateFileDiff('shared/styles/tokens.scss', '$color-primary: blue;'),
+      generateCreateFileDiff(
+        'shared/styles/tokens.scss',
+        '$color-primary: blue;',
+      ),
     ].join('');
 
     const hasRulePassed = preventScssFileAdditions(testDiff);
