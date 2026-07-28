@@ -162,6 +162,7 @@ export const spanLocator = {
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
   snapUiRendererPanel: '.snap-ui-renderer__panel',
+  snapUiRendererText: '.snap-ui-renderer__text',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signMessageMultichainResultSpan: '#signMessageMultichainResult',
   signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',

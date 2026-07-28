@@ -62,10 +62,10 @@ describe('Test Snap Background Events', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify background event fired
-        await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
-          text: 'This dialog was triggered by a background event',
-        });
+        await testSnaps.checkMessageResultSpan(
+          'snapUIRenderer',
+          'This dialog was triggered by a background event',
+        );
 
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
@@ -136,10 +136,10 @@ describe('Test Snap Background Events', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify background event fired
-        await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
-          text: 'This dialog was triggered by a background event',
-        });
+        await testSnaps.checkMessageResultSpan(
+          'snapUIRenderer',
+          'This dialog was triggered by a background event',
+        );
 
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
