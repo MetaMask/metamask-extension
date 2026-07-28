@@ -2,7 +2,7 @@ import { NameType } from '@metamask/name-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import {
   MetaMetricsEventCategory,
@@ -18,7 +18,12 @@ import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { useDispatch } from '../../../../store/hooks';
 import NameDetails from './name-details';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
@@ -27,7 +32,6 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
