@@ -54,18 +54,6 @@ describe('useDeFiPositionsV2', () => {
     expect(mockFetchDeFiPositions).toHaveBeenCalledWith();
   });
 
-  it('does not fetch when disabled', async () => {
-    const { result } = renderHook(() => useDeFiPositionsV2({ enabled: false }));
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    expect(mockFetchDeFiPositions).not.toHaveBeenCalled();
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.isError).toBe(false);
-  });
-
   it('reports loading until positions exist', async () => {
     let resolveFetch: (() => void) | undefined;
     mockFetchDeFiPositions.mockImplementation(
@@ -142,7 +130,7 @@ describe('useDeFiPositionsV2', () => {
       'account-1': [{ protocolId: 'lido' }],
     };
 
-    const { result } = renderHook(() => useDeFiPositionsV2({ enabled: false }));
+    const { result } = renderHook(() => useDeFiPositionsV2());
 
     expect(result.current.positions).toEqual([{ protocolId: 'lido' }]);
   });

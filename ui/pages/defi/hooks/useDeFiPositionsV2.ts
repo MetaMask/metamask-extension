@@ -20,14 +20,6 @@ export type UseDeFiPositionsV2Result = {
   refresh: () => Promise<void>;
 };
 
-export type UseDeFiPositionsV2Options = {
-  /**
-   * When false, skips the mount / account-group fetch. Defaults to true.
-   * Use to gate V2 fetches while the V1 list is still shown.
-   */
-  enabled?: boolean;
-};
-
 /**
  * Fetches and reads DeFi positions for the selected account group from
  * `DeFiPositionsControllerV2`. Call once per screen (tab or details) — do not
@@ -36,14 +28,9 @@ export type UseDeFiPositionsV2Options = {
  * Must be used under a `RouteWithMessenger` that includes
  * `DeFiPositionsControllerV2:fetchDeFiPositions` (see `DEFI_ROUTE_ALLOWED_CAPABILITIES`).
  *
- * @param options - Optional fetch controls.
- * @param options.enabled - When false, does not auto-fetch. Defaults to true.
  * @returns Merged positions plus loading / error / refresh.
  */
-export function useDeFiPositionsV2(
-  options: UseDeFiPositionsV2Options = {},
-): UseDeFiPositionsV2Result {
-  const { enabled = true } = options;
+export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const groupAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, selectedAccountGroup),
@@ -61,10 +48,6 @@ export function useDeFiPositionsV2(
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
     let cancelled = false;
 
     setIsFetching(true);
@@ -85,25 +68,21 @@ export function useDeFiPositionsV2(
     return () => {
       cancelled = true;
     };
-  }, [enabled, selectedAccountGroup, fetchDeFiPositions]);
+  }, [selectedAccountGroup, fetchDeFiPositions]);
 
   const refresh = useCallback(async () => {
-    if (!enabled) {
-      return;
-    }
-
     setIsError(false);
     try {
       await fetchDeFiPositions({ forceRefresh: true });
     } catch {
       setIsError(true);
     }
-  }, [enabled, fetchDeFiPositions]);
+  }, [fetchDeFiPositions]);
 
   return {
     positions,
-    isLoading: enabled && isFetching && !hasPositions,
-    isError: enabled && isError,
+    isLoading: isFetching && !hasPositions,
+    isError,
     refresh,
   };
 }

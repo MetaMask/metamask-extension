@@ -167,6 +167,7 @@ describe('DefiList', () => {
   beforeEach(() => {
     mockRefresh.mockClear();
     mockRefresh.mockResolvedValue(undefined);
+    mockUseDeFiPositionsV2.mockClear();
     mockUseDeFiPositionsV2.mockReturnValue({
       positions: [],
       isLoading: false,
@@ -280,7 +281,7 @@ describe('DefiList', () => {
     });
   });
 
-  it('shows a refresh-only menu that fetches DeFi positions', async () => {
+  it('shows a refresh-only menu that fetches DeFi positions when V2 is enabled', async () => {
     mockUseDeFiPositionsV2.mockReturnValue({
       positions: allDeFiPositionsV2List,
       isLoading: false,
@@ -292,9 +293,7 @@ describe('DefiList', () => {
       render('with-positions', { defiControllerV2Enabled: true });
     });
 
-    expect(mockUseDeFiPositionsV2).toHaveBeenCalledWith({
-      enabled: true,
-    });
+    expect(mockUseDeFiPositionsV2).toHaveBeenCalled();
 
     const actionButton = await screen.findByTestId(
       'asset-list-control-bar-action-button',
@@ -310,5 +309,16 @@ describe('DefiList', () => {
     mockRefresh.mockClear();
     fireEvent.click(refreshListButton);
     expect(mockRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not show the refresh menu when V2 is disabled', async () => {
+    await act(async () => {
+      render('with-positions');
+    });
+
+    expect(mockUseDeFiPositionsV2).not.toHaveBeenCalled();
+    expect(
+      screen.queryByTestId('asset-list-control-bar-action-button'),
+    ).not.toBeInTheDocument();
   });
 });

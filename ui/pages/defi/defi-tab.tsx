@@ -11,27 +11,20 @@ import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
 import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from './messenger';
 import DefiListV2 from './components/defi-list-v2';
 
-type DeFiTabContentProps = Readonly<AssetListProps> & {
-  isDefiControllerV2Enabled: boolean;
-};
-
 /**
- * Inner content that must run under {@link RouteWithMessenger} so it can call
+ * V2 DeFi tab content. Mounts only when the V2 controller flag is enabled so
+ * `useDeFiPositionsV2` always runs (no legacy `enabled` gate in the hook).
+ *
+ * Must run under {@link RouteWithMessenger} so it can call
  * `DeFiPositionsControllerV2:fetchDeFiPositions` via the route messenger.
  *
  * @param props - Component props.
  * @param props.onClickAsset - Handler when an asset row is clicked.
- * @param props.isDefiControllerV2Enabled - Whether to render the V2 list.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function DeFiTabContent({
-  onClickAsset,
-  isDefiControllerV2Enabled,
-}: DeFiTabContentProps) {
-  const { positions, isLoading, isError, refresh } = useDeFiPositionsV2({
-    enabled: isDefiControllerV2Enabled,
-  });
+function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
+  const { positions, isLoading, isError, refresh } = useDeFiPositionsV2();
 
   const handleRefresh = useCallback(() => {
     refresh().catch(() => {
@@ -45,22 +38,36 @@ function DeFiTabContent({
         showImportTokenButton={false}
         onRefresh={handleRefresh}
       />
-      {isDefiControllerV2Enabled ? (
-        <DefiListV2
-          onClick={onClickAsset}
-          positions={positions}
-          isLoading={isLoading}
-          isError={isError}
-        />
-      ) : (
-        <DefiList onClick={onClickAsset} />
-      )}
+      <DefiListV2
+        onClick={onClickAsset}
+        positions={positions}
+        isLoading={isLoading}
+        isError={isError}
+      />
+    </>
+  );
+}
+
+/**
+ * Legacy (V1) DeFi tab content. No refresh control — V1 positions are polled
+ * by the background controller, not user-initiated.
+ *
+ * @param props - Component props.
+ * @param props.onClickAsset - Handler when an asset row is clicked.
+ */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
+  return (
+    <>
+      <AssetListControlBar showImportTokenButton={false} />
+      <DefiList onClick={onClickAsset} />
     </>
   );
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
- 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DeFiTab({
   onClickAsset,
   entryPoint,
@@ -73,10 +80,11 @@ export default function DeFiTab({
       path="defi-tab"
       capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
     >
-      <DeFiTabContent
-        onClickAsset={onClickAsset}
-        isDefiControllerV2Enabled={isDefiControllerV2Enabled}
-      />
+      {isDefiControllerV2Enabled ? (
+        <DeFiTabContentV2 onClickAsset={onClickAsset} />
+      ) : (
+        <DeFiTabContentV1 onClickAsset={onClickAsset} />
+      )}
     </RouteWithMessenger>
   );
 }
