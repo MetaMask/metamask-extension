@@ -37,7 +37,7 @@ import {
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
-import DeFiTab from '../../../pages/defi/defi-tab';
+import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
