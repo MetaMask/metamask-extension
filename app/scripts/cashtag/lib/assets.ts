@@ -1,9 +1,9 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import { searchTokens } from '../../../../shared/lib/token-search/token-search-api';
 import type { AssetData } from './types';
 
+const TOKEN_SEARCH_URL = 'https://token.api.cx.metamask.io/tokens/search';
 const ICON_BASE = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
 const ETHEREUM = 'eip155:1' as CaipChainId;
 const BNB_CHAIN = 'eip155:56' as CaipChainId;
@@ -85,12 +85,22 @@ function pickHit(symbol: string, hits: SearchHit[]) {
 }
 
 async function lookup(symbol: string, chainId: CaipChainId) {
-  const response = await searchTokens({
+  // Use globalThis.fetch — getFetchWithTimeout/searchTokens use window.*,
+  // which does not exist in the MV3 service worker (prod build).
+  const params = new URLSearchParams({
     query: symbol,
-    networks: [chainId],
-    first: 25,
+    networks: chainId,
+    first: '25',
   });
-  return pickHit(symbol, response.data as SearchHit[]);
+  const response = await globalThis.fetch(`${TOKEN_SEARCH_URL}?${params}`, {
+    method: 'GET',
+    headers: { 'X-Client-Id': 'extension' },
+  });
+  if (!response.ok) {
+    return null;
+  }
+  const body = (await response.json()) as { data?: SearchHit[] };
+  return pickHit(symbol, body.data ?? []);
 }
 
 export async function fetchAssetData(): Promise<AssetData[]> {

@@ -3,7 +3,7 @@
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
@@ -611,6 +611,7 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -673,6 +674,41 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  // Cashtag swap redirect — written by the background script via
+  // chrome.storage.session so we avoid Redux / AppStateController entirely.
+  // Covers two cases:
+  //   1. Sidepanel was already open when BG wrote the value → caught by .get()
+  //   2. Sidepanel just opened/focused → caught by onChanged listener
+  useEffect(() => {
+    const handlePending = (caip: string) => {
+      globalThis.chrome?.storage?.session?.remove('pendingCashtagSwapTo');
+      navigate(
+        `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
+      );
+    };
+
+    globalThis.chrome?.storage?.session?.get(
+      'pendingCashtagSwapTo',
+      (result) => {
+        const caip = result?.pendingCashtagSwapTo;
+        if (typeof caip === 'string') {
+          handlePending(caip);
+        }
+      },
+    );
+
+    const listener = (
+      changes: Record<string, chrome.storage.StorageChange>,
+    ) => {
+      const caip = changes.pendingCashtagSwapTo?.newValue;
+      if (typeof caip === 'string') {
+        handlePending(caip);
+      }
+    };
+    globalThis.chrome?.storage?.onChanged?.addListener(listener);
+    return () => globalThis.chrome?.storage?.onChanged?.removeListener(listener);
+  }, [navigate]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

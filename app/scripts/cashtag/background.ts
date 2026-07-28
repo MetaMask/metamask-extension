@@ -1,10 +1,8 @@
 import browser from 'webextension-polyfill';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { fetchAssetData } from './lib/assets';
-import { swapRoute, swapRouteSearchForDest } from './lib/constants';
 import type { Controller } from './lib/types';
 
 let registered = false;
@@ -85,11 +83,11 @@ export function registerBackgroundBridge({
         });
       }
 
-      controller?.appStateController?.setPendingRedirectRoute?.({
-        path: swapRoute,
-        ...(caipAssetId ? { search: swapRouteSearchForDest(caipAssetId) } : {}),
-        environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
-      });
+      if (caipAssetId) {
+        globalThis.chrome?.storage?.session?.set({
+          pendingCashtagSwapTo: caipAssetId,
+        });
+      }
 
       return Promise.resolve(sidePanelApi.open(openOptions)).then(
         () => ({

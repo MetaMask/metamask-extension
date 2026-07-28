@@ -31,11 +31,4 @@ export type Controller = {
   remoteFeatureFlagController?: {
     state?: { remoteFeatureFlags?: Record<string, unknown> };
   };
-  appStateController?: {
-    setPendingRedirectRoute?: (route: {
-      path: string;
-      search?: `?${string}`;
-      environmentType?: string;
-    }) => void;
-  };
 };

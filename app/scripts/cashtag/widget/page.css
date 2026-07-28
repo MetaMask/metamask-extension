@@ -23,10 +23,24 @@ a[interestfor='mm-cashtag-popover'] {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 
   position-anchor: --mm-cashtag-invoker;
-  position-area: bottom;
-  margin-block-start: 8px;
+  position-area: center inline-end;
+  margin-inline-start: 8px;
   position-try:
-    flip-block,
     flip-inline,
-    flip-block flip-inline;
+    flip-block,
+    flip-inline flip-block;
+}
+
+@supports not (position-area: center inline-end) {
+  #mm-cashtag-popover {
+    position-area: right;
+    margin-inline-start: 8px;
+  }
+
+  html:dir(rtl) #mm-cashtag-popover,
+  html[dir='rtl'] #mm-cashtag-popover {
+    position-area: left;
+    margin-inline-start: 0;
+    margin-inline-end: 8px;
+  }
 }
