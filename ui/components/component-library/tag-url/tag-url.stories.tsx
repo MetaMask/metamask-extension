@@ -10,6 +10,7 @@ import { TagUrl } from './tag-url';
 export default {
   title: 'Components/ComponentLibrary/TagUrl',
   component: TagUrl,
+  tags: ['autodocs'],
   argTypes: {
     label: {
       control: 'text',

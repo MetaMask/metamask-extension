@@ -7,6 +7,7 @@ export default {
   title: 'Components/ComponentLibrary/Label (deprecated)',
 
   component: Label,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

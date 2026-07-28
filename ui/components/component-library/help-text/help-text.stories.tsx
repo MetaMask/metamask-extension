@@ -6,6 +6,7 @@ import { HelpText } from './help-text';
 export default {
   title: 'Components/ComponentLibrary/HelpText (deprecated)',
   component: HelpText,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

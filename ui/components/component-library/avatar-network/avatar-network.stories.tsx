@@ -8,6 +8,7 @@ import { AvatarNetwork } from './avatar-network';
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork (deprecated)',
   component: AvatarNetwork,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

@@ -10,6 +10,7 @@ const meta = {
   title:
     'Components/MultichainAccounts/HardwareWallets/Ledger/LedgerConnectionStatusDeviceSelector',
   component: LedgerConnectionStatusDeviceSelector,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {

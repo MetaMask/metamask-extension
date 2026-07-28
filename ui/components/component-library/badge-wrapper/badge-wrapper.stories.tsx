@@ -16,6 +16,7 @@ type BadgeWrapperProps = React.ComponentProps<typeof BadgeWrapper>;
 export default {
   title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',
   component: BadgeWrapper,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
