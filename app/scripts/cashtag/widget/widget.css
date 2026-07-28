@@ -1,23 +1,6 @@
 /* Widget Shadow DOM */
 
 :host {
-  /* Inherit x.com's light|dark value from <html> so light-dark() below tracks
-     the page theme (dim + Lights Out both resolve to dark). */
-  color-scheme: inherit;
-
-  --mm-bg: light-dark(#ffffff, #131416);
-  --mm-text: light-dark(#121314, #ffffff);
-  --mm-text-muted: light-dark(#6a737d, #9b9b9b);
-  --mm-text-disabled: light-dark(#b7bbc8, #6d6d75);
-  --mm-surface: light-dark(rgb(0 0 0 / 4%), rgb(255 255 255 / 4%));
-  --mm-overlay: light-dark(rgb(255 255 255 / 88%), rgb(8 8 9 / 92%));
-  --mm-button-bg: light-dark(#121314, #ffffff);
-  --mm-button-text: light-dark(#ffffff, #121314);
-  --mm-up-text: light-dark(#128207, #baf24a);
-  --mm-up-bg: light-dark(rgb(18 130 7 / 12%), rgb(186 242 74 / 15%));
-  --mm-down-text: light-dark(#ca3542, #ffb0b0);
-  --mm-down-bg: light-dark(rgb(202 53 66 / 12%), rgb(255 176 176 / 15%));
-
   font-family:
     Geist,
     -apple-system,

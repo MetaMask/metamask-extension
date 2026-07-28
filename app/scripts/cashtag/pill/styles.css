@@ -13,11 +13,10 @@ a[data-mm-cashtag]:active {
   margin: 0 2px;
   padding: 2px 10px 2px 3px;
   border-radius: 999px;
-  border: 1px solid #3c3e5a;
-  background: #161625;
-  color: #aab2ff;
+  border: 1px solid var(--mm-pill-border);
+  background: var(--mm-pill-bg);
+  color: var(--mm-text);
   font-size: 13px;
-  font-weight: 600;
   line-height: 1.2;
   vertical-align: middle;
   text-decoration: none;

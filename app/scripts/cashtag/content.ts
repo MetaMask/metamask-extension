@@ -45,8 +45,10 @@ async function main() {
     return;
   }
 
-  const pills = await injectPills(assetsByTicker);
+  // Inject the widget first: its page.css defines the shared palette tokens on
+  // <html>, which the pills also consume, so they must exist before pills paint.
   const widget = await injectWidget();
+  const pills = await injectPills(assetsByTicker);
   const triggers = bindWidgetTriggers(widget, assetsByTicker);
 
   const teardown = () => {

@@ -1,5 +1,44 @@
 /* Injected into the page for the widget */
 
+/* Shared palette for cashtag UI: the widget's shadow content (widget.css),
+   the popover host below, and the pills (pill/styles.css). Defined on <html> so
+   the properties inherit into the widget's shadow tree and the light-DOM pills. */
+html {
+  --mm-bg: #131416;
+  --mm-text: #fff;
+  --mm-text-muted: #9b9b9b;
+  --mm-text-disabled: #6d6d75;
+  --mm-surface: rgb(255 255 255 / 4%);
+  --mm-overlay: rgb(8 8 9 / 92%);
+  --mm-button-bg: #fff;
+  --mm-button-text: #121314;
+  --mm-up-text: #baf24a;
+  --mm-up-bg: rgb(186 242 74 / 15%);
+  --mm-down-text: #ffb0b0;
+  --mm-down-bg: rgb(255 176 176 / 15%);
+  --mm-shadow: rgba(0, 0, 0, 0.5);
+  --mm-pill-bg: #ffffff0a; /* = --color-background-muted */
+  --mm-pill-border: #ffffff14; /* = --color-border-muted */
+}
+
+html[data-theme='light'] {
+  --mm-bg: #fff;
+  --mm-text: #131416;
+  --mm-text-muted: #6a737d;
+  --mm-text-disabled: #b7bbc8;
+  --mm-surface: rgb(0 0 0 / 4%);
+  --mm-overlay: rgb(8 8 9 / 18%);
+  --mm-button-bg: #121314;
+  --mm-button-text: #fff;
+  --mm-up-text: #128207;
+  --mm-up-bg: rgb(18 130 7 / 12%);
+  --mm-down-text: #ca3542;
+  --mm-down-bg: rgb(202 53 66 / 12%);
+  --mm-shadow: rgba(0, 0, 0, 0.18);
+  --mm-pill-bg: #b4b4b528; /* = --color-background-muted */
+  --mm-pill-border: #b4b4b566; /* = --color-border-muted */
+}
+
 a[interestfor='mm-cashtag-popover'] {
   interest-delay: 0.25s 0.6s;
 }
@@ -16,11 +55,10 @@ a[interestfor='mm-cashtag-popover'] {
   padding: 0;
   width: max-content;
   height: max-content;
-  background: #131416;
+  background: var(--mm-bg);
   border-radius: 12px;
   overflow: hidden;
-  color-scheme: dark;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 48px var(--mm-shadow);
 
   position-anchor: --mm-cashtag-invoker;
   position-area: center inline-end;
