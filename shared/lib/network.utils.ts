@@ -1,7 +1,6 @@
 import {
   type Hex,
   type CaipChainId,
-  type CaipNamespace,
   KnownCaipNamespace,
   isStrictHexString,
   parseCaipChainId,
@@ -12,8 +11,10 @@ import type { MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import type {
   NetworkClientId,
   NetworkConfiguration,
+  NetworkState,
   AddNetworkFields,
 } from '@metamask/network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 
 import {
   MAX_SAFE_CHAIN_ID,
@@ -227,8 +228,6 @@ export const getFilteredFeaturedNetworks = (
   );
 };
 
-type EnabledNetworksByChainId = Record<CaipNamespace, Record<string, boolean>>;
-
 /**
  * Returns default network client IDs for every enabled EIP-155 network.
  *
@@ -237,11 +236,11 @@ type EnabledNetworksByChainId = Record<CaipNamespace, Record<string, boolean>>;
  * @returns Network client IDs for enabled EVM networks.
  */
 export function getAllEnabledNetworkClientIds(
-  enabledNetworkMap: EnabledNetworksByChainId | undefined,
-  networkConfigurationsByChainId: Record<string, NetworkConfiguration>,
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
 ): NetworkClientId[] {
   const enabledEip155Networks =
-    enabledNetworkMap?.[KnownCaipNamespace.Eip155] ?? {};
+    enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
 
   const chainIds = Object.entries(enabledEip155Networks)
     .filter(([_chainId, isEnabled]) => isEnabled)

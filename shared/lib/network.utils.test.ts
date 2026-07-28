@@ -9,6 +9,7 @@ import { ChainId } from '@metamask/controller-utils';
 import type {
   AddNetworkFields,
   NetworkConfiguration,
+  NetworkState,
 } from '@metamask/network-controller';
 import {
   AVALANCHE_DISPLAY_NAME,
@@ -531,7 +532,7 @@ describe('network utils', () => {
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
       },
-    } as unknown as Record<string, NetworkConfiguration>;
+    } as unknown as NetworkState['networkConfigurationsByChainId'];
 
     it('returns client IDs for enabled EIP-155 networks only', () => {
       const result = getAllEnabledNetworkClientIds(
@@ -554,15 +555,6 @@ describe('network utils', () => {
             '0x1': false,
           },
         },
-        networkConfigurationsByChainId,
-      );
-
-      expect(result).toStrictEqual([]);
-    });
-
-    it('returns an empty array when enabledNetworkMap is undefined', () => {
-      const result = getAllEnabledNetworkClientIds(
-        undefined,
         networkConfigurationsByChainId,
       );
 
