@@ -25,6 +25,7 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { setPendingOrderPreview } from '../../../../hooks/ramps/utils/pendingOrderPreview';
 import { forceUpdateMetamaskState } from '../../../../store/actions';
 import {
   findSelectedQuote,
@@ -306,6 +307,24 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         // code — normalize it before it ends up in the route, or react-router
         // sees extra path segments and 404s ("No route matches URL").
         const orderCode = getInternalOrderCode(widget.orderId);
+        if (selectedToken) {
+          // The precreated order's own payload has no token/amount/fees yet —
+          // stash what the user picked here so the details view can show a
+          // best-effort preview until the provider fills the real order in.
+          setPendingOrderPreview(orderCode, {
+            cryptoAmount: selectedQuote.quote?.amountOut ?? '0',
+            cryptoCurrency: {
+              symbol: selectedToken.symbol,
+              assetId: selectedToken.assetId,
+              decimals: selectedToken.decimals,
+            },
+            fiatAmount: Number(
+              selectedQuote.quote?.amountOutInFiat ?? debouncedAmount,
+            ),
+            fiatCurrency: { symbol: currency },
+            totalFeesFiat: Number(selectedQuote.quote?.totalFees ?? 0),
+          });
+        }
         // A provider that precreates the order returns its id. Persist it and
         // route to the details view BEFORE opening checkout: opening a tab can
         // unload the extension popup, which would abort any work queued after
@@ -339,13 +358,15 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   }, [
     addPrecreatedOrder,
     canContinue,
+    currency,
+    debouncedAmount,
     dispatch,
     getBuyWidgetData,
     isContinuing,
     navigate,
     selectedProvider?.id,
     selectedQuote,
-    selectedToken?.chainId,
+    selectedToken,
     t,
     walletAddress,
     watchForRedirectCallback,

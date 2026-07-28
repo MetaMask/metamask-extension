@@ -7,6 +7,7 @@ import configureStore from '../../../store/store';
 import * as storeActions from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { getPendingOrderPreview } from '../../../hooks/ramps/utils/pendingOrderPreview';
 import { RampsBuildQuoteScreen } from './build-quote';
 
 const QUOTE_DEBOUNCE_MS = 500;
@@ -260,6 +261,35 @@ describe('RampsBuildQuoteScreen', () => {
     // or the details view can render with the not-yet-updated order list.
     expect(storeActions.forceUpdateMetamaskState).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith('/tx/eip155:1/order-123');
+  });
+
+  it('stashes the selected token/fiat amount as a best-effort preview for the pending order', async () => {
+    // A freshly precreated order has no token/amount/fees until the provider
+    // fills it in — the details view falls back to what was picked here.
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'order-123',
+    });
+    mockAddPrecreatedOrder.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(getPendingOrderPreview('order-123')).toMatchObject({
+      cryptoCurrency: {
+        symbol: mockSelectedToken.symbol,
+        assetId: mockSelectedToken.assetId,
+        decimals: mockSelectedToken.decimals,
+      },
+      fiatCurrency: { symbol: 'USD' },
+    });
   });
 
   it('normalizes a full-path orderId before routing to order details', async () => {

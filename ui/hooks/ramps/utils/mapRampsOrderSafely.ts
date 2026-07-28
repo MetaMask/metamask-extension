@@ -1,5 +1,6 @@
 import { mapRampsOrder, type RampsOrderLike } from '@metamask/client-utils';
-import type { RampsOrder } from '@metamask/ramps-controller';
+import { getInternalOrderCode, type RampsOrder } from '@metamask/ramps-controller';
+import { getPendingOrderPreview } from './pendingOrderPreview';
 
 /**
  * mapRampsOrder expects `order.network` as `{ chainId }`, but some providers
@@ -48,6 +49,38 @@ function withNormalizedOrderType(order: RampsOrder): RampsOrder {
 }
 
 /**
+ * A precreated order's own payload is still empty (no token/amount/fees)
+ * until the provider fills it in — overlay what the user picked on the
+ * build-quote screen (stashed via `setPendingOrderPreview`) so the activity
+ * list/details view shows a best-effort amount instead of a blank one. Real
+ * fields always win once the provider/polling populates them.
+ *
+ * @param order - The raw ramps order.
+ * @returns The order with crypto/fiat fields filled from the preview, if any.
+ */
+function withPendingOrderPreview(order: RampsOrder): RampsOrder {
+  if (order.cryptoCurrency && order.fiatCurrency) {
+    return order;
+  }
+  const preview = getPendingOrderPreview(getInternalOrderCode(order));
+  if (!preview) {
+    return order;
+  }
+  return {
+    ...order,
+    cryptoCurrency: order.cryptoCurrency ?? preview.cryptoCurrency,
+    cryptoAmount: order.cryptoCurrency
+      ? order.cryptoAmount
+      : preview.cryptoAmount,
+    fiatCurrency: order.fiatCurrency ?? preview.fiatCurrency,
+    fiatAmount: order.fiatCurrency ? order.fiatAmount : preview.fiatAmount,
+    totalFeesFiat: order.fiatCurrency
+      ? order.totalFeesFiat
+      : preview.totalFeesFiat,
+  };
+}
+
+/**
  * mapRampsOrder throws if it still can't resolve a chainId after
  * normalization (e.g. the field is missing outright, such as briefly after a
  * checkout redirect before the backend has filled it in). Callers render
@@ -64,7 +97,7 @@ export function mapRampsOrderSafely(
 ): ReturnType<typeof mapRampsOrder> | undefined {
   try {
     const normalizedOrder = withNormalizedOrderType(
-      withNormalizedNetwork(order, fallbackChainId),
+      withNormalizedNetwork(withPendingOrderPreview(order), fallbackChainId),
     );
     return mapRampsOrder(normalizedOrder as unknown as RampsOrderLike);
   } catch {

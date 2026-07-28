@@ -38,7 +38,7 @@ describe('TransactionDetails', () => {
     mockSelectEvmAddress.mockReturnValue('0xabc');
     mockSelectLocalActivityItemsByIdentifier.mockReturnValue(new Map());
     mockSelectNonEvmActivityItemsById.mockReturnValue(new Map());
-    mockUseApiTransaction.mockReturnValue(undefined);
+    mockUseApiTransaction.mockReturnValue(undefined as never);
   });
 
   it('does not query the accounts API using a ramps order id as a tx hash', () => {

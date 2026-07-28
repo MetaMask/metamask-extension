@@ -5,7 +5,7 @@ import {
 } from '../../hooks/ramps/test-utils';
 import { useRampsOrderActivity } from './useRampsOrderActivity';
 
-const buyOrder = {
+const buyOrderData = {
   id: '1',
   provider: { id: 'transak', name: 'Transak' },
   cryptoAmount: '1.5',
@@ -21,7 +21,11 @@ const buyOrder = {
   status: 'COMPLETED',
   network: { chainId: '1', name: 'Ethereum' },
   orderType: 'buy',
-} as never;
+};
+// buyOrderData isn't assignable to RampsOrder as an object literal (missing
+// fields), but spreading a `never`-typed const is a TS error — cast only at
+// the point of use, keeping the plain object spreadable for other tests.
+const buyOrder = buyOrderData as never;
 
 describe('useRampsOrderActivity', () => {
   it('maps ramps orders into activity items filtered by network', () => {
@@ -81,7 +85,7 @@ describe('useRampsOrderActivity', () => {
     // index (1) as mapRampsOrderSafely's fallbackChainId, silently mapping
     // it to eip155:1 (Ethereum Mainnet) instead of dropping it.
     const precreatedOrder = {
-      ...buyOrder,
+      ...buyOrderData,
       id: '2',
       providerOrderId: 'order-2',
       network: null,

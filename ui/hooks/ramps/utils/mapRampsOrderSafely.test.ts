@@ -1,5 +1,6 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { mapRampsOrderSafely } from './mapRampsOrderSafely';
+import { setPendingOrderPreview } from './pendingOrderPreview';
 
 const baseOrder = {
   provider: { id: 'mockprovider-staging', name: 'MockProvider (Staging)' },
@@ -72,5 +73,44 @@ describe('mapRampsOrderSafely', () => {
     } as unknown as RampsOrder;
 
     expect(mapRampsOrderSafely(order)?.type).toBe('rampSell');
+  });
+
+  it('overlays a stashed preview onto a precreated order with no token/fiat data yet', () => {
+    setPendingOrderPreview('order-2', {
+      cryptoCurrency: { symbol: 'ETH', assetId: 'eip155:1/slip44:60' },
+      cryptoAmount: '0.05',
+      fiatCurrency: { symbol: 'USD' },
+      fiatAmount: 100,
+      totalFeesFiat: 2,
+    } as never);
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+      providerOrderId: 'order-2',
+      cryptoCurrency: undefined,
+      fiatCurrency: undefined,
+      status: 'PRECREATED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order);
+
+    expect(mapped?.data.token).toMatchObject({ symbol: 'ETH', amount: '0.05' });
+    expect(mapped?.data.fiat).toMatchObject({ amount: '100', currency: 'USD' });
+  });
+
+  it('leaves the order untouched when no preview was stashed for it', () => {
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+      providerOrderId: 'order-without-preview',
+      cryptoCurrency: undefined,
+      fiatCurrency: undefined,
+      status: 'PRECREATED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order);
+
+    expect(mapped?.data.token).toBeUndefined();
+    expect(mapped?.data.fiat.currency).toBeUndefined();
   });
 });
