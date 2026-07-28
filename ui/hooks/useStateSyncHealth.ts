@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { forceUpdateMetamaskState } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 const STALE_THRESHOLD_MS = 60_000; // 60 seconds (conservative)
 const CHECK_INTERVAL_MS = 10_000; // 10 seconds (reduced overhead)

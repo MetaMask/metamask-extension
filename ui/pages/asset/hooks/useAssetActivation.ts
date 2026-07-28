@@ -1,9 +1,13 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipAssetType,
+  type CaipChainId,
+} from '@metamask/utils';
 import { getAsset } from '../../../selectors/assets';
 import {
   isAssetRequireActivate,
@@ -15,10 +19,10 @@ import {
   requestStellarChangeTrustOptAdd,
   requestStellarChangeTrustOptDelete,
 } from '../utils/stellar-snap-client-requests';
-import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
@@ -40,7 +44,7 @@ export const useAssetActivation = ({ asset }: { asset: Asset }) => {
     assetId = asset.address as CaipAssetType;
     isAssetIsTrustlineAsset = isTrustlineAsset(assetId);
     if (isAssetIsTrustlineAsset) {
-      chainId = getChainIdFromAssetId(assetId);
+      chainId = parseCaipAssetType(assetId).chainId;
     }
   }
 

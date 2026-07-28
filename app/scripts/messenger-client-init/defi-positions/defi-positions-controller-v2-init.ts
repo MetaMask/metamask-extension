@@ -56,23 +56,17 @@ export const DeFiPositionsControllerV2Init: MessengerClientInitFunction<
   DeFiPositionsControllerV2,
   DeFiPositionsControllerV2Messenger,
   DeFiPositionsControllerV2InitMessenger
-> = ({ initMessenger, controllerMessenger, getMessengerClient }) => {
-  const getPreferencesController = () =>
-    getMessengerClient('PreferencesController');
-  const getOnboardingController = () =>
-    getMessengerClient('OnboardingController');
-
+> = ({ initMessenger, controllerMessenger }) => {
   const messengerClient = new DeFiPositionsControllerV2({
     messenger: controllerMessenger,
     apiClient: getApiClient(initMessenger),
     isEnabled: () => {
-      const {
-        state: { useExternalServices },
-      } = getPreferencesController();
-      const {
-        state: { completedOnboarding },
-      } = getOnboardingController();
-
+      const { useExternalServices } = initMessenger.call(
+        'PreferencesController:getState',
+      );
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
       const { remoteFeatureFlags } = initMessenger.call(
         'RemoteFeatureFlagController:getState',
       );
@@ -87,7 +81,7 @@ export const DeFiPositionsControllerV2Init: MessengerClientInitFunction<
       );
     },
     getVsCurrency: () =>
-      initMessenger.call('CurrencyRateController:getState').currentCurrency,
+      initMessenger.call('AssetsController:getState').selectedCurrency,
   });
 
   return {
