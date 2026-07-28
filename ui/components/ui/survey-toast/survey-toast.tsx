@@ -15,7 +15,6 @@ import {
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
 } from '../../../selectors';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
@@ -39,7 +38,6 @@ export function SurveyToast() {
     getCompletedMetaMetricsOnboarding,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
-  const internalAccount = useSelector(getSelectedInternalAccount);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
 
@@ -93,14 +91,7 @@ export function SurveyToast() {
     return () => {
       controller.abort();
     };
-  }, [
-    internalAccount?.address,
-    lastViewedUserSurvey,
-    basicFunctionality,
-    analyticsId,
-    isMetaMetricsEnabled,
-    dispatch,
-  ]);
+  }, [lastViewedUserSurvey, basicFunctionality, analyticsId, isMetaMetricsEnabled]);
 
   function handleActionClick() {
     if (!survey) {
