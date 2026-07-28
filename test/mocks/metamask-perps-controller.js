@@ -124,6 +124,7 @@ const mockPerpsEventValueLiterals = {
     COMPLIANCE_BLOCK_NOTIF: 'compliance_block_notif',
     FLIP_POSITION: 'flip_position',
     ERROR: 'error',
+    GEO_BLOCK_NOTIF: 'geo_block_notif',
     SEARCH_RESULTS_SHOWN: 'search_results_shown',
     SEARCH_NO_RESULTS: 'search_no_results',
   },
