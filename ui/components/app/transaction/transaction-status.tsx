@@ -1,5 +1,5 @@
 import React, { useId } from 'react';
-import { useLocalTransactionMeta } from '#ui/hooks/activity/useLocalTransactionMeta';
+import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const statusConfig: Record<
