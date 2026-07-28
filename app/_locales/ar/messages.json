@@ -350,9 +350,6 @@
   "networks": {
     "message": "الشبكات"
   },
-  "nevermind": {
-    "message": "لا يهم"
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"

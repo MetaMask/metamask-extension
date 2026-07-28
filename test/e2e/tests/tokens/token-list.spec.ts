@@ -65,12 +65,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
 
         await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -125,13 +119,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',

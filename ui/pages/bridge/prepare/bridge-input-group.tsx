@@ -67,6 +67,7 @@ export const BridgeInputGroup = ({
   showAmountSkeleton = false,
   isAssetPickerOpen,
   setIsAssetPickerOpen,
+  tokenSecurityData,
 }: {
   isAssetPickerOpen: boolean;
   setIsAssetPickerOpen: (isOpen: boolean) => void;
@@ -83,6 +84,7 @@ export const BridgeInputGroup = ({
   networks: BridgeNetwork[];
   containerProps?: React.ComponentProps<typeof Column>;
   showAmountSkeleton?: boolean;
+  tokenSecurityData?: Pick<BridgeToken, 'isVerified' | 'securityData'>;
 } & Pick<
   React.ComponentProps<typeof BridgeAssetPicker>,
   | 'header'
@@ -103,6 +105,17 @@ export const BridgeInputGroup = ({
   const locale = useSelector(getIntlLocale);
 
   const selectedChainId = token?.chainId;
+  const selectedButtonAsset = useMemo(
+    () =>
+      tokenSecurityData
+        ? {
+            ...token,
+            isVerified: token.isVerified ?? tokenSecurityData.isVerified,
+            securityData: token.securityData ?? tokenSecurityData.securityData,
+          }
+        : token,
+    [token, tokenSecurityData],
+  );
 
   // useCopyToClipboard analysis: Copies a public address
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -290,7 +303,7 @@ export const BridgeInputGroup = ({
               navigate(SWAP_ASSETS_PATH);
             }
           }}
-          asset={token}
+          asset={selectedButtonAsset}
           data-testid={buttonProps.testId}
         />
       </Row>

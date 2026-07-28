@@ -349,9 +349,6 @@
   "networks": {
     "message": "Мережі"
   },
-  "nevermind": {
-    "message": "Не зважати"
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"

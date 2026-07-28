@@ -340,9 +340,6 @@
   "networks": {
     "message": "Nettverk"
   },
-  "nevermind": {
-    "message": "Bare glem det"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

@@ -254,9 +254,7 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(
-      getByText(
-        `${messages.bridgeFeeDisclaimer.message.replace('$1', '0.875')}. ${messages.willApproveAmountForBridging.message}`,
-      ),
+      getByText(messages.bridgeFeeDisclaimer.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });

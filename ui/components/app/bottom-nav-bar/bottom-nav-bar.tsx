@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -17,11 +17,15 @@ import {
   DEFAULT_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsSwapsEventSource,
+  ScreenViewedEntryPoint,
+} from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { resetBridgeController } from '../../../ducks/bridge/actions';
+import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
@@ -92,7 +96,12 @@ export function BottomNavBar() {
     transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        { state: { stayOnHomePage: true } },
+        {
+          state: {
+            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+            stayOnHomePage: true,
+          },
+        },
       ),
     );
   }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
@@ -116,7 +125,12 @@ export function BottomNavBar() {
   const handleActivityClick = useCallback(() => {
     resetBridgeIfNeeded();
     transitionForward(() =>
-      navigate(ACTIVITY_ROUTE, { state: { stayOnHomePage: true } }),
+      navigate(ACTIVITY_ROUTE, {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
     );
   }, [navigate, resetBridgeIfNeeded]);
 

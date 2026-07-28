@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -39,6 +38,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
+import { useDispatch } from '../../../../store/hooks';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -176,8 +176,6 @@ const PopularNetworkList = ({
                 iconName={IconName.Add}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('add')}
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 

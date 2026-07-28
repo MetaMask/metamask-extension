@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -31,13 +30,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ClearMetaMetricsData({
   onDeletionSuccess,
 }: {
@@ -121,8 +120,6 @@ export default function ClearMetaMetricsData({
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={deleteMetaMetricsData}
               danger
             >
