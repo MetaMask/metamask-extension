@@ -1367,7 +1367,7 @@ const PerpsOrderEntryPage = () => {
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
-          hlFeeRate: currentFeeRate,
+          hlFeeRate: protocolFeeRate,
         });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
@@ -1407,7 +1407,7 @@ const PerpsOrderEntryPage = () => {
             marketPrice: currentPrice,
             vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
-            hlFeeRate: currentFeeRate,
+            hlFeeRate: protocolFeeRate,
             tradeAction: derivePerpsTradeAction(
               position ? getPositionDirection(position.size) : null,
               orderFormState.direction,
@@ -1502,7 +1502,7 @@ const PerpsOrderEntryPage = () => {
         marketPrice: currentPrice,
         vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
-        hlFeeRate: currentFeeRate,
+        hlFeeRate: protocolFeeRate,
         tradeAction: derivePerpsTradeAction(
           position ? getPositionDirection(position.size) : null,
           orderFormState.direction,
@@ -1658,6 +1658,7 @@ const PerpsOrderEntryPage = () => {
     replacePerpsToastByKey,
     t,
     currentFeeRate,
+    protocolFeeRate,
     hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
     vipTier,

@@ -514,6 +514,29 @@ describe('MarketListView', () => {
       ).toHaveLength(0);
     });
 
+    it('reports the search funnel when the popup is dismissed without unmounting', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Dismissing the extension popup hides the page without unmounting React,
+      // so effect teardown never runs — the funnel has to close on `pagehide`,
+      // the same lifecycle the abandon-order hook already handles.
+      act(() => {
+        window.dispatchEvent(new Event('pagehide'));
+      });
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
     it('flushes a pending query when the box is cleared inside the debounce window', () => {
       renderWithProvider(<MarketListView />, mockStore);
 

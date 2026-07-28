@@ -187,6 +187,7 @@ describe('ReversePositionModal', () => {
     mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      protocolFeeRate: 0.00005,
       undiscountedFeeRate: 0.0001,
       isLoading: false,
       hasError: false,
@@ -296,6 +297,7 @@ describe('ReversePositionModal', () => {
     it('shows strikethrough original and discounted fee when fees are available', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        protocolFeeRate: 0.00005,
         undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
@@ -412,7 +414,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: 2900,
-                hlFeeRate: 0.0001,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -452,6 +454,7 @@ describe('ReversePositionModal', () => {
       mockUseVipTier.mockReturnValue(2);
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        protocolFeeRate: 0.00005,
         undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
@@ -472,7 +475,7 @@ describe('ReversePositionModal', () => {
                 marketPrice: 2900,
                 vipTier: 2,
                 vipDiscount: 50,
-                hlFeeRate: 0.0001,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -506,7 +509,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: 45000,
-                hlFeeRate: 0.0001,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],
@@ -737,7 +740,7 @@ describe('ReversePositionModal', () => {
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
                 marketPrice: expect.any(Number),
-                hlFeeRate: 0.0001,
+                hlFeeRate: 0.00005,
               }),
             }),
           ],

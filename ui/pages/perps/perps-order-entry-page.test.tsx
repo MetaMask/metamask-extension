@@ -163,7 +163,13 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+  usePerpsOrderFees: () => ({
+    // combined = protocol + discounted builder; hl_fee_rate must report only
+    // the protocol part.
+    feeRate: 0.00145,
+    protocolFeeRate: 0.00045,
+    isLoading: false,
+  }),
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
@@ -1828,7 +1834,7 @@ describe('PerpsOrderEntryPage', () => {
             isBuy: true,
             orderType: 'market',
             trackingData: expect.objectContaining({
-              hlFeeRate: 0.00145,
+              hlFeeRate: 0.00045,
               // No existing position -> create_position; the controller only
               // emits the tx `action` when trackingData.tradeAction is set.
               tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
@@ -1969,7 +1975,7 @@ describe('PerpsOrderEntryPage', () => {
             trackingData: expect.objectContaining({
               totalFee: expect.any(Number),
               marketPrice: 3025.5,
-              hlFeeRate: 0.00145,
+              hlFeeRate: 0.00045,
             }),
           }),
         ],
@@ -2205,7 +2211,7 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             orderType: 'market',
             trackingData: expect.objectContaining({
-              hlFeeRate: 0.00145,
+              hlFeeRate: 0.00045,
             }),
           }),
         ]),

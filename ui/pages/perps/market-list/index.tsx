@@ -436,16 +436,24 @@ export const MarketListView = () => {
     resetSearchSession,
   ]);
 
-  // Leaving the page flushes a query still inside the debounce window (so the
-  // session is measured rather than dropped), then reports the unresolved
-  // search as an abandonment.
-  useEffect(
-    () => () => {
+  // Close the funnel on both ways out of the page: React teardown (in-app
+  // navigation) and `pagehide` (the extension popup being dismissed, which hides
+  // the document without unmounting React, so teardown never runs). Same
+  // lifecycle pair `usePerpsAbandonOrderTracking` handles. Both flush a query
+  // still inside the debounce window before reporting the abandonment, and
+  // `emitSearchAbandoned` is idempotent — it clears `emittedQueryRef`, so a
+  // pagehide followed by teardown reports once.
+  useEffect(() => {
+    const closeSearchSession = () => {
       flushPendingSearchQuery();
       emitSearchAbandoned();
-    },
-    [flushPendingSearchQuery, emitSearchAbandoned],
-  );
+    };
+    window.addEventListener('pagehide', closeSearchSession);
+    return () => {
+      window.removeEventListener('pagehide', closeSearchSession);
+      closeSearchSession();
+    };
+  }, [flushPendingSearchQuery, emitSearchAbandoned]);
 
   // Handlers
   const handleBack = useCallback(() => {

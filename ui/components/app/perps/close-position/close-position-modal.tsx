@@ -471,12 +471,16 @@ export const ClosePositionModal = ({
     active: isOpen,
   });
 
-  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: position.symbol,
-      orderType: effectiveOrderType,
-      isMaker: effectiveOrderType === 'limit',
-    });
+  const {
+    feeRate,
+    protocolFeeRate,
+    undiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: effectiveOrderType,
+    isMaker: effectiveOrderType === 'limit',
+  });
 
   const liveUnrealizedPnl = useMemo(
     () => Number.parseFloat(position.unrealizedPnl) || 0,
@@ -666,7 +670,7 @@ export const ClosePositionModal = ({
           marketPrice: currentPrice,
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
-          hlFeeRate: feeRate,
+          hlFeeRate: protocolFeeRate,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -750,7 +754,7 @@ export const ClosePositionModal = ({
     sizeDecimals,
     limitPrice,
     estimatedFees,
-    feeRate,
+    protocolFeeRate,
     buildTrackingData,
     onClose,
     formatPercentWithMinThreshold,

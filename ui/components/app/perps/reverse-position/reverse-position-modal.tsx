@@ -112,6 +112,7 @@ export const ReversePositionModal = ({
 
   const {
     feeRate,
+    protocolFeeRate,
     undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
@@ -168,7 +169,7 @@ export const ReversePositionModal = ({
               marketPrice: currentPrice,
               vipTier,
               vipDiscount: metamaskFeeRateDiscountPercentage,
-              hlFeeRate: feeRate,
+              hlFeeRate: protocolFeeRate,
             }),
           },
         ]);
@@ -237,7 +238,7 @@ export const ReversePositionModal = ({
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,
-    feeRate,
+    protocolFeeRate,
     buildTrackingData,
   ]);
 
