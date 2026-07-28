@@ -1,10 +1,8 @@
 import {
-  AccountGroupAssets,
   AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
-  calculateBalanceChangeForAllWallets,
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
@@ -48,11 +46,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-  TEST_CHAINS,
-} from '../../shared/constants/network';
+import { TEST_CHAINS } from '../../shared/constants/network';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
@@ -91,7 +85,12 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
-import { augmentAssetControllersState } from '../components/app/assets/enablement/arc';
+import {
+  augmentAssetControllersState,
+  filterExcludedAssets,
+  filterExcludedTokenBalances,
+  filterExcludedAssetList,
+} from '../components/app/assets/enablement/networks-customization';
 import {
   calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
   calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
@@ -340,7 +339,7 @@ export const getTokenBalancesEvm = createSelector(
         });
       },
     );
-    return tokensWithBalance;
+    return filterExcludedAssetList(tokensWithBalance);
   },
 );
 
@@ -721,37 +720,14 @@ const selectAccountsStateForBalances = createSelector(
   }),
 );
 
-const ARC_USDC_ERC20_ADDRESS = ARC_USDC_TOKEN_ADDRESS.toLowerCase();
-
 /**
  * Wraps token balances for core balance computations.
  */
 const selectTokenBalancesStateForBalances = createSelector(
   [getTokenBalances],
-  (tokenBalances) => {
-    // Strip the Arc USDC ERC20 (0x3600…) so it is excluded from the aggregated
-    // balance — the native token already reflects the USDC balance on Arc and
-    // is the source of truth, so counting both would double the balance.
-    const result = Object.fromEntries(
-      Object.entries(tokenBalances).map(([account, chainMap]) => [
-        account,
-        Object.fromEntries(
-          Object.entries(chainMap).map(([chainId, addressMap]) => [
-            chainId,
-            chainId === CHAIN_IDS.ARC
-              ? Object.fromEntries(
-                  Object.entries(addressMap).filter(
-                    ([address]) =>
-                      address.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
-                  ),
-                )
-              : addressMap,
-          ]),
-        ),
-      ]),
-    ) as typeof tokenBalances;
-    return { tokenBalances: result };
-  },
+  (tokenBalances) => ({
+    tokenBalances: filterExcludedTokenBalances(tokenBalances),
+  }),
 );
 
 /**
@@ -1429,42 +1405,17 @@ const getStateForAssetSelector = createSelector(
   },
 );
 
-/**
- * Removes the Arc USDC ERC20 (0x3600…) from the per-chain asset map so it never
- * appears as a duplicate of the native token on Arc. The native token (zero
- * address) is kept, as it is the source of truth for USDC on Arc.
- *
- * @param assets - Per-chain map of assets keyed by chain ID.
- * @returns The asset map with the Arc USDC ERC20 removed from the Arc entry.
- */
-function filterArcUsdcErc20Token(
-  assets: AccountGroupAssets,
-): AccountGroupAssets {
-  const arcAssets = assets[CHAIN_IDS.ARC];
-  if (!arcAssets) {
-    return assets;
-  }
-  return {
-    ...assets,
-    [CHAIN_IDS.ARC]: arcAssets.filter(
-      (asset) =>
-        !('address' in asset) ||
-        asset.address?.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
-    ),
-  };
-}
-
 export const getAssetsBySelectedAccountGroup = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
-    filterArcUsdcErc20Token(selectAssetsBySelectedAccountGroup(assetListState)),
+    filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),
 );
 
 export const getAssetsBySelectedAccountGroupIncludingHidden =
   createDeepEqualSelector(
     getStateForAssetSelector,
     (assetListState: AssetListState) =>
-      filterArcUsdcErc20Token(
+      filterExcludedAssets(
         selectAssetsBySelectedAccountGroup({
           ...assetListState,
           allIgnoredTokens: EMPTY_OBJECT,
