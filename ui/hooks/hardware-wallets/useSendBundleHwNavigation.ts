@@ -34,7 +34,7 @@ export function useSendBundleHwNavigation({
   transactionMeta,
 }: UseSendBundleHwNavigationArgs) {
   const hardwareWalletUsed = useIsHardwareWalletAccount(
-    transactionMeta?.txParams.from,
+    transactionMeta?.txParams?.from,
   );
   const { navigateToHwSigningPage } = useBridgeNavigation();
   // Derive the send amount/symbol internally so the HW signing page label

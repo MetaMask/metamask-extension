@@ -48,4 +48,21 @@ describe('useSendBundleHwNavigation', () => {
     expect(useIsHardwareWalletAccount).toHaveBeenCalledWith(FROM);
     expect(result.current.shouldRedirectToHwSigningPage).toBe(true);
   });
+
+  it('does not throw when txParams is undefined (e.g. typed sign confirmations)', () => {
+    // Signature confirmations (signTypedData, personalSign, ...) share the
+    // confirm footer with transactions but have no txParams. The hook must
+    // not crash when the footer renders for these confirmation types.
+    const transactionMeta = {
+      id: 'typed-sign',
+      type: undefined,
+    } as TransactionMeta;
+
+    const { result } = renderHook(() =>
+      useSendBundleHwNavigation({ transactionMeta }),
+    );
+
+    expect(useIsHardwareWalletAccount).toHaveBeenCalledWith(undefined);
+    expect(result.current.shouldRedirectToHwSigningPage).toBe(false);
+  });
 });
