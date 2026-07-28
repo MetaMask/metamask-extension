@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import React, { useContext, useState, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useRef, useState, useEffect } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
@@ -65,6 +65,7 @@ import SwapsFooter from '../swaps-footer';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { useDispatch } from '../../../store/hooks';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -83,7 +84,7 @@ export default function AwaitingSwap({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const [animationEventEmitter] = useState(() => new EventEmitter());
+  const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -291,7 +292,7 @@ export default function AwaitingSwap({
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter}
+        animationEventEmitter={animationEventEmitter.current}
         width="90"
         height="90"
       />

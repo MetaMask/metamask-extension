@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import { StoryFn, Meta } from '@storybook/react';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
@@ -13,11 +12,6 @@ export default {
   title: 'Components/ComponentLibrary/SelectWrapper',
   component: SelectWrapper,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     placeholder: {
       control: {

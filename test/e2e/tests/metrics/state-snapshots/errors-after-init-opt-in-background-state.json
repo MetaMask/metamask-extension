@@ -146,6 +146,7 @@
     "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
+  "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgCount": 0,
     "unapprovedDecryptMsgs": "object"

@@ -6,7 +6,7 @@ import {
   type GasFeeEstimates as TransactionGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -19,6 +19,7 @@ import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useDispatch } from '../../../../store/hooks';
 import { usePersistGasFeePreference } from './usePersistGasFeePreference';
 import { useTransactionGasLimit } from './useTransactionGasLimit';
 
