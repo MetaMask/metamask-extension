@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
   formatChainIdToCaip,
   getQuotesReceivedProperties,
@@ -37,7 +37,7 @@ import {
   DEFAULT_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
-import { type MetaMaskReduxDispatch } from '../../store/store';
+import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
@@ -54,7 +54,7 @@ export default function useSubmitBridgeTransaction() {
   );
   const { navigateToBridgePage, navigateToHwSigningPage } =
     useBridgeNavigation();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
