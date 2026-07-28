@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { formatUsd, formatUsdCompact } from '../lib/helpers';
 import type { WidgetModel } from '../lib/types';
 import { SparklineChart } from './chart';
+import { DisableConfirmation } from './disable-confirmation';
 
 const foxSrc = browser.runtime.getURL('images/logo/metamask-fox.svg');
 
 export function Widget({ data, onSwap, onDisable }: WidgetModel) {
+  const [confirmingDisable, setConfirmingDisable] = useState(false);
   const changeUp = data.change24hPercent !== null && data.change24hPercent >= 0;
   const priceLabel =
     typeof data.price === 'number' && data.price > 0
@@ -112,11 +114,21 @@ export function Widget({ data, onSwap, onDisable }: WidgetModel) {
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
-          onDisable();
+          setConfirmingDisable(true);
         }}
       >
         Disable widget
       </button>
+
+      {confirmingDisable ? (
+        <DisableConfirmation
+          onCancel={() => setConfirmingDisable(false)}
+          onConfirm={() => {
+            setConfirmingDisable(false);
+            onDisable();
+          }}
+        />
+      ) : null}
     </div>
   );
 }

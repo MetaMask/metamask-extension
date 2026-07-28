@@ -43,6 +43,30 @@ export function registerBackgroundBridge({
       });
     }
 
+    if (message?.type === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
+      const controller = getController();
+      const enabled =
+        controller?.preferencesController?.state?.preferences
+          ?.showWebWidgetOnX ?? true;
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+        body: { enabled },
+      });
+    }
+
+    if (message?.type === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED) {
+      const controller = getController();
+      const enabled = message.body?.enabled === true;
+      controller?.preferencesController?.setPreference?.(
+        'showWebWidgetOnX',
+        enabled,
+      );
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+        body: { enabled },
+      });
+    }
+
     if (message?.type === EXTENSION_MESSAGES.GET_ASSET_DATA) {
       return fetchAssetData()
         .then((assets) => ({

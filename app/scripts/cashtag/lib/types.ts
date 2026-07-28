@@ -31,4 +31,8 @@ export type Controller = {
   remoteFeatureFlagController?: {
     state?: { remoteFeatureFlags?: Record<string, unknown> };
   };
+  preferencesController?: {
+    state?: { preferences?: { showWebWidgetOnX?: boolean } };
+    setPreference?: (preference: string, value: boolean) => unknown;
+  };
 };

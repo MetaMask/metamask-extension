@@ -17,7 +17,23 @@ async function getAssetData() {
   }
 }
 
+async function isWidgetEnabled() {
+  try {
+    const response = await browser.runtime.sendMessage({
+      type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+    });
+    // Default to enabled unless the preference is explicitly turned off.
+    return response?.body?.enabled !== false;
+  } catch {
+    return true;
+  }
+}
+
 async function main() {
+  if (!(await isWidgetEnabled())) {
+    return;
+  }
+
   const host = window.location.hostname.toLowerCase();
   if (!supportedHosts.has(host)) {
     return;

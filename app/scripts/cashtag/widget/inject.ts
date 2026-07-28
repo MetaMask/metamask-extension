@@ -52,6 +52,12 @@ export async function injectWidget() {
             .catch(() => undefined);
         },
         onDisable: () => {
+          browser.runtime
+            .sendMessage({
+              type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+              body: { enabled: false },
+            })
+            .catch(() => undefined);
           window.dispatchEvent(new CustomEvent('mm-cashtag-disable'));
           if (shadowHost.matches(':popover-open')) {
             shadowHost.hidePopover();

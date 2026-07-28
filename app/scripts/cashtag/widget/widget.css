@@ -14,6 +14,7 @@
 }
 
 .widget {
+  position: relative;
   box-sizing: border-box;
   width: 360px;
   display: flex;
@@ -244,4 +245,122 @@
   line-height: 22px;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* Disable confirmation modal */
+
+.disable-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(8 8 9 / 92%);
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.disable-modal {
+  box-sizing: border-box;
+  width: 328px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background: #131416;
+  border-radius: 8px;
+}
+
+.disable-modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+
+.disable-modal-header-spacer,
+.disable-modal-close {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.disable-modal-title-wrap {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.disable-modal-warning {
+  display: block;
+  flex-shrink: 0;
+}
+
+.disable-modal-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+  color: #fff;
+}
+
+.disable-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.disable-modal-body {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #9b9b9b;
+}
+
+.disable-modal-body strong {
+  font-weight: 600;
+  color: #9b9b9b;
+}
+
+.disable-modal-footer {
+  display: flex;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.disable-modal-cancel,
+.disable-modal-confirm {
+  flex: 1 0 0;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.disable-modal-cancel {
+  background: rgb(255 255 255 / 4%);
+  color: #fff;
+}
+
+.disable-modal-confirm {
+  background: #fff;
+  color: #131416;
 }

@@ -1283,6 +1283,7 @@ describe('preferences controller', () => {
             showExtensionInFullSizeView: true,
             privacyMode: true,
             showFiatInTestnets: true,
+            showWebWidgetOnX: true,
             showTestNetworks: true,
             smartTransactionsMigrationApplied: false,
             smartTransactionsOptInStatus: true,
