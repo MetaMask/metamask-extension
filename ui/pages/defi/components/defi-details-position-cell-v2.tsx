@@ -64,7 +64,11 @@ export default function DefiDetailsPositionCellV2({
           privacyMode={privacyMode}
         />
       }
-      footerLeftDisplay={null}
+      // Empty spacer keeps a second flex child so `space-between` still
+      // end-aligns the primary balance under the fiat value.
+      footerLeftDisplay={
+        <span data-testid="defi-details-position-footer-spacer" />
+      }
       footerRightDisplay={
         <TokenCellPrimaryDisplay
           token={displayToken}

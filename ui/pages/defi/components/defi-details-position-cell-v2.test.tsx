@@ -76,4 +76,15 @@ describe('DefiDetailsPositionCellV2', () => {
       screen.getByTestId('token-cell-primary-display-stub'),
     ).toBeInTheDocument();
   });
+
+  it('renders a footer spacer so the primary balance stays end-aligned', () => {
+    renderWithProvider(
+      <DefiDetailsPositionCellV2 position={position} />,
+      store,
+    );
+
+    expect(
+      screen.getByTestId('defi-details-position-footer-spacer'),
+    ).toBeInTheDocument();
+  });
 });
