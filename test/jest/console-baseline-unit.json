@@ -328,9 +328,6 @@
     "ui/components/component-library/sensitive-text/sensitive-text.test.tsx": {
       "warn: Invalid length provided: invalid. Falling": 1
     },
-    "ui/components/component-library/text-field-search/text-field-search.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 54
-    },
     "ui/components/component-library/text-field/text-field.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 17
     },
