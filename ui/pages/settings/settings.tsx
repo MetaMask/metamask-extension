@@ -340,7 +340,6 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
             {
               flex: isOnSettingsRoot || !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-              'max-w-full': isOnSettingsRoot && usesCompactSettingsLayout,
             },
           )}
         >
