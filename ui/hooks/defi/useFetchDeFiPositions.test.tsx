@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useFetchDeFiPositions } from './useFetchDeFiPositions';
-import { DEFI_MESSENGER_CAPABILITIES } from './messenger';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from './messenger';
 
 const mockCall = jest.fn().mockResolvedValue(undefined);
 
@@ -38,7 +38,7 @@ describe('useFetchDeFiPositions', () => {
   });
 
   it('exposes DeFi messenger capabilities including fetchDeFiPositions', () => {
-    expect(DEFI_MESSENGER_CAPABILITIES.actions).toContain(
+    expect(DEFI_ROUTE_ALLOWED_CAPABILITIES.actions).toContain(
       'DeFiPositionsControllerV2:fetchDeFiPositions',
     );
   });

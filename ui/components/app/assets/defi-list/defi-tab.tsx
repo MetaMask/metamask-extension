@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../../selectors/defi-controller-v2/feature-flags';
 import { useDeFiPositionsV2 } from '../../../../hooks/defi/useDeFiPositionsV2';
 import { RouteWithMessenger } from '../../../../layouts/route-with-messenger';
-import { DEFI_MESSENGER_CAPABILITIES } from '../../../../hooks/defi/messenger';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../../../../hooks/defi/messenger';
 import { AssetListProps } from '../asset-list/asset-list';
 import AssetListControlBar from '../asset-list/asset-list-control-bar';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
@@ -69,7 +69,7 @@ export default function DeFiTab({
   return (
     <RouteWithMessenger
       path="defi-tab"
-      capabilities={DEFI_MESSENGER_CAPABILITIES}
+      capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
     >
       <DeFiTabContent
         onClickAsset={onClickAsset}
