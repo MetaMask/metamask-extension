@@ -5529,9 +5529,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.1.1, @metamask/assets-controller@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "@metamask/assets-controller@npm:11.2.0"
+"@metamask/assets-controller@npm:^11.1.1, @metamask/assets-controller@npm:^11.2.1":
+  version: 11.2.1
+  resolution: "@metamask/assets-controller@npm:11.2.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5563,7 +5563,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/45f420415b569badbbbf36c25851a4e658b45c904ff11411bb610fdc5e258e40fbded13c9f413834f5d38ce2e7aa31449490c8e925c3bf5bc2c7ae6c7c42f675
+  checksum: 10/526387dddd54b4fa4b061174e656f3f538525ef426d1b5f198daf1c3f7ec0948ed84fe0d9b0d5ae7deaa694536abd1a9e35c05403c8d1995f6fa925a10b28c97
   languageName: node
   linkType: hard
 
@@ -7426,7 +7426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^17.2.0, @metamask/phishing-controller@npm:^17.3.0":
+"@metamask/phishing-controller@npm:^17.3.0":
   version: 17.3.0
   resolution: "@metamask/phishing-controller@npm:17.3.0"
   dependencies:
@@ -7674,16 +7674,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@metamask/ramps-controller@npm:17.0.0"
+"@metamask/ramps-controller@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/ramps-controller@npm:18.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^28.3.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-  checksum: 10/45980e93d79bf72c00edc44e2cd075a738c44a1c0b3dd695a7bce688f7954f80f28988b56c7a5774b1747e335b66c16f6a7d36833030bf116cefafc7b2e5f223
+  checksum: 10/664a36f0e8c31a879051d8ef37f8ae5b15eb64b7df8b981a25b8abfbe90d8e5ca8f82915de3aaabf8bf76e016113f9a5125e53c101804fc4888c93157659f1c5
   languageName: node
   linkType: hard
 
@@ -8436,13 +8436,13 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-pay-controller@npm:^26.0.0":
-  version: 26.0.0
-  resolution: "@metamask/transaction-pay-controller@npm:26.0.0"
+  version: 26.0.1
+  resolution: "@metamask/transaction-pay-controller@npm:26.0.1"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/assets-controller": "npm:^11.2.0"
+    "@metamask/assets-controller": "npm:^11.2.1"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -8451,7 +8451,7 @@ __metadata:
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/ramps-controller": "npm:^17.0.0"
+    "@metamask/ramps-controller": "npm:^18.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
     "@metamask/sentinel-api-service": "npm:^1.0.0"
     "@metamask/transaction-controller": "npm:^69.2.1"
@@ -8460,7 +8460,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/35c681ab2e1fbf60e3ae01b3f67be52ac69e755a67266884e40a1a3dfe0db74e29c81516df4904e5a78c11d20793df09de6136d436c4513be19730c392cbd977
+  checksum: 10/8392b5856cf58c186a882cbaee3050d02dfc98f699f407d8a72bf90c4443af69bac985160209f0fed18d2001255ae36e7737c2bef28f0e400fd398f737819da5
   languageName: node
   linkType: hard
 
@@ -16338,7 +16338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.7
   resolution: "@types/hoist-non-react-statics@npm:3.3.7"
   dependencies:
@@ -16783,18 +16783,6 @@ __metadata:
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/e329d8ad82c365fec7dd7d91c8b6d167faac30cef0d9f1e27d7e895172a0ebfa65829fb4acabbe79283b01cbbe5840a845caeb50148ceef6f3fad42b3c2c4bdc
-  languageName: node
-  linkType: hard
-
-"@types/react-redux@npm:^7.1.20, @types/react-redux@npm:^7.1.25":
-  version: 7.1.34
-  resolution: "@types/react-redux@npm:7.1.34"
-  dependencies:
-    "@types/hoist-non-react-statics": "npm:^3.3.0"
-    "@types/react": "npm:*"
-    hoist-non-react-statics: "npm:^3.3.0"
-    redux: "npm:^4.0.0"
-  checksum: 10/febcd1db0c83c5002c6bee0fdda9e70da0653454ffbb72d6c37cbf2f5c005e06fb5271cff344d7164c385c944526565282de9a95ff379e040476b71d27fc2512
   languageName: node
   linkType: hard
 
@@ -32830,7 +32818,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.2.0"
+    "@metamask/assets-controller": "npm:^11.2.1"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
@@ -32924,7 +32912,7 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
     "@metamask/perps-controller": "npm:^9.0.0"
-    "@metamask/phishing-controller": "npm:^17.2.0"
+    "@metamask/phishing-controller": "npm:^17.3.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
@@ -33052,7 +33040,6 @@ __metadata:
     "@types/pify": "npm:^5.0.1"
     "@types/react": "npm:18.2.0"
     "@types/react-dom": "npm:18.2.0"
-    "@types/react-redux": "npm:^7.1.25"
     "@types/react-router-dom": "npm:^5.3.3"
     "@types/readable-stream": "npm:4.0.4"
     "@types/readable-stream-2": "npm:^2.3.15"
@@ -33218,7 +33205,7 @@ __metadata:
     react-idle-timer: "npm:4.5.6"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
-    react-redux: "npm:^7.2.9"
+    react-redux: "npm:^8.1.3"
     react-refresh: "npm:^0.14.0"
     react-router-dom: "npm:^6.30.4"
     react-simple-file-input: "npm:^2.0.0"
@@ -37322,7 +37309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^17.0.0, react-is@npm:^17.0.1, react-is@npm:^17.0.2":
+"react-is@npm:^17.0.0, react-is@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 10/73b36281e58eeb27c9cc6031301b6ae19ecdc9f18ae2d518bdb39b0ac564e65c5779405d623f1df9abf378a13858b79442480244bd579968afc1faf9a2ce5e05
@@ -37438,27 +37425,6 @@ __metadata:
     react: ~16
     react-dom: ~16
   checksum: 10/c0825017c0c836936fed376c107c6d64e3a0795fd8e54bba5f14fa46f17d0b00c6f9cfd9a3c4216cd52509d2042860f3e4fea25687167e9585dbf87642c2cc2d
-  languageName: node
-  linkType: hard
-
-"react-redux@npm:^7.2.9":
-  version: 7.2.9
-  resolution: "react-redux@npm:7.2.9"
-  dependencies:
-    "@babel/runtime": "npm:^7.15.4"
-    "@types/react-redux": "npm:^7.1.20"
-    hoist-non-react-statics: "npm:^3.3.2"
-    loose-envify: "npm:^1.4.0"
-    prop-types: "npm:^15.7.2"
-    react-is: "npm:^17.0.2"
-  peerDependencies:
-    react: ^16.8.3 || ^17 || ^18
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 10/1c3018bd2601e6d18339281867910b583dcbb3d8856403086e08c00abf0dfe467a94c0d1356bafa8cdf107bf1e2c9899a28486e4778e85c8bc4dfed2076b116f
   languageName: node
   linkType: hard
 
