@@ -1,15 +1,16 @@
 import { Hex } from '@metamask/utils';
-import {
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+import type {
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { selectTransactionDataByTransactionId } from '../../../../../selectors/transactionPayController';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
-  useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
 } from '../../pay/useTransactionPayData';
@@ -20,6 +21,10 @@ import { useNoPayTokenQuotesAlert } from './useNoPayTokenQuotesAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
+jest.mock('../../../../../selectors/transactionPayController', () => ({
+  ...jest.requireActual('../../../../../selectors/transactionPayController'),
+  selectTransactionDataByTransactionId: jest.fn(),
+}));
 
 const ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
 const CHAIN_ID_MOCK = '0x1' as Hex;
@@ -49,7 +54,9 @@ function runHook() {
 
 describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-  const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
+  const selectTransactionDataByTransactionIdMock = jest.mocked(
+    selectTransactionDataByTransactionId,
+  );
   const useTransactionPaySourceAmountsMock = jest.mocked(
     useTransactionPaySourceAmounts,
   );
@@ -70,7 +77,9 @@ describe('useNoPayTokenQuotesAlert', () => {
     });
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
-    useTransactionPayQuotesMock.mockReturnValue([]);
+    selectTransactionDataByTransactionIdMock.mockReturnValue({
+      quotes: [],
+    } as never);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
   });
@@ -92,7 +101,19 @@ describe('useNoPayTokenQuotesAlert', () => {
   });
 
   it('returns no alerts if quotes available', () => {
-    useTransactionPayQuotesMock.mockReturnValue([{ id: 'quote-1' }] as never);
+    selectTransactionDataByTransactionIdMock.mockReturnValue({
+      quotes: [{ strategy: TransactionPayStrategy.Relay }],
+    } as never);
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alerts if only a no-op quote resolved', () => {
+    selectTransactionDataByTransactionIdMock.mockReturnValue({
+      quotes: [{ strategy: TransactionPayStrategy.None }],
+    } as never);
 
     const { result } = runHook();
 
