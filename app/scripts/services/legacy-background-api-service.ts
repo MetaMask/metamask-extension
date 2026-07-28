@@ -157,7 +157,7 @@ import {
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { getAllEnabledNetworkClientIds } from '../../../shared/lib/selectors/multichain';
+import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
