@@ -1,4 +1,5 @@
 import React from 'react';
+import { TransactionStatus } from '#ui/components/app/transaction/transaction-status';
 import type {
   ActivityListItem,
   TokenAmount,
@@ -6,7 +7,6 @@ import type {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { NetworkName } from '../../../components/app/transaction/network-name';
-import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { TransactionId } from '../../../components/app/transaction/transaction-id';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
@@ -61,7 +61,7 @@ export function MetadataSection({
     <Section>
       <Row
         label={t('status')}
-        value={<TransactionStatus status={item.status} />}
+        value={<TransactionStatus status={item.status} hash={item.hash} />}
       />
 
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />
