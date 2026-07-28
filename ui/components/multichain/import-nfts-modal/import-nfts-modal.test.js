@@ -409,7 +409,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(getByTestId('test-import-tokens-drop-down-custom-import'));
 
     expect(
-      getByTestId(`select-network-item-${CHAIN_IDS.LOCALHOST}`),
+      getByTestId(`network-list-item-${CHAIN_IDS.LOCALHOST}`),
     ).toBeInTheDocument();
   });
 

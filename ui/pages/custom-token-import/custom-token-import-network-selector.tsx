@@ -89,19 +89,15 @@ export const CustomTokenImportNetworkSelector = ({
                   ? formatChainIdToHex(chainIdRef) === selectedNetwork
                   : network.chainId === selectedNetwork;
                 return (
-                  <Box
+                  <NetworkListItem
                     key={network.chainId}
-                    data-testid={`select-network-item-${network.chainId}`}
-                  >
-                    <NetworkListItem
-                      chainId={network.chainId}
-                      name={network.name}
-                      iconSrc={getImageForChainId(network.chainId)}
-                      selected={isSelected}
-                      onClick={() => onSelectNetwork(network)}
-                      focus={false}
-                    />
-                  </Box>
+                    chainId={network.chainId}
+                    name={network.name}
+                    iconSrc={getImageForChainId(network.chainId)}
+                    selected={isSelected}
+                    onClick={() => onSelectNetwork(network)}
+                    focus={false}
+                  />
                 );
               })}
             </Box>

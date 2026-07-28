@@ -1,13 +1,8 @@
 import React from 'react';
 import {
-  TextVariant,
-  TextColor,
-  BorderRadius,
-  AlignItems,
-  Display,
-  JustifyContent,
-  BorderColor,
   BackgroundColor,
+  BorderColor,
+  BorderRadius,
 } from '../../../../helpers/constants/design-system';
 import {
   SelectButton,
