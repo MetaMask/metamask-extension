@@ -58,6 +58,7 @@ export const PREFERENCES_ITEMS = {
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
   'show-extension': 'showExtensionInFullSizeView',
+  'show-x-widget': 'showWebWidgetOnX',
   'manage-institutional-wallet': 'manageInstitutionalWallets',
 } as const;
 

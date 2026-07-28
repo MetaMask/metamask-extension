@@ -9743,6 +9743,12 @@
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
+  "showWebWidgetOnX": {
+    "message": "Show web widget on X"
+  },
+  "showWebWidgetOnXDescription": {
+    "message": "Displays a MetaMask widget with token details when you’re browsing X.com."
+  },
   "sidePanelMigrationToast": {
     "message": "MetaMask now opens in the side panel by default. $1 any time from the menu.",
     "description": "Shown when the extension opens in the side panel after migration. $1 is an inline link to switch back to the popup view."

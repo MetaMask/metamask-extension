@@ -4,11 +4,13 @@ import { SettingsTab, createToggleItem, createSelectItem } from '../shared';
 import {
   getManageInstitutionalWallets,
   getShowExtensionInFullSizeView,
+  getShowWebWidgetOnX,
   getTheme,
 } from '../../../selectors';
 import {
   setManageInstitutionalWallets,
   setShowExtensionInFullSizeView,
+  setShowWebWidgetOnX,
 } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -64,6 +66,16 @@ const ShowExtensionItem = createToggleItem({
   },
 });
 
+const ShowWebWidgetOnXItem = createToggleItem({
+  name: 'ShowWebWidgetOnXItem',
+  titleKey: PREFERENCES_ITEMS['show-x-widget'],
+  descriptionKey: 'showWebWidgetOnXDescription',
+  selector: getShowWebWidgetOnX,
+  action: setShowWebWidgetOnX,
+  dataTestId: 'show-metamask-widget-on-x',
+  trackEventProperty: 'show_metamask_widget_on_x',
+});
+
 const ManageInstitutionalWalletItem = createToggleItem({
   name: 'ManageInstitutionalWalletItem',
   titleKey: PREFERENCES_ITEMS['manage-institutional-wallet'],
@@ -82,9 +94,12 @@ const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'account-identicon', component: AccountIdenticonItem },
   { id: 'show-default-address', component: ShowDefaultAddressItem },
   {
+    id: 'show-x-widget',
+    component: ShowWebWidgetOnXItem,
+  },
+  {
     id: 'show-extension',
     component: ShowExtensionItem,
-    hasDividerBefore: true,
   },
   {
     id: 'manage-institutional-wallet',
