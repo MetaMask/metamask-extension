@@ -162,6 +162,22 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
+          <Box className="mx-4">
+            <TextFieldSearch
+              autoFocus
+              className="app-text-field-search"
+              clearButtonOnClick={() => setSearchQuery('')}
+              inputProps={
+                {
+                  'data-testid': 'bridge-asset-picker-search-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={t('enterTokenNameOrAddress')}
+              size={TextFieldSize.Lg}
+              value={searchQuery}
+            />
+          </Box>
           <ButtonBase
             ref={networkPickerButtonRef}
             onClick={() =>
@@ -207,22 +223,6 @@ export const BridgeAssetPickerContent = forwardRef<
             onClose={() => setIsNetworkPickerOpen(false)}
             testId="bridge-network-picker-popover"
           />
-          <Box className="mx-4">
-            <TextFieldSearch
-              autoFocus
-              className="app-text-field-search"
-              clearButtonOnClick={() => setSearchQuery('')}
-              inputProps={
-                {
-                  'data-testid': 'bridge-asset-picker-search-input',
-                } as React.ComponentPropsWithoutRef<'input'>
-              }
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder={t('enterTokenNameOrAddress')}
-              size={TextFieldSize.Lg}
-              value={searchQuery}
-            />
-          </Box>
         </div>
 
         {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
