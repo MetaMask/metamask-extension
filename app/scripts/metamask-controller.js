@@ -2637,7 +2637,6 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      deFiPositionsControllerV2,
       multichainAssetsRatesController,
       staticAssetsController,
     } = this;
@@ -2749,8 +2748,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        this.notificationManager.markAsAutomaticallyClosed.bind(
-          this.notificationManager,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
       getCode: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3763,10 +3763,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       deFiStopPolling: deFiPositionsController.stopPollingByPollingToken.bind(
         deFiPositionsController,
-      ),
-
-      fetchDeFiPositions: deFiPositionsControllerV2.fetchDeFiPositions.bind(
-        deFiPositionsControllerV2,
       ),
 
       // GasFeeController
@@ -9293,6 +9289,10 @@ export default class MetamaskController extends EventEmitter {
       getFlatState: this.getState.bind(this),
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
       getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
