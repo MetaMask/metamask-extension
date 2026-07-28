@@ -71,6 +71,7 @@ export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 export const BRIDGE_DEBUG_ENABLED = process.env.BRIDGE_DEBUG === '1';
+export const BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE = '1.5';
 
 /**
  * Resolves the Bridge API base URL to use based on the current MetaMask

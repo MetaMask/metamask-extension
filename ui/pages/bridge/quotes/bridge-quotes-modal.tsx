@@ -188,6 +188,13 @@ export const BridgeQuotesModal = ({
                       }}
                     >
                       {startCase(protocols[0])}
+                      {BRIDGE_DEBUG_ENABLED
+                        ? quote.quote?.gasIncluded7702
+                          ? '(7702)'
+                          : quote.quote?.gasIncluded
+                            ? '(gasIncluded)'
+                            : ''
+                        : ''}
                     </Text>
                     {/* DEST AMOUNT */}
                     <Text

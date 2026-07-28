@@ -352,6 +352,11 @@ export const MultichainBridgeQuoteCard = ({
                   }
                 >
                   {t('swapGasFeesIncluded')}
+                  {BRIDGE_DEBUG_ENABLED
+                    ? activeQuote.quote?.gasIncluded7702
+                      ? '(7702)'
+                      : ''
+                    : ''}
                 </Text>
               </Row>
             )}
@@ -374,12 +379,12 @@ export const MultichainBridgeQuoteCard = ({
                     ? ` (${activeQuote.gasFee?.total?.valueInCurrency?.slice(0, 8) ?? '0'})`
                     : '') +
                   (BRIDGE_DEBUG_ENABLED
-                    ? ` / AMOUNT: ${sumAmounts(
+                    ? ` / USD: ${sumAmounts(
                         activeQuote.quote.feeData.network,
-                      )?.normalizedAmount?.slice(
+                      )?.usd?.slice(
                         0,
                         8,
-                      )}  (${activeQuote.gasFee?.total?.amount?.slice(0, 8) ?? '0'})`
+                      )}  (${activeQuote.gasFee?.total?.usd?.slice(0, 8) ?? '0'})`
                     : '')}
               </Text>
             )}
