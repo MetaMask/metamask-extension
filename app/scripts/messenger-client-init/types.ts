@@ -239,6 +239,11 @@ export type MessengerClientInitRequest<
   getOpenMetamaskTabsIds: () => Record<string, number>;
 
   /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  requestSafeReload: () => Promise<void>;
+
+  /**
    * Sends an update to the UI.
    *
    */
