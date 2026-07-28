@@ -1,1 +1,1 @@
-export { default } from './defi-tab';
+export { default } from './defi-list';

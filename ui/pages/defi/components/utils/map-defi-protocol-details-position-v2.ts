@@ -5,10 +5,10 @@ import {
   type Hex,
 } from '@metamask/utils';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
-import { decimalToPrefixedHex } from '../../../../../../shared/lib/conversion.utils';
-import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
-import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
-import type { TokenWithFiatAmount } from '../../types';
+import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
+import type { TokenWithFiatAmount } from '../../../../components/app/assets/types';
 
 function toTokenCellChainId(
   chainId: DeFiUnderlyingPosition['chainId'],

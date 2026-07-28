@@ -15,12 +15,12 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) => selector({}),
 }));
 
-jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getSelectedAccountGroup: () => mockSelectedAccountGroup,
   getInternalAccountsFromGroupById: () => mockGroupAccounts,
 }));
 
-jest.mock('../../selectors/defi-controller-v2/positions', () => ({
+jest.mock('../../../selectors/defi-controller-v2/positions', () => ({
   getDeFiPositionsV2: () => mockPositionsByAccount,
 }));
 
@@ -55,9 +55,7 @@ describe('useDeFiPositionsV2', () => {
   });
 
   it('does not fetch when disabled', async () => {
-    const { result } = renderHook(() =>
-      useDeFiPositionsV2({ enabled: false }),
-    );
+    const { result } = renderHook(() => useDeFiPositionsV2({ enabled: false }));
 
     await act(async () => {
       await Promise.resolve();

@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
 import { useFetchDeFiPositions } from './useFetchDeFiPositions';
-import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from './messenger';
 
 const mockCall = jest.fn().mockResolvedValue(undefined);
 
-jest.mock('../useMessenger', () => ({
+jest.mock('../../../hooks/useMessenger', () => ({
   useMessenger: () => ({
     call: mockCall,
   }),

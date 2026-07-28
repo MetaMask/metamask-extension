@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import { Box, BoxFlexDirection, Tag } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
-import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
-import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
-import { AssetCellTitle } from '../../asset-list/cells/asset-title';
-import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
-import { useTokenDisplayInfo } from '../../hooks/useTokenDisplayInfo';
+import GenericAssetCellLayout from '../../../../components/app/assets/asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { AssetCellTitle } from '../../../../components/app/assets/asset-list/cells/asset-title';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { useTokenDisplayInfo } from '../../../../components/app/assets/hooks/useTokenDisplayInfo';
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
-} from '../../token-cell/cells';
+} from '../../../../components/app/assets/token-cell/cells';
 import { mapDefiProtocolDetailsPositionV2ToToken } from '../utils/map-defi-protocol-details-position-v2';
 
 type DefiDetailsPositionCellV2Props = {
@@ -19,7 +19,7 @@ type DefiDetailsPositionCellV2Props = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export default function DefiDetailsPositionCellV2({
   position,
 }: DefiDetailsPositionCellV2Props) {

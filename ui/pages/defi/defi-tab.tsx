@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { getIsDefiControllerV2Enabled } from '../../../../selectors/defi-controller-v2/feature-flags';
-import { useDeFiPositionsV2 } from '../../../../hooks/defi/useDeFiPositionsV2';
-import { RouteWithMessenger } from '../../../../layouts/route-with-messenger';
-import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../../../../hooks/defi/messenger';
-import { AssetListProps } from '../asset-list/asset-list';
-import AssetListControlBar from '../asset-list/asset-list-control-bar';
-import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import DefiList from './defi-list';
-import DefiListV2 from './defi-list-v2';
+import { getIsDefiControllerV2Enabled } from '../../selectors/defi-controller-v2/feature-flags';
+import { RouteWithMessenger } from '../../layouts/route-with-messenger';
+import { AssetListProps } from '../../components/app/assets/asset-list/asset-list';
+import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar';
+import { useScreenViewedEvent } from '../../hooks/useScreenViewedEvent';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import DefiList from '../../components/app/assets/defi-list/defi-list';
+import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from './messenger';
+import DefiListV2 from './components/defi-list-v2';
 
 type DeFiTabContentProps = Readonly<AssetListProps> & {
   isDefiControllerV2Enabled: boolean;
@@ -23,6 +23,8 @@ type DeFiTabContentProps = Readonly<AssetListProps> & {
  * @param props.onClickAsset - Handler when an asset row is clicked.
  * @param props.isDefiControllerV2Enabled - Whether to render the V2 list.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContent({
   onClickAsset,
   isDefiControllerV2Enabled,
@@ -58,7 +60,7 @@ function DeFiTabContent({
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export default function DeFiTab({
   onClickAsset,
   entryPoint,

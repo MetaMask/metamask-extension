@@ -3,13 +3,13 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Route, Routes } from 'react-router-dom';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../../test/data/mock-state.json';
 import DeFiProtocolCellV2, {
   type DeFiProtocolListItem,
 } from './defi-protocol-cell-v2';
 
-jest.mock('../../../../../../ui/hooks/useAnalytics', () => ({
+jest.mock('../../../../hooks/useAnalytics', () => ({
   useAnalytics: () => ({
     trackEvent: jest.fn(),
     createEventBuilder: jest.fn(() => ({

@@ -7,17 +7,17 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { getTokenSortConfig } from '../../../../selectors';
-import { getSelectedCurrency } from '../../../../selectors/assets';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../../selectors/multichain/networks';
-import { sortAssets } from '../util/sort';
-import PulseLoader from '../../../ui/pulse-loader';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
-import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
-import { ASSET_CELL_HEIGHT } from '../constants';
-import { DeFiErrorMessage } from './cells/defi-error-message';
-import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
+import { getTokenSortConfig } from '../../../selectors';
+import { getSelectedCurrency } from '../../../selectors/assets';
+import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
+import { sortAssets } from '../../../components/app/assets/util/sort';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { VirtualizedList } from '../../../components/ui/virtualized-list/virtualized-list';
+import { ASSET_CELL_HEIGHT } from '../../../components/app/assets/constants';
+import { DeFiErrorMessage } from '../../../components/app/assets/defi-list/cells/defi-error-message';
+import { DeFiEmptyStateMessage } from '../../../components/app/assets/defi-list/cells/defi-empty-state';
 import DeFiProtocolCellV2, {
   type DeFiProtocolListItem,
 } from './cells/defi-protocol-cell-v2';
@@ -30,7 +30,7 @@ type DefiListV2Props = {
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export default function DefiListV2({
   onClick,
   positions,

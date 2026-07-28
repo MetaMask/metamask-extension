@@ -2,20 +2,20 @@ import React from 'react';
 import { screen, act, waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { DEFI_CONTROLLER_V2_FLAG } from '../../../../../shared/lib/defi-controller-v2/remote-feature-flag';
-import { useDeFiPositionsV2 } from '../../../../hooks/defi/useDeFiPositionsV2';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import mockState from '../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { DEFI_CONTROLLER_V2_FLAG } from '../../../shared/lib/defi-controller-v2/remote-feature-flag';
+import { useDeFiPositionsV2 } from './hooks/useDeFiPositionsV2';
 import DeFiTab from './defi-tab';
 
-jest.mock('../../../../hooks/defi/useDeFiPositionsV2', () => ({
+jest.mock('./hooks/useDeFiPositionsV2', () => ({
   useDeFiPositionsV2: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useFormatters', () => ({
+jest.mock('../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyWithMinThreshold: (value: number) =>
       new Intl.NumberFormat('en-US', {
@@ -28,8 +28,8 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 // AssetListControlBar mounts with effects that call setTokenNetworkFilter →
 // setPreference → submitRequestToBackground. Without a background connection
 // that warns in unit tests.
-jest.mock('../../../../store/background-connection', () => ({
-  ...jest.requireActual('../../../../store/background-connection'),
+jest.mock('../../store/background-connection', () => ({
+  ...jest.requireActual('../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 

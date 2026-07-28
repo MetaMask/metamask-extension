@@ -141,7 +141,7 @@ import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/se
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
-import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../../hooks/defi/messenger';
+import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../defi/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { getConnectingLabel, setTheme } from './utils';
@@ -203,7 +203,9 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -216,19 +218,27 @@ const RampsProviderSelection = mmLazy(
 );
 const PermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
+    import(
+      '../../components/multichain/pages/permissions-page/permissions-page.js'
+    ),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    ),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    ),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    ),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(

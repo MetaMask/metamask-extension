@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mergePositionsForAccounts } from '@metamask/assets-controllers';
 import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
-import { getDeFiPositionsV2 } from '../../selectors/defi-controller-v2/positions';
+import { getDeFiPositionsV2 } from '../../../selectors/defi-controller-v2/positions';
 import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
-} from '../../selectors/multichain-accounts/account-tree';
+} from '../../../selectors/multichain-accounts/account-tree';
 import { useFetchDeFiPositions } from './useFetchDeFiPositions';
 
 export type UseDeFiPositionsV2Result = {
@@ -34,7 +34,7 @@ export type UseDeFiPositionsV2Options = {
  * also call it from child list components, or you will double-fetch.
  *
  * Must be used under a `RouteWithMessenger` that includes
- * `DeFiPositionsControllerV2:fetchDeFiPositions` (see `DEFI_MESSENGER_CAPABILITIES`).
+ * `DeFiPositionsControllerV2:fetchDeFiPositions` (see `DEFI_ROUTE_ALLOWED_CAPABILITIES`).
  *
  * @param options - Optional fetch controls.
  * @param options.enabled - When false, does not auto-fetch. Defaults to true.

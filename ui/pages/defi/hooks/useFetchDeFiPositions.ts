@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useMessenger } from '../useMessenger';
-import type { DeFiMessenger } from './messenger';
+import { useMessenger } from '../../../hooks/useMessenger';
+import type { DeFiMessenger } from '../messenger';
 
 export type FetchDeFiPositionsOptions = {
   /**
@@ -16,7 +16,7 @@ export type FetchDeFiPositionsOptions = {
  *
  * Must be used under a `RouteWithMessenger` that includes
  * `DeFiPositionsControllerV2:fetchDeFiPositions` in its capabilities (see
- * `DEFI_MESSENGER_CAPABILITIES` in `./messenger`).
+ * `DEFI_ROUTE_ALLOWED_CAPABILITIES` in `../messenger`).
  *
  * @returns A stable callback that triggers a DeFi positions fetch.
  */
