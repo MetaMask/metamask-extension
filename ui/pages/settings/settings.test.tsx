@@ -225,41 +225,87 @@ describe('Settings', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       setBackgroundConnection(backgroundConnectionMock as never);
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     });
 
-    it('applies bg-background-default and border-r border-muted to sidebar in pure black mode', async () => {
-      const { usePureBlack } = jest.requireMock(
-        '@metamask/design-system-react',
-      );
-      usePureBlack.mockReturnValue(true);
-      mockPathname = CURRENCY_ROUTE;
+    describe('fullscreen', () => {
+      beforeEach(() => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      });
 
-      const { container } = renderSettings(mockStore);
-
-      await waitFor(() => {
-        const sidebar = container.querySelector(
-          '.border-r.border-muted',
+      it('applies bg-background-default and border-r border-muted to sidebar in pure black mode', async () => {
+        const { usePureBlack } = jest.requireMock(
+          '@metamask/design-system-react',
         );
-        expect(sidebar).toBeInTheDocument();
+        usePureBlack.mockReturnValue(true);
+        mockPathname = CURRENCY_ROUTE;
+
+        const { container } = renderSettings(mockStore);
+
+        await waitFor(() => {
+          expect(
+            container.querySelector('.border-r.border-muted'),
+          ).toBeInTheDocument();
+        });
+      });
+
+      it('applies bg-background-muted to sidebar when pure black is off', async () => {
+        const { usePureBlack } = jest.requireMock(
+          '@metamask/design-system-react',
+        );
+        usePureBlack.mockReturnValue(false);
+        mockPathname = CURRENCY_ROUTE;
+
+        const { container } = renderSettings(mockStore);
+
+        await waitFor(() => {
+          expect(
+            container.querySelector('.bg-background-muted'),
+          ).toBeInTheDocument();
+          expect(
+            container.querySelector('.border-r.border-muted'),
+          ).not.toBeInTheDocument();
+        });
       });
     });
 
-    it('applies bg-background-muted to sidebar when pure black is off', async () => {
-      const { usePureBlack } = jest.requireMock(
-        '@metamask/design-system-react',
-      );
-      usePureBlack.mockReturnValue(false);
-      mockPathname = CURRENCY_ROUTE;
+    describe('popup', () => {
+      beforeEach(() => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      });
 
-      const { container } = renderSettings(mockStore);
+      it('applies bg-background-alternative to sidebar in pure black mode', async () => {
+        const { usePureBlack } = jest.requireMock(
+          '@metamask/design-system-react',
+        );
+        usePureBlack.mockReturnValue(true);
+        mockPathname = CURRENCY_ROUTE;
 
-      await waitFor(() => {
-        const sidebar = container.querySelector('.bg-background-muted');
-        expect(sidebar).toBeInTheDocument();
-        expect(
-          container.querySelector('.border-r.border-muted'),
-        ).not.toBeInTheDocument();
+        const { container } = renderSettings(mockStore);
+
+        await waitFor(() => {
+          expect(
+            container.querySelector('.bg-background-alternative'),
+          ).toBeInTheDocument();
+        });
+      });
+
+      it('applies bg-background-default to sidebar when pure black is off', async () => {
+        const { usePureBlack } = jest.requireMock(
+          '@metamask/design-system-react',
+        );
+        usePureBlack.mockReturnValue(false);
+        mockPathname = CURRENCY_ROUTE;
+
+        const { container } = renderSettings(mockStore);
+
+        await waitFor(() => {
+          expect(
+            container.querySelector('.bg-background-default'),
+          ).toBeInTheDocument();
+          expect(
+            container.querySelector('.bg-background-alternative'),
+          ).not.toBeInTheDocument();
+        });
       });
     });
   });

@@ -335,15 +335,20 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         <Box
           className={classnames(
             'w-full h-full max-w-[262px]',
-            isPureBlack ? 'bg-background-default' : 'bg-background-muted',
+            // Popup/compact: mirrors the GlobalMenuDrawer pattern (bg-alternative in pure black).
+            // Fullscreen: bg-muted normally, bg-default in pure black to avoid muted-overlay artifact.
+            // TODO: @metamask/design-system-engineers remove isPureBlack conditions once pure black is shipped targeted(13.43.0)
+            usesCompactSettingsLayout
+              ? isPureBlack
+                ? 'bg-background-alternative'
+                : 'bg-background-default'
+              : isPureBlack
+                ? 'bg-background-default'
+                : 'bg-background-muted',
             {
               flex: isOnSettingsRoot || !usesCompactSettingsLayout,
               hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-              'max-w-full bg-background-default':
-                isOnSettingsRoot && usesCompactSettingsLayout,
-              // Single right border provides visual separation from the content
-              // panel in pure black mode, replacing the muted-background edge
-              // that would otherwise create a double-border effect.
+              'max-w-full': isOnSettingsRoot && usesCompactSettingsLayout,
               'border-r border-muted':
                 isPureBlack && !usesCompactSettingsLayout,
             },
