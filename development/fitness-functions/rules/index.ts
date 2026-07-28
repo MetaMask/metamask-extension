@@ -26,7 +26,7 @@ const RULES: IRule[] = [
     name: "Don't add new SCSS files",
     fn: preventScssFileAdditions,
     errorMessage:
-      'The diff includes a newly created SCSS file. Please use Tailwind CSS utility classes instead. New SCSS files are not allowed as we migrate to Tailwind CSS to align with the design system and prevent CSS file size growth.',
+      'The diff includes a newly created SCSS file. Please use Tailwind CSS utility classes instead.',
   },
 ];
 
