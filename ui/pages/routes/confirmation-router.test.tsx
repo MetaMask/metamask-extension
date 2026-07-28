@@ -12,6 +12,7 @@ import {
 import {
   BATCH_SELL_REVIEW_ROUTE,
   BATCH_SELL_SELECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -79,7 +80,9 @@ describe('ConfirmationRouter', () => {
         hasQuotes: true,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(SWAP_ROUTE);
+      // `toHaveTextContent` does a substring match, and every route here
+      // contains a `/`, so we compare `textContent` directly for an exact match.
+      expect(getByTestId('pathname').textContent).toBe(SWAP_ROUTE);
     });
 
     it('stays on the batch sell review page', () => {
@@ -88,7 +91,7 @@ describe('ConfirmationRouter', () => {
         hasQuotes: true,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(
+      expect(getByTestId('pathname').textContent).toBe(
         BATCH_SELL_REVIEW_ROUTE,
       );
     });
@@ -99,7 +102,7 @@ describe('ConfirmationRouter', () => {
         hasQuotes: true,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(
+      expect(getByTestId('pathname').textContent).toBe(
         BATCH_SELL_SELECT_ROUTE,
       );
     });
@@ -111,7 +114,7 @@ describe('ConfirmationRouter', () => {
         environmentType: ENVIRONMENT_TYPE_FULLSCREEN,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(DEFAULT_ROUTE);
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
     });
 
     it('does not redirect from a non-exempted route in the side panel', () => {
@@ -121,7 +124,7 @@ describe('ConfirmationRouter', () => {
         environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(DEFAULT_ROUTE);
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
     });
   });
 
@@ -132,7 +135,9 @@ describe('ConfirmationRouter', () => {
         hasPendingApproval: true,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(PENDING_APPROVAL_ID);
+      expect(getByTestId('pathname').textContent).toBe(
+        `${CONFIRM_TRANSACTION_ROUTE}/${PENDING_APPROVAL_ID}`,
+      );
     });
 
     it('leaves batch sell in place, so the confirmation is shown once the user exits', () => {
@@ -141,7 +146,7 @@ describe('ConfirmationRouter', () => {
         hasPendingApproval: true,
       });
 
-      expect(getByTestId('pathname')).toHaveTextContent(
+      expect(getByTestId('pathname').textContent).toBe(
         BATCH_SELL_REVIEW_ROUTE,
       );
     });
