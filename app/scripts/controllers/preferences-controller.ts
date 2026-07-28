@@ -164,6 +164,7 @@ export const getDefaultPreferencesControllerState =
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
+      showWebWidgetOnX: true,
       showMultiRpcModal: false,
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,

@@ -1560,6 +1560,11 @@ export function getShowExtensionInFullSizeView(state) {
   return Boolean(showExtensionInFullSizeView);
 }
 
+export function getShowWebWidgetOnX(state) {
+  const { showWebWidgetOnX = true } = getPreferences(state);
+  return Boolean(showWebWidgetOnX);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = getProviderConfig(state).ticker;
   switch (true) {
