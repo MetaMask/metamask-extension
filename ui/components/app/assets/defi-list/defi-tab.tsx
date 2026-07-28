@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../../selectors/defi-controller-v2/feature-flags';
 import { fetchDeFiPositions } from '../../../../hooks/defi/defiActions';
+import { RouteWithMessenger } from '../../../../layouts/route-with-messenger';
+import { DEFI_MESSENGER_CAPABILITIES } from '../../../../hooks/defi/messenger';
 import { AssetListProps } from '../asset-list/asset-list';
 import AssetListControlBar from '../asset-list/asset-list-control-bar';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
@@ -26,7 +28,10 @@ export default function DeFiTab({
   }, []);
 
   return (
-    <>
+    <RouteWithMessenger
+      path="defi-tab"
+      capabilities={DEFI_MESSENGER_CAPABILITIES}
+    >
       <AssetListControlBar
         showImportTokenButton={false}
         onRefresh={handleRefresh}
@@ -36,6 +41,6 @@ export default function DeFiTab({
       ) : (
         <DefiList onClick={onClickAsset} />
       )}
-    </>
+    </RouteWithMessenger>
   );
 }
