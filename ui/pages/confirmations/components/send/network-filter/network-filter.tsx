@@ -236,7 +236,7 @@ export const NetworkFilter = ({
           onClick={handleNetworkFilterClick}
           isActive={isSingleNetworkSelected}
           startIconName={IconName.Filter}
-          startIconProps={{ className: 'me-1' }}
+          startIconProps={{ className: 'me-1', 'data-testid': 'icon-filter' }}
         >
           {displayName}
         </ButtonFilter>
