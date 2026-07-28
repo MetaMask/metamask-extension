@@ -16,7 +16,7 @@ type DefiDetailsListV2Props = {
 
 export default function DefiDetailsListV2({
   sections,
-}: DefiDetailsListV2Props) {
+}: Readonly<DefiDetailsListV2Props>) {
   return (
     <>
       {sections.map((section, sectionIndex) => (

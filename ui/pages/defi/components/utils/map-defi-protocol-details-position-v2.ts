@@ -2,7 +2,6 @@ import {
   isCaipChainId,
   parseCaipAssetType,
   parseCaipChainId,
-  type Hex,
 } from '@metamask/utils';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';

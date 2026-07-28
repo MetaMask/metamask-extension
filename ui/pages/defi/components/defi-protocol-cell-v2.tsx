@@ -42,7 +42,7 @@ type DeFiProtocolCellV2Props = {
 export default function DeFiProtocolCellV2({
   onClick,
   position,
-}: DeFiProtocolCellV2Props) {
+}: Readonly<DeFiProtocolCellV2Props>) {
   const { privacyMode } = useSelector(getPreferences);
   const { trackEvent, createEventBuilder } = useAnalytics();
 

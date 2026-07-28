@@ -20,7 +20,7 @@ type DefiDetailsPositionCellV2Props = {
 
 export default function DefiDetailsPositionCellV2({
   position,
-}: DefiDetailsPositionCellV2Props) {
+}: Readonly<DefiDetailsPositionCellV2Props>) {
   const { privacyMode } = useSelector(getPreferences);
 
   const token = useMemo(

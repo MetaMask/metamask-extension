@@ -34,7 +34,7 @@ export default function DefiListV2({
   positions,
   isLoading,
   isError,
-}: DefiListV2Props) {
+}: Readonly<DefiListV2Props>) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
