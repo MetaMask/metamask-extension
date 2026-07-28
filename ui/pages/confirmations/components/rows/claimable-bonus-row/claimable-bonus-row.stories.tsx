@@ -8,8 +8,6 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 import { ConfirmContextProvider } from '../../../context/confirm';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
-
 import { ClaimableBonusRow } from './claimable-bonus-row';
 
 const CHAIN_ID_MOCK = '0x1';
@@ -18,7 +16,7 @@ const transaction = genUnapprovedContractInteractionConfirmation({
   chainId: CHAIN_ID_MOCK,
 }) as TransactionMeta;
 
-const createMockState = (isLoading = false) => {
+const createMockState = () => {
   const state = cloneDeep(mockState);
 
   merge(state, {
@@ -33,7 +31,7 @@ const createMockState = (isLoading = false) => {
       transactions: [transaction],
       transactionData: {
         [transaction.id]: {
-          isLoading,
+          isLoading: false,
           quotes: [{ id: 'quote-1' }],
         },
       },
@@ -61,18 +59,3 @@ export default Story;
 
 export const DefaultStory = () => <ClaimableBonusRow />;
 DefaultStory.storyName = 'Default';
-
-export const SmallStory = () => <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />;
-SmallStory.storyName = 'Small';
-
-export const LoadingStory = () => {
-  const store = configureStore(createMockState(true));
-  return (
-    <Provider store={store}>
-      <ConfirmContextProvider confirmationId={transaction.id}>
-        <ClaimableBonusRow />
-      </ConfirmContextProvider>
-    </Provider>
-  );
-};
-LoadingStory.storyName = 'Loading';
