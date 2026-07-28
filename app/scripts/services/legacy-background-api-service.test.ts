@@ -55,6 +55,7 @@ const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
 jest.mock('../../../ui/contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../ui/contexts/hardware-wallets'),
   toHardwareWalletError: (...args: unknown[]) =>
     mockToHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args: unknown[]) =>
