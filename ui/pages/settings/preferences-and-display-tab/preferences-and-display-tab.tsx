@@ -89,7 +89,6 @@ const ManageInstitutionalWalletItem = createToggleItem({
 });
 
 const PreferencesAndDisplayTab = () => {
-  // The X.com widget setting is only shown when its remote feature flag is on.
   const isWebWidgetOnXFeatureEnabled = useSelector(
     getIsWebWidgetOnXFeatureEnabled,
   );

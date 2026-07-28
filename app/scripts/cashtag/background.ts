@@ -80,7 +80,6 @@ export function registerBackgroundBridge({
     }
 
     if (message?.type === EXTENSION_MESSAGES.OPEN_SWAP_PAGE) {
-      const controller = getController();
       const windowId = sender?.tab?.windowId;
       const tabId = sender?.tab?.id;
       const sidePanelApi = globalThis.chrome?.sidePanel;

@@ -1,7 +1,23 @@
 /* Widget Shadow DOM */
 
 :host {
-  color-scheme: dark;
+  /* Inherit x.com's light|dark value from <html> so light-dark() below tracks
+     the page theme (dim + Lights Out both resolve to dark). */
+  color-scheme: inherit;
+
+  --mm-bg: light-dark(#ffffff, #131416);
+  --mm-text: light-dark(#121314, #ffffff);
+  --mm-text-muted: light-dark(#6a737d, #9b9b9b);
+  --mm-text-disabled: light-dark(#b7bbc8, #6d6d75);
+  --mm-surface: light-dark(rgb(0 0 0 / 4%), rgb(255 255 255 / 4%));
+  --mm-overlay: light-dark(rgb(255 255 255 / 88%), rgb(8 8 9 / 92%));
+  --mm-button-bg: light-dark(#121314, #ffffff);
+  --mm-button-text: light-dark(#ffffff, #121314);
+  --mm-up-text: light-dark(#128207, #baf24a);
+  --mm-up-bg: light-dark(rgb(18 130 7 / 12%), rgb(186 242 74 / 15%));
+  --mm-down-text: light-dark(#ca3542, #ffb0b0);
+  --mm-down-bg: light-dark(rgb(202 53 66 / 12%), rgb(255 176 176 / 15%));
+
   font-family:
     Geist,
     -apple-system,
@@ -10,7 +26,7 @@
     Helvetica,
     Arial,
     sans-serif;
-  color: #fff;
+  color: var(--mm-text);
 }
 
 .widget {
@@ -22,8 +38,8 @@
   align-items: center;
   gap: 8px;
   padding: 0 0 16px;
-  background: #131416;
-  color: #fff;
+  background: var(--mm-bg);
+  color: var(--mm-text);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -73,7 +89,7 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: #fff;
+  color: var(--mm-text);
 }
 
 .name {
@@ -81,7 +97,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 22px;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
 }
 
 .fox {
@@ -104,7 +120,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 20px;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
 }
 
 .price-block {
@@ -134,10 +150,10 @@
   font-weight: 600;
   line-height: 32px;
   letter-spacing: 0;
-  color: #fff;
+  color: var(--mm-text);
 
   &.empty {
-    color: #6d6d75;
+    color: var(--mm-text-disabled);
   }
 }
 
@@ -152,13 +168,13 @@
   line-height: 20px;
 
   &.up {
-    color: #baf24a;
-    background: rgb(186 242 74 / 15%);
+    color: var(--mm-up-text);
+    background: var(--mm-up-bg);
   }
 
   &.down {
-    color: #ffb0b0;
-    background: rgb(255 176 176 / 15%);
+    color: var(--mm-down-text);
+    background: var(--mm-down-bg);
   }
 }
 
@@ -191,7 +207,7 @@
   gap: 0;
   padding: 12px 16px;
   border-radius: 8px;
-  background: rgb(255 255 255 / 4%);
+  background: var(--mm-surface);
 }
 
 .stat-label {
@@ -199,7 +215,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 20px;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
 }
 
 .stat-value {
@@ -207,7 +223,7 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 20px;
-  color: #fff;
+  color: var(--mm-text);
 }
 
 .swap {
@@ -219,8 +235,8 @@
   padding: 0 16px;
   border: 0;
   border-radius: 12px;
-  background: #fff;
-  color: #121314;
+  background: var(--mm-button-bg);
+  color: var(--mm-button-text);
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -239,7 +255,7 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
   font-size: 14px;
   font-weight: 400;
   line-height: 22px;
@@ -256,7 +272,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgb(8 8 9 / 92%);
+  background: var(--mm-overlay);
   border-radius: 12px;
   z-index: 1;
 }
@@ -267,7 +283,7 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  background: #131416;
+  background: var(--mm-bg);
   border-radius: 8px;
 }
 
@@ -305,7 +321,7 @@
   font-weight: 700;
   line-height: 24px;
   text-align: center;
-  color: #fff;
+  color: var(--mm-text);
 }
 
 .disable-modal-close {
@@ -316,7 +332,7 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #fff;
+  color: var(--mm-text);
   cursor: pointer;
 }
 
@@ -325,12 +341,12 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
 }
 
 .disable-modal-body strong {
   font-weight: 600;
-  color: #9b9b9b;
+  color: var(--mm-text-muted);
 }
 
 .disable-modal-footer {
@@ -356,11 +372,11 @@
 }
 
 .disable-modal-cancel {
-  background: rgb(255 255 255 / 4%);
-  color: #fff;
+  background: var(--mm-surface);
+  color: var(--mm-text);
 }
 
 .disable-modal-confirm {
-  background: #fff;
-  color: #131416;
+  background: var(--mm-button-bg);
+  color: var(--mm-button-text);
 }
