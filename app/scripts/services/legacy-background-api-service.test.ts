@@ -29,7 +29,6 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
@@ -41,6 +40,7 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { HardwareWalletType } from '../../../ui/contexts/hardware-wallets/types';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -3103,7 +3103,7 @@ describe('LegacyBackgroundApiService', () => {
           { txMeta: { id: '0x2' } },
           {
             waitForResult: true,
-            walletType: HardwareKeyringNames.ledger,
+            walletType: HardwareWalletType.Ledger,
           },
         );
 
@@ -3135,7 +3135,7 @@ describe('LegacyBackgroundApiService', () => {
           userMessage: 'Please reconnect your device',
           metadata: {
             transport: 'usb',
-            walletType: HardwareKeyringNames.ledger,
+            walletType: HardwareWalletType.Ledger,
           },
         });
 
@@ -3144,7 +3144,7 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:resolvePendingApproval',
             'approval-id',
             { txMeta: { id: '0x3' } },
-            { walletType: HardwareKeyringNames.ledger },
+            { walletType: HardwareWalletType.Ledger },
           ),
         ).rejects.toMatchObject({
           code: -32603,
@@ -3155,14 +3155,14 @@ describe('LegacyBackgroundApiService', () => {
             userMessage: 'Please reconnect your device',
             metadata: {
               transport: 'usb',
-              walletType: HardwareKeyringNames.ledger,
+              walletType: HardwareWalletType.Ledger,
             },
           },
         });
 
         expect(mockToHardwareWalletError).toHaveBeenCalledWith(
           error,
-          HardwareKeyringNames.ledger,
+          HardwareWalletType.Ledger,
         );
       });
     });
@@ -3185,7 +3185,7 @@ describe('LegacyBackgroundApiService', () => {
           category: Category.UserAction,
           userMessage: 'Request rejected',
           metadata: {
-            walletType: HardwareKeyringNames.ledger,
+            walletType: HardwareWalletType.Ledger,
           },
         });
         mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
@@ -3195,7 +3195,7 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:resolvePendingApproval',
             'approval-id',
             { txMeta: { id: '0x4' } },
-            { walletType: HardwareKeyringNames.ledger },
+            { walletType: HardwareWalletType.Ledger },
           ),
         ).rejects.toMatchObject({
           code: 4001,
@@ -3205,7 +3205,7 @@ describe('LegacyBackgroundApiService', () => {
             category: Category.UserAction,
             userMessage: 'Request rejected',
             metadata: {
-              walletType: HardwareKeyringNames.ledger,
+              walletType: HardwareWalletType.Ledger,
             },
           },
         });
@@ -3232,13 +3232,13 @@ describe('LegacyBackgroundApiService', () => {
           txId: 42,
           txMeta,
           actionId: 'action-id',
-          walletType: HardwareKeyringNames.ledger,
+          walletType: HardwareWalletType.Ledger,
         });
 
         expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
           '42',
           { txMeta, actionId: 'action-id' },
-          { waitForResult: true, walletType: HardwareKeyringNames.ledger },
+          { waitForResult: true, walletType: HardwareWalletType.Ledger },
         );
       });
     });

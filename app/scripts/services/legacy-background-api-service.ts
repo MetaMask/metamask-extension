@@ -185,6 +185,7 @@ import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import {
+  HardwareWalletType,
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
   // eslint-disable-next-line import-x/no-restricted-paths
@@ -1600,7 +1601,7 @@ export class LegacyBackgroundApiService {
     id: string,
     value: unknown,
     options: {
-      walletType?: string;
+      walletType?: HardwareWalletType;
       waitForResult?: boolean;
     } | null = {},
   ): Promise<void> {
@@ -1645,7 +1646,7 @@ export class LegacyBackgroundApiService {
    */
   async #handleHardwareWalletError(
     error: Error,
-    walletType: string,
+    walletType: HardwareWalletType,
   ): Promise<never> {
     const hwError = toHardwareWalletError(error, walletType);
     const createRpcError = isUserRejectedHardwareWalletError(hwError)
@@ -1686,7 +1687,7 @@ export class LegacyBackgroundApiService {
     txId: string | number;
     txMeta: unknown;
     actionId: string;
-    walletType: string;
+    walletType: HardwareWalletType;
   }): Promise<void> {
     await this.resolvePendingApproval(
       String(txId),
