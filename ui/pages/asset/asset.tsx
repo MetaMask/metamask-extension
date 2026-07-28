@@ -1,5 +1,6 @@
 import { Nft } from '@metamask/assets-controllers';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getFungibleAssetForRoute } from '../../selectors/assets';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 import {
@@ -46,6 +48,23 @@ const Asset = () => {
     assetId,
   });
 
+  const displayChainId = getRouteAssetChainId(token, chainId);
+
+  let caipChainId: CaipChainId | undefined;
+  if (displayChainId) {
+    caipChainId = isCaipChainId(displayChainId)
+      ? displayChainId
+      : formatChainIdToCaip(displayChainId);
+  }
+
+  // Null when the selected account group has no account for this chain
+  // (e.g. Solana asset deeplink while an EVM-only account is selected).
+  const selectedAccountForAsset = useSelector((state) =>
+    caipChainId
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
+      : null,
+  );
+
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
       // @ts-expect-error TODO: Fix this type error by handling undefined parameters
@@ -68,18 +87,24 @@ const Asset = () => {
     }
 
     const isInvalid = !token || !chainId || hasError;
-    if (isInvalid) {
+    if (isInvalid || !selectedAccountForAsset) {
       return <Navigate to={DEFAULT_ROUTE} />;
     }
 
-    const displayChainId = getRouteAssetChainId(token, chainId) as Hex;
-
     if (token.isNative) {
-      return <NativeAsset chainId={displayChainId} token={token} />;
+      return <NativeAsset chainId={displayChainId as Hex} token={token} />;
     }
 
-    return <TokenAsset chainId={displayChainId} token={token} />;
-  }, [chainId, hasError, isLoading, nft, token]);
+    return <TokenAsset chainId={displayChainId as Hex} token={token} />;
+  }, [
+    chainId,
+    displayChainId,
+    hasError,
+    isLoading,
+    nft,
+    selectedAccountForAsset,
+    token,
+  ]);
 
   return (
     <ScrollContainer className="main-container asset__container">

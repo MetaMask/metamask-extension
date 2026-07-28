@@ -12,6 +12,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request.infuraProjectId - The Infura project ID.
  * @param request.getRequestAccountTabIds - A function that returns a record of account tab IDs.
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+ * @param request.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
  * @param request.sendUpdate - A function to send updates to the UI.
  * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
  * @param request.createVaultMutex - A mutex to serialize vault creation/export with locking.
@@ -26,6 +27,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   infuraProjectId,
   getRequestAccountTabIds,
   getOpenMetamaskTabsIds,
+  markNotificationPopupAsAutomaticallyClosed,
   sendUpdate,
   seedlessOperationMutex,
   createVaultMutex,
@@ -36,6 +38,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    markNotificationPopupAsAutomaticallyClosed,
     sendUpdate,
     seedlessOperationMutex,
     createVaultMutex,
