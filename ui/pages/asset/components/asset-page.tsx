@@ -91,7 +91,7 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { isNativeAsset, isTokenAsset, type Asset } from '../types/asset';
+import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import {
@@ -150,8 +150,10 @@ const AssetPage = ({
   }, []);
 
   const { chainId, type, symbol, name, image } = asset;
-  const tokenAddress = isTokenAsset(asset) ? asset.address : undefined;
-  const aggregators = isTokenAsset(asset) ? asset.aggregators : undefined;
+  const tokenAddress =
+    asset.type === AssetType.token ? asset.address : undefined;
+  const aggregators =
+    asset.type === AssetType.token ? asset.aggregators : undefined;
 
   const selectIsSwapsChain = useMemo(
     () => (state: Parameters<typeof getIsSwapsChain>[0]) =>
