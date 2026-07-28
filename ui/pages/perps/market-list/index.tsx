@@ -233,6 +233,82 @@ export const MarketListView = () => {
   const searchStartedAtRef = useRef<number | null>(null);
   const queryCountRef = useRef(0);
   const resultTappedRef = useRef(false);
+  // Query typed but not yet emitted. Flushed on unmount so a mid-debounce exit
+  // is never silently lost (mirrors mobile's `pendingSearchQueryRef`).
+  const pendingQueryRef = useRef<string | null>(null);
+  const isLoadingRef = useRef(isLoading);
+  isLoadingRef.current = isLoading;
+
+  // Chips narrowing the browse context. The Extension exposes only the category
+  // filter; mobile also counts its watchlist chip.
+  const activeChips = useMemo(
+    () => (selectedFilter === 'all' ? [] : [selectedFilter]),
+    [selectedFilter],
+  );
+  const activeChipsRef = useRef(activeChips);
+  activeChipsRef.current = activeChips;
+
+  /**
+   * Emit PERPS_SEARCH_QUERY (and the matching screen view once counts are
+   * known). `resultsSettled` is false when flushing mid-load, in which case the
+   * count-dependent props are omitted rather than reported as a mid-load zero.
+   */
+  const emitSearchQuery = useCallback(
+    (normalizedQuery: string, resultsSettled: boolean) => {
+      const resultCount = displayedMarketsRef.current.length;
+      const hasResults = resultCount > 0;
+      const chips = activeChipsRef.current;
+
+      emittedQueryRef.current = normalizedQuery;
+      emittedResultsCountRef.current = resultsSettled ? resultCount : undefined;
+      queryCountRef.current += 1;
+      resultTappedRef.current = false;
+
+      trackRef.current(MetaMetricsEventName.PerpsSearchQuery, {
+        [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
+        [PERPS_EVENT_PROPERTY.QUERY_TEXT]: normalizedQuery,
+        [PERPS_EVENT_PROPERTY.QUERY_LENGTH]: normalizedQuery.length,
+        ...(resultsSettled
+          ? {
+              [PERPS_EVENT_PROPERTY.RESULTS_COUNT]: resultCount,
+              [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
+              [PERPS_EVENT_PROPERTY.HAS_RESULTS]: hasResults,
+            }
+          : {}),
+        // Chips/category narrow the browse context → discovery; a short
+        // ticker-like token → intent; anything else → browse.
+        [PERPS_EVENT_PROPERTY.MODE]: chips.length
+          ? 'discovery'
+          : /^[a-z0-9]{1,6}$/u.test(normalizedQuery)
+            ? 'intent'
+            : 'browse',
+        [PERPS_EVENT_PROPERTY.ACTIVE_CHIPS]: chips,
+        [PERPS_EVENT_PROPERTY.SOURCE]:
+          PERPS_EVENT_VALUE.SOURCE.PERP_MARKET_SEARCH,
+      });
+
+      // A results/no-results screen view is only meaningful once the counts are
+      // known; while loading no such screen has actually been shown yet.
+      if (resultsSettled) {
+        trackRef.current(MetaMetricsEventName.PerpsScreenViewed, {
+          [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasResults
+            ? PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_RESULTS_SHOWN
+            : PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_NO_RESULTS,
+          [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
+          [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
+        });
+      }
+    },
+    [],
+  );
+
+  const flushPendingSearchQuery = useCallback(() => {
+    if (!pendingQueryRef.current) {
+      return;
+    }
+    emitSearchQuery(pendingQueryRef.current, !isLoadingRef.current);
+    pendingQueryRef.current = null;
+  }, [emitSearchQuery]);
 
   const emitSearchAbandoned = useCallback(() => {
     if (!emittedQueryRef.current || resultTappedRef.current) {
@@ -265,49 +341,47 @@ export const MarketListView = () => {
   // and re-runs on count changes so the emitted count matches what is rendered.
   const trimmedQuery = searchQuery.trim();
   useEffect(() => {
-    if (!trimmedQuery || isLoading) {
+    if (!trimmedQuery) {
+      // Emptying the box ends the session: drop anything still pending and
+      // restart the clock for the next one.
+      pendingQueryRef.current = null;
+      searchStartedAtRef.current = null;
       return undefined;
+    }
+    // The clock starts at the first keystroke, not at the first emitted query,
+    // so time_in_search_ms / time_to_tap_ms cover the whole search session and
+    // stay comparable with mobile rather than running a debounce shorter.
+    if (searchStartedAtRef.current === null) {
+      searchStartedAtRef.current = Date.now();
     }
     const normalizedQuery = trimmedQuery.toLowerCase();
     if (emittedQueryRef.current === normalizedQuery) {
+      pendingQueryRef.current = null;
+      return undefined;
+    }
+    pendingQueryRef.current = normalizedQuery;
+    // Wait for the markets to settle so the reported count is never a mid-load
+    // zero. The effect re-runs when loading completes or the count changes.
+    if (isLoading) {
       return undefined;
     }
     const timeoutId = setTimeout(() => {
-      const resultCount = displayedMarketsRef.current.length;
-      const hasResults = resultCount > 0;
-      if (searchStartedAtRef.current === null) {
-        searchStartedAtRef.current = Date.now();
-      }
-      emittedQueryRef.current = normalizedQuery;
-      emittedResultsCountRef.current = resultCount;
-      queryCountRef.current += 1;
-      resultTappedRef.current = false;
-
-      trackRef.current(MetaMetricsEventName.PerpsSearchQuery, {
-        [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
-        [PERPS_EVENT_PROPERTY.RESULTS_COUNT]: resultCount,
-        [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
-        // No search chips in the Extension, so `discovery` never applies: a
-        // short ticker-like token reads as intent, anything else as browse.
-        [PERPS_EVENT_PROPERTY.MODE]: /^[a-z0-9]{1,6}$/u.test(normalizedQuery)
-          ? 'intent'
-          : 'browse',
-        [PERPS_EVENT_PROPERTY.SOURCE]:
-          PERPS_EVENT_VALUE.SOURCE.PERP_MARKET_SEARCH,
-      });
-      trackRef.current(MetaMetricsEventName.PerpsScreenViewed, {
-        [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasResults
-          ? PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_RESULTS_SHOWN
-          : PERPS_EVENT_VALUE.SCREEN_TYPE.SEARCH_NO_RESULTS,
-        [PERPS_EVENT_PROPERTY.SEARCH_QUERY]: normalizedQuery,
-        [PERPS_EVENT_PROPERTY.RESULT_COUNT]: resultCount,
-      });
+      emitSearchQuery(normalizedQuery, true);
+      pendingQueryRef.current = null;
     }, SEARCH_QUERY_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
-  }, [trimmedQuery, isLoading, displayedMarkets.length]);
+  }, [trimmedQuery, isLoading, displayedMarkets.length, emitSearchQuery]);
 
-  // Leaving the page with an unresolved search is an abandonment.
-  useEffect(() => emitSearchAbandoned, [emitSearchAbandoned]);
+  // Leaving the page flushes a query still inside the debounce window (so the
+  // session is measured rather than dropped), then reports the unresolved
+  // search as an abandonment.
+  useEffect(
+    () => () => {
+      flushPendingSearchQuery();
+      emitSearchAbandoned();
+    },
+    [flushPendingSearchQuery, emitSearchAbandoned],
+  );
 
   // Handlers
   const handleBack = useCallback(() => {

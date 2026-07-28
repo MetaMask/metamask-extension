@@ -36,6 +36,10 @@ export const PERPS_EVENT_PROPERTY = {
   QUERY_COUNT: 'query_count',
   TIME_IN_SEARCH_MS: 'time_in_search_ms',
   TIME_TO_TAP_MS: 'time_to_tap_ms',
+  QUERY_TEXT: 'query_text',
+  QUERY_LENGTH: 'query_length',
+  HAS_RESULTS: 'has_results',
+  ACTIVE_CHIPS: 'active_chips',
 } as const;
 
 /**
@@ -120,10 +124,3 @@ export const PERPS_EVENT_VALUE = {
     REMOVE_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
   },
 } as const;
-
-/**
- * verify-locales scans quoted strings in `shared/` and treats them as locale
- * keys. Keep the former mirror's `'tutorial'` literal so removing the hand-
- * maintained enum does not fail locale verification.
- */
-export const PERPS_VERIFY_LOCALE_FALSE_POSITIVES = ['tutorial'] as const;

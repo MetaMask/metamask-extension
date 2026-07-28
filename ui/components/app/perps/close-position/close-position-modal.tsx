@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -439,18 +439,21 @@ export const ClosePositionModal = ({
   );
 
   // Emit when the modal closes without a confirmed close. Snapshot refreshed
-  // each render so the emit carries the latest size.
-  latestAbandonPropsRef.current = {
-    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-      PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-    [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
-    [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
-    [PERPS_EVENT_PROPERTY.DIRECTION]:
-      getPositionDirection(position.size) === 'long'
-        ? PERPS_EVENT_VALUE.DIRECTION.LONG
-        : PERPS_EVENT_VALUE.DIRECTION.SHORT,
-    [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
-  };
+  // after each render so the emit carries the latest size. Written in an effect
+  // rather than during render to keep the render body pure.
+  useEffect(() => {
+    latestAbandonPropsRef.current = {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+      [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.DIRECTION]:
+        getPositionDirection(position.size) === 'long'
+          ? PERPS_EVENT_VALUE.DIRECTION.LONG
+          : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+      [PERPS_EVENT_PROPERTY.ORDER_SIZE]: closeNotionalUsd,
+    };
+  }, [position.symbol, position.size, closeNotionalUsd]);
   usePerpsAbandonOrderTracking({
     getAbandonProperties: getAbandonProperties.current,
     hasCommittedRef: hasConfirmedCloseRef,
@@ -735,11 +738,7 @@ export const ClosePositionModal = ({
     currentPrice,
     sizeDecimals,
     limitPrice,
-    closeNotionalUsd,
     estimatedFees,
-    effectivePnl,
-    youWillReceive,
-    closePercent,
     feeRate,
     buildTrackingData,
     onClose,

@@ -10915,9 +10915,6 @@
   "turnOnTokenDetection": {
     "message": "Ενεργοποίηση της ενισχυμένης ανίχνευσης των token"
   },
-  "tutorial": {
-    "message": "Εκμάθηση"
-  },
   "txAlertTitle": {
     "message": "Αυτή η συναλλαγή θα ακυρωθεί"
   },

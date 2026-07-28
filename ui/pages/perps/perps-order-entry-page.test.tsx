@@ -1817,7 +1817,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('does not duplicate symbol in toast description for HIP3 markets', async () => {
+    it('does not duplicate symbol in toast description for HIP3 markets (TAT-3053)', async () => {
       // HIP3 market symbol is "xyz:TSLA" but positionSize uses the display name "TSLA".
       // The strip logic must match against the display name, not the raw symbol,
       // otherwise the toast reads "Long 0.5 TSLA TSLA" instead of "Long 0.5 TSLA".
@@ -2224,7 +2224,7 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastUpdateFailed',
-        description: "We couldn't load this page.",
+        description: messages.somethingWentWrong.message,
       });
     });
 

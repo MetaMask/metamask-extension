@@ -2058,7 +2058,7 @@ describe('PerpsMarketDetailPage', () => {
     });
   });
 
-  describe('orders section spacing', () => {
+  describe('orders section spacing (TAT-3264)', () => {
     it('renders the orders section header with the same top spacing token as the stats section header', () => {
       const store = mockStore(createMockState(true));
       renderWithProvider(<PerpsMarketDetailPage />, store);

@@ -10915,9 +10915,6 @@
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
   },
-  "tutorial": {
-    "message": "Pagtuturo"
-  },
   "txAlertTitle": {
     "message": "Ibabalik ang transaksyong ito"
   },

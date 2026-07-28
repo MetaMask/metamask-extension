@@ -64,6 +64,30 @@ const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
   /^error$/iu,
 ];
 
+/**
+ * Build the margin-adjustment failure toast, swapping unhelpful backend strings
+ * ("unknown error", empty) for the localized fallback copy. Shared by the
+ * `{ success: false }` branch and the transport `catch`.
+ */
+const getMarginAdjustmentFailedToast = (
+  errorMessage: string,
+  fallbackDescription: string,
+) => {
+  const normalizedErrorMessage = errorMessage.trim();
+  const shouldUseFallbackDescription =
+    normalizedErrorMessage.length === 0 ||
+    MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+      pattern.test(normalizedErrorMessage),
+    );
+
+  return {
+    key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+    description: shouldUseFallbackDescription
+      ? fallbackDescription
+      : normalizedErrorMessage,
+  };
+};
+
 export type EditMarginModalContentProps = {
   position: Position;
   account: AccountState | null;
@@ -109,8 +133,8 @@ export const EditMarginModalContent = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
-  const { track } = usePerpsEventTracking();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const { track } = usePerpsEventTracking();
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -315,19 +339,13 @@ export const EditMarginModalContent = ({
           // next perps-controller release (core #9471) — a client fallback
           // would double-emit once that ships.
           const errorMessage = result.error || 'Failed to update margin';
-          const normalizedErrorMessage = errorMessage.trim();
-          const shouldUseFallbackDescription =
-            normalizedErrorMessage.length === 0 ||
-            MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-              pattern.test(normalizedErrorMessage),
-            );
 
-          replacePerpsToastByKey({
-            key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-            description: shouldUseFallbackDescription
-              ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-              : normalizedErrorMessage,
-          });
+          replacePerpsToastByKey(
+            getMarginAdjustmentFailedToast(
+              errorMessage,
+              t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+            ),
+          );
           // Error is DISPLAYED — emit the error screen view.
           trackPerpsErrorScreenViewed(
             track,
@@ -373,19 +391,12 @@ export const EditMarginModalContent = ({
           PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
         );
 
-        const normalizedErrorMessage = errorMessage.trim();
-        const shouldUseFallbackDescription =
-          normalizedErrorMessage.length === 0 ||
-          MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
-            pattern.test(normalizedErrorMessage),
-          );
-
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
-          description: shouldUseFallbackDescription
-            ? t('perpsToastMarginAdjustmentFailedDescriptionFallback')
-            : normalizedErrorMessage,
-        });
+        replacePerpsToastByKey(
+          getMarginAdjustmentFailedToast(
+            errorMessage,
+            t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+          ),
+        );
       } finally {
         setIsSaving(false);
         onSavingChange?.(false);
@@ -400,8 +411,8 @@ export const EditMarginModalContent = ({
     position.symbol,
     onClose,
     onSavingChange,
-    track,
     replacePerpsToastByKey,
+    track,
     t,
   ]);
 

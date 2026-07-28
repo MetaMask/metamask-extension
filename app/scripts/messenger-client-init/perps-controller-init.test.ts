@@ -783,10 +783,7 @@ describe('PerpsControllerInit', () => {
         );
         return Object.assign(
           new Error('Failed to establish WebSocket connection'),
-          {
-            name: 'WebSocketRequestError',
-            cause,
-          },
+          { name: 'WebSocketRequestError', cause },
         );
       }
 
@@ -862,10 +859,7 @@ describe('PerpsControllerInit', () => {
           );
           const wsError = Object.assign(
             new Error('Failed to establish WebSocket connection'),
-            {
-              name: 'WebSocketRequestError',
-              cause,
-            },
+            { name: 'WebSocketRequestError', cause },
           );
           getPositions.mockRejectedValueOnce(wsError);
 
@@ -881,9 +875,7 @@ describe('PerpsControllerInit', () => {
           const getPositions = messengerClient.getPositions as jest.Mock;
           const wsError = Object.assign(
             new Error('Failed to close WebSocket connection'),
-            {
-              name: 'WebSocketRequestError',
-            },
+            { name: 'WebSocketRequestError' },
           );
           getPositions.mockRejectedValueOnce(wsError);
 

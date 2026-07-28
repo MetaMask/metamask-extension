@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   Navigate,
@@ -227,6 +227,15 @@ function formStateToOrderParams(
 
 const FULL_CLOSE_PERCENT = 100;
 
+/** Leverage ceiling assumed when the market is unknown or not yet loaded. */
+const DEFAULT_MAX_LEVERAGE = 50;
+
+/**
+ * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
+ * emitted, so a burst of keystrokes reports one considered event.
+ */
+const TRANSACTION_CONSIDERED_DEBOUNCE_MS = 1000;
+
 function buildClosePositionParams(
   formState: OrderFormState,
   currentPrice: number,
@@ -338,14 +347,9 @@ const PerpsOrderEntryPage = () => {
     const pending = config?.pendingConfig;
     // Report the leverage the UI actually seeds, which is clamped to the
     // market max (mirrors `initialLeverage`) — not the raw saved config.
-    const marketForSymbol = decodedSymbol
-      ? allMarkets.find(
-          (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
-        )
-      : undefined;
-    const marketMaxLeverage = marketForSymbol
-      ? parseInt(marketForSymbol.maxLeverage.replace('x', ''), 10)
-      : 50;
+    const marketMaxLeverage = market
+      ? parseInt(market.maxLeverage.replace('x', ''), 10)
+      : DEFAULT_MAX_LEVERAGE;
     const savedLeverage = config?.leverage ?? DEFAULT_LEVERAGE;
     return {
       [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
@@ -360,7 +364,7 @@ const PerpsOrderEntryPage = () => {
         pending?.takeProfitPrice || pending?.stopLossPrice,
       ),
     };
-  }, [tradeConfigurations, isTestnet, decodedSymbol, allMarkets]);
+  }, [tradeConfigurations, isTestnet, decodedSymbol, market]);
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -606,26 +610,35 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
         [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
       });
-    }, 1000);
+    }, TRANSACTION_CONSIDERED_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
   }, [orderMode, orderFormState, positionDirection]);
 
-  // Snapshot of the abandon-order props, refreshed each render so the unmount /
-  // page-hide emit carries the latest form state rather than a mount-time copy.
-  latestAbandonPropsRef.current = {
-    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-      PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-    [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
-    [PERPS_EVENT_PROPERTY.ASSET]: orderFormState?.asset ?? decodedSymbol ?? '',
-    [PERPS_EVENT_PROPERTY.DIRECTION]:
-      orderDirection === 'long'
-        ? PERPS_EVENT_VALUE.DIRECTION.LONG
-        : PERPS_EVENT_VALUE.DIRECTION.SHORT,
-    [PERPS_EVENT_PROPERTY.ORDER_SIZE]: Number.parseFloat(
-      orderFormState?.amount?.replace(/,/gu, '') || '0',
-    ),
-    [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: orderFormState?.leverage ?? 0,
-  };
+  // Snapshot of the abandon-order props, refreshed after each render so the
+  // unmount / page-hide emit carries the latest form state rather than a
+  // mount-time copy. Written in an effect to keep the render body pure.
+  useEffect(() => {
+    latestAbandonPropsRef.current = {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+      [PERPS_EVENT_PROPERTY.ACTION]: PERPS_EVENT_VALUE.ACTION.ABANDON_ORDER,
+      [PERPS_EVENT_PROPERTY.ASSET]: orderFormState?.asset ?? decodedSymbol ?? '',
+      [PERPS_EVENT_PROPERTY.DIRECTION]:
+        orderDirection === 'long'
+          ? PERPS_EVENT_VALUE.DIRECTION.LONG
+          : PERPS_EVENT_VALUE.DIRECTION.SHORT,
+      [PERPS_EVENT_PROPERTY.ORDER_SIZE]: Number.parseFloat(
+        orderFormState?.amount?.replace(/,/gu, '') || '0',
+      ),
+      [PERPS_EVENT_PROPERTY.LEVERAGE_USED]: orderFormState?.leverage ?? 0,
+    };
+  }, [
+    orderFormState?.asset,
+    orderFormState?.amount,
+    orderFormState?.leverage,
+    decodedSymbol,
+    orderDirection,
+  ]);
   usePerpsAbandonOrderTracking({
     getAbandonProperties: getAbandonProperties.current,
     hasCommittedRef: hasSubmittedOrderRef,
@@ -968,7 +981,7 @@ const PerpsOrderEntryPage = () => {
 
   const maxLeverage = useMemo(() => {
     if (!market) {
-      return 50;
+      return DEFAULT_MAX_LEVERAGE;
     }
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);

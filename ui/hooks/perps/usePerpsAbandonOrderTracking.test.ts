@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import { renderHook } from '@testing-library/react-hooks';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { usePerpsAbandonOrderTracking } from './usePerpsAbandonOrderTracking';

@@ -10915,9 +10915,6 @@
   "turnOnTokenDetection": {
     "message": "Erweiterte Token-Erkennung aktivieren"
   },
-  "tutorial": {
-    "message": "Tutorial"
-  },
   "txAlertTitle": {
     "message": "Diese Transaktion wird rückgängig gemacht"
   },

@@ -10915,9 +10915,6 @@
   "turnOnTokenDetection": {
     "message": "Включите расширенное определение токенов"
   },
-  "tutorial": {
-    "message": "Руководство"
-  },
   "txAlertTitle": {
     "message": "Эта транзакция будет отменена"
   },

@@ -3,6 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import messages from '../../../../../app/_locales/en/messages.json';
 import { mockPositions, mockAccountState } from '../mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../utils/formatPerpsDisplayPrice';
 import { EditMarginModalContent } from './edit-margin-modal-content';
@@ -263,7 +264,8 @@ describe('EditMarginModalContent', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastMarginAdjustmentFailed',
-          description: 'Unable to adjust margin. Please try again.',
+          description:
+            messages.perpsToastMarginAdjustmentFailedDescriptionFallback.message,
         });
       });
       expect(defaultProps.onClose).not.toHaveBeenCalled();
