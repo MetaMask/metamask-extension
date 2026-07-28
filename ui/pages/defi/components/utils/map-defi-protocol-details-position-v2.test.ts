@@ -43,6 +43,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
       title: 'Ethereum',
       symbol: 'ETH',
       isNative: true,
+      address: '60',
     });
   });
 
@@ -56,6 +57,19 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
       mapDefiProtocolDetailsPositionV2ToToken(positionWithoutPrice),
     ).toMatchObject({
       tokenFiatAmount: null,
+    });
+  });
+
+  it('defaults image to an empty string when tokenImage is missing', () => {
+    const positionWithoutImage: DeFiUnderlyingPosition = {
+      ...position,
+      tokenImage: undefined,
+    };
+
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(positionWithoutImage),
+    ).toMatchObject({
+      image: '',
     });
   });
 

@@ -1,8 +1,4 @@
-import {
-  isCaipChainId,
-  parseCaipAssetType,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { parseCaipAssetType, parseCaipChainId } from '@metamask/utils';
 import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
@@ -12,7 +8,7 @@ import type { TokenWithFiatAmount } from '../../../../components/app/assets/type
 function toTokenCellChainId(
   chainId: DeFiUnderlyingPosition['chainId'],
 ): TokenWithFiatAmount['chainId'] {
-  if (isCaipChainId(chainId) && isEvmChainId(chainId)) {
+  if (isEvmChainId(chainId)) {
     return decimalToPrefixedHex(parseCaipChainId(chainId).reference);
   }
 
@@ -27,10 +23,12 @@ function toTokenCellAddress(
   );
 
   if (assetNamespace === 'slip44') {
-    return assetReference;
+    return assetReference as TokenWithFiatAmount['address'];
   }
 
-  return toChecksumHexAddress(assetReference) ?? assetReference;
+  return toChecksumHexAddress(
+    assetReference,
+  ) as TokenWithFiatAmount['address'];
 }
 
 /**
@@ -64,7 +62,7 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     title: position.name,
     symbol: position.symbol,
     tokenFiatAmount: position.marketValue ?? null,
-    image: position.tokenImage,
+    image: position.tokenImage ?? '',
     balance: normalizedBalance.toString(),
     secondary: null,
     string: normalizedBalance.toString(),
@@ -72,5 +70,5 @@ export function mapDefiProtocolDetailsPositionV2ToToken(
     chainId: toTokenCellChainId(position.chainId),
     assetId: position.assetId,
     isNative,
-  };
+  } as TokenWithFiatAmount;
 }
