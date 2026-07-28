@@ -1,4 +1,4 @@
-import { E2E_TESTS_REGEX, JS_REGEX } from './constants';
+import { E2E_TESTS_REGEX, JS_REGEX, SCSS_REGEX } from './constants';
 
 describe('Regular Expressions used in Fitness Functions', (): void => {
   describe(`E2E_TESTS_REGEX "${E2E_TESTS_REGEX}"`, (): void => {
@@ -99,6 +99,46 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
       PATHS_IT_SHOULD_NOT_MATCH.forEach((path: string): void => {
         it(`should not match "${path}"`, (): void => {
           const result = JS_REGEX.test(path);
+          expect(result).toStrictEqual(false);
+        });
+      });
+    });
+  });
+
+  describe(`SCSS_REGEX "${SCSS_REGEX}"`, (): void => {
+    const PATHS_IT_SHOULD_MATCH = [
+      'app/much/longer/path/file.scss',
+      'shared/file.scss',
+      'ui/much/longer/path/file.scss',
+    ];
+
+    const PATHS_IT_SHOULD_NOT_MATCH = [
+      // any without SCSS extension
+      'file',
+      'file.extension',
+      'path/file.extension',
+      'much/longer/path/file.extension',
+      'file.css',
+      'path/file.css',
+      'much/longer/path/file.css',
+      // any SCSS files outside the app, shared, and ui directories
+      'test/longer/path/file.scss',
+      'random/longer/path/file.scss',
+    ];
+
+    describe('included paths', (): void => {
+      PATHS_IT_SHOULD_MATCH.forEach((path: string): void => {
+        it(`should match "${path}"`, (): void => {
+          const result = SCSS_REGEX.test(path);
+          expect(result).toStrictEqual(true);
+        });
+      });
+    });
+
+    describe('excluded paths', (): void => {
+      PATHS_IT_SHOULD_NOT_MATCH.forEach((path: string): void => {
+        it(`should not match "${path}"`, (): void => {
+          const result = SCSS_REGEX.test(path);
           expect(result).toStrictEqual(false);
         });
       });
