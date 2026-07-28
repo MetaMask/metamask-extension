@@ -47,27 +47,26 @@
 }
 
 // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
-html[data-theme='dark'][data-pure-black='true'] {
+html[data-theme='dark'] {
   .tippy-popper {
     .tippy-tooltip.tippy-tooltip--mm-custom-theme {
-      background: var(--color-background-alternative);
-      border: 1px solid var(--color-border-muted);
+      background: var(--color-background-section);
     }
 
     &[x-placement^='top'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
-      border-top-color: var(--color-background-alternative);
+      border-top-color: var(--color-background-section);
     }
 
     &[x-placement^='right'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
-      border-right-color: var(--color-background-alternative);
+      border-right-color: var(--color-background-section);
     }
 
     &[x-placement^='left'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
-      border-left-color: var(--color-background-alternative);
+      border-left-color: var(--color-background-section);
     }
 
     &[x-placement^='bottom'] .tippy-tooltip.tippy-tooltip--mm-custom-theme [x-arrow] {
-      border-bottom-color: var(--color-background-alternative);
+      border-bottom-color: var(--color-background-section);
     }
   }
 }
