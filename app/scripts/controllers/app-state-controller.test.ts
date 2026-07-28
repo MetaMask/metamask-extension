@@ -875,7 +875,7 @@ describe('AppStateController', () => {
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
-              "trezorModel": null,
+              "trezorModels": {},
               "updateModalLastDismissedAt": null,
             }
           `);
@@ -963,7 +963,7 @@ describe('AppStateController', () => {
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
-              "trezorModel": null,
+              "trezorModels": {},
               "updateModalLastDismissedAt": null,
             }
           `);
@@ -1035,7 +1035,7 @@ describe('AppStateController', () => {
               "snapsInstallPrivacyWarningShown": false,
               "termsOfUseLastAgreed": 1000,
               "timeoutMinutes": 0,
-              "trezorModel": null,
+              "trezorModels": {},
               "updateModalLastDismissedAt": null,
             }
           `);

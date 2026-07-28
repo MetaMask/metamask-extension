@@ -51,6 +51,10 @@ const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 const mockForgetDevice = jest.fn().mockResolvedValue(undefined);
 const mockUnlockHardwareWalletAccountsAction = jest.fn();
 const mockUnlockHardwareWalletAccounts = jest.fn().mockResolvedValue(undefined);
+// Only relevant for Trezor/OneKey: defaults to "no extra devices detected"
+// so existing single-device flows behave exactly as before this mock
+// existed. Tests exercising the multi-device picker override this.
+const mockListTrezorDevices = jest.fn().mockResolvedValue([]);
 
 jest.mock('../../../store/actions', () => ({
   connectHardware: (...args: unknown[]) => {
@@ -68,6 +72,7 @@ jest.mock('../../../store/actions', () => ({
   setHardwareWalletDefaultHdPath: () => ({
     type: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   }),
+  listTrezorDevices: () => mockListTrezorDevices,
 }));
 
 const mockGetActiveQrCodeScanRequest = jest.fn().mockReturnValue(null);
@@ -810,6 +815,7 @@ describe('ConnectHardwareForm', () => {
             HardwareDeviceNames.trezor,
             null,
             '',
+            undefined,
           );
         });
       });

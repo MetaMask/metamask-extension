@@ -1,0 +1,378 @@
+diff --git a/dist/trezor-bridge.d.cts b/dist/trezor-bridge.d.cts
+index a20c794f46a31b3f2a362c07897526c3ef463a61..3b04965c331acd16f43fa5d217f6764869146836 100644
+--- a/dist/trezor-bridge.d.cts
++++ b/dist/trezor-bridge.d.cts
+@@ -1,10 +1,17 @@
+-import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
++import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash, Features } from "@trezor/connect-web";
+ export type ExtendedPublicKey = {
+     publicKey: string;
+     chainCode: string;
+ };
+ export interface TrezorBridge {
+     model?: string;
++    /**
++     * Stable per-device identity (Trezor's `features.device_id`), set by
++     * the keyring once known so the bridge can target this specific
++     * physical device on every subsequent call, even while other
++     * devices are connected at the same time.
++     */
++    deviceId?: string;
+     init(settings: {
+         manifest: Manifest;
+     } & Partial<ConnectSettings>): Promise<void>;
+@@ -16,5 +23,11 @@ export interface TrezorBridge {
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
++    /**
++     * Optional: not every bridge implementation supports reading device
++     * features. When present, the keyring uses it after unlocking to
++     * learn the device's stable `device_id`.
++     */
++    getFeatures?(): Response<Features>;
+ }
+ //# sourceMappingURL=trezor-bridge.d.cts.map
+\ No newline at end of file
+diff --git a/dist/trezor-bridge.d.mts b/dist/trezor-bridge.d.mts
+index 26082a51a675ff4a1fabdac6bffe4d2335808ae8..534b44029beee78b78d25005e20282cfc08504e0 100644
+--- a/dist/trezor-bridge.d.mts
++++ b/dist/trezor-bridge.d.mts
+@@ -1,10 +1,17 @@
+-import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash } from "@trezor/connect-web";
++import type { ConnectSettings, EthereumSignedTx, Manifest, PROTO, Response, Params, EthereumSignMessage, EthereumSignTransaction, EthereumSignTypedDataTypes, EthereumSignTypedHash, Features } from "@trezor/connect-web";
+ export type ExtendedPublicKey = {
+     publicKey: string;
+     chainCode: string;
+ };
+ export interface TrezorBridge {
+     model?: string;
++    /**
++     * Stable per-device identity (Trezor's `features.device_id`), set by
++     * the keyring once known so the bridge can target this specific
++     * physical device on every subsequent call, even while other
++     * devices are connected at the same time.
++     */
++    deviceId?: string;
+     init(settings: {
+         manifest: Manifest;
+     } & Partial<ConnectSettings>): Promise<void>;
+@@ -16,5 +23,11 @@ export interface TrezorBridge {
+     ethereumSignTransaction(params: Params<EthereumSignTransaction>): Response<EthereumSignedTx>;
+     ethereumSignMessage(params: Params<EthereumSignMessage>): Response<PROTO.MessageSignature>;
+     ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(params: Params<EthereumSignTypedHash<T>>): Response<PROTO.EthereumTypedDataSignature>;
++    /**
++     * Optional: not every bridge implementation supports reading device
++     * features. When present, the keyring uses it after unlocking to
++     * learn the device's stable `device_id`.
++     */
++    getFeatures?(): Response<Features>;
+ }
+ //# sourceMappingURL=trezor-bridge.d.mts.map
+\ No newline at end of file
+diff --git a/dist/trezor-keyring.cjs b/dist/trezor-keyring.cjs
+index 61c9a539579e97ba3cad201c6477260b36f0950c..743879a94eca9e5a0557f7ed48bd0643c3b8c9f6 100644
+--- a/dist/trezor-keyring.cjs
++++ b/dist/trezor-keyring.cjs
+@@ -71,6 +71,7 @@ class TrezorKeyring {
+         this.perPage = 5;
+         this.unlockedAccount = 0;
+         this.paths = {};
++        this.deviceId = undefined;
+         if (!bridge) {
+             throw new Error('Bridge is a required dependency for the keyring');
+         }
+@@ -102,6 +103,7 @@ class TrezorKeyring {
+             paths: this.paths,
+             perPage: this.perPage,
+             unlockedAccount: this.unlockedAccount,
++            deviceId: this.deviceId,
+         });
+     }
+     async deserialize(opts) {
+@@ -110,12 +112,43 @@ class TrezorKeyring {
+         this.accounts = (_b = opts.accounts) !== null && _b !== void 0 ? _b : [];
+         this.page = (_c = opts.page) !== null && _c !== void 0 ? _c : 0;
+         this.perPage = (_d = opts.perPage) !== null && _d !== void 0 ? _d : 5;
++        this.deviceId = opts.deviceId;
++        if (this.deviceId) {
++            this.bridge.deviceId = this.deviceId;
++        }
+         return Promise.resolve();
+     }
+     isUnlocked() {
+         var _a;
+         return Boolean((_a = this.hdk) === null || _a === void 0 ? void 0 : _a.publicKey);
+     }
++    /**
++     * Learns and persists this keyring's physical device's stable
++     * `device_id` the first time it can be read, via `bridge.getFeatures()`.
++     * Once known, it is also pushed onto the bridge so every subsequent
++     * call targets this specific device (`device: { path }`), which is
++     * required to route requests correctly when more than one device is
++     * connected at the same time. Best-effort: bridges that do not
++     * implement `getFeatures`, or a transient read failure, leave
++     * `deviceId` unset rather than failing `unlock()`.
++     */
++    async captureDeviceId() {
++        if (this.deviceId || typeof this.bridge.getFeatures !== 'function') {
++            return;
++        }
++        try {
++            const featuresResponse = await this.bridge.getFeatures();
++            if (featuresResponse.success && featuresResponse.payload.device_id) {
++                this.deviceId = featuresResponse.payload.device_id;
++                this.bridge.deviceId = this.deviceId;
++            }
++        }
++        catch (_error) {
++            // Best-effort: signing still works via the bridge's current
++            // implicit device targeting, it just cannot be pinned to a
++            // specific device yet.
++        }
++    }
+     async unlock() {
+         var _a, _b;
+         if (this.isUnlocked()) {
+@@ -131,6 +164,7 @@ class TrezorKeyring {
+             }
+             this.hdk.publicKey = Buffer.from(response.payload.publicKey, 'hex');
+             this.hdk.chainCode = Buffer.from(response.payload.chainCode, 'hex');
++            await this.captureDeviceId();
+             return 'just unlocked';
+         }
+         catch (error) {
+diff --git a/dist/trezor-keyring.d.cts b/dist/trezor-keyring.d.cts
+index f945654a8bc65cb3dc120a2f0ba846702b542354..489b634837d061cefcd5bd5e4035a601854df5ec 100644
+--- a/dist/trezor-keyring.d.cts
++++ b/dist/trezor-keyring.d.cts
+@@ -26,6 +26,7 @@ export type TrezorControllerOptions = {
+     accounts?: Hex[];
+     page?: number;
+     perPage?: number;
++    deviceId?: string;
+ };
+ export type TrezorControllerState = {
+     hdPath: string;
+@@ -34,6 +35,13 @@ export type TrezorControllerState = {
+     paths: Record<Hex, number>;
+     perPage: number;
+     unlockedAccount: number;
++    /**
++     * The physical device's stable `device_id`, learned via
++     * `bridge.getFeatures()` the first time this keyring unlocks.
++     * Persisted so a reconnected device is recognized as the same
++     * one instead of being treated as a new pairing.
++     */
++    deviceId?: string;
+ };
+ export declare class TrezorKeyring implements Keyring {
+     #private;
+@@ -41,6 +49,12 @@ export declare class TrezorKeyring implements Keyring {
+     readonly type: string;
+     accounts: readonly Hex[];
+     hdk: HDKey;
++    /**
++     * The physical device's stable `device_id`, or `undefined` until the
++     * first successful `unlock()` learns it (requires the bridge to
++     * implement `getFeatures`).
++     */
++    deviceId: string | undefined;
+     hdPath: string;
+     page: number;
+     perPage: number;
+@@ -63,6 +77,7 @@ export declare class TrezorKeyring implements Keyring {
+     deserialize(opts: TrezorControllerOptions): Promise<void>;
+     isUnlocked(): boolean;
+     unlock(): Promise<string>;
++    captureDeviceId(): Promise<void>;
+     setAccountToUnlock(index: number | string): void;
+     addAccounts(numberOfAccounts: number): Promise<Hex[]>;
+     getFirstPage(): Promise<AccountPage>;
+diff --git a/dist/trezor-keyring.d.mts b/dist/trezor-keyring.d.mts
+index 2a7598f864ba9ecfc2ef781f6760c00c0d2dd75d..05083283debbc59046d33984743924c6348dd8ea 100644
+--- a/dist/trezor-keyring.d.mts
++++ b/dist/trezor-keyring.d.mts
+@@ -26,6 +26,7 @@ export type TrezorControllerOptions = {
+     accounts?: Hex[];
+     page?: number;
+     perPage?: number;
++    deviceId?: string;
+ };
+ export type TrezorControllerState = {
+     hdPath: string;
+@@ -34,6 +35,13 @@ export type TrezorControllerState = {
+     paths: Record<Hex, number>;
+     perPage: number;
+     unlockedAccount: number;
++    /**
++     * The physical device's stable `device_id`, learned via
++     * `bridge.getFeatures()` the first time this keyring unlocks.
++     * Persisted so a reconnected device is recognized as the same
++     * one instead of being treated as a new pairing.
++     */
++    deviceId?: string;
+ };
+ export declare class TrezorKeyring implements Keyring {
+     #private;
+@@ -41,6 +49,12 @@ export declare class TrezorKeyring implements Keyring {
+     readonly type: string;
+     accounts: readonly Hex[];
+     hdk: HDKey;
++    /**
++     * The physical device's stable `device_id`, or `undefined` until the
++     * first successful `unlock()` learns it (requires the bridge to
++     * implement `getFeatures`).
++     */
++    deviceId: string | undefined;
+     hdPath: string;
+     page: number;
+     perPage: number;
+@@ -63,6 +77,7 @@ export declare class TrezorKeyring implements Keyring {
+     deserialize(opts: TrezorControllerOptions): Promise<void>;
+     isUnlocked(): boolean;
+     unlock(): Promise<string>;
++    captureDeviceId(): Promise<void>;
+     setAccountToUnlock(index: number | string): void;
+     addAccounts(numberOfAccounts: number): Promise<Hex[]>;
+     getFirstPage(): Promise<AccountPage>;
+diff --git a/dist/trezor-keyring.mjs b/dist/trezor-keyring.mjs
+index 0a13ac5ba65c5d7cb04481441716ce317d32b627..307eda334dc1887a2a70f5ccd5b1dfbe974bb4df 100644
+--- a/dist/trezor-keyring.mjs
++++ b/dist/trezor-keyring.mjs
+@@ -72,6 +72,7 @@ export class TrezorKeyring {
+         this.perPage = 5;
+         this.unlockedAccount = 0;
+         this.paths = {};
++        this.deviceId = undefined;
+         if (!bridge) {
+             throw new Error('Bridge is a required dependency for the keyring');
+         }
+@@ -103,6 +104,7 @@ export class TrezorKeyring {
+             paths: this.paths,
+             perPage: this.perPage,
+             unlockedAccount: this.unlockedAccount,
++            deviceId: this.deviceId,
+         });
+     }
+     async deserialize(opts) {
+@@ -111,12 +113,43 @@ export class TrezorKeyring {
+         this.accounts = (_b = opts.accounts) !== null && _b !== void 0 ? _b : [];
+         this.page = (_c = opts.page) !== null && _c !== void 0 ? _c : 0;
+         this.perPage = (_d = opts.perPage) !== null && _d !== void 0 ? _d : 5;
++        this.deviceId = opts.deviceId;
++        if (this.deviceId) {
++            this.bridge.deviceId = this.deviceId;
++        }
+         return Promise.resolve();
+     }
+     isUnlocked() {
+         var _a;
+         return Boolean((_a = this.hdk) === null || _a === void 0 ? void 0 : _a.publicKey);
+     }
++    /**
++     * Learns and persists this keyring's physical device's stable
++     * `device_id` the first time it can be read, via `bridge.getFeatures()`.
++     * Once known, it is also pushed onto the bridge so every subsequent
++     * call targets this specific device (`device: { path }`), which is
++     * required to route requests correctly when more than one device is
++     * connected at the same time. Best-effort: bridges that do not
++     * implement `getFeatures`, or a transient read failure, leave
++     * `deviceId` unset rather than failing `unlock()`.
++     */
++    async captureDeviceId() {
++        if (this.deviceId || typeof this.bridge.getFeatures !== 'function') {
++            return;
++        }
++        try {
++            const featuresResponse = await this.bridge.getFeatures();
++            if (featuresResponse.success && featuresResponse.payload.device_id) {
++                this.deviceId = featuresResponse.payload.device_id;
++                this.bridge.deviceId = this.deviceId;
++            }
++        }
++        catch (_error) {
++            // Best-effort: signing still works via the bridge's current
++            // implicit device targeting, it just cannot be pinned to a
++            // specific device yet.
++        }
++    }
+     async unlock() {
+         var _a, _b;
+         if (this.isUnlocked()) {
+@@ -132,6 +165,7 @@ export class TrezorKeyring {
+             }
+             this.hdk.publicKey = Buffer.from(response.payload.publicKey, 'hex');
+             this.hdk.chainCode = Buffer.from(response.payload.chainCode, 'hex');
++            await this.captureDeviceId();
+             return 'just unlocked';
+         }
+         catch (error) {
+diff --git a/dist/v2/trezor-keyring.cjs b/dist/v2/trezor-keyring.cjs
+index 22c3809ba0c41abd5226321d10fdafb307d03910..5fcc8beba5a534841e8ff96d38f022327d5ef06d 100644
+--- a/dist/v2/trezor-keyring.cjs
++++ b/dist/v2/trezor-keyring.cjs
+@@ -210,6 +210,13 @@ class TrezorKeyring extends v2_2.EthKeyringWrapper {
+     getModel() {
+         return this.inner.getModel();
+     }
++    /**
++     * @returns The physical device's stable `device_id`, or `undefined`
++     * until the inner keyring has unlocked at least once.
++     */
++    get deviceId() {
++        return this.inner.deviceId;
++    }
+     /**
+      * @returns The current derivation path used by the inner keyring.
+      */
+diff --git a/dist/v2/trezor-keyring.d.cts b/dist/v2/trezor-keyring.d.cts
+index f335863f31dd64b80ef502ee1979b2f8e054b83f..aeaf9c94161ed621de3279f32923aca64d26b7ee 100644
+--- a/dist/v2/trezor-keyring.d.cts
++++ b/dist/v2/trezor-keyring.d.cts
+@@ -65,6 +65,11 @@ export declare class TrezorKeyring extends EthKeyringWrapper<TrezorKeyringAsEthK
+      * device is paired.
+      */
+     getModel(): string | undefined;
++    /**
++     * @returns The physical device's stable `device_id`, or `undefined`
++     * until the inner keyring has unlocked at least once.
++     */
++    get deviceId(): string | undefined;
+     /**
+      * @returns The current derivation path used by the inner keyring.
+      */
+diff --git a/dist/v2/trezor-keyring.d.mts b/dist/v2/trezor-keyring.d.mts
+index c792b861f0eed722e6d5f9a05575d151b6ce2619..243a78dfa8456570902ac3b41ea38f235e830ec9 100644
+--- a/dist/v2/trezor-keyring.d.mts
++++ b/dist/v2/trezor-keyring.d.mts
+@@ -65,6 +65,11 @@ export declare class TrezorKeyring extends EthKeyringWrapper<TrezorKeyringAsEthK
+      * device is paired.
+      */
+     getModel(): string | undefined;
++    /**
++     * @returns The physical device's stable `device_id`, or `undefined`
++     * until the inner keyring has unlocked at least once.
++     */
++    get deviceId(): string | undefined;
+     /**
+      * @returns The current derivation path used by the inner keyring.
+      */
+diff --git a/dist/v2/trezor-keyring.mjs b/dist/v2/trezor-keyring.mjs
+index d461f86c9f22e92d50446d8c379b4857a1b9fec2..d75ac1d1f6aef46494c888643928cd81fc07a5ee 100644
+--- a/dist/v2/trezor-keyring.mjs
++++ b/dist/v2/trezor-keyring.mjs
+@@ -207,6 +207,13 @@ export class TrezorKeyring extends EthKeyringWrapper {
+     getModel() {
+         return this.inner.getModel();
+     }
++    /**
++     * @returns The physical device's stable `device_id`, or `undefined`
++     * until the inner keyring has unlocked at least once.
++     */
++    get deviceId() {
++        return this.inner.deviceId;
++    }
+     /**
+      * @returns The current derivation path used by the inner keyring.
+      */

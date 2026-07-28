@@ -60,6 +60,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
+import type { TrezorDevice } from '../../../../shared/constants/offscreen-communication';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -155,6 +156,20 @@ const ConnectHardwareForm = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
   const [isFirefox, setIsFirefox] = useState(false);
+  // Only populated when more than one Trezor/OneKey device is connected at
+  // once and none has been chosen yet — lets the user pick which physical
+  // device to pair instead of leaving it to whichever one TrezorConnect
+  // happens to pick.
+  const [trezorDevicePickerOptions, setTrezorDevicePickerOptions] = useState<
+    TrezorDevice[]
+  >([]);
+  // The deviceId of the Trezor/OneKey device whose accounts are currently
+  // shown, if any (undefined for every other hardware wallet type, or if
+  // no explicit device was chosen). Threaded back into `forgetDevice` so
+  // forgetting only removes this device's keyring.
+  const [connectedDeviceId, setConnectedDeviceId] = useState<
+    string | undefined
+  >(undefined);
   const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
     activeQrCodeScanRequest,
   );
@@ -224,6 +239,7 @@ const ConnectHardwareForm = () => {
       hdPath: string,
       loadHid?: boolean,
       shouldShowConnectedAlert = true,
+      deviceId?: string,
     ) => {
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
@@ -239,6 +255,7 @@ const ConnectHardwareForm = () => {
             hdPath,
             loadHid ?? false,
             t as (key: string) => string,
+            deviceId,
           ),
         )) as { address: string; index?: number }[];
 
@@ -272,6 +289,7 @@ const ConnectHardwareForm = () => {
           setHardwareAccounts(newAccounts);
           setUnlocked(true);
           setCurrentDevice(deviceName);
+          setConnectedDeviceId(deviceId);
           setError(null);
         }
       } catch (e: unknown) {
@@ -397,7 +415,7 @@ const ConnectHardwareForm = () => {
   ]);
 
   const connectToHardwareWallet = useCallback(
-    (nextDevice: string) => {
+    async (nextDevice: string) => {
       if (latestPendingDevice.current === nextDevice) {
         return;
       }
@@ -418,16 +436,42 @@ const ConnectHardwareForm = () => {
           .build(),
       );
 
+      if (
+        nextDevice === HardwareDeviceNames.trezor ||
+        nextDevice === HardwareDeviceNames.oneKey
+      ) {
+        // Multiple physical Trezor/OneKey devices can be connected at
+        // once; let the user choose which one to pair instead of leaving
+        // it to whichever one TrezorConnect happens to pick.
+        const connectedDevices = await dispatch(actions.listTrezorDevices());
+        if (connectedDevices.length > 1) {
+          setTrezorDevicePickerOptions(connectedDevices);
+          return;
+        }
+      }
+
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
       defaultHdPaths,
+      dispatch,
       getPage,
       hardwareAccounts.length,
       hardwareWalletKeyrings.length,
       setCurrentDevice,
       trackEvent,
     ],
+  );
+
+  const connectToSelectedTrezorDevice = useCallback(
+    (selectedDeviceId: string) => {
+      if (!device) {
+        return;
+      }
+      setTrezorDevicePickerOptions([]);
+      getPage(device, 0, defaultHdPaths[device], true, true, selectedDeviceId);
+    },
+    [defaultHdPaths, device, getPage],
   );
 
   const onPathChange = useCallback(
@@ -463,7 +507,12 @@ const ConnectHardwareForm = () => {
   const onForgetDevice = useCallback(
     async (deviceName: string, hdPath: string) => {
       try {
-        await dispatch(actions.forgetDevice(deviceName as HardwareDeviceNames));
+        await dispatch(
+          actions.forgetDevice(
+            deviceName as HardwareDeviceNames,
+            connectedDeviceId,
+          ),
+        );
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.HardwareWalletForgotten)
@@ -480,6 +529,7 @@ const ConnectHardwareForm = () => {
         latestHardwareAccounts.current = [];
         setHardwareAccounts([]);
         setCurrentDevice(null);
+        setConnectedDeviceId(undefined);
         setUnlocked(false);
       } catch (e) {
         const errorMessage = toErrorMessage(e);
@@ -499,7 +549,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [connectedDeviceId, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -532,6 +582,7 @@ const ConnectHardwareForm = () => {
             deviceName as HardwareDeviceNames,
             path || null,
             description,
+            connectedDeviceId,
           ),
         );
 
@@ -601,6 +652,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      connectedDeviceId,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,
@@ -694,6 +746,27 @@ const ConnectHardwareForm = () => {
 
   const renderContent = () => {
     if (!hardwareAccounts.length) {
+      if (trezorDevicePickerOptions.length > 0) {
+        // Minimal picker: more than one Trezor/OneKey device is connected
+        // and none has been chosen yet.
+        return (
+          <Box marginHorizontal={5} marginBottom={2}>
+            <Box marginBottom={2}>
+              <Text>{t('selectHardwareWalletDevice')}</Text>
+            </Box>
+            {trezorDevicePickerOptions.map((option) => (
+              <TextButton
+                key={option.deviceId}
+                onClick={() => connectToSelectedTrezorDevice(option.deviceId)}
+                className="hw-connect__device-option"
+              >
+                {option.label || option.model || option.deviceId}
+              </TextButton>
+            ))}
+          </Box>
+        );
+      }
+
       return (
         <SelectHardware
           connectToHardwareWallet={connectToHardwareWallet}

@@ -5407,7 +5407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^7.5.3, @metamask/account-tree-controller@npm:^7.5.5":
+"@metamask/account-tree-controller@npm:7.5.5":
   version: 7.5.5
   resolution: "@metamask/account-tree-controller@npm:7.5.5"
   dependencies:
@@ -5429,6 +5429,31 @@ __metadata:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/18913a9cdf65a5ab640d2cb608f6fb46b0f4ebce1537d4ed3e6502392efb15acb45b0648319a861421e6f527a40c7574e9e505fc4cefdc4f9fde0a06df1e428e
+  languageName: node
+  linkType: hard
+
+"@metamask/account-tree-controller@patch:@metamask/account-tree-controller@npm%3A7.5.5#~/.yarn/patches/@metamask-account-tree-controller-npm-7.5.5-7e92299d95.patch":
+  version: 7.5.5
+  resolution: "@metamask/account-tree-controller@patch:@metamask/account-tree-controller@npm%3A7.5.5#~/.yarn/patches/@metamask-account-tree-controller-npm-7.5.5-7e92299d95.patch::version=7.5.5&hash=797eb1"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^39.0.5"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/multichain-account-service": "npm:^13.0.0"
+    "@metamask/profile-sync-controller": "npm:^28.3.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.11.0"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/280c8ef9cd7899cda76ed1fe279a3e0ecfa4926951e0ef491c314ea4996ce8dee5625061b7a7e10e5f9de6082227594632e00819bdc46f34d03136859b2acdbd
   languageName: node
   linkType: hard
 
@@ -6575,7 +6600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^10.1.0":
+"@metamask/eth-trezor-keyring@npm:10.1.0":
   version: 10.1.0
   resolution: "@metamask/eth-trezor-keyring@npm:10.1.0"
   dependencies:
@@ -6592,6 +6617,26 @@ __metadata:
     hdkey: "npm:^2.1.0"
     tslib: "npm:^2.6.2"
   checksum: 10/20ac27bbb4d6a19807db8108eb941e2b37225e01d2a8efafad5e64d91736caa95de70a0399ccbd9db9e31a76bbc85903a8332c2ef6e3f4f6229d76e48b7a8dd5
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-trezor-keyring@patch:@metamask/eth-trezor-keyring@npm%3A10.1.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-10.1.0-70aadca269.patch":
+  version: 10.1.0
+  resolution: "@metamask/eth-trezor-keyring@patch:@metamask/eth-trezor-keyring@npm%3A10.1.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-10.1.0-70aadca269.patch::version=10.1.0&hash=eb1f66"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/hw-wallet-sdk": "npm:^0.8.0"
+    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-sdk": "npm:^2.1.1"
+    "@metamask/keyring-utils": "npm:^3.3.1"
+    "@metamask/utils": "npm:^11.11.0"
+    "@trezor/connect-plugin-ethereum": "npm:^9.0.5"
+    "@trezor/connect-web": "npm:^9.6.0"
+    hdkey: "npm:^2.1.0"
+    tslib: "npm:^2.6.2"
+  checksum: 10/47a932739c01001e07c6ecee66c38f26d6f48b37397053fa0726b0b7ba5184a39682aa5423e42c24ac68d2491e7df3350e911c95e2b7edf2b9ac61cacbd40672
   languageName: node
   linkType: hard
 
@@ -32843,7 +32888,7 @@ __metadata:
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
-    "@metamask/account-tree-controller": "npm:^7.5.3"
+    "@metamask/account-tree-controller": "patch:@metamask/account-tree-controller@npm%3A7.5.5#~/.yarn/patches/@metamask-account-tree-controller-npm-7.5.5-7e92299d95.patch"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^39.0.3"
     "@metamask/address-book-controller": "npm:^7.1.2"
@@ -32900,7 +32945,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^22.3.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^10.1.0"
+    "@metamask/eth-trezor-keyring": "patch:@metamask/eth-trezor-keyring@npm%3A10.1.0#~/.yarn/patches/@metamask-eth-trezor-keyring-npm-10.1.0-70aadca269.patch"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"

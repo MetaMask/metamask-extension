@@ -70,7 +70,25 @@ export enum TrezorAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getFeatures = 'trezor-get-features',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  listDevices = 'trezor-list-devices',
 }
+
+/**
+ * A Trezor device currently tracked by the Offscreen Document's device
+ * registry. `deviceId` is the device's stable `features.device_id` reported
+ * by TrezorConnect; `path` is the current transport path, which is only
+ * valid for the lifetime of the connection and is re-resolved from
+ * `deviceId` on every request (it changes across reconnects).
+ */
+export type TrezorDevice = {
+  deviceId: string;
+  path: string;
+  label?: string;
+  model?: string;
+  minorVersion?: number;
+};
 
 /**
  * Defines actions intended to be sent to the Trezor Offscreen iframe.

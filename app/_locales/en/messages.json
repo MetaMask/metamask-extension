@@ -8973,6 +8973,9 @@
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
   },
+  "selectHardwareWalletDevice": {
+    "message": "Multiple devices detected. Select which one to connect:"
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
