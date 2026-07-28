@@ -27,20 +27,28 @@ import {
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
+  type ActivityKindFilter,
   type ActivityListFilter,
 } from './helpers';
 import { useActivityScreenViewed } from './useActivityScreenViewed';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
+import { useRampsOrderActivity } from './useRampsOrderActivity';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 62;
 const headerHeight = 40;
+const BUY_SELL_TYPES = new Set(['rampBuy', 'rampSell']);
 
 export function ActivityList({
   filter,
   entryPoint,
-}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
+  kindFilter,
+}: {
+  filter?: ActivityListFilter;
+  entryPoint?: ScreenViewedEntryPoint;
+  kindFilter?: ActivityKindFilter;
+} = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { formatMediumDate } = useFormatters();
@@ -52,23 +60,34 @@ export function ActivityList({
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: deferredNetworks ?? [] };
+  const filters: ActivityListFilter = filter ?? {
+    networks: deferredNetworks ?? [],
+    kindFilter,
+  };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
   const nonEvmItems = useNonEvmTransactions(filters);
+  const rampsItems = useRampsOrderActivity(filters);
   const evmItems = useMemo(
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data],
   );
 
   const groupedItems = useMemo(() => {
-    const items = dedupeItems(localItems, evmItems, nonEvmItems);
+    // rampsItems first: once a ramp order settles on-chain, its hash can
+    // also surface as a generic local/API tx — dedupeItems keeps whichever
+    // source it saw first for a given hash, and the ramp-specific view is
+    // strictly more informative than the generic classification.
+    let items = dedupeItems(rampsItems, localItems, evmItems, nonEvmItems);
+    if (kindFilter === 'buySell') {
+      items = items.filter((item) => BUY_SELL_TYPES.has(item.type));
+    }
 
     return groupActivityListItems(items);
-  }, [evmItems, localItems, nonEvmItems]);
+  }, [evmItems, kindFilter, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),
@@ -79,7 +98,7 @@ export function ActivityList({
     filter,
     isSettled: networks !== null && !isInitialLoading,
     isEmpty: groupedItems.length === 0,
-    pendingLength: [...localItems, ...nonEvmItems].filter(
+    pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
     ).length,
     entryPoint,
@@ -96,7 +115,11 @@ export function ActivityList({
   });
 
   const handleClick = (item: ActivityListItem) => {
-    if (!item.hash) {
+    // A pending ramp order has no on-chain hash yet — fall back to its
+    // stable provider order id so it can still be opened. Use `||` (not `??`)
+    // so an empty-string hash also falls through to the id.
+    const identifier = item.hash || item.id;
+    if (!identifier) {
       return;
     }
 
@@ -116,7 +139,7 @@ export function ActivityList({
       dialogRef.current.showModal?.();
     }
 
-    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
+    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
     const alreadyOnDetails = window.location.hash.includes(
       `${TX_DETAILS_ROUTE}/`,
     );
@@ -205,7 +228,7 @@ export function ActivityList({
       >
         <TransactionDetails
           chainId={selectedItem?.chainId}
-          txIdentifier={selectedItem?.hash}
+          txIdentifier={selectedItem?.hash || selectedItem?.id}
           onBack={() => dialogRef.current?.close?.()}
         />
       </dialog>

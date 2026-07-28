@@ -4,11 +4,13 @@ import { useToastLabel } from './useToastLabel';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
-type ToastContentOptions = {
+export type ToastContentOptions = {
   title?: string;
   description?: string;
   dataTestId?: string;
   transactionId?: string;
+  actionText?: string;
+  onActionClick?: () => void;
 };
 
 export const ToastContent = ({
@@ -17,6 +19,8 @@ export const ToastContent = ({
   description,
   dataTestId,
   transactionId,
+  actionText,
+  onActionClick,
 }: { status: ToastStatus } & ToastContentOptions) => {
   const { title: derivedTitle, description: derivedDescription } =
     useToastLabel(status, transactionId);
@@ -26,6 +30,8 @@ export const ToastContent = ({
       title={title ?? derivedTitle}
       description={description ?? derivedDescription}
       dataTestId={dataTestId}
+      actionText={actionText}
+      onActionClick={onActionClick}
     />
   );
 };

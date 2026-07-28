@@ -14,5 +14,8 @@ export function useApiTransaction({
     txHash,
     enabled: Boolean(chainId && txHash && !cached),
   });
-  return cached ?? fetched;
+  // `fetched` is typed as always-present because of the react-query v4/v5
+  // mismatch inside useTransactionQuery, but it is undefined while the query is
+  // in flight and whenever the query is disabled for lack of a hash.
+  return cached ?? (fetched as typeof fetched | undefined);
 }

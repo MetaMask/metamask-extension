@@ -167,6 +167,14 @@
   "activity": {
     "message": "Activity"
   },
+  "activityFilterAll": {
+    "message": "All",
+    "description": "Activity list filter chip that shows all activity types"
+  },
+  "activityFilterBuySell": {
+    "message": "Buy/Sell",
+    "description": "Activity list filter chip that shows only ramp buy and sell orders"
+  },
   "activityEmptyDescription": {
     "message": "Swap your first token today."
   },
@@ -889,6 +897,50 @@
   },
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Predictions withdrawal"
+  },
+  "activity_rampBuy_failed_description": {
+    "message": "Buy failed"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Buy failed"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Sell failed"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Sell failed"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
   },
   "activity_receive_failed_description": {
     "message": "From: $1",
@@ -8130,6 +8182,60 @@
   "rampsOnNetwork": {
     "message": "on $1",
     "description": "$1 is the network name"
+  },
+  "rampsOrderDetailsBankDetails": {
+    "message": "Bank transfer details"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Buy again"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Fees"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Paid with",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 fee",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "View on $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Something went wrong with your order.",
+    "description": "Description for the failed ramp order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Buy failed",
+    "description": "Title for the failed ramp order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Your order is being processed.",
+    "description": "Description for the pending ramp order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Buy in progress",
+    "description": "Title for the pending ramp order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Your crypto is on the way.",
+    "description": "Description for the successful ramp order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Buy successful",
+    "description": "Title for the successful ramp order toast"
+  },
+  "rampsOrderToastView": {
+    "message": "View",
+    "description": "Action button on ramp order status toasts that opens Activity"
   },
   "rampsOtherOptions": {
     "message": "Other options"
