@@ -6,6 +6,7 @@ import { ButtonLinkSize } from './button-link.types';
 export default {
   title: 'Components/ComponentLibrary/ButtonLink (deprecated)',
   component: ButtonLink,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

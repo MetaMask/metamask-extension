@@ -5,6 +5,7 @@ import { ModalOverlay } from './modal-overlay';
 export default {
   title: 'Components/ComponentLibrary/ModalOverlay (deprecated)',
   component: ModalOverlay,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

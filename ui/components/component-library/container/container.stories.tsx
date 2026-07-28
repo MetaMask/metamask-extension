@@ -13,6 +13,7 @@ import { Container } from './container';
 export default {
   title: 'Components/ComponentLibrary/Container',
   component: Container,
+  tags: ['autodocs'],
   args: {
     children:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.',

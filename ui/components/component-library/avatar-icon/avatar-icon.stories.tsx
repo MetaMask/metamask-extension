@@ -12,6 +12,7 @@ import { AvatarIconSize } from './avatar-icon.types';
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon (deprecated)',
   component: AvatarIcon,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

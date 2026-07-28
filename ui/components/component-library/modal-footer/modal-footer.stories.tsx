@@ -4,6 +4,7 @@ import { ModalFooter } from './modal-footer';
 const meta: Meta<typeof ModalFooter> = {
   title: 'Components/ComponentLibrary/ModalFooter (deprecated)',
   component: ModalFooter,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

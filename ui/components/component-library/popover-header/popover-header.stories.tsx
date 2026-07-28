@@ -6,6 +6,7 @@ import { PopoverHeader } from './popover-header';
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader (deprecated)',
   component: PopoverHeader,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

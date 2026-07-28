@@ -8,6 +8,7 @@ import { AvatarFaviconSize } from './avatar-favicon.types';
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon (deprecated)',
   component: AvatarFavicon,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

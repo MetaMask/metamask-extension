@@ -7,6 +7,7 @@ import { BannerAlertSeverity } from './banner-alert.types';
 export default {
   title: 'Components/ComponentLibrary/BannerAlert (deprecated)',
   component: BannerAlert,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {

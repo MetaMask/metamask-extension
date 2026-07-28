@@ -17,6 +17,7 @@ const meta = {
   title:
     'Components/MultichainAccounts/HardwareWallets/Ledger/LedgerConnectionStatusIllustration',
   component: LedgerConnectionStatusIllustration,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {
