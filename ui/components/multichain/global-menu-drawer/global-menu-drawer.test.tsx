@@ -104,7 +104,9 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      expect(container.querySelector('.border-l.border-muted')).not.toBeInTheDocument();
+      expect(
+        container.querySelector('.border-l.border-muted'),
+      ).not.toBeInTheDocument();
     });
   });
 

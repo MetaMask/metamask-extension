@@ -64,7 +64,8 @@ export const GlobalMenuDrawer = ({
   const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
     useState(false);
   // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
-  const isLargeDrawer = isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
+  const isLargeDrawer =
+    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
