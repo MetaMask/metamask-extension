@@ -17,17 +17,6 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-// TEMPORARY DIAGNOSTIC BUMP (ledger-dmk PR): widened from 20_000 to 60_000 to
-// test whether the Chrome MV3 E2E bitcoin/solana icon timeout is caused by
-// the heavier offscreen document bundle (DMK stack) slowing the Snap runtime.
-// If CI passes at 60s, the root cause is a timing regression and the real
-// fix is lazy-loading ledger-dmk in the offscreen router. If it still fails,
-// it's a hard breakage and a different root cause. Revert this once resolved.
-const NON_EVM_ICON_TIMEOUT = 60_000;
-
 class HomePage {
   protected driver: Driver;
 
@@ -229,14 +218,8 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
-    await this.driver.waitForSelector(this.solanaAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
-    await this.driver.waitForSelector(this.bitcoinAccountIcon, {
-      timeout: NON_EVM_ICON_TIMEOUT,
-    });
+    await this.driver.waitForSelector(this.solanaAccountIcon);
+    await this.driver.waitForSelector(this.bitcoinAccountIcon);
   }
 
   async checkPageIsNotLoaded(): Promise<void> {

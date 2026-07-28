@@ -121,7 +121,7 @@ function ensureMessageListener(): void {
  * document (snaps, Trezor, Lattice, legacy Ledger).
  *
  * @param mode - The handler implementation to construct. `DMK` instantiates
- * `LedgerDMKBridgeHandler`, any other value instantiates the legacy
+ * `LedgerDmkBridgeHandler`, any other value instantiates the legacy
  * `LedgerLegacyHandler`.
  * @returns Initialised handler ready to receive actions.
  */
