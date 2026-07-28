@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 
@@ -22,6 +22,7 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * Manages trustline activation and deactivation for supported assets (currently Stellar classic tokens).
