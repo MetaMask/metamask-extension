@@ -48,6 +48,41 @@ function withNormalizedOrderType(order: RampsOrder): RampsOrder {
     : order;
 }
 
+// Keyed by internal order code, holding the first valid ('buy'/'sell')
+// orderType seen for that order — see withStableOrderType below.
+const knownOrderTypes = new Map<string, 'buy' | 'sell'>();
+
+/**
+ * An order's buy/sell direction can't legitimately change after creation, but
+ * polling has been observed to return an inconsistent `orderType` across
+ * successive fetches of the same order (the sibling casing bug fixed by
+ * `withNormalizedOrderType` above is one flavor of this same upstream data
+ * inconsistency) — this flickered the details screen between "Buying" and
+ * "Selling" for a single order. Pin to whichever valid value was seen first
+ * for a given order code instead of trusting every poll's value blindly.
+ *
+ * @param order - The order, already orderType-casing-normalized.
+ * @returns The order with `orderType` pinned to its first confirmed value.
+ */
+function withStableOrderType(order: RampsOrder): RampsOrder {
+  const orderCode = getInternalOrderCode(order);
+  const currentType =
+    order.orderType === 'buy' || order.orderType === 'sell'
+      ? order.orderType
+      : undefined;
+  const knownType = knownOrderTypes.get(orderCode);
+
+  if (!knownType) {
+    if (currentType) {
+      knownOrderTypes.set(orderCode, currentType);
+    }
+    return order;
+  }
+  return currentType === knownType
+    ? order
+    : { ...order, orderType: knownType };
+}
+
 /**
  * A precreated order's own payload is still empty (no token/amount/fees)
  * until the provider fills it in — overlay what the user picked on the
@@ -96,8 +131,10 @@ export function mapRampsOrderSafely(
   fallbackChainId?: string,
 ): ReturnType<typeof mapRampsOrder> | undefined {
   try {
-    const normalizedOrder = withNormalizedOrderType(
-      withNormalizedNetwork(withPendingOrderPreview(order), fallbackChainId),
+    const normalizedOrder = withStableOrderType(
+      withNormalizedOrderType(
+        withNormalizedNetwork(withPendingOrderPreview(order), fallbackChainId),
+      ),
     );
     return mapRampsOrder(normalizedOrder as unknown as RampsOrderLike);
   } catch {

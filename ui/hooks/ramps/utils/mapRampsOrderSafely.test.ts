@@ -1,6 +1,9 @@
 import type { RampsOrder } from '@metamask/ramps-controller';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { mapRampsOrderSafely } from './mapRampsOrderSafely';
 import { setPendingOrderPreview } from './pendingOrderPreview';
+
+type RampOrderItem = Extract<ActivityListItem, { type: 'rampBuy' | 'rampSell' }>;
 
 const baseOrder = {
   provider: { id: 'mockprovider-staging', name: 'MockProvider (Staging)' },
@@ -69,6 +72,7 @@ describe('mapRampsOrderSafely', () => {
     const order = {
       ...baseOrder,
       network: '1',
+      providerOrderId: 'sell-order-1',
       orderType: 'SELL',
     } as unknown as RampsOrder;
 
@@ -92,7 +96,7 @@ describe('mapRampsOrderSafely', () => {
       status: 'PRECREATED',
     } as unknown as RampsOrder;
 
-    const mapped = mapRampsOrderSafely(order);
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
 
     expect(mapped?.data.token).toMatchObject({ symbol: 'ETH', amount: '0.05' });
     expect(mapped?.data.fiat).toMatchObject({ amount: '100', currency: 'USD' });
@@ -108,9 +112,52 @@ describe('mapRampsOrderSafely', () => {
       status: 'PRECREATED',
     } as unknown as RampsOrder;
 
-    const mapped = mapRampsOrderSafely(order);
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
 
     expect(mapped?.data.token).toBeUndefined();
-    expect(mapped?.data.fiat.currency).toBeUndefined();
+    expect(mapped?.data.fiat?.currency).toBeUndefined();
+  });
+
+  it('pins orderType to the first confirmed value, ignoring a later conflicting poll of the same order', () => {
+    // An order's buy/sell direction can't legitimately change after creation.
+    // Polling has been observed to return an inconsistent orderType across
+    // successive fetches of the same order, flickering the details screen
+    // between Buying/Selling — the second (conflicting) poll result must not
+    // override the first.
+    const buyOrder = {
+      ...baseOrder,
+      network: '1',
+      providerOrderId: 'pinned-order-1',
+      orderType: 'buy',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(buyOrder)?.type).toBe('rampBuy');
+
+    const sameOrderPolledAsSell = {
+      ...baseOrder,
+      network: '1',
+      providerOrderId: 'pinned-order-1',
+      orderType: 'sell',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(sameOrderPolledAsSell)?.type).toBe('rampBuy');
+  });
+
+  it('does not let one order code affect the pinned orderType of another', () => {
+    const buyOrder = {
+      ...baseOrder,
+      network: '1',
+      providerOrderId: 'pinned-order-buy',
+      orderType: 'buy',
+    } as unknown as RampsOrder;
+    const sellOrder = {
+      ...baseOrder,
+      network: '1',
+      providerOrderId: 'pinned-order-sell',
+      orderType: 'sell',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(buyOrder)?.type).toBe('rampBuy');
+    expect(mapRampsOrderSafely(sellOrder)?.type).toBe('rampSell');
   });
 });
