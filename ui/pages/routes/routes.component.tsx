@@ -1,16 +1,14 @@
-/* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -18,7 +16,8 @@ import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
-  ASSET_ROUTE,
+  ASSET_DETAILS_ROUTE,
+  ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -28,7 +27,7 @@ import {
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
-  SEND_ROUTE,
+  SEND_PAGE_ROUTE,
   LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -63,8 +62,8 @@ import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
-  TOKEN_TRANSFER_ROUTE,
-  REVIEW_GATOR_PERMISSIONS_ROUTE,
+  TOKEN_TRANSFER_DETAILS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
   REWARDS_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -377,7 +376,7 @@ export const routeConfig = [
         element: <SettingsV2LegacyRedirect />,
       },
       {
-        path: `${SEND_ROUTE}/:page?`,
+        path: SEND_PAGE_ROUTE,
         element: <SendPage />,
       },
       {
@@ -413,11 +412,11 @@ export const routeConfig = [
         element: <PermissionsConnect />,
       },
       {
-        path: `${ASSET_ROUTE}/image/:asset/:id`,
+        path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
       },
       {
-        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+        path: ASSET_DETAILS_ROUTE,
         element: <Asset />,
       },
       {
@@ -437,11 +436,11 @@ export const routeConfig = [
         ),
       },
       {
-        path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
+        path: TOKEN_TRANSFER_DETAILS_ROUTE,
         element: <GatorPermissionsTokenTransferPermissionsPage />,
       },
       {
-        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
+        path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
         element: <GatorPermissionsReviewPermissionsPage />,
       },
       {
@@ -608,7 +607,6 @@ export const routeConfig = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();

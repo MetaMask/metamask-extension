@@ -66,7 +66,6 @@ jest.mock('@metamask/assets-controller', () => ({
 }));
 
 jest.mock('@metamask/assets-controllers', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const actual = jest.requireActual('@metamask/assets-controllers');
   return {
     ...actual,
@@ -960,6 +959,10 @@ describe('Aggregated balance adapters/selectors', () => {
 describe('Aggregated balance recomputation behavior', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // createDeepEqualSelector caches by deep input equality across tests;
+    // clear so call-count assertions are not affected by earlier describes.
+    selectBalanceForAllWallets.clearCache();
+    selectBalanceForAllWallets.memoizedResultFunc.clearCache();
   });
 
   it('does not recompute when unrelated state changes but used slice references are stable', () => {

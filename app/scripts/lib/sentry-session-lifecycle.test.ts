@@ -10,7 +10,6 @@ type FetchCallArgs = [RequestInfo | URL, RequestInit | undefined];
 // this suite owns the first `Sentry.init` in the worker.
 async function flushMicrotasks(depth = 5): Promise<void> {
   for (let i = 0; i < depth; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => queueMicrotask(resolve));
   }
 }

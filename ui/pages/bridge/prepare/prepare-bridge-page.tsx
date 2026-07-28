@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
 import {
@@ -74,6 +74,7 @@ import { getMultichainProviderConfig } from '../../../selectors/multichain';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
+import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
@@ -86,6 +87,8 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useEnsureNetworkEnabled } from '../hooks/useEnsureNetworkEnabled';
+import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { useDispatch } from '../../../store/hooks';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -110,6 +113,10 @@ const PrepareBridgePage = ({
 
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const selectedTokenSecurityData = useSelectedTokenSecurityData(
+    fromToken,
+    toToken,
+  );
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -368,6 +375,11 @@ const PrepareBridgePage = ({
           }
           header={t('swapSelectToken')}
           token={fromToken}
+          tokenSecurityData={
+            selectedTokenSecurityData[
+              getTokenSecurityAssetKey(fromToken.assetId)
+            ]
+          }
           accountAddress={selectedAccount?.address}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
@@ -393,8 +405,6 @@ const PrepareBridgePage = ({
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           containerProps={{
@@ -530,6 +540,11 @@ const PrepareBridgePage = ({
               selectedDestinationAccount?.address ?? selectedAccount.address
             }
             token={toToken}
+            tokenSecurityData={
+              selectedTokenSecurityData[
+                getTokenSecurityAssetKey(toToken.assetId)
+              ]
+            }
             // If the fromChain is a bridge-only chain, disable it in the toChain picker
             disabledChainId={
               fromChain?.chainId &&

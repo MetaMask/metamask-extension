@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
@@ -72,13 +72,12 @@ import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
 import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
-import { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();

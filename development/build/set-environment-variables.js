@@ -77,6 +77,7 @@ function setEnvironmentVariables({
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
+    MM_PURE_BLACK_PREVIEW: variables.getMaybe('MM_PURE_BLACK_PREVIEW'),
   });
 }
 
