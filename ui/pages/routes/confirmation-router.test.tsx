@@ -91,9 +91,7 @@ describe('ConfirmationRouter', () => {
         hasQuotes: true,
       });
 
-      expect(getByTestId('pathname').textContent).toBe(
-        BATCH_SELL_REVIEW_ROUTE,
-      );
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
     });
 
     it('stays on the batch sell select page', () => {
@@ -102,9 +100,7 @@ describe('ConfirmationRouter', () => {
         hasQuotes: true,
       });
 
-      expect(getByTestId('pathname').textContent).toBe(
-        BATCH_SELL_SELECT_ROUTE,
-      );
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_SELECT_ROUTE);
     });
 
     it('does not redirect from a non-exempted route in fullscreen', () => {
@@ -146,9 +142,7 @@ describe('ConfirmationRouter', () => {
         hasPendingApproval: true,
       });
 
-      expect(getByTestId('pathname').textContent).toBe(
-        BATCH_SELL_REVIEW_ROUTE,
-      );
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
     });
   });
 });
