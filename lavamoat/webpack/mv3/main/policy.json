@@ -2153,7 +2153,7 @@
         "@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
-        "webpack-cli>fastest-levenshtein": true,
+        "stylelint>fastest-levenshtein": true,
         "punycode": true
       }
     },
