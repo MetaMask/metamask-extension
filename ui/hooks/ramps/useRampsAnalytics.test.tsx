@@ -85,33 +85,6 @@ describe('useRampsAnalytics', () => {
     });
   });
 
-  it('tracks checkout closed with the checkout context', () => {
-    const { result } = renderRampsAnalytics();
-
-    result.current.trackCheckoutClosed({
-      checkoutSessionId: 'sess-1',
-      closeSource: 'user_close_button',
-      callbackReached: false,
-      stepIndex: 3,
-      timeOnScreenMs: 4200,
-    });
-
-    const [built] = mockTrackEvent.mock.calls[0];
-    expect(built.name).toBe(MetaMetricsEventName.RampsCheckoutClosed);
-    expect(built.properties).toStrictEqual({
-      category: MetaMetricsEventCategory.Ramps,
-      ramp_type: RAMPS_RAMP_TYPE,
-      ramp_routing: RAMPS_RAMP_ROUTING,
-      location: 'Checkout',
-      region: 'us-ca',
-      checkout_session_id: 'sess-1',
-      close_source: 'user_close_button',
-      callback_reached: false,
-      step_index: 3,
-      time_on_screen_ms: 4200,
-    });
-  });
-
   it('does not track when rampsEnabled is off', () => {
     const { result } = renderRampsAnalytics(false);
 

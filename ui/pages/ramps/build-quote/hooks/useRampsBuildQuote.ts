@@ -228,6 +228,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         ? getInternalOrderCode(widget.orderId)
         : undefined;
       const checkoutSessionId = uuidV4();
+      const checkoutOpenedAt = Date.now();
 
       // Durable work first — opening a tab can unload the popup.
       if (widget.orderId && orderCode) {
@@ -287,6 +288,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         walletAddress,
         orderAlreadyPrecreated,
         orderCode,
+        checkoutSessionId,
+        checkoutOpenedAt,
+        region: userRegion?.regionCode,
       });
       checkoutWatchStarted = true;
 
@@ -323,6 +327,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedToken,
     t,
     trackCheckoutOpened,
+    userRegion?.regionCode,
     walletAddress,
   ]);
 

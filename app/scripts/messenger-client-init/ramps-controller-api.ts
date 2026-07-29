@@ -3,6 +3,7 @@ import {
   createWatchRampsCheckoutTab,
   type WatchRampsCheckoutTabParams,
 } from '../lib/ramps-checkout-watch';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import type ExtensionPlatform from '../platforms/extension';
 
 /**
@@ -19,6 +20,7 @@ export function getRampsControllerApi(
   const watchRampsCheckoutTab = createWatchRampsCheckoutTab(
     platform,
     rampsController,
+    { trackEvent, createEventBuilder },
   );
 
   return {

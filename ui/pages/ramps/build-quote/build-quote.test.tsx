@@ -268,13 +268,18 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockOpenTab).toHaveBeenCalledWith({
       url: 'https://provider.example/checkout',
     });
-    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
-      tabId: 42,
-      providerCode: 'transak',
-      walletAddress: '0xabc123',
-      orderAlreadyPrecreated: true,
-      orderCode: 'order-123',
-    });
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tabId: 42,
+        providerCode: 'transak',
+        walletAddress: '0xabc123',
+        orderAlreadyPrecreated: true,
+        orderCode: 'order-123',
+        checkoutSessionId: expect.any(String),
+        checkoutOpenedAt: expect.any(Number),
+        region: 'us-ca',
+      }),
+    );
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
@@ -326,13 +331,18 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(mockAddPrecreatedOrder).not.toHaveBeenCalled();
-    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith({
-      tabId: 7,
-      providerCode: 'transak',
-      walletAddress: '0xabc123',
-      orderAlreadyPrecreated: false,
-      orderCode: undefined,
-    });
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tabId: 7,
+        providerCode: 'transak',
+        walletAddress: '0xabc123',
+        orderAlreadyPrecreated: false,
+        orderCode: undefined,
+        checkoutSessionId: expect.any(String),
+        checkoutOpenedAt: expect.any(Number),
+        region: 'us-ca',
+      }),
+    );
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 

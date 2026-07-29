@@ -1,7 +1,8 @@
 /*
- * This file is the single place that maps the ramps buy flow onto the
- * `metamask-ramps` Segment schema, so it owns the schema's snake_case property
- * names. Call sites pass camelCase; the mapping to snake_case lives here.
+ * Maps UI-side ramps buy-flow events onto the `metamask-ramps` Segment schema.
+ * Checkout callback/closed and terminal transaction KPIs fire from the
+ * background instead — see `trackRampsCheckoutAnalytics.ts` and
+ * `buildRampsTransactionCompletedProperties.ts`.
  */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useRef } from 'react';
@@ -44,22 +45,6 @@ export type RampsCheckoutOpenedArgs = {
   providerName?: string;
   initialUrlPath: string;
   hasCallbackFlow: boolean;
-  orderId?: string;
-};
-
-export type RampsCheckoutCallbackDetectedArgs = {
-  checkoutSessionId: string;
-  urlPath: string;
-  stepIndex: number;
-  timeSinceOpenMs: number;
-};
-
-export type RampsCheckoutClosedArgs = {
-  checkoutSessionId: string;
-  closeSource: 'user_close_button' | 'callback_success';
-  callbackReached: boolean;
-  stepIndex: number;
-  timeOnScreenMs: number;
   orderId?: string;
 };
 
@@ -157,42 +142,10 @@ export function useRampsAnalytics() {
     [track],
   );
 
-  const trackCheckoutCallbackDetected = useCallback(
-    (args: RampsCheckoutCallbackDetectedArgs) => {
-      track(MetaMetricsEventName.RampsCheckoutCallbackDetected, {
-        location: 'Checkout',
-        region: regionRef.current,
-        checkout_session_id: args.checkoutSessionId,
-        url_path: args.urlPath,
-        step_index: args.stepIndex,
-        time_since_open_ms: args.timeSinceOpenMs,
-      });
-    },
-    [track],
-  );
-
-  const trackCheckoutClosed = useCallback(
-    (args: RampsCheckoutClosedArgs) => {
-      track(MetaMetricsEventName.RampsCheckoutClosed, {
-        location: 'Checkout',
-        region: regionRef.current,
-        checkout_session_id: args.checkoutSessionId,
-        close_source: args.closeSource,
-        callback_reached: args.callbackReached,
-        step_index: args.stepIndex,
-        time_on_screen_ms: args.timeOnScreenMs,
-        order_id: args.orderId,
-      });
-    },
-    [track],
-  );
-
   return {
     trackScreenViewed,
     trackTokenSelected,
     trackProviderSelected,
     trackCheckoutOpened,
-    trackCheckoutCallbackDetected,
-    trackCheckoutClosed,
   };
 }
