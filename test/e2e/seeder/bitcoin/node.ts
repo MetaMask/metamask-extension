@@ -496,11 +496,24 @@ export class BitcoinNode {
     this.#nodeProcess = undefined;
 
     if (nodeProcess) {
+      // Gracefully stop bitcoind so LevelDB locks are released before we
+      // delete the regtest datadir. Without this, teardown can race the
+      // daemon shutdown and fail with ENOTEMPTY on Linux CI runners.
+      try {
+        await this.rpc('stop');
+      } catch {
+        // bitcoind may already be stopped or RPC may be unavailable.
+      }
       await stopProcess(nodeProcess);
     }
 
     if (dataDir) {
-      await rm(dataDir, { force: true, recursive: true });
+      await rm(dataDir, {
+        force: true,
+        maxRetries: 5,
+        recursive: true,
+        retryDelay: 200,
+      });
     }
   }
 
