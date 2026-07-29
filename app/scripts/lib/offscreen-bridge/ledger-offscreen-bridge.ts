@@ -214,12 +214,7 @@ export class LedgerOffscreenBridge implements Omit<
   #toLedgerBridgeError(
     response: LedgerOffscreenResponse<unknown> | undefined,
   ): Error {
-    const error =
-      response?.payload &&
-      typeof response.payload === 'object' &&
-      'error' in response.payload
-        ? response.payload.error
-        : response?.error;
+    const error = this.#extractSerializedError(response);
 
     if (error?.name === 'HardwareWalletError') {
       return toHardwareWalletError(error, HardwareWalletType.Ledger);
@@ -238,5 +233,20 @@ export class LedgerOffscreenBridge implements Omit<
     }
 
     return new Error('Unknown Ledger error occurred');
+  }
+
+  #extractSerializedError(
+    response: LedgerOffscreenResponse<unknown> | undefined,
+  ): SerializedLedgerError | undefined {
+    if (
+      response?.payload &&
+      typeof response.payload === 'object' &&
+      'error' in response.payload
+    ) {
+      // `ResponsePayload` is `unknown` here, so `payload` collapses to
+      // `unknown` and `.error` is not typed — narrow explicitly.
+      return (response.payload as { error?: SerializedLedgerError }).error;
+    }
+    return response?.error;
   }
 }

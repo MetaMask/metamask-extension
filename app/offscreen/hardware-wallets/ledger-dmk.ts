@@ -280,25 +280,36 @@ export class LedgerDmkBridgeHandler {
       >,
     });
 
-    console.log('[LedgerDMK] constructBridge: finding permitted device');
-    const device = await this.findPermittedDevice(bridge);
-    console.log('[LedgerDMK] constructBridge: connecting to device');
-    this.sessionId = await bridge.connect({ device });
+    try {
+      console.log('[LedgerDMK] constructBridge: finding permitted device');
+      const device = await this.findPermittedDevice(bridge);
+      console.log('[LedgerDMK] constructBridge: connecting to device');
+      this.sessionId = await bridge.connect({ device });
 
-    // `connect()` sets isConnected synchronously and starts session monitoring.
-    // The bridge's signing methods handle device-action completion internally
-    // via waitForDeviceAction, so no explicit readiness wait is needed here.
-    // (onSessionStateChange is a Subject, not BehaviorSubject — subscribing
-    // after connect() would miss the initial emission.)
-    console.log('[LedgerDMK] constructBridge: session ready', {
-      sessionId: this.sessionId,
-    });
+      // `connect()` sets isConnected synchronously and starts session monitoring.
+      // The bridge's signing methods handle device-action completion internally
+      // via waitForDeviceAction, so no explicit readiness wait is needed here.
+      // (onSessionStateChange is a Subject, not BehaviorSubject — subscribing
+      // after connect() would miss the initial emission.)
+      console.log('[LedgerDMK] constructBridge: session ready', {
+        sessionId: this.sessionId,
+      });
 
-    // Subscribe to disconnect events so we tear down the bridge when the
-    // device is unplugged.
-    this.setupDisconnectMonitoring(bridge);
+      // Subscribe to disconnect events so we tear down the bridge when the
+      // device is unplugged.
+      this.setupDisconnectMonitoring(bridge);
 
-    return bridge;
+      return bridge;
+    } catch (error) {
+      // Discovery/connect failures must not leave an orphaned DMK instance in
+      // the long-lived offscreen document (HID state, transports, etc.).
+      try {
+        await bridge.destroy();
+      } catch {
+        // Best-effort cleanup of a partially constructed bridge.
+      }
+      throw error;
+    }
   }
 
   /**

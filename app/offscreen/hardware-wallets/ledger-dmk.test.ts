@@ -146,6 +146,7 @@ describe('LedgerDmkBridgeHandler', () => {
       await jest.advanceTimersByTimeAsync(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS);
       await expectation;
       await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
     it('wraps discovery Errors as HardwareWalletError.Unknown', async () => {
@@ -164,6 +165,7 @@ describe('LedgerDmkBridgeHandler', () => {
         message: 'HID permission denied',
         cause: discoveryError,
       });
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
     it('wraps non-Error discovery failures as HardwareWalletError without JSON.stringify', async () => {
@@ -576,6 +578,8 @@ describe('LedgerDmkBridgeHandler', () => {
       await expect(handler.handleAction(LedgerAction.makeApp)).rejects.toThrow(
         'Connection failed',
       );
+      // Failed constructBridge must destroy the orphaned DMK instance.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
 
       // bridgePromise should be cleared so the next call can retry
       mockBridgeConnect.mockResolvedValueOnce('new-session-id');
