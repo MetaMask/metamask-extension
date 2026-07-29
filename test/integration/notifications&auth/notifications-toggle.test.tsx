@@ -42,8 +42,9 @@ const selectors = {
 };
 
 const clickElement = async (testId: string) => {
+  const element = await screen.findByTestId(testId);
   await act(async () => {
-    fireEvent.click(await screen.findByTestId(testId));
+    fireEvent.click(element);
   });
 };
 
@@ -95,7 +96,7 @@ describe('Notifications Toggle', () => {
       preloadedState: {
         ...mockedState,
         analyticsId: 'test-metametrics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         dataCollectionForMarketing: false,
       },
@@ -169,7 +170,7 @@ describe('Notifications Toggle', () => {
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: true,
         dataCollectionForMarketing: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
       backgroundConnection: backgroundConnectionMocked,

@@ -34,11 +34,6 @@
       "count": 1
     }
   },
-  "ui/components/app/perps/hooks/useClickOutside.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/components/app/shield-entry-modal/shield-illustration-animation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
