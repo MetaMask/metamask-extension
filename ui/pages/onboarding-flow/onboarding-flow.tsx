@@ -384,7 +384,8 @@ export default function OnboardingFlow() {
 
   const isSrpBackupRoute =
     pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
-    pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE);
+    pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE) ||
+    pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE);
 
   const isTransparentContainer =
     pathname === ONBOARDING_WELCOME_ROUTE ||

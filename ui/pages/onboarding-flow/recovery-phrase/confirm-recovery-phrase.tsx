@@ -202,7 +202,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="recovery-phrase recovery-phrase__confirm h-full"
+      className="recovery-phrase recovery-phrase__confirm h-full bg-default"
       data-testid="confirm-recovery-phrase"
     >
       <Box>
