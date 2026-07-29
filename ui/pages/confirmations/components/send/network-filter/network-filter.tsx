@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalBody,
 } from '@metamask/design-system-react';
-import { IconSize as LegacyIconSize } from '../../../../../components/component-library';
+import { AvatarNetworkSize } from '../../../../../components/component-library';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
@@ -273,7 +273,7 @@ export const NetworkFilter = ({
               <NetworkListItem
                 name={t('allNetworks')}
                 iconSrc={IconName.Global}
-                iconSize={LegacyIconSize.Xl}
+                iconSize={AvatarNetworkSize.Xl}
                 selected={selectedChainId === null}
                 onClick={() => handleNetworkSelection(null)}
                 focus={false}
