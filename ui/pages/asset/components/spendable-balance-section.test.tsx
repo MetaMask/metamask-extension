@@ -1,26 +1,14 @@
-import { XlmScope } from '@metamask/keyring-api';
-import type { CaipAssetType } from '@metamask/utils';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { I18nContext } from '../../../contexts/i18n';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
-import * as stellarAssetsSelectors from '../../../selectors/stellar-assets';
 import { SpendableBalanceSection } from './spendable-balance-section';
 
 jest.mock('../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (n: number) => `$${n.toFixed(2)}`,
 }));
-
-jest.mock('../../../selectors/stellar-assets', () => ({
-  ...jest.requireActual('../../../selectors/stellar-assets'),
-  getSpendableForAccount: jest.fn(),
-}));
-
-const STELLAR_NATIVE_ASSET_ID =
-  `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
-const ACCOUNT_ID = 'stellar-account-id';
 
 const store = configureMockStore()({
   metamask: { currentCurrency: 'usd' },
@@ -38,28 +26,16 @@ const renderWithProviders = (component: React.ReactElement) =>
   );
 
 describe('SpendableBalanceSection', () => {
-  const getSpendableForAccountMock =
-    stellarAssetsSelectors.getSpendableForAccount as jest.Mock;
+  const defaultProps = {
+    minimumReserveBalance: '2.5',
+    spendableBalance: '247.5',
+    totalBalance: '250',
+    symbol: 'XLM',
+    fiatValue: 105,
+  };
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('renders total, spendable, and reserved balances', () => {
-    getSpendableForAccountMock.mockReturnValue({
-      minimumReserveBalance: '2.5',
-      spendableBalance: '247.5',
-    });
-
-    renderWithProviders(
-      <SpendableBalanceSection
-        accountId={ACCOUNT_ID}
-        assetId={STELLAR_NATIVE_ASSET_ID}
-        totalBalance="250"
-        symbol="XLM"
-        fiatValue={105}
-      />,
-    );
+  it('renders total, spendable, reserved, and fiat balances', () => {
+    renderWithProviders(<SpendableBalanceSection {...defaultProps} />);
 
     expect(screen.getByTestId('spendable-balance-section')).toBeInTheDocument();
     expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
@@ -77,36 +53,30 @@ describe('SpendableBalanceSection', () => {
     ).toHaveTextContent('$105.00');
   });
 
-  it('returns null when spendable info is unavailable', () => {
-    getSpendableForAccountMock.mockReturnValue(undefined);
-
-    const { container } = renderWithProviders(
-      <SpendableBalanceSection
-        accountId={ACCOUNT_ID}
-        assetId={STELLAR_NATIVE_ASSET_ID}
-        totalBalance="250"
-        symbol="XLM"
-        fiatValue={null}
-      />,
+  it('renders em dash when fiat value is null', () => {
+    renderWithProviders(
+      <SpendableBalanceSection {...defaultProps} fiatValue={null} />,
     );
 
-    expect(container).toBeEmptyDOMElement();
+    expect(
+      screen.getByTestId('spendable-balance-fiat-value'),
+    ).toHaveTextContent('—');
   });
 
-  it('returns null for assets that do not support spendable balance', () => {
-    getSpendableForAccountMock.mockReturnValue(undefined);
+  it('renders labels for total, fiat, spendable, and reserved rows', () => {
+    renderWithProviders(<SpendableBalanceSection {...defaultProps} />);
 
-    const { container } = renderWithProviders(
-      <SpendableBalanceSection
-        accountId={ACCOUNT_ID}
-        assetId={'eip155:1/slip44:60' as CaipAssetType}
-        totalBalance="250"
-        symbol="ETH"
-        fiatValue={null}
-      />,
-    );
-
-    expect(getSpendableForAccountMock).toHaveBeenCalled();
-    expect(container).toBeEmptyDOMElement();
+    expect(
+      screen.getByText(messages.spendableBalanceTotalBalance.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalanceFiatValue.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalance.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.spendableBalanceBaseReserved.message),
+    ).toBeInTheDocument();
   });
 });

@@ -5,6 +5,18 @@ import { useSelector } from 'react-redux';
 import { getSpendableForAccount } from '../../../selectors/stellar-assets';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 
+type UseSpendableBalanceResult =
+  | {
+      hasSpendableBalance: true;
+      minimumReserveBalance: string;
+      spendableBalance: string;
+    }
+  | {
+      hasSpendableBalance: false;
+      minimumReserveBalance: undefined;
+      spendableBalance: undefined;
+    };
+
 /**
  * Resolves native spendable balance data for an account/asset pair.
  *
@@ -19,7 +31,7 @@ export const useSpendableBalance = ({
 }: {
   accountId?: string;
   assetId?: CaipAssetType;
-}) => {
+}): UseSpendableBalanceResult => {
   const chainId =
     assetId && isCaipAssetType(assetId)
       ? parseCaipAssetType(assetId).chainId
@@ -37,8 +49,20 @@ export const useSpendableBalance = ({
     getSpendableForAccount(state, resolvedAccountId, assetId),
   );
 
+  if (
+    spendableInfo?.minimumReserveBalance !== undefined &&
+    spendableInfo?.spendableBalance !== undefined
+  ) {
+    return {
+      hasSpendableBalance: true,
+      minimumReserveBalance: spendableInfo.minimumReserveBalance,
+      spendableBalance: spendableInfo.spendableBalance,
+    };
+  }
+
   return {
-    minimumReserveBalance: spendableInfo?.minimumReserveBalance,
-    spendableBalance: spendableInfo?.spendableBalance,
+    hasSpendableBalance: false,
+    minimumReserveBalance: undefined,
+    spendableBalance: undefined,
   };
 };

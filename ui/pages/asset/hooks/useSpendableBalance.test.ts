@@ -46,12 +46,13 @@ describe('useSpendableBalance', () => {
       STELLAR_NATIVE_ASSET_ID,
     );
     expect(result.current).toStrictEqual({
+      hasSpendableBalance: true,
       minimumReserveBalance: '2.5',
       spendableBalance: '247.5',
     });
   });
 
-  it('returns undefined values when spendable info is unavailable', () => {
+  it('returns hasSpendableBalance false when spendable info is unavailable', () => {
     getSpendableForAccountMock.mockReturnValue(undefined);
 
     const { result } = renderHook(() =>
@@ -62,12 +63,13 @@ describe('useSpendableBalance', () => {
     );
 
     expect(result.current).toStrictEqual({
+      hasSpendableBalance: false,
       minimumReserveBalance: undefined,
       spendableBalance: undefined,
     });
   });
 
-  it('returns undefined values when account id or asset id is missing', () => {
+  it('returns hasSpendableBalance false when account id or asset id is missing', () => {
     getSpendableForAccountMock.mockReturnValue(undefined);
 
     const { result } = renderHook(() =>
@@ -83,12 +85,13 @@ describe('useSpendableBalance', () => {
       undefined,
     );
     expect(result.current).toStrictEqual({
+      hasSpendableBalance: false,
       minimumReserveBalance: undefined,
       spendableBalance: undefined,
     });
   });
 
-  it('returns undefined values for assets that do not support spendable balance', () => {
+  it('returns hasSpendableBalance false for assets that do not support spendable balance', () => {
     getSpendableForAccountMock.mockReturnValue(undefined);
 
     const { result } = renderHook(() =>
@@ -104,8 +107,29 @@ describe('useSpendableBalance', () => {
       'eip155:1/slip44:60',
     );
     expect(result.current).toStrictEqual({
+      hasSpendableBalance: false,
       minimumReserveBalance: undefined,
       spendableBalance: undefined,
+    });
+  });
+
+  it('returns hasSpendableBalance true when spendable balance is zero', () => {
+    getSpendableForAccountMock.mockReturnValue({
+      minimumReserveBalance: '1',
+      spendableBalance: '0',
+    });
+
+    const { result } = renderHook(() =>
+      useSpendableBalance({
+        accountId: ACCOUNT_ID,
+        assetId: STELLAR_NATIVE_ASSET_ID,
+      }),
+    );
+
+    expect(result.current).toStrictEqual({
+      hasSpendableBalance: true,
+      minimumReserveBalance: '1',
+      spendableBalance: '0',
     });
   });
 });

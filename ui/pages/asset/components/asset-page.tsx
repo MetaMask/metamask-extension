@@ -85,8 +85,8 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { isAssetSupportSpendableBalance } from '../../../selectors/stellar-assets';
 import { useAssetActivation } from '../hooks/useAssetActivation';
+import { useSpendableBalance } from '../hooks/useSpendableBalance';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
@@ -257,6 +257,12 @@ const AssetPage = ({
     assetId: resolvedAssetId,
   });
 
+  const spendableBalanceData = useSpendableBalance({
+    accountId: selectedAccount?.id,
+    assetId: resolvedAssetId,
+  });
+  const showSpendableBalance = spendableBalanceData.hasSpendableBalance;
+
   const tokenWithFiatAmount = {
     address: isEvm ? address : assetId,
     chainId,
@@ -275,8 +281,6 @@ const AssetPage = ({
     assetId: bip44Asset?.assetId ?? assetId,
     rwaData,
   };
-
-  const showSpendableBalance = isAssetSupportSpendableBalance(resolvedAssetId);
 
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -457,13 +461,13 @@ const AssetPage = ({
             />
           </>
         ) : null}
-        {!isMusdAssetPage && showSpendableBalance ? (
+        {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
           <SpendableBalanceSection
-            accountId={selectedAccount?.id}
-            assetId={resolvedAssetId}
+            minimumReserveBalance={spendableBalanceData.minimumReserveBalance}
+            spendableBalance={spendableBalanceData.spendableBalance}
             totalBalance={String(balance)}
             symbol={symbol}
-            fiatValue={tokenFiatAmount}
+            fiatValue={showFiat ? tokenFiatAmount : null}
           />
         ) : null}
         {!isMusdAssetPage && !showSpendableBalance ? (
