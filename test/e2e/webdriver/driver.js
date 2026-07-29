@@ -288,6 +288,25 @@ class Driver {
     return cdpConnection;
   }
 
+  /**
+   * Evaluates a script inside the extension's service worker context.
+   *
+   * The `script` is wrapped in an `async` IIFE and evaluated with
+   * `Runtime.evaluate` (`awaitPromise: true`, `returnByValue: true`), so
+   * `await` and returning a serializable value both work. Use `return` inside
+   * `script` to surface a value. Exceptions raised in the service worker are
+   * rethrown here with the remote description.
+   *
+   * @param {string} script - Body of the async IIFE to evaluate in the
+   * service worker. Any value must be returned explicitly (e.g. `'return true;'`).
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<unknown>} The `returnByValue` result of the evaluation,
+   * or `undefined` if the script returned nothing.
+   * @throws {Error} If the service worker target cannot be resolved or
+   * attached to within `timeout`, or if the evaluated script throws.
+   */
   async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
     await using cdpConnection = await this.#createServiceWorkerConnection({
       timeout,
