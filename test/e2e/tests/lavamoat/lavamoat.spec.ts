@@ -1,17 +1,10 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-
-const lavamoatErrorScript = 'globalThis.stateHooks.throwLavamoatError();';
-
-const lavamoatErrorPattern = isFirefox
-  ? /can't access property "log", console is undefined/u
-  : /Cannot read properties of undefined \(reading 'log'\)/u;
+const lavamoatTestScript = 'return globalThis.stateHooks.hasConsoleAccess();';
 
 describe('lavamoat', function (this: Mocha.Suite) {
   it('the UI environment enforces the lavamoat policy', async function () {
@@ -22,9 +15,10 @@ describe('lavamoat', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
-        await assert.rejects(
-          driver.executeScript(lavamoatErrorScript),
-          lavamoatErrorPattern,
+        assert.strictEqual(
+          await driver.executeScript(lavamoatTestScript),
+          false,
+          'Expected LavaMoat to deny console access to @metamask/dummy-package in the UI',
         );
       },
     );
@@ -46,15 +40,19 @@ describe('lavamoat', function (this: Mocha.Suite) {
           // );
 
           await driver.navigate(PAGES.HOME);
-          await assert.rejects(
-            driver.executeScriptInExtensionServiceWorker(lavamoatErrorScript),
-            lavamoatErrorPattern,
+          assert.strictEqual(
+            await driver.executeScriptInExtensionServiceWorker(
+              lavamoatTestScript,
+            ),
+            false,
+            'Expected LavaMoat to deny console access to @metamask/dummy-package in the service worker',
           );
         } else {
           await driver.navigate(PAGES.BACKGROUND);
-          await assert.rejects(
-            driver.executeScript(lavamoatErrorScript),
-            lavamoatErrorPattern,
+          assert.strictEqual(
+            await driver.executeScript(lavamoatTestScript),
+            false,
+            'Expected LavaMoat to deny console access to @metamask/dummy-package in the background page',
           );
         }
       },

@@ -278,12 +278,18 @@ type StateHooks = {
   captureTestError?: (msg?: string) => Promise<void>;
   captureBackgroundError?: (msg?: string) => Promise<void>;
   /**
-   * The following stateHook is a method intended to verify that LavaMoat is
-   * applied correctly. If this throws, the protection is working as expected.
-   * If it does not throw, it indicates that LavaMoat is not protecting the
-   * app as expected.
+   * State hook used to verify that LavaMoat is applied correctly.
+   *
+   * Delegates to a test-only package (`@metamask/dummy-package`) that has no
+   * policy grant for `console`. When invoked from inside that package's
+   * compartment, the check for `console` must resolve to `false` because
+   * LavaMoat withholds the endowment.
+   *
+   * @returns `true` if the dummy package can see a usable `console` in its
+   * compartment — meaning LavaMoat is NOT enforcing its policy — and `false`
+   * when the policy is correctly enforced.
    */
-  throwLavamoatError?: () => void;
+  hasConsoleAccess?: () => boolean;
 
   /**
    * This is initialized by the service worker in MV3. It is handled in `background.js`.

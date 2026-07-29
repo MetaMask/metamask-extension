@@ -50,7 +50,7 @@ function assertLockdown(target: typeof globalThis) {
   }
 }
 
-const testCode = `
+const lockdownTestScript = `
 ${assertLockdown.toString()};
 assertLockdown(${lockdownTarget});
 ${assertScuttling.toString()};
@@ -68,7 +68,7 @@ describe('lockdown', function (this: Mocha.Suite) {
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
         assert(
-          await driver.executeScript(testCode),
+          await driver.executeScript(lockdownTestScript),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',
         );
       },
@@ -90,19 +90,21 @@ describe('lockdown', function (this: Mocha.Suite) {
         if (isManifestV3) {
           await driver.navigate(PAGES.OFFSCREEN);
           assert(
-            await driver.executeScript(testCode),
+            await driver.executeScript(lockdownTestScript),
             'Expected script execution to be complete. driver.executeScript might have failed silently.',
           );
 
           await driver.navigate(PAGES.HOME);
           assert(
-            await driver.executeScriptInExtensionServiceWorker(testCode),
+            await driver.executeScriptInExtensionServiceWorker(
+              lockdownTestScript,
+            ),
             'Expected script execution to be complete. driver.executeScriptInExtensionServiceWorker might have failed silently.',
           );
         } else {
           await driver.navigate(PAGES.BACKGROUND);
           assert(
-            await driver.executeScript(testCode),
+            await driver.executeScript(lockdownTestScript),
             'Expected script execution to be complete. driver.executeScript might have failed silently.',
           );
         }

@@ -1,3 +1,7 @@
 export function hasConsoleAccess() {
-  return typeof console !== 'undefined' && typeof console.log === 'function';
+  return (
+    typeof console !== 'undefined' &&
+    console !== null &&
+    typeof console.log === 'function'
+  );
 }
