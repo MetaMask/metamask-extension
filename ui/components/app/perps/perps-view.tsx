@@ -220,7 +220,10 @@ export const PerpsView = () => {
         // publish the count. The client is the source of record until a core
         // ticket adds it — do not delete this on a routine dependency bump.
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          // EXECUTED, not FAILED: the controller sets `success = successCount >
+          // 0` and emits EXECUTED for a partial batch. Reporting FAILED here
+          // would contradict the controller's own event for the same action.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
         });
         replacePerpsToastByKey({
@@ -239,7 +242,8 @@ export const PerpsView = () => {
         return;
       } else {
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          // Same vocabulary as the controller's batch event.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
             successCount || positionCount,
         });
@@ -260,12 +264,12 @@ export const PerpsView = () => {
         captureException(refreshError);
       }
     } catch (error) {
+      // Same reasoning as the cancel path: TradingService.closePositions
+      // rethrows but still emits its terminal PositionCloseTransaction from
+      // `finally`, so a client emit here would double-count. The count is only
+      // reported on the branches where the batch actually returned a result.
       captureException(error);
       setBatchActionError(t('somethingWentWrong'));
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
-      });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
       });
@@ -297,17 +301,16 @@ export const PerpsView = () => {
         [{ cancelAll: true }],
       );
     } catch (error) {
-      // The request never reached the controller, so its terminal cancel event
-      // will never fire — without this fallback the failure is invisible to
-      // MetaMetrics. Kept separate from the refresh failure below, which
-      // happens AFTER the cancel has already been handed off.
+      // No client cancel TRANSACTION event here. TradingService.cancelOrders
+      // rethrows from its catch but still emits the terminal
+      // OrderCancelTransaction from its `finally`, so any failure that reached
+      // the controller is already reported — a client emit would double-count,
+      // and the UI cannot tell a controller-internal throw from a transport
+      // one. PerpsError and the error screen view are not duplicates: the
+      // controller emits neither.
       captureException(error);
       const errorMessage =
         error instanceof Error ? error.message : t('somethingWentWrong');
-      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
