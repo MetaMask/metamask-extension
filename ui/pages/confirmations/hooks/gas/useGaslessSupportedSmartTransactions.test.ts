@@ -152,16 +152,16 @@ describe('useGaslessSupportedSmartTransactions', () => {
     });
   });
 
-  it('returns isSupported false for hardware wallets even when smart transactions and sendBundle are supported', async () => {
-    useIsHardwareWalletAccountMock.mockReturnValue(true);
+  it('returns isSupported true for hardware wallets when smart transactions and sendBundle are supported', async () => {
     getIsSmartTransactionMock.mockReturnValue(true);
     isSendBundleSupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
 
+    // Hardware wallets support the sendBundle path (standard EIP-1559 signing only)
     expect(result).toStrictEqual({
       isSmartTransaction: true,
-      isSupported: false,
+      isSupported: true,
       pending: false,
     });
   });

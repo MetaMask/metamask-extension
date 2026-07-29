@@ -9,9 +9,9 @@ const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const reactCompilerPlugin = require('eslint-plugin-react-compiler');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
+const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
 
 const {
   architecturalZones,
@@ -376,7 +376,7 @@ module.exports = defineConfig([
     ],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -387,10 +387,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'error',
@@ -410,6 +408,20 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
+      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+      // promotes them to error and clears the baseline.
+      'react-hooks/config': 'warn',
+      'react-hooks/error-boundaries': 'warn',
+      'react-hooks/gating': 'warn',
+      'react-hooks/globals': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/use-memo': 'warn',
     },
     settings: {
       react: {
@@ -433,7 +445,7 @@ module.exports = defineConfig([
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
     extends: [
       reactPlugin.configs.flat.recommended,
-      reactHooksPlugin.configs['recommended-latest'],
+      reactHooksPlugin.configs.flat['recommended-latest'],
     ],
     languageOptions: {
       parserOptions: {
@@ -444,10 +456,8 @@ module.exports = defineConfig([
     },
     plugins: {
       react: reactPlugin,
-      'react-compiler': reactCompilerPlugin,
     },
     rules: {
-      'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
       'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'off',
@@ -467,6 +477,20 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
+      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
+      // promotes them to error and clears the baseline.
+      'react-hooks/config': 'warn',
+      'react-hooks/error-boundaries': 'warn',
+      'react-hooks/gating': 'warn',
+      'react-hooks/globals': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/use-memo': 'warn',
     },
     settings: {
       react: {
@@ -845,12 +869,13 @@ module.exports = defineConfig([
   /**
    * E2E page objects
    *
-   * Page objects should declare selectors (fields) alphabetically at the
-   * top, followed by the constructor, then methods in alphabetical order.
-   *
-   * The files listed in `excludedFiles` don't yet comply. They are
-   * temporarily exempt and should be removed from this list as each one is
-   * reordered. Do NOT add new files here — new page objects must comply.
+   * Page objects should declare selectors first (both constant fields and
+   * arrow-function locator builders), followed by the constructor, then the
+   * action methods that drive the `driver`. Everything is alphabetical within
+   * its group.
+   * The files listed in `ignores` don't yet comply. They are temporarily
+   * exempt and should be removed from this list as each one is reordered. Do
+   * NOT add new files here. New page objects must comply.
    *
    * TODO: Reorder the excluded files and delete them from this list.
    */
@@ -922,7 +947,6 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/home/nfts-tab.ts',
       'test/e2e/page-objects/pages/home/perps-tab.ts',
       'test/e2e/page-objects/pages/home/tokens-tab.ts',
-      'test/e2e/page-objects/pages/home/transaction-details.ts',
       'test/e2e/page-objects/pages/login-page.ts',
       'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
       'test/e2e/page-objects/pages/multichain/address-list-modal.ts',
@@ -985,16 +1009,15 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/vault-decryptor-page.ts',
       'test/e2e/page-objects/pages/wallet-details-page.ts',
     ],
-    rules: {
-      '@typescript-eslint/member-ordering': [
-        'error',
-        {
-          classes: {
-            memberTypes: ['field', 'constructor', 'method'],
-            order: 'alphabetically',
-          },
+    plugins: {
+      'page-object': {
+        rules: {
+          'member-order': pageObjectMemberOrderRule,
         },
-      ],
+      },
+    },
+    rules: {
+      'page-object/member-order': 'error',
     },
   },
   /**

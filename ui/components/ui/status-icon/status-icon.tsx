@@ -31,7 +31,7 @@ export function StatusIcon({ state, className }: Props) {
     }
 
     try {
-      // eslint-disable-next-line react-compiler/react-compiler
+      // eslint-disable-next-line react-hooks/immutability
       darkInput.value = isDark;
     } catch {
       // Rive WASM runtime may have been cleaned up

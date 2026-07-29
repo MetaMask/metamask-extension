@@ -376,21 +376,12 @@
     "message": "$1(으)로 전환 완료",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "예치 실패"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1 예치 중",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 예치 완료",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "지갑 추가"
   },
+  "add_device_error_connection": {
+    "message": "휴대전화와의 안전한 연결을 유지할 수 없습니다. 인터넷 연결을 확인한 후 다시 시도하세요."
+  },
+  "add_device_error_expired": {
+    "message": "동기화 세션이 만료되었습니다. 새 QR 코드를 생성하려면 다시 시작하세요."
+  },
+  "add_device_error_generic": {
+    "message": "휴대전화와 동기화하는 동안 오류가 발생했습니다. 다시 시도하세요."
+  },
+  "add_device_error_invalid_code": {
+    "message": "인증 코드가 정확하지 않습니다. 휴대전화를 동기화하려면 다시 시작하세요."
+  },
+  "add_device_error_rejected": {
+    "message": "휴대전화에서 동기화가 취소되었습니다. 동기화하려면 다시 시작하세요."
+  },
+  "add_device_error_sync_failed": {
+    "message": "계정을 휴대전화로 동기화할 수 없습니다. 다시 시도하세요."
+  },
+  "add_device_error_title": {
+    "message": "동기화를 완료할 수 없습니다"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "알 수 없는 주소에 접근하고 있습니다. 이는 악성 트랜잭션을 방지하는 데 도움이 됩니다."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "추가 보호 비용 $1이(가) 포함되어 있습니다",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "선택 사항"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "스왑 페이지"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "팔로우 트레이딩 페이지"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "트랜잭션 보호 페이지"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "$1초 후 만료",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "입력 가능 횟수를 초과했습니다. 새 QR 코드로 다시 시작하세요."
   },
   "enter_your_password": {
     "message": "비밀번호 입력"
@@ -4220,6 +4242,9 @@
   },
   "hardwareWalletConnected": {
     "message": "하드웨어 지갑 연결됨"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "기기 응답이 너무 오래 걸리거나 연결 시간이 초과되었습니다. 기기가 연결되어 있고 잠금이 해제되어 있는지 확인한 후 다시 시도하세요."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "계속"
@@ -5644,6 +5669,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "이 계정에서 지원되지 않습니다."
+  },
   "networkOptions": {
     "message": "네트워크 옵션"
   },
@@ -6907,6 +6935,12 @@
   "perpsCloseAmount": {
     "message": "종료 금액"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "가격은 시장가에서 95% 이상 벗어날 수 없습니다."
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "계속하려면 올바른 지정가를 입력하세요."
+  },
   "perpsCloseLong": {
     "message": "롱 청산"
   },
@@ -6915,6 +6949,9 @@
   },
   "perpsClosePosition": {
     "message": "포지션 종료"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "현재 가격을 확인할 수 없습니다. 잠시 후에 다시 시도하세요."
   },
   "perpsCloseShort": {
     "message": "숏 청산"
@@ -7445,6 +7482,10 @@
     "message": "손익은 $1입니다",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "청산 주문을 제출하지 못했습니다",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "$2 포지션에 $1의 마진을 추가함",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7496,6 +7537,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "포지션이 부분적으로 종료되었습니다",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "부분 청산 주문을 제출하지 못했습니다",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "포지션이 여전히 유효합니다",
@@ -8062,8 +8107,128 @@
   "quotedTotalCost": {
     "message": "총비용: $1"
   },
+  "rampsBestRate": {
+    "message": "최적 환율"
+  },
+  "rampsBuyToken": {
+    "message": "$1 매수",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1을(를) 통해 매수합니다.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "공급자를 변경하세요."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "다시 시도해 보세요. 계속 문제가 발생하면 고객지원팀에 문의하세요."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "사용자 지역을 확인할 수 없습니다"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "결제 수단을 불러오지 못했습니다"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "토큰을 불러오지 못했습니다"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "최대 매수 금액은 $1입니다",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "최소 구매 금액은 $1입니다",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "가장 신뢰할 수 있음"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "사용 가능한 결제 방법이 없습니다."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "공급자가 없습니다."
+  },
   "rampsNoTokensAvailable": {
     "message": "사용 가능한 토큰 없음"
+  },
+  "rampsOnNetwork": {
+    "message": "$1에서",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "기타 옵션"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "영업일"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "영업일"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "시간"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "시간"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "즉시"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "다음 미만:"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "분"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "분"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "최대 $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "최소 $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "사용한 적 있음"
+  },
+  "rampsProviders": {
+    "message": "공급자"
+  },
+  "rampsQuoteFetchError": {
+    "message": "견적을 불러오지 못했습니다."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "견적을 확인할 수 없습니다."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1에 대한 견적을 표시합니다.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "결제 방법 선택"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "서비스 장애가 발생했습니다. 나중에 다시 시도하세요."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "현재 일시적으로 매수 기능을 이용할 수 없습니다"
+  },
+  "rampsShowAllTokens": {
+    "message": "모든 토큰 표시"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "사용자 지역에서는 아직 암호화폐를 매수할 수 없습니다."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "여기서는 매수할 수 없습니다"
   },
   "rank": {
     "message": "순위"
@@ -10675,6 +10840,9 @@
   },
   "tokenDecimal": {
     "message": "토큰 십진수"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0부터 36까지의 정수를 입력하세요."
   },
   "tokenDetails": {
     "message": "토큰 상세 정보"

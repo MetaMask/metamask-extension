@@ -46,13 +46,23 @@ jest.mock('../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+  getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
+    standard: 'ERC721',
+  }),
 }));
 
 jest.mock('../../../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../../../hooks/useAssetDetails'),
-  useAssetDetails: jest.fn().mockResolvedValue({
+  useAssetDetails: jest.fn(() => ({
     decimals: '4',
-  }),
+  })),
+}));
+
+jest.mock('./approve/hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({
+    isNFT: true,
+    pending: false,
+  })),
 }));
 
 jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
@@ -111,6 +121,22 @@ jest.mock('../../../hooks/gas/useGasSponsorshipPreference', () => ({
     setSponsorshipOptedOut: jest.fn(),
   })),
 }));
+
+/**
+ * Tippy assigns incrementing IDs; normalize so snapshots are order-stable.
+ *
+ * @param container - Rendered DOM container to clone and normalize.
+ * @returns A clone of the container with Tippy aria IDs normalized.
+ */
+const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
+  const clone = container.cloneNode(true) as HTMLElement;
+  clone
+    .querySelectorAll('[aria-describedby^="tippy-tooltip-"]')
+    .forEach((el) => {
+      el.setAttribute('aria-describedby', 'tippy-tooltip');
+    });
+  return clone;
+};
 
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
@@ -192,9 +218,14 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      // useIsNFT pending renders Container loader (advanced-details-data-section);
+      // wait for the settled simulation before snapshotting.
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for setApprovalForAll request', async () => {
@@ -204,9 +235,12 @@ describe('Info', () => {
 
     await waitFor(() => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for addEthereumChain request', () => {

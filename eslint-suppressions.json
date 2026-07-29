@@ -34,11 +34,6 @@
       "count": 1
     }
   },
-  "ui/components/app/perps/hooks/useClickOutside.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/components/app/shield-entry-modal/shield-illustration-animation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -172,11 +167,6 @@
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/hooks/bridge/useBridgeNavigation.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 6
     }
   },
   "ui/hooks/bridge/useInitialBridgeTokens.ts": {
@@ -457,9 +447,6 @@
   "ui/pages/create-account/connect-hardware/index.tsx": {
     "promise/no-nesting": {
       "count": 1
-    },
-    "react-hooks/exhaustive-deps": {
-      "count": 3
     }
   },
   "ui/pages/create-account/connect-hardware/select-hardware.tsx": {
