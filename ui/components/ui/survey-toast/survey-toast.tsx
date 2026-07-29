@@ -15,6 +15,7 @@ import {
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
 } from '../../../selectors';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
@@ -38,6 +39,7 @@ export function SurveyToast() {
     getCompletedMetaMetricsOnboarding,
   );
   const basicFunctionality = useSelector(getUseExternalServices);
+  const isUnlocked = useSelector(getIsUnlocked);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
 
@@ -47,7 +49,6 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    console.error('[SurveyToast] effect', { basicFunctionality, analyticsId, isMetaMetricsEnabled });
     if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
       return undefined;
     }
@@ -57,7 +58,6 @@ export function SurveyToast() {
     // cleanup cancels any pending timer, so only the last stable dep state
     // actually fires a request.
     const timeoutId = setTimeout(() => {
-      console.error('[SurveyToast] fetching', surveyUrl);
       fetchWithCache({
         url: surveyUrl,
         fetchOptions: {
@@ -70,7 +70,6 @@ export function SurveyToast() {
         cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
       })
         .then((response) => {
-          console.error('[SurveyToast] response', JSON.stringify(response));
           const _survey: Survey = response?.surveys;
 
           if (
@@ -78,23 +77,27 @@ export function SurveyToast() {
             Object.keys(_survey).length === 0 ||
             _survey.id <= lastViewedUserSurvey
           ) {
-            console.error('[SurveyToast] filtered', { _survey, lastViewedUserSurvey });
             return;
           }
 
-          console.error('[SurveyToast] setSurvey', _survey.id);
           setSurvey(_survey);
         })
         .catch((error: unknown) => {
-          console.error('[SurveyToast] fetch failed:', error);
+          console.error('Failed to fetch survey:', analyticsId, error);
         });
     }, 0);
 
     return () => {
-      console.error('[SurveyToast] cleanup');
       clearTimeout(timeoutId);
     };
+
+    fetchSurvey();
+
+    return () => {
+      controller.abort();
+    };
   }, [
+    isUnlocked,
     lastViewedUserSurvey,
     basicFunctionality,
     analyticsId,
