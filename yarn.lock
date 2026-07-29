@@ -16157,13 +16157,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.268":
-  version: 0.0.268
-  resolution: "@types/chrome@npm:0.0.268"
+"@types/chrome@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@types/chrome@npm:0.2.2"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10/f03cf2f816f7c8f19319299af9399dd3eed8b46b3e4791bd7c1c70d982ae63634580a4c03509841cd65b91e99e6bc47f05358811d2c8b707968746d3d482b983
+  checksum: 10/1096af177cc8e3a051834e85869f9f2a06f55362e34e81bbb3329c2b680f6c3176b5316fe8d1f09d56b65f7302384ecd3103aca03de2fcff76043b524c9e6b74
   languageName: node
   linkType: hard
 
@@ -33027,7 +33027,7 @@ __metadata:
     "@types/babel__code-frame": "npm:^7.0.6"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
-    "@types/chrome": "npm:^0.0.268"
+    "@types/chrome": "npm:^0.2.2"
     "@types/currency-formatter": "npm:^1.5.1"
     "@types/eslint-plugin-tailwindcss": "npm:^3"
     "@types/fs-extra": "npm:^9.0.13"

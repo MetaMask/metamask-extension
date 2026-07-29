@@ -640,7 +640,7 @@
     "@types/babel__code-frame": "^7.0.6",
     "@types/babelify": "^7.3.7",
     "@types/browserify": "^12.0.37",
-    "@types/chrome": "^0.0.268",
+    "@types/chrome": "^0.2.2",
     "@types/currency-formatter": "^1.5.1",
     "@types/eslint-plugin-tailwindcss": "^3",
     "@types/fs-extra": "^9.0.13",
