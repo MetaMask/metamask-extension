@@ -9,6 +9,8 @@ const SIGKILL_TIMEOUT_MS = 5_000;
  * Sends SIGTERM first, then SIGKILL if needed. After SIGKILL, waits for the
  * `exit` event (up to {@link SIGKILL_TIMEOUT_MS}) and throws if the process is
  * still alive so teardown does not race directory cleanup.
+ *
+ * @param childProcess - The spawned child process to stop.
  */
 export async function stopProcess(childProcess: ChildProcess): Promise<void> {
   if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
