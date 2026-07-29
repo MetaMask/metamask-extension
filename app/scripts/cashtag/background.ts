@@ -1,26 +1,17 @@
 import browser from 'webextension-polyfill';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { fetchAssetData } from './lib/assets';
+import { swapRoute, swapRouteSearchForDest } from './lib/constants';
 import type { Controller } from './lib/types';
 
 let registered = false;
 
-// Held in the service worker until the sidepanel UI consumes it. Chrome's
-// sidePanel.setOptions path cannot carry query/hash, so the URL cannot be the
-// signal — this one-shot value + a runtime message is.
-let pendingCashtagSwapTo: string | null = null;
-
 function bodyString(message: { body?: Record<string, unknown> }, key: string) {
   const value = message.body?.[key];
   return typeof value === 'string' ? value : null;
-}
-
-function takePendingCashtagSwapTo() {
-  const value = pendingCashtagSwapTo;
-  pendingCashtagSwapTo = null;
-  return value;
 }
 
 export function registerBackgroundBridge({
@@ -90,14 +81,8 @@ export function registerBackgroundBridge({
         }));
     }
 
-    if (message?.type === EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP) {
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP,
-        body: { caipAssetId: takePendingCashtagSwapTo() },
-      });
-    }
-
     if (message?.type === EXTENSION_MESSAGES.OPEN_SWAP_PAGE) {
+      const controller = getController();
       const windowId = sender?.tab?.windowId;
       const tabId = sender?.tab?.id;
       const sidePanelApi = globalThis.chrome?.sidePanel;
@@ -124,43 +109,26 @@ export function registerBackgroundBridge({
         });
       }
 
-      if (caipAssetId) {
-        pendingCashtagSwapTo = caipAssetId;
-      }
+      controller?.appStateController?.setPendingRedirectRoute?.({
+        path: swapRoute,
+        ...(caipAssetId ? { search: swapRouteSearchForDest(caipAssetId) } : {}),
+        environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+      });
 
-      // setOptions only accepts a package file path — query/hash are invalid and
-      // break opening entirely. Reset to the default path in case a prior build
-      // left a bad path configured.
-      const resetPath = sidePanelApi.setOptions
-        ? Promise.resolve(sidePanelApi.setOptions({ path: 'sidepanel.html' }))
-        : Promise.resolve();
-
-      return resetPath
-        .then(() => sidePanelApi.open(openOptions))
-        .then(async () => {
-          if (caipAssetId) {
-            try {
-              await browser.runtime.sendMessage({
-                type: EXTENSION_MESSAGES.CASHTAG_SWAP_NAVIGATE,
-                body: { caipAssetId },
-              });
-            } catch {
-              // No UI listener yet (cold open) — Routes will GET_PENDING instead.
-            }
-          }
-          return {
-            type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-            body: { ok: true, caipAssetId },
-          };
-        })
-        .catch((error: unknown) => ({
+      return Promise.resolve(sidePanelApi.open(openOptions)).then(
+        () => ({
+          type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
+          body: { ok: true, caipAssetId },
+        }),
+        (error: unknown) => ({
           type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
           body: {
             ok: false,
             reason: 'sidepanel-open-failed',
             error: error instanceof Error ? error.message : String(error),
           },
-        }));
+        }),
+      );
     }
 
     return undefined;

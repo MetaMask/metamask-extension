@@ -4,12 +4,10 @@ import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
-import extension from 'webextension-polyfill';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -42,6 +40,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  SWAP_PATH,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -88,6 +87,7 @@ import {
   getNetworkIdentifier,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
+  getPendingRedirectRoute,
 } from '../../selectors';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
@@ -100,6 +100,7 @@ import {
   setLastActiveTime,
   hideDeprecatedNetworkModal,
   hideKeyringRemovalResultModal,
+  setPendingRedirectRoute,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
@@ -676,53 +677,22 @@ export default function Routes() {
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
 
-  // Cashtag Swap: sidePanel.setOptions cannot take a route/query, so the
-  // background holds a one-shot pending caip and also broadcasts a navigate
-  // message for an already-open panel. Wait until unlocked so unlock/home
-  // redirects do not wipe the destination.
+  // If cashtag set a pending swap redirect, go there (Home may not be mounted).
+  const pendingRedirectRoute = useAppSelector(getPendingRedirectRoute);
   useEffect(() => {
-    if (!isUnlocked) {
-      return undefined;
+    if (!isUnlocked || pendingRedirectRoute?.path !== SWAP_PATH) {
+      return;
     }
-
-    const goToSwap = (caip: string) => {
-      navigate(
-        `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page?to=${encodeURIComponent(caip)}`,
-      );
-    };
-
-    extension.runtime
-      .sendMessage({ type: EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP })
-      .then((response) => {
-        const caip = response?.body?.caipAssetId;
-        if (typeof caip === 'string' && caip.length > 0) {
-          goToSwap(caip);
-        }
-      })
-      .catch(() => undefined);
-
-    const onMessage = (message: {
-      type?: string;
-      body?: { caipAssetId?: unknown };
-    }) => {
-      if (message?.type !== EXTENSION_MESSAGES.CASHTAG_SWAP_NAVIGATE) {
-        return undefined;
-      }
-      const caip = message.body?.caipAssetId;
-      if (typeof caip === 'string' && caip.length > 0) {
-        goToSwap(caip);
-        extension.runtime
-          .sendMessage({ type: EXTENSION_MESSAGES.GET_PENDING_CASHTAG_SWAP })
-          .catch(() => undefined);
-      }
-      return undefined;
-    };
-
-    extension.runtime.onMessage.addListener(onMessage);
-    return () => {
-      extension.runtime.onMessage.removeListener(onMessage);
-    };
-  }, [isUnlocked, navigate]);
+    if (
+      pendingRedirectRoute.environmentType &&
+      pendingRedirectRoute.environmentType !== getEnvironmentType()
+    ) {
+      return;
+    }
+    const { path, search } = pendingRedirectRoute;
+    dispatch(setPendingRedirectRoute(null));
+    navigate(search ? `${path}${search}` : path);
+  }, [isUnlocked, pendingRedirectRoute, navigate, dispatch]);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

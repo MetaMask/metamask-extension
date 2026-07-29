@@ -35,4 +35,11 @@ export type Controller = {
     state?: { preferences?: { showWebWidgetOnX?: boolean } };
     setPreference?: (preference: string, value: boolean) => unknown;
   };
+  appStateController?: {
+    setPendingRedirectRoute?: (route: {
+      path: string;
+      search?: `?${string}`;
+      environmentType?: string;
+    }) => void;
+  };
 };
