@@ -1149,13 +1149,16 @@ export const getTokensMarketData = (state) => {
 
 export { getTokenRatesControllerMarketData as getMarketData };
 
-export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
-    return [];
-  }
-  return Object.values(state.metamask.addressBook[chainId]);
-}
+export const getAddressBook = createSelector(
+  getCurrentChainId,
+  (state) => state.metamask.addressBook,
+  (chainId, addressBook) => {
+    if (!addressBook[chainId]) {
+      return EMPTY_ARRAY;
+    }
+    return Object.values(addressBook[chainId]);
+  },
+);
 
 export const getCompleteAddressBook = createShallowResultSelector(
   (state) => state.metamask.addressBook,
