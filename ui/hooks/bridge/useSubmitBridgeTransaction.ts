@@ -83,7 +83,7 @@ export default function useSubmitBridgeTransaction() {
   } | null>(null);
 
   const submitQuote = async (
-    quoteResponse: QuoteResponse & QuoteMetadata,
+    quoteResponse: QuoteResponseV1 & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -107,7 +107,7 @@ export default function useSubmitBridgeTransaction() {
       const { requestId } = quoteResponse.quote;
       let rpcPromise =
         inFlightSubmitBridgeTxRef.current?.requestId === requestId
-          ? inFlightSubmitBridgeTxRef.current.promise
+          ? inFlightSubmitBridgeTxRef.current?.promise
           : null;
 
       if (!rpcPromise) {

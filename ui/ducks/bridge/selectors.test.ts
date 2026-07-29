@@ -2562,7 +2562,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
           quotes: (
-            mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[]
+            mockBridgeQuotesNativeErc20 as unknown as QuoteResponseV1[]
           ).map((quote) => ({
             ...quote,
             quote: {
