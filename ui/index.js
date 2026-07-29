@@ -460,8 +460,8 @@ function setupStateHooks(store) {
   if (process.env.IN_TEST) {
     // Load conditionally so this test-only package is excluded from production builds and policies.
     // eslint-disable-next-line n/global-require
-    const { runDummyPackage } = require('@metamask/dummy-package');
-    window.stateHooks.throwLavamoatError = () => runDummyPackage();
+    window.stateHooks.throwLavamoatError = () =>
+      require('@metamask/dummy-package').runDummyPackage();
   }
 }
 

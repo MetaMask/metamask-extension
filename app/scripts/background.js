@@ -2663,6 +2663,6 @@ if (process.env.IN_TEST) {
   });
   // Load conditionally so this test-only package is excluded from production builds and policies.
   // eslint-disable-next-line n/global-require
-  const { runDummyPackage } = require('@metamask/dummy-package');
-  global.stateHooks.throwLavamoatError = () => runDummyPackage();
+  global.stateHooks.throwLavamoatError = () =>
+    require('@metamask/dummy-package').runDummyPackage();
 }
