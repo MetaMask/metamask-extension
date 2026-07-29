@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  BRIDGE_UAT_API_BASE_URL,
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -14,6 +15,7 @@ import {
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from './network';
+import { ENVIRONMENT } from './build';
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
@@ -69,9 +71,43 @@ export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
-  ? BRIDGE_DEV_API_BASE_URL
-  : BRIDGE_PROD_API_BASE_URL;
+/**
+ * Resolves the Bridge API base URL to use based on the current MetaMask
+ * environment.
+ *
+ * @returns the Bridge API base URL for the current MetaMask environment
+ */
+export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
+  if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
+  }
+
+  switch (process.env.METAMASK_ENVIRONMENT) {
+    case 'exp':
+    case ENVIRONMENT.STAGING:
+      return BRIDGE_UAT_API_BASE_URL;
+    case 'e2e':
+    case 'dev':
+    case 'local':
+    case ENVIRONMENT.DEVELOPMENT:
+    case ENVIRONMENT.TESTING:
+    case ENVIRONMENT.OTHER:
+      return BRIDGE_DEV_API_BASE_URL;
+    case 'production':
+    case 'rc':
+    case 'pre-release':
+    case 'beta':
+    case ENVIRONMENT.RELEASE_CANDIDATE:
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.PULL_REQUEST:
+    default:
+      return BRIDGE_PROD_API_BASE_URL;
+  }
+};
+
+// Allows developers to point the extension at a custom Bridge API deployment
+// (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
+export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
 
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
