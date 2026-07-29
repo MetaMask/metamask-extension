@@ -5529,7 +5529,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.1.1, @metamask/assets-controller@npm:^11.2.0":
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@11.2.1-preview-a3ea429":
+  version: 11.2.1-preview-a3ea429
+  resolution: "@metamask-previews/assets-controller@npm:11.2.1-preview-a3ea429"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/account-tree-controller": "npm:^7.5.5"
+    "@metamask/accounts-controller": "npm:^39.0.5"
+    "@metamask/assets-controllers": "npm:^110.0.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/client-controller": "npm:^1.0.1"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^7.0.0"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/keyring-controller": "npm:^27.1.0"
+    "@metamask/keyring-internal-api": "npm:^11.0.1"
+    "@metamask/keyring-snap-client": "npm:^9.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/network-controller": "npm:^34.0.0"
+    "@metamask/network-enablement-controller": "npm:^5.6.0"
+    "@metamask/permission-controller": "npm:^13.1.1"
+    "@metamask/phishing-controller": "npm:^17.3.0"
+    "@metamask/polling-controller": "npm:^16.0.8"
+    "@metamask/preferences-controller": "npm:^23.1.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/transaction-controller": "npm:^69.2.1"
+    "@metamask/utils": "npm:^11.11.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    lodash: "npm:^4.17.21"
+    p-limit: "npm:^3.1.0"
+  checksum: 10/5abba4fe657f489cdc453b7cfebb169e93d7a88e92131664c6494abd079fcd92731907799792a228873ee17c9cedc6523d0b9013fef2a9f4a9d99ff3dcae4050
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controller@npm:^11.0.0, @metamask/assets-controller@npm:^11.1.1":
   version: 11.2.0
   resolution: "@metamask/assets-controller@npm:11.2.0"
   dependencies:
@@ -32872,7 +32910,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^11.2.0"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@11.2.1-preview-a3ea429"
     "@metamask/assets-controllers": "npm:^110.0.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
