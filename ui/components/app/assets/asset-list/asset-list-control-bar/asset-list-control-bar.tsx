@@ -355,6 +355,7 @@ const AssetListControlBar = ({
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
+    closePopover();
   };
 
   return (
