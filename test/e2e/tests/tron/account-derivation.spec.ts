@@ -85,8 +85,10 @@ async function assertTronAddressesForAccounts(
     await accountList.openMultichainAccountMenu({ accountLabel });
     await accountList.clickMultichainAccountMenuItem('Addresses');
     await addressList.checkPageIsLoaded();
-    await addressList.checkNetworkNameisDisplayed('Tron');
-    await addressList.checkNetworkAddressIsDisplayed(shortenAddress(expected));
+    await addressList.checkNetworkAddressIsDisplayedForNetwork({
+      networkName: 'Tron',
+      networkAddress: shortenAddress(expected),
+    });
     await addressList.clickCopyButtonForNetworkAndAssertClipboard({
       networkName: 'Tron',
       expectedAddress: expected,
@@ -153,10 +155,10 @@ describe('Tron account derivation', function (this: Suite) {
           await accountList.openMultichainAccountMenu({ accountLabel });
           await accountList.clickMultichainAccountMenuItem('Addresses');
           await addressList.checkPageIsLoaded();
-          await addressList.checkNetworkNameisDisplayed('Tron');
-          await addressList.checkNetworkAddressIsDisplayed(
-            shortenAddress(expected),
-          );
+          await addressList.checkNetworkAddressIsDisplayedForNetwork({
+            networkName: 'Tron',
+            networkAddress: shortenAddress(expected),
+          });
           await addressList.clickCopyButtonForNetworkAndAssertClipboard({
             networkName: 'Tron',
             expectedAddress: expected,
