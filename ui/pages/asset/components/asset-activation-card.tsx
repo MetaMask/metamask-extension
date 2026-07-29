@@ -17,13 +17,16 @@ import {
 } from '@metamask/design-system-react';
 import React from 'react';
 
+import type { CaipAssetType } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAssetActivation } from '../hooks/useAssetActivation';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 export type AssetActivateCardProps = {
   asset: Asset;
+  accountId?: string;
   chainName: string;
 };
 
@@ -33,16 +36,22 @@ export type AssetActivateCardProps = {
  *
  * @param params - Trustline activate card parameters
  * @param params.asset - The asset to activate
+ * @param params.accountId - Optional account id override.
  * @param params.chainName - The name of the chain
  */
 export const AssetActivateCard = ({
   asset,
+  accountId,
   chainName,
 }: AssetActivateCardProps) => {
   const t = useI18nContext();
   const { symbol } = asset;
+  const assetId =
+    asset.type === AssetType.token
+      ? (asset.address as CaipAssetType)
+      : undefined;
   const { activateAsset, isActivating, errorMessage, dismissErrorMessage } =
-    useAssetActivation({ asset });
+    useAssetActivation({ accountId, assetId, assetSymbol: symbol });
 
   return (
     <Box

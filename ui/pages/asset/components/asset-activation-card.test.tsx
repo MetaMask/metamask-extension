@@ -25,7 +25,7 @@ const STELLAR_TOKEN = {
   symbol: 'USDC',
   decimals: 7,
   image: '',
-} as unknown as Asset & { type: typeof AssetType.token };
+} as Asset & { type: typeof AssetType.token };
 
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
 const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
@@ -98,8 +98,8 @@ describe('AssetActivateCard', () => {
 
     expect(screen.getByTestId('asset-activate-card')).toBeInTheDocument();
     expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
-    expect(screen.getByText(/USDC/u)).toBeInTheDocument();
-    expect(screen.getByText(/Stellar/u)).toBeInTheDocument();
+    expect(screen.getByText(/USDC/)).toBeInTheDocument();
+    expect(screen.getByText(/Stellar/)).toBeInTheDocument();
   });
 
   it('submits changeTrustOpt add when the user taps Activate', async () => {
