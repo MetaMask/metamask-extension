@@ -90,7 +90,6 @@ const Name = memo(
           })
           .build(),
       );
-      // eslint-disable-next-line react-compiler/react-compiler
       // eslint-disable-next-line react-hooks/exhaustive-deps -- only want to call `trackEvent` on the initial render
     }, []);
 
