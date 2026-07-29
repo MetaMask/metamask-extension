@@ -17,6 +17,7 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldType } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -357,15 +358,20 @@ export default function SrpInputImport({
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
           flexDirection={BoxFlexDirection.Column}
-          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          marginTop={2}
+          backgroundColor={
+            draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
+          }
           className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
-            <Box padding={4} style={{ flex: 1 }}>
+            <Box style={{ flex: 1 }}>
               <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
+                      borderWidth={0}
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       inputProps={{
                         ref: (el) => {
                           if (el) {
@@ -425,7 +431,10 @@ export default function SrpInputImport({
             </Box>
           ) : (
             <Box
-              padding={4}
+              paddingTop={3}
+              paddingBottom={3}
+              paddingLeft={4}
+              paddingRight={4}
               className="srp-input-import__srp-note rounded-lg"
               style={{ flex: 1 }}
             >

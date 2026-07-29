@@ -414,7 +414,7 @@ export default function OnboardingFlow() {
       )}
       <Box
         className={classnames(
-          'onboarding-flow__container w-full rounded-lg mx-auto',
+          'onboarding-flow__container w-full rounded-2xl mx-auto',
           {
             'onboarding-flow__container--full': isFullPage,
             'onboarding-flow__container--popup': isPopup,
@@ -433,7 +433,7 @@ export default function OnboardingFlow() {
               pathname,
             ) || isPopup
               ? 'transparent'
-              : 'var(--color-background-muted)',
+              : 'var(--color-background-alternative)',
         }}
       >
         <ErrorBoundary>

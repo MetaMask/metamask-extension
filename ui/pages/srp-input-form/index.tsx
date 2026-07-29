@@ -9,7 +9,6 @@ import {
   BoxAlignItems,
   TextVariant,
   TextColor,
-  IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import SrpInputImport from '../../components/app/srp-input-import';
@@ -91,8 +90,8 @@ const SrpInputForm = ({
             </Text>
             <ButtonIcon
               iconName={IconName.Info}
-              size={ButtonIconSize.Sm}
-              color={IconColor.IconAlternative}
+              size={ButtonIconSize.Xs}
+              className="text-icon-alternative"
               onClick={onShowSrpDetailsModal}
               ariaLabel="info"
             />

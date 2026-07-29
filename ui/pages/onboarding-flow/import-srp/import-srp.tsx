@@ -115,13 +115,13 @@ export default function ImportSRP({
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             color={IconColor.IconDefault}
-            size={ButtonIconSize.Md}
+            size={ButtonIconSize.Sm}
             data-testid="import-srp-back-button"
             onClick={onBack}
             ariaLabel={t('back')}
           />
         </Box>
-        <Box className="text-left mb-2">
+        <Box className="text-left mb-1">
           <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
         </Box>
         <SrpInputForm
