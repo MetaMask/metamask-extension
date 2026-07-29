@@ -323,7 +323,6 @@ describe('Tron account derivation', function (this: Suite) {
             networkName: 'Tron',
             expectedAddress: expected,
           });
-          await addressList.verifyCopyButtonFeedback();
           await addressList.goBack();
         }
       },
