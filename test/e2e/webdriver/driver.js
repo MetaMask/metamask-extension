@@ -1857,6 +1857,8 @@ class Driver {
       'unable to proceed, wallet is locked',
       // Rive load/cleanup noise (createRoot); not an app regression. See #44516.
       'Problem loading file; may be corrupt!',
+      // Temporary survey-toast diagnostics — remove after root cause identified
+      '[SurveyToast]',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

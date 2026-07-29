@@ -47,7 +47,7 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    console.log('[SurveyToast] effect', { basicFunctionality, analyticsId, isMetaMetricsEnabled });
+    console.error('[SurveyToast] effect', { basicFunctionality, analyticsId, isMetaMetricsEnabled });
     if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
       return undefined;
     }
@@ -57,7 +57,7 @@ export function SurveyToast() {
     // cleanup cancels any pending timer, so only the last stable dep state
     // actually fires a request.
     const timeoutId = setTimeout(() => {
-      console.log('[SurveyToast] fetching', surveyUrl);
+      console.error('[SurveyToast] fetching', surveyUrl);
       fetchWithCache({
         url: surveyUrl,
         fetchOptions: {
@@ -70,7 +70,7 @@ export function SurveyToast() {
         cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
       })
         .then((response) => {
-          console.log('[SurveyToast] response', JSON.stringify(response));
+          console.error('[SurveyToast] response', JSON.stringify(response));
           const _survey: Survey = response?.surveys;
 
           if (
@@ -78,11 +78,11 @@ export function SurveyToast() {
             Object.keys(_survey).length === 0 ||
             _survey.id <= lastViewedUserSurvey
           ) {
-            console.log('[SurveyToast] filtered out', { _survey, lastViewedUserSurvey });
+            console.error('[SurveyToast] filtered', { _survey, lastViewedUserSurvey });
             return;
           }
 
-          console.log('[SurveyToast] setSurvey', _survey.id);
+          console.error('[SurveyToast] setSurvey', _survey.id);
           setSurvey(_survey);
         })
         .catch((error: unknown) => {
@@ -91,7 +91,7 @@ export function SurveyToast() {
     }, 0);
 
     return () => {
-      console.log('[SurveyToast] cleanup – cancelling timer');
+      console.error('[SurveyToast] cleanup');
       clearTimeout(timeoutId);
     };
   }, [
