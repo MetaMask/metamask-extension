@@ -89,7 +89,6 @@ export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
     case 'e2e':
     case 'dev':
     case 'local':
-    case 'test':
     case ENVIRONMENT.DEVELOPMENT:
     case ENVIRONMENT.TESTING:
     case ENVIRONMENT.OTHER:
