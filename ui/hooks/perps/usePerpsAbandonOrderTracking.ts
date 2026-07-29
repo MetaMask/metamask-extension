@@ -25,6 +25,16 @@ import { usePerpsEventTracking } from './usePerpsEventTracking';
  * @param options.active - Whether the surface is currently shown. Pages leave
  * this true; modals that stay mounted while closed pass their open state.
  */
+/**
+ * Abandon emits deferred by a teardown, keyed by the caller's commit ref (stable
+ * across a StrictMode remount of the same component instance). A setup that
+ * finds an entry here cancels it: that teardown was the probe, not an exit.
+ */
+const pendingAbandonEmits = new WeakMap<
+  MutableRefObject<boolean>,
+  { timeoutId: ReturnType<typeof setTimeout>; startedAt: number }
+>();
+
 export function usePerpsAbandonOrderTracking({
   getAbandonProperties,
   hasCommittedRef,
@@ -46,7 +56,18 @@ export function usePerpsAbandonOrderTracking({
     if (!active) {
       return undefined;
     }
-    const startedAt = Date.now();
+    // A teardown that is immediately followed by a setup on the same instance
+    // is React StrictMode's development-only probe, not the user leaving. Cancel
+    // the scheduled emit in that case; a real exit has no follow-up setup, so
+    // the deferred emit runs on the next macrotask.
+    const pending = pendingAbandonEmits.get(hasCommittedRef);
+    if (pending !== undefined) {
+      clearTimeout(pending.timeoutId);
+      pendingAbandonEmits.delete(hasCommittedRef);
+    }
+    // Resuming the probed session keeps its original clock so the StrictMode
+    // remount does not reset `time_on_screen_ms`.
+    const startedAt = pending?.startedAt ?? Date.now();
     let emitted = false;
 
     const emitAbandon = () => {
@@ -63,7 +84,17 @@ export function usePerpsAbandonOrderTracking({
     window.addEventListener('pagehide', emitAbandon);
     return () => {
       window.removeEventListener('pagehide', emitAbandon);
-      emitAbandon();
+      // `pagehide` already emitted (popup dismissal): nothing left to defer.
+      // A commit landing after this point is still honoured — `emitAbandon`
+      // re-reads the flag when the deferred fire runs.
+      if (emitted) {
+        return;
+      }
+      const timeoutId = setTimeout(() => {
+        pendingAbandonEmits.delete(hasCommittedRef);
+        emitAbandon();
+      }, 0);
+      pendingAbandonEmits.set(hasCommittedRef, { timeoutId, startedAt });
     };
   }, [active, hasCommittedRef]);
 }

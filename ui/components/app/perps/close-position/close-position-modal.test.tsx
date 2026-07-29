@@ -287,7 +287,7 @@ describe('ClosePositionModal', () => {
   });
 
   describe('abandon tracking', () => {
-    it('reports leverage_used when the modal is dismissed without submitting', () => {
+    it('reports leverage_used when the modal is dismissed without submitting', async () => {
       const { unmount } = renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -299,8 +299,12 @@ describe('ClosePositionModal', () => {
       );
 
       // Dismissing without submitting is the real abandonment path: the host
-      // unmounts the modal and the hook's cleanup emits.
+      // unmounts the modal and the hook's cleanup emits (deferred one macrotask
+      // so a StrictMode probe can cancel it).
       unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       const abandonCall = mockCloseImperativeTrack.mock.calls.find(
         ([event, properties]) =>

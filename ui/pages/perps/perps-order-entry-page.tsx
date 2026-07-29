@@ -298,6 +298,12 @@ const PerpsOrderEntryPage = () => {
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
   const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
   const hasSubmittedOrderRef = useRef(false);
+  // Read by the considered-event effect, which is declared above `currentPrice`
+  // and must not re-arm its debounce when the price ticks.
+  const currentPriceRef = useRef(0);
+  // Same reason: the considered event reads the latest slippage config without
+  // re-arming its debounce whenever the estimate recomputes.
+  const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -586,15 +592,25 @@ const PerpsOrderEntryPage = () => {
     if (!(orderSize > 0)) {
       return undefined;
     }
+    // `orderSize` is the USD margin the user typed; the position is in asset
+    // units. Convert with the same maths submission uses
+    // (`formStateToOrderParams`) before comparing, or a $100 order against
+    // 2.5 ETH reads as a flip here while the executed event calls it a
+    // reduction.
+    const priceForSizing = currentPriceRef.current;
+    const orderAssetSize =
+      priceForSizing > 0
+        ? (orderSize * orderFormState.leverage) / priceForSizing
+        : 0;
     // Derive from the existing position direction + order direction so an
     // opposite-side order against an open position reports a flip, and so this
     // matches the executed-tx `action` (both use derivePerpsTradeAction).
     const action = derivePerpsTradeAction(
       positionDirection,
       orderFormState.direction,
-      positionSizeAbs === null
+      positionSizeAbs === null || !(orderAssetSize > 0)
         ? undefined
-        : { orderSize, positionSize: positionSizeAbs },
+        : { orderSize: orderAssetSize, positionSize: positionSizeAbs },
     );
     const timeoutId = setTimeout(() => {
       trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
@@ -622,10 +638,21 @@ const PerpsOrderEntryPage = () => {
         ),
         [PERPS_EVENT_PROPERTY.LEVERAGE]: orderFormState.leverage,
         [PERPS_EVENT_PROPERTY.TRADE_WITH_TOKEN]: false,
+        // Slippage rides the client-owned CONSIDERED event because the
+        // controller's TrackingData has no slippage fields and AC5 forbids
+        // re-adding a client trade event to carry them. Move these onto the
+        // transaction event once the controller contract gains them.
+        ...(isSlippageConfigEnabled ? slippageTradePropertiesRef.current : {}),
       });
     }, TRANSACTION_CONSIDERED_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
-  }, [orderMode, orderFormState, positionDirection, positionSizeAbs]);
+  }, [
+    orderMode,
+    orderFormState,
+    positionDirection,
+    positionSizeAbs,
+    isSlippageConfigEnabled,
+  ]);
 
   // Snapshot of the abandon-order props, refreshed after each render so the
   // unmount / page-hide emit carries the latest form state rather than a
@@ -659,6 +686,11 @@ const PerpsOrderEntryPage = () => {
   usePerpsAbandonOrderTracking({
     getAbandonProperties: getAbandonProperties.current,
     hasCommittedRef: hasSubmittedOrderRef,
+    // Only once the order form actually renders. The component returns early
+    // for the feature-disabled, still-loading and market-not-found paths, and
+    // leaving one of those screens is not an abandoned order — it also keeps
+    // market-loading time out of `time_on_screen_ms`.
+    active: Boolean(isPerpsExperienceAvailable && !marketsLoading && market),
   });
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
@@ -755,6 +787,7 @@ const PerpsOrderEntryPage = () => {
   }, [candleData]);
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
+  currentPriceRef.current = currentPrice;
 
   // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
   // This is the price the exchange uses for actual margin assessment and liquidation
@@ -976,6 +1009,7 @@ const PerpsOrderEntryPage = () => {
     }),
     [estimatedSlippagePct, maxSlippageBps, maxSlippageSource],
   );
+  slippageTradePropertiesRef.current = slippageTradeProperties;
 
   const isSubmitDisabled =
     !selectedAddress ||
@@ -1592,8 +1626,15 @@ const PerpsOrderEntryPage = () => {
                 trackingData: buildTpslTrackingData({
                   direction: orderFormState.direction,
                   source: PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
-                  positionSize:
-                    Math.abs(Number.parseFloat(orderParams.size)) || 0,
+                  // After a flip the resulting position is what the order
+                  // overshot the old one by, not the full order size. The
+                  // controller publishes this as the risk event's
+                  // `position_size`.
+                  positionSize: Math.max(
+                    (Math.abs(Number.parseFloat(orderParams.size)) || 0) -
+                      (positionSizeAbs ?? 0),
+                    0,
+                  ),
                   // New/flip market attach — not editing an existing TP/SL set.
                   isEditingExistingPosition: false,
                 }),
@@ -1698,6 +1739,7 @@ const PerpsOrderEntryPage = () => {
     maxSlippageBps,
     maxSlippageSource,
     isSlippageConfigEnabled,
+    positionSizeAbs,
     buildTrackingData,
     buildTpslTrackingData,
     isMarketOrderWithAmount,

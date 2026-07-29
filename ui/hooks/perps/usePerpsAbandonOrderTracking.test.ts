@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { usePerpsAbandonOrderTracking } from './usePerpsAbandonOrderTracking';
 
@@ -23,8 +23,21 @@ describe('usePerpsAbandonOrderTracking', () => {
       { initialProps: { isActive: active } },
     );
 
+  // The emit is deferred one macrotask so a StrictMode setup/cleanup/setup probe
+  // can cancel it; tests drive that clock explicitly.
+  const flushDeferredEmit = () => {
+    act(() => {
+      jest.advanceTimersByTime(0);
+    });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('emits abandon_order with time on screen when the surface unmounts', () => {
@@ -32,6 +45,7 @@ describe('usePerpsAbandonOrderTracking', () => {
 
     expect(mockTrack).not.toHaveBeenCalled();
     unmount();
+    flushDeferredEmit();
 
     expect(mockTrack).toHaveBeenCalledTimes(1);
     const [eventName, properties] = mockTrack.mock.calls[0];
@@ -48,6 +62,7 @@ describe('usePerpsAbandonOrderTracking', () => {
 
     hasCommittedRef.current = true;
     unmount();
+    flushDeferredEmit();
 
     expect(mockTrack).not.toHaveBeenCalled();
   });
@@ -56,6 +71,7 @@ describe('usePerpsAbandonOrderTracking', () => {
     const { rerender } = renderTracking({ current: false });
 
     rerender({ isActive: false });
+    flushDeferredEmit();
 
     expect(mockTrack).toHaveBeenCalledTimes(1);
   });
@@ -65,6 +81,7 @@ describe('usePerpsAbandonOrderTracking', () => {
 
     window.dispatchEvent(new Event('pagehide'));
     unmount();
+    flushDeferredEmit();
 
     // The one-shot guard keeps the popup-dismissal and unmount paths from
     // double-reporting the same abandonment.
@@ -75,7 +92,26 @@ describe('usePerpsAbandonOrderTracking', () => {
     const { unmount } = renderTracking({ current: false }, false);
 
     unmount();
+    flushDeferredEmit();
 
     expect(mockTrack).not.toHaveBeenCalled();
+  });
+
+  it('does not emit for a StrictMode setup/cleanup/setup probe', () => {
+    const hasCommittedRef = { current: false };
+    // StrictMode tears the effect down and sets it up again on the same
+    // instance, so the commit ref identity is preserved. That teardown is not
+    // the user leaving and must not report an abandonment.
+    const first = renderTracking(hasCommittedRef);
+    first.unmount();
+    const second = renderTracking(hasCommittedRef);
+    flushDeferredEmit();
+
+    expect(mockTrack).not.toHaveBeenCalled();
+
+    // The real exit still reports.
+    second.unmount();
+    flushDeferredEmit();
+    expect(mockTrack).toHaveBeenCalledTimes(1);
   });
 });

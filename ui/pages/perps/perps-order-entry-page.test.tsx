@@ -373,6 +373,15 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  afterEach(async () => {
+    // The abandon emit is deferred one macrotask (StrictMode probe guard). RTL
+    // has already unmounted by now, so drain it here — otherwise it fires
+    // inside the NEXT test, after its beforeEach cleared the mocks.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
@@ -1578,8 +1587,10 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
-    it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
-      // ETH position is long (size 2.5); a short order flips it.
+    it('omits the action when an opposite-side order only reduces the position', async () => {
+      // $100 against 2.5 ETH is ~0.03 ETH — a reduction. Comparing the USD
+      // amount to the asset-unit position used to call this a flip, and to
+      // disagree with the executed event, which sizes in asset units.
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
         isInitialLoading: false,
@@ -1588,6 +1599,26 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
       enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      expect(consideredCalls()[0][0].properties).not.toHaveProperty(
+        PERPS_EVENT_PROPERTY.ACTION,
+      );
+    });
+
+    it('emits CONSIDERED with flip_long_to_short for a short order on a long position', async () => {
+      // ETH position is long (size 2.5) at ~3025; at 3x leverage $5000 buys
+      // ~4.96 ETH, which overshoots it — a real flip.
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'short');
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('5000');
 
       await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
         timeout: 2000,
@@ -1601,7 +1632,8 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('emits CONSIDERED with flip_short_to_long for a long order on a short position', async () => {
-      // BTC position is short (size -0.5); a long order flips it.
+      // BTC position is short (size -0.5); the order must overshoot it in
+      // ASSET units to be a flip.
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       mockLivePositions.mockReturnValue({
         positions: mockPositions,
@@ -1610,7 +1642,7 @@ describe('PerpsOrderEntryPage', () => {
       mockSearchParams.set('direction', 'long');
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
-      enterAmount('100');
+      enterAmount('25000');
 
       await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
         timeout: 2000,
@@ -1644,7 +1676,7 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('emits abandon_order with the form snapshot when the page is left uncommitted', () => {
+    it('emits abandon_order with the form snapshot when the page is left uncommitted', async () => {
       const { unmount } = renderWithProvider(
         <PerpsOrderEntryPage />,
         mockStore(createMockState()),
@@ -1652,11 +1684,17 @@ describe('PerpsOrderEntryPage', () => {
 
       enterAmount('100');
       unmount();
+      // The abandon emit is deferred one macrotask so a StrictMode probe can
+      // cancel it.
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       const abandonCall = mockAnalyticsTrackEvent.mock.calls.find(
         ([arg]) =>
           arg?.name === MetaMetricsEventName.PerpsUiInteraction &&
-          arg?.properties?.action === 'abandon_order',
+          arg?.properties?.action === 'abandon_order' &&
+          arg?.properties?.asset === 'ETH',
       );
       expect(abandonCall).toBeDefined();
       expect(abandonCall?.[0].properties).toEqual(
@@ -1698,6 +1736,9 @@ describe('PerpsOrderEntryPage', () => {
       // The failure re-arms the commit flag, so leaving now is a real
       // abandonment rather than the tail of a committed order.
       unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       const abandonCall = mockAnalyticsTrackEvent.mock.calls.find(
         ([arg]) =>
