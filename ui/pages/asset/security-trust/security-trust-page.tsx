@@ -452,9 +452,7 @@ const OfficialLinksSection = ({
         <OfficialLinkButton
           iconName={IconName.Explore}
           label={blockExplorerLink.name}
-          onClick={() =>
-            onLinkClick(blockExplorerLink.url, 'block_explorer')
-          }
+          onClick={() => onLinkClick(blockExplorerLink.url, 'block_explorer')}
           testId="security-trust-link-explorer"
         />
       ) : null}
