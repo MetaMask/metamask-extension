@@ -3476,6 +3476,18 @@
   "discover": {
     "message": "Discover"
   },
+  "discoverSearchCap": {
+    "message": "cap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
+  "discoverSearchNoResults": {
+    "message": "No results found",
+    "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchVol": {
+    "message": "vol",
+    "description": "Abbreviated label for volume in Discover search result rows."
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -11370,6 +11382,10 @@
   },
   "view": {
     "message": "View"
+  },
+  "viewAll": {
+    "message": "View all",
+    "description": "Link to show the full list for a Discover search section."
   },
   "viewAddressOnExplorer": {
     "message": "View on $1",

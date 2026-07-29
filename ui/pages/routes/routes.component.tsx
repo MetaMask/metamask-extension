@@ -60,6 +60,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
@@ -165,6 +166,7 @@ const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
 );
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
@@ -285,6 +287,10 @@ export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
 };
 
+export const DiscoverSearchFeatureRoute = () => {
+  return <DiscoverSearchPage />;
+};
+
 export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
@@ -352,6 +358,14 @@ export const routeConfig = [
         element: (
           <GlobalMenuRouteTransition>
             <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
           </GlobalMenuRouteTransition>
         ),
       },

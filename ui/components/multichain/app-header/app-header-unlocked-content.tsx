@@ -28,7 +28,10 @@ import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+} from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
@@ -99,6 +102,16 @@ export const AppHeaderUnlockedContent = ({
       return prev;
     });
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
+
+  const handleOpenDiscoverSearch = useCallback(() => {
+    transitionForward(() =>
+      navigate(DISCOVER_SEARCH_ROUTE, {
+        state: {
+          globalMenuTransition: 'forward',
+        },
+      }),
+    );
+  }, [navigate]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -210,6 +223,13 @@ export const AppHeaderUnlockedContent = ({
                 <NotificationsTagCounter noLabel />
               </BoxDeprecated>
             )}
+            <ButtonIcon
+              iconName={IconNameDeprecated.Search}
+              data-testid="discover-search-button"
+              ariaLabel={t('searchTokens')}
+              onClick={handleOpenDiscoverSearch}
+              size={ButtonIconSize.Lg}
+            />
             <ButtonIcon
               ref={menuRef}
               iconName={IconNameDeprecated.Menu}
