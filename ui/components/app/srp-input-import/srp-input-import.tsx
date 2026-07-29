@@ -385,8 +385,7 @@ export default function SrpInputImport({
                     testId={`import-srp__srp-word-${index}`}
                     key={word.id}
                     error={
-                      !word.active &&
-                      misSpelledWordsList().includes(word.word)
+                      !word.active && misSpelledWordsList().includes(word.word)
                     }
                     value={word.word}
                     type={
