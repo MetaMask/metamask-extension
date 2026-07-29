@@ -779,14 +779,26 @@ class TokensTab extends HomePage {
    * Checks if the specified token amount is displayed in the token list.
    *
    * @param tokenAmount - The token amount to be checked for.
+   * @param stableFor - The duration in milliseconds for which the token amount should remain stable (not change) on the screen.
    */
-  async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
+  async checkTokenAmountIsDisplayed(
+    tokenAmount: string,
+    stableFor: number = 1000,
+  ): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
-    await this.driver.waitForSelector({
-      css: this.tokenAmountValue,
-      text: tokenAmount,
-    });
-    console.log(`Token amount ${tokenAmount} was found`);
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible({
+          css: this.tokenAmountValue,
+          text: tokenAmount,
+        });
+      },
+      {
+        interval: 1000,
+        stableFor,
+        timeout: 10000,
+      },
+    );
   }
 
   /**
