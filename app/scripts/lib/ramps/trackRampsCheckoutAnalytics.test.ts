@@ -1,13 +1,17 @@
-import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { trackEvent } from '../../controllers/analytics';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
 } from './trackRampsCheckoutAnalytics';
 
+jest.mock('../../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
+}));
+
 describe('trackRampsCheckoutAnalytics', () => {
-  const trackEvent = jest.fn();
-  const analytics = { trackEvent, createEventBuilder };
   const context = {
     checkoutSessionId: 'session-1',
     checkoutOpenedAt: 1_000,
@@ -16,7 +20,7 @@ describe('trackRampsCheckoutAnalytics', () => {
   };
 
   beforeEach(() => {
-    trackEvent.mockClear();
+    jest.mocked(trackEvent).mockClear();
     jest.spyOn(Date, 'now').mockReturnValue(2_500);
   });
 
@@ -26,14 +30,13 @@ describe('trackRampsCheckoutAnalytics', () => {
 
   it('tracks callback detected with sanitized url path', () => {
     trackRampsCheckoutCallbackDetected(
-      analytics,
       context,
       'https://provider.example/callback?wallet=0xabc',
       2,
     );
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
-    const built = trackEvent.mock.calls[0][0];
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
     expect(built.name).toBe(MetaMetricsEventName.RampsCheckoutCallbackDetected);
     expect(built.properties).toMatchObject({
       checkout_session_id: 'session-1',
@@ -45,14 +48,14 @@ describe('trackRampsCheckoutAnalytics', () => {
   });
 
   it('tracks checkout closed on user tab close', () => {
-    trackRampsCheckoutClosed(analytics, context, {
+    trackRampsCheckoutClosed(context, {
       closeSource: 'user_close_button',
       callbackReached: false,
       stepIndex: 3,
     });
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
-    const built = trackEvent.mock.calls[0][0];
+    const built = jest.mocked(trackEvent).mock.calls[0][0];
     expect(built.name).toBe(MetaMetricsEventName.RampsCheckoutClosed);
     expect(built.properties).toMatchObject({
       close_source: 'user_close_button',

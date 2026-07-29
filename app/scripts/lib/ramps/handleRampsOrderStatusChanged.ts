@@ -3,10 +3,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type {
-  AnalyticsEvent,
-  AnalyticsEventBuilder,
-} from '../../../../shared/lib/analytics/create-event-builder';
+import {
+  createEventBuilder,
+  trackEvent,
+} from '../../controllers/analytics';
 import {
   buildRampsTransactionCompletedProperties,
   buildRampsTransactionFailedProperties,
@@ -15,11 +15,6 @@ import {
 type RampsOrderStatusChangedEvent = {
   order: RampsOrder;
   previousStatus: RampsOrderStatus;
-};
-
-type Analytics = {
-  trackEvent: (built: AnalyticsEvent) => void;
-  createEventBuilder: (eventName: string) => AnalyticsEventBuilder;
 };
 
 /**
@@ -33,14 +28,10 @@ type Analytics = {
  *
  * @param event - The `orderStatusChanged` event payload.
  * @param event.order - The order whose status changed.
- * @param analytics - The background `trackEvent` / `createEventBuilder` pair.
- * @param analytics.trackEvent - Submits a built analytics event.
- * @param analytics.createEventBuilder - Builds an event by name.
  */
-export function handleRampsOrderStatusChanged(
-  { order }: RampsOrderStatusChangedEvent,
-  { trackEvent, createEventBuilder }: Analytics,
-): void {
+export function handleRampsOrderStatusChanged({
+  order,
+}: RampsOrderStatusChangedEvent): void {
   // Status strings are RampsOrderStatus values from @metamask/ramps-controller.
   if (order?.status === 'COMPLETED') {
     trackEvent(

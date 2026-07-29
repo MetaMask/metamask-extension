@@ -9,7 +9,6 @@ import type ExtensionPlatform from '../platforms/extension';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
-  type RampsCheckoutAnalytics,
   type RampsCheckoutAnalyticsContext,
 } from './ramps/trackRampsCheckoutAnalytics';
 
@@ -43,13 +42,11 @@ type ActiveWatch = {
  *
  * @param platform - Extension platform (tab listeners / closeTab).
  * @param rampsController - Controller used to resolve redirect-only orders.
- * @param analytics - Background analytics used for checkout callback/closed.
  * @returns A `watchRampsCheckoutTab` function suitable for the background API.
  */
 export function createWatchRampsCheckoutTab(
   platform: ExtensionPlatform,
   rampsController: RampsController,
-  analytics: RampsCheckoutAnalytics,
 ): (params: WatchRampsCheckoutTabParams) => void {
   const activeByTabId = new Map<number, ActiveWatch>();
 
@@ -153,12 +150,11 @@ export function createWatchRampsCheckoutTab(
       }
 
       trackRampsCheckoutCallbackDetected(
-        analytics,
         analyticsContext,
         candidateUrl,
         stepIndex,
       );
-      trackRampsCheckoutClosed(analytics, analyticsContext, {
+      trackRampsCheckoutClosed(analyticsContext, {
         closeSource: 'callback_success',
         callbackReached: true,
         stepIndex,
@@ -172,7 +168,7 @@ export function createWatchRampsCheckoutTab(
       }
       // User closed checkout without finishing — not an error, but the key
       // abandonment signal (the provider page is otherwise opaque).
-      trackRampsCheckoutClosed(analytics, analyticsContext, {
+      trackRampsCheckoutClosed(analyticsContext, {
         closeSource: 'user_close_button',
         callbackReached: false,
         stepIndex,

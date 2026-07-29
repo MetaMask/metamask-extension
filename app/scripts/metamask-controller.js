@@ -934,8 +934,7 @@ export default class MetamaskController extends EventEmitter {
     // after the user finishes on the provider's page.
     this.controllerMessenger.subscribe(
       'RampsController:orderStatusChanged',
-      (event) =>
-        handleRampsOrderStatusChanged(event, { trackEvent, createEventBuilder }),
+      (event) => handleRampsOrderStatusChanged(event),
     );
 
     // on/off shield controller based on shield subscription

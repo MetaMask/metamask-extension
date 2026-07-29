@@ -7,6 +7,7 @@
  */
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RampsOrder } from '@metamask/ramps-controller';
+import type { Json } from '@metamask/utils';
 
 // Mirror of the UI hook's RAMPS_RAMP_TYPE / RAMPS_RAMP_ROUTING (see
 // ui/hooks/ramps/useRampsAnalytics.ts) — duplicated rather than shared to
@@ -16,7 +17,7 @@ const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
 
 export function buildRampsTransactionCompletedProperties(
   order: RampsOrder,
-): Record<string, unknown> {
+): Record<string, Json | undefined> {
   const cryptoAmount = Number(order.cryptoAmount);
   const totalFee = Number(order.totalFeesFiat);
   // Providers don't always populate exchangeRate; derive it from the amounts
@@ -58,7 +59,7 @@ export function buildRampsTransactionCompletedProperties(
  */
 export function buildRampsTransactionFailedProperties(
   order: RampsOrder,
-): Record<string, unknown> {
+): Record<string, Json | undefined> {
   return {
     ...buildRampsTransactionCompletedProperties(order),
     error_message: order.statusDescription || 'transaction_failed',

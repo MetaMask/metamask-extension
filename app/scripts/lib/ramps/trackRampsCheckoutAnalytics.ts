@@ -8,18 +8,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type {
-  AnalyticsEvent,
-  AnalyticsEventBuilder,
-} from '../../../../shared/lib/analytics/create-event-builder';
+import type { Json } from '@metamask/utils';
+import {
+  createEventBuilder,
+  trackEvent,
+} from '../../controllers/analytics';
 
 const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
 const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
-
-export type RampsCheckoutAnalytics = {
-  trackEvent: (built: AnalyticsEvent) => void;
-  createEventBuilder: (eventName: string) => AnalyticsEventBuilder;
-};
 
 export type RampsCheckoutAnalyticsContext = {
   checkoutSessionId: string;
@@ -37,13 +33,11 @@ function sanitizeUrlPath(url: string): string {
 }
 
 function trackCheckoutEvent(
-  analytics: RampsCheckoutAnalytics,
   eventName: MetaMetricsEventName,
-  properties: Record<string, unknown>,
+  properties: Record<string, Json | undefined>,
 ): void {
-  analytics.trackEvent(
-    analytics
-      .createEventBuilder(eventName)
+  trackEvent(
+    createEventBuilder(eventName)
       .addCategory(MetaMetricsEventCategory.Ramps)
       .addProperties({
         ramp_type: RAMPS_RAMP_TYPE,
@@ -56,26 +50,20 @@ function trackCheckoutEvent(
 }
 
 export function trackRampsCheckoutCallbackDetected(
-  analytics: RampsCheckoutAnalytics,
   context: RampsCheckoutAnalyticsContext,
   callbackUrl: string,
   stepIndex: number,
 ): void {
-  trackCheckoutEvent(
-    analytics,
-    MetaMetricsEventName.RampsCheckoutCallbackDetected,
-    {
-      region: context.region ?? '',
-      checkout_session_id: context.checkoutSessionId,
-      url_path: sanitizeUrlPath(callbackUrl),
-      step_index: stepIndex,
-      time_since_open_ms: Date.now() - context.checkoutOpenedAt,
-    },
-  );
+  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutCallbackDetected, {
+    region: context.region ?? '',
+    checkout_session_id: context.checkoutSessionId,
+    url_path: sanitizeUrlPath(callbackUrl),
+    step_index: stepIndex,
+    time_since_open_ms: Date.now() - context.checkoutOpenedAt,
+  });
 }
 
 export function trackRampsCheckoutClosed(
-  analytics: RampsCheckoutAnalytics,
   context: RampsCheckoutAnalyticsContext,
   args: {
     closeSource: 'user_close_button' | 'callback_success';
@@ -83,7 +71,7 @@ export function trackRampsCheckoutClosed(
     stepIndex: number;
   },
 ): void {
-  trackCheckoutEvent(analytics, MetaMetricsEventName.RampsCheckoutClosed, {
+  trackCheckoutEvent(MetaMetricsEventName.RampsCheckoutClosed, {
     region: context.region ?? '',
     checkout_session_id: context.checkoutSessionId,
     close_source: args.closeSource,

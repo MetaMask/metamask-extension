@@ -1,8 +1,14 @@
 import { RampsOrderStatus } from '@metamask/ramps-controller';
 import type { RampsController } from '@metamask/ramps-controller';
-import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { trackEvent } from '../controllers/analytics';
 import { createWatchRampsCheckoutTab } from './ramps-checkout-watch';
+
+jest.mock('../controllers/analytics', () => ({
+  createEventBuilder: jest.requireActual('../controllers/analytics')
+    .createEventBuilder,
+  trackEvent: jest.fn(),
+}));
 
 describe('createWatchRampsCheckoutTab', () => {
   const callbackBase =
@@ -10,6 +16,7 @@ describe('createWatchRampsCheckoutTab', () => {
 
   beforeEach(() => {
     process.env.METAMASK_ENVIRONMENT = 'test';
+    jest.mocked(trackEvent).mockClear();
     jest.spyOn(Date, 'now').mockReturnValue(5_000);
   });
 
@@ -59,13 +66,9 @@ describe('createWatchRampsCheckoutTab', () => {
       removeOrder: jest.fn(),
     };
 
-    const trackEvent = jest.fn();
-    const analytics = { trackEvent, createEventBuilder };
-
     const watch = createWatchRampsCheckoutTab(
       platform as never,
       rampsController as unknown as RampsController,
-      analytics,
     );
 
     const checkoutAnalytics = {
@@ -79,7 +82,6 @@ describe('createWatchRampsCheckoutTab', () => {
       platform,
       rampsController,
       watch,
-      trackEvent,
       checkoutAnalytics,
       getOnUpdated: () => onUpdated,
       getOnRemoved: () => onRemoved,
@@ -254,8 +256,7 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('tracks callback and closed analytics when the callback URL is reached', () => {
-    const { watch, getOnUpdated, trackEvent, checkoutAnalytics } =
-      createHarness();
+    const { watch, getOnUpdated, checkoutAnalytics } = createHarness();
 
     watch({
       tabId: 9,
@@ -272,21 +273,20 @@ describe('createWatchRampsCheckoutTab', () => {
     );
 
     expect(trackEvent).toHaveBeenCalledTimes(2);
-    expect(trackEvent.mock.calls[0][0].name).toBe(
+    expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutCallbackDetected,
     );
-    expect(trackEvent.mock.calls[1][0].name).toBe(
+    expect(jest.mocked(trackEvent).mock.calls[1][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutClosed,
     );
-    expect(trackEvent.mock.calls[1][0].properties).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[1][0].properties).toMatchObject({
       close_source: 'callback_success',
       callback_reached: true,
     });
   });
 
   it('tracks checkout closed when the user closes the tab before callback', () => {
-    const { watch, getOnRemoved, trackEvent, checkoutAnalytics } =
-      createHarness();
+    const { watch, getOnRemoved, checkoutAnalytics } = createHarness();
 
     watch({
       tabId: 5,
@@ -299,10 +299,10 @@ describe('createWatchRampsCheckoutTab', () => {
     getOnRemoved()?.(5);
 
     expect(trackEvent).toHaveBeenCalledTimes(1);
-    expect(trackEvent.mock.calls[0][0].name).toBe(
+    expect(jest.mocked(trackEvent).mock.calls[0][0].name).toBe(
       MetaMetricsEventName.RampsCheckoutClosed,
     );
-    expect(trackEvent.mock.calls[0][0].properties).toMatchObject({
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
       close_source: 'user_close_button',
       callback_reached: false,
     });
