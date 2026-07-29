@@ -25,7 +25,7 @@ const STELLAR_TOKEN = {
   symbol: 'USDC',
   decimals: 7,
   image: '',
-} as Asset & { type: typeof AssetType.token };
+} as unknown as Asset & { type: typeof AssetType.token };
 
 const STELLAR_WALLET_ID = 'entropy:stellar-test';
 const STELLAR_GROUP_ID = 'entropy:stellar-test/0';

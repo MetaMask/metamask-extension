@@ -83,9 +83,13 @@ export type SpendableInfo = {
   spendableBalance: string;
 };
 
-type AssetsBalancesState = {
-  metamask?: Pick<AssetsControllerState, 'assetsBalance'>;
-};
+/**
+ * Reuses `getAssetsBalance` from the assets selector. Cast is confined here so
+ * call sites can pass untyped `useSelector` state without annotations.
+ */
+const selectAssetsBalance = getAssetsBalance as (
+  state: unknown,
+) => AssetsControllerState['assetsBalance'];
 
 type AssetBalanceEntry = AssetsControllerState['assetsBalance'][string][string];
 
@@ -200,10 +204,9 @@ function normalizeAmount(amount: string, decimalPlaces: number): string {
 export const getSpendableForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
-  getAssetsBalance,
-  (_state: AssetsBalancesState, accountId?: string) => accountId,
-  (_state: AssetsBalancesState, _accountId?: string, assetId?: CaipAssetType) =>
-    assetId,
+  selectAssetsBalance,
+  (_state, accountId?: string) => accountId,
+  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
   (assetsBalance, accountId, assetId) => {
     if (!accountId || !assetId || !isAssetSupportSpendableBalance(assetId)) {
       return undefined;
@@ -249,10 +252,9 @@ export const getSpendableForAccount = createParameterizedSelector(
 export const getTrustlineAssetInfoForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
-  getAssetsBalance,
-  (_state: AssetsBalancesState, accountId?: string) => accountId,
-  (_state: AssetsBalancesState, _accountId?: string, assetId?: CaipAssetType) =>
-    assetId,
+  selectAssetsBalance,
+  (_state, accountId?: string) => accountId,
+  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
   (assetsBalance, accountId, assetId) => {
     if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
       return undefined;
@@ -284,9 +286,8 @@ export const getIsAssetRequireActivate = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   getTrustlineAssetInfoForAccount,
-  (_state: AssetsBalancesState, accountId?: string) => accountId,
-  (_state: AssetsBalancesState, _accountId?: string, assetId?: CaipAssetType) =>
-    assetId,
+  (_state, accountId?: string) => accountId,
+  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
   (assetMetadata, accountId, assetId) => {
     if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
       return false;
