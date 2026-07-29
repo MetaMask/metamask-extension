@@ -1,6 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { screen, fireEvent } from '@testing-library/react';
 import type { QrSignatureRequest } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import configureStore from '../../../../../store/store';
@@ -142,7 +141,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
 
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
       expect(screen.queryByTestId('mock-qr-player')).not.toBeInTheDocument();
@@ -154,7 +153,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
 
       expect(screen.getByTestId('qr-reader-request-id')).toHaveTextContent(
         'test-request-id-1',
@@ -169,7 +168,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
 
       rerender(
@@ -189,7 +188,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
       expect(screen.getByTestId('mock-qr-reader')).toBeInTheDocument();
 
       rerender(<QRHardwareSignRequest {...defaultProps} />);
@@ -205,7 +204,7 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-cancel'));
+      fireEvent.click(screen.getByTestId('qr-player-cancel'));
 
       expect(defaultProps.handleCancel).toHaveBeenCalledTimes(1);
     });
@@ -216,8 +215,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-cancel'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-cancel'));
 
       expect(defaultProps.handleCancel).toHaveBeenCalledTimes(1);
     });
@@ -230,8 +229,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-submit'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-submit'));
 
       expect(mockCompleteQrCodeScan).toHaveBeenCalledWith({
         type: UrType.EthSignature,
@@ -247,8 +246,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-set-error'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-set-error'));
 
       expect(defaultProps.setErrorTitle).toHaveBeenCalledWith('test-error');
     });
@@ -261,8 +260,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(screen.getByTestId('qr-reader-set-error-active'));
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(screen.getByTestId('qr-reader-set-error-active'));
 
       expect(defaultProps.setErrorActive).toHaveBeenCalledWith(true);
     });
@@ -275,8 +274,8 @@ describe('QRHardwareSignRequest', () => {
         buildStore(),
       );
 
-      await userEvent.click(screen.getByTestId('qr-player-to-read'));
-      await userEvent.click(
+      fireEvent.click(screen.getByTestId('qr-player-to-read'));
+      fireEvent.click(
         screen.getByTestId('qr-reader-set-camera-permission-error-code'),
       );
 
