@@ -5,7 +5,11 @@ import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  Button,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
@@ -25,7 +29,6 @@ import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  AvatarToken,
   BadgeWrapper,
   Box,
   ButtonIcon,

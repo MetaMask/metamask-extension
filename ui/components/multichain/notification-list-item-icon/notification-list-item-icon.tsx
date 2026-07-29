@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
@@ -7,8 +8,6 @@ import { isIpfsURL } from '../../../helpers/utils/notification.util';
 import {
   AvatarIcon,
   AvatarIconSize,
-  AvatarToken,
-  AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
@@ -19,7 +18,6 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
   IconColor,
   JustifyContent,
@@ -56,10 +54,8 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
-    padding={1}
-    backgroundColor={BackgroundColor.transparent}
-    borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
+    className="bg-transparent border-none p-1"
   />
 );
 
