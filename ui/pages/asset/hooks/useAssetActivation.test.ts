@@ -104,9 +104,9 @@ describe('useAssetActivation', () => {
               [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
                 [PUBNET_USDC_ASSET]: {
                   amount: balanceAmount ?? '0',
-                  ...(trustlineLimit !== undefined
-                    ? { metadata: { limit: trustlineLimit } }
-                    : {}),
+                  ...(trustlineLimit === undefined
+                    ? {}
+                    : { metadata: { limit: trustlineLimit } }),
                 },
               },
             }
