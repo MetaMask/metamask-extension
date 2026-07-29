@@ -173,18 +173,6 @@ class SendPage {
     await this.driver.findElement(this.invalidAddressError);
   }
 
-  /**
-   * Waits for a recipient address validation error to be displayed.
-   * Recipient validation is debounced, so callers should expect this to
-   * wait rather than assert instantly.
-   *
-   * @param errorText - The expected (potentially localized) error text.
-   */
-  async checkRecipientValidationError(errorText: string): Promise<void> {
-    console.log(`Checking recipient validation error: ${errorText}`);
-    await this.driver.waitForSelector(this.recipientValidationError(errorText));
-  }
-
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.networkPicker);
   }
@@ -201,6 +189,18 @@ class SendPage {
       throw e;
     }
     console.log('Send page is loaded');
+  }
+
+  /**
+   * Waits for a recipient address validation error to be displayed.
+   * Recipient validation is debounced, so callers should expect this to
+   * wait rather than assert instantly.
+   *
+   * @param errorText - The expected (potentially localized) error text.
+   */
+  async checkRecipientValidationError(errorText: string): Promise<void> {
+    console.log(`Checking recipient validation error: ${errorText}`);
+    await this.driver.waitForSelector(this.recipientValidationError(errorText));
   }
 
   async checkSendFormIsLoaded(): Promise<void> {
