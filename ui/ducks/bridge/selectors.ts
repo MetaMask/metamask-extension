@@ -20,6 +20,9 @@ import {
   RequestStatus,
   isNonEvmChainId,
   sumAmounts,
+  selectExchangeRateByAssetId,
+  ChainId,
+  validateQuoteResponse,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -749,6 +752,16 @@ export const getBridgeQuotes = createSelector(
       // Decides whether to prioritize legacy metadata over new metadata
       migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
+
+    // console.log(
+    //   '======selectExchangeRateByAssetId',
+    //   validateQuoteResponse(quotes.activeQuote),
+    //   quotes.activeQuote?.quote.dest.asset.assetId,
+    //   selectExchangeRateByAssetId(
+    //     controllerStates,
+    //     quotes.activeQuote?.quote.dest.asset.assetId, //getNativeAssetForChainId(ChainId.POLYGON).assetId,
+    //   ),
+    // );
     return quotes;
   },
 );

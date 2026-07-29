@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
 import { readMmFee } from '../utils/quote';
+import { KnownCaipNamespace } from '@metamask/utils';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();

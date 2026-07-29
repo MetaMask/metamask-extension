@@ -85,20 +85,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
               "valueInCurrency": "12",
             },
           ],
-          "relayer": [
-            {
-              "amount": undefined,
-              "asset": {
-                "assetId": "eip155:1/slip44:60",
-                "decimals": 18,
-                "name": "Ether",
-                "symbol": "ETH",
-              },
-              "normalizedAmount": undefined,
-              "usd": undefined,
-              "valueInCurrency": undefined,
-            },
-          ],
+          "relayer": undefined,
           "txFee": undefined,
         },
         "priceData": {
@@ -106,13 +93,9 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "usd": "12",
             "valueInCurrency": "12",
           },
-          "cost": {
+          "priceImpact": {
             "usd": "12",
             "valueInCurrency": "12",
-          },
-          "priceImpact": {
-            "usd": "988",
-            "valueInCurrency": "988",
           },
           "swapRate": "12",
         },
@@ -301,20 +284,7 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
               "valueInCurrency": "12",
             },
           ],
-          "relayer": [
-            {
-              "amount": undefined,
-              "asset": {
-                "assetId": "eip155:10/slip44:60",
-                "decimals": 18,
-                "name": "Ether",
-                "symbol": "ETH",
-              },
-              "normalizedAmount": undefined,
-              "usd": undefined,
-              "valueInCurrency": undefined,
-            },
-          ],
+          "relayer": undefined,
           "txFee": undefined,
         },
         "priceData": {
@@ -322,13 +292,9 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
             "usd": "12",
             "valueInCurrency": "12",
           },
-          "cost": {
+          "priceImpact": {
             "usd": "12",
             "valueInCurrency": "12",
-          },
-          "priceImpact": {
-            "usd": "988",
-            "valueInCurrency": "988",
           },
           "swapRate": "12",
         },

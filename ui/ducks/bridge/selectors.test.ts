@@ -11,6 +11,7 @@ import {
   selectIsQuoteExpired,
   sumAmounts,
   toQuoteResponseV2,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -182,10 +183,23 @@ describe('Bridge selectors', () => {
   // instead of the client-provided fromTokenExchangeRate. Seed the bridge
   // controller's assetExchangeRates so the ERC20 srcAsset in
   // mockErc20Erc20Quotes resolves to the same rates the old tests assumed.
-  const mockErc20SrcAssetRates = (usdExchangeRate: string) => ({
+  const mockErc20SrcAssetRates = (
+    usdExchangeRate: string,
+    usdExchangeRateDest: string,
+  ) => ({
+    [getNativeAssetForChainId(
+      mockErc20Erc20Quotes[0].chainId,
+    ).assetId.toLowerCase()]: {
+      exchangeRate: '1',
+      usdExchangeRate: '1',
+    },
     [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
       exchangeRate: '1',
       usdExchangeRate,
+    },
+    [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+      exchangeRate: usdExchangeRateDest,
+      usdExchangeRate: usdExchangeRateDest,
     },
   });
 
@@ -1033,23 +1047,28 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           fromTokenExchangeRate: 1,
-          fromToken: { address: zeroAddress(), symbol: 'TEST' },
+          fromToken: {
+            address: mockErc20Erc20Quotes[0].quote.src.asset.assetId,
+            symbol: 'TEST',
+            assetId: mockErc20Erc20Quotes[0].quote.src.asset.assetId,
+          },
           toToken: {
             chainId: '0x89',
-            address: zeroAddress(),
+            address: mockErc20Erc20Quotes[0].quote.dest.asset.assetId,
             symbol: 'TEST',
+            assetId: mockErc20Erc20Quotes[0].quote.dest.asset.assetId,
           },
         },
         bridgeStateOverrides: {
           quoteRequest: {
             insufficientBal: false,
             srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
+            srcTokenAddress: mockErc20Erc20Quotes[0].quote.src.asset.assetId,
             destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
+            destTokenAddress: mockErc20Erc20Quotes[0].quote.dest.asset.assetId,
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('1'),
+          assetExchangeRates: mockErc20SrcAssetRates('1', '0.99'),
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1079,6 +1098,7 @@ describe('Bridge selectors', () => {
       expect(result.sortedQuotes).toHaveLength(2);
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
+
       const {
         quote,
         approval,
@@ -1165,20 +1185,35 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          fromToken: { address: zeroAddress(), symbol: 'ETH' },
-          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+          fromToken: mockErc20Erc20Quotes[0].quote.src.asset,
+          toToken: mockErc20Erc20Quotes[0].quote.dest.asset,
           fromTokenExchangeRate: 1,
         },
         bridgeStateOverrides: {
           quoteRequest: {
             insufficientBal: false,
             srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
+            srcTokenAddress: mockErc20Erc20Quotes[0].quote.src.asset.assetId,
             destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
+            destTokenAddress: mockErc20Erc20Quotes[0].quote.dest.asset.assetId,
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('20'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.9899999999999999',
+              usdExchangeRate: (0.99 / 0.354073).toFixed(),
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+          },
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1208,34 +1243,33 @@ describe('Bridge selectors', () => {
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
-          usd: '240.919484728424019402436',
+          usd: '238.0671612885683904',
           valueInCurrency: '0.156562864428420918428',
         },
         {
-          usd: '241.43473800386724486',
+          usd: '238.6200014947292928',
           valueInCurrency: '0.33900007473646602',
         },
       ];
       result.sortedQuotes.forEach((quote, idx: number) => {
-        expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+        expect(quote.quote.priceData?.priceImpact).toStrictEqual(
+          EXPECTED_SORTED_COSTS[idx],
+        );
       });
 
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
-      // const {
-      //   quote,
-      //   approval,
-      //   trade,
-      //   estimatedProcessingTimeInSeconds,
-      //   ...calculatedQuoteMetadata
-      // } = recommendedQuote as QuoteResponseV1;
-      // expect(calculatedQuoteMetadata).toMatchSnapshot();
-      // expect({
-      //   quote,
-      //   approval,
-      //   trade,
-      //   estimatedProcessingTimeInSeconds,
-      // }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote as QuoteResponse & QuoteMetadata;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect(recommendedQuote).toStrictEqual(
+        mergeQuoteMetadata(mockErc20Erc20Quotes[0], calculatedQuoteMetadata),
+      );
       const quoteMetadata = toQuoteMetadataV1(
         recommendedQuote as QuoteResponse,
       );
@@ -1283,7 +1317,22 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('20'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.99',
+              usdExchangeRate: '0.99',
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+          },
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1323,7 +1372,7 @@ describe('Bridge selectors', () => {
         },
       ];
       result.sortedQuotes.forEach((quote: QuoteResponse, idx: number) => {
-        expect(quote.quote.priceData?.cost).toStrictEqual(
+        expect(quote.quote.priceData?.priceImpact).toStrictEqual(
           EXPECTED_SORTED_COSTS[idx],
         );
       });
@@ -1457,7 +1506,22 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('1'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '1',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.99',
+              usdExchangeRate: '0.99',
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '1',
+            },
+          },
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1566,7 +1630,22 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('20'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.9899999999999999',
+              usdExchangeRate: (0.99 / 0.354073).toFixed(),
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+          },
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1596,7 +1675,7 @@ describe('Bridge selectors', () => {
       expect(result.recommendedQuotes).toHaveLength(1);
       const EXPECTED_SORTED_COSTS = [
         {
-          usd: '240.919484728424019402436',
+          usd: '238.0671612885683904',
           valueInCurrency: '0.156562864428420918428',
         },
         {
@@ -1604,9 +1683,9 @@ describe('Bridge selectors', () => {
           valueInCurrency: '0.33900007473646602',
         },
       ];
-      expect(result.recommendedQuotes[0]?.quote.priceData?.cost).toStrictEqual(
-        EXPECTED_SORTED_COSTS[0],
-      );
+      expect(
+        result.recommendedQuotes[0]?.quote.priceData?.priceImpact,
+      ).toStrictEqual(EXPECTED_SORTED_COSTS[0]);
 
       const { recommendedQuotes, ...rest } = result;
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
@@ -1644,7 +1723,7 @@ describe('Bridge selectors', () => {
               "symbol": "USDC",
             },
             "normalizedAmount": "13.98428",
-            "usd": "39.100516560144370997564",
+            "usd": "41.95284",
             "valueInCurrency": "13.844437199999998601572",
           },
           "quoteFetchError": null,
@@ -1662,10 +1741,10 @@ describe('Bridge selectors', () => {
             },
             "minAmount": "13984280",
             "minAmountNormalized": "13.98428",
-            "minAmountUsd": "39.100516560144370997564",
+            "minAmountUsd": "41.95284",
             "minAmountValueInCurrency": "13.844437199999998601572",
             "normalizedAmount": "13.98428",
-            "usd": "39.100516560144370997564",
+            "usd": "41.95284",
             "valueInCurrency": "13.844437199999998601572",
           },
         }
@@ -1697,7 +1776,22 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('20'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.99',
+              usdExchangeRate: '0.99',
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+          },
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
@@ -1736,9 +1830,9 @@ describe('Bridge selectors', () => {
           valueInCurrency: '0.33900007473646464',
         },
       ];
-      expect(result.recommendedQuotes[0]?.quote.priceData?.cost).toStrictEqual(
-        EXPECTED_SORTED_COSTS[0],
-      );
+      expect(
+        result.recommendedQuotes[0]?.quote.priceData?.priceImpact,
+      ).toStrictEqual(EXPECTED_SORTED_COSTS[0]);
 
       const { recommendedQuotes, ...rest } = result;
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
@@ -1846,7 +1940,22 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockErc20Erc20Quotes,
-          assetExchangeRates: mockErc20SrcAssetRates('20'),
+          assetExchangeRates: {
+            [mockErc20Erc20Quotes[0].quote.src.asset.assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+            [mockErc20Erc20Quotes[0].quote.dest.asset.assetId.toLowerCase()]: {
+              exchangeRate: '0.9899999999999999',
+              usdExchangeRate: (0.99 / 0.354073).toFixed(),
+            },
+            [getNativeAssetForChainId(
+              mockErc20Erc20Quotes[0].chainId,
+            ).assetId.toLowerCase()]: {
+              exchangeRate: '1',
+              usdExchangeRate: '20',
+            },
+          },
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
@@ -1876,7 +1985,7 @@ describe('Bridge selectors', () => {
       expect(result.recommendedQuotes).toHaveLength(4);
       const EXPECTED_SORTED_COSTS = [
         {
-          usd: '240.919484728424019402436',
+          usd: '238.0671612885683904',
           valueInCurrency: '0.156562864428420918428',
         },
         {
@@ -1884,9 +1993,9 @@ describe('Bridge selectors', () => {
           valueInCurrency: '0.33900007473646602',
         },
       ];
-      expect(result.recommendedQuotes[0]?.quote.priceData?.cost).toStrictEqual(
-        EXPECTED_SORTED_COSTS[0],
-      );
+      expect(
+        result.recommendedQuotes[0]?.quote.priceData?.priceImpact,
+      ).toStrictEqual(EXPECTED_SORTED_COSTS[0]);
 
       const { recommendedQuotes, ...rest } = result;
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
@@ -1915,7 +2024,7 @@ describe('Bridge selectors', () => {
               "symbol": "USDC",
             },
             "normalizedAmount": "13.98428",
-            "usd": "39.100516560144370997564",
+            "usd": "41.95284",
             "valueInCurrency": "13.844437199999998601572",
           },
           "quoteFetchError": null,
@@ -1933,10 +2042,10 @@ describe('Bridge selectors', () => {
             },
             "minAmount": "13984280",
             "minAmountNormalized": "13.98428",
-            "minAmountUsd": "39.100516560144370997564",
+            "minAmountUsd": "41.95284",
             "minAmountValueInCurrency": "13.844437199999998601572",
             "normalizedAmount": "13.98428",
-            "usd": "39.100516560144370997564",
+            "usd": "41.95284",
             "valueInCurrency": "13.844437199999998601572",
           },
         }
@@ -2476,6 +2585,18 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
+          assetExchangeRates: {
+            [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+              {
+                exchangeRate: '2524.25',
+                usdExchangeRate: '1',
+              },
+            [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+              {
+                exchangeRate: '0.61',
+                usdExchangeRate: '1',
+              },
+          },
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -2552,6 +2673,18 @@ describe('Bridge selectors', () => {
             destTokenAddress: zeroAddress(),
           },
           quotes: mockBridgeQuotesNativeErc20,
+          assetExchangeRates: {
+            [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+              {
+                exchangeRate: '2524.25',
+                usdExchangeRate: '1',
+              },
+            [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+              {
+                exchangeRate: '0.95',
+                usdExchangeRate: '0.95',
+              },
+          },
         },
         metamaskStateOverrides: {
           currencyRates: {

@@ -109,10 +109,16 @@ describe('BridgeAlertModal', () => {
         {
           bridgeStateOverrides: {
             assetExchangeRates: {
-              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-                exchangeRate: '2524.259',
-                usdExchangeRate: '1',
-              },
+              [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
+              [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '0.61',
+                  usdExchangeRate: '1',
+                },
             },
           },
         },
@@ -172,10 +178,16 @@ describe('BridgeAlertModal', () => {
         {
           bridgeStateOverrides: {
             assetExchangeRates: {
-              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-                exchangeRate: '2524.259',
-                usdExchangeRate: '1',
-              },
+              [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
+              [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '0.61',
+                  usdExchangeRate: '1',
+                },
             },
           },
         },

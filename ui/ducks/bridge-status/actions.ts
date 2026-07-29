@@ -7,7 +7,6 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
-import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -48,7 +47,6 @@ export const submitBridgeTx = (
       boolean,
       RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
       MetaMetricsSwapsEventSource,
-      string,
       undefined,
       undefined,
       string | null,
@@ -59,7 +57,6 @@ export const submitBridgeTx = (
     isStxSupportedInClient,
     context,
     location,
-    BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     undefined,
     undefined,
     tokenSecurityTypeDestination,
@@ -82,9 +79,7 @@ export const submitBridgeIntent = (params: {
   location: MetaMetricsSwapsEventSource;
   tokenSecurityTypeDestination?: string | null;
 }) =>
-  callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [
-    { ...params, migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE },
-  ]);
+  callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
 
 /**
  * Submit a batch-sell trade through the bridge status controller. The
@@ -108,5 +103,5 @@ export const submitBatchSellTrade = (params: {
   tokenSecurityTypeDestination?: string | null;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitBatchSell', [
-    { ...params, migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE },
+    params,
   ]);

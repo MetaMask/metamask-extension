@@ -95,8 +95,9 @@ export const useBridgeAlerts = () => {
     activeQuote?.quote.priceData?.priceImpact?.amount,
   );
   const formattedPriceImpactFiat = formatPriceImpactFiat(
-    activeQuote?.quote.priceData?.priceImpact?.valueInCurrency ??
-      activeQuote?.priceImpact?.valueInCurrency,
+    activeQuote?.quote.priceData?.priceImpact?.valueInCurrency,
+    // ??
+    //   activeQuote?.priceImpact?.valueInCurrency,
     currentCurrency,
   );
 
