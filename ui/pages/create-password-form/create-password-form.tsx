@@ -139,7 +139,7 @@ const CreatePasswordForm = ({
                 {t('createPasswordDetailsSocial', [
                   <Text
                     key="create-password-details-social-reset"
-                    variant={TextVariant.BodyMd}
+                    variant={TextVariant.BodySm}
                     color={TextColor.WarningDefault}
                     asChild
                   >
