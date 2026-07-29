@@ -10,7 +10,10 @@ import {
   FormTextFieldSize,
   InputType,
 } from '../../component-library';
-import { BackgroundColor, TextColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
