@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { usePureBlack } from '@metamask/design-system-react';
 import Menu from './menu';
 
 jest.mock('react-popper', () => ({
@@ -9,6 +10,12 @@ jest.mock('react-popper', () => ({
   })),
 }));
 
+jest.mock('@metamask/design-system-react', () => ({
+  usePureBlack: jest.fn(),
+}));
+
+const mockUsePureBlack = usePureBlack as jest.Mock;
+
 describe('Menu Component', () => {
   let portalContainer: HTMLDivElement;
 
@@ -16,6 +23,7 @@ describe('Menu Component', () => {
     portalContainer = document.createElement('div');
     portalContainer.setAttribute('id', 'popover-content');
     document.body.appendChild(portalContainer);
+    mockUsePureBlack.mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -63,5 +71,29 @@ describe('Menu Component', () => {
       <Menu {...defaultProps} data-testid="test-menu" />,
     );
     expect(getByTestId('test-menu')).toBeInTheDocument();
+  });
+
+  describe('pure black mode', () => {
+    it('applies bg-alternative background and border-muted border when isPureBlack is true', () => {
+      mockUsePureBlack.mockReturnValue(true);
+      render(<Menu {...defaultProps} />);
+      const menuContainer = document.body.querySelector(
+        '.menu__container',
+      ) as HTMLElement;
+      expect(menuContainer).toHaveClass('bg-alternative');
+      expect(menuContainer).toHaveClass('border');
+      expect(menuContainer).toHaveClass('border-muted');
+    });
+
+    it('does not apply pure black styles when isPureBlack is false', () => {
+      mockUsePureBlack.mockReturnValue(false);
+      render(<Menu {...defaultProps} />);
+      const menuContainer = document.body.querySelector(
+        '.menu__container',
+      ) as HTMLElement;
+      expect(menuContainer).not.toHaveClass('bg-alternative');
+      expect(menuContainer).not.toHaveClass('border');
+      expect(menuContainer).not.toHaveClass('border-muted');
+    });
   });
 });

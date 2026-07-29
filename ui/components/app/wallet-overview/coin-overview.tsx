@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { CaipChainId } from '@metamask/utils';
@@ -60,6 +60,7 @@ import {
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
+import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -77,10 +78,10 @@ export type CoinOverviewProps = {
 
 const BalanceOverviewSkeleton = () => (
   <Box
-    className="flex w-full max-w-[400px] items-center gap-[10px] self-center px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
+    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
     data-testid="coin-overview-balance-skeleton"
   >
-    <Box className="flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px] [.wallet-overview-fullscreen_&]:items-center">
+    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
       <Skeleton className="h-[50px] w-full rounded-lg" />
       <Skeleton className="h-6 w-[180px] rounded-lg" />
     </Box>
@@ -375,9 +376,7 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div
-        className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
-      >
+      <div className={`${classPrefix}-overview__balance`}>
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (

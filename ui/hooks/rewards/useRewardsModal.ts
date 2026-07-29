@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setRewardsModalOpen } from '../../ducks/rewards';
 import {
   selectRewardsDeeplinkUrl,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
+import { useDispatch } from '../../store/hooks';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
 
 /**

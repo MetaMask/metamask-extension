@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -39,6 +39,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { useDispatch } from '../../../../../store/hooks';
 
 type SortControlProps = {
   handleClose: () => void;

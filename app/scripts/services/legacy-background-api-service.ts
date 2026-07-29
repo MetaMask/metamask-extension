@@ -216,6 +216,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
+  'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
   'rejectAllPendingApprovals',
@@ -350,6 +351,7 @@ type LegacyBackgroundApiServiceOptions = {
   createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
+  markNotificationPopupAsAutomaticallyClosed: () => void;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
 };
@@ -374,6 +376,8 @@ export class LegacyBackgroundApiService {
 
   readonly #getOpenMetamaskTabsIds: () => Record<string, number>;
 
+  readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
+
   readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
@@ -391,6 +395,7 @@ export class LegacyBackgroundApiService {
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+   * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
@@ -401,6 +406,7 @@ export class LegacyBackgroundApiService {
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    markNotificationPopupAsAutomaticallyClosed,
     sendUpdate,
     seedlessOperationMutex,
     createVaultMutex,
@@ -411,6 +417,8 @@ export class LegacyBackgroundApiService {
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
+    this.#markNotificationPopupAsAutomaticallyClosed =
+      markNotificationPopupAsAutomaticallyClosed;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
@@ -542,6 +550,16 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('PhishingController:maybeUpdateState');
 
     return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   *
+   * This lets us differentiate between the cases where we close the
+   * notification popup v.s. when the user closes the popup window directly.
+   */
+  markNotificationPopupAsAutomaticallyClosed(): void {
+    this.#markNotificationPopupAsAutomaticallyClosed();
   }
 
   /**
