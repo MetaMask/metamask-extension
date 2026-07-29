@@ -13,7 +13,6 @@ import {
   Checkbox,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxBackgroundColor,
   IconColor,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
@@ -120,7 +119,7 @@ const CreatePasswordForm = ({
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               color={loading ? IconColor.IconMuted : IconColor.IconDefault}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Sm}
               data-testid="create-password-back-button"
               type="button"
               onClick={onBack}
@@ -128,11 +127,13 @@ const CreatePasswordForm = ({
               disabled={loading}
             />
           </Box>
-          <Box className="mb-4 w-full">
-            <Text variant={TextVariant.HeadingLg}>{t('createPassword')}</Text>
+          <Box className="mb-5 w-full">
+            <Text variant={TextVariant.HeadingMd} className="mb-1">
+              {t('createPassword')}
+            </Text>
             {isSocialLoginFlow ? (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
                 {t('createPasswordDetailsSocial', [
@@ -148,7 +149,7 @@ const CreatePasswordForm = ({
               </Text>
             ) : (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
               >
                 {t('createPasswordDetails')}
@@ -162,8 +163,6 @@ const CreatePasswordForm = ({
           <Box
             className="create-password__terms-container rounded-lg"
             marginTop={6}
-            backgroundColor={BoxBackgroundColor.BackgroundMuted}
-            padding={3}
           >
             <Checkbox
               id="create-password-terms"
@@ -179,7 +178,7 @@ const CreatePasswordForm = ({
                 <Text
                   asChild
                   variant={TextVariant.BodySm}
-                  color={TextColor.TextDefault}
+                  color={TextColor.TextAlternative}
                 >
                   <span>
                     {checkboxLabel}

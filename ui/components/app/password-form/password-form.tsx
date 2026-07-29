@@ -1,10 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, ButtonIcon, IconName } from '@metamask/design-system-react';
+import {
+  Box,
+  ButtonIcon,
+  IconName,
+  IconColor,
+} from '@metamask/design-system-react';
 import {
   FormTextField,
   FormTextFieldSize,
   InputType,
 } from '../../component-library';
+import { BackgroundColor, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
@@ -111,6 +117,9 @@ export default function PasswordForm({
         size={FormTextFieldSize.Lg}
         value={password}
         disabled={disabled}
+        textFieldProps={{
+          backgroundColor: BackgroundColor.transparent,
+        }}
         inputProps={{
           'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
@@ -120,7 +129,7 @@ export default function PasswordForm({
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          className: 'text-alternative',
+          color: TextColor.textAlternative,
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}
@@ -129,6 +138,7 @@ export default function PasswordForm({
         endAccessory={
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
+            color={IconColor.IconAlternative}
             data-testid="show-password"
             type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -146,10 +156,13 @@ export default function PasswordForm({
         label={t('confirmPassword')}
         id="create-password-confirm"
         autoComplete
-        marginTop={4}
+        marginTop={5}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
         disabled={disabled}
+        textFieldProps={{
+          backgroundColor: BackgroundColor.transparent,
+        }}
         helpTextProps={{
           'data-testid': 'confirm-password-error',
         }}
@@ -167,6 +180,7 @@ export default function PasswordForm({
         endAccessory={
           <ButtonIcon
             iconName={showConfirmPassword ? IconName.EyeSlash : IconName.Eye}
+            color={IconColor.IconAlternative}
             data-testid="show-confirm-password"
             type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
