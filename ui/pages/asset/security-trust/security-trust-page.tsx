@@ -374,6 +374,14 @@ const TokenInfoSection = ({
   </>
 );
 
+const SectionDivider = () => (
+  <Box
+    className="security-trust__section-divider"
+    marginTop={8}
+    marginBottom={2}
+  />
+);
+
 const OfficialLinksSection = ({
   title,
   metadata,
@@ -388,7 +396,7 @@ const OfficialLinksSection = ({
   telegramLabel: string;
 }) => (
   <>
-    <Box className="asset-page__divider" marginTop={6} marginBottom={6} />
+    <SectionDivider />
     <SectionHeader title={title} />
     <Box flexDirection={BoxFlexDirection.Row} className="flex-wrap" gap={2}>
       {metadata.externalLinks.homepage ? (
@@ -429,10 +437,6 @@ const OfficialLinksSection = ({
       ) : null}
     </Box>
   </>
-);
-
-const SectionDivider = () => (
-  <Box className="asset-page__divider" marginTop={6} marginBottom={6} />
 );
 
 const SecurityTrustPage = () => {
