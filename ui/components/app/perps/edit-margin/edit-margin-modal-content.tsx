@@ -346,8 +346,13 @@ export const EditMarginModalContent = ({
           // instead of throwing — so every provider-rejected margin adjustment
           // ("No position found", "Insufficient balance") would otherwise emit
           // no terminal risk event at all. Shaped like the controller's own
-          // margin event so the two match once core #9471 ships.
-          // REMOVE when the controller bump lands, or this double-emits.
+          // margin event so the two line up if core ever covers this path.
+          //
+          // TAT-3134 says the submitted/terminal pattern should extend to
+          // PERPS_RISK_MANAGEMENT, but the non-throwing `{ success: false }`
+          // branch is not covered by the shipped 9.2.1. Re-check that branch
+          // against the controller when bumping: if it starts emitting, this
+          // becomes a double-emit and must be deleted in the same PR.
           track(MetaMetricsEventName.PerpsRiskManagement, {
             [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
             [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,

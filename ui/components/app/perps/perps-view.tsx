@@ -212,9 +212,13 @@ export const PerpsView = () => {
         setBatchActionError(t('somethingWentWrong'));
         // Client-owned until the controller emits the count: 9.2.1's batch close
         // event carries status/duration/bulk_action_id but NOT
-        // number_positions_closed. REMOVE together with the other client close
-        // emitters when the controller version that emits it is checked in —
-        // gate that on the dependency bump, not on the plan.
+        // number_positions_closed.
+        //
+        // This is NOT a temporary bridge: TAT-3150 scopes bulk_action_id per
+        // event only, and the TAT-3463 audit explicitly removed the batch
+        // summary from its scope, so no controller release is scheduled to
+        // publish the count. The client is the source of record until a core
+        // ticket adds it — do not delete this on a routine dependency bump.
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
           [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
