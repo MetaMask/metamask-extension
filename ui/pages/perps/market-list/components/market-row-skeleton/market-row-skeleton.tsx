@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Box,
-  BoxBackgroundColor,
   BoxFlexDirection,
   BoxAlignItems,
   Skeleton,
@@ -14,8 +13,7 @@ import {
 export const MarketRowSkeleton = () => {
   return (
     <Box
-      className="px-4 py-3"
-      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      className="bg-default px-4 py-3"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}
