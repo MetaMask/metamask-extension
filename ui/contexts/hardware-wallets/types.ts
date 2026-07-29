@@ -1,6 +1,3 @@
-/**
- * Hardware wallet types normalized for the hardware wallet context
- */
 export { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 
 /**

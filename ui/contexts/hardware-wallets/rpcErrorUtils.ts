@@ -1,17 +1,5 @@
 /**
- * Re-export RPC error utilities from shared.
- *
- * Background/offscreen code must import from `shared/lib/hardware-wallets`
- * directly. UI code may continue importing from this module.
+ * Re-exported for existing UI import paths.
+ * Prefer `shared/lib/hardware-wallets` from background code.
  */
-export {
-  isJsonRpcHardwareWalletError,
-  getHardwareWalletErrorCode,
-  toHardwareWalletError,
-  isHardwareWalletError,
-  isUserRejectedHardwareWalletError,
-  extractTrezorCodeFromMessage,
-  extractMessageFromUnknownError,
-  hasUserRejectedMessage,
-  isTrezorDesktopConnectionMissingError,
-} from '../../../shared/lib/hardware-wallets/rpc-error-utils';
+export * from '../../../shared/lib/hardware-wallets/rpc-error-utils';

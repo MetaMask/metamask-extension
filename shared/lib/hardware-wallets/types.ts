@@ -1,8 +1,5 @@
 /**
- * Hardware wallet types normalized for connection and error handling.
- *
- * Shared between background and UI so RPC/error reconstruction does not
- * depend on the React hardware-wallet context.
+ * Hardware wallet types normalized across background and UI.
  */
 export enum HardwareWalletType {
   Ledger = 'ledger',
