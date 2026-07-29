@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
-  usePureBlack,
   TextVariant,
   TextColor,
   IconColor,
@@ -19,6 +18,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import type { Position } from '@metamask/perps-controller';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -26,6 +26,7 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { useTheme } from '../../../../hooks/useTheme';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useSelectedAccountComplianceGate } from '../../compliance';
@@ -88,8 +89,9 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
+  // Elevated menus: bg-section in dark (incl. pure black), bg-default + shadow in light.
+  const theme = useTheme();
+  const isDarkTheme = theme === ThemeType.dark;
 
   const totalBalance = account?.totalBalance ?? '0';
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
@@ -213,9 +215,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
           <Box
             className={twMerge(
               'absolute right-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg',
-              isPureBlack
-                ? 'bg-background-alternative'
-                : 'bg-background-default',
+              isDarkTheme ? 'bg-section' : 'bg-default',
             )}
             flexDirection={BoxFlexDirection.Column}
             data-testid="perps-balance-dropdown-panel"

@@ -1,19 +1,20 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import * as useThemeHook from '../../../../hooks/useTheme';
 import { mockAccountState, mockPositions } from '../mocks';
 import {
   PerpsBalanceDropdown,
   invokePerpsBalanceAction,
 } from './perps-balance-dropdown';
 
-const mockUsePureBlack = jest.fn().mockReturnValue(false);
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: () => mockUsePureBlack(),
-}));
+jest.mock('../../../../hooks/useTheme');
+const mockUseTheme = useThemeHook.useTheme as jest.MockedFunction<
+  typeof useThemeHook.useTheme
+>;
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -95,6 +96,10 @@ describe('invokePerpsBalanceAction', () => {
 });
 
 describe('PerpsBalanceDropdown', () => {
+  beforeEach(() => {
+    mockUseTheme.mockReturnValue(ThemeType.light);
+  });
+
   it('renders the balance dropdown component', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
@@ -325,37 +330,39 @@ describe('PerpsBalanceDropdown', () => {
     );
   });
 
-  describe('pure black mode', () => {
+  describe('elevated menu background', () => {
     beforeEach(() => {
-      mockUsePureBlack.mockReturnValue(false);
+      mockUseTheme.mockReturnValue(ThemeType.light);
     });
 
-    it('uses bg-background-default for the dropdown panel in normal dark mode', () => {
-      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
-
-      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
-        'bg-background-default',
-      );
-      expect(
-        screen.getByTestId('perps-balance-dropdown-panel'),
-      ).not.toHaveClass('bg-background-alternative');
-    });
-
-    it('uses bg-background-alternative for the dropdown panel in pure black mode', () => {
-      mockUsePureBlack.mockReturnValue(true);
+    it('uses bg-default for the dropdown panel in light mode', () => {
+      mockUseTheme.mockReturnValue(ThemeType.light);
 
       renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
 
       expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
-        'bg-background-alternative',
+        'bg-default',
       );
       expect(
         screen.getByTestId('perps-balance-dropdown-panel'),
-      ).not.toHaveClass('bg-background-default');
+      ).not.toHaveClass('bg-section');
+    });
+
+    it('uses bg-section for the dropdown panel in dark mode (including pure black)', () => {
+      mockUseTheme.mockReturnValue(ThemeType.dark);
+
+      renderWithProvider(<PerpsBalanceDropdown />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-balance-dropdown-balance'));
+
+      expect(screen.getByTestId('perps-balance-dropdown-panel')).toHaveClass(
+        'bg-section',
+      );
+      expect(
+        screen.getByTestId('perps-balance-dropdown-panel'),
+      ).not.toHaveClass('bg-default');
     });
   });
 });
