@@ -148,7 +148,7 @@ const WalletActivitySectionContent = ({
     [accountAddresses, getAccountEnabledValue],
   );
 
-  const trackWalletActivityAggregateToggle = useCallback(
+  const trackWalletActivityAccountsAggregateToggle = useCallback(
     (enabled: boolean) => {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
@@ -183,7 +183,7 @@ const WalletActivitySectionContent = ({
       }
       await refetchAccountSettings();
       await refetchNotificationPreferences();
-      trackWalletActivityAggregateToggle(newState);
+      trackWalletActivityAccountsAggregateToggle(newState);
       listNotifications();
     } finally {
       setUpdatingAllAccounts(false);
@@ -196,7 +196,7 @@ const WalletActivitySectionContent = ({
     refetchNotificationPreferences,
     setUpdatingAllAccounts,
     switchAccountNotifications,
-    trackWalletActivityAggregateToggle,
+    trackWalletActivityAccountsAggregateToggle,
   ]);
 
   const handleToggleAccountNotifications = useCallback(
@@ -234,7 +234,7 @@ const WalletActivitySectionContent = ({
           await refetchNotificationPreferences();
           listNotifications();
           if (aggregateTransition !== null) {
-            trackWalletActivityAggregateToggle(aggregateTransition);
+            trackWalletActivityAccountsAggregateToggle(aggregateTransition);
           }
         } catch {
           // write failed; chain resolves so subsequent toggles can still run
@@ -263,7 +263,7 @@ const WalletActivitySectionContent = ({
       refetchAccountSettings,
       refetchNotificationPreferences,
       switchAccountNotifications,
-      trackWalletActivityAggregateToggle,
+      trackWalletActivityAccountsAggregateToggle,
     ],
   );
 

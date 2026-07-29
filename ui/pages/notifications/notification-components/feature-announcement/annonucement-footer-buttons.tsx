@@ -11,6 +11,7 @@ import {
   isInternalRouteHref,
   resolveTrustedDeepLinkHref,
 } from '../../../../helpers/utils/resolve-deep-link-href';
+import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
 import { FeatureAnnouncementNotification } from './types';
 
 type ResolvedHref = {
@@ -63,7 +64,7 @@ const useAnalyticEventCallback = (props: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: notification.id,
-          notification_type: notification.notification_type,
+          notification_type: getNotificationTypeForAnalytics(notification),
           notification_subtype: notification.notification_subtype,
           clicked_item: clickType,
           /* eslint-enable @typescript-eslint/naming-convention */

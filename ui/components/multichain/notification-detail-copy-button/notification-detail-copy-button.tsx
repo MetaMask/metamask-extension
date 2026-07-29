@@ -22,6 +22,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getNotificationTypeForAnalytics } from '../../../helpers/utils/notification.util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -84,7 +85,7 @@ export const NotificationDetailCopyButton: FC<
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */
             notification_id: notification.id,
-            notification_type: notification.notification_type,
+            notification_type: getNotificationTypeForAnalytics(notification),
             notification_subtype: notification.notification_subtype,
             ...otherNotificationProperties(),
             clicked_item: 'tx_id',
