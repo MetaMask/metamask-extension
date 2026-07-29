@@ -2857,9 +2857,9 @@ describe('MetaMaskController', () => {
             AnalyticsController: {
               analyticsId: 'MOCK_METRICS_ID',
               optedIn: true,
+              consentDecisionMade: true,
             },
             MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
               dataCollectionForMarketing: true,
             },
           },
