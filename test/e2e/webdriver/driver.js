@@ -209,12 +209,17 @@ class Driver {
    * Opens a Chrome DevTools Protocol (CDP) connection attached to the
    * extension's service worker target.
    *
+   * The returned connection implements `Symbol.asyncDispose`, so callers
+   * should use `await using` to guarantee the CDP session is detached — no
+   * manual cleanup required. Dispose is best-effort and swallows detach
+   * errors.
+   *
    * @param {object} [options]
    * @param {number} [options.timeout] - Milliseconds to wait for the service
    * worker target to become available. Defaults to `this.timeout`.
-   * @returns {Promise<{ cdpConnection: CdpConnection, closeServiceWorkerConnection: () => Promise<void>}>} An object containing the attached CDP connection (with `sessionId`
-   * set to the attached service worker session) and a cleanup function that
-   * detaches from the target. Best-effort cleanup swallows detach errors.
+   * @returns {Promise<CdpConnection & AsyncDisposable>} The attached CDP
+   * connection (with `sessionId` set to the attached service worker session).
+   * Disposing it detaches from the target.
    * @throws {Error} If the service worker target cannot be resolved within
    * `timeout`, or if attaching to the resolved target fails.
    */
@@ -267,53 +272,48 @@ class Driver {
 
     cdpConnection.sessionId = attachedSessionId;
 
-    return {
-      cdpConnection,
-      async closeServiceWorkerConnection() {
-        if (!attachedSessionId) {
-          return;
-        }
+    cdpConnection[Symbol.asyncDispose] = async () => {
+      if (!attachedSessionId) {
+        return;
+      }
 
-        cdpConnection.sessionId = null;
-        try {
-          await cdpConnection.send('Target.detachFromTarget', {
-            sessionId: attachedSessionId,
-          });
-        } catch (_) {
-          // Best-effort cleanup.
-        }
-      },
+      cdpConnection.sessionId = null;
+      try {
+        await cdpConnection.send('Target.detachFromTarget', {
+          sessionId: attachedSessionId,
+        });
+      } catch (_) {
+        // Best-effort cleanup.
+      }
     };
+
+    return cdpConnection;
   }
 
   async executeScriptInExtensionServiceWorker(script, { timeout } = {}) {
-    const { cdpConnection, closeServiceWorkerConnection } =
-      await this.#createServiceWorkerConnection({ timeout });
+    await using cdpConnection = await this.#createServiceWorkerConnection({
+      timeout,
+    });
 
-    try {
-      await cdpConnection.send('Runtime.enable');
+    await cdpConnection.send('Runtime.enable');
 
-      const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
-        expression: `(async () => {\n${script}\n})()`,
-        awaitPromise: true,
-        returnByValue: true,
-      });
+    const evaluationResponse = await cdpConnection.send('Runtime.evaluate', {
+      expression: `(async () => {\n${script}\n})()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
 
-      const evaluationResult = evaluationResponse?.result ?? {};
-      if (evaluationResult.exceptionDetails) {
-        const { description } =
-          evaluationResult.exceptionDetails.exception ?? {};
-        throw new Error(
-          description ??
-            evaluationResult.exceptionDetails.text ??
-            'Runtime evaluation failed in extension service worker',
-        );
-      }
-
-      return evaluationResult.result?.value;
-    } finally {
-      await closeServiceWorkerConnection();
+    const evaluationResult = evaluationResponse?.result ?? {};
+    if (evaluationResult.exceptionDetails) {
+      const { description } = evaluationResult.exceptionDetails.exception ?? {};
+      throw new Error(
+        description ??
+          evaluationResult.exceptionDetails.text ??
+          'Runtime evaluation failed in extension service worker',
+      );
     }
+
+    return evaluationResult.result?.value;
   }
 
   /**
