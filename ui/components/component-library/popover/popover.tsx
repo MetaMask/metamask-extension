@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { usePureBlack } from '@metamask/design-system-react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'clsx';
-import { usePureBlack } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -162,7 +162,7 @@ export const Popover: PopoverComponent = React.forwardRef(
         borderRadius={BorderRadius.LG}
         backgroundColor={
           isPureBlack
-            ? BackgroundColor.backgroundAlternative
+            ? BackgroundColor.backgroundSection
             : BackgroundColor.backgroundDefault
         }
         padding={4}

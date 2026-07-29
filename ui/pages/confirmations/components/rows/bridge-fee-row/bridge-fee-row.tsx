@@ -137,7 +137,7 @@ export function BridgeFeeRow({
             ariaLabel={feeLabel}
             data-testid="bridge-fee-tooltip-popover"
           >
-            <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+            <Text variant={TextVariant.BodyMd}>
               {tooltipLines.map((line, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <br />}
