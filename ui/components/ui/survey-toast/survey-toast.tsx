@@ -49,46 +49,51 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
+    // ToastMaster can mount on `/` while the wallet is still locked (e.g. the
+    // brief DEFAULT_ROUTE flash before redirecting to /unlock). Fetching then
+    // burns the first survey response before the home screen ever sees it.
+    if (
+      !isUnlocked ||
+      !basicFunctionality ||
+      !analyticsId ||
+      !isMetaMetricsEnabled
+    ) {
       return undefined;
     }
 
-    // Defer the fetch by one macrotask so that rapid dep transitions during
-    // createRoot hydration collapse into a single network request.  The
-    // cleanup cancels any pending timer, so only the last stable dep state
-    // actually fires a request.
-    const timeoutId = setTimeout(() => {
-      fetchWithCache({
-        url: surveyUrl,
-        fetchOptions: {
-          method: 'GET',
-          headers: {
-            'x-metamask-clientproduct': 'metamask-extension',
+    const controller = new AbortController();
+
+    const fetchSurvey = async () => {
+      try {
+        const response = await fetchWithCache({
+          url: surveyUrl,
+          fetchOptions: {
+            method: 'GET',
+            headers: {
+              'x-metamask-clientproduct': 'metamask-extension',
+            },
+            signal: controller.signal,
           },
-        },
-        functionName: 'fetchSurveys',
-        cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
-      })
-        .then((response) => {
-          const _survey: Survey = response?.surveys;
-
-          if (
-            !_survey ||
-            Object.keys(_survey).length === 0 ||
-            _survey.id <= lastViewedUserSurvey
-          ) {
-            return;
-          }
-
-          setSurvey(_survey);
-        })
-        .catch((error: unknown) => {
-          console.error('Failed to fetch survey:', analyticsId, error);
+          functionName: 'fetchSurveys',
+          cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
         });
-    }, 0);
 
-    return () => {
-      clearTimeout(timeoutId);
+        const _survey: Survey = response?.surveys;
+
+        if (
+          !_survey ||
+          Object.keys(_survey).length === 0 ||
+          _survey.id <= lastViewedUserSurvey
+        ) {
+          return;
+        }
+
+        setSurvey(_survey);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Failed to fetch survey:', analyticsId, error);
+        }
+      }
     };
 
     fetchSurvey();
