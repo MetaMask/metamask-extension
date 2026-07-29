@@ -1587,6 +1587,26 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
+    it('carries the slippage configuration on the considered event', async () => {
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('100');
+
+      await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
+        timeout: 2000,
+      });
+      // These three moved here when the client trade event was removed: the
+      // controller's TrackingData has no slippage fields. Coverage is partial by
+      // construction — see the note in report.md.
+      expect(consideredCalls()[0][0].properties).toEqual(
+        expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: expect.any(Number),
+          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
+            PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+        }),
+      );
+    });
+
     it('omits the action when an opposite-side order only reduces the position', async () => {
       // $100 against 2.5 ETH is ~0.03 ETH — a reduction. Comparing the USD
       // amount to the asset-unit position used to call this a flip, and to
@@ -1674,6 +1694,52 @@ describe('PerpsOrderEntryPage', () => {
           [PERPS_EVENT_PROPERTY.SCREEN_NAME]: 'perps_order',
         }),
       );
+    });
+
+    it('does not report abandonment when leaving a market-not-found screen', async () => {
+      // No order form was ever shown, so there is nothing to abandon.
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) => arg?.properties?.action === 'abandon_order',
+        ),
+      ).toBe(false);
+    });
+
+    it('does not report abandonment when leaving while the markets are still loading', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: true,
+      });
+
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) => arg?.properties?.action === 'abandon_order',
+        ),
+      ).toBe(false);
     });
 
     it('emits abandon_order with the form snapshot when the page is left uncommitted', async () => {
@@ -2433,6 +2499,53 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
+    });
+
+    it('reports the NET position size to TP/SL tracking after a flip', async () => {
+      // ETH position is long 2.5 at ~3025. $5000 at 3x buys ~4.958 ETH, so the
+      // flip leaves ~2.458 ETH open — not the full 4.958 the order requested.
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockSearchParams.set('direction', 'short');
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({ success: true });
+        }
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({ success: true });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('5000');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2000' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const tpslCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsUpdatePositionTPSL',
+      );
+      const orderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      const requestedSize = Math.abs(
+        Number.parseFloat(orderCall?.[1][0].size ?? '0'),
+      );
+      const reportedSize = tpslCall?.[1][0].trackingData.positionSize;
+
+      // The controller publishes this as the risk event's position_size.
+      expect(reportedSize).toBeCloseTo(requestedSize - 2.5, 5);
+      expect(reportedSize).toBeLessThan(requestedSize);
     });
 
     it('reports TP/SL attach failure when the follow-up updatePositionTPSL call fails', async () => {
