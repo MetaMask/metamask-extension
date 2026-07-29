@@ -17,6 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { buildAssetSecurityTrustRoutePath } from '../../../../../shared/lib/asset-route';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getFeatureTags,
@@ -49,6 +51,7 @@ export const SecurityTrustEntryCard = ({
 }: SecurityTrustEntryCardProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
 
   const config = getResultTypeConfig(
@@ -69,13 +72,51 @@ export const SecurityTrustEntryCard = ({
   useEffect(() => {
     if (!isLoading && securityData && !hasTrackedView.current) {
       hasTrackedView.current = true;
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.TokenDetailsSecuritySectionViewed,
+        )
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: token.symbol,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: token.chainId,
+            severity: securityData.resultType ?? 'unknown',
+          })
+          .build(),
+      );
     }
-  }, [isLoading, securityData]);
+  }, [
+    createEventBuilder,
+    isLoading,
+    securityData,
+    token.chainId,
+    token.symbol,
+    trackEvent,
+  ]);
 
   const handlePress = () => {
     if (!hasDetails) {
       return;
     }
+
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.TokenDetailsSecuritySectionClicked,
+      )
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+          severity: securityData?.resultType ?? 'unknown',
+        })
+        .build(),
+    );
 
     const state: SecurityTrustLocationState = {
       securityData,

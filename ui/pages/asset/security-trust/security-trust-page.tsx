@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -16,9 +16,14 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { transitionBack } from '../../../components/ui/transition';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTheme } from '../../../hooks/useTheme';
 import {
   formatCompactSupply,
@@ -36,6 +41,12 @@ import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
 const OTHER_HOLDERS_BAR_BG_LIGHT = 'bg-[rgba(133,139,154,0.77)]';
 const OTHER_HOLDERS_BAR_BG_DARK = 'bg-[rgba(237,239,242,0.3)]';
+
+type SecurityTrustPageCtaType =
+  | 'website'
+  | 'twitter'
+  | 'telegram'
+  | 'block_explorer';
 
 const OfficialLinkButton = ({
   iconName,
@@ -388,12 +399,14 @@ const OfficialLinksSection = ({
   blockExplorerLink,
   websiteLabel,
   telegramLabel,
+  onLinkClick,
 }: {
   title: string;
   metadata: TokenSecurityMetadata;
   blockExplorerLink: { url: string; name: string } | null;
   websiteLabel: string;
   telegramLabel: string;
+  onLinkClick: (url: string, ctaType: SecurityTrustPageCtaType) => void;
 }) => (
   <>
     <SectionDivider />
@@ -403,7 +416,9 @@ const OfficialLinksSection = ({
         <OfficialLinkButton
           iconName={IconName.WebTraffic}
           label={websiteLabel}
-          onClick={() => openLink(metadata.externalLinks.homepage ?? '')}
+          onClick={() =>
+            onLinkClick(metadata.externalLinks.homepage ?? '', 'website')
+          }
           testId="security-trust-link-website"
         />
       ) : null}
@@ -412,7 +427,10 @@ const OfficialLinksSection = ({
           iconName={IconName.X}
           label={`@${metadata.externalLinks.twitterPage}`}
           onClick={() =>
-            openLink(`https://x.com/${metadata.externalLinks.twitterPage}`)
+            onLinkClick(
+              `https://x.com/${metadata.externalLinks.twitterPage}`,
+              'twitter',
+            )
           }
           testId="security-trust-link-twitter"
         />
@@ -422,7 +440,10 @@ const OfficialLinksSection = ({
           iconName={IconName.Telegram}
           label={telegramLabel}
           onClick={() =>
-            openLink(`https://t.me/${metadata.externalLinks.telegramChannelId}`)
+            onLinkClick(
+              `https://t.me/${metadata.externalLinks.telegramChannelId}`,
+              'telegram',
+            )
           }
           testId="security-trust-link-telegram"
         />
@@ -431,7 +452,9 @@ const OfficialLinksSection = ({
         <OfficialLinkButton
           iconName={IconName.Explore}
           label={blockExplorerLink.name}
-          onClick={() => openLink(blockExplorerLink.url)}
+          onClick={() =>
+            onLinkClick(blockExplorerLink.url, 'block_explorer')
+          }
           testId="security-trust-link-explorer"
         />
       ) : null}
@@ -442,6 +465,9 @@ const OfficialLinksSection = ({
 const SecurityTrustPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedView = useRef(false);
+  const timeSpentStart = useRef(Date.now());
   const otherHoldersBarClassName =
     theme === ThemeType.dark
       ? OTHER_HOLDERS_BAR_BG_DARK
@@ -461,6 +487,7 @@ const SecurityTrustPage = () => {
     otherPct,
     symbol,
     decimals,
+    chainId,
     formattedCreatedDate,
     tokenAgeDisplay,
     tokenType,
@@ -472,7 +499,91 @@ const SecurityTrustPage = () => {
     document.querySelector('.app')?.scroll(0, 0);
   }, []);
 
-  const handleBack = () => transitionBack(() => navigate(-1));
+  useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+
+    hasTrackedView.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SecurityPageViewed)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          severity: securityData?.resultType ?? 'unknown',
+        })
+        .build(),
+    );
+  }, [
+    chainId,
+    createEventBuilder,
+    securityData?.resultType,
+    symbol,
+    trackEvent,
+  ]);
+
+  const handleLinkClick = useCallback(
+    (url: string, ctaType: SecurityTrustPageCtaType) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SecurityPageCtaClicked)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: symbol,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: chainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            cta_type: ctaType,
+            severity: securityData?.resultType ?? 'unknown',
+          })
+          .build(),
+      );
+
+      if (ctaType === 'block_explorer') {
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.BlockExplorerLinkClicked)
+            .addCategory(MetaMetricsEventCategory.Navigation)
+            .addProperties({
+              location: 'security_trust_page',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainId,
+            })
+            .build(),
+        );
+      }
+
+      openLink(url);
+    },
+    [chainId, createEventBuilder, securityData?.resultType, symbol, trackEvent],
+  );
+
+  const handleBack = () => {
+    const timeSpentMs = Date.now() - timeSpentStart.current;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SecurityPageDismissed)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: symbol,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: chainId,
+          severity: securityData?.resultType ?? 'unknown',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          time_spent_ms: timeSpentMs,
+        })
+        .build(),
+    );
+    transitionBack(() => navigate(-1));
+  };
 
   const pageContent =
     isLoading && !securityData ? (
@@ -543,6 +654,7 @@ const SecurityTrustPage = () => {
               blockExplorerLink={blockExplorerLink}
               websiteLabel={t('securityTrustWebsite')}
               telegramLabel={t('securityTrustTelegram')}
+              onLinkClick={handleLinkClick}
             />
           ) : null}
 

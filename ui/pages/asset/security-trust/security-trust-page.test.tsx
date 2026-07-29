@@ -4,11 +4,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
 
 const mockNavigate = jest.fn();
+const mockTrackEvent = jest.fn();
 let mockLocationState: Record<string, unknown> | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -38,6 +40,18 @@ jest.mock('../../../selectors/assets', () => ({
 jest.mock('../../../hooks/useTheme', () => ({
   useTheme: () => 'light',
 }));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const { useTokenSecurityData } = jest.requireMock(
   '../../../hooks/useTokenSecurityData',
@@ -182,6 +196,41 @@ describe('SecurityTrustPage', () => {
 
     expect(screen.getByTestId('security-trust-screen')).toBeInTheDocument();
     expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
+  });
+
+  it('tracks page viewed on mount', () => {
+    renderPage();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+  });
+
+  it('tracks cta click when official link is opened', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('security-trust-link-website'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageCtaClicked,
+      }),
+    );
+  });
+
+  it('tracks page dismissed when back button is clicked', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('security-trust-back-button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageDismissed,
+      }),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('renders verified summary and feature tags', () => {

@@ -256,6 +256,9 @@ export const useSecurityTrustPageData = () => {
     otherPct,
     symbol,
     decimals,
+    chainId:
+      locationState?.chainId ??
+      (chainId && isStrictHexString(chainId) ? chainId : undefined),
     formattedCreatedDate,
     tokenAgeDisplay,
     tokenType,
