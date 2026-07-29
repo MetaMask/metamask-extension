@@ -165,14 +165,20 @@ export const SecurityTrustEntryCard = ({
     );
   };
 
+  const detailsSection = renderDetailsSection();
+
   const content = (
-    <Box gap={3}>
+    <Box flexDirection={BoxFlexDirection.Column}>
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={1}
       >
-        <Text variant={TextVariant.HeadingMd} color={TextColor.TextDefault}>
+        <Text
+          variant={TextVariant.HeadingSm}
+          color={TextColor.TextDefault}
+          className="asset-page__details-heading"
+        >
           {t('securityTrustTitle')}
         </Text>
         {hasDetails ? (
@@ -184,13 +190,14 @@ export const SecurityTrustEntryCard = ({
         ) : null}
       </Box>
       <Text
-        variant={TextVariant.BodyMd}
+        variant={TextVariant.BodyLg}
         color={config.textColor}
         fontWeight={FontWeight.Medium}
+        className="mt-1 py-1"
       >
         {config.label}
       </Text>
-      {renderDetailsSection()}
+      {detailsSection ? <Box marginTop={3}>{detailsSection}</Box> : null}
     </Box>
   );
 

@@ -123,9 +123,10 @@ const SecurityTrustSummarySection = ({
 }) => (
   <Box flexDirection={BoxFlexDirection.Column} gap={3} paddingTop={3}>
     <Text
-      variant={TextVariant.HeadingMd}
+      variant={TextVariant.BodyLg}
       color={config.textColor}
       fontWeight={FontWeight.Medium}
+      className="py-1"
     >
       {config.label}
     </Text>
@@ -320,6 +321,21 @@ const BuySellTaxSection = ({
   </>
 );
 
+const TokenInfoField = ({ label, value }: { label: string; value: string }) => (
+  <Box flexDirection={BoxFlexDirection.Column} gap={1} style={{ flex: 1 }}>
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.TextAlternative}
+      fontWeight={FontWeight.Medium}
+    >
+      {label}
+    </Text>
+    <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+      {value}
+    </Text>
+  </Box>
+);
+
 const TokenInfoSection = ({
   title,
   createdLabel,
@@ -345,58 +361,14 @@ const TokenInfoSection = ({
 }) => (
   <>
     <SectionHeader title={title} />
-    <Box gap={3}>
+    <Box flexDirection={BoxFlexDirection.Column} gap={4}>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
-        <Box style={{ flex: 1 }}>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            fontWeight={FontWeight.Medium}
-          >
-            {createdLabel}
-          </Text>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-            {formattedCreatedDate}
-          </Text>
-        </Box>
-        <Box style={{ flex: 1 }}>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            fontWeight={FontWeight.Medium}
-          >
-            {tokenAgeLabel}
-          </Text>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-            {tokenAgeDisplay}
-          </Text>
-        </Box>
+        <TokenInfoField label={createdLabel} value={formattedCreatedDate} />
+        <TokenInfoField label={tokenAgeLabel} value={tokenAgeDisplay} />
       </Box>
       <Box flexDirection={BoxFlexDirection.Row} gap={3}>
-        <Box style={{ flex: 1 }}>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            fontWeight={FontWeight.Medium}
-          >
-            {networkLabel}
-          </Text>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-            {networkName ?? naLabel}
-          </Text>
-        </Box>
-        <Box style={{ flex: 1 }}>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            fontWeight={FontWeight.Medium}
-          >
-            {typeLabel}
-          </Text>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-            {tokenType}
-          </Text>
-        </Box>
+        <TokenInfoField label={networkLabel} value={networkName ?? naLabel} />
+        <TokenInfoField label={typeLabel} value={tokenType} />
       </Box>
     </Box>
   </>
