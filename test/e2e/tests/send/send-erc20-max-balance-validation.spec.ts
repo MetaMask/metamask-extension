@@ -77,6 +77,7 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
     .forGet(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
+    .once()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -229,7 +230,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
         tstBalanceHolder.value = '5';
         wsServer.sendMessage(JSON.stringify(notification));
 
-        await tokensTab.checkTokenAmountIsDisplayed(`5 ${SYMBOL}`);
+        await tokensTab.checkTokenAmountIsDisplayed(`5 ${SYMBOL}`, 5000);
         await tokensTab.openTokenDetails(SYMBOL);
         await tokensTab.startSendFlow();
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
