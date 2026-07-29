@@ -41,10 +41,7 @@ import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
-import {
-  HardwareWalletType,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/contexts/hardware-wallets';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -55,8 +52,8 @@ jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
-jest.mock('../../../ui/contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../ui/contexts/hardware-wallets'),
+jest.mock('../../../shared/lib/hardware-wallets', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
   toHardwareWalletError: (...args: unknown[]) =>
     mockToHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args: unknown[]) =>

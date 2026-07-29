@@ -189,8 +189,7 @@ import {
   HardwareWalletType,
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/contexts/hardware-wallets';
+} from '../../../shared/lib/hardware-wallets';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
