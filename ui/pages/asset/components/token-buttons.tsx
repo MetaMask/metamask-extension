@@ -29,8 +29,8 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
-import { AssetActivationErrorToast } from './asset-activation-error-toast';
 import { useDispatch } from '../../../store/hooks';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -167,7 +167,7 @@ const TokenButtons = ({
           data-testid="token-overview-buy"
           onClick={handleBuyAndSellOnClick}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
           disabled={token.isERC721}
         />
 

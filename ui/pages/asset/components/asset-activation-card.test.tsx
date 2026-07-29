@@ -98,8 +98,8 @@ describe('AssetActivateCard', () => {
 
     expect(screen.getByTestId('asset-activate-card')).toBeInTheDocument();
     expect(screen.getByTestId('asset-activate-button')).toBeInTheDocument();
-    expect(screen.getByText(/USDC/)).toBeInTheDocument();
-    expect(screen.getByText(/Stellar/)).toBeInTheDocument();
+    expect(screen.getByText(/USDC/u)).toBeInTheDocument();
+    expect(screen.getByText(/Stellar/u)).toBeInTheDocument();
   });
 
   it('submits changeTrustOpt add when the user taps Activate', async () => {
