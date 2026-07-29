@@ -194,7 +194,9 @@ describe('SecurityTrustPage', () => {
       '/asset/eip155:1/eip155%3A1%2Ferc20%3A0xabc',
       { replace: true },
     );
-    expect(screen.queryByTestId('security-trust-screen')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('security-trust-screen'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders loading state when data is loading and unavailable', () => {
