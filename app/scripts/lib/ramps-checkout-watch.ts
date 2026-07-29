@@ -2,6 +2,7 @@ import {
   getInternalOrderCode,
   RampsOrderStatus,
   type RampsController,
+  type RampsOrder,
 } from '@metamask/ramps-controller';
 import { getRampCallbackBaseUrl } from '../../../shared/lib/ramps/callback-url';
 import type ExtensionPlatform from '../platforms/extension';
@@ -55,15 +56,15 @@ export function createWatchRampsCheckoutTab(
       activeByTabId.delete(tabId);
     };
 
-    const markPrecreatedOrderPending = () => {
+    const markPrecreatedOrderPending = (): RampsOrder | undefined => {
       if (!orderCode) {
-        return;
+        return undefined;
       }
       const existing = (rampsController.state?.orders ?? []).find(
         (order) => getInternalOrderCode(order) === orderCode,
       );
       if (!existing || existing.status !== RampsOrderStatus.Precreated) {
-        return;
+        return undefined;
       }
       // Optimistic in-progress so the UI pending toast fires the moment the
       // provider tab closes, instead of waiting on the next poll cycle.
@@ -71,6 +72,7 @@ export function createWatchRampsCheckoutTab(
         ...existing,
         status: RampsOrderStatus.Pending,
       });
+      return existing;
     };
 
     const finish = (callbackUrl?: string) => {
@@ -82,7 +84,7 @@ export function createWatchRampsCheckoutTab(
       }
 
       // Fire pending toast / activity update immediately on redirect.
-      markPrecreatedOrderPending();
+      const precreatedOrder = markPrecreatedOrderPending();
 
       // Always resolve from the callback URL — even for precreated checkouts.
       // Providers like MoonPay put their native transaction id in the redirect;
@@ -99,6 +101,12 @@ export function createWatchRampsCheckoutTab(
         })
         .catch((error) => {
           console.error('Failed to resolve ramps order from callback', error);
+          // Undo the optimistic flip. A pending stub carrying no provider data
+          // is invisible to `removeStalePrecreatedOrders`, so leaving it would
+          // strand it in state forever.
+          if (precreatedOrder) {
+            rampsController.addOrder(precreatedOrder);
+          }
         });
     };
 

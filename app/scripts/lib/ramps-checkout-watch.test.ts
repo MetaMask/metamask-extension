@@ -140,6 +140,41 @@ describe('createWatchRampsCheckoutTab', () => {
     expect(rampsController.removeOrder).toHaveBeenCalledWith('c-custom');
   });
 
+  it('restores the precreated stub when the callback order cannot be resolved', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    const stub = {
+      providerOrderId: 'c-custom',
+      status: RampsOrderStatus.Precreated,
+      walletAddress: '0xabc',
+    };
+    const { rampsController, watch, getOnUpdated } = createHarness({
+      orders: [stub],
+    });
+    rampsController.getOrderFromCallback.mockRejectedValue(
+      new Error('callback lookup failed'),
+    );
+
+    watch({
+      tabId: 7,
+      providerCode: 'moonpay',
+      walletAddress: '0xabc',
+      orderAlreadyPrecreated: true,
+      orderCode: 'c-custom',
+    });
+
+    getOnUpdated()?.(
+      7,
+      { url: `${callbackBase}?transactionId=abc` },
+      undefined,
+    );
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(rampsController.addOrder.mock.calls).toMatchSnapshot();
+    expect(rampsController.removeOrder).not.toHaveBeenCalled();
+  });
+
   it('does not remove the stub when the resolved order shares its code', async () => {
     const stub = {
       providerOrderId: 'same-code',
