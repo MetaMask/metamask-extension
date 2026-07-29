@@ -25,7 +25,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-19"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -132,7 +132,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-15"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -233,7 +233,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-16"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -280,7 +280,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-17"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -346,7 +346,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-18"
+                aria-describedby="tippy-tooltip"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -1012,7 +1012,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-20"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -1119,7 +1119,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-21"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -1220,7 +1220,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-22"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -1267,7 +1267,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-23"
+              aria-describedby="tippy-tooltip"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -1333,7 +1333,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-24"
+                aria-describedby="tippy-tooltip"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""

@@ -19,6 +19,7 @@ export function getRampsEnvironment(): RampsEnvironment {
     case 'dev':
       return RampsEnvironment.Development;
     case 'test':
+    case 'testing':
     default:
       return RampsEnvironment.Staging;
   }
