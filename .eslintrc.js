@@ -12,6 +12,7 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const reactCompilerPlugin = require('eslint-plugin-react-compiler');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
+const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
 
 const {
   architecturalZones,
@@ -845,12 +846,13 @@ module.exports = defineConfig([
   /**
    * E2E page objects
    *
-   * Page objects should declare selectors (fields) alphabetically at the
-   * top, followed by the constructor, then methods in alphabetical order.
-   *
-   * The files listed in `excludedFiles` don't yet comply. They are
-   * temporarily exempt and should be removed from this list as each one is
-   * reordered. Do NOT add new files here — new page objects must comply.
+   * Page objects should declare selectors first (both constant fields and
+   * arrow-function locator builders), followed by the constructor, then the
+   * action methods that drive the `driver`. Everything is alphabetical within
+   * its group.
+   * The files listed in `ignores` don't yet comply. They are temporarily
+   * exempt and should be removed from this list as each one is reordered. Do
+   * NOT add new files here. New page objects must comply.
    *
    * TODO: Reorder the excluded files and delete them from this list.
    */
@@ -985,16 +987,15 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/vault-decryptor-page.ts',
       'test/e2e/page-objects/pages/wallet-details-page.ts',
     ],
-    rules: {
-      '@typescript-eslint/member-ordering': [
-        'error',
-        {
-          classes: {
-            memberTypes: ['field', 'constructor', 'method'],
-            order: 'alphabetically',
-          },
+    plugins: {
+      'page-object': {
+        rules: {
+          'member-order': pageObjectMemberOrderRule,
         },
-      ],
+      },
+    },
+    rules: {
+      'page-object/member-order': 'error',
     },
   },
   /**
