@@ -384,7 +384,6 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 déposé",
