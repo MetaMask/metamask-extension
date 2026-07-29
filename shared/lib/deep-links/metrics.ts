@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../constants/metametrics';
 import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
-import { SignatureStatus } from './verify';
+import type { SignatureStatus } from './verify';
 
 export type Properties = {
   route: string;

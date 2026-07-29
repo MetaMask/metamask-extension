@@ -6,7 +6,11 @@ import {
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
-import { MISSING } from '../../../../shared/lib/deep-links/verify';
+import {
+  INVALID,
+  MISSING,
+  VALID,
+} from '../../../../shared/lib/deep-links/verify';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -347,6 +351,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const mockAssign = jest.fn();
@@ -423,6 +428,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const mockAssign = jest.fn();
@@ -526,6 +532,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const browserMock = jest.requireMock('webextension-polyfill');
@@ -601,6 +608,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
@@ -660,6 +668,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Redirect,
         url: externalUrl,
+        signature: VALID,
       });
 
       const { result } = renderHookWithProvider(
@@ -691,6 +700,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Navigate,
         route: testRoute,
+        signature: VALID,
       });
 
       const { result } = renderHookWithProvider(
@@ -821,6 +831,7 @@ describe('useOnboardingCompletion', () => {
       (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
         type: DeferredDeepLinkRouteType.Interstitial,
         urlPathAndQuery,
+        signature: INVALID,
       });
       (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
         `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
