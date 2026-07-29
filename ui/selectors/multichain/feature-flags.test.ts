@@ -1,3 +1,4 @@
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 import {
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
@@ -5,7 +6,6 @@ import {
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
 } from './feature-flags';
-import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 
 const buildState = (
   remoteFeatureFlags: Record<string, unknown> = {},
