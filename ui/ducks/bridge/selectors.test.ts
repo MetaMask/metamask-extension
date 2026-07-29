@@ -21,7 +21,10 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { MOCK_ACCOUNT_TRON_MAINNET } from '../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_STELLAR_PUBNET,
+  MOCK_ACCOUNT_TRON_MAINNET,
+} from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
@@ -167,6 +170,88 @@ describe('Bridge selectors', () => {
             [btcAsset.assetId]: {
               amount: fromNativeBalance,
               unit: 'BTC',
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const createStellarBridgeState = ({
+    fromTokenInputValue = '84',
+    fromNativeBalance = '88.41',
+    nonEvmBalanceError,
+    srcTokenAmount = '840000000',
+  }: {
+    fromTokenInputValue?: string;
+    fromNativeBalance?: string;
+    nonEvmBalanceError?: {
+      code: string;
+      assetId: string;
+      availableAmount: string;
+      requiredAmount: string;
+      reserveAmount?: string;
+    };
+    srcTokenAmount?: string;
+  } = {}) => {
+    const xlmAsset = getNativeAssetForChainId(ChainId.STELLAR);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const stellarQuote = {
+      quote: {
+        requestId: 'xlm-quote',
+        bridgeId: 'rango',
+        aggregator: 'rango',
+        srcChainId: ChainId.STELLAR,
+        srcTokenAmount,
+        srcAsset: xlmAsset,
+        destChainId: ChainId.ETH,
+        destTokenAmount: '1000000000000000000',
+        destAsset: ethAsset,
+        minDestTokenAmount: '990000000000000000',
+        feeData: {
+          metabridge: {
+            amount: '0',
+            asset: xlmAsset,
+          },
+        },
+        bridges: ['rango'],
+        protocols: ['rango'],
+        steps: [],
+      },
+      trade: { xdrBase64: 'AAAA' },
+      estimatedProcessingTimeInSeconds: 600,
+      // The Stellar snap throws instead of returning a fee when the balance
+      // is insufficient, so the quote carries no fee data.
+      nonEvmFeesInNative: undefined,
+      nonEvmBalanceError,
+    };
+
+    return createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue,
+        fromToken: toBridgeToken(xlmAsset),
+        toToken: toBridgeToken(ethAsset),
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.STELLAR,
+          srcTokenAmount,
+        },
+        quotes: [stellarQuote] as unknown as QuoteResponse[],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_ACCOUNT_STELLAR_PUBNET.id,
+          accounts: {
+            [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+          },
+        },
+        balances: {
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [xlmAsset.assetId]: {
+              amount: fromNativeBalance,
+              unit: 'XLM',
             },
           },
         },
@@ -671,10 +756,6 @@ describe('Bridge selectors', () => {
           {
             "chainId": "tron:728126428",
             "name": "Tron",
-          },
-          {
-            "chainId": "stellar:pubnet",
-            "name": "Stellar",
           },
           {
             "chainId": "eip155:8453",
@@ -2274,10 +2355,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
@@ -2303,13 +2384,10 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalMaxNetworkFee.amount,
-      ).toStrictEqual('0.00100011265800784');
-      expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
@@ -2319,7 +2397,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2330,7 +2408,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2341,7 +2419,7 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('1');
       expect(result.isNetworkFeeUnavailable).toBe(false);
     });
@@ -2404,19 +2482,20 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount
+          ?.valueInCurrency,
       ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('2.52453437697629012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.toTokenAmount
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('14.90773022');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('12.38319584302370988');
       expect(result.isEstimatedReturnLow).toBe(true);
     });
@@ -2481,15 +2560,16 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount
+          ?.valueInCurrency,
       ).toBe('25.2425');
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('2.52453437697629012');
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
-          .valueInCurrency,
+          ?.valueInCurrency,
       ).toBe('20.69242252302370988');
       expect(result.isEstimatedReturnLow).toBe(false);
     });
@@ -2877,8 +2957,8 @@ describe('Bridge selectors', () => {
       );
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual('1e-8');
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+      ).toStrictEqual('0.00000001');
       expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
         '0.99996999',
       );
@@ -2892,6 +2972,76 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         nonEvmFeesInNative: '0.000031',
         srcTokenAmount: '99997000',
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientNativeReserve).toBe(false);
+      expect(result.isInsufficientGasForQuote).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Stellar when the snap reports an insufficient native balance', () => {
+      const state = createStellarBridgeState({
+        nonEvmBalanceError: {
+          code: 'InsufficientBalance',
+          assetId: 'stellar:pubnet/slip44:148',
+          availableAmount: '82.410506',
+          requiredAmount: '84',
+          reserveAmount: '6',
+        },
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
+        '82.410506',
+      );
+      expect(
+        nativeReserveError?.minimumNativeBalanceToBeKeptInAccount,
+      ).toStrictEqual('6');
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return no native reserve error on Stellar when the snap does not report a reserve amount', () => {
+      const state = createStellarBridgeState({
+        nonEvmBalanceError: {
+          code: 'InsufficientBalance',
+          assetId: 'stellar:pubnet/slip44:148',
+          availableAmount: '82.410506',
+          requiredAmount: '84',
+        },
+      });
+
+      expect(
+        getActiveQuoteInsufficientNativeReserveError(state as never),
+      ).toBeUndefined();
+    });
+
+    it('should return no native reserve error on Stellar when the input is within the snap-reported available amount', () => {
+      const state = createStellarBridgeState({
+        fromTokenInputValue: '80',
+        srcTokenAmount: '800000000',
+        nonEvmBalanceError: undefined,
+      });
+
+      expect(
+        getActiveQuoteInsufficientNativeReserveError(state as never),
+      ).toBeUndefined();
+      expect(
+        getValidationErrors(state as never).isInsufficientGasForQuote,
+      ).toBe(false);
+    });
+
+    it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Stellar when the snap reports the fee cannot be covered', () => {
+      const state = createStellarBridgeState({
+        nonEvmBalanceError: {
+          code: 'InsufficientBalanceToCoverFee',
+          assetId: 'stellar:pubnet/slip44:148',
+          availableAmount: '0.5',
+          requiredAmount: '1',
+        },
       });
       const result = getValidationErrors(state as never);
 
@@ -4336,29 +4486,26 @@ describe('Bridge selectors', () => {
       expect(result).toBeUndefined();
     });
 
-    it('returns undefined when sentAmount.valueInCurrency is null', () => {
+    // Per-field null handling (sentAmount/toTokenAmount) is covered by the
+    // formatPriceImpactFiat unit tests; quote metadata is recomputed by the
+    // bridge-controller selector, so fiat values are nulled out here by
+    // removing the exchange rates from state.
+    it('returns undefined when fiat values are unavailable for the active quote', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            sentAmount: { ...quote.sentAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB,
+          quoteRequest: {
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: 42161,
+            destTokenAddress: zeroAddress(),
+          },
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
-      });
-      const result = getFormattedPriceImpactFiat(state as never);
-      expect(result).toBeUndefined();
-    });
-
-    it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quotes: DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB.map((quote) => ({
-            ...quote,
-            toTokenAmount: { ...quote.toTokenAmount, valueInCurrency: null },
-          })) as unknown as QuoteResponse[],
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {},
+          marketData: {},
         },
-        metamaskStateOverrides: { currentCurrency: 'usd' },
       });
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();

@@ -933,6 +933,28 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     const isBitcoinNativeReserveChain = Boolean(
       fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
     );
+    const nonEvmBalanceError = activeQuote?.nonEvmBalanceError;
+
+    // Generic path for non-EVM chains with a native reserve:
+    // the snap reports the spendable balance and the reserve directly in the
+    // structured balance error, so no chain-specific lookup is needed.
+    if (
+      nonEvmBalanceError?.code === 'InsufficientBalance' &&
+      nonEvmBalanceError?.assetId?.toLowerCase() ===
+        fromToken?.assetId.toLowerCase() &&
+      nonEvmBalanceError?.availableAmount &&
+      nonEvmBalanceError?.reserveAmount
+    ) {
+      return buildInsufficientNativeReserveError({
+        fromToken,
+        nativeBalance,
+        validatedSrcAmount,
+        minimumNativeBalanceToBeKeptInAccount: nonEvmBalanceError.reserveAmount,
+        maxSwappableNativeBalance: new BigNumber(
+          nonEvmBalanceError.availableAmount,
+        ),
+      });
+    }
 
     if (
       isBitcoinNativeReserveChain &&
@@ -986,10 +1008,10 @@ export const getQuoteRequestInsufficientBal = createSelector(
   (fromTokenBalance, validatedSrcAmount, insufficientNativeReserveError) =>
     Boolean(
       insufficientNativeReserveError ||
-      (validatedSrcAmount &&
-        fromTokenBalance &&
-        !Number.isNaN(Number(fromTokenBalance)) &&
-        new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
+        (validatedSrcAmount &&
+          fromTokenBalance &&
+          !Number.isNaN(Number(fromTokenBalance)) &&
+          new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
     ),
 );
 
@@ -1007,14 +1029,32 @@ export const isNativeBalanceInsufficientForQuote = (
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
   minimumBalanceToKeep: string,
-): boolean =>
-  isNativeAddress(fromToken.assetId)
+): boolean => {
+  // The Stellar snap reports when the spendable balance cannot cover the
+  // network fee. No amount reduction can fix this (the fee is fixed), so
+  // surface the insufficient-gas alert even though the quote has no fee data.
+  if (quote.nonEvmBalanceError?.code === 'InsufficientBalanceToCoverFee') {
+    return true;
+  }
+
+  const totalNetworkFee = quote.totalNetworkFee?.amount;
+  if (!totalNetworkFee) {
+    return false;
+  }
+
+  if (!isNativeAddress(fromToken.assetId)) {
+    return new BigNumber(nativeBalance).lte(totalNetworkFee);
+  }
+
+  const sentAmount = quote.sentAmount?.amount;
+  return sentAmount
     ? new BigNumber(nativeBalance)
-        .sub(quote.totalNetworkFee.amount)
-        .sub(quote.sentAmount.amount)
+        .sub(totalNetworkFee)
+        .sub(sentAmount)
         .sub(minimumBalanceToKeep)
         .lte(0)
-    : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount);
+    : false;
+};
 
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
@@ -1078,11 +1118,11 @@ export const computeQuoteValidationErrors = (
   const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
   const isNetworkFeeUnavailable = Boolean(
     quote &&
-    srcChainId &&
-    (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
-    !isGasless &&
-    (quote.totalNetworkFee?.amount === undefined ||
-      new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
+      srcChainId &&
+      (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
+      !isGasless &&
+      (quote.totalNetworkFee?.amount === undefined ||
+        new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
   );
 
   const parsedPriceImpactNumber = Number(quote?.quote?.priceData?.priceImpact);
@@ -1094,32 +1134,32 @@ export const computeQuoteValidationErrors = (
     // Shown prior to fetching quotes (native reserve error takes precedence)
     isInsufficientGasBalance: Boolean(
       nativeBalance &&
-      !quote &&
-      validatedSrcAmount &&
-      fromToken &&
-      !isGasless &&
-      (isNativeAddress(fromToken.assetId)
-        ? new BigNumber(nativeBalance)
-            .sub(minimumBalanceToKeep)
-            .lte(validatedSrcAmount)
-        : new BigNumber(nativeBalance).lte(0)),
+        !quote &&
+        validatedSrcAmount &&
+        fromToken &&
+        !isGasless &&
+        (isNativeAddress(fromToken.assetId)
+          ? new BigNumber(nativeBalance)
+              .sub(minimumBalanceToKeep)
+              .lte(validatedSrcAmount)
+          : new BigNumber(nativeBalance).lte(0)),
     ),
     isInsufficientNativeReserve,
     isNetworkFeeUnavailable,
     // Shown after fetching quotes
     isInsufficientGasForQuote: Boolean(
       !isNetworkFeeUnavailable &&
-      nativeBalance &&
-      quote &&
-      fromToken &&
-      fromTokenInputValue &&
-      !isGasless &&
-      isNativeBalanceInsufficientForQuote(
-        quote,
-        nativeBalance,
-        fromToken,
-        minimumBalanceToKeep,
-      ),
+        nativeBalance &&
+        quote &&
+        fromToken &&
+        fromTokenInputValue &&
+        !isGasless &&
+        isNativeBalanceInsufficientForQuote(
+          quote,
+          nativeBalance,
+          fromToken,
+          minimumBalanceToKeep,
+        ),
     ),
     isInsufficientBalance:
       validatedSrcAmount &&
@@ -1139,8 +1179,8 @@ export const computeQuoteValidationErrors = (
         : false,
     isPriceImpactWarning: Boolean(
       priceImpactNumber &&
-      priceImpactNumber > warning &&
-      priceImpactNumber <= error,
+        priceImpactNumber > warning &&
+        priceImpactNumber <= error,
     ),
     isPriceImpactError: Boolean(priceImpactNumber && priceImpactNumber > error),
   };
@@ -1201,10 +1241,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         quoteStreamCompleteData?.hasQuotes === false ||
         Boolean(
           !activeQuote &&
-          isValidQuoteRequest(quoteRequest) &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
+            isValidQuoteRequest(quoteRequest) &&
+            quotesLastFetchedMs &&
+            !isLoading &&
+            quotesRefreshCount > 0,
         ),
     };
   },
