@@ -22,7 +22,8 @@ export class PerpsMarketDetailPage {
    * Close-amount slider wrapper in the open close-position modal only (avoids
    * targeting any other `CloseAmountSection` in the document).
    */
-  private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
+  private readonly closeAmountSliderInCloseModal =
+    '[data-testid="perps-close-position-modal"] [data-testid^="close-amount-slider-pct-"]';
 
   /**
    * `CloseAmountSection` slider wrapper. Full `data-testid` is
