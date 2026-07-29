@@ -22,7 +22,7 @@ class NftsTab extends HomePage {
     '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
   private readonly importNftNetworkName =
-    '[data-testid="select-network-item-0x539"]';
+    '[data-testid="network-list-item-0x539"]';
 
   private readonly importNftTokenIdInput = '#token-id';
 

@@ -29,6 +29,7 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useAppSelector, useDispatch } from '../../../store/hooks';
@@ -123,6 +124,8 @@ const MoreButtonsGroup = ({
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const hasOnlyOneEnabledAction =
     actions.filter(({ enabled }) => enabled).length === 1;
   const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
@@ -164,7 +167,9 @@ const MoreButtonsGroup = ({
         onClick={onClick}
       />
       {modalIsOpen && (
-        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg">
+        <Box
+          className={`flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg${isPureBlack ? ' bg-background-alternative' : ' bg-background-default'}`}
+        >
           {actions.map((action) => (
             <ButtonBase
               key={action.label}
@@ -342,7 +347,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -406,10 +411,9 @@ const CoinButtons = ({
     if (!opened) {
       return;
     }
-    // Only the flag-off path opens a Portfolio browser tab; with the ramps
-    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
-    // be misleading.
-    if (!isRampsEnabled) {
+    // Only the Portfolio paths open a browser tab; when goToBuy navigates
+    // in-app the "tab opened" toast would be misleading.
+    if (opensBuyInPortfolioTab) {
       toast.success(
         <ToastContent
           title={t('buyTabOpenedToastText')}
@@ -440,7 +444,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -560,7 +564,7 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Send}
+            name={IconName.Arrow2UpRight}
             color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
