@@ -77,7 +77,6 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
     .forGet(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
