@@ -9,6 +9,11 @@ export type AssetsUnifyStateFeatureFlag = {
   featureVersion: string | null;
   minimumVersion?: string | null;
   deprecatedControllers?: string[];
+  /**
+   * When true (and the unify feature itself is enabled), AssetsController
+   * emits Sentry traces via `traceAsControllerCallback`.
+   */
+  tracesEnabled?: boolean;
 };
 
 /**
@@ -33,6 +38,27 @@ export const isAssetsUnifyStateFeatureEnabled = (
     Boolean(featureFlag?.enabled) &&
     featureFlag?.featureVersion === featureVersion
   );
+};
+
+/**
+ * Returns true when AssetsController Sentry tracing should run.
+ *
+ * Requires the unify feature itself to be enabled for `featureVersion`, and
+ * `tracesEnabled: true` on the resolved flag entry. Defaults to false when
+ * the field is absent.
+ *
+ * @param featureFlag - The assets-unify-state feature flag.
+ * @param featureVersion - The feature version to check.
+ * @returns boolean
+ */
+export const isAssetsUnifyStateTracesEnabled = (
+  featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
+  featureVersion: string,
+): boolean => {
+  if (!isAssetsUnifyStateFeatureEnabled(featureFlag, featureVersion)) {
+    return false;
+  }
+  return featureFlag?.tracesEnabled === true;
 };
 
 /**

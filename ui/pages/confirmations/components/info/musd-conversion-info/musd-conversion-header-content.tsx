@@ -7,7 +7,6 @@ import {
   TextAlign,
   TextButton,
   TextButtonSize,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -43,15 +42,10 @@ export function useMusdConversionHeaderContent(): HeaderContent {
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+          <Text variant={TextVariant.BodyMd}>
             {t('musdBonusExplanation', [
               String(MUSD_CONVERSION_APY),
-              <TextButton
-                key="terms-link"
-                size={TextButtonSize.BodyMd}
-                isInverse
-                asChild
-              >
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
                 <a
                   href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
                   target="_blank"
@@ -78,12 +72,7 @@ export function useMusdConversionHeaderContent(): HeaderContent {
               </TextButton>,
             ])}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.InfoInverse}
-            textAlign={TextAlign.Center}
-            style={{ opacity: 0.8 }}
-          >
+          <Text variant={TextVariant.BodySm} textAlign={TextAlign.Center}>
             {t('musdBonusPoweredByRelay')}
           </Text>
         </Box>
