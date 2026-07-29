@@ -85,81 +85,81 @@ describe('TokenButtons buy wiring', () => {
   });
 });
 
-const PUBNET_USDC_ASSET =
-  'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
+describe('TokenButtons asset deactivation wiring', () => {
+  const PUBNET_USDC_ASSET =
+    'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as CaipAssetType;
 
-const STELLAR_TOKEN = {
-  type: AssetType.token,
-  address: PUBNET_USDC_ASSET,
-  chainId: XlmScope.Pubnet,
-  symbol: 'USDC',
-  decimals: 7,
-  image: '',
-  balance: {
-    value: '0',
-    display: '0.00',
-    fiat: '0.00',
-  },
-} as Asset & { type: typeof AssetType.token };
-
-const STELLAR_WALLET_ID = 'entropy:stellar-test';
-const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
-
-const stellarMockState = {
-  ...initializedMockState,
-  metamask: {
-    ...initializedMockState.metamask,
-    internalAccounts: {
-      ...initializedMockState.metamask.internalAccounts,
-      accounts: {
-        ...initializedMockState.metamask.internalAccounts.accounts,
-        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
-      },
+  const STELLAR_TOKEN = {
+    type: AssetType.token,
+    address: PUBNET_USDC_ASSET,
+    chainId: XlmScope.Pubnet,
+    symbol: 'USDC',
+    decimals: 7,
+    image: '',
+    balance: {
+      value: '0',
+      display: '0.00',
+      fiat: '0.00',
     },
-    accountTree: {
-      ...initializedMockState.metamask.accountTree,
-      wallets: {
-        ...initializedMockState.metamask.accountTree.wallets,
-        [STELLAR_WALLET_ID]: {
-          id: STELLAR_WALLET_ID,
-          type: AccountWalletType.Entropy,
-          status: 'ready',
-          groups: {
-            [STELLAR_GROUP_ID]: {
-              id: STELLAR_GROUP_ID,
-              type: AccountGroupType.MultichainAccount,
-              accounts: [MOCK_ACCOUNT_STELLAR_PUBNET.id],
-              metadata: {
-                name: 'Stellar',
-                entropy: { groupIndex: 0 },
-                pinned: false,
-                hidden: false,
-                lastSelected: 0,
+  } as unknown as Asset & { type: typeof AssetType.token };
+
+  const STELLAR_WALLET_ID = 'entropy:stellar-test';
+  const STELLAR_GROUP_ID = 'entropy:stellar-test/0';
+
+  const stellarMockState = {
+    ...initializedMockState,
+    metamask: {
+      ...initializedMockState.metamask,
+      internalAccounts: {
+        ...initializedMockState.metamask.internalAccounts,
+        accounts: {
+          ...initializedMockState.metamask.internalAccounts.accounts,
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+        },
+      },
+      accountTree: {
+        ...initializedMockState.metamask.accountTree,
+        wallets: {
+          ...initializedMockState.metamask.accountTree.wallets,
+          [STELLAR_WALLET_ID]: {
+            id: STELLAR_WALLET_ID,
+            type: AccountWalletType.Entropy,
+            status: 'ready',
+            groups: {
+              [STELLAR_GROUP_ID]: {
+                id: STELLAR_GROUP_ID,
+                type: AccountGroupType.MultichainAccount,
+                accounts: [MOCK_ACCOUNT_STELLAR_PUBNET.id],
+                metadata: {
+                  name: 'Stellar',
+                  entropy: { groupIndex: 0 },
+                  pinned: false,
+                  hidden: false,
+                  lastSelected: 0,
+                },
               },
             },
+            metadata: {
+              name: 'Stellar Wallet',
+              entropy: { id: 'stellar-test' },
+            },
           },
-          metadata: {
-            name: 'Stellar Wallet',
-            entropy: { id: 'stellar-test' },
+        },
+      },
+      selectedAccountGroup: STELLAR_GROUP_ID,
+      assetsBalance: {
+        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+          [PUBNET_USDC_ASSET]: {
+            amount: '0',
+            metadata: {
+              limit: '10',
+            },
           },
         },
       },
     },
-    selectedAccountGroup: STELLAR_GROUP_ID,
-    assetsBalance: {
-      [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
-        [PUBNET_USDC_ASSET]: {
-          amount: '0',
-          metadata: {
-            limit: '10',
-          },
-        },
-      },
-    },
-  },
-};
+  };
 
-describe('TokenButtons', () => {
   const mockStore = configureMockStore([thunk])(stellarMockState);
 
   beforeEach(() => {

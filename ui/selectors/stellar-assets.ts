@@ -265,7 +265,7 @@ export const getTrustlineAssetInfoForAccount = createParameterizedSelector(
 );
 
 /**
- * Whether a asset needs trustline activation.
+ * Whether an asset needs trustline activation.
  *
  * Returns `false` when:
  * - `accountId` or `assetId` is missing
