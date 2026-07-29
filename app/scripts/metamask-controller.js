@@ -206,8 +206,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
+} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -352,6 +351,7 @@ import { AuthenticationControllerInit } from './messenger-client-init/identity/a
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
@@ -433,6 +433,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
+import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
@@ -653,6 +654,7 @@ export default class MetamaskController extends EventEmitter {
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
       GeolocationApiService: GeolocationApiServiceInit,
+      SentinelApiService: SentinelApiServiceInit,
       GeolocationController: GeolocationControllerInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
@@ -702,6 +704,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
@@ -850,6 +853,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
       messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
@@ -1452,6 +1457,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -1519,6 +1525,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -2718,8 +2725,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        this.notificationManager.markAsAutomaticallyClosed.bind(
-          this.notificationManager,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
       getCode: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3655,12 +3663,6 @@ export default class MetamaskController extends EventEmitter {
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
-
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
@@ -4744,6 +4746,10 @@ export default class MetamaskController extends EventEmitter {
         deviceRead: true,
       },
       async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no isUnlocked(); pairing is reported via getMode().
+          return Boolean(keyring.getMode());
+        }
         return keyring.isUnlocked();
       },
     );
@@ -6019,14 +6025,14 @@ export default class MetamaskController extends EventEmitter {
     const {
       analyticsId,
       dataCollectionForMarketing,
-      completedMetaMetricsOnboarding,
+      consentDecisionMade,
       optedIn,
     } = this.getState();
 
     if (
       analyticsId &&
       dataCollectionForMarketing &&
-      completedMetaMetricsOnboarding &&
+      consentDecisionMade &&
       optedIn
     ) {
       // setup multiplexing
@@ -7501,10 +7507,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: (payload, options) => {
         trackEvent(
@@ -8557,6 +8561,10 @@ export default class MetamaskController extends EventEmitter {
       getFlatState: this.getState.bind(this),
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
       getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),

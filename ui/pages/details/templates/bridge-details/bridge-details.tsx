@@ -129,7 +129,7 @@ export function BridgeDetails({
         <Section>
           <Row
             label={t('status')}
-            value={<TransactionStatus status={status} />}
+            value={<TransactionStatus status={status} hash={item.hash} />}
           />
           <Row label={t('date')} value={formatDateTime(item.timestamp)} />
           {showFromToAccountRows ? (
