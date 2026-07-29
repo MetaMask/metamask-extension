@@ -173,18 +173,15 @@ export const SecurityTrustEntryCard = ({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={1}
+        className="asset-page__details-heading"
       >
-        <Text
-          variant={TextVariant.HeadingSm}
-          color={TextColor.TextDefault}
-          className="asset-page__details-heading"
-        >
+        <Text variant={TextVariant.HeadingSm} color={TextColor.TextDefault}>
           {t('securityTrustTitle')}
         </Text>
         {hasDetails ? (
           <Icon
             name={IconName.ArrowRight}
-            size={IconSize.Md}
+            size={IconSize.Sm}
             color={IconColor.IconAlternative}
           />
         ) : null}
