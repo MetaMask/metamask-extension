@@ -3,11 +3,9 @@
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
-  PLATFORM_BRAVE,
-  PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
+import { CameraPermissionState } from '../../contexts/hardware-wallets/constants';
 import {
   openCameraVideoStream,
   queryCameraPermissionWithStatus,
@@ -42,41 +40,39 @@ class WebcamUtils {
 
   static async checkStatus() {
     const environmentType = getEnvironmentType();
-    const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
-    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-    const browserName = getBrowserName();
-    const isFirefoxOrBrave =
-      browserName === PLATFORM_FIREFOX || browserName === PLATFORM_BRAVE;
+    const isRestrictedEnvironment =
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
     const devices = await window.navigator.mediaDevices.enumerateDevices();
-    const webcams = devices.filter((device) => device.kind === 'videoinput');
-    const hasWebcam = webcams.length > 0;
-    // A non-empty-string label implies that the webcam has been granted permission, as
-    // otherwise the label is kept blank to prevent fingerprinting
-    const hasWebcamPermissions = webcams.some(
-      (webcam) => webcam.label && webcam.label.length > 0,
+    const hasWebcam = devices.some((device) => device.kind === 'videoinput');
+
+    if (!hasWebcam) {
+      const error = new Error('No webcam found');
+      error.type = 'NO_WEBCAM_FOUND';
+      throw error;
+    }
+
+    // Detect permission via the Permissions API rather than device labels.
+    // Device labels stay blank until `getUserMedia` has succeeded in the
+    // current document (per the media-capture spec, and reinforced by Brave's
+    // anti-fingerprinting "farbling"), so they can't tell us whether the
+    // extension origin already holds a persisted grant.
+    const { state } = await queryCameraPermissionWithStatus();
+    const hasWebcamPermissions = state === CameraPermissionState.Granted;
+
+    // No Chromium context (popup or side panel) can surface a camera prompt,
+    // so redirect those to fullscreen whenever the grant isn't already in
+    // place. Once granted, the origin-scoped permission is reused in place —
+    // this is what lets the user sign entirely within the side panel.
+    const environmentReady = !(
+      isRestrictedEnvironment && !hasWebcamPermissions
     );
 
-    if (hasWebcam) {
-      let environmentReady = true;
-      // Popup and sidepanel modes have limited camera permission capabilities.
-      // When permissions aren't granted, redirect to fullscreen mode where
-      // the browser can properly prompt for camera access.
-      const isRestrictedEnvironment = isPopup || isSidepanel;
-      if (
-        (isFirefoxOrBrave && isRestrictedEnvironment) ||
-        (isRestrictedEnvironment && !hasWebcamPermissions)
-      ) {
-        environmentReady = false;
-      }
-      return {
-        permissions: hasWebcamPermissions,
-        environmentReady,
-      };
-    }
-    const error = new Error('No webcam found');
-    error.type = 'NO_WEBCAM_FOUND';
-    throw error;
+    return {
+      permissions: hasWebcamPermissions,
+      environmentReady,
+    };
   }
 }
 
