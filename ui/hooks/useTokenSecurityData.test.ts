@@ -165,8 +165,8 @@ describe('useTokenSecurityData', () => {
       resultType: 'Warning',
     };
 
-    let resolveFirstFetch: (value: unknown) => void;
-    const firstFetchPromise = new Promise((resolve) => {
+    let resolveFirstFetch: ((value: unknown) => void) | undefined;
+    const firstFetchPromise = new Promise<void>((resolve) => {
       resolveFirstFetch = resolve;
     });
 
@@ -212,7 +212,7 @@ describe('useTokenSecurityData', () => {
     expect(result.current.securityData).toBe(secondSecurityData);
     expect(result.current.symbol).toBe('SECOND');
 
-    resolveFirstFetch!(null);
+    resolveFirstFetch?.(null);
 
     await waitFor(() => {
       expect(mockFetchCachedTokenAssets).toHaveBeenCalledTimes(2);
