@@ -41,7 +41,8 @@ export class TestDappSolana {
     tag: 'button',
   };
 
-  private readonly walletButtonSelector = `${this.walletModalSelector} .wallet-adapter-button`;
+  private readonly walletButtonSelector =
+    '.wallet-adapter-modal-list .wallet-adapter-button';
 
   private readonly walletModalSelector = '.wallet-adapter-modal-list';
 
