@@ -159,6 +159,7 @@ import {
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
@@ -219,11 +220,13 @@ const MESSENGER_EXPOSED_METHODS = [
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'openUpdateTabAndReload',
   'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
+  'requestSafeReload',
   'resetAccount',
   'setAccountLabel',
   'setCurrentCurrency',
@@ -352,6 +355,7 @@ type LegacyBackgroundApiServiceOptions = {
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
+  requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
 };
@@ -378,6 +382,8 @@ export class LegacyBackgroundApiService {
 
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
+  readonly #requestSafeReload: () => Promise<void>;
+
   readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
@@ -396,6 +402,7 @@ export class LegacyBackgroundApiService {
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
+   * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
@@ -407,6 +414,7 @@ export class LegacyBackgroundApiService {
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
     markNotificationPopupAsAutomaticallyClosed,
+    requestSafeReload,
     sendUpdate,
     seedlessOperationMutex,
     createVaultMutex,
@@ -419,6 +427,7 @@ export class LegacyBackgroundApiService {
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
+    this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
@@ -535,6 +544,21 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  async requestSafeReload(): Promise<void> {
+    return this.#requestSafeReload();
+  }
+
+  /**
+   * Opens the "Updating" page in a new tab and then triggers a safe extension
+   * reload. Used when an update is available.
+   */
+  async openUpdateTabAndReload(): Promise<void> {
+    return openUpdateTabAndReload(this.#requestSafeReload);
   }
 
   /**
