@@ -2,8 +2,10 @@ import {
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
+  getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
 } from './feature-flags';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 
 const buildState = (
   remoteFeatureFlags: Record<string, unknown> = {},
@@ -268,6 +270,57 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
       ),
+    ).toBe(false);
+  });
+});
+
+describe('getIsSecurityTrustTdpEnabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsSecurityTrustTdpEnabled(buildState() as any),
     ).toBe(false);
   });
 });

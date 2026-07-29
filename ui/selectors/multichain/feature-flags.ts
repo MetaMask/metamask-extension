@@ -3,6 +3,7 @@
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
@@ -152,4 +153,20 @@ export const getIsChainlistEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUxChainlist }) =>
     getBooleanFeatureFlag(extensionUxChainlist, false),
+);
+
+/**
+ * Get the state of the `extensionTrustAndSecurityTdp` remote feature flag.
+ * LD key: `extension-trust-and-security-tdp` (camelCased in extension state).
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when Security & Trust TDP surfaces should be shown.
+ */
+export const getIsSecurityTrustTdpEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags[EXTENSION_TRUST_AND_SECURITY_TDP_FLAG],
+      false,
+    ),
 );
