@@ -10147,18 +10147,6 @@
   "statusNotConnected": {
     "message": "Hindi konektado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Nagkaproblema habang idinaragdag ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Nagkaproblema habang tinatanggal ang trustline na ito. Subukan ulit.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "May $1 $2 ka pa sa wallet na ito. Dapat mong ipadala o i-swap ang lahat ng ito bago i-deactivate ang asset na ito sa Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."

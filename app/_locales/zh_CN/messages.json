@@ -10147,18 +10147,6 @@
   "statusNotConnected": {
     "message": "未连接"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "添加此信任线时出错。请重试。",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "移除此信任线时出错。请重试。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "您的钱包中仍有 $1 $2。在 Stellar 上停用此资产前，必须将其全部发送或兑换。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "仍在连接到 $1……",
     "description": "Message shown when network connection is slow. $1 is the network name."
