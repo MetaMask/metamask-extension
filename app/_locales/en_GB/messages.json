@@ -1705,6 +1705,9 @@
     "message": "Something went wrong while adding this trustline. Try again.",
     "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
   },
+  "assetChartNoHistoricalPrices": {
+    "message": "We could not fetch any historical data"
+  },
   "assetDeactivate": {
     "message": "Remove",
     "description": "Button label to deactivate an asset."
@@ -1716,9 +1719,6 @@
   "assetDeactivationNonZeroBalanceError": {
     "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
     "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
-  "assetChartNoHistoricalPrices": {
-    "message": "We could not fetch any historical data"
   },
   "assetInactive": {
     "message": "Inactive",
