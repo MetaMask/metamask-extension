@@ -37,6 +37,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
   BorderRadius,
+  BorderStyle,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -721,8 +722,9 @@ export const UpdateTPSLModalContent = ({
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
+              borderStyle={BorderStyle.none}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
+              className="w-full border-0"
               disabled={isSaving}
               autoFocus
               testId="perps-update-tpsl-tp-price-input"
@@ -751,8 +753,9 @@ export const UpdateTPSLModalContent = ({
               placeholder="0"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
+              borderStyle={BorderStyle.none}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
+              className="w-full border-0"
               disabled={isSaving}
               testId="perps-update-tpsl-tp-percent-input"
               inputRef={tpPercentInputRef}
@@ -863,8 +866,9 @@ export const UpdateTPSLModalContent = ({
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
+              borderStyle={BorderStyle.none}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
+              className="w-full border-0"
               disabled={isSaving}
               testId="perps-update-tpsl-sl-price-input"
               inputProps={{ onKeyDown: handleInputEnterKey }}
@@ -892,8 +896,9 @@ export const UpdateTPSLModalContent = ({
               placeholder="0"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
+              borderStyle={BorderStyle.none}
               backgroundColor={BackgroundColor.backgroundMuted}
-              className="w-full"
+              className="w-full border-0"
               disabled={isSaving}
               testId="perps-update-tpsl-sl-percent-input"
               inputRef={slPercentInputRef}

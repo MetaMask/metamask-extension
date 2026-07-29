@@ -75,6 +75,27 @@ describe('AutoCloseSection', () => {
       expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
     });
 
+    it('removes borders from TP/SL price and percent inputs', () => {
+      renderWithProvider(
+        <AutoCloseSection {...defaultProps} enabled={true} />,
+        mockStore,
+      );
+
+      const inputTestIds = [
+        'tp-price-input',
+        'tp-percent-input',
+        'sl-price-input',
+        'sl-percent-input',
+      ];
+
+      for (const testId of inputTestIds) {
+        const textField = screen.getByTestId(testId).closest('.mm-text-field');
+        expect(textField).toHaveClass('border-0');
+        expect(textField).toHaveClass('mm-box--border-style-none');
+        expect(textField).toHaveClass('mm-box--border-width-0');
+      }
+    });
+
     it('shows percent inputs when enabled', () => {
       renderWithProvider(
         <AutoCloseSection {...defaultProps} enabled={true} />,

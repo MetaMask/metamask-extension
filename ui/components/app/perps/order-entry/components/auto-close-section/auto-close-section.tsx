@@ -23,6 +23,7 @@ import {
 
 import {
   BorderRadius,
+  BorderStyle,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -502,8 +503,9 @@ export const AutoCloseSection = ({
                   placeholder="0.00"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
+                  borderStyle={BorderStyle.none}
                   backgroundColor={BackgroundColor.backgroundMuted}
-                  className="w-full"
+                  className="w-full border-0"
                   data-testid="tp-price-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -530,8 +532,9 @@ export const AutoCloseSection = ({
                   placeholder="0"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
+                  borderStyle={BorderStyle.none}
                   backgroundColor={BackgroundColor.backgroundMuted}
-                  className="w-full"
+                  className="w-full border-0"
                   data-testid="tp-percent-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -634,8 +637,9 @@ export const AutoCloseSection = ({
                   placeholder="0.00"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
+                  borderStyle={BorderStyle.none}
                   backgroundColor={BackgroundColor.backgroundMuted}
-                  className="w-full"
+                  className="w-full border-0"
                   data-testid="sl-price-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -662,8 +666,9 @@ export const AutoCloseSection = ({
                   placeholder="0"
                   borderRadius={BorderRadius.MD}
                   borderWidth={0}
+                  borderStyle={BorderStyle.none}
                   backgroundColor={BackgroundColor.backgroundMuted}
-                  className="w-full"
+                  className="w-full border-0"
                   data-testid="sl-percent-input"
                   inputProps={{
                     inputMode: 'decimal',

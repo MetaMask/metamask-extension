@@ -222,6 +222,24 @@ describe('UpdateTPSLModalContent', () => {
       expect(percentInputs).toHaveLength(2);
     });
 
+    it('removes borders from TP/SL price and percent inputs on the sheet', () => {
+      renderTpslModalContent();
+
+      const inputTestIds = [
+        'perps-update-tpsl-tp-price-input',
+        'perps-update-tpsl-tp-percent-input',
+        'perps-update-tpsl-sl-price-input',
+        'perps-update-tpsl-sl-percent-input',
+      ];
+
+      for (const testId of inputTestIds) {
+        const textField = screen.getByTestId(testId).closest('.mm-text-field');
+        expect(textField).toHaveClass('border-0');
+        expect(textField).toHaveClass('mm-box--border-style-none');
+        expect(textField).toHaveClass('mm-box--border-width-0');
+      }
+    });
+
     it('keeps the TP percent value selected after focus switches to the raw value', async () => {
       renderTpslModalContent();
 
