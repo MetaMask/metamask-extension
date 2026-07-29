@@ -12,7 +12,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  IconColor,
   IconName,
   Text,
   TextColor,
@@ -201,11 +200,6 @@ export const MultichainAddressRow = ({
           size={ButtonIconSize.Md}
           onClick={handleCopyClick}
           ariaLabel={t('copyAddressShort')}
-          iconProps={{
-            color: addressCopied
-              ? IconColor.SuccessDefault
-              : IconColor.IconDefault,
-          }}
           data-testid="multichain-address-row-copy-button"
         />
         {qrActionParams ? (
@@ -214,7 +208,6 @@ export const MultichainAddressRow = ({
             size={ButtonIconSize.Md}
             onClick={handleQrClick}
             ariaLabel="Show QR code"
-            iconProps={{ color: IconColor.IconDefault }}
             data-testid="multichain-address-row-qr-button"
           />
         ) : null}

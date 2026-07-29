@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
 } from '@metamask/design-system-react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -28,7 +27,6 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
@@ -94,7 +92,6 @@ describe('AccountDetailsRow', () => {
       const arrowButton = (
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="View details"
           data-testid="arrow-button"
@@ -118,7 +115,6 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"

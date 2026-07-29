@@ -3,7 +3,6 @@ import { StoryFn, Meta } from '@storybook/react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
 } from '@metamask/design-system-react';
 import { AccountDetailsRow } from './account-details-row';
@@ -60,7 +59,6 @@ WithEditButton.args = {
   endAccessory: (
     <ButtonIcon
       iconName={IconName.Edit}
-      color={IconColor.IconAlternative}
       size={ButtonIconSize.Md}
       ariaLabel="Edit account name"
       className="ml-2"
@@ -75,7 +73,6 @@ WithArrowButton.args = {
   endAccessory: (
     <ButtonIcon
       iconName={IconName.ArrowRight}
-      color={IconColor.IconAlternative}
       size={ButtonIconSize.Md}
       ariaLabel="View details"
       className="ml-2"
@@ -91,7 +88,6 @@ export const MultipleRows: StoryFn<typeof AccountDetailsRow> = () => (
       endAccessory={
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="Edit account name"
           className="ml-2"
@@ -109,7 +105,6 @@ export const MultipleRows: StoryFn<typeof AccountDetailsRow> = () => (
       endAccessory={
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="View QR code"
           className="ml-2"

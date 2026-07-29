@@ -5,7 +5,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
 } from '@metamask/design-system-react';
 
@@ -64,7 +63,6 @@ export const AccountShowPrivateKeyRow = ({
           <ButtonIcon
             iconName={IconName.ArrowRight}
             ariaLabel={t('next')}
-            color={IconColor.IconAlternative}
             size={ButtonIconSize.Md}
           />
         }

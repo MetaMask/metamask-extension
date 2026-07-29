@@ -7,11 +7,10 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
-  Icon,
-  IconColor,
   IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -84,10 +83,10 @@ export const MultichainSrpBackup = ({
               ? t('accountDetailsSrpBackUpMessage')
               : t('srpListStateBackedUp')}
           </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
+          <ButtonIcon
+            iconName={IconName.ArrowRight}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('secretRecoveryPhrase')}
           />
         </Box>
       </Box>

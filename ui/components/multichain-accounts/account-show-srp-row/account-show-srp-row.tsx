@@ -9,7 +9,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  IconColor,
   IconName,
   Text,
   TextColor,
@@ -64,7 +63,6 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
             <ButtonIcon
               iconName={IconName.ArrowRight}
               ariaLabel={t('next')}
-              iconProps={{ color: IconColor.IconAlternative }}
               size={ButtonIconSize.Md}
             />
           </Box>
