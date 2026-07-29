@@ -46,7 +46,7 @@ const renderHookConsumer = ({
           .build(),
       );
       onTrack?.(trackEventPromise);
-    }, [createEventBuilder, trackEvent]);
+    }, [createEventBuilder, trackEvent, eventName, onTrack]);
 
     return null;
   };
