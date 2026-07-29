@@ -47,7 +47,7 @@ export function SurveyToast() {
   );
 
   useEffect(() => {
-    console.log('[SurveyToast] effect ran, basicFunctionality=', basicFunctionality, 'analyticsId=', analyticsId, 'isMetaMetricsEnabled=', isMetaMetricsEnabled);
+    console.log('[SurveyToast] effect', { basicFunctionality, analyticsId, isMetaMetricsEnabled });
     if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
       return undefined;
     }
@@ -56,9 +56,8 @@ export function SurveyToast() {
     // createRoot hydration collapse into a single network request.  The
     // cleanup cancels any pending timer, so only the last stable dep state
     // actually fires a request.
-    console.log('[SurveyToast] scheduling fetch, analyticsId=', analyticsId, 'url=', surveyUrl);
     const timeoutId = setTimeout(() => {
-      console.log('[SurveyToast] timer fired, starting fetch to', surveyUrl);
+      console.log('[SurveyToast] fetching', surveyUrl);
       fetchWithCache({
         url: surveyUrl,
         fetchOptions: {
@@ -71,7 +70,7 @@ export function SurveyToast() {
         cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
       })
         .then((response) => {
-          console.log('[SurveyToast] fetch response:', JSON.stringify(response));
+          console.log('[SurveyToast] response', JSON.stringify(response));
           const _survey: Survey = response?.surveys;
 
           if (
@@ -79,20 +78,20 @@ export function SurveyToast() {
             Object.keys(_survey).length === 0 ||
             _survey.id <= lastViewedUserSurvey
           ) {
-            console.log('[SurveyToast] survey filtered out, _survey=', JSON.stringify(_survey), 'lastViewed=', lastViewedUserSurvey);
+            console.log('[SurveyToast] filtered out', { _survey, lastViewedUserSurvey });
             return;
           }
 
-          console.log('[SurveyToast] calling setSurvey with', JSON.stringify(_survey));
+          console.log('[SurveyToast] setSurvey', _survey.id);
           setSurvey(_survey);
         })
         .catch((error: unknown) => {
-          console.error('[SurveyToast] Failed to fetch survey:', analyticsId, error);
+          console.error('[SurveyToast] fetch failed:', error);
         });
     }, 0);
 
     return () => {
-      console.log('[SurveyToast] cleanup - cancelling timer', timeoutId);
+      console.log('[SurveyToast] cleanup – cancelling timer');
       clearTimeout(timeoutId);
     };
   }, [
