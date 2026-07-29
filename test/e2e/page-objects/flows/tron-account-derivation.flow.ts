@@ -7,6 +7,16 @@ import {
 import HomePage from '../pages/home/homepage';
 import AccountListPage from '../pages/account-list-page';
 
+type WaitUntilAccountTreeSyncIdleOptions = {
+  /**
+   * When true, first wait for `isAccountTreeSyncingInProgress === true` before
+   * waiting for it to become false. Use after actions that trigger a new sync
+   * (e.g. network selection or onboarding) to avoid racing past a sync that
+   * has not started yet.
+   */
+  waitForSyncToStart?: boolean;
+};
+
 /**
  * Waits until the AccountTreeController's `isAccountTreeSyncingInProgress`
  * flag is false.  This is more reliable than
@@ -15,10 +25,26 @@ import AccountListPage from '../pages/account-list-page';
  * never reset to false once it becomes true.
  *
  * @param driver - The WebDriver instance.
+ * @param options - Optional wait behavior.
+ * @param options.waitForSyncToStart - When true, wait for sync to start first.
  */
 export async function waitUntilAccountTreeSyncIdle(
   driver: Driver,
+  { waitForSyncToStart = false }: WaitUntilAccountTreeSyncIdleOptions = {},
 ): Promise<void> {
+  if (waitForSyncToStart) {
+    await driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(driver);
+        return uiState?.metamask?.isAccountTreeSyncingInProgress === true;
+      },
+      {
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+      },
+    );
+  }
+
   await driver.waitUntil(
     async () => {
       const uiState = await getCleanAppState(driver);

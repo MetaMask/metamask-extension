@@ -134,7 +134,9 @@ describe('Tron account derivation', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         const addressList = new AddressListModal(driver);
 
-        await waitUntilAccountTreeSyncIdle(driver);
+        await waitUntilAccountTreeSyncIdle(driver, {
+          waitForSyncToStart: true,
+        });
         await homepage.headerNavbar.openAccountMenu();
         await accountList.checkPageIsLoaded();
 
@@ -180,7 +182,9 @@ describe('Tron account derivation', function (this: Suite) {
         await addNHdAccountsForTronDerivation(driver, 8);
 
         await selectTronNetwork(driver);
-        await waitUntilAccountTreeSyncIdle(driver);
+        await waitUntilAccountTreeSyncIdle(driver, {
+          waitForSyncToStart: true,
+        });
 
         await assertTronAddressesForAccounts(driver, 8);
       },
@@ -197,7 +201,9 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
-        await waitUntilAccountTreeSyncIdle(driver);
+        await waitUntilAccountTreeSyncIdle(driver, {
+          waitForSyncToStart: true,
+        });
 
         await assertTronAddressesForAccounts(driver, 5, {
           absentAccountLabel: 'Account 6',
