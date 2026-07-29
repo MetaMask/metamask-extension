@@ -171,14 +171,29 @@ jobs:
         if: >-
           ${{
             steps.classify.outputs.will-retry == 'true'
-            && (
-              env.WORKFLOW_EVENT != 'merge_group'
-              || steps.verify-queue-entry.outputs.state == 'current'
-            )
+            && (env.WORKFLOW_EVENT != 'merge_group'
+              || steps.verify-queue-entry.outputs.state == 'current')
           }}
         run: |
           PR="${{ steps.classify.outputs.pr-number }}"
           CONSUME_RETRY_LABEL="${{ steps.classify.outputs.consume-retry-label }}"
+
+          # A pushed commit can supersede this failed PR run before triage
+          # starts. Rerunning the old run would reuse its concurrency group and
+          # can cancel the current commit's CI, so only retry an exact head.
+          if [[ "$WORKFLOW_EVENT" == 'pull_request' ]]; then
+            if ! CURRENT_HEAD=$(gh api "repos/$REPO/pulls/$PR" --jq '.head.sha' 2>/dev/null); then
+              echo "::warning::Could not verify PR #$PR head — skipping retry"
+              exit 0
+            fi
+
+            if [[ "$CURRENT_HEAD" != "$HEAD_SHA" ]]; then
+              echo "PR #$PR advanced from $HEAD_SHA to $CURRENT_HEAD — skipping stale retry"
+              exit 0
+            fi
+
+            echo "PR #$PR head still matches failed run $HEAD_SHA"
+          fi
 
           echo "Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
