@@ -79,8 +79,11 @@ import {
 } from '../../shared/constants/defi-referrals';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
+import {
+  FakeTrezorBridge,
+  KNOWN_PUBLIC_KEY_ADDRESSES,
+} from '../../test/stub/keyring-bridge';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
 import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -2354,6 +2357,30 @@ describe('MetaMaskController', () => {
             getFirstPageSpy.mockRestore();
             setTimeoutSpy.mockRestore();
           }
+        });
+      });
+
+      describe('cancelHardwareConnect', () => {
+        it('cancels an in-flight connect via the active Trezor bridge', async () => {
+          const cancelSpy = jest.spyOn(FakeTrezorBridge.prototype, 'cancel');
+
+          await metamaskController.cancelHardwareConnect(
+            HardwareDeviceNames.trezor,
+          );
+
+          expect(cancelSpy).toHaveBeenCalledTimes(1);
+          cancelSpy.mockRestore();
+        });
+
+        it('is a no-op for non-Trezor devices', async () => {
+          const cancelSpy = jest.spyOn(FakeTrezorBridge.prototype, 'cancel');
+
+          await metamaskController.cancelHardwareConnect(
+            HardwareDeviceNames.ledger,
+          );
+
+          expect(cancelSpy).not.toHaveBeenCalled();
+          cancelSpy.mockRestore();
         });
       });
 

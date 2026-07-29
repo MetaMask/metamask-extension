@@ -10,7 +10,15 @@ import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-ke
 import LatticeKeyring from 'eth-lattice-keyring';
 import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
-import { getKeyringV2Builders } from './keyrings';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
+import {
+  cancelHardwareConnect,
+  getKeyringBuilders,
+  getKeyringV2Builders,
+} from './keyrings';
+
+const mockTrezorOffscreenCancel = jest.fn().mockResolvedValue(undefined);
+const mockTrezorMv2Cancel = jest.fn().mockResolvedValue(undefined);
 
 // The V2 wrappers have their own tests; here we only verify that
 // `getKeyringV2Builders` wires each one up correctly, so stub them out.
@@ -25,6 +33,27 @@ jest.mock('@metamask/eth-ledger-bridge-keyring/v2', () => ({
 jest.mock('../lib/offscreen-bridge/lattice-keyring-v2', () => ({
   LatticeKeyringV2: jest.fn(),
 }));
+
+// `getKeyringBuilders` instantiates a Trezor bridge for cancellation and wires
+// up the snap keyring + an internal messenger. Stub these so the test can focus
+// on the cancel routing without real transports or messengers.
+jest.mock('../lib/offscreen-bridge/trezor-offscreen-bridge', () => ({
+  TrezorOffscreenBridge: jest
+    .fn()
+    .mockImplementation(() => ({ cancel: mockTrezorOffscreenCancel })),
+}));
+jest.mock('../lib/offscreen-bridge/trezor-mv2-bridge', () => ({
+  TrezorMv2Bridge: jest
+    .fn()
+    .mockImplementation(() => ({ cancel: mockTrezorMv2Cancel })),
+}));
+jest.mock('../lib/snap-keyring', () => ({
+  snapKeyringBuilder: jest.fn(() => ({ type: 'Snap Keyring' })),
+}));
+jest.mock('@metamask/messenger', () => ({
+  Messenger: jest.fn().mockImplementation(() => ({ delegate: jest.fn() })),
+}));
+jest.mock('../../../shared/lib/mv3.utils', () => ({ isManifestV3: true }));
 
 describe('getKeyringV2Builders', () => {
   beforeEach(() => {
@@ -69,5 +98,50 @@ describe('getKeyringV2Builders', () => {
     expect(QrKeyringV2).toHaveBeenCalledWith(expectedArgs);
     expect(TrezorKeyringV2).toHaveBeenCalledWith(expectedArgs);
     expect(OneKeyKeyringV2).toHaveBeenCalledWith(expectedArgs);
+  });
+});
+
+describe('cancelHardwareConnect', () => {
+  const originalInTest = process.env.IN_TEST;
+
+  const buildBuilders = () =>
+    getKeyringBuilders({
+      delegate: jest.fn(),
+      call: jest.fn(),
+    } as unknown as Parameters<typeof getKeyringBuilders>[0]);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // `getKeyringBuilders` swaps in fake bridges when `IN_TEST` is set; clear it
+    // so the (mocked) real Trezor bridge is used and its cancel can be asserted.
+    delete process.env.IN_TEST;
+  });
+
+  afterAll(() => {
+    process.env.IN_TEST = originalInTest;
+  });
+
+  it('cancels an in-flight Trezor connect via the active bridge', async () => {
+    buildBuilders();
+
+    await cancelHardwareConnect(HardwareDeviceNames.trezor);
+
+    expect(mockTrezorOffscreenCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancels an in-flight OneKey connect via the active bridge', async () => {
+    buildBuilders();
+
+    await cancelHardwareConnect(HardwareDeviceNames.oneKey);
+
+    expect(mockTrezorOffscreenCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not cancel for non-Trezor devices', async () => {
+    buildBuilders();
+
+    await cancelHardwareConnect(HardwareDeviceNames.ledger);
+
+    expect(mockTrezorOffscreenCancel).not.toHaveBeenCalled();
   });
 });

@@ -109,6 +109,10 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
     return Promise.resolve();
   }
 
+  async cancel() {
+    return Promise.resolve();
+  }
+
   async ethereumSignMessage(params) {
     const { message } = params;
     const signature = personalSign({

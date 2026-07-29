@@ -124,6 +124,17 @@ export default function init() {
 
           break;
 
+        case TrezorAction.cancel:
+          // Cancels any in-flight Trezor Connect call (e.g. a getPublicKey that
+          // is hanging while the device is locked). This settles the pending
+          // promise so the keyring operation that holds the KeyringController
+          // mutex can unwind and release it.
+          TrezorConnectSDK.cancel();
+
+          sendResponse();
+
+          break;
+
         default:
           sendResponse({
             success: false,

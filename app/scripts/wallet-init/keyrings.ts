@@ -17,6 +17,7 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
@@ -111,6 +112,48 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
 }
 
 /**
+ * A hardware-keyring bridge that can cancel an in-flight connect request.
+ */
+type CancellableBridge = { cancel: () => Promise<void> };
+
+/**
+ * Reference to the active Trezor bridge so the connect flow can be cancelled
+ * without acquiring the `KeyringController` operation mutex. The Trezor (and
+ * OneKey) keyrings share a single Trezor Connect singleton, so cancelling
+ * through any bridge instance settles whatever call is currently pending.
+ */
+let activeTrezorBridge: CancellableBridge | undefined;
+
+/**
+ * Cancel any in-flight hardware-wallet connect request.
+ *
+ * When a user starts adding a Trezor (or OneKey) and leaves the device locked,
+ * the underlying `getPublicKey`/`getFirstPage` call can hang forever. That call
+ * runs inside `KeyringController.withKeyringV2`, so it holds the global
+ * controller operation mutex and blocks Backup & Sync, leaving the account list
+ * stuck on "Syncing...". This cancels the pending Trezor Connect call directly
+ * (without going through `withKeyringV2`, which would deadlock on the same held
+ * mutex), letting the keyring call unwind and release the mutex.
+ *
+ * Only Trezor and OneKey use a cancellable bridge; other devices are no-ops.
+ *
+ * @param deviceName - The hardware device being connected, if known.
+ */
+export async function cancelHardwareConnect(
+  deviceName?: string,
+): Promise<void> {
+  if (
+    deviceName &&
+    deviceName !== HardwareDeviceNames.trezor &&
+    deviceName !== HardwareDeviceNames.oneKey
+  ) {
+    return;
+  }
+
+  await activeTrezorBridge?.cancel();
+}
+
+/**
  * Build the list of keyring builders for the hardware wallets.
  *
  * @param messenger - The root messenger.
@@ -145,6 +188,15 @@ export function getKeyringBuilders(
       },
     ),
   ];
+
+  // Keep a reference to a Trezor bridge so an in-flight connect can be cancelled
+  // out-of-band (see `cancelHardwareConnect`). The bridge forwards to the Trezor
+  // Connect singleton, so this dedicated instance can cancel a request issued by
+  // any Trezor/OneKey keyring.
+  const TrezorBridge =
+    overrides?.trezorBridge ||
+    (isManifestV3 === false ? TrezorMv2Bridge : TrezorOffscreenBridge);
+  activeTrezorBridge = new TrezorBridge() as unknown as CancellableBridge;
 
   if (isManifestV3 === false) {
     keyrings.push(
