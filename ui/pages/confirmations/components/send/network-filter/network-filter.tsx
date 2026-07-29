@@ -2,6 +2,7 @@ import React, { useCallback, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -13,7 +14,6 @@ import {
   ModalHeader,
   ModalBody,
 } from '@metamask/design-system-react';
-import { AvatarNetworkSize } from '../../../../../components/component-library';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
