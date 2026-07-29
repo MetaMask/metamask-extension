@@ -273,7 +273,11 @@ export const NetworkFilter = ({
               <NetworkListItem
                 name={t('allNetworks')}
                 iconSrc={IconName.Global}
-                iconSize={AvatarNetworkSize.Xl}
+                iconSize={
+                  AvatarNetworkSize.Xl as unknown as React.ComponentProps<
+                    typeof NetworkListItem
+                  >['iconSize']
+                }
                 selected={selectedChainId === null}
                 onClick={() => handleNetworkSelection(null)}
                 focus={false}
