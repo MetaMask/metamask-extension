@@ -60,10 +60,13 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   // Tie the error to the group that failed so a stale failure cannot suppress
   // loading (or flash the error UI / bounce details home) on the first render
   // after switching to a different group with no cached rows.
+  // `null` means "no failure recorded" — never treat that as an error, even when
+  // `selectedAccountGroup` is also still null on cold start (`null === null`).
   const [failedAccountGroup, setFailedAccountGroup] = useState<
     typeof selectedAccountGroup | null
   >(null);
-  const isError = failedAccountGroup === selectedAccountGroup;
+  const isError =
+    failedAccountGroup !== null && failedAccountGroup === selectedAccountGroup;
 
   useEffect(() => {
     let cancelled = false;

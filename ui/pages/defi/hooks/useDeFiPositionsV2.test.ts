@@ -7,7 +7,7 @@ jest.mock('./useFetchDeFiPositions', () => ({
   useFetchDeFiPositions: () => mockFetchDeFiPositions,
 }));
 
-let mockSelectedAccountGroup = 'entropy:1/0';
+let mockSelectedAccountGroup: string | null = 'entropy:1/0';
 let mockGroupAccounts: { id: string }[] = [{ id: 'account-1' }];
 let mockPositionsByAccount: Record<string, unknown> = {};
 
@@ -104,6 +104,22 @@ describe('useDeFiPositionsV2', () => {
 
     expect(result.current.isError).toBe(true);
     expect(result.current.isLoading).toBe(false);
+  });
+
+  it('does not report isError when the selected account group is still null', () => {
+    mockSelectedAccountGroup = null;
+    mockGroupAccounts = [];
+    mockFetchDeFiPositions.mockImplementation(
+      () =>
+        new Promise<void>(() => {
+          // Leave pending so we stay on the cold-start path.
+        }),
+    );
+
+    const { result } = renderHook(() => useDeFiPositionsV2());
+
+    expect(result.current.isError).toBe(false);
+    expect(result.current.isLoading).toBe(true);
   });
 
   it('shows loading for a new account group after a prior fetch failure', async () => {
