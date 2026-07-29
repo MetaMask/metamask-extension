@@ -14,6 +14,7 @@ const QUOTE_DEBOUNCE_MS = 500;
 const mockNavigate = jest.fn();
 const mockGetBuyWidgetData = jest.fn();
 const mockAddPrecreatedOrder = jest.fn();
+const mockRemoveOrder = jest.fn();
 const mockOpenTab = jest.fn();
 const mockWatchRampsCheckoutTab = jest.fn();
 const mockShowBuyTabOpenedToast = jest.fn();
@@ -128,6 +129,7 @@ const mockControllerState = ({
   paymentMethodsStatus: 'success',
   getBuyWidgetData: mockGetBuyWidgetData,
   addPrecreatedOrder: mockAddPrecreatedOrder,
+  removeOrder: mockRemoveOrder,
 });
 
 describe('RampsBuildQuoteScreen', () => {
@@ -384,6 +386,34 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
       messages.rampsBuyWidgetError.message,
     );
+  });
+
+  it('cleans up precreated data when the opened tab has no id', async () => {
+    const precreatedOrderId = 'providers/transak/orders/order-no-tab-id';
+    const precreatedOrderCode = 'order-no-tab-id';
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: precreatedOrderId,
+    });
+    mockOpenTab.mockResolvedValue({});
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockAddPrecreatedOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: precreatedOrderId,
+      }),
+    );
+    expect(mockRemoveOrder).toHaveBeenCalledWith(precreatedOrderId);
+    expect(getPendingOrderPreview(precreatedOrderCode)).toBeUndefined();
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {

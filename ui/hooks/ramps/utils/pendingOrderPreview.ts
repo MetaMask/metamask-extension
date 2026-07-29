@@ -27,3 +27,7 @@ export function getPendingOrderPreview(
 ): PendingOrderPreview | undefined {
   return previews.get(orderCode);
 }
+
+export function removePendingOrderPreview(orderCode: string): void {
+  previews.delete(orderCode);
+}

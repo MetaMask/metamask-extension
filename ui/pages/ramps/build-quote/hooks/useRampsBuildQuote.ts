@@ -19,7 +19,10 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
-import { setPendingOrderPreview } from '../../../../hooks/ramps/utils/pendingOrderPreview';
+import {
+  removePendingOrderPreview,
+  setPendingOrderPreview,
+} from '../../../../hooks/ramps/utils/pendingOrderPreview';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -78,6 +81,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     paymentMethodsStatus,
     getBuyWidgetData,
     addPrecreatedOrder,
+    removeOrder,
   } = useRampsController();
 
   const intentAssetId = (location.state as BuildQuoteLocationState | null)
@@ -195,6 +199,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     }
     setContinueError(null);
     setIsContinuing(true);
+    let seededOrderId: string | undefined;
+    let seededOrderCode: string | undefined;
+    let checkoutWatchStarted = false;
     try {
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
@@ -231,12 +238,23 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           walletAddress,
           chainId: selectedToken?.chainId,
         });
+        seededOrderId = widget.orderId;
+        seededOrderCode = orderCode;
       }
+
+      const cleanupSeededOrder = async () => {
+        if (!seededOrderId || !seededOrderCode) {
+          return;
+        }
+        removePendingOrderPreview(seededOrderCode);
+        await removeOrder(seededOrderId);
+      };
 
       const openedTab = await global.platform.openTab({ url: widget.url });
       if (openedTab.id === undefined) {
         // Without a tab id the background watcher cannot detect the callback
         // redirect, so the order would never resolve.
+        await cleanupSeededOrder();
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
@@ -248,6 +266,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         orderAlreadyPrecreated,
         orderCode,
       });
+      checkoutWatchStarted = true;
 
       navigate(DEFAULT_ROUTE);
       showBuyTabOpenedToast(
@@ -255,6 +274,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         t('buyTabOpenedToastDescription'),
       );
     } catch (error) {
+      if (seededOrderId && seededOrderCode && !checkoutWatchStarted) {
+        removePendingOrderPreview(seededOrderCode);
+        try {
+          await removeOrder(seededOrderId);
+        } catch {
+          // Best effort cleanup only.
+        }
+      }
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
     } finally {
       setIsContinuing(false);
@@ -267,6 +294,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
+    removeOrder,
     selectedProvider?.id,
     selectedQuote,
     selectedToken,
