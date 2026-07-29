@@ -183,7 +183,7 @@ export default function RecoveryPhrase({
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
       gap={6}
-      className="recovery-phrase h-full"
+      className="recovery-phrase h-full bg-default"
       data-testid="recovery-phrase"
     >
       <Box>

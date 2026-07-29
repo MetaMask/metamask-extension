@@ -22,11 +22,16 @@
     min-height: 627px;
     height: auto;
     margin-bottom: 32px;
+    background-color: var(--color-background-muted);
 
     @include design-system.screen-sm-min {
       padding-inline: 24px;
       padding-top: 32px;
       padding-bottom: 32px;
+    }
+
+    &--srp {
+      background-color: var(--color-background-default);
     }
 
     &--full {

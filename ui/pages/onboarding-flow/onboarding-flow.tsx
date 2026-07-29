@@ -382,6 +382,15 @@ export default function OnboardingFlow() {
     pathname === ONBOARDING_UNLOCK_ROUTE ||
     (isFlask() && pathname === ONBOARDING_EXPERIMENTAL_AREA);
 
+  const isSrpBackupRoute =
+    pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
+    pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE);
+
+  const isTransparentContainer =
+    pathname === ONBOARDING_WELCOME_ROUTE ||
+    pathname === ONBOARDING_UNLOCK_ROUTE ||
+    isPopup;
+
   const backgroundColorForWelcomePage = useMemo(() => {
     if (isWelcomePage) {
       return theme === ThemeType.light
@@ -419,6 +428,7 @@ export default function OnboardingFlow() {
             'onboarding-flow__container--full': isFullPage,
             'onboarding-flow__container--popup': isPopup,
             'onboarding-flow__container--sidepanel': isSidepanel,
+            'onboarding-flow__container--srp': isSrpBackupRoute,
           },
         )}
         marginTop={
@@ -428,12 +438,7 @@ export default function OnboardingFlow() {
         }
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         style={{
-          backgroundColor:
-            [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(
-              pathname,
-            ) || isPopup
-              ? 'transparent'
-              : 'var(--color-background-muted)',
+          backgroundColor: isTransparentContainer ? 'transparent' : undefined,
         }}
       >
         <ErrorBoundary>
