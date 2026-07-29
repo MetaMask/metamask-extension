@@ -1597,12 +1597,15 @@ describe('PerpsOrderEntryPage', () => {
       });
       // These three moved here when the client trade event was removed: the
       // controller's TrackingData has no slippage fields. Coverage is partial by
-      // construction — see the note in report.md.
+      // construction — see the note in report.md. Exact values, not shapes: the
+      // mocks fix maxSlippageBps at 300 and estimatedSlippageBps at 50, so a
+      // regression in the bps->pct conversion or the source mapping fails here.
       expect(consideredCalls()[0][0].properties).toEqual(
         expect.objectContaining({
-          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: expect.any(Number),
+          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: 3,
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
             PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+          [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]: 0.5,
         }),
       );
     });
