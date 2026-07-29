@@ -56,3 +56,11 @@ declare module 'selenium-webdriver' {
     createCDPConnection(target: string): Promise<CdpConnection>;
   }
 }
+
+// This file must be a module (not a script) so the `declare module
+// 'selenium-webdriver'` block above is treated as an *augmentation* of the
+// upstream `@types/selenium-webdriver` module rather than a full replacement.
+// Without this, all real exports (`Browser`, `Key`, `By`, `WebElement`,
+// `until`, `ThenableWebDriver`, ...) disappear from `selenium-webdriver` at
+// type-check time.
+export {};
