@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
@@ -46,12 +46,23 @@ export function SurveyToast() {
     [analyticsId],
   );
 
+  // Tracks in-flight fetch promise to prevent concurrent requests.
+  // createRoot can re-run effects mid-hydration when deps transition
+  // transiently; without this guard the AbortController would cancel the
+  // first fetch while the mock (or real server) has already received it,
+  // leaving the second attempt with nothing to match.
+  const fetchInFlightRef = useRef<Promise<void> | null>(null);
+
   useEffect(() => {
     if (!basicFunctionality || !analyticsId || !isMetaMetricsEnabled) {
       return undefined;
     }
 
-    const controller = new AbortController();
+    // If a fetch is already in flight (e.g. a transient dep re-run), let it
+    // finish rather than firing a duplicate request.
+    if (fetchInFlightRef.current) {
+      return undefined;
+    }
 
     const fetchSurvey = async () => {
       try {
@@ -62,7 +73,6 @@ export function SurveyToast() {
             headers: {
               'x-metamask-clientproduct': 'metamask-extension',
             },
-            signal: controller.signal,
           },
           functionName: 'fetchSurveys',
           cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
@@ -80,22 +90,21 @@ export function SurveyToast() {
 
         setSurvey(_survey);
       } catch (error: unknown) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Failed to fetch survey:', analyticsId, error);
-        }
+        console.error('Failed to fetch survey:', analyticsId, error);
+      } finally {
+        fetchInFlightRef.current = null;
       }
     };
 
-    fetchSurvey();
+    fetchInFlightRef.current = fetchSurvey();
 
-    return () => {
-      controller.abort();
-    };
+    return undefined;
   }, [
     lastViewedUserSurvey,
     basicFunctionality,
     analyticsId,
     isMetaMetricsEnabled,
+    surveyUrl,
   ]);
 
   function handleActionClick() {
