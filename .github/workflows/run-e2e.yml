@@ -139,11 +139,32 @@ jobs:
       - name: Pin geckodriver 0.36.0 (Firefox only)
         if: ${{ contains(inputs.test-command, 'firefox') }}
         run: |
+          set -euo pipefail
           GECKO_VERSION=0.36.0
           GECKO_DIR="$RUNNER_TEMP/geckodriver-${GECKO_VERSION}"
+          GECKO_TARBALL="$GECKO_DIR/geckodriver.tar.gz"
+          GECKO_URL="https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VERSION}/geckodriver-v${GECKO_VERSION}-linux64.tar.gz"
           mkdir -p "$GECKO_DIR"
-          curl -fsSL "https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VERSION}/geckodriver-v${GECKO_VERSION}-linux64.tar.gz" \
-            | tar -xz -C "$GECKO_DIR"
+
+          # The GitHub release CDN intermittently 500s. Download to a file (not a
+          # pipe, so a partial download can't corrupt extraction) and retry the
+          # whole download+extract a few times before giving up.
+          for attempt in 1 2 3 4 5; do
+            echo "geckodriver download attempt ${attempt}..."
+            if curl -fSL --retry 5 --retry-delay 3 --retry-all-errors \
+              -o "$GECKO_TARBALL" "$GECKO_URL" \
+              && tar -xzf "$GECKO_TARBALL" -C "$GECKO_DIR"; then
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              echo "Failed to download geckodriver ${GECKO_VERSION} after ${attempt} attempts" >&2
+              exit 1
+            fi
+            echo "Attempt ${attempt} failed; retrying in $((attempt * 5))s..." >&2
+            rm -f "$GECKO_TARBALL"
+            sleep "$((attempt * 5))"
+          done
+
           chmod +x "$GECKO_DIR/geckodriver"
           echo "GECKODRIVER_PATH=$GECKO_DIR/geckodriver" >> "$GITHUB_ENV"
           "$GECKO_DIR/geckodriver" --version
