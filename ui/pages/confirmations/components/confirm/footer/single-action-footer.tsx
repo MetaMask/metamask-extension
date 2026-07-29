@@ -98,9 +98,9 @@ export const SingleActionFooter = ({
       <Button
         className="w-full"
         data-testid="confirm-footer-button"
-        disabled={isDisabled}
+        disabled={isDisabled || isLoading}
         isLoading={isLoading}
-        onClick={isLoading ? undefined : onSubmit}
+        onClick={onSubmit}
         size={ButtonSize.Lg}
       >
         {buttonText}
