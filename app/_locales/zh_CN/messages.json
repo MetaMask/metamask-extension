@@ -376,21 +376,12 @@
     "message": "已兑换为 $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "存款失败"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "正在存入 $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "已存入 $1",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "添加钱包"
   },
+  "add_device_error_connection": {
+    "message": "无法与您的手机保持安全连接。请检查网络连接后重试。"
+  },
+  "add_device_error_expired": {
+    "message": "此同步会话已过期。请重新开始以生成新的二维码。"
+  },
+  "add_device_error_generic": {
+    "message": "与您的手机同步时出现问题。请重试。"
+  },
+  "add_device_error_invalid_code": {
+    "message": "验证码有误。请重新开始以同步您的手机。"
+  },
+  "add_device_error_rejected": {
+    "message": "同步已在您的手机上取消。请重新开始以尝试同步。"
+  },
+  "add_device_error_sync_failed": {
+    "message": "无法将您的账户完整同步至手机。请重试。"
+  },
+  "add_device_error_title": {
+    "message": "同步未能完成"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "已将 $1 个导入账户同步到您的手机。",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "您正在与一个未知地址交互。这有助于防止恶意交易。"
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "含 $1 额外保护费用",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "可选"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "兑换页面"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "跟单交易页面"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "交易防护页面"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "$1 秒后过期",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "错误次数过多。请使用新的二维码重新开始。"
   },
   "enter_your_password": {
     "message": "输入您的密码"
@@ -4216,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "已连接的硬件钱包"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "设备响应时间过长或连接已超时。请确保您的设备已连接并已解锁，然后重试。"
   },
   "hardwareWalletErrorContinueButton": {
     "message": "继续"
@@ -5640,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "此账户不支持此功能。"
+  },
   "networkOptions": {
     "message": "网络选项"
   },
@@ -6903,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "平仓金额"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "价格与市场价格的偏差不能超过 95%"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "请输入有效的限价以继续。"
+  },
   "perpsCloseLong": {
     "message": "平仓多头仓位"
   },
@@ -6911,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "平仓"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "暂时无法获取当前价格，请稍后重试。"
   },
   "perpsCloseShort": {
     "message": "平仓空头仓位"
@@ -7441,6 +7478,10 @@
     "message": "您的盈亏为 $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "平仓订单提交失败",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "向 $2 仓位添加了 $1 保证金",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7488,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "仓位已部分平仓",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "部分平仓订单提交失败",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "您的仓位仍有效",
@@ -8054,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "总成本：$1"
   },
+  "rampsBestRate": {
+    "message": "最优价格"
+  },
+  "rampsBuyToken": {
+    "message": "购买 $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "正在通过$1购买。",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "更换提供商。"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "请重试；如果问题持续出现，请联系客服。"
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "无法验证您所在的地区"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "加载支付方式时出错"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "加载代币时出错"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "最高购买金额为 $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "最低购买金额为 $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "最可靠"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "无可用支付方式。"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "没有可用的提供商。"
+  },
   "rampsNoTokensAvailable": {
     "message": "无可用代币"
+  },
+  "rampsOnNetwork": {
+    "message": "在 $1 上",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "其他选项"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "工作日"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "工作日"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "小时"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "小时"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "即时"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "少于"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "分钟"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "分钟"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "最高 $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "最低 $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "先前使用的"
+  },
+  "rampsProviders": {
+    "message": "提供商"
+  },
+  "rampsQuoteFetchError": {
+    "message": "获取报价失败。"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "报价不可用。"
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "显示 $1 的报价。",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "选择付款方式"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "服务目前中断，请稍后重试。"
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "购买功能暂时不可用"
+  },
+  "rampsShowAllTokens": {
+    "message": "显示所有代币"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "您所在的地区暂不支持购买加密货币。"
+  },
+  "rampsUnsupportedTitle": {
+    "message": "此地区暂不支持购买"
   },
   "rank": {
     "message": "排名"
@@ -10667,6 +10832,9 @@
   },
   "tokenDecimal": {
     "message": "代币小数位"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "请输入 0 到 36 之间的整数。"
   },
   "tokenDetails": {
     "message": "代币详情"
