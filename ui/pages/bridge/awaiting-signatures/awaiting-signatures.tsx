@@ -34,8 +34,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNavigateOnQrScanComplete } from '../hooks/useNavigateOnQrScanComplete';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);

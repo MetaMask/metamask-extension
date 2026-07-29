@@ -9,7 +9,6 @@ import {
 } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import { getRegistryBooleanFlag } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -585,10 +584,6 @@ async function mockFeatureFlags(
   featureFlags: Partial<FeatureFlagResponse>,
   additionalFlags: Record<string, unknown> = {},
 ) {
-  const extensionUxActivityListRedesign =
-    additionalFlags.extensionUxActivityListRedesign ??
-    getRegistryBooleanFlag('extensionUxActivityListRedesign');
-
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -598,7 +593,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],
@@ -1320,7 +1314,7 @@ export const getBridgeFixtures = ({
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
       analyticsId: MOCK_ANALYTICS_ID,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     })
     .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)

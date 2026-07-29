@@ -172,9 +172,6 @@
   "decimal": {
     "message": "የትክክለኛነት አስርዮሽ"
   },
-  "decimalsMustZerotoTen": {
-    "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
-  },
   "delete": {
     "message": "ሰርዝ"
   },
@@ -337,9 +334,6 @@
   "networks": {
     "message": "አውታረ መረቦች"
   },
-  "nevermind": {
-    "message": "ምንም አይደል"
-  },
   "newAccountNumberName": {
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"
@@ -496,9 +490,6 @@
   },
   "sign": {
     "message": "ፈርም"
-  },
-  "signatureRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "signed": {
     "message": "ተፈርሟል"

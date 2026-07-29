@@ -3,12 +3,16 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
+import { useDispatch } from '../../store/hooks';
 import { useHwSwapQrState } from './useHwSwapQrState';
+
+jest.mock('../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/selectors/keyring', () => ({
@@ -36,27 +40,21 @@ jest.mock(
 );
 
 const mockUseSelector = jest.requireMock('react-redux').useSelector;
-const mockUseDispatch = jest.requireMock('react-redux').useDispatch;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+const mockUseAppDispatch = jest.requireMock('../../store/hooks').useDispatch;
 const mockGetHardwareWalletType = jest.requireMock(
   '../../../shared/lib/selectors/keyring',
 ).getHardwareWalletType;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetActiveQrCodeScanRequest =
   jest.requireMock('../../selectors').getActiveQrCodeScanRequest;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockIsQrHardwareSignRequest = jest.requireMock(
   '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
 ).isQrHardwareSignRequest;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCleanupPendingApproval = jest.requireMock(
   '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
 ).cleanupPendingApproval;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCancelQrCodeScan = jest.requireMock(
   '../../store/actions',
 ).cancelQrCodeScan;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCompleteQrCodeScan = jest.requireMock(
   '../../store/actions',
 ).completeQrCodeScan;
@@ -66,7 +64,7 @@ describe('useHwSwapQrState', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockGetHardwareWalletType.mockReturnValue(undefined);
     mockGetActiveQrCodeScanRequest.mockReturnValue(undefined);
     mockIsQrHardwareSignRequest.mockReturnValue(false);

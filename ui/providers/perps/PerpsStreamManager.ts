@@ -56,7 +56,7 @@ const EMPTY_PRICES: PriceUpdate[] = [];
  * Placeholder noop function for channel initialization.
  * Actual connect functions are set when init() is called.
  */
-// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+// eslint-disable-next-line no-empty-function
 const placeholderConnectFn = () => () => {};
 
 /**

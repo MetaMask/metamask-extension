@@ -278,9 +278,6 @@
   "decimal": {
     "message": "小數點位數"
   },
-  "decimalsMustZerotoTen": {
-    "message": "小數點位數至少為 0，至多為 36。"
-  },
   "decrypt": {
     "message": "解密"
   },
@@ -648,9 +645,6 @@
   "networks": {
     "message": "網路"
   },
-  "nevermind": {
-    "message": "算了"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -784,9 +778,6 @@
   "restore": {
     "message": "還原"
   },
-  "retryTransaction": {
-    "message": "重試交易"
-  },
   "reusedTokenNameWarning": {
     "message": "這裡的其中一個代幣重複使用了您關注的另一個代幣的符號，這可能會造成混淆甚至讓您被誤導。"
   },
@@ -859,9 +850,6 @@
   },
   "sign": {
     "message": "簽署"
-  },
-  "signatureRequest": {
-    "message": "請求簽署"
   },
   "signed": {
     "message": "已簽署"

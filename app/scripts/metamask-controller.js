@@ -11,7 +11,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, uniq } from 'lodash';
+import { debounce, merge, uniq } from 'lodash';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
@@ -124,6 +124,7 @@ import {
   RecoveryError,
   EncAccountDataType,
   SeedlessOnboardingMigrationVersion,
+  InvalidPrimarySecretDataTypeError,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -151,6 +152,10 @@ import {
   KEYRING_DEVICE_PROPERTY_MAP,
   LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -239,6 +244,7 @@ import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-fla
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
+import { restrictKeyringForDeviceRead } from './lib/hardware-device-read-keyring';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -374,6 +380,7 @@ import { AuthenticationControllerInit } from './messenger-client-init/identity/a
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
@@ -438,8 +445,10 @@ import { UserOperationControllerInit } from './messenger-client-init/confirmatio
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { PasskeyControllerInit } from './messenger-client-init/passkey-controller-init';
-import { QrSyncControllerInit } from './messenger-client-init/qr-sync-controller-init';
-import { QrSyncDataServiceInit } from './messenger-client-init/qr-sync-data-service-init';
+import {
+  QrSyncControllerInit,
+  QrSyncDataServiceInit,
+} from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
@@ -496,6 +505,15 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
  * Wallet lock bypasses this grace — see {@link MetamaskController._onLock}.
  */
 const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
+
+/**
+ * Upper bound (ms) on lock-free hardware device reads (address paging,
+ * status/feature probes). Device reads may legitimately wait on user
+ * interaction (PIN or passphrase entry), so the bound is generous; it exists
+ * to fail abandoned requests with an actionable error instead of leaving the
+ * UI waiting forever. See {@link MetamaskController.#withKeyringForDevice}.
+ */
+export const HARDWARE_DEVICE_READ_TIMEOUT_MS = 5 * MINUTE;
 
 function isKeyringV2NotSupportedError(error) {
   return error?.message?.includes(
@@ -715,6 +733,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
@@ -863,6 +882,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
       messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
@@ -895,10 +916,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
 
@@ -980,7 +997,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: walletFundsObtainedMonitorMessenger,
       events: ['NotificationServicesController:notificationsListUpdated'],
       actions: [
-        'MetaMetricsController:trackEvent',
         'AppStateController:setCanTrackWalletFundsObtained',
         'OnboardingController:getState',
         'NotificationServicesController:getState',
@@ -1464,6 +1480,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -1531,6 +1548,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -2547,18 +2565,9 @@ export default class MetamaskController extends EventEmitter {
         'NetworkEnablementController:stateChange',
         restorePreviousEnabledNetworkMap,
       );
-      this.networkEnablementController.update((state) => {
-        Object.entries(state.enabledNetworkMap).forEach(
-          ([namespace, currentNetworks]) => {
-            Object.keys(currentNetworks).forEach((chainId) => {
-              const previousValue =
-                previousEnabledNetworkMap[namespace]?.[chainId];
-              state.enabledNetworkMap[namespace][chainId] =
-                previousValue ?? false;
-            });
-          },
-        );
-      });
+      this.networkEnablementController.restoreEnabledNetworkMap(
+        previousEnabledNetworkMap,
+      );
     };
 
     this.controllerMessenger.subscribe(
@@ -2722,10 +2731,6 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
-      setServiceWorkerKeepAlivePreference:
-        preferencesController.setServiceWorkerKeepAlivePreference.bind(
-          preferencesController,
-        ),
       markPasswordForgotten: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:markPasswordForgotten',
@@ -2743,8 +2748,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        this.notificationManager.markAsAutomaticallyClosed.bind(
-          this.notificationManager,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
       getCode: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -2785,6 +2791,10 @@ export default class MetamaskController extends EventEmitter {
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
         this.subscriptionController,
       ),
+      subscriptionsStopPolling:
+        this.subscriptionController.stopPollingByPollingToken.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionsEligibilities:
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
@@ -2915,6 +2925,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getLedgerMode: this.getLedgerMode.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -3361,6 +3372,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:setLocked',
       ),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
+      createNewVaultAndGetSeedPhrase:
+        this.createNewVaultAndGetSeedPhrase.bind(this),
+      unlockAndGetSeedPhrase: this.unlockAndGetSeedPhrase.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.controllerMessenger.call.bind(
@@ -3633,7 +3647,6 @@ export default class MetamaskController extends EventEmitter {
               excludeMetaMetricsId: options?.excludeMetaMetricsId,
               matomoEvent: options?.matomoEvent,
             }),
-          options,
         );
       },
       trackAnalyticsEvent: trackEvent,
@@ -3651,12 +3664,6 @@ export default class MetamaskController extends EventEmitter {
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
-
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
@@ -4762,51 +4769,99 @@ export default class MetamaskController extends EventEmitter {
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
     try {
-      if (isWalletResetInProgress) {
-        // clear permissions
-        this.permissionController.clearState();
-
-        // Clear snap state
-        await this.snapController.clearState();
-
-        // Clear account tree state
-        this.accountTreeController.clearState();
-
-        // Currently, the account-order-controller is not in sync with
-        // the accounts-controller. To properly persist the hidden state
-        // of accounts, we should add a new flag to the account struct
-        // to indicate if it is hidden or not.
-        // TODO: Update @metamask/accounts-controller to support this.
-        this.accountOrderController.updateHiddenAccountsList([]);
-
-        this.txController.clearUnapprovedTransactions();
-      }
-
-      await this.multichainAccountService.createMultichainAccountWallet({
-        type: 'create',
-        password,
-      });
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
-
-      const primaryKeyring = this.keyringController.state.keyrings[0];
-
-      // Once we have our first HD keyring available, we re-create the internal list of
-      // accounts (they should be up-to-date already, but we still run `updateAccounts` as
-      // there are some account migration happening in that function).
-      await this.accountsController.updateAccounts();
-
-      // Then we can build the initial tree.
-      this.accountTreeController.reinit();
-
-      return primaryKeyring;
+      return await this._createNewVaultAndKeychainUnderLock(password);
     } finally {
       releaseLock();
     }
+  }
+
+  /**
+   * Creates a new vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param {string} password
+   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
+   */
+  async createNewVaultAndGetSeedPhrase(password) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      await this._createNewVaultAndKeychainUnderLock(password);
+      return await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:getSeedPhrase',
+        password,
+      );
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Unlocks the vault and returns the seed phrase in a single atomic operation.
+   * Holding the vault mutex through seed export avoids races where concurrent
+   * keyring mutations leave no HD keyring available for export.
+   *
+   * @param {string} password
+   * @returns {Promise<Buffer>} The seed phrase encoded as UTF-8 bytes.
+   */
+  async unlockAndGetSeedPhrase(password) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
+      return await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:getSeedPhrase',
+        password,
+      );
+    } finally {
+      releaseLock();
+    }
+  }
+
+  async _createNewVaultAndKeychainUnderLock(password) {
+    const isWalletResetInProgress =
+      this.appStateController.getIsWalletResetInProgress();
+    if (isWalletResetInProgress) {
+      // clear permissions
+      this.permissionController.clearState();
+
+      // Clear snap state
+      await this.snapController.clearState();
+
+      // Clear account tree state
+      this.accountTreeController.clearState();
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
+
+      this.txController.clearUnapprovedTransactions();
+    }
+
+    await this.multichainAccountService.createMultichainAccountWallet({
+      type: 'create',
+      password,
+    });
+
+    // set is resetting wallet in progress to false, after new vault and keychain are created
+    this.appStateController.setIsWalletResetInProgress(false);
+
+    const primaryKeyring = this.keyringController.state.keyrings[0];
+
+    // Once we have our first HD keyring available, we re-create the internal list of
+    // accounts (they should be up-to-date already, but we still run `updateAccounts` as
+    // there are some account migration happening in that function).
+    await this.accountsController.updateAccounts();
+
+    // Then we can build the initial tree.
+    this.accountTreeController.reinit();
+
+    return primaryKeyring;
   }
 
   /**
@@ -4962,11 +5017,8 @@ export default class MetamaskController extends EventEmitter {
           createEventBuilder(MetaMetricsEventName.ImportSecretRecoveryPhrase)
             .addProperties({
               status: 'completed',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: newHdEntropyIndex,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               number_of_bitcoin_accounts_discovered:
                 discoveredAccounts?.Bitcoin,
             })
@@ -5081,6 +5133,15 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      if (error instanceof InvalidPrimarySecretDataTypeError) {
+        const errorMessage = `${error.message} - ${JSON.stringify(error.data)}`;
+        log.error('restoreSocialBackupAndGetSeedPhrase::error', errorMessage);
+        this.controllerMessenger?.captureException?.(
+          createSentryError(errorMessage, error),
+        );
+        throw error;
       }
 
       this.controllerMessenger?.captureException?.(
@@ -5315,23 +5376,46 @@ export default class MetamaskController extends EventEmitter {
 
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.attemptMakeApp(),
     );
   }
 
   async getAppNameAndVersion() {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.getAppNameAndVersion(),
     );
   }
 
   async getLedgerAppConfiguration() {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.bridge.getAppConfiguration(),
     );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns {LedgerHandlerMode}
+   */
+  getLedgerMode() {
+    const state = this.controllerMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   }
 
   /**
@@ -5346,8 +5430,12 @@ export default class MetamaskController extends EventEmitter {
     // This is the first-time setup path for a hardware wallet; the keyring
     // may not exist yet, so allow creation here. Every other caller of
     // `#withKeyringForDevice` operates on an already-paired device.
+    //
+    // Address paging waits on the device (and on user interaction, e.g.
+    // entering a PIN), potentially forever if the device stays locked, so it
+    // runs as a `deviceRead` outside the controller lock.
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath, create: true },
+      { name: deviceName, hdPath, create: true, deviceRead: true },
       async (keyring) => {
         let accounts = [];
         switch (page) {
@@ -5379,6 +5467,7 @@ export default class MetamaskController extends EventEmitter {
         name: deviceName,
         hdPath,
         create: deviceName === HardwareDeviceNames.qr,
+        deviceRead: true,
       },
       async (keyring) => {
         return keyring.isUnlocked();
@@ -5393,7 +5482,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getHdPathForLedgerKeyring() {
     return this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => {
         return await keyring.hdPath;
       },
@@ -5402,14 +5491,14 @@ export default class MetamaskController extends EventEmitter {
 
   async getLedgerPublicKey(hdPath) {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
+      { name: HardwareDeviceNames.ledger, deviceRead: true },
       async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
     );
   }
 
   async getTrezorFeatures() {
     return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.trezor },
+      { name: HardwareDeviceNames.trezor, deviceRead: true },
       async (keyring) => {
         if (typeof keyring.bridge.getFeatures !== 'function') {
           throw new Error('Trezor bridge does not support getFeatures');
@@ -6656,14 +6745,14 @@ export default class MetamaskController extends EventEmitter {
     const {
       analyticsId,
       dataCollectionForMarketing,
-      completedMetaMetricsOnboarding,
+      consentDecisionMade,
       optedIn,
     } = this.getState();
 
     if (
       analyticsId &&
       dataCollectionForMarketing &&
-      completedMetaMetricsOnboarding &&
+      consentDecisionMade &&
       optedIn
     ) {
       // setup multiplexing
@@ -7550,10 +7639,15 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           startTrace: (options) => {
-            // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-            // eslint-disable-next-line no-unused-vars
-            const { _isStandaloneSpan, ...result } = trace(options);
-            return result;
+            // Must return a JSON-serializable TraceContext: spreading the raw
+            // Sentry Span leaks internal `undefined` fields that fail the snap
+            // response's JSON validation, and only the `SerializedTraceContext`
+            // shape round-trips into a later `startTrace` `parentContext`.
+            const span = trace(options);
+            const spanContext = span?.spanContext?.();
+            return spanContext
+              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
+              : {};
           },
           endTrace,
           getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
@@ -8133,10 +8227,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: (payload, options) => {
         trackEvent(
@@ -9008,6 +9100,17 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.name - The device name to select
    * @param {string} options.hdPath - An optional hd path to be set on the device
    * keyring
+   * @param {boolean} options.create - Whether to create the hardware keyring
+   * if it does not exist yet
+   * @param {boolean} options.deviceRead - Set when the callback only reads
+   * from the device (address paging, feature/status probes). Device reads can
+   * stall indefinitely on a locked or unresponsive device, so they are
+   * executed on the lock-free `withKeyringV2Unsafe` path instead of holding
+   * the controller-wide operation mutex for the whole device interaction.
+   * To enforce this, the callback does not receive the full keyring: it
+   * receives a frozen read-only facade (see `restrictKeyringForDeviceRead`)
+   * on which mutating methods do not exist. The remaining reads only touch
+   * non-load-bearing paging cursor/cache fields (`page`, `paths`, `hdk`).
    * @param {*} callback - The callback to execute with the keyring
    * @returns {*} The result of the callback
    */
@@ -9056,38 +9159,111 @@ export default class MetamaskController extends EventEmitter {
       });
     }
 
-    return this.keyringController.withKeyringV2(
+    // The prelude mutates keyring/app state (`setHdPath` resets the paging
+    // state and can clear accounts, the Lattice `network` field feeds the
+    // GridPlus session) and is fast and bounded, so it always runs under the
+    // controller lock where `persistOrRollback` can pick up the changes.
+    const prepareKeyring = async (keyring) => {
+      if (options.hdPath && keyring.setHdPath) {
+        keyring.setHdPath(options.hdPath);
+      }
+
+      if (options.name === HardwareDeviceNames.ledger) {
+        await this.setLedgerTransportPreference(keyring);
+      }
+
+      if (
+        options.name === HardwareDeviceNames.trezor ||
+        options.name === HardwareDeviceNames.oneKey
+      ) {
+        const model = keyring.getModel();
+        this.appStateController.setTrezorModel(model);
+      }
+
+      if (options.name === HardwareDeviceNames.lattice) {
+        // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
+        // runtime state, so we keep tracking it on every entry. The
+        // GridPlus SDK Client reads it on `_initSession` to target
+        // the right chain.
+        keyring.network = getProviderConfig({
+          metamask: this.networkController.state,
+        }).type;
+      }
+    };
+
+    if (!options.deviceRead) {
+      return this.keyringController.withKeyringV2(
+        { type: v2KeyringType },
+        async ({ keyring }) => {
+          await prepareKeyring(keyring);
+          return await callback(keyring);
+        },
+      );
+    }
+
+    // Device-read path. The prelude still runs under the lock (short,
+    // mutating), but the device interaction itself runs on the lock-free
+    // path: a locked or unresponsive device makes calls like
+    // `getFirstPage` or `getPublicKey` hang indefinitely, and holding
+    // `#controllerOperationMutex` across that hang deadlocks every other
+    // locked keyring operation (account syncing, account creation,
+    // unlocking, ...) until the browser restarts.
+    //
+    // Trade-off: while the device read is in flight, a concurrent locked
+    // operation that fails (or a lock/unlock cycle) can rebuild the keyring
+    // instances, in which case this read fails or returns data from the
+    // replaced instance. That is intentional: the stale instance is no
+    // longer part of the controller, so its state can never be persisted,
+    // and the caller can simply retry — unlike the previous behavior, where
+    // the whole wallet wedged on the held mutex.
+    await this.keyringController.withKeyringV2(
       { type: v2KeyringType },
-      async ({ keyring }) => {
-        if (options.hdPath && keyring.setHdPath) {
-          keyring.setHdPath(options.hdPath);
-        }
-
-        if (options.name === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
-        if (
-          options.name === HardwareDeviceNames.trezor ||
-          options.name === HardwareDeviceNames.oneKey
-        ) {
-          const model = keyring.getModel();
-          this.appStateController.setTrezorModel(model);
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
-          // runtime state, so we keep tracking it on every entry. The
-          // GridPlus SDK Client reads it on `_initSession` to target
-          // the right chain.
-          keyring.network = getProviderConfig({
-            metamask: this.networkController.state,
-          }).type;
-        }
-
-        return await callback(keyring);
-      },
+      async ({ keyring }) => prepareKeyring(keyring),
     );
+
+    // The timeout is a UX backstop: without the lock, an abandoned device
+    // read no longer blocks anything else, but the requesting UI would
+    // still wait forever. Note that timing out abandons the in-flight
+    // device call rather than cancelling it; a retry while the device call
+    // is still pending may be rejected by the transport SDK.
+    const deviceReadOperation = this.keyringController.withKeyringV2Unsafe(
+      { type: v2KeyringType },
+      // The facade structurally prevents `deviceRead` callbacks from
+      // reaching mutating keyring methods on the lock-free path.
+      async ({ keyring }) =>
+        await callback(restrictKeyringForDeviceRead(keyring)),
+    );
+
+    let timeoutHandle;
+    let timedOut = false;
+    try {
+      return await Promise.race([
+        deviceReadOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet device read timed out for device: ${options.name}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // Only for observability: `Promise.race` already subscribes to the
+        // abandoned device read, so a late rejection can never surface as an
+        // unhandled rejection — but without this it would be dropped silently.
+        deviceReadOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware device read failed after timeout for device: ${options.name}`,
+            error,
+          ),
+        );
+      }
+    }
   }
 
   #createEnsureOnboardingCompleteCallback() {
@@ -9105,6 +9281,10 @@ export default class MetamaskController extends EventEmitter {
       getFlatState: this.getState.bind(this),
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
       getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
@@ -9119,6 +9299,7 @@ export default class MetamaskController extends EventEmitter {
       // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
       // TODO: Remove this once the migration is complete.
       seedlessOperationMutex: this.seedlessOperationMutex,
+      createVaultMutex: this.createVaultMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:

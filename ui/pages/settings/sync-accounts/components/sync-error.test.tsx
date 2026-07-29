@@ -23,17 +23,15 @@ const createMockStore = (qrSyncError: QrSyncError | null = null) =>
     },
   });
 
-const renderSyncError = (
-  qrSyncError: QrSyncError | null = null,
-  props: Partial<{ onRetry: () => void; onCancel: () => void }> = {},
-) => {
-  const onRetry = props.onRetry ?? jest.fn();
-  const onCancel = props.onCancel ?? jest.fn();
+const renderSyncError = (qrSyncError: QrSyncError | null = null) => {
+  const onRetry = jest.fn();
+  const onCancel = jest.fn();
   const store = createMockStore(qrSyncError);
   renderWithProvider(
     <SyncError onRetry={onRetry} onCancel={onCancel} />,
     store,
   );
+
   return { onRetry, onCancel };
 };
 

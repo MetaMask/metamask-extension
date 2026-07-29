@@ -1,10 +1,8 @@
 import {
-  AccountGroupAssets,
   AssetListState,
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
-  calculateBalanceChangeForAllWallets,
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
@@ -48,11 +46,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-  TEST_CHAINS,
-} from '../../shared/constants/network';
+import { TEST_CHAINS } from '../../shared/constants/network';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
@@ -89,10 +83,14 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { traceAsControllerCallback } from '../../shared/lib/trace';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
-import { augmentAssetControllersState } from '../components/app/assets/enablement/arc';
+import {
+  augmentAssetControllersState,
+  filterExcludedAssets,
+  filterExcludedTokenBalances,
+  filterExcludedAssetList,
+} from '../components/app/assets/enablement/networks-customization';
 import {
   calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
   calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
@@ -294,8 +292,6 @@ export const getTokenBalancesEvm = createSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -325,8 +321,6 @@ export const getTokenBalancesEvm = createSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -345,7 +339,7 @@ export const getTokenBalancesEvm = createSelector(
         });
       },
     );
-    return tokensWithBalance;
+    return filterExcludedAssetList(tokensWithBalance);
   },
 );
 
@@ -666,7 +660,7 @@ const defaultAccountTreeState = getDefaultAccountTreeControllerState();
  *
  * @param state
  */
-const selectAccountTreeStateForBalances = createSelector(
+const selectAccountTreeStateForBalances = createDeepEqualSelector(
   [
     (state: BalanceCalculationState) => getMetamaskState(state).accountTree,
 
@@ -726,37 +720,14 @@ const selectAccountsStateForBalances = createSelector(
   }),
 );
 
-const ARC_USDC_ERC20_ADDRESS = ARC_USDC_TOKEN_ADDRESS.toLowerCase();
-
 /**
  * Wraps token balances for core balance computations.
  */
 const selectTokenBalancesStateForBalances = createSelector(
   [getTokenBalances],
-  (tokenBalances) => {
-    // Strip the Arc USDC ERC20 (0x3600…) so it is excluded from the aggregated
-    // balance — the native token already reflects the USDC balance on Arc and
-    // is the source of truth, so counting both would double the balance.
-    const result = Object.fromEntries(
-      Object.entries(tokenBalances).map(([account, chainMap]) => [
-        account,
-        Object.fromEntries(
-          Object.entries(chainMap).map(([chainId, addressMap]) => [
-            chainId,
-            chainId === CHAIN_IDS.ARC
-              ? Object.fromEntries(
-                  Object.entries(addressMap).filter(
-                    ([address]) =>
-                      address.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
-                  ),
-                )
-              : addressMap,
-          ]),
-        ),
-      ]),
-    ) as typeof tokenBalances;
-    return { tokenBalances: result };
-  },
+  (tokenBalances) => ({
+    tokenBalances: filterExcludedTokenBalances(tokenBalances),
+  }),
 );
 
 /**
@@ -869,7 +840,7 @@ const selectAssetsControllerStateForBalances = createSelector(
  * @param state - Redux state from which the required slices are derived.
  * @returns Aggregated balances structure for all wallets and groups.
  */
-export const selectBalanceForAllWallets = createSelector(
+export const selectBalanceForAllWallets = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     selectAssetsControllerStateForBalances,
@@ -908,7 +879,6 @@ export const selectBalanceForAllWallets = createSelector(
         accountTreeState,
         accountsById,
         enabledNetworkMap,
-        traceAsControllerCallback,
       );
     }
     return calculateBalanceForAllWallets(
@@ -979,7 +949,6 @@ export const selectBalanceChangeBySelectedAccountGroup = (
           enabledNetworkMap,
           groupId,
           period,
-          traceAsControllerCallback,
         );
       }
       return calculateBalanceChangeForAccountGroup(
@@ -1223,6 +1192,108 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 );
 
 /**
+ * Determines whether balance data has loaded for the selected account group.
+ * A missing balance record means the wallet can still be hydrating, so the UI
+ * should avoid showing the zero-balance empty state until a zero is confirmed.
+ *
+ * @param state - Redux state containing account tree, accounts, and balances.
+ * @returns true if the account group has at least one mainnet balance record.
+ */
+export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
+  [
+    selectAccountTreeStateForBalances,
+    selectAccountsStateForBalances,
+    selectMultichainBalancesStateForBalances,
+    selectAllMainnetNetworksEnabledMap,
+    getAccountTrackerControllerAccountsByChainId,
+  ],
+  (
+    accountTreeState,
+    accountsState,
+    multichainBalancesState,
+    allMainnetNetworksMap,
+    accountsByChainId,
+  ): boolean => {
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return false;
+    }
+
+    const accountTree = accountTreeState?.accountTree;
+    if (!accountTree?.wallets) {
+      return false;
+    }
+
+    let groupAccountIds: string[] = [];
+    for (const treeWallet of Object.values(accountTree.wallets)) {
+      if (treeWallet.groups[selectedGroupId]) {
+        groupAccountIds = treeWallet.groups[selectedGroupId].accounts || [];
+        break;
+      }
+    }
+
+    if (groupAccountIds.length === 0) {
+      return false;
+    }
+
+    const groupAccountIdsSet = new Set(groupAccountIds);
+    const groupEvmAddresses = new Set<string>();
+    const groupNonEvmAccountIds = new Set<string>();
+
+    Object.entries(accountsState.internalAccounts?.accounts || {}).forEach(
+      ([accountId, account]) => {
+        if (!groupAccountIdsSet.has(accountId)) {
+          return;
+        }
+
+        if (isEvmAccountType(account.type) && account.address) {
+          groupEvmAddresses.add(account.address.toLowerCase());
+          return;
+        }
+
+        groupNonEvmAccountIds.add(accountId);
+      },
+    );
+
+    const mainnetEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.eip155 || {}),
+    );
+    const mainnetNonEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.solana || {}).concat(
+        Object.keys(allMainnetNetworksMap?.bip122 || {}),
+      ),
+    );
+
+    const hasLoadedEvmBalance = Object.entries(accountsByChainId || {}).some(
+      ([chainId, chainAccounts]) => {
+        if (!mainnetEvmChainIds.has(chainId) || !isObject(chainAccounts)) {
+          return false;
+        }
+
+        return Object.keys(chainAccounts).some((address) =>
+          groupEvmAddresses.has(address.toLowerCase()),
+        );
+      },
+    );
+
+    const hasLoadedNonEvmBalance = Object.entries(
+      multichainBalancesState?.balances || {},
+    ).some(([accountId, accountBalances]) => {
+      if (!groupNonEvmAccountIds.has(accountId) || !isObject(accountBalances)) {
+        return false;
+      }
+
+      return Object.keys(accountBalances).some((assetId) => {
+        const chainId = assetId.split('/')[0];
+        return mainnetNonEvmChainIds.has(chainId);
+      });
+    });
+
+    return hasLoadedEvmBalance || hasLoadedNonEvmBalance;
+  },
+);
+
+/**
  * Selects the selected account group's balance entry from the aggregated
  * balances output, returning a minimal fallback when not present.
  *
@@ -1334,42 +1405,17 @@ const getStateForAssetSelector = createSelector(
   },
 );
 
-/**
- * Removes the Arc USDC ERC20 (0x3600…) from the per-chain asset map so it never
- * appears as a duplicate of the native token on Arc. The native token (zero
- * address) is kept, as it is the source of truth for USDC on Arc.
- *
- * @param assets - Per-chain map of assets keyed by chain ID.
- * @returns The asset map with the Arc USDC ERC20 removed from the Arc entry.
- */
-function filterArcUsdcErc20Token(
-  assets: AccountGroupAssets,
-): AccountGroupAssets {
-  const arcAssets = assets[CHAIN_IDS.ARC];
-  if (!arcAssets) {
-    return assets;
-  }
-  return {
-    ...assets,
-    [CHAIN_IDS.ARC]: arcAssets.filter(
-      (asset) =>
-        !('address' in asset) ||
-        asset.address?.toLowerCase() !== ARC_USDC_ERC20_ADDRESS,
-    ),
-  };
-}
-
 export const getAssetsBySelectedAccountGroup = createSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
-    filterArcUsdcErc20Token(selectAssetsBySelectedAccountGroup(assetListState)),
+    filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),
 );
 
 export const getAssetsBySelectedAccountGroupIncludingHidden =
   createDeepEqualSelector(
     getStateForAssetSelector,
     (assetListState: AssetListState) =>
-      filterArcUsdcErc20Token(
+      filterExcludedAssets(
         selectAssetsBySelectedAccountGroup({
           ...assetListState,
           allIgnoredTokens: EMPTY_OBJECT,

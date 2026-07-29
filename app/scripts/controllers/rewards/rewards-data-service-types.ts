@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { Messenger } from '@metamask/messenger';
 import { PreferencesControllerGetStateAction } from '../preferences-controller';
 import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';

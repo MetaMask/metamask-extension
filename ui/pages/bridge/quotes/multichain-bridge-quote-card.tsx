@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   BRIDGE_MM_FEE_RATE,
@@ -21,8 +21,7 @@ import {
   getToToken,
   getFromToken,
   getSlippage,
-  getIsSolanaSwap,
-  getIsRWASwap,
+  getIsSlippageUserOverride,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
@@ -49,6 +48,7 @@ import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
+import { useDispatch } from '../../../store/hooks';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
@@ -91,8 +91,13 @@ export const MultichainBridgeQuoteCard = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const isRWASwap = useSelector(getIsRWASwap);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
+  let slippageDisplay: string;
+  if (slippage === undefined) {
+    slippageDisplay = isSlippageUserOverride ? t('slippageAuto') : '-';
+  } else {
+    slippageDisplay = `${slippage}%`;
+  }
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -378,9 +383,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && (isSolanaSwap || isRWASwap)
-                ? t('slippageAuto')
-                : `${slippage}%`}
+              {slippageDisplay}
             </Text>
             <ButtonIcon
               iconName={IconName.Edit}

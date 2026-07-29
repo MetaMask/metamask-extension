@@ -156,6 +156,11 @@ export type MessengerClientInitRequest<
   seedlessOperationMutex: Mutex;
 
   /**
+   * The mutex used to serialize vault creation, seed export, and locking.
+   */
+  createVaultMutex: Mutex;
+
+  /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
    *
@@ -232,6 +237,11 @@ export type MessengerClientInitRequest<
    * Gets the record of open MetaMask tab IDs.
    */
   getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   */
+  markNotificationPopupAsAutomaticallyClosed: () => void;
 
   /**
    * Sends an update to the UI.

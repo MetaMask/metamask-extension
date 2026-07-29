@@ -43,8 +43,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AnalyticsController: {
     analyticsId: true,
+    consentDecisionMade: true,
     eventQueue: false,
     optedIn: true,
+    preConsentEventQueue: false,
   },
   AnnouncementController: {
     announcements: false,
@@ -206,8 +208,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    completedMetaMetricsOnboarding: true,
-    eventsBeforeMetricsOptIn: false,
     tracesBeforeMetricsOptIn: false,
     fragments: false,
     traits: false,
@@ -294,7 +294,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,

@@ -2,10 +2,12 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import {
   getAccountAddressRelationship,
+  GasFeeEstimateLevel,
   SavedGasFees,
   TransactionController,
   TransactionMeta,
   TransactionType,
+  UserFeeLevel,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
@@ -109,8 +111,6 @@ export function setupTransactionControllerListeners({
 }: SetupTransactionControllerListenersRequest) {
   messenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (...args) =>
       handlePostTransactionBalanceUpdate(
         getTransactionMetricsRequest(),
@@ -120,34 +120,22 @@ export function setupTransactionControllerListeners({
 
   messenger.subscribe(
     'TransactionController:unapprovedTransactionAdded',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
       handleTransactionAdded(getTransactionMetricsRequest(), {
         transactionMeta,
       }),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionApproved',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionApproved(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionApproved', (...args) =>
+    handleTransactionApproved(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionDropped',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionDropped(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionDropped', (...args) =>
+    handleTransactionDropped(getTransactionMetricsRequest(), ...args),
   );
 
   messenger.subscribe(
     'TransactionController:transactionConfirmed',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
       handleTransactionConfirmed(
         getTransactionMetricsRequest(),
@@ -155,28 +143,16 @@ export function setupTransactionControllerListeners({
       ),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionFailed',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionFailed(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionFailed', (...args) =>
+    handleTransactionFailed(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionRejected',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionRejected(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionRejected', (...args) =>
+    handleTransactionRejected(getTransactionMetricsRequest(), ...args),
   );
 
-  messenger.subscribe(
-    'TransactionController:transactionSubmitted',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    (...args) =>
-      handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
+  messenger.subscribe('TransactionController:transactionSubmitted', (...args) =>
+    handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
   );
 }
 
@@ -238,10 +214,47 @@ async function checkFirstTimeInteraction(
 
 function getSavedGasFees(
   { messenger }: { messenger: TransactionControllerInitMessenger },
-  chainId: string,
+  transactionMeta: TransactionMeta,
 ): SavedGasFees | undefined {
+  const account = transactionMeta.txParams.from?.toLowerCase();
+
+  if (!account || transactionMeta.metamaskPay) {
+    return undefined;
+  }
+
   const { advancedGasFee } = messenger.call('PreferencesController:getState');
-  return advancedGasFee[chainId] as unknown as SavedGasFees | undefined;
+  const savedGasFeePreference =
+    advancedGasFee[transactionMeta.chainId]?.[account];
+
+  if (!savedGasFeePreference) {
+    return undefined;
+  }
+
+  const savedGasFeeLevel = getSavedGasFeeLevel(
+    savedGasFeePreference.userFeeLevel,
+  );
+
+  if (!savedGasFeeLevel) {
+    return undefined;
+  }
+
+  const savedGasFees: SavedGasFees = {
+    level: savedGasFeeLevel,
+  };
+
+  if (savedGasFeePreference.maxBaseFee) {
+    savedGasFees.maxBaseFee = savedGasFeePreference.maxBaseFee;
+  }
+
+  if (savedGasFeePreference.priorityFee) {
+    savedGasFees.priorityFee = savedGasFeePreference.priorityFee;
+  }
+
+  if (savedGasFeePreference.gasPrice) {
+    savedGasFees.gasPrice = savedGasFeePreference.gasPrice;
+  }
+
+  return savedGasFees;
 }
 
 async function getSimulationConfig(
@@ -324,4 +337,17 @@ function isAutomaticGasFeeUpdateEnabled(transaction: TransactionMeta) {
     transaction,
     DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES,
   );
+}
+
+function getSavedGasFeeLevel(
+  userFeeLevel: string,
+): SavedGasFees['level'] | undefined {
+  const savedGasFeeLevels = [
+    GasFeeEstimateLevel.Low,
+    GasFeeEstimateLevel.Medium,
+    GasFeeEstimateLevel.High,
+    UserFeeLevel.CUSTOM,
+  ] as const;
+
+  return savedGasFeeLevels.find((level) => level === userFeeLevel);
 }

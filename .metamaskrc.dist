@@ -31,7 +31,9 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
-;BRIDGE_USE_DEV_APIS=
+; Override the Bridge API base URL (e.g. to point at a local server or a
+; one-off environment). Takes precedence over the environment-based mapping.
+;BRIDGE_USE_CUSTOM_BASE_URL=
 ;ANALYTICS_DATA_DELETION_SOURCE_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
@@ -95,9 +97,9 @@ BLOCKAID_PUBLIC_KEY=
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
-; Set to `true` to enable the Add Device Sync tab in Settings
+; Set to `true` to enable the QR Sync Sync tab in Settings
 ; (device pairing, QR code scan and verification flow)
-; ADD_DEVICE_SYNC_ENABLED='false'
+; QR_SYNC_ENABLED='false'
 
 ; Set to `true` to enable the new hardware wallet onboarding flow
 ; (device discovery, error handling, account selection).
@@ -108,3 +110,7 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
+
+; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
+; To enable for all users, change the corresponding entry in builds.yml to `true`.
+MM_PURE_BLACK_PREVIEW=true

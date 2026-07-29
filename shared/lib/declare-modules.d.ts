@@ -4,8 +4,13 @@ declare module 'eth-ens-namehash' {
   function hash(name: string): string;
   function normalize(name: string): string;
 
+  const ethEnsNamehash: {
+    hash: typeof hash;
+    normalize: typeof normalize;
+  };
+
   export { hash, normalize };
-  export default { hash, normalize };
+  export default ethEnsNamehash;
 }
 
 declare module '@ensdomains/content-hash' {

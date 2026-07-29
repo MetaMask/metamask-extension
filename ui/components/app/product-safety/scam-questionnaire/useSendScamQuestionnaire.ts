@@ -9,7 +9,12 @@ import {
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
+import {
+  SCAM_QUESTIONNAIRE_FLAG_KEY,
+  SCAM_QUESTIONNAIRE_VARIANTS,
+} from '../../../../../shared/lib/ab-testing/configs/scam-questionnaire';
 import useAlerts from '../../../../hooks/useAlerts';
+import { useABTest } from '../../../../hooks/useABTest';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import type { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
 import type { ScamQuestionnaireProps } from './scam-questionnaire';
@@ -57,6 +62,16 @@ export function useSendScamQuestionnaire({
   ownerId: string;
   onCancel: OnCancelHandler;
 }): UseSendScamQuestionnaireResult {
+  // Staged-rollout gate. `trackExposure: false` because this is a rollout,
+  // not an experiment — `Experiment Viewed` events are reserved for real
+  // A/B tests.
+  const { variant } = useABTest(
+    SCAM_QUESTIONNAIRE_FLAG_KEY,
+    SCAM_QUESTIONNAIRE_VARIANTS,
+    undefined,
+    { trackExposure: false },
+  );
+
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { alerts, setAlertConfirmed, isAlertConfirmed } = useAlerts(ownerId);
   const [isScamQuestionnaireVisible, setVisible] = useState(false);
@@ -74,6 +89,7 @@ export function useSendScamQuestionnaire({
   );
 
   const isScamQuestionnaireRequired = Boolean(
+    variant.showQuestionnaire &&
     isMMSend &&
     securityAlertResponse?.result_type === BlockaidResultType.Malicious &&
     blockaidAlert &&

@@ -66,6 +66,10 @@ import {
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
 import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDeFiPositionsControllerV2Messenger,
+  getDeFiPositionsControllerV2InitMessenger,
+} from './defi-positions/defi-positions-controller-v2-messenger';
 import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 import {
   getAccountTreeControllerMessenger,
@@ -139,8 +143,10 @@ import {
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
-import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-import { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+import {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -264,8 +270,10 @@ export {
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-export { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+export {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 export {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -437,6 +445,10 @@ export const MESSENGER_FACTORIES = {
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: getDeFiPositionsControllerInitMessenger,
+  },
+  DeFiPositionsControllerV2: {
+    getMessenger: getDeFiPositionsControllerV2Messenger,
+    getInitMessenger: getDeFiPositionsControllerV2InitMessenger,
   },
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,

@@ -107,7 +107,7 @@ export const generateDefaultFixtureState = async (
     driver,
     seedPhrase: E2E_SRP,
     password: WALLET_PASSWORD,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: false,
     dataCollectionForMarketing: true,
     needNavigateToNewPage: false,

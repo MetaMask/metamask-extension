@@ -22,7 +22,7 @@ import { getPreferences } from '../../../../../shared/lib/selectors/preferences'
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
-  getDisplayName,
+  getDisplaySymbol,
   getPositionDirection,
   getPrivacyAwareColor,
 } from '../utils';
@@ -64,10 +64,10 @@ export const PositionCard = ({
   const absSize = Math.abs(parseFloat(position.size)).toString();
   // Title uses the full asset name when enabled; the size line keeps the ticker
   // as its unit. When the flag is off, fall back to the ticker.
-  const displayName = getDisplayName(
+  const displayName = getDisplaySymbol(
     showFullAssetNames ? assetName || position.symbol : position.symbol,
   );
-  const displaySymbol = getDisplayName(position.symbol);
+  const displaySymbol = getDisplaySymbol(position.symbol);
   const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
   const formattedRoe = Number.isNaN(roeNum)

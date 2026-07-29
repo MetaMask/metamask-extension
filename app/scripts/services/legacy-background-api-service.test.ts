@@ -27,10 +27,7 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
@@ -453,6 +450,30 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('markNotificationPopupAsAutomaticallyClosed', () => {
+    it('marks the notification popup as automatically closed', async () => {
+      const mockMarkNotificationPopupAsAutomaticallyClosed = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markNotificationPopupAsAutomaticallyClosed:
+              mockMarkNotificationPopupAsAutomaticallyClosed,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+          );
+
+          expect(
+            mockMarkNotificationPopupAsAutomaticallyClosed,
+          ).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
   describe('markPasswordForgotten', () => {
     it('sets the preference and triggers an update', async () => {
       const mockSendUpdate = jest.fn();
@@ -744,41 +765,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'ApprovalController:getState',
-          jest.fn().mockReturnValue({
-            pendingApprovals: {
-              foo: {
-                id: 'foo',
-                type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-                requestState: {
-                  txId: 'bar',
-                },
-              },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'TransactionController:getState',
-          jest.fn().mockReturnValue({
-            transactions: [
-              {
-                id: 'bar',
-                chainId: '0x1',
-                txParams: {
-                  from: selectedAddress,
-                },
-              },
-            ],
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'ApprovalController:rejectRequest',
-          jest.fn(),
-        );
-
-        rootMessenger.registerActionHandler(
           'TransactionController:wipeTransactions',
           jest.fn(),
         );
@@ -803,12 +789,6 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(selectedAddress);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'ApprovalController:rejectRequest',
-          'foo',
-          expect.any(Error),
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'TransactionController:wipeTransactions',
@@ -2923,6 +2903,56 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
+        );
+
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('rejectPendingApproval', () => {
@@ -3634,7 +3664,6 @@ function getMessenger(
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
-      'MetaMetricsController:trackEvent',
       'MetaMetricsController:getEventFragmentById',
       'MetaMetricsController:updateEventFragment',
       'MetaMetricsController:createEventFragment',
@@ -3687,8 +3716,10 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
+    createVaultMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });

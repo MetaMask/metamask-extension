@@ -43,7 +43,7 @@ export default function getObjStructure(
  * @returns The modified object
  */
 function deepMap(
-  target: Record<string, unknown> = {},
+  target: Record<string, unknown>,
   visit: (value: unknown) => string,
 ): Record<string, unknown> {
   Object.entries(target).forEach(([key, value]) => {

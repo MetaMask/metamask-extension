@@ -21,7 +21,6 @@ const DEPRECATED_COMPONENT_PATHS = [
   'component-library/modal-content/deprecated/modal-content',
   'component-library/modal-header/deprecated/modal-header',
   'component-library/text',
-  'component-library/text-field-search/deprecated',
   // Deprecated ui/components/ui paths
   'ui/actionable-message',
   'ui/box',
@@ -30,7 +29,7 @@ const DEPRECATED_COMPONENT_PATHS = [
   'ui/check-box',
   'ui/chip',
   'ui/form-field',
-  // 'ui/icon',
+  'ui/icon',
   'ui/icon-border',
   'ui/icon-with-fallback',
   'ui/identicon',

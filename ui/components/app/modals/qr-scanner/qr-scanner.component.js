@@ -176,7 +176,8 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
     (async () => {
       await checkEnvironment();
     })();
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only runs on component mount and unmount
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only runs on component mount and unmount
   }, []);
 
   useEffect(() => {
