@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { trackEvent } from '../../controllers/analytics';
 import {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { RampsOrderStatus } from '@metamask/ramps-controller';
 import type { RampsController } from '@metamask/ramps-controller';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
