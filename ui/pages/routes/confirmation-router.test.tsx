@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { FeatureId } from '@metamask/bridge-controller';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
@@ -32,14 +33,31 @@ const PathnameDisplay = () => {
   return <div data-testid="pathname">{pathname}</div>;
 };
 
+// A leftover batch-sell quote carries `featureId: 'batch_sell'`, which is what
+// distinguishes it from a real in-progress swap quote.
+const getMockQuotes = ({
+  hasQuotes,
+  hasBatchSellQuotes,
+}: {
+  hasQuotes: boolean;
+  hasBatchSellQuotes: boolean;
+}) => {
+  if (hasBatchSellQuotes) {
+    return [{ featureId: FeatureId.BATCH_SELL }];
+  }
+  return hasQuotes ? [{}] : [];
+};
+
 const renderConfirmationRouter = ({
   pathname,
   hasQuotes = false,
+  hasBatchSellQuotes = false,
   hasPendingApproval = false,
   environmentType = ENVIRONMENT_TYPE_POPUP,
 }: {
   pathname: string;
   hasQuotes?: boolean;
+  hasBatchSellQuotes?: boolean;
   hasPendingApproval?: boolean;
   environmentType?: string;
 }) => {
@@ -54,7 +72,9 @@ const renderConfirmationRouter = ({
         : { pendingApprovals: {}, pendingApprovalCount: 0, approvalFlows: [] }),
       // Batch sell fetches quotes through the bridge controller, so they land in
       // the same state that drives the swap redirect. A single entry is enough.
-      quotes: hasQuotes ? [{}] : [],
+      // A leftover batch-sell quote carries `featureId: 'batch_sell'`, which is
+      // what distinguishes it from a real in-progress swap quote.
+      quotes: getMockQuotes({ hasQuotes, hasBatchSellQuotes }),
     },
   });
 
@@ -118,6 +138,39 @@ describe('ConfirmationRouter', () => {
         pathname: DEFAULT_ROUTE,
         hasQuotes: true,
         environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+  });
+
+  describe('with a leftover batch-sell quote in state', () => {
+    // Reproduces closing the popup mid-review and reopening it: the popup
+    // cold-mounts at the home route, and the batch-sell quote fetched before
+    // closing is still sitting in the (unmocked) BridgeController state.
+    it('redirects home instead of the swap page from a non-exempted route in the popup', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+
+    it('stays on the batch sell review page', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
+    });
+
+    it('does not redirect from a non-exempted route in fullscreen', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+        environmentType: ENVIRONMENT_TYPE_FULLSCREEN,
       });
 
       expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
