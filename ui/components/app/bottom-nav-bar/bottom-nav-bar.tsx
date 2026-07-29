@@ -33,6 +33,7 @@ import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 type NavTabProps = {
   isActive: boolean;
   icon: IconName;
+  animation?: 'bounce' | 'rotate';
   label: string;
   onClick: () => void;
   'data-testid'?: string;
@@ -41,6 +42,7 @@ type NavTabProps = {
 const NavTab = ({
   isActive,
   icon,
+  animation = 'rotate',
   label,
   onClick,
   'data-testid': testId,
@@ -64,7 +66,7 @@ const NavTab = ({
         className={classnames(
           'bottom-nav-bar__icon inline-flex transform-gpu',
           {
-            'bottom-nav-bar__icon--animate': isIconAnimating,
+            [`bottom-nav-bar__icon--animate-${animation}`]: isIconAnimating,
           },
         )}
         onAnimationEnd={() => setIsIconAnimating(false)}
@@ -161,6 +163,7 @@ export function BottomNavBar() {
       <NavTab
         isActive={isHome}
         icon={isHome ? IconName.HomeFilled : IconName.Home}
+        animation="bounce"
         label={t('home')}
         onClick={handleHomeClick}
         data-testid="bottom-nav-home"
