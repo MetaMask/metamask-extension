@@ -12,26 +12,6 @@ export type BridgeQuote = {
 };
 
 class BridgeQuotePage {
-  approveModal = async () => {
-    await this.driver.clickElement(this.warningModalProceedButton);
-  };
-
-  approveModalIfPresent = async () => {
-    try {
-      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
-      // - No modal present           → no match → 3 s timeout → catch (no-op)
-      // - Modal open, tx in-flight   → button has [disabled] attr → no match
-      //                              → 3 s timeout → catch (no-op)
-      // - Modal open, tx not yet submitted → button is enabled → match → click
-      await this.driver.waitForSelector(
-        `${this.warningModalProceedButton}:not([disabled])`,
-      );
-      await this.driver.clickElement(this.warningModalProceedButton);
-    } catch {
-      // No confirmation modal with an enabled proceed button — nothing to do
-    }
-  };
-
   public assetInfoIcon = (assetId: string) => ({
     tag: 'button' as const,
     testId: `bridge-asset-info-icon-${assetId}`,
@@ -44,43 +24,7 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
-  checkAssetPickerModalIsReopened = async () => {
-    await this.driver.waitForSelector(this.assetPickerModal);
-    console.log('Asset picker modal is visible');
-    await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
-    console.log('Asset picker modal closed');
-  };
-
-  checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
-    await this.driver.waitForSelector({
-      css: this.sourceAssetPickerButton,
-      text: sourceToken,
-    });
-    console.log(`Expected source asset ${sourceToken} is selected`);
-    await this.driver.waitForSelector({
-      css: this.destinationAssetPickerButton,
-      text: destToken,
-    });
-    console.log(`Expected dest asset ${destToken} is selected`);
-  };
-
-  checkPriceImpactModalIsDisplayed = async () => {
-    await this.driver.clickElement(this.priceImpactQuoteCardButton);
-    await this.driver.waitForSelector(this.warningModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.warningModalCancelButton,
-    );
-  };
-
   private closeButton = '[aria-label="Close"]';
-
-  closeModal = async () => {
-    await this.driver.clickElement(this.closeButton);
-  };
-
-  confirmBridgeTransaction = async () => {
-    await this.driver.clickElement(this.confirmButton);
-  };
 
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
@@ -91,76 +35,7 @@ class BridgeQuotePage {
   public destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
-  dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
-    await this.closeModal();
-    if (expectedNumberOfAlerts) {
-      await this.driver.elementCountBecomesN(
-        this.tokenWarningAlert,
-        expectedNumberOfAlerts,
-      );
-    }
-  };
-
   protected driver: Driver;
-
-  enterBridgeQuote = async (quote: BridgeQuote) => {
-    // Source
-    if (quote.tokenFrom || quote.fromChain) {
-      await this.driver.clickElement(this.sourceAssetPickerButton);
-      if (quote.fromChain) {
-        await this.driver.clickElement(this.networkSelector);
-        await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-      }
-      if (quote.tokenFrom) {
-        await this.driver.pasteIntoField(
-          this.assetPrickerSearchInput,
-          quote.tokenFrom,
-        );
-        await this.driver.clickElement({
-          text: quote.tokenFrom,
-          css: this.tokenButton,
-        });
-      }
-    }
-
-    // Destination
-    if (quote.tokenTo || quote.toChain) {
-      await this.driver.waitForSelector(this.destinationAssetPickerButton);
-      await this.driver.clickElement(this.destinationAssetPickerButton);
-
-      // After clicking destination, we might see either:
-      // 1. Network selection modal (if destination is pre-populated and different from desired network)
-      // 2. Token picker with network badge (if destination is empty or on the correct network)
-
-      if (quote.toChain) {
-        // We're in token picker, need to click network badge first
-        await this.driver.waitForSelector(this.networkSelector);
-        await this.driver.clickElement(this.networkSelector);
-
-        // Now select the destination network
-        await this.driver.clickElementAndWaitToDisappear({
-          text: quote.toChain,
-        });
-      }
-      if (quote.tokenTo) {
-        await this.driver.pasteIntoField(
-          this.assetPrickerSearchInput,
-          quote.tokenTo,
-        );
-        await this.driver.delay(2000);
-        await this.driver.clickElementAndWaitToDisappear({
-          text: quote.tokenTo,
-          css: this.tokenButton,
-        });
-      }
-    }
-
-    // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
-    await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
-      waitAtLeastGuard: 500,
-    });
-  };
 
   private fetchingQuotesLabel = {
     tag: 'p',
@@ -170,22 +45,6 @@ class BridgeQuotePage {
   private gasIncludedIndicator = '[data-testid="network-fees-included"]';
 
   private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
-
-  goBack = async () => {
-    await this.driver.waitForSelector(this.backButton);
-    await this.driver.clickElement(this.backButton);
-  };
-
-  /**
-   * Navigates away from the bridge page via the bottom nav bar home tab.
-   * Use this instead of `goBack` when the user is in the bottom nav AB test
-   * treatment, where the back button is removed on the swap/bridge page.
-   */
-  goBackViaBottomNavHome = async () => {
-    const homeTab = '[data-testid="bottom-nav-home"]';
-    await this.driver.waitForSelector(homeTab);
-    await this.driver.clickElement(homeTab);
-  };
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
@@ -208,27 +67,9 @@ class BridgeQuotePage {
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
 
-  rejectModal = async () => {
-    await this.driver.clickElement(this.warningModalCancelButton);
-  };
-
   private rwaGeoRestrictedMessage = {
     css: '[data-testid="bridge-no-quotes"]',
     text: "This swap isn't available in your region.",
-  };
-
-  searchForAssetAndSelect = async (
-    token: string,
-    assetPicker = this.sourceAssetPickerButton,
-  ) => {
-    console.log(`Opening asset picker`);
-    await this.driver.clickElement(assetPicker);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    console.log(`Filled search input with ${token}`);
-    await this.driver.clickElementAndWaitToDisappear({
-      css: this.tokenButton,
-      text: token,
-    });
   };
 
   private slippageCustomButton =
@@ -245,39 +86,12 @@ class BridgeQuotePage {
 
   private submitButton = '[data-testid="bridge-cta-button"]';
 
-  submitQuote = async () => {
-    await this.driver.clickElement(this.submitButton);
-  };
-
-  submitQuoteAndDismiss = async () => {
-    await this.submitQuote();
-
-    // If no price data is available a confirmation modal appears before submission.
-    // Dismiss it so the transaction can proceed.
-    await this.approveModalIfPresent();
-  };
-
-  submitQuoteWithWarning = async (warningCount: number = 0) => {
-    if (warningCount) {
-      await this.driver.elementCountBecomesN(
-        this.tokenWarningAlert,
-        warningCount,
-      );
-    }
-    await this.submitQuote();
-    await this.driver.waitForSelector(this.warningModal);
-  };
-
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
   public tokenButton = '[data-testid^="bridge-asset--"]';
 
   private tokenWarningAlert =
     '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
-
-  waitForQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton);
-  };
 
   private warningModal = '[data-testid="bridge-alert-modal"]';
 
@@ -290,6 +104,46 @@ class BridgeQuotePage {
   constructor(driver: Driver) {
     this.driver = driver;
   }
+
+  approveModal = async () => {
+    await this.driver.clickElement(this.warningModalProceedButton);
+  };
+
+  approveModalIfPresent = async () => {
+    try {
+      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
+      // - No modal present           → no match → 3 s timeout → catch (no-op)
+      // - Modal open, tx in-flight   → button has [disabled] attr → no match
+      //                              → 3 s timeout → catch (no-op)
+      // - Modal open, tx not yet submitted → button is enabled → match → click
+      await this.driver.waitForSelector(
+        `${this.warningModalProceedButton}:not([disabled])`,
+      );
+      await this.driver.clickElement(this.warningModalProceedButton);
+    } catch {
+      // No confirmation modal with an enabled proceed button — nothing to do
+    }
+  };
+
+  checkAssetPickerModalIsReopened = async () => {
+    await this.driver.waitForSelector(this.assetPickerModal);
+    console.log('Asset picker modal is visible');
+    await this.driver.clickElementAndWaitToDisappear('[aria-label="Close"]');
+    console.log('Asset picker modal closed');
+  };
+
+  checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
+    await this.driver.waitForSelector({
+      css: this.sourceAssetPickerButton,
+      text: sourceToken,
+    });
+    console.log(`Expected source asset ${sourceToken} is selected`);
+    await this.driver.waitForSelector({
+      css: this.destinationAssetPickerButton,
+      text: destToken,
+    });
+    console.log(`Expected dest asset ${destToken} is selected`);
+  };
 
   async checkDestAmount(amount: string) {
     await this.driver.waitForSelector(this.destinationAmount(amount));
@@ -389,6 +243,14 @@ class BridgeQuotePage {
     console.log('Bridge quote page is loaded');
   }
 
+  checkPriceImpactModalIsDisplayed = async () => {
+    await this.driver.clickElement(this.priceImpactQuoteCardButton);
+    await this.driver.waitForSelector(this.warningModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.warningModalCancelButton,
+    );
+  };
+
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
@@ -442,6 +304,103 @@ class BridgeQuotePage {
     console.log('Clicked Max button');
   }
 
+  closeModal = async () => {
+    await this.driver.clickElement(this.closeButton);
+  };
+
+  confirmBridgeTransaction = async () => {
+    await this.driver.clickElement(this.confirmButton);
+  };
+
+  dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
+    await this.closeModal();
+    if (expectedNumberOfAlerts) {
+      await this.driver.elementCountBecomesN(
+        this.tokenWarningAlert,
+        expectedNumberOfAlerts,
+      );
+    }
+  };
+
+  enterBridgeQuote = async (quote: BridgeQuote) => {
+    // Source
+    if (quote.tokenFrom || quote.fromChain) {
+      await this.driver.clickElement(this.sourceAssetPickerButton);
+      if (quote.fromChain) {
+        await this.driver.clickElement(this.networkSelector);
+        await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
+      }
+      if (quote.tokenFrom) {
+        await this.driver.pasteIntoField(
+          this.assetPrickerSearchInput,
+          quote.tokenFrom,
+        );
+        await this.driver.clickElement({
+          text: quote.tokenFrom,
+          css: this.tokenButton,
+        });
+      }
+    }
+
+    // Destination
+    if (quote.tokenTo || quote.toChain) {
+      await this.driver.waitForSelector(this.destinationAssetPickerButton);
+      await this.driver.clickElement(this.destinationAssetPickerButton);
+
+      // After clicking destination, we might see either:
+      // 1. Network selection modal (if destination is pre-populated and different from desired network)
+      // 2. Token picker with network badge (if destination is empty or on the correct network)
+
+      if (quote.toChain) {
+        // We're in token picker, need to click network badge first
+        await this.driver.waitForSelector(this.networkSelector);
+        await this.driver.clickElement(this.networkSelector);
+
+        // Now select the destination network
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.toChain,
+        });
+      }
+      if (quote.tokenTo) {
+        await this.driver.pasteIntoField(
+          this.assetPrickerSearchInput,
+          quote.tokenTo,
+        );
+        await this.driver.delay(2000);
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.tokenTo,
+          css: this.tokenButton,
+        });
+      }
+    }
+
+    // QTY
+    await this.driver.fill(this.sourceAmount, quote.amount);
+    await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
+      waitAtLeastGuard: 500,
+    });
+  };
+
+  goBack = async () => {
+    await this.driver.waitForSelector(this.backButton);
+    await this.driver.clickElement(this.backButton);
+  };
+
+  /**
+   * Navigates away from the bridge page via the bottom nav bar home tab.
+   * Use this instead of `goBack` when the user is in the bottom nav AB test
+   * treatment, where the back button is removed on the swap/bridge page.
+   */
+  goBackViaBottomNavHome = async () => {
+    const homeTab = '[data-testid="bottom-nav-home"]';
+    await this.driver.waitForSelector(homeTab);
+    await this.driver.clickElement(homeTab);
+  };
+
+  rejectModal = async () => {
+    await this.driver.clickElement(this.warningModalCancelButton);
+  };
+
   async searchAndClickAssetInfo({
     token,
     assetId,
@@ -468,6 +427,20 @@ class BridgeQuotePage {
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
     await this.driver.elementCountBecomesN(this.tokenButton, count);
   }
+
+  searchForAssetAndSelect = async (
+    token: string,
+    assetPicker = this.sourceAssetPickerButton,
+  ) => {
+    console.log(`Opening asset picker`);
+    await this.driver.clickElement(assetPicker);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    console.log(`Filled search input with ${token}`);
+    await this.driver.clickElementAndWaitToDisappear({
+      css: this.tokenButton,
+      text: token,
+    });
+  };
 
   async selectDestToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
@@ -503,9 +476,36 @@ class BridgeQuotePage {
     await input.sendKeys(Key.TAB);
   }
 
+  submitQuote = async () => {
+    await this.driver.clickElement(this.submitButton);
+  };
+
+  submitQuoteAndDismiss = async () => {
+    await this.submitQuote();
+
+    // If no price data is available a confirmation modal appears before submission.
+    // Dismiss it so the transaction can proceed.
+    await this.approveModalIfPresent();
+  };
+
+  submitQuoteWithWarning = async (warningCount: number = 0) => {
+    if (warningCount) {
+      await this.driver.elementCountBecomesN(
+        this.tokenWarningAlert,
+        warningCount,
+      );
+    }
+    await this.submitQuote();
+    await this.driver.waitForSelector(this.warningModal);
+  };
+
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
   }
+
+  waitForQuote = async () => {
+    await this.driver.waitForSelector(this.submitButton);
+  };
 }
 
 export default BridgeQuotePage;

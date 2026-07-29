@@ -848,8 +848,8 @@ module.exports = defineConfig([
    *
    * Page objects should declare selectors first (both constant fields and
    * arrow-function locator builders), followed by the constructor, then the
-   * action methods that drive the `driver`. Everything is alphabetical within
-   * its group.
+   * action methods that drive the `driver` (including async arrow-function
+   * properties). Everything is alphabetical within its group.
    * The files listed in `ignores` don't yet comply. They are temporarily
    * exempt and should be removed from this list as each one is reordered. Do
    * NOT add new files here. New page objects must comply.
