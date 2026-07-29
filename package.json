@@ -16,6 +16,9 @@
       "./shared/*/index.ts"
     ]
   },
+  "workspaces": [
+    "test/fakes/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
@@ -372,6 +375,7 @@
     "@metamask/design-system-react": "^0.35.0",
     "@metamask/design-system-tailwind-preset": "^0.10.0",
     "@metamask/design-tokens": "^8.7.0",
+    "@metamask/dummy-package": "workspace:*",
     "@metamask/eip-5792-middleware": "3.0.3",
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
     "@metamask/ens-controller": "^19.1.4",

@@ -6211,6 +6211,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/dummy-package@workspace:*, @metamask/dummy-package@workspace:test/fakes/dummy-package":
+  version: 0.0.0-use.local
+  resolution: "@metamask/dummy-package@workspace:test/fakes/dummy-package"
+  languageName: unknown
+  linkType: soft
+
 "@metamask/eip-5792-middleware@npm:3.0.3":
   version: 3.0.3
   resolution: "@metamask/eip-5792-middleware@npm:3.0.3"
@@ -32773,6 +32779,7 @@ __metadata:
     "@metamask/design-system-shared": "npm:^0.31.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.10.0"
     "@metamask/design-tokens": "npm:^8.7.0"
+    "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.4"
