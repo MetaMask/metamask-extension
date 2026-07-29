@@ -190,8 +190,7 @@ export class LedgerOffscreenBridge implements Omit<
           clearTimeout(responseTimeout);
 
           if (chrome.runtime.lastError) {
-            const chromeError = chrome.runtime.lastError.message;
-            reject(new Error(chromeError));
+            reject(new Error(chrome.runtime.lastError.message));
             return;
           }
 
@@ -203,35 +202,41 @@ export class LedgerOffscreenBridge implements Omit<
 
           if (response?.success) {
             resolve((response.payload ?? response.success) as ResponsePayload);
-          } else {
-            const error =
-              response?.payload &&
-              typeof response.payload === 'object' &&
-              'error' in response.payload
-                ? response.payload.error
-                : response?.error;
-
-            if (error?.name === 'HardwareWalletError') {
-              reject(toHardwareWalletError(error, HardwareWalletType.Ledger));
-            } else if (
-              error &&
-              typeof error.statusCode === 'number' &&
-              error.statusCode > 0
-            ) {
-              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
-              if (isKnownLedgerError(statusCodeHex)) {
-                reject(createLedgerError(statusCodeHex));
-              } else {
-                reject(new TransportStatusError(error.statusCode));
-              }
-            } else if (error?.message) {
-              reject(new Error(error.message, { cause: error }));
-            } else {
-              reject(new Error('Unknown Ledger error occurred'));
-            }
+            return;
           }
+
+          reject(this.#toLedgerBridgeError(response));
         },
       );
     });
+  }
+
+  #toLedgerBridgeError(
+    response: LedgerOffscreenResponse<unknown> | undefined,
+  ): Error {
+    const error =
+      response?.payload &&
+      typeof response.payload === 'object' &&
+      'error' in response.payload
+        ? response.payload.error
+        : response?.error;
+
+    if (error?.name === 'HardwareWalletError') {
+      return toHardwareWalletError(error, HardwareWalletType.Ledger);
+    }
+
+    if (error && typeof error.statusCode === 'number' && error.statusCode > 0) {
+      const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+      if (isKnownLedgerError(statusCodeHex)) {
+        return createLedgerError(statusCodeHex);
+      }
+      return new TransportStatusError(error.statusCode);
+    }
+
+    if (error?.message) {
+      return new Error(error.message, { cause: error });
+    }
+
+    return new Error('Unknown Ledger error occurred');
   }
 }

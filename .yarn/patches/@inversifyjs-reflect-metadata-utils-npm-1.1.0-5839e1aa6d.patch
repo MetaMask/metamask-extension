@@ -2,10 +2,11 @@ diff --git a/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js b/lib/cjs/re
 index 369a8ead9f5c03251ac531175db0353002f99bc6..1653fd16a04ddaf824053f4836ba901ecce37956 100644
 --- a/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js
 +++ b/lib/cjs/reflectMetadata/utils/getOwnReflectMetadata.js
-@@ -1,8 +1,9 @@
+@@ -1,8 +1,10 @@
  "use strict";
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.getOwnReflectMetadata = getOwnReflectMetadata;
++// Use no-conflict so we don't touch the SES/LavaMoat-frozen global Reflect.
 +const ReflectMetadata = require("reflect-metadata/no-conflict");
  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
  function getOwnReflectMetadata(target, metadataKey) {
@@ -80,9 +81,10 @@ diff --git a/lib/esm/index.js b/lib/esm/index.js
 index f9ebab3ccccceaf185f799c070468d69ebf89072..be44be3a241cb7b1408f852da4902935b1a29859 100644
 --- a/lib/esm/index.js
 +++ b/lib/esm/index.js
-@@ -1,2 +1,31 @@
+@@ -1,2 +1,32 @@
 -function t(t,e){return Reflect.getOwnMetadata(e,t)}function e(t,e){return Reflect.getMetadata(e,t)}function n(t,e,n){Reflect.defineMetadata(e,n,t)}function a(e,n,a,f){const c=f(t(e,n)??a());Reflect.defineMetadata(n,c,e)}function f(t,n,a,f){const c=f(e(t,n)??a());Reflect.defineMetadata(n,c,t)}export{t as getOwnReflectMetadata,e as getReflectMetadata,n as setReflectMetadata,a as updateOwnReflectMetadata,f as updateReflectMetadata};
 -//# sourceMappingURL=index.js.map
++// Use no-conflict so we don't touch the SES/LavaMoat-frozen global Reflect.
 +import ReflectMetadata from "reflect-metadata/no-conflict";
 +
 +function getOwnReflectMetadata(target, metadataKey) {

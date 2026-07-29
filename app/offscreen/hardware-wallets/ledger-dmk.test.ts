@@ -594,9 +594,8 @@ describe('LedgerDmkBridgeHandler', () => {
 
     it('destroy() is safe to call multiple times', async () => {
       const handler = new LedgerDmkBridgeHandler();
-      await handler.destroy();
-      await handler.destroy();
-      // No error thrown, no crash
+      await expect(handler.destroy()).resolves.toBeUndefined();
+      await expect(handler.destroy()).resolves.toBeUndefined();
     });
 
     it('removes HID listeners on destroy()', async () => {
