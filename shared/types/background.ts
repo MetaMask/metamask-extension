@@ -12,6 +12,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
   DeFiPositionsControllerState,
+  DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -62,7 +63,6 @@ import type { ConnectivityControllerState } from '@metamask/connectivity-control
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
-import type { StellarAssetsControllerState } from '../../app/scripts/controllers/stellar-assets-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
@@ -176,6 +176,7 @@ export type ControllerStatePropertiesEnumerated = {
   unapprovedDecryptMsgCount: DecryptMessageControllerState['unapprovedDecryptMsgCount'];
   allDeFiPositions: DeFiPositionsControllerState['allDeFiPositions'];
   allDeFiPositionsCount: DeFiPositionsControllerState['allDeFiPositionsCount'];
+  allDeFiPositionsV2: DeFiPositionsControllerV2State['allDeFiPositionsV2'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
   ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
@@ -191,10 +192,10 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
   tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   fragments: MetaMetricsControllerState['fragments'];
-  completedMetaMetricsOnboarding: MetaMetricsControllerState['completedMetaMetricsOnboarding'];
+  consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
@@ -205,7 +206,6 @@ export type ControllerStatePropertiesEnumerated = {
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   balances: MultichainBalancesControllerState['balances'];
-  accountAssets: StellarAssetsControllerState['accountAssets'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
   historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
@@ -355,6 +355,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
+  DeFiPositionsControllerV2State &
   EncryptionPublicKeyControllerState &
   EnsControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
@@ -387,7 +388,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SelectedNetworkControllerState &
   SignatureControllerState &
   SmartTransactionsControllerState &
-  StellarAssetsControllerState &
   SnapControllerState &
   SnapInterfaceControllerState &
   SnapInsightsControllerState &

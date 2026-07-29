@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -29,9 +29,10 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useAppSelector } from '../../../store/store';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -123,6 +124,8 @@ const MoreButtonsGroup = ({
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const hasOnlyOneEnabledAction =
     actions.filter(({ enabled }) => enabled).length === 1;
   const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
@@ -164,7 +167,9 @@ const MoreButtonsGroup = ({
         onClick={onClick}
       />
       {modalIsOpen && (
-        <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg">
+        <Box
+          className={`flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg${isPureBlack ? ' bg-background-alternative' : ' bg-background-default'}`}
+        >
           {actions.map((action) => (
             <ButtonBase
               key={action.label}
@@ -560,7 +565,7 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Send}
+            name={IconName.Arrow2UpRight}
             color={IconColor.IconAlternative}
             size={IconSize.Md}
           />

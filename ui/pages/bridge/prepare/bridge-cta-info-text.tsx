@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { Text } from '../../../components/component-library';
@@ -22,8 +22,9 @@ export const BridgeCTAInfoText = () => {
 
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const { isQuoteExpired } = useSelector((state) =>
-    getValidationErrors(state as BridgeAppState, Date.now()),
+  const { isQuoteExpired } = useSelector(
+    (state: BridgeAppState) => getValidationErrors(state, Date.now()),
+    shallowEqual,
   );
 
   const hasMMFee = new BigNumber(

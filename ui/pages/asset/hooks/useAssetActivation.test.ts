@@ -97,11 +97,17 @@ describe('useAssetActivation', () => {
             },
           }
         : {},
-      accountAssets:
-        includeAssetInState && trustlineLimit !== undefined
+      assetsBalance:
+        includeAssetInState &&
+        (balanceAmount !== undefined || trustlineLimit !== undefined)
           ? {
               [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
-                [PUBNET_USDC_ASSET]: { limit: trustlineLimit },
+                [PUBNET_USDC_ASSET]: {
+                  amount: balanceAmount ?? '0',
+                  ...(trustlineLimit !== undefined
+                    ? { metadata: { limit: trustlineLimit } }
+                    : {}),
+                },
               },
             }
           : {},

@@ -1,9 +1,13 @@
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { XlmScope } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
 
 import {
-  getStellarBaseReserveForAccountAsset,
-  getStellarTrustlineAssetInfoForAccount,
+  getIsAssetRequireActivate,
+  getSpendableForAccount,
+  getTrustlineAssetInfoForAccount,
+  isAssetSupportActivation,
+  isAssetSupportSpendableBalance,
 } from './stellar-assets';
 
 const ACCOUNT_ID = 'stellar-account-id';
@@ -15,52 +19,133 @@ const TRUSTLINE_USDC =
 const SEP41_ASSET_ID =
   'stellar:pubnet/sep41:CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN' as CaipAssetType;
 
-const mockState = {
-  metamask: {
-    accountAssets: {
-      [ACCOUNT_ID]: {
-        [STELLAR_NATIVE_ASSET_ID]: {
-          baseReserve: '2.5',
-        },
-        [TRUSTLINE_USDC]: {
-          limit: '1000',
-        },
+/** 2.5 XLM in stroops (7 decimals). */
+const MINIMUM_RESERVE_BALANCE_STROOPS = '25000000';
+/** 7.5 XLM in stroops (7 decimals). */
+const SPENDABLE_BALANCE_STROOPS = '75000000';
+const STELLAR_DECIMALS = 7;
+
+type AssetsState = {
+  metamask: AssetsControllerState;
+};
+
+function createMockState(
+  assetsBalance: AssetsControllerState['assetsBalance'],
+): AssetsState {
+  return {
+    metamask: { assetsBalance } as unknown as AssetsControllerState,
+  };
+}
+
+const mockState = createMockState({
+  [ACCOUNT_ID]: {
+    [STELLAR_NATIVE_ASSET_ID]: {
+      amount: '10',
+      metadata: {
+        minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+        spendableBalance: SPENDABLE_BALANCE_STROOPS,
+        decimal: STELLAR_DECIMALS,
+      },
+    },
+    [TRUSTLINE_USDC]: {
+      amount: '0',
+      metadata: {
+        limit: '1000',
       },
     },
   },
-};
+});
 
 describe('stellar-assets selectors', () => {
-  describe('getStellarBaseReserveForAccountAsset', () => {
-    it('returns base reserve from StellarAssetsController state', () => {
+  describe('getSpendableForAccount', () => {
+    it('returns spendable and minimum reserve from AssetsController balance metadata', () => {
       expect(
-        getStellarBaseReserveForAccountAsset(
+        getSpendableForAccount(
           mockState,
           ACCOUNT_ID,
           STELLAR_NATIVE_ASSET_ID,
         ),
-      ).toBe('2.5');
+      ).toStrictEqual({
+        minimumReserveBalance: '2.5',
+        spendableBalance: '7.5',
+      });
     });
 
-    it('defaults base reserve to "0" when native enrichment is missing', () => {
+    it('returns undefined when accountId is missing', () => {
       expect(
-        getStellarBaseReserveForAccountAsset(
-          {
-            metamask: {
-              accountAssets: {
-                [ACCOUNT_ID]: {},
+        getSpendableForAccount(
+          mockState,
+          undefined,
+          STELLAR_NATIVE_ASSET_ID,
+        ),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when assetId is missing', () => {
+      expect(
+        getSpendableForAccount(mockState, ACCOUNT_ID, undefined),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when native enrichment is missing', () => {
+      expect(
+        getSpendableForAccount(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [STELLAR_NATIVE_ASSET_ID]: {
+                amount: '10',
               },
             },
-          },
+          }),
           ACCOUNT_ID,
           STELLAR_NATIVE_ASSET_ID,
         ),
-      ).toBe('0');
+      ).toBeUndefined();
     });
 
-    it('returns undefined base reserve for unsupported assets', () => {
+    it('returns undefined when spendableBalance is missing from metadata', () => {
       expect(
-        getStellarBaseReserveForAccountAsset(
+        getSpendableForAccount(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [STELLAR_NATIVE_ASSET_ID]: {
+                amount: '10',
+                metadata: {
+                  minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+                  decimal: STELLAR_DECIMALS,
+                },
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+        ),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when decimal is missing from metadata', () => {
+      expect(
+        getSpendableForAccount(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [STELLAR_NATIVE_ASSET_ID]: {
+                amount: '10',
+                metadata: {
+                  minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+                  spendableBalance: SPENDABLE_BALANCE_STROOPS,
+                },
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+        ),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined for unsupported assets', () => {
+      expect(
+        getSpendableForAccount(
           mockState,
           ACCOUNT_ID,
           ETHER_NATIVE_ASSET_ID,
@@ -69,10 +154,10 @@ describe('stellar-assets selectors', () => {
     });
   });
 
-  describe('getStellarTrustlineAssetInfoForAccount', () => {
+  describe('getTrustlineAssetInfoForAccount', () => {
     it('returns trustline metadata for an account/asset pair', () => {
       expect(
-        getStellarTrustlineAssetInfoForAccount(
+        getTrustlineAssetInfoForAccount(
           mockState,
           ACCOUNT_ID,
           TRUSTLINE_USDC,
@@ -84,7 +169,7 @@ describe('stellar-assets selectors', () => {
 
     it('returns undefined for native asset enrichment', () => {
       expect(
-        getStellarTrustlineAssetInfoForAccount(
+        getTrustlineAssetInfoForAccount(
           mockState,
           ACCOUNT_ID,
           STELLAR_NATIVE_ASSET_ID,
@@ -92,10 +177,10 @@ describe('stellar-assets selectors', () => {
       ).toBeUndefined();
     });
 
-    it('returns undefined when the account has no cached enrichment', () => {
+    it('returns undefined when the account has no balance entry', () => {
       expect(
-        getStellarTrustlineAssetInfoForAccount(
-          { metamask: { accountAssets: {} } },
+        getTrustlineAssetInfoForAccount(
+          createMockState({}),
           ACCOUNT_ID,
           TRUSTLINE_USDC,
         ),
@@ -104,12 +189,144 @@ describe('stellar-assets selectors', () => {
 
     it('returns undefined when the asset is missing for the account', () => {
       expect(
-        getStellarTrustlineAssetInfoForAccount(
+        getTrustlineAssetInfoForAccount(
           mockState,
           ACCOUNT_ID,
           SEP41_ASSET_ID,
         ),
       ).toBeUndefined();
+    });
+
+    it('returns undefined when balance metadata is missing', () => {
+      expect(
+        getTrustlineAssetInfoForAccount(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [TRUSTLINE_USDC]: {
+                amount: '0',
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
+  describe('getIsAssetRequireActivate', () => {
+    it('returns false when accountId is missing', () => {
+      expect(
+        getIsAssetRequireActivate(mockState, undefined, TRUSTLINE_USDC),
+      ).toBe(false);
+    });
+
+    it('returns false when assetId is missing', () => {
+      expect(
+        getIsAssetRequireActivate(mockState, ACCOUNT_ID, undefined),
+      ).toBe(false);
+    });
+
+    it('returns false when trustline limit is active', () => {
+      expect(
+        getIsAssetRequireActivate(mockState, ACCOUNT_ID, TRUSTLINE_USDC),
+      ).toBe(false);
+    });
+
+    it('returns true when trustline metadata is missing', () => {
+      expect(
+        getIsAssetRequireActivate(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [TRUSTLINE_USDC]: {
+                amount: '0',
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true when trustline limit is "0"', () => {
+      expect(
+        getIsAssetRequireActivate(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [TRUSTLINE_USDC]: {
+                amount: '0',
+                metadata: {
+                  limit: '0',
+                },
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          TRUSTLINE_USDC,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for non-trustline assets', () => {
+      expect(
+        getIsAssetRequireActivate(
+          mockState,
+          ACCOUNT_ID,
+          STELLAR_NATIVE_ASSET_ID,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for SEP-41 assets even with inactive-looking metadata', () => {
+      expect(
+        getIsAssetRequireActivate(
+          createMockState({
+            [ACCOUNT_ID]: {
+              [SEP41_ASSET_ID]: {
+                amount: '0',
+                metadata: {
+                  limit: '0',
+                },
+              },
+            },
+          }),
+          ACCOUNT_ID,
+          SEP41_ASSET_ID,
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe('isAssetSupportActivation', () => {
+    it('returns true for a Stellar classic asset', () => {
+      expect(isAssetSupportActivation(TRUSTLINE_USDC)).toBe(true);
+    });
+
+    it('returns false for a Stellar SEP-41 asset', () => {
+      expect(isAssetSupportActivation(SEP41_ASSET_ID)).toBe(false);
+    });
+
+    it('returns false for a non-Stellar asset', () => {
+      expect(isAssetSupportActivation(ETHER_NATIVE_ASSET_ID)).toBe(false);
+    });
+
+    it('returns false for an empty or undefined assetId', () => {
+      expect(isAssetSupportActivation('')).toBe(false);
+      expect(isAssetSupportActivation(undefined)).toBe(false);
+    });
+  });
+
+  describe('isAssetSupportSpendableBalance', () => {
+    it('returns true for native XLM', () => {
+      expect(isAssetSupportSpendableBalance(STELLAR_NATIVE_ASSET_ID)).toBe(true);
+    });
+
+    it('returns false for unsupported assets', () => {
+      expect(isAssetSupportSpendableBalance(ETHER_NATIVE_ASSET_ID)).toBe(false);
+      expect(isAssetSupportSpendableBalance(TRUSTLINE_USDC)).toBe(false);
+      expect(isAssetSupportSpendableBalance('')).toBe(false);
+      expect(isAssetSupportSpendableBalance(undefined)).toBe(false);
     });
   });
 });

@@ -6,16 +6,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { CaipAssetType } from '@metamask/utils';
 import React from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { useSpendableBalance } from '../hooks/useSpendableBalance';
 
 export type SpendableBalanceSectionProps = {
-  accountId?: string;
-  assetId: CaipAssetType;
+  spendableBalance: string;
+  minimumReserveBalance: string;
   totalBalance: string;
   symbol: string;
   fiatValue: number | null;
@@ -25,34 +23,25 @@ export type SpendableBalanceSectionProps = {
  * Spendable balance section: breakdown for a native asset (total, spendable, reserved, fiat value).
  *
  * @param params - Spendable balance section parameters
- * @param params.accountId - Optional account id override.
- * @param params.assetId - CAIP asset id for the native asset.
+ * @param params.minimumReserveBalance - minimum reserve balance.
+ * @param params.spendableBalance - spendable balance.
  * @param params.totalBalance - The total balance
  * @param params.symbol - The symbol of the asset
  * @param params.fiatValue - The fiat value
  */
 export function SpendableBalanceSection({
-  accountId,
-  assetId,
+  minimumReserveBalance,
+  spendableBalance,
   totalBalance,
   symbol,
   fiatValue,
 }: SpendableBalanceSectionProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter();
-  const { baseReserve, spendableBalance } = useSpendableBalance({
-    accountId,
-    assetId,
-    totalBalance,
-  });
-
-  if (baseReserve === undefined || spendableBalance === undefined) {
-    return null;
-  }
 
   const totalDisplay = `${totalBalance} ${symbol}`;
   const spendableDisplay = `${spendableBalance} ${symbol}`;
-  const reservedDisplay = `${baseReserve} ${symbol}`;
+  const reservedDisplay = `${minimumReserveBalance} ${symbol}`;
   const fiatValueDisplay =
     fiatValue !== null && Number.isFinite(fiatValue)
       ? formatFiat(fiatValue)

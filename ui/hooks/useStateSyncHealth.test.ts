@@ -1,9 +1,9 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
 import { forceUpdateMetamaskState } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 import { useStateSyncHealth } from './useStateSyncHealth';
 
-jest.mock('react-redux', () => ({
+jest.mock('../store/hooks', () => ({
   useDispatch: jest.fn(),
 }));
 

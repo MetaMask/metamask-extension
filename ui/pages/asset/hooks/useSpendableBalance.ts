@@ -1,14 +1,21 @@
 import type { CaipAssetType } from '@metamask/utils';
 import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  computeSpendableBalance,
-  isSupportBaseReserve,
-} from '../../../../shared/lib/multichain/spendable-balance';
-import { getStellarBaseReserveForAccountAsset } from '../../../selectors/stellar-assets';
+import { getSpendableForAccount } from '../../../selectors/stellar-assets';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+
+type UseSpendableBalanceResult =
+  | {
+      hasSpendableBalance: true;
+      minimumReserveBalance: string;
+      spendableBalance: string;
+    }
+  | {
+      hasSpendableBalance: false;
+      minimumReserveBalance: undefined;
+      spendableBalance: undefined;
+    };
 
 /**
  * Resolves native spendable balance data for an account/asset pair.
@@ -16,18 +23,15 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
  * @param params - Hook parameters.
  * @param params.accountId - Optional account id override.
  * @param params.assetId - CAIP asset id for the native asset.
- * @param params.totalBalance - Total balance display string used to compute spendable balance.
- * @returns Base reserve and spendable balance when available.
+ * @returns Minimum reserve and spendable balance when available.
  */
 export const useSpendableBalance = ({
   accountId,
   assetId,
-  totalBalance,
 }: {
   accountId?: string;
   assetId?: CaipAssetType;
-  totalBalance?: string;
-}) => {
+}): UseSpendableBalanceResult => {
   const chainId =
     assetId && isCaipAssetType(assetId)
       ? parseCaipAssetType(assetId).chainId
@@ -41,28 +45,24 @@ export const useSpendableBalance = ({
   });
   const resolvedAccountId = accountId ?? selectedAccountId;
 
-  const baseReserve = useSelector((state) => {
-    if (!assetId || !resolvedAccountId || !isSupportBaseReserve(assetId)) {
-      return undefined;
-    }
+  const spendableInfo = useSelector((state) =>
+    getSpendableForAccount(state, resolvedAccountId, assetId),
+  );
 
-    return getStellarBaseReserveForAccountAsset(
-      state,
-      resolvedAccountId,
-      assetId,
-    );
-  });
-
-  const spendableBalance = useMemo(() => {
-    if (baseReserve === undefined || totalBalance === undefined) {
-      return undefined;
-    }
-
-    return computeSpendableBalance(totalBalance, baseReserve);
-  }, [baseReserve, totalBalance]);
+  if (
+    spendableInfo?.minimumReserveBalance !== undefined &&
+    spendableInfo?.spendableBalance !== undefined
+  ) {
+    return {
+      hasSpendableBalance: true,
+      minimumReserveBalance: spendableInfo.minimumReserveBalance,
+      spendableBalance: spendableInfo.spendableBalance,
+    };
+  }
 
   return {
-    baseReserve,
-    spendableBalance,
+    hasSpendableBalance: false,
+    minimumReserveBalance: undefined,
+    spendableBalance: undefined,
   };
 };

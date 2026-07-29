@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType } from '@metamask/utils';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
@@ -30,6 +30,7 @@ import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
+import { useDispatch } from '../../../store/hooks';
 
 const TokenButtons = ({
   token,
@@ -157,7 +158,7 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.Dollar}
+              name={IconName.Arrow2UpRight}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />

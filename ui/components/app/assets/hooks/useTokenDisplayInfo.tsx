@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { isCaipChainId } from '@metamask/utils';
+import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 import {
   getAllTokens,
   getEnabledNetworksByNamespace,
@@ -22,8 +22,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { isAssetRequireActivate } from '../../../../../shared/lib/multichain/trustline';
-import { getStellarTrustlineAssetInfoForAccount } from '../../../../selectors/stellar-assets';
+import { getIsAssetRequireActivate } from '../../../../selectors/stellar-assets';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -100,22 +99,13 @@ export const useTokenDisplayInfo = ({
   const isStakeable =
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
-  const tokenRequireActivate = useSelector((state) => {
-    if (!token.assetId || !selectedAccount?.id) {
-      return false;
-    }
-
-    const assetMetadata = getStellarTrustlineAssetInfoForAccount(
+  const tokenRequireActivate = useSelector((state) =>
+    getIsAssetRequireActivate(
       state,
-      selectedAccount.id,
-      token.assetId,
-    );
-
-    return isAssetRequireActivate({
-      assetId: token.assetId,
-      assetMetadata,
-    });
-  });
+      selectedAccount?.id,
+      token.assetId as CaipAssetType | undefined,
+    ),
+  );
 
   if (isEvm) {
     const tokenData = (

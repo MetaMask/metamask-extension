@@ -1,0 +1,74 @@
+diff --git a/dist/data-sources/SnapDataSource.cjs b/dist/data-sources/SnapDataSource.cjs
+index a0649f95814beaf4916a1a2dcf1d39c76549258a..53f5172b29d909191d7e42af202ffb306201c60d 100644
+--- a/dist/data-sources/SnapDataSource.cjs
++++ b/dist/data-sources/SnapDataSource.cjs
+@@ -158,6 +158,7 @@ class SnapDataSource extends AbstractDataSource_js_1.AbstractDataSource {
+                         if (accountBalances) {
+                             accountBalances[assetId] = {
+                                 amount: balance.amount,
++                                ...(balance.metadata ? { metadata: balance.metadata } : {}),
+                             };
+                         }
+                     }
+@@ -370,6 +371,7 @@ _SnapDataSource_messenger = new WeakMap(), _SnapDataSource_onActiveChainsUpdated
+                 accountAssets ?? (accountAssets = {});
+                 accountAssets[assetId] = {
+                     amount: balance.amount,
++                    ...(balance.metadata ? { metadata: balance.metadata } : {}),
+                 };
+             }
+         }
+diff --git a/dist/data-sources/SnapDataSource.d.cts b/dist/data-sources/SnapDataSource.d.cts
+index 8356b8e34cc13bbe12de96bffb87893636a7feae..cfb41f250fd23bca299db7fbc1cc641c4326b37d 100644
+--- a/dist/data-sources/SnapDataSource.d.cts
++++ b/dist/data-sources/SnapDataSource.d.cts
+@@ -1,3 +1,4 @@
++import type { Json } from "@metamask/utils";
+ import type { GetPermissions, PermissionConstraint, PermissionControllerStateChange } from "@metamask/permission-controller";
+ import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { AssetsControllerMessenger } from "../AssetsController.cjs";
+@@ -14,6 +15,7 @@ export type AccountBalancesUpdatedEventPayload = {
+             [assetId: string]: {
+                 amount: string;
+                 unit: string;
++                metadata?: Record<string, Json>;
+             };
+         };
+     };
+diff --git a/dist/data-sources/SnapDataSource.d.mts b/dist/data-sources/SnapDataSource.d.mts
+index cf4e643f50c3d91423fdd22dc8891bd36fbb6952..8884af87884168d3cffae0dd8e41b0250d143eca 100644
+--- a/dist/data-sources/SnapDataSource.d.mts
++++ b/dist/data-sources/SnapDataSource.d.mts
+@@ -1,3 +1,4 @@
++import type { Json } from "@metamask/utils";
+ import type { GetPermissions, PermissionConstraint, PermissionControllerStateChange } from "@metamask/permission-controller";
+ import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { AssetsControllerMessenger } from "../AssetsController.mjs";
+@@ -14,6 +15,7 @@ export type AccountBalancesUpdatedEventPayload = {
+             [assetId: string]: {
+                 amount: string;
+                 unit: string;
++                metadata?: Record<string, Json>;
+             };
+         };
+     };
+diff --git a/dist/data-sources/SnapDataSource.mjs b/dist/data-sources/SnapDataSource.mjs
+index e4439dfbfbd3f24fa0767f02d2f7c93f4bcfe688..639e2023d5bc802bfd84cde300ad1a5aca536c3c 100644
+--- a/dist/data-sources/SnapDataSource.mjs
++++ b/dist/data-sources/SnapDataSource.mjs
+@@ -153,6 +153,7 @@ export class SnapDataSource extends AbstractDataSource {
+                         if (accountBalances) {
+                             accountBalances[assetId] = {
+                                 amount: balance.amount,
++                                ...(balance.metadata ? { metadata: balance.metadata } : {}),
+                             };
+                         }
+                     }
+@@ -364,6 +365,7 @@ _SnapDataSource_messenger = new WeakMap(), _SnapDataSource_onActiveChainsUpdated
+                 accountAssets ?? (accountAssets = {});
+                 accountAssets[assetId] = {
+                     amount: balance.amount,
++                    ...(balance.metadata ? { metadata: balance.metadata } : {}),
+                 };
+             }
+         }

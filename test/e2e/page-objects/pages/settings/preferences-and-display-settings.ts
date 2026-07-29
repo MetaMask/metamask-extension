@@ -44,6 +44,9 @@ class PreferencesAndDisplaySettings {
   private readonly showNativeTokenAsMainBalanceToggleLabel =
     "label.toggle-button:has([data-testid='show-native-token-as-main-balance'])";
 
+  private readonly autoDetectTokensToggleLabel =
+    "label.toggle-button:has([data-testid='autodetect-tokens'])";
+
   private readonly showDefaultAddressToggle =
     '[data-testid="show-default-address-toggle"]';
 
@@ -148,6 +151,13 @@ class PreferencesAndDisplaySettings {
     await this.driver.clickElement(
       this.showNativeTokenAsMainBalanceToggleLabel,
     );
+  }
+
+  async toggleAutoDetectTokens(): Promise<void> {
+    console.log('Toggle auto detect tokens on Assets settings page');
+    await this.checkAssetsPageIsLoaded();
+    await this.driver.waitForSelector(this.autoDetectTokensToggleLabel);
+    await this.driver.clickElement(this.autoDetectTokensToggleLabel);
   }
 
   async toggleShowDefaultAddress(): Promise<void> {

@@ -34,7 +34,7 @@ describe('Wallet Created Events - Imported Account', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -44,7 +44,7 @@ describe('Wallet Created Events - Imported Account', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
 
@@ -103,7 +103,7 @@ describe('Wallet Created Events - Imported Account', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
 

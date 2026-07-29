@@ -5,10 +5,9 @@ import { errorCodes } from '@metamask/rpc-errors';
 import type { CaipAssetType } from '@metamask/utils';
 import { parseCaipAssetType, isCaipAssetType } from '@metamask/utils';
 import {
-  isAssetRequireActivate,
-  isTrustlineAsset,
-} from '../../../../shared/lib/multichain/trustline';
-import { getStellarTrustlineAssetInfoForAccount } from '../../../selectors/stellar-assets';
+  getIsAssetRequireActivate,
+  isAssetSupportActivation,
+} from '../../../selectors/stellar-assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
@@ -39,8 +38,10 @@ export const useAssetActivation = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isAssetIsTrustlineAsset = assetId ? isTrustlineAsset(assetId) : false;
-  const chainId = assetId && isCaipAssetType(assetId) ? parseCaipAssetType(assetId).chainId : undefined;
+  const chainId =
+    assetId && isCaipAssetType(assetId)
+      ? parseCaipAssetType(assetId).chainId
+      : undefined;
 
   const selectedAccountId = useSelector((state) => {
     if (accountId || !chainId) {
@@ -58,26 +59,13 @@ export const useAssetActivation = ({
       ? multichainBalances[resolvedAccountId]?.[assetId]?.amount
       : undefined;
 
-  const requiresActivate = useSelector((state) => {
-    if (!assetId || !isAssetIsTrustlineAsset || !resolvedAccountId) {
-      return false;
-    }
+  const requiresActivate = useSelector((state) =>
+    getIsAssetRequireActivate(state, resolvedAccountId, assetId),
+  );
 
-    const assetMetadata = getStellarTrustlineAssetInfoForAccount(
-      state,
-      resolvedAccountId,
-      assetId,
-    );
-
-    return isAssetRequireActivate({
-      assetId,
-      assetMetadata,
-    });
-  });
-
+  // Classic asset with an active trustline (not requiring activation).
   const canDeactivate = Boolean(
-    assetId &&
-    isAssetIsTrustlineAsset &&
+    isAssetSupportActivation(assetId) &&
     !requiresActivate &&
     resolvedAccountId &&
     chainId,
@@ -137,12 +125,8 @@ export const useAssetActivation = ({
   ]);
 
   const activateAsset = useCallback(async () => {
-    if (
-      !resolvedAccountId ||
-      !chainId ||
-      !assetId ||
-      !isAssetIsTrustlineAsset
-    ) {
+    // Non-classic / already-active assets have requiresActivate === false.
+    if (!resolvedAccountId || !chainId || !assetId || !requiresActivate) {
       return;
     }
     setErrorMessage(null);
@@ -168,14 +152,7 @@ export const useAssetActivation = ({
     } finally {
       setIsActivating(false);
     }
-  }, [
-    assetId,
-    chainId,
-    dispatch,
-    isAssetIsTrustlineAsset,
-    resolvedAccountId,
-    t,
-  ]);
+  }, [assetId, chainId, dispatch, requiresActivate, resolvedAccountId, t]);
 
   return {
     deactivateAsset,
