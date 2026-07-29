@@ -36,9 +36,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
-import {
-  ALLOWED_PROD_SWAPS_CHAIN_IDS,
-} from '../../../../shared/constants/swaps';
+import { ALLOWED_PROD_SWAPS_CHAIN_IDS } from '../../../../shared/constants/swaps';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -141,8 +139,7 @@ const AssetPage = ({
   const { chainId, type, symbol, name, image } = asset;
 
   const isSwapsChain = useMemo(
-    () =>
-      (ALLOWED_PROD_SWAPS_CHAIN_IDS as readonly string[]).includes(chainId),
+    () => (ALLOWED_PROD_SWAPS_CHAIN_IDS as readonly string[]).includes(chainId),
     [chainId],
   );
 
