@@ -278,6 +278,7 @@
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "null"
     },
     "allDeFiPositionsCount": {},
+    "allDeFiPositionsV2": {},
     "allDetectedTokens": {},
     "allIgnoredAssets": {},
     "allIgnoredTokens": {},
@@ -638,8 +639,8 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
-    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
+    "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object"
@@ -856,13 +857,6 @@
         "snapId": "string"
       }
     },
-    "eventsBeforeMetricsOptIn": [
-      {
-        "category": "string",
-        "event": "string",
-        "properties": {}
-      }
-    ],
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "string",

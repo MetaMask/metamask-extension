@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { upperFirst } from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
@@ -59,6 +59,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
 
@@ -295,6 +296,18 @@ const ConnectHardwareForm = () => {
           }
         }
 
+        if (deviceName === HardwareDeviceNames.qr) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Qr);
+
+          if (
+            hwError.code === ErrorCode.PermissionCameraDenied ||
+            hwError.code === ErrorCode.PermissionCameraPromptDismissed
+          ) {
+            setError(t('youNeedToAllowCameraAccess') as string);
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
@@ -308,8 +321,15 @@ const ConnectHardwareForm = () => {
           errorMessage === 'LEDGER_WRONG_APP'
         ) {
           setError(t('ledgerLocked') as string);
-        } else if (errorMessage.includes('timeout')) {
-          setError(t('ledgerTimeout') as string);
+        } else if (
+          errorMessage.includes('timeout') ||
+          errorMessage.includes('timed out')
+        ) {
+          setError(
+            (deviceName === HardwareDeviceNames.ledger
+              ? t('ledgerTimeout')
+              : t('hardwareWalletConnectionTimeout')) as string,
+          );
         } else if (ledgerErrorCode) {
           setError(
             `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
@@ -413,6 +433,7 @@ const ConnectHardwareForm = () => {
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
+      createEventBuilder,
       defaultHdPaths,
       getPage,
       hardwareAccounts.length,
@@ -491,7 +512,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [createEventBuilder, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -593,6 +614,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      createEventBuilder,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,

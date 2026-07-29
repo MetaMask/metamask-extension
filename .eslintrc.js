@@ -12,6 +12,7 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const reactCompilerPlugin = require('eslint-plugin-react-compiler');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
+const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
 
 const {
   architecturalZones,
@@ -33,12 +34,15 @@ module.exports = defineConfig([
     ignores: readFileSync('.prettierignore', 'utf8')
       .trim()
       .split('\n')
-      .map((path) => (path.startsWith('/') ? `.${path}` : path)),
+      .map((path) => (path.startsWith('/') ? path.slice(1) : `**/${path}`)),
   },
   {
     languageOptions: {
       // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
       parser: babelParser,
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error',
     },
   },
 
@@ -402,7 +406,7 @@ module.exports = defineConfig([
       'react/default-props-match-prop-types': 'error',
       'react/jsx-no-duplicate-props': 'error',
       'react-hooks/exhaustive-deps': [
-        'warn',
+        'error',
         {
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
@@ -446,12 +450,12 @@ module.exports = defineConfig([
     rules: {
       'react-compiler/react-compiler': 'error',
       'react/no-unused-prop-types': 'error',
-      'react/no-unused-state': 'warn',
+      'react/no-unused-state': 'error',
       'react/jsx-boolean-value': 'off',
       'react/jsx-curly-brace-presence': 'off',
-      'react/no-deprecated': 'warn',
-      'react/default-props-match-prop-types': 'warn',
-      'react/jsx-no-duplicate-props': 'warn',
+      'react/no-deprecated': 'error',
+      'react/default-props-match-prop-types': 'error',
+      'react/jsx-no-duplicate-props': 'error',
       'react/display-name': 'off',
       'react/no-unescaped-entities': 'error',
       'react/prop-types': 'off',
@@ -459,7 +463,7 @@ module.exports = defineConfig([
       'react/jsx-key': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': [
-        'warn',
+        'error',
         {
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
@@ -605,6 +609,9 @@ module.exports = defineConfig([
 
       // TODO: Re-enable after ESLint v9 update
       'jest/unbound-method': 'off',
+
+      // TODO: Update to `@metamask/eslint-config-jest@15`, which includes these changes
+      'jest/no-disabled-tests': 'error',
     },
   },
   /**
@@ -839,12 +846,13 @@ module.exports = defineConfig([
   /**
    * E2E page objects
    *
-   * Page objects should declare selectors (fields) alphabetically at the
-   * top, followed by the constructor, then methods in alphabetical order.
-   *
-   * The files listed in `excludedFiles` don't yet comply. They are
-   * temporarily exempt and should be removed from this list as each one is
-   * reordered. Do NOT add new files here — new page objects must comply.
+   * Page objects should declare selectors first (both constant fields and
+   * arrow-function locator builders), followed by the constructor, then the
+   * action methods that drive the `driver`. Everything is alphabetical within
+   * its group.
+   * The files listed in `ignores` don't yet comply. They are temporarily
+   * exempt and should be removed from this list as each one is reordered. Do
+   * NOT add new files here. New page objects must comply.
    *
    * TODO: Reorder the excluded files and delete them from this list.
    */
@@ -916,7 +924,6 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/home/nfts-tab.ts',
       'test/e2e/page-objects/pages/home/perps-tab.ts',
       'test/e2e/page-objects/pages/home/tokens-tab.ts',
-      'test/e2e/page-objects/pages/home/transaction-details.ts',
       'test/e2e/page-objects/pages/login-page.ts',
       'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
       'test/e2e/page-objects/pages/multichain/address-list-modal.ts',
@@ -979,16 +986,15 @@ module.exports = defineConfig([
       'test/e2e/page-objects/pages/vault-decryptor-page.ts',
       'test/e2e/page-objects/pages/wallet-details-page.ts',
     ],
-    rules: {
-      '@typescript-eslint/member-ordering': [
-        'error',
-        {
-          classes: {
-            memberTypes: ['field', 'constructor', 'method'],
-            order: 'alphabetically',
-          },
+    plugins: {
+      'page-object': {
+        rules: {
+          'member-order': pageObjectMemberOrderRule,
         },
-      ],
+      },
+    },
+    rules: {
+      'page-object/member-order': 'error',
     },
   },
   /**

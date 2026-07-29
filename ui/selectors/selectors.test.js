@@ -2400,7 +2400,7 @@ describe('#getConnectedSitesList', () => {
         decimals: 18,
         balance: '966987986469506564059',
         string: '966.988',
-        iconUrl: './images/black-eth-logo.svg',
+        iconUrl: './images/black-eth-logo.png',
         chainId: '0x5',
       };
 

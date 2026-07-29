@@ -377,22 +377,20 @@
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
-    "message": "Nabigo ang pagdeposito"
+    "message": ""
   },
   "activity_deposit_failed_title": {
     "message": "Nabigo ang pagdeposito"
   },
   "activity_deposit_pending_description": {
-    "message": "Nagdedeposito ng $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Nagdedeposito ng $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_description": {
-    "message": "Naideposito ang $1",
-    "description": "$1 is the token symbol"
+    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Naideposito ang $1",
@@ -1997,12 +1995,6 @@
     "message": "Aprubahan ang $1 para sa bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Pinahihintulutan mo ang access sa $1 $2. Hindi gagamitin ng kontrata ang anumang karagdagang pondo."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $3. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nakopya ang link ng block explorer"
   },
@@ -2451,9 +2443,6 @@
   },
   "clear": {
     "message": "I-clear"
-  },
-  "clearActivity": {
-    "message": "I-clear ang aktibidad at datos ng nonce"
   },
   "clearActivityDescription": {
     "message": "Nire-reset ang nonce ng account at binubura ang data mula sa tab ng aktibidad sa iyong wallet. Tanging ang kasalukuyang account at network lamang ang maaapektuhan. Ang iyong mga balanse at mga papasok na transaksyon ay hindi magbabago."
@@ -4163,9 +4152,6 @@
   "gotIt": {
     "message": "Nakuha ko"
   },
-  "grantExactAccess": {
-    "message": "Payagan ang eksaktong access"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -5698,9 +5684,6 @@
   },
   "networksSmallCase": {
     "message": "mga network"
-  },
-  "nevermind": {
-    "message": "Huwag na"
   },
   "new": {
     "message": "Bago!"
@@ -11115,12 +11098,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprubahan ang token para sa bridge."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprubahan ang token para sa swap."
   },
   "withdrawTo": {
     "message": "Tumanggap",

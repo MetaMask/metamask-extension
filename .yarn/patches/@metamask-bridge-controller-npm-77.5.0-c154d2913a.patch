@@ -1,0 +1,84 @@
+diff --git a/dist/constants/bridge.cjs b/dist/constants/bridge.cjs
+index 4d169e95dc5df859b7cd14235231c8ebf054071e..a0498c1c40b5ddca28ffed5c8f84cacc2c6a6ad9 100644
+--- a/dist/constants/bridge.cjs
++++ b/dist/constants/bridge.cjs
+@@ -47,7 +47,6 @@ exports.DEFAULT_CHAIN_RANKING = [
+     { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
+     { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
+     { chainId: 'tron:728126428', name: 'Tron' },
+-    { chainId: 'stellar:pubnet', name: 'Stellar' },
+     { chainId: 'eip155:8453', name: 'Base' },
+     { chainId: 'eip155:42161', name: 'Arbitrum' },
+     { chainId: 'eip155:59144', name: 'Linea' },
+@@ -58,7 +57,6 @@ exports.DEFAULT_CHAIN_RANKING = [
+     { chainId: 'eip155:1329', name: 'Sei' },
+     { chainId: 'eip155:999', name: 'HyperEVM' },
+     { chainId: 'eip155:4326', name: 'MegaETH' },
+-    { chainId: 'eip155:5042', name: 'Arc' },
+     { chainId: 'eip155:4663', name: 'Robinhood Chain' },
+     { chainId: 'eip155:324', name: 'zkSync' },
+ ];
+diff --git a/dist/constants/bridge.d.cts b/dist/constants/bridge.d.cts
+index 681da522ddf1e2d06aebb8d6a770e3cd2cd441ce..a4c46054f2c5cd000f4c1cd883f038c1c82b2c4a 100644
+--- a/dist/constants/bridge.d.cts
++++ b/dist/constants/bridge.d.cts
+@@ -34,8 +34,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "tron:728126428";
+     readonly name: "Tron";
+ }, {
+-    readonly chainId: "stellar:pubnet";
+-    readonly name: "Stellar";
+ }, {
+     readonly chainId: "eip155:8453";
+     readonly name: "Base";
+@@ -67,8 +65,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "eip155:4326";
+     readonly name: "MegaETH";
+ }, {
+-    readonly chainId: "eip155:5042";
+-    readonly name: "Arc";
+ }, {
+     readonly chainId: "eip155:4663";
+     readonly name: "Robinhood Chain";
+diff --git a/dist/constants/bridge.d.mts b/dist/constants/bridge.d.mts
+index 81663828b77d36b5bfc015be95eb208de6d61d8e..f379917139aa1ade40f33dc306808f1a3ec09587 100644
+--- a/dist/constants/bridge.d.mts
++++ b/dist/constants/bridge.d.mts
+@@ -34,8 +34,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "tron:728126428";
+     readonly name: "Tron";
+ }, {
+-    readonly chainId: "stellar:pubnet";
+-    readonly name: "Stellar";
+ }, {
+     readonly chainId: "eip155:8453";
+     readonly name: "Base";
+@@ -67,8 +65,6 @@ export declare const DEFAULT_CHAIN_RANKING: readonly [{
+     readonly chainId: "eip155:4326";
+     readonly name: "MegaETH";
+ }, {
+-    readonly chainId: "eip155:5042";
+-    readonly name: "Arc";
+ }, {
+     readonly chainId: "eip155:4663";
+     readonly name: "Robinhood Chain";
+diff --git a/dist/constants/bridge.mjs b/dist/constants/bridge.mjs
+index 01da97226b25daaeee44ff79572cb58e8cf1c788..bc286d5b6380fe623a167954e19a556a6325d02e 100644
+--- a/dist/constants/bridge.mjs
++++ b/dist/constants/bridge.mjs
+@@ -44,7 +44,6 @@ export const DEFAULT_CHAIN_RANKING = [
+     { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
+     { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
+     { chainId: 'tron:728126428', name: 'Tron' },
+-    { chainId: 'stellar:pubnet', name: 'Stellar' },
+     { chainId: 'eip155:8453', name: 'Base' },
+     { chainId: 'eip155:42161', name: 'Arbitrum' },
+     { chainId: 'eip155:59144', name: 'Linea' },
+@@ -55,7 +54,6 @@ export const DEFAULT_CHAIN_RANKING = [
+     { chainId: 'eip155:1329', name: 'Sei' },
+     { chainId: 'eip155:999', name: 'HyperEVM' },
+     { chainId: 'eip155:4326', name: 'MegaETH' },
+-    { chainId: 'eip155:5042', name: 'Arc' },
+     { chainId: 'eip155:4663', name: 'Robinhood Chain' },
+     { chainId: 'eip155:324', name: 'zkSync' },
+ ];

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -92,7 +92,20 @@ export async function integrationTestRender(extendedRenderOptions) {
 
   const store = await setupInitialStore(preloadedState, activeTab);
 
-  return {
-    ...render(<Root store={store} />, { ...renderOptions }),
-  };
+  let result;
+  // Wrap render + microtask flush so async setState from mount effects
+  // (e.g. useAsyncResult / useUserSubscriptions) stays inside act.
+  await act(async () => {
+    result = render(<Root store={store} />, {
+      // Prefer the legacy root for integration tests. RTL v14 defaults to
+      // createRoot (concurrent), which interacts poorly with existing
+      // act()/waitFor patterns and floods act-environment console warnings.
+      legacyRoot: true,
+      ...renderOptions,
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  return result;
 }

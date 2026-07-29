@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconColor,
   IconName,
+  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useEventListener } from '../../../hooks/useEventListener';
@@ -48,6 +49,8 @@ export const GlobalMenuDrawer = ({
   anchorElement,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
@@ -60,6 +63,9 @@ export const GlobalMenuDrawer = ({
   const [contentTopOffset, setContentTopOffset] = useState(0);
   const [isCompactSidepanelDrawer, setIsCompactSidepanelDrawer] =
     useState(false);
+  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
+  const isLargeDrawer =
+    isFullscreen || (isSidepanel && !isCompactSidepanelDrawer);
   const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(() =>
     isOpen && !usePortal ? 'open' : null,
   );
@@ -359,8 +365,12 @@ export const GlobalMenuDrawer = ({
           style={{ maxWidth: isCompactSidepanelDrawer ? undefined : width }}
         >
           <Box
-            className="h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
-            backgroundColor={BoxBackgroundColor.BackgroundDefault}
+            className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
+            backgroundColor={
+              isPureBlack && isLargeDrawer
+                ? BoxBackgroundColor.BackgroundAlternative
+                : BoxBackgroundColor.BackgroundDefault
+            }
           >
             {showCloseButton && (
               <Box className="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden">

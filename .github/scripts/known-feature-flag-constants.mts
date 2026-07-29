@@ -15,7 +15,10 @@ const { FeatureFlagNames } = featureFlagsModule;
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
-  Object.entries(FeatureFlagNames).map(([k, v]) => [`FeatureFlagNames.${k}`, v]),
+  Object.entries(FeatureFlagNames).map(([k, v]) => [
+    `FeatureFlagNames.${k}`,
+    v,
+  ]),
 );
 
 /**
@@ -53,6 +56,11 @@ const FILE_SOURCES: Array<{
     exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
   },
   {
+    key: 'ENABLE_DMK_FEATURE_FLAG',
+    file: 'shared/lib/hardware-wallets/feature-flags.ts',
+    exportName: 'ENABLE_DMK_FEATURE_FLAG',
+  },
+  {
     key: 'PAY_EXTENDED_FEATURE_FLAG',
     file: 'shared/lib/transaction/pay-prefill.ts',
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',
@@ -77,7 +85,8 @@ function resolveConstantFromFile(
     const content = fs.readFileSync(fullPath, 'utf-8');
     const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(
-      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
+      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` +
+        '`([^`]+)`)',
     );
     const match = re.exec(content);
     return match?.[1] ?? match?.[2] ?? match?.[3];
