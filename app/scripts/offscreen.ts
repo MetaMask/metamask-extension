@@ -13,14 +13,25 @@ import {
  * @returns True if the offscreen document already is has been opened, otherwise false.
  */
 async function hasOffscreenDocument() {
-  const { chrome, clients } = globalThis;
+  const { chrome } = globalThis;
+  const clients = (
+    globalThis as typeof globalThis & {
+      clients?: { matchAll: () => Promise<Array<{ url: string }>> };
+    }
+  ).clients;
+
   // getContexts is only available in Chrome 116+
   if ('getContexts' in chrome.runtime) {
-    const contexts = await chrome.runtime.getContexts({
-      contextTypes: ['OFFSCREEN_DOCUMENT'],
-    });
+    const contexts = (await chrome.runtime.getContexts({
+      contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
+    })) as chrome.runtime.ExtensionContext[];
     return contexts.length > 0;
   }
+
+  if (!clients) {
+    return false;
+  }
+
   const matchedClients = await clients.matchAll();
   const url = chrome.runtime.getURL('offscreen.html');
   return matchedClients.some((client) => client.url === url);
@@ -83,7 +94,7 @@ export async function createOffscreen() {
 
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
-      reasons: ['IFRAME_SCRIPTING'],
+      reasons: [chrome.offscreen.Reason.IFRAME_SCRIPTING],
       justification:
         'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
     });

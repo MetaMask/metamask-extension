@@ -38,13 +38,13 @@ export default function getObjStructure(
  * Modifies all the properties and deeply nested of a passed object. Iterates recursively over all nested objects and
  * their properties, and covers the entire depth of the object. At each property value which is not an object is modified.
  *
- * @param visit - The modifier to apply to each non-object property value
  * @param target - The object to modify
+ * @param visit - The modifier to apply to each non-object property value
  * @returns The modified object
  */
 function deepMap(
-  visit: (value: unknown) => string,
   target: Record<string, unknown> = {},
+  visit: (value: unknown) => string,
 ): Record<string, unknown> {
   Object.entries(target).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
