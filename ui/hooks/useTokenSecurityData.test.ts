@@ -157,6 +157,71 @@ describe('useTokenSecurityData', () => {
     expect(result.current.symbol).toBe('SECOND');
   });
 
+  it('ignores stale fetch responses when assetId changes quickly', async () => {
+    const firstAssetId = 'eip155:1/erc20:0x1111' as CaipAssetType;
+    const secondAssetId = 'eip155:1/erc20:0x2222' as CaipAssetType;
+    const secondSecurityData: TokenSecurityData = {
+      ...mockSecurityData,
+      resultType: 'Warning',
+    };
+
+    let resolveFirstFetch: (value: unknown) => void;
+    const firstFetchPromise = new Promise((resolve) => {
+      resolveFirstFetch = resolve;
+    });
+
+    mockFetchCachedTokenAssets.mockImplementation(async (assetIds) => {
+      const requestedAssetId = assetIds[0];
+
+      if (requestedAssetId === firstAssetId) {
+        await firstFetchPromise;
+        return [
+          {
+            assetId: firstAssetId,
+            name: 'First Token',
+            symbol: 'FIRST',
+            decimals: 18,
+            securityData: mockSecurityData,
+          },
+        ];
+      }
+
+      return [
+        {
+          assetId: secondAssetId,
+          name: 'Second Token',
+          symbol: 'SECOND',
+          decimals: 6,
+          securityData: secondSecurityData,
+        },
+      ];
+    });
+
+    const { result, rerender } = renderHook(
+      ({ assetId }: { assetId: CaipAssetType }) =>
+        useTokenSecurityData({ assetId }),
+      { initialProps: { assetId: firstAssetId } },
+    );
+
+    rerender({ assetId: secondAssetId });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.securityData).toBe(secondSecurityData);
+    expect(result.current.symbol).toBe('SECOND');
+
+    resolveFirstFetch!(null);
+
+    await waitFor(() => {
+      expect(mockFetchCachedTokenAssets).toHaveBeenCalledTimes(2);
+    });
+
+    expect(result.current.securityData).toBe(secondSecurityData);
+    expect(result.current.symbol).toBe('SECOND');
+  });
+
   it('derives native asset metadata from slip44 asset id', async () => {
     const assetId = 'eip155:1/slip44:60' as CaipAssetType;
     mockFetchCachedTokenAssets.mockResolvedValue([
