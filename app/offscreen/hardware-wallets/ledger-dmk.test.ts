@@ -687,5 +687,56 @@ describe('LedgerDmkBridgeHandler', () => {
       consoleErrorSpy.mockRestore();
       consoleLogSpy.mockRestore();
     });
+
+    it('does not let an orphan destroy tear down a newer in-flight bridge', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+
+      // Orphan destroy emits disconnect — previously this re-ran tearDownBridge
+      // via a monitor attached too early in constructBridge.
+      mockBridgeDestroy.mockImplementation(async () => {
+        mockOnSessionStateChangeSubject.next({ connected: false });
+      });
+
+      let resolveFirstConnect: ((sessionId: string) => void) | undefined;
+      mockBridgeConnect.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFirstConnect = resolve;
+          }),
+      );
+
+      const firstAction = handler.handleAction(LedgerAction.makeApp);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveFirstConnect).toBeDefined();
+
+      // Retire the first construction (hot-swap / destroy).
+      await handler.destroy();
+
+      // Start a second construction before the orphan finishes being discarded.
+      mockBridgeConnect.mockResolvedValueOnce('second-session-id');
+      const secondAction = handler.handleAction(LedgerAction.makeApp);
+
+      // Finish the orphaned first construction; discard path destroys it.
+      resolveFirstConnect?.('orphan-session-id');
+      await expect(firstAction).rejects.toMatchObject({
+        code: ErrorCode.DeviceInvalidSession,
+      });
+
+      // Second construction must still succeed — orphan disconnect must not
+      // bump generation / clear bridgePromise for the newer attempt.
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await expect(secondAction).resolves.toBe(true);
+
+      consoleErrorSpy.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
   });
 });

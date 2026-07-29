@@ -235,6 +235,12 @@ export class LedgerDmkBridgeHandler {
             Category.Connection,
           );
         }
+        // Only subscribe after the generation check. Doing this inside
+        // `constructBridge` lets an orphan re-attach monitoring; a later
+        // `bridge.destroy()` can emit `connected: false` and run
+        // `tearDownBridge()`, bumping generation and clearing a newer
+        // in-flight `bridgePromise`.
+        this.setupDisconnectMonitoring(bridge);
         this.bridge = bridge;
         console.log('[LedgerDMK] ensureBridge: bridge ready', {
           sessionId: this.sessionId,
@@ -294,10 +300,6 @@ export class LedgerDmkBridgeHandler {
       console.log('[LedgerDMK] constructBridge: session ready', {
         sessionId: this.sessionId,
       });
-
-      // Subscribe to disconnect events so we tear down the bridge when the
-      // device is unplugged.
-      this.setupDisconnectMonitoring(bridge);
 
       return bridge;
     } catch (error) {
