@@ -29,6 +29,150 @@ import {
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
+function SnapsConnectContent({ origin, isLoading, snaps, snapName, t }) {
+  let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
+  const { name } = useSelector((state) =>
+    // hack around the selector throwing
+    getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
+  );
+
+  if (isSnapId(origin)) {
+    trimmedOrigin = name;
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+      >
+        <PulseLoader />
+      </Box>
+    );
+  }
+
+  if (snaps?.length > 1) {
+    return (
+      <Box
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        paddingTop={4}
+        width={BlockSize.Full}
+        style={{ overflowY: 'hidden' }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+      >
+        <Text
+          paddingBottom={2}
+          variant={TextVariant.headingMd}
+          textAlign={TextAlign.Center}
+        >
+          {t('connectionRequest')}
+        </Text>
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+          {t('multipleSnapConnectionWarning', [
+            <Text
+              as="span"
+              key="1"
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Medium}
+            >
+              {trimmedOrigin}
+            </Text>,
+            <Text
+              as="span"
+              key="2"
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Medium}
+            >
+              {snaps?.length}
+            </Text>,
+          ])}
+        </Text>
+        <Box
+          flexDirection={FlexDirection.Column}
+          display={Display.Flex}
+          marginTop={4}
+          width={BlockSize.Full}
+          style={{ overflowY: 'auto', flex: 1 }}
+        >
+          {snaps.map((snap) => (
+            // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
+            <SnapConnectCell
+              key={`snaps-connect-${snap}`}
+              snapId={snap}
+              origin={trimmedOrigin}
+            />
+          ))}
+        </Box>
+      </Box>
+    );
+  } else if (snaps?.length === 1) {
+    return (
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+      >
+        <Box paddingBottom={2}>
+          <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
+        </Box>
+        <Text
+          paddingBottom={2}
+          variant={TextVariant.headingMd}
+          textAlign="center"
+        >
+          {t('connectionRequest')}
+        </Text>
+        <Text
+          variant={TextVariant.bodyMd}
+          textAlign={TextAlign.Center}
+          padding={[0, 4]}
+          overflowWrap={OverflowWrap.Anywhere}
+        >
+          {t('snapConnectionWarning', [
+            <Text
+              as="span"
+              key="1"
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Medium}
+            >
+              {trimmedOrigin}
+            </Text>,
+            <Text
+              as="span"
+              key="2"
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Medium}
+            >
+              {snapName}
+            </Text>,
+          ])}
+        </Text>
+      </Box>
+    );
+  }
+  return null;
+}
+
+SnapsConnectContent.propTypes = {
+  origin: PropTypes.string,
+  isLoading: PropTypes.bool,
+  snaps: PropTypes.arrayOf(PropTypes.string),
+  snapName: PropTypes.string,
+  t: PropTypes.func.isRequired,
+};
+
 export default function SnapsConnect({
   request,
   approveConnection,
@@ -70,142 +214,6 @@ export default function SnapsConnect({
     }
   }, [request, approveConnection]);
 
-  const SnapsConnectContent = () => {
-    let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
-    const { name } = useSelector((state) =>
-      // hack around the selector throwing
-      getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
-    );
-
-    if (isSnapId(origin)) {
-      trimmedOrigin = name;
-    }
-
-    if (isLoading) {
-      return (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          width={BlockSize.Full}
-          height={BlockSize.Full}
-        >
-          <PulseLoader />
-        </Box>
-      );
-    }
-
-    if (snaps?.length > 1) {
-      return (
-        <Box
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          paddingTop={4}
-          width={BlockSize.Full}
-          style={{ overflowY: 'hidden' }}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-        >
-          <Text
-            paddingBottom={2}
-            variant={TextVariant.headingMd}
-            textAlign={TextAlign.Center}
-          >
-            {t('connectionRequest')}
-          </Text>
-          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-            {t('multipleSnapConnectionWarning', [
-              <Text
-                as="span"
-                key="1"
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Medium}
-              >
-                {trimmedOrigin}
-              </Text>,
-              <Text
-                as="span"
-                key="2"
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Medium}
-              >
-                {snaps?.length}
-              </Text>,
-            ])}
-          </Text>
-          <Box
-            flexDirection={FlexDirection.Column}
-            display={Display.Flex}
-            marginTop={4}
-            width={BlockSize.Full}
-            style={{ overflowY: 'auto', flex: 1 }}
-          >
-            {snaps.map((snap) => (
-              // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
-              <SnapConnectCell
-                key={`snaps-connect-${snap}`}
-                snapId={snap}
-                origin={trimmedOrigin}
-              />
-            ))}
-          </Box>
-        </Box>
-      );
-    } else if (snaps?.length === 1) {
-      return (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          width={BlockSize.Full}
-          height={BlockSize.Full}
-          paddingLeft={4}
-          paddingRight={4}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-        >
-          <Box paddingBottom={2}>
-            <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
-          </Box>
-          <Text
-            paddingBottom={2}
-            variant={TextVariant.headingMd}
-            textAlign="center"
-          >
-            {t('connectionRequest')}
-          </Text>
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Center}
-            padding={[0, 4]}
-            overflowWrap={OverflowWrap.Anywhere}
-          >
-            {t('snapConnectionWarning', [
-              <Text
-                as="span"
-                key="1"
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Medium}
-              >
-                {trimmedOrigin}
-              </Text>,
-              <Text
-                as="span"
-                key="2"
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Medium}
-              >
-                {snapName}
-              </Text>,
-            ])}
-          </Text>
-        </Box>
-      );
-    }
-    return null;
-  };
-
   return (
     <Box
       className="snaps-connect"
@@ -232,7 +240,13 @@ export default function SnapsConnect({
         paddingLeft={4}
         paddingRight={4}
       >
-        <SnapsConnectContent />
+        <SnapsConnectContent
+          origin={origin}
+          isLoading={isLoading}
+          snaps={snaps}
+          snapName={snapName}
+          t={t}
+        />
       </Box>
       <PageContainerFooter
         cancelButtonType="default"

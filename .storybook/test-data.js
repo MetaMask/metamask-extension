@@ -680,7 +680,7 @@ const state = {
         name: 'Approve Tokens',
       },
     },
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: true,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,

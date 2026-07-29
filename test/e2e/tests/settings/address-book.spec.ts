@@ -49,6 +49,7 @@ describe('Address Book', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
 
+        // Add flakiness fix here: wait for the continue button to be stably enabled
         await createInternalTransaction({
           driver,
           chainId: '0x539',

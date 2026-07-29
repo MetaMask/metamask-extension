@@ -1,0 +1,142 @@
+diff --git a/lib/previous-map.js b/lib/previous-map.js
+index 588e80992ca2041f0bfee0ab1039b9c218a7e4dc..d4368704f5119eaafa9cfc2d4114d065657b042c 100644
+--- a/lib/previous-map.js
++++ b/lib/previous-map.js
+@@ -64,7 +64,15 @@ var PreviousMap = /*#__PURE__*/function () {
+ 
+   _proto.consumer = function consumer() {
+     if (!this.consumerCache) {
+-      this.consumerCache = new _sourceMap.default.SourceMapConsumer(this.text);
++      // Backport the intent of postcss 8.4.31's aaec7b78 (avoid throwing raw parse
++      // errors for non-JSON source maps): v7 has no explicit JSON.parse call here —
++      // parsing happens inside SourceMapConsumer — so guard its construction instead,
++      // preventing a parse-error message (which can echo file content) from bubbling up.
++      try {
++        this.consumerCache = new _sourceMap.default.SourceMapConsumer(this.text);
++      } catch (e) {
++        this.consumerCache = new _sourceMap.default.SourceMapConsumer(JSON.stringify({ version: 3, sources: [], mappings: '' }));
++      }
+     }
+ 
+     return this.consumerCache;
+@@ -150,6 +158,14 @@ var PreviousMap = /*#__PURE__*/function () {
+       if (file) map = _path.default.join(_path.default.dirname(file), map);
+       this.root = _path.default.dirname(map);
+ 
++      // Backport postcss 8.5.12 (GHSA-6g55-p6wh-862q) + 8.5.18 (GHSA-r28c-9q8g-f849):
++      // only auto-load a sibling *.map file; reject non-.map paths and directory traversal.
++      if (!/\.map$/i.test(map)) return false;
++      if (file) {
++        var _rel = _path.default.relative(_path.default.dirname(file), map);
++        if (_rel === '..' || _rel.indexOf('..' + _path.default.sep) === 0 || _path.default.isAbsolute(_rel)) return false;
++      }
++
+       if (_fs.default.existsSync && _fs.default.existsSync(map)) {
+         return _fs.default.readFileSync(map, 'utf-8').toString().trim();
+       } else {
+diff --git a/lib/stringifier.js b/lib/stringifier.js
+index 0e99a417a33504958c296a9d70c4c1804db1691a..36f9db97433440e897268320472564841385bfc6 100644
+--- a/lib/stringifier.js
++++ b/lib/stringifier.js
+@@ -21,6 +21,18 @@ function capitalize(str) {
+   return str[0].toUpperCase() + str.slice(1);
+ }
+ 
++// Backport postcss 8.5.10 (GHSA-qx2v-qp2m-jg93): stringified CSS could contain a
++// literal '</style>' or '<!--', letting attacker-controlled CSS content (e.g. a
++// custom property value) break out of an inline <style> tag and inject markup.
++// CSS-escape any '<' before 'style'/'/style'/'!--' so it round-trips as data, not markup.
++var STYLE_TAG = /(<)(\/?style\b)/gi;
++var COMMENT_OPEN = /(<)(!--)/g;
++function escapeHTMLInCSS(str) {
++  if (typeof str !== 'string') return str;
++  if (str.indexOf('<') === -1) return str;
++  return str.replace(STYLE_TAG, '\\3c $2').replace(COMMENT_OPEN, '\\3c $2');
++}
++
+ var Stringifier = /*#__PURE__*/function () {
+   function Stringifier(builder) {
+     this.builder = builder;
+@@ -34,13 +46,13 @@ var Stringifier = /*#__PURE__*/function () {
+ 
+   _proto.root = function root(node) {
+     this.body(node);
+-    if (node.raws.after) this.builder(node.raws.after);
++    if (node.raws.after) this.builder(escapeHTMLInCSS(node.raws.after));
+   };
+ 
+   _proto.comment = function comment(node) {
+     var left = this.raw(node, 'left', 'commentLeft');
+     var right = this.raw(node, 'right', 'commentRight');
+-    this.builder('/*' + left + node.text + right + '*/', node);
++    this.builder(escapeHTMLInCSS('/*' + left + node.text + right + '*/'), node);
+   };
+ 
+   _proto.decl = function decl(node, semicolon) {
+@@ -52,14 +64,14 @@ var Stringifier = /*#__PURE__*/function () {
+     }
+ 
+     if (semicolon) string += ';';
+-    this.builder(string, node);
++    this.builder(escapeHTMLInCSS(string), node);
+   };
+ 
+   _proto.rule = function rule(node) {
+     this.block(node, this.rawValue(node, 'selector'));
+ 
+     if (node.raws.ownSemicolon) {
+-      this.builder(node.raws.ownSemicolon, node, 'end');
++      this.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, 'end');
+     }
+   };
+ 
+@@ -77,7 +89,7 @@ var Stringifier = /*#__PURE__*/function () {
+       this.block(node, name + params);
+     } else {
+       var end = (node.raws.between || '') + (semicolon ? ';' : '');
+-      this.builder(name + params + end, node);
++      this.builder(escapeHTMLInCSS(name + params + end), node);
+     }
+   };
+ 
+@@ -94,14 +106,14 @@ var Stringifier = /*#__PURE__*/function () {
+     for (var i = 0; i < node.nodes.length; i++) {
+       var child = node.nodes[i];
+       var before = this.raw(child, 'before');
+-      if (before) this.builder(before);
++      if (before) this.builder(escapeHTMLInCSS(before));
+       this.stringify(child, last !== i || semicolon);
+     }
+   };
+ 
+   _proto.block = function block(node, start) {
+     var between = this.raw(node, 'between', 'beforeOpen');
+-    this.builder(start + between + '{', node, 'start');
++    this.builder(escapeHTMLInCSS(start + between) + '{', node, 'start');
+     var after;
+ 
+     if (node.nodes && node.nodes.length) {
+@@ -111,7 +123,7 @@ var Stringifier = /*#__PURE__*/function () {
+       after = this.raw(node, 'after', 'emptyBody');
+     }
+ 
+-    if (after) this.builder(after);
++    if (after) this.builder(escapeHTMLInCSS(after));
+     this.builder('}', node, 'end');
+   };
+ 
+diff --git a/lib/tokenize.js b/lib/tokenize.js
+index 5b556bf5de5a338706d1d5008e35372c2164fc96..07fac24d3e3794f2b84dd3e2aa9054814023f21f 100644
+--- a/lib/tokenize.js
++++ b/lib/tokenize.js
+@@ -23,7 +23,9 @@ var COLON = ':'.charCodeAt(0);
+ var AT = '@'.charCodeAt(0);
+ var RE_AT_END = /[ \n\t\r\f{}()'"\\;/[\]#]/g;
+ var RE_WORD_END = /[ \n\t\r\f(){}:;@!'"\\\][#]|\/(?=\*)/g;
+-var RE_BAD_BRACKET = /.[\\/("'\n]/;
++// Backport postcss 8.4.31 (GHSA-7fh5-64p2-3v2j / CVE-2023-44270): a bare CR before
++// a bracket/quote was mis-tokenized, letting crafted input desync the parser.
++var RE_BAD_BRACKET = /.[\r\\/("'\n]/;
+ var RE_HEX_ESCAPE = /[a-f0-9]/i;
+ 
+ function tokenizer(input, options) {

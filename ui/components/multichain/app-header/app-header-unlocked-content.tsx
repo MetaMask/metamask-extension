@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -39,6 +39,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
+import { useDispatch } from '../../../store/hooks';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;

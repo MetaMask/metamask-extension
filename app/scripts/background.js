@@ -68,12 +68,13 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { useSplitStateStorage } from './lib/use-split-state-storage';
-import migrations from './migrations';
 import Migrator from './lib/migrator';
+import migrations from './migrations';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
@@ -861,6 +862,8 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
+  setupLedgerModeOffscreenBridge(controller);
+
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
   });
@@ -1351,10 +1354,10 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { completedMetaMetricsOnboarding, optedIn } = controller.getState();
+  const { consentDecisionMade, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (!completedMetaMetricsOnboarding || !optedIn) {
+  if (!consentDecisionMade || !optedIn) {
     return;
   }
 
@@ -2166,41 +2169,19 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }
 
-  const appInstalledEvent = {
-    category: MetaMetricsEventCategory.App,
-    event: MetaMetricsEventName.AppInstalled,
-    properties: eventProperties,
-  };
+  const { consentDecisionMade, optedIn } = controller.getState();
 
-  const { completedMetaMetricsOnboarding, optedIn, analyticsId } =
-    controller.getState();
-
-  if (completedMetaMetricsOnboarding === true && optedIn === false) {
+  if (consentDecisionMade === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the analytics ID is
-  // available. Otherwise keep the event buffered for the opt-in flush path so
-  // it is not dropped.
-  if (
-    completedMetaMetricsOnboarding === true &&
-    optedIn === true &&
-    analyticsId
-  ) {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AppInstalled)
-        .addCategory(MetaMetricsEventCategory.App)
-        .addProperties(eventProperties)
-        .build(),
-    );
-  } else {
-    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
-    // so we queue the metrics event for possible submission later.
-    controller.metaMetricsController.addEventBeforeMetricsOptIn(
-      appInstalledEvent,
-    );
-  }
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppInstalled)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(eventProperties)
+      .build(),
+  );
 };
 
 /**

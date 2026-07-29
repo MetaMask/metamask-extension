@@ -42,8 +42,6 @@ export type DeferredDeepLinkRoute =
   | {
       /**
        * External URL that can be opened without showing the interstitial.
-       * This can be because the signature is valid or because the route is in
-       * the interstitial bypass list.
        */
       type: DeferredDeepLinkRouteType.Redirect;
       url: string;
@@ -52,8 +50,6 @@ export type DeferredDeepLinkRoute =
   | {
       /**
        * Internal app route that can be opened without showing the interstitial.
-       * This can be because the signature is valid or because the route is in
-       * the interstitial bypass list.
        */
       type: DeferredDeepLinkRouteType.Navigate;
       route: string;

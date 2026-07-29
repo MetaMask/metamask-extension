@@ -64,13 +64,6 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
       },
@@ -131,13 +124,6 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.openTokenDetails(symbol);
         await tokensTab.checkTokenSymbolAndAddressDetails(symbol, tokenAddress);
 
