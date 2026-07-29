@@ -49,6 +49,9 @@ declare module 'selenium-webdriver/devtools/CDPConnection' {
 declare module 'selenium-webdriver' {
   import type { CdpConnection } from 'selenium-webdriver/devtools/CDPConnection';
 
+  // Module augmentation of selenium-webdriver's `WebDriver` requires an
+  // `interface` so the declaration merges with the upstream class.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface WebDriver {
     createCDPConnection(target: string): Promise<CdpConnection>;
   }

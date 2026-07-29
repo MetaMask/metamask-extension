@@ -2640,7 +2640,7 @@ if (process.env.IN_TEST) {
     return Promise.resolve();
   });
   // Load conditionally so this test-only package is excluded from production builds and policies.
-  // eslint-disable-next-line n/global-require
   global.stateHooks.hasConsoleAccess = () =>
+    // eslint-disable-next-line n/global-require
     require('@metamask/dummy-package').hasConsoleAccess();
 }
