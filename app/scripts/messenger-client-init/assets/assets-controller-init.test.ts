@@ -12,9 +12,9 @@ import {
   getAssetsControllerInitMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import { AssetsControllerInit } from './assets-controller-init';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import { AssetsControllerInit } from './assets-controller-init';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   traceAsControllerCallback: jest.fn((_req, fn) =>
@@ -468,7 +468,7 @@ describe('AssetsControllerInit', () => {
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const trace = constructorCall.trace;
+      const { trace } = constructorCall;
       if (!trace) {
         throw new Error('Expected trace callback to be defined');
       }
@@ -515,7 +515,7 @@ describe('AssetsControllerInit', () => {
       AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const trace = constructorCall.trace;
+      const { trace } = constructorCall;
       if (!trace) {
         throw new Error('Expected trace callback to be defined');
       }
