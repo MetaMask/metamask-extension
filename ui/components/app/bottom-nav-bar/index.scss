@@ -1,0 +1,34 @@
+.bottom-nav-bar {
+  &__icon {
+    transform-origin: center;
+    will-change: transform;
+
+    &--animate {
+      animation: bottom-nav-bar-icon-rotate 320ms cubic-bezier(0.2, 0, 0.2, 1);
+    }
+  }
+}
+
+@keyframes bottom-nav-bar-icon-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  40% {
+    transform: rotate(180deg) scale(0.92);
+  }
+
+  70% {
+    transform: rotate(300deg) scale(1.04);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-bar__icon--animate {
+    animation: none;
+  }
+}
