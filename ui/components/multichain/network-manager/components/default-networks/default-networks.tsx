@@ -1,6 +1,6 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   BtcScope,
   EthScope,
@@ -68,6 +68,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
+import { useDispatch } from '../../../../../store/hooks';
 
 const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
