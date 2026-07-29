@@ -400,8 +400,8 @@ export default function OnboardingFlow() {
       return 'transparent';
     }
     if (
-      pathname === ONBOARDING_REVEAL_SRP_ROUTE ||
-      pathname === ONBOARDING_REVIEW_SRP_ROUTE
+      pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
+      pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE)
     ) {
       return 'var(--color-background-default)';
     }
