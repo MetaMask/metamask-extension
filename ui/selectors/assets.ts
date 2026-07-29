@@ -96,10 +96,6 @@ import {
   filterExcludedTokenBalances,
   filterExcludedAssetList,
 } from '../components/app/assets/enablement/networks-customization';
-import {
-  calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
-  calculateBalanceChangeForAccountGroup as calculateBalanceChangeForAccountGroupFromUnified,
-} from './assets.balance-utils';
 import { getAccountIdByAddress, getInternalAccountsObject } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
