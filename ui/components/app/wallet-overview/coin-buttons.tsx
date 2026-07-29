@@ -347,7 +347,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, isRampsEnabled } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -411,10 +411,9 @@ const CoinButtons = ({
     if (!opened) {
       return;
     }
-    // Only the flag-off path opens a Portfolio browser tab; with the ramps
-    // flow enabled, goToBuy navigates in-app, so the "tab opened" toast would
-    // be misleading.
-    if (!isRampsEnabled) {
+    // Only the Portfolio paths open a browser tab; when goToBuy navigates
+    // in-app the "tab opened" toast would be misleading.
+    if (opensBuyInPortfolioTab) {
       toast.success(
         <ToastContent
           title={t('buyTabOpenedToastText')}
@@ -445,7 +444,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, isRampsEnabled]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
