@@ -10,8 +10,6 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
   WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
-// eslint-disable-next-line no-unused-vars -- this is imported for JSDoc
-const { CdpConnection } = require('selenium-webdriver/devtools/CDPConnection');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
@@ -217,7 +215,7 @@ class Driver {
    * @param {object} [options]
    * @param {number} [options.timeout] - Milliseconds to wait for the service
    * worker target to become available. Defaults to `this.timeout`.
-   * @returns {Promise<CdpConnection & AsyncDisposable>} The attached CDP
+   * @returns {Promise<import('selenium-webdriver/devtools/CDPConnection').CdpConnection & AsyncDisposable>} The attached CDP
    * connection (with `sessionId` set to the attached service worker session).
    * Disposing it detaches from the target.
    * @throws {Error} If the service worker target cannot be resolved within
