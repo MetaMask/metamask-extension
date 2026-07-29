@@ -9,7 +9,6 @@ import type {
   QuoteMetadata,
   QuoteResponseV1,
 } from '@metamask/bridge-controller';
-import { useNavigate } from 'react-router-dom';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
