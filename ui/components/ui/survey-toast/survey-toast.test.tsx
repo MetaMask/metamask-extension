@@ -57,7 +57,7 @@ const createStore = (options = { metametricsEnabled: true }) =>
     metamask: {
       lastViewedUserSurvey: 2,
       useExternalServices: true,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: options.metametricsEnabled,
       analyticsId: '0x123',
       internalAccounts: {

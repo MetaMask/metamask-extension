@@ -1,9 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { completeQrCodeScan } from '../../../../../store/actions';
 import QrPlayer from '../qr-player';
 import QrReader from '../qr-reader';
+import { useDispatch } from '../../../../../store/hooks';
+
 import {
   FlowStatus,
   type FlowStatusValue,

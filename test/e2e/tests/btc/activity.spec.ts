@@ -61,7 +61,7 @@ async function broadcastBitcoinSend(
   await sendPage.selectToken(BTC_CHAIN_ID, 'BTC');
   await sendPage.fillRecipient({ recipientAddress: recipient });
   await sendPage.fillAmount(amount);
-  await sendPage.isContinueButtonEnabled();
+  await sendPage.checkContinueButton({ state: 'enabled' });
   await sendPage.pressContinueButton();
   const reviewPage = new BitcoinReviewTxPage(driver);
   await reviewPage.checkPageIsLoaded();

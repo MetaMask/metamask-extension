@@ -1,10 +1,20 @@
 import { type BridgeController } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../store/store';
 import { getIsSmartTransaction } from '../../../shared/lib/selectors';
-import { BridgeAppState } from '../bridge/selectors';
+import type { SmartTransactionsState } from '../../../shared/lib/selectors/smart-transactions';
 import { getMaybeHexChainId } from '../bridge/utils';
+
+function getSmartTransactionsState(
+  state: MetaMaskReduxState,
+): SmartTransactionsState {
+  // @ts-expect-error Full Redux state includes smart transaction fields at runtime.
+  return state;
+}
 
 const callBridgeControllerMethod = <Action extends keyof BridgeController>(
   bridgeAction: Action,
@@ -24,11 +34,11 @@ export const updateBatchSellTrades = (
 ) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
     const hexChainId = getMaybeHexChainId(chain);
     const isSmartTransaction = hexChainId
-      ? getIsSmartTransaction(getState(), hexChainId)
+      ? getIsSmartTransaction(getSmartTransactionsState(getState()), hexChainId)
       : false;
     await dispatch(
       callBridgeControllerMethod(
