@@ -1,5 +1,12 @@
-import { parseCaipAssetType, parseCaipChainId } from '@metamask/utils';
-import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
+import {
+  type Hex,
+  parseCaipAssetType,
+  parseCaipChainId,
+} from '@metamask/utils';
+import {
+  getNativeTokenAddress,
+  type DeFiUnderlyingPosition,
+} from '@metamask/assets-controllers';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
@@ -15,18 +22,39 @@ function toTokenCellChainId(
   return chainId;
 }
 
+/**
+ * Resolves the token-cell `address` for a DeFi underlying position.
+ *
+ * - Non-EVM: return the CAIP asset id unchanged.
+ * - EVM slip44 (native): return the chain's native token address (or zero).
+ * - EVM erc20: return the checksummed contract address.
+ *
+ * @param position - Underlying position from `DeFiPositionsControllerV2` state.
+ * @returns Token cell address appropriate for the chain/asset type.
+ */
 function toTokenCellAddress(
   position: DeFiUnderlyingPosition,
 ): TokenWithFiatAmount['address'] {
+  if (!isEvmChainId(position.chainId)) {
+    return position.assetId;
+  }
+
   const { assetReference, assetNamespace } = parseCaipAssetType(
     position.assetId,
   );
+  const hexChainId = toTokenCellChainId(position.chainId) as Hex;
 
   if (assetNamespace === 'slip44') {
-    return assetReference as TokenWithFiatAmount['address'];
+    return getNativeTokenAddress(hexChainId);
   }
 
-  return toChecksumHexAddress(assetReference) as TokenWithFiatAmount['address'];
+  if (assetNamespace === 'erc20') {
+    return toChecksumHexAddress(
+      assetReference,
+    ) as TokenWithFiatAmount['address'];
+  }
+
+  return position.assetId;
 }
 
 /**

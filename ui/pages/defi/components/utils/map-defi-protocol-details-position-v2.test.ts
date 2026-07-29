@@ -1,4 +1,7 @@
-import type { DeFiUnderlyingPosition } from '@metamask/assets-controllers';
+import {
+  getNativeTokenAddress,
+  type DeFiUnderlyingPosition,
+} from '@metamask/assets-controllers';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { mapDefiProtocolDetailsPositionV2ToToken } from './map-defi-protocol-details-position-v2';
 
@@ -29,7 +32,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     });
   });
 
-  it('marks native assets and keeps symbol separate from name', () => {
+  it('marks native assets and uses the chain native token address', () => {
     const nativePosition: DeFiUnderlyingPosition = {
       ...position,
       assetId: 'eip155:59144/slip44:60',
@@ -43,7 +46,25 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
       title: 'Ethereum',
       symbol: 'ETH',
       isNative: true,
-      address: '60',
+      address: getNativeTokenAddress('0xe708'),
+    });
+  });
+
+  it('uses Polygon native token address for Polygon slip44 assets', () => {
+    const polygonNativePosition: DeFiUnderlyingPosition = {
+      ...position,
+      assetId: 'eip155:137/slip44:966',
+      chainId: 'eip155:137',
+      symbol: 'POL',
+      name: 'Polygon',
+    };
+
+    expect(
+      mapDefiProtocolDetailsPositionV2ToToken(polygonNativePosition),
+    ).toMatchObject({
+      isNative: true,
+      address: getNativeTokenAddress('0x89'),
+      chainId: '0x89',
     });
   });
 
@@ -103,11 +124,12 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
     });
   });
 
-  it('passes a non-EVM CAIP chain id through unchanged', () => {
+  it('passes a non-EVM CAIP chain id and asset id through unchanged', () => {
     const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+    const solanaAssetId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
     const solanaPosition: DeFiUnderlyingPosition = {
       ...position,
-      assetId: `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+      assetId: solanaAssetId,
       chainId: solanaChainId,
     };
 
@@ -115,6 +137,7 @@ describe('mapDefiProtocolDetailsPositionV2ToToken', () => {
       mapDefiProtocolDetailsPositionV2ToToken(solanaPosition),
     ).toMatchObject({
       chainId: solanaChainId,
+      address: solanaAssetId,
     });
   });
 });
