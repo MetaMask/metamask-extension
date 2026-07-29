@@ -10,6 +10,8 @@ const {
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
   WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
+// eslint-disable-next-line no-unused-vars -- this is imported for JSDoc
+const { CdpConnection } = require('selenium-webdriver/devtools/CDPConnection');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const lodash = require('lodash');
@@ -203,6 +205,19 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
+  /**
+   * Opens a Chrome DevTools Protocol (CDP) connection attached to the
+   * extension's service worker target.
+   *
+   * @param {object} [options]
+   * @param {number} [options.timeout] - Milliseconds to wait for the service
+   * worker target to become available. Defaults to `this.timeout`.
+   * @returns {Promise<{ cdpConnection: CdpConnection, closeServiceWorkerConnection: () => Promise<void>}>} An object containing the attached CDP connection (with `sessionId`
+   * set to the attached service worker session) and a cleanup function that
+   * detaches from the target. Best-effort cleanup swallows detach errors.
+   * @throws {Error} If the service worker target cannot be resolved within
+   * `timeout`, or if attaching to the resolved target fails.
+   */
   async #createServiceWorkerConnection({ timeout = this.timeout } = {}) {
     const cdpConnection = await this.driver.createCDPConnection('browser');
     let attachedSessionId = null;
