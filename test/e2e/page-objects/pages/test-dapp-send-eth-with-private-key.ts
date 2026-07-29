@@ -2,9 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { DAPP_URL } from '../../constants';
 
 class TestDappSendEthWithPrivateKey {
-  private readonly driver: Driver;
-
   private readonly addressInput = '#address';
+
+  private readonly driver: Driver;
 
   private readonly sendEthWithPrivateKeyButton = '#send';
 

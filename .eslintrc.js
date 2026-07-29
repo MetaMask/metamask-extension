@@ -850,76 +850,9 @@ module.exports = defineConfig([
    * arrow-function locator builders), followed by the constructor, then the
    * action methods that drive the `driver`. Everything is alphabetical within
    * its group.
-   * The files listed in `ignores` don't yet comply. They are temporarily
-   * exempt and should be removed from this list as each one is reordered. Do
-   * NOT add new files here. New page objects must comply.
-   *
-   * TODO: Reorder the excluded files and delete them from this list.
    */
   {
     files: ['test/e2e/page-objects/**/*.ts'],
-    ignores: [
-      'test/e2e/page-objects/pages/multichain/account-address-modal.ts',
-      'test/e2e/page-objects/pages/multichain/address-list-modal.ts',
-      'test/e2e/page-objects/pages/multichain/multichain-account-details-page.ts',
-      'test/e2e/page-objects/pages/multichain/private-key-modal.ts',
-      'test/e2e/page-objects/pages/network-manager.ts',
-      'test/e2e/page-objects/pages/nft-details-page.ts',
-      'test/e2e/page-objects/pages/notification-details-page.ts',
-      'test/e2e/page-objects/pages/notifications-list-page.ts',
-      'test/e2e/page-objects/pages/onboarding/onboarding-complete-page.ts',
-      'test/e2e/page-objects/pages/onboarding/onboarding-metrics-page.ts',
-      'test/e2e/page-objects/pages/onboarding/onboarding-password-page.ts',
-      'test/e2e/page-objects/pages/onboarding/onboarding-privacy-settings-page.ts',
-      'test/e2e/page-objects/pages/onboarding/onboarding-srp-page.ts',
-      'test/e2e/page-objects/pages/onboarding/secure-wallet-page.ts',
-      'test/e2e/page-objects/pages/onboarding/setup-passkey-page.ts',
-      'test/e2e/page-objects/pages/onboarding/start-onboarding-page.ts',
-      'test/e2e/page-objects/pages/permission/gator-permissions-page.ts',
-      'test/e2e/page-objects/pages/permission/permission-list-page.ts',
-      'test/e2e/page-objects/pages/permission/site-permission-page.ts',
-      'test/e2e/page-objects/pages/perps/perps-activity-page.ts',
-      'test/e2e/page-objects/pages/perps/perps-market-detail-page.ts',
-      'test/e2e/page-objects/pages/perps/perps-market-list-page.ts',
-      'test/e2e/page-objects/pages/perps/perps-order-entry-page.ts',
-      'test/e2e/page-objects/pages/perps/perps-withdraw-page.ts',
-      'test/e2e/page-objects/pages/phishing-warning-page.ts',
-      'test/e2e/page-objects/pages/reset-password-page.ts',
-      'test/e2e/page-objects/pages/send/bitcoin-review-tx-page.ts',
-      'test/e2e/page-objects/pages/send/send-page.ts',
-      'test/e2e/page-objects/pages/send/solana-confirm-tx-page.ts',
-      'test/e2e/page-objects/pages/send/solana-send-page.ts',
-      'test/e2e/page-objects/pages/send/solana-tx-result-page.ts',
-      'test/e2e/page-objects/pages/settings/about-page.ts',
-      'test/e2e/page-objects/pages/settings/advanced-settings.ts',
-      'test/e2e/page-objects/pages/settings/backup-and-sync-settings.ts',
-      'test/e2e/page-objects/pages/settings/contacts-settings.ts',
-      'test/e2e/page-objects/pages/settings/experimental-settings.ts',
-      'test/e2e/page-objects/pages/settings/notifications-settings-page.ts',
-      'test/e2e/page-objects/pages/settings/preferences-and-display-settings.ts',
-      'test/e2e/page-objects/pages/settings/preinstalled-example-settings.ts',
-      'test/e2e/page-objects/pages/settings/privacy-settings.ts',
-      'test/e2e/page-objects/pages/settings/settings-page.ts',
-      'test/e2e/page-objects/pages/settings/shield/shield-claim-page.ts',
-      'test/e2e/page-objects/pages/settings/shield/shield-claims-list-page.ts',
-      'test/e2e/page-objects/pages/settings/shield/shield-detail-page.ts',
-      'test/e2e/page-objects/pages/settings/shield/shield-plan-page.ts',
-      'test/e2e/page-objects/pages/settings/shield/shield-subscription-approve-page.ts',
-      'test/e2e/page-objects/pages/settings/transactions-settings.ts',
-      'test/e2e/page-objects/pages/snap-list-page.ts',
-      'test/e2e/page-objects/pages/snap-simple-keyring-page.ts',
-      'test/e2e/page-objects/pages/swap/swap-page.ts',
-      'test/e2e/page-objects/pages/test-dapp-mm-connect.ts',
-      'test/e2e/page-objects/pages/test-dapp-multichain.ts',
-      'test/e2e/page-objects/pages/test-dapp-send-eth-with-private-key.ts',
-      'test/e2e/page-objects/pages/test-dapp-solana.ts',
-      'test/e2e/page-objects/pages/test-dapp-tron.ts',
-      'test/e2e/page-objects/pages/test-dapp.ts',
-      'test/e2e/page-objects/pages/test-snaps.ts',
-      'test/e2e/page-objects/pages/token-overview-page.ts',
-      'test/e2e/page-objects/pages/vault-decryptor-page.ts',
-      'test/e2e/page-objects/pages/wallet-details-page.ts',
-    ],
     plugins: {
       'page-object': {
         rules: {

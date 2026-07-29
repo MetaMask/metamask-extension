@@ -1,24 +1,7 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AddressListModal {
-  private driver: Driver;
-
   private readonly accountAddress =
-    '[data-testid="multichain-address-row-address"]';
-
-  private readonly copyButton =
-    '[data-testid="multichain-address-row-copy-button"]';
-
-  private readonly qrButton =
-    '[data-testid="multichain-address-row-qr-button"]';
-
-  private readonly backButton =
-    '[data-testid="multichain-account-address-list-page-back-button"]';
-
-  private readonly networkName =
-    '[data-testid="multichain-address-row-network-name"]';
-
-  private readonly shortenedAddress =
     '[data-testid="multichain-address-row-address"]';
 
   private readonly addressCopiedMessage = {
@@ -26,8 +9,41 @@ class AddressListModal {
     text: 'Address copied',
   };
 
+  private readonly backButton =
+    '[data-testid="multichain-account-address-list-page-back-button"]';
+
+  private readonly copyButton =
+    '[data-testid="multichain-address-row-copy-button"]';
+
+  private driver: Driver;
+
+  private readonly networkName =
+    '[data-testid="multichain-address-row-network-name"]';
+
+  private readonly qrButton =
+    '[data-testid="multichain-address-row-qr-button"]';
+
+  private readonly shortenedAddress =
+    '[data-testid="multichain-address-row-address"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
+    console.log(`Check network "${networkAddress}" is displayed`);
+    await this.driver.waitForSelector({
+      text: networkAddress,
+      css: this.shortenedAddress,
+    });
+  }
+
+  async checkNetworkNameisDisplayed(networkName: string): Promise<void> {
+    console.log(`Check network "${networkName}" is displayed`);
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+    });
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -43,31 +59,10 @@ class AddressListModal {
     console.log('Address list modal is loaded');
   }
 
-  async checkNetworkNameisDisplayed(networkName: string): Promise<void> {
-    console.log(`Check network "${networkName}" is displayed`);
-    await this.driver.waitForSelector({
-      text: networkName,
-      tag: 'p',
-    });
-  }
-
-  async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
-    console.log(`Check network "${networkAddress}" is displayed`);
-    await this.driver.waitForSelector({
-      text: networkAddress,
-      css: this.shortenedAddress,
-    });
-  }
-
   async clickCopyButton(addressIndex: number = 0): Promise<void> {
     const copyButtonsList = await this.driver.findElements(this.copyButton);
     const copyButton = copyButtonsList[addressIndex];
     await copyButton.click();
-  }
-
-  async verifyCopyButtonFeedback(): Promise<void> {
-    console.log(`Look for "Address copied'!" state change`);
-    await this.driver.waitForSelector(this.addressCopiedMessage);
   }
 
   async clickQRbutton(addressIndex: number = 0): Promise<void> {
@@ -89,6 +84,11 @@ class AddressListModal {
 
   async goBack(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
+  }
+
+  async verifyCopyButtonFeedback(): Promise<void> {
+    console.log(`Look for "Address copied'!" state change`);
+    await this.driver.waitForSelector(this.addressCopiedMessage);
   }
 }
 
