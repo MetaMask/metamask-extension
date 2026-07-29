@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import NetworkManager from '../pages/network-manager';
-import { clearOrphanedNetworkManagerBackdrop } from './network.flow';
+import { waitForNetworkManagerBackdropToClear } from './network.flow';
 
 export async function selectTronNetwork(driver: Driver): Promise<void> {
   const networkManager = new NetworkManager(driver);
@@ -10,5 +10,5 @@ export async function selectTronNetwork(driver: Driver): Promise<void> {
 
   // Network Manager close transitions can leave an orphan backdrop that blocks
   // Selenium clicks even after the modal itself has gone away.
-  await clearOrphanedNetworkManagerBackdrop(driver);
+  await waitForNetworkManagerBackdropToClear(driver);
 }
