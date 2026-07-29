@@ -803,13 +803,14 @@ describe('rpc-error-utils', () => {
       expect(result.message).toContain('0x5515');
     });
 
-    it.each([
-      'Could not establish connection. Receiving end does not exist.',
-      'Could not establish connection.',
-      'The offscreen document is not available.',
-    ])(
-      'maps Ledger offscreen/runtime bridge failures to ConnectionTransportMissing: %s',
-      (message) => {
+    it('maps Ledger offscreen/runtime bridge failures to ConnectionTransportMissing', () => {
+      const messages = [
+        'Could not establish connection. Receiving end does not exist.',
+        'Could not establish connection.',
+        'The offscreen document is not available.',
+      ];
+
+      for (const message of messages) {
         const result = toHardwareWalletError(
           new Error(message),
           HardwareWalletType.Ledger,
@@ -820,8 +821,8 @@ describe('rpc-error-utils', () => {
         expect(result.message).toBe(
           'Ledger hardware wallet service is not available. Please try again.',
         );
-      },
-    );
+      }
+    });
   });
 
   describe('isHardwareWalletError', () => {
