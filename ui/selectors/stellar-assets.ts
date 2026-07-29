@@ -246,25 +246,23 @@ export const getSpendableForAccount = createParameterizedSelector(
  * @param assetId - CAIP asset id, when known.
  * @returns Trustline info, or `undefined`.
  */
-export const getTrustlineAssetInfoForAccount =
-  createParameterizedSelector(ACCOUNT_ASSET_LRU_CACHE_SIZE)(
-    getAssetsBalance,
-    (_state: AssetsBalancesState, accountId?: string) => accountId,
-    (
-      _state: AssetsBalancesState,
-      _accountId?: string,
-      assetId?: CaipAssetType,
-    ) => assetId,
-    (assetsBalance, accountId, assetId) => {
-      if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
-        return undefined;
-      }
-      return getTrustlineAssetInfoForAsset(
-        assetId,
-        getAssetBalanceMetadata(assetsBalance[accountId]?.[assetId]),
-      );
-    },
-  );
+export const getTrustlineAssetInfoForAccount = createParameterizedSelector(
+  ACCOUNT_ASSET_LRU_CACHE_SIZE,
+)(
+  getAssetsBalance,
+  (_state: AssetsBalancesState, accountId?: string) => accountId,
+  (_state: AssetsBalancesState, _accountId?: string, assetId?: CaipAssetType) =>
+    assetId,
+  (assetsBalance, accountId, assetId) => {
+    if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
+      return undefined;
+    }
+    return getTrustlineAssetInfoForAsset(
+      assetId,
+      getAssetBalanceMetadata(assetsBalance[accountId]?.[assetId]),
+    );
+  },
+);
 
 /**
  * Whether a asset needs trustline activation.
