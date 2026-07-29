@@ -65,15 +65,12 @@ export const useTokenSecurityData = ({
   const [error, setError] = useState<Error | null>(null);
   const [assetMetadata, setAssetMetadata] =
     useState<TokenSecurityAssetMetadata>({});
-  const isMountedRef = useRef(true);
+  const activeAssetIdRef = useRef<CaipAssetType | null>(null);
 
-  const fetchData = useCallback(async () => {
-    if (!assetId) {
-      return;
-    }
+  const fetchData = useCallback(async (requestAssetId: CaipAssetType) => {
     try {
-      const assets = await fetchCachedTokenAssets([assetId]);
-      if (!isMountedRef.current) {
+      const assets = await fetchCachedTokenAssets([requestAssetId]);
+      if (requestAssetId !== activeAssetIdRef.current) {
         return;
       }
       const asset = assets?.[0];
@@ -84,27 +81,26 @@ export const useTokenSecurityData = ({
               symbol: asset.symbol,
               name: asset.name,
               decimals: asset.decimals,
-              ...getAssetMetadataFromAssetId(assetId),
+              ...getAssetMetadataFromAssetId(requestAssetId),
             }
-          : getAssetMetadataFromAssetId(assetId),
+          : getAssetMetadataFromAssetId(requestAssetId),
       );
       setError(null);
     } catch (err) {
-      if (!isMountedRef.current) {
+      if (requestAssetId !== activeAssetIdRef.current) {
         return;
       }
       setError(err as Error);
     } finally {
-      if (isMountedRef.current) {
+      if (requestAssetId === activeAssetIdRef.current) {
         setIsLoading(false);
       }
     }
-  }, [assetId]);
+  }, []);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
     if (prefetchedData) {
+      activeAssetIdRef.current = assetId;
       setSecurityData(prefetchedData);
       setError(null);
       setIsLoading(false);
@@ -112,6 +108,7 @@ export const useTokenSecurityData = ({
     }
 
     if (!assetId) {
+      activeAssetIdRef.current = null;
       setSecurityData(null);
       setError(null);
       setAssetMetadata({});
@@ -119,14 +116,15 @@ export const useTokenSecurityData = ({
       return undefined;
     }
 
+    activeAssetIdRef.current = assetId;
     setSecurityData(null);
     setError(null);
     setAssetMetadata(getAssetMetadataFromAssetId(assetId));
     setIsLoading(true);
-    fetchData();
+    fetchData(assetId);
 
     return () => {
-      isMountedRef.current = false;
+      activeAssetIdRef.current = null;
     };
   }, [assetId, prefetchedData, fetchData]);
 
