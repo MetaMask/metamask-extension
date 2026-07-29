@@ -33,6 +33,10 @@ import {
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
 import { SecurityBanner } from './security-banner';
+import {
+  getSheetAnalyticsSource,
+  SecurityTrustAnalyticsProperty,
+} from './security-trust-analytics-properties';
 import type { SecurityTrustSheetParams } from './security-trust-sheet-types';
 
 const FEATURE_TAG_MAX = 5;
@@ -121,22 +125,13 @@ export const SecurityTrustInfoModal = ({
     trackEvent(
       createEventBuilder(MetaMetricsEventName.SecurityTrustBottomSheetOpened)
         .addProperties({
-          source:
-            sheetParams.source === 'buy'
-              ? 'Buy'
-              : sheetParams.source === 'swap'
-                ? 'Swap'
-                : 'badge',
+          source: getSheetAnalyticsSource(sheetParams.source),
           severity: sheetParams.severity,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_address: sheetParams.tokenAddress,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: sheetParams.tokenSymbol,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: sheetParams.chainId,
+          [SecurityTrustAnalyticsProperty.TokenAddress]:
+            sheetParams.tokenAddress,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]:
+            sheetParams.tokenSymbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: sheetParams.chainId,
         })
         .build(),
     );
@@ -154,22 +149,13 @@ export const SecurityTrustInfoModal = ({
         )
           .addProperties({
             action,
-            source:
-              sheetParams.source === 'buy'
-                ? 'Buy'
-                : sheetParams.source === 'swap'
-                  ? 'Swap'
-                  : 'badge',
+            source: getSheetAnalyticsSource(sheetParams.source),
             severity: sheetParams.severity,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_address: sheetParams.tokenAddress,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: sheetParams.tokenSymbol,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: sheetParams.chainId,
+            [SecurityTrustAnalyticsProperty.TokenAddress]:
+              sheetParams.tokenAddress,
+            [SecurityTrustAnalyticsProperty.TokenSymbol]:
+              sheetParams.tokenSymbol,
+            [SecurityTrustAnalyticsProperty.ChainId]: sheetParams.chainId,
           })
           .build(),
       );

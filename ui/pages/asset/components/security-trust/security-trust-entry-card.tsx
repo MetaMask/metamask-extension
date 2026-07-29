@@ -21,6 +21,9 @@ import { MetaMetricsEventName } from '../../../../../shared/constants/metametric
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  SecurityTrustAnalyticsProperty,
+} from './security-trust-analytics-properties';
+import {
   getFeatureTags,
   getResultTypeConfig,
   getSecurityAlertIconProps,
@@ -77,12 +80,8 @@ export const SecurityTrustEntryCard = ({
           MetaMetricsEventName.TokenDetailsSecuritySectionViewed,
         )
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: token.symbol,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: token.chainId,
+            [SecurityTrustAnalyticsProperty.TokenSymbol]: token.symbol,
+            [SecurityTrustAnalyticsProperty.ChainId]: token.chainId,
             severity: securityData.resultType ?? 'unknown',
           })
           .build(),
@@ -107,12 +106,8 @@ export const SecurityTrustEntryCard = ({
         MetaMetricsEventName.TokenDetailsSecuritySectionClicked,
       )
         .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: token.chainId,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: token.symbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: token.chainId,
           severity: securityData?.resultType ?? 'unknown',
         })
         .build(),

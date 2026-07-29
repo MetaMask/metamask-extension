@@ -5,6 +5,7 @@ import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { SecurityTrustAnalyticsProperty } from '../components/security-trust/security-trust-analytics-properties';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SecurityTrustPage from './security-trust-page';
@@ -260,8 +261,8 @@ describe('SecurityTrustPage', () => {
         name: MetaMetricsEventName.SecurityPageViewed,
         properties: expect.objectContaining({
           severity: 'Verified',
-          token_symbol: 'USDC',
-          chain_id: '0x1',
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: 'USDC',
+          [SecurityTrustAnalyticsProperty.ChainId]: '0x1',
         }),
       }),
     );

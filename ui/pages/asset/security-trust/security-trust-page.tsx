@@ -25,6 +25,7 @@ import { transitionBack } from '../../../components/ui/transition';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTheme } from '../../../hooks/useTheme';
+import { SecurityTrustAnalyticsProperty } from '../components/security-trust/security-trust-analytics-properties';
 import {
   formatCompactSupply,
   formatFeePercent,
@@ -506,12 +507,8 @@ const SecurityTrustPage = () => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.SecurityPageViewed)
         .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: symbol,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: symbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: chainId,
           severity: securityData.resultType ?? 'unknown',
         })
         .build(),
@@ -523,15 +520,9 @@ const SecurityTrustPage = () => {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SecurityPageCtaClicked)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            token_symbol: symbol,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            cta_type: ctaType,
+            [SecurityTrustAnalyticsProperty.TokenSymbol]: symbol,
+            [SecurityTrustAnalyticsProperty.ChainId]: chainId,
+            [SecurityTrustAnalyticsProperty.CtaType]: ctaType,
             severity: securityData?.resultType ?? 'unknown',
           })
           .build(),
@@ -543,9 +534,7 @@ const SecurityTrustPage = () => {
             .addCategory(MetaMetricsEventCategory.Navigation)
             .addProperties({
               location: 'security_trust_page',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: chainId,
+              [SecurityTrustAnalyticsProperty.ChainId]: chainId,
             })
             .build(),
         );
@@ -561,16 +550,10 @@ const SecurityTrustPage = () => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.SecurityPageDismissed)
         .addProperties({
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: symbol,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
+          [SecurityTrustAnalyticsProperty.TokenSymbol]: symbol,
+          [SecurityTrustAnalyticsProperty.ChainId]: chainId,
           severity: securityData?.resultType ?? 'unknown',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          time_spent_ms: timeSpentMs,
+          [SecurityTrustAnalyticsProperty.TimeSpentMs]: timeSpentMs,
         })
         .build(),
     );
