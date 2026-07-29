@@ -49,9 +49,4 @@ export type GlobalMenuDrawerProps = {
    * Optional data-testid for testing
    */
   'data-testid'?: string;
-
-  /**
-   * Optional anchor element to help find the correct container in fullscreen mode
-   */
-  anchorElement?: HTMLElement | null;
 };

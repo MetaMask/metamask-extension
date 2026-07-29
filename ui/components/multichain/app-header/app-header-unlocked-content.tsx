@@ -220,7 +220,6 @@ export const AppHeaderUnlockedContent = ({
           </BoxDeprecated>
         </BoxDeprecated>
         <GlobalMenuDrawerWithList
-          anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           onClose={closeAccountOptionsMenu}
         />

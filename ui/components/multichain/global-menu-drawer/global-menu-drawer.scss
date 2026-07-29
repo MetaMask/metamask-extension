@@ -1,0 +1,92 @@
+// Native <dialog> enter/exit: animate the dialog + ::backdrop themselves
+// (not children), with display/overlay + allow-discrete + @starting-style.
+// See https://developer.chrome.com/blog/entry-exit-animations
+
+.global-menu-drawer {
+  // Panel sits on the right edge of the centered shell column
+  width: min(var(--drawer-width, 400px), 100%);
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  margin-right: max(0px, calc((100vw - var(--width-max)) / 2));
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  background: transparent;
+
+  // EXIT / closed state
+  transform: translateX(100%);
+  transition:
+    transform 300ms ease-in-out,
+    display 300ms ease-in-out allow-discrete,
+    overlay 300ms ease-in-out allow-discrete;
+
+  // OPEN state
+  &[open] {
+    transform: translateX(0);
+  }
+
+  // Fullscreen: keep fox logo visible above the drawer
+  &--fullscreen {
+    top: 90px;
+    height: calc(100% - 90px);
+    max-height: calc(100% - 90px);
+  }
+
+  &--instant {
+    transition-duration: 0.01ms;
+
+    &::backdrop {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // Dimmed backdrop (fullscreen / sidepanel only)
+  &--backdrop::backdrop {
+    background: var(--color-overlay-default);
+    opacity: 0;
+    transition:
+      opacity 300ms ease-linear,
+      display 300ms ease-linear allow-discrete,
+      overlay 300ms ease-linear allow-discrete;
+  }
+
+  &--backdrop[open]::backdrop {
+    opacity: 1;
+  }
+
+  &:not(.global-menu-drawer--backdrop)::backdrop {
+    background: transparent;
+  }
+}
+
+// ENTRY: before-open starting point
+@starting-style {
+  .global-menu-drawer[open] {
+    transform: translateX(100%);
+  }
+
+  .global-menu-drawer--backdrop[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+// Narrow sidepanel: drawer covers the full surface
+.app--sidepanel {
+  @media (max-width: 490px) {
+    .global-menu-drawer {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-menu-drawer,
+  .global-menu-drawer--backdrop::backdrop {
+    transition: none;
+  }
+}
