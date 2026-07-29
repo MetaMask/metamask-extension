@@ -498,7 +498,7 @@ const SecurityTrustPage = () => {
   }, []);
 
   useEffect(() => {
-    if (hasTrackedView.current) {
+    if (hasTrackedView.current || !securityData) {
       return;
     }
 
@@ -512,17 +512,11 @@ const SecurityTrustPage = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
-          severity: securityData?.resultType ?? 'unknown',
+          severity: securityData.resultType ?? 'unknown',
         })
         .build(),
     );
-  }, [
-    chainId,
-    createEventBuilder,
-    securityData?.resultType,
-    symbol,
-    trackEvent,
-  ]);
+  }, [chainId, createEventBuilder, securityData, symbol, trackEvent]);
 
   const handleLinkClick = useCallback(
     (url: string, ctaType: SecurityTrustPageCtaType) => {

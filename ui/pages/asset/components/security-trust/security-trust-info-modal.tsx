@@ -213,7 +213,7 @@ export const SecurityTrustInfoModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={showProceedActions ? handleCloseWithMetrics : onClose}
       autoFocus={false}
       data-testid="security-trust-info-modal"
     >

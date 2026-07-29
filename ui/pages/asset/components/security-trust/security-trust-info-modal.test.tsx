@@ -110,4 +110,40 @@ describe('SecurityTrustInfoModal', () => {
     fireEvent.click(getByTestId('security-trust-info-modal-cancel'));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it('tracks cancel when gated sheet is dismissed via modal close', () => {
+    const config = getResultTypeConfig('Malicious', t);
+    const onClose = jest.fn();
+    const onProceed = jest.fn();
+    const { getByRole } = render(
+      <SecurityTrustInfoModal
+        isOpen
+        onClose={onClose}
+        onProceed={onProceed}
+        sheetParams={{
+          severity: 'Malicious',
+          securityConfig: config,
+          title: config.sheetTitle ?? '',
+          description: config.getSheetDescription?.('SWOL') ?? '',
+          displayIcon: config.icon ?? IconName.Danger,
+          displayIconColor: config.iconColor ?? IconColor.ErrorDefault,
+          tokenSymbol: 'SWOL',
+          source: 'swap',
+        }}
+      />,
+    );
+
+    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityTrustBottomSheetActionTaken,
+        properties: expect.objectContaining({
+          action: 'cancel',
+          source: 'Swap',
+        }),
+      }),
+    );
+  });
 });

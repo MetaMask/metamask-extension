@@ -198,6 +198,75 @@ describe('SecurityTrustPage', () => {
     expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
   });
 
+  it('does not track page viewed while security data is loading', () => {
+    mockLocationState = {
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      address: '0xabc',
+    };
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: null,
+      isLoading: true,
+      error: null,
+    });
+
+    renderWithProvider(<SecurityTrustPage />, createStore());
+
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+  });
+
+  it('tracks page viewed after security data loads', () => {
+    mockLocationState = {
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      address: '0xabc',
+      chainId: '0x1',
+    };
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: null,
+      isLoading: true,
+      error: null,
+    });
+
+    const { rerender } = renderWithProvider(
+      <SecurityTrustPage />,
+      createStore(),
+    );
+
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+      }),
+    );
+
+    useTokenSecurityData.mockReturnValue({
+      securityData: baseSecurityData,
+      isLoading: false,
+      error: null,
+    });
+
+    rerender(<SecurityTrustPage />);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SecurityPageViewed,
+        properties: expect.objectContaining({
+          severity: 'Verified',
+          token_symbol: 'USDC',
+          chain_id: '0x1',
+        }),
+      }),
+    );
+  });
+
   it('tracks page viewed on mount', () => {
     renderPage();
 
