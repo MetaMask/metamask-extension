@@ -83,7 +83,7 @@ const SrpInputForm = ({
             alignItems={BoxAlignItems.Center}
           >
             <Text
-              variant={TextVariant.BodyMd}
+              variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
             >
               {t('typeYourSRP')}

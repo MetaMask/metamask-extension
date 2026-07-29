@@ -362,72 +362,74 @@ export default function SrpInputImport({
           backgroundColor={
             draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
           }
-          className="srp-input-import__container rounded-lg"
+          className={
+            draftSrp.length > 0
+              ? 'srp-input-import__container rounded-lg'
+              : 'srp-input-import__container srp-input-import__container--empty rounded-lg'
+          }
         >
           {draftSrp.length > 0 ? (
-            <Box style={{ flex: 1 }}>
-              <Box className="srp-input-import__words-list grid" gap={2}>
-                {draftSrp.map((word, index) => {
-                  return (
-                    <TextField
-                      borderWidth={0}
-                      backgroundColor={BackgroundColor.backgroundMuted}
-                      inputProps={{
-                        ref: (el) => {
-                          if (el) {
-                            srpRefs.current[word.id] = el;
-                          }
-                        },
-                      }}
-                      testId={`import-srp__srp-word-${index}`}
-                      key={word.id}
-                      error={
-                        !word.active &&
-                        misSpelledWordsList().includes(word.word)
-                      }
-                      value={word.word}
-                      type={
-                        word.active || misSpelledWordsList().includes(word.word)
-                          ? TextFieldType.Text
-                          : TextFieldType.Password
-                      }
-                      startAccessory={
-                        <Text
-                          color={TextColor.TextAlternative}
-                          textAlign={TextAlign.Left}
-                          className="srp-input-import__word-index"
-                        >
-                          {index + 1}.
-                        </Text>
-                      }
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleChange(word.id, e.target.value)
-                      }
-                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          if (word.word.trim() !== '') {
-                            nextWord(word.id);
-                          }
-                        } else if (
-                          e.key === 'Backspace' &&
-                          word.word.length === 0
-                        ) {
-                          e.preventDefault();
-                          deleteWord(word.id);
+            <Box className="srp-input-import__words-list grid" gap={2}>
+              {draftSrp.map((word, index) => {
+                return (
+                  <TextField
+                    borderWidth={0}
+                    backgroundColor={BackgroundColor.backgroundMuted}
+                    inputProps={{
+                      ref: (el) => {
+                        if (el) {
+                          srpRefs.current[word.id] = el;
                         }
-                      }}
-                      onFocus={() => {
-                        onWordFocus(word.id);
-                      }}
-                      onBlur={() => {
-                        setWordInactive(word.id);
-                        checkForInvalidWords();
-                      }}
-                    />
-                  );
-                })}
-              </Box>
+                      },
+                    }}
+                    testId={`import-srp__srp-word-${index}`}
+                    key={word.id}
+                    error={
+                      !word.active &&
+                      misSpelledWordsList().includes(word.word)
+                    }
+                    value={word.word}
+                    type={
+                      word.active || misSpelledWordsList().includes(word.word)
+                        ? TextFieldType.Text
+                        : TextFieldType.Password
+                    }
+                    startAccessory={
+                      <Text
+                        color={TextColor.TextAlternative}
+                        textAlign={TextAlign.Left}
+                        className="srp-input-import__word-index"
+                      >
+                        {index + 1}.
+                      </Text>
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleChange(word.id, e.target.value)
+                    }
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (word.word.trim() !== '') {
+                          nextWord(word.id);
+                        }
+                      } else if (
+                        e.key === 'Backspace' &&
+                        word.word.length === 0
+                      ) {
+                        e.preventDefault();
+                        deleteWord(word.id);
+                      }
+                    }}
+                    onFocus={() => {
+                      onWordFocus(word.id);
+                    }}
+                    onBlur={() => {
+                      setWordInactive(word.id);
+                      checkForInvalidWords();
+                    }}
+                  />
+                );
+              })}
             </Box>
           ) : (
             <Box
@@ -442,7 +444,7 @@ export default function SrpInputImport({
                 id="first-word-input-text-area"
                 ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
-                className="srp-input-import__initial-input"
+                className="srp-input-import__initial-input text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm"
                 placeholder={t('onboardingSrpInputPlaceholder')}
                 rows={7}
                 value={firstWord}

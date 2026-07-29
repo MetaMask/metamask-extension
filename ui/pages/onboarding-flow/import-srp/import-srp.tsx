@@ -122,7 +122,7 @@ export default function ImportSRP({
           />
         </Box>
         <Box className="text-left mb-1">
-          <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
+          <Text variant={TextVariant.HeadingMd}>{t('importAWallet')}</Text>
         </Box>
         <SrpInputForm
           error={srpError}

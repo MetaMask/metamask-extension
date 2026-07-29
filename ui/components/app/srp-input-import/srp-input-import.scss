@@ -2,7 +2,9 @@
 
 .srp-input-import {
   &__container {
-    min-height: 218px;
+    &--empty {
+      min-height: 218px;
+    }
   }
 
   &__initial-input {
@@ -12,7 +14,6 @@
     background: transparent;
     resize: none;
     font-family: inherit;
-    font-size: inherit;
     color: inherit;
 
     &:focus {
