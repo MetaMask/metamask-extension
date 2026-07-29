@@ -35,6 +35,10 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
+import {
+  ALLOWED_DEV_SWAPS_CHAIN_IDS,
+} from '../../../../shared/constants/swaps';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -59,8 +63,6 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
-  getIsBridgeChain,
-  getIsSwapsChain,
   getAnalyticsId,
   getCompletedMetaMetricsOnboarding,
   getOptedIn,
@@ -138,9 +140,15 @@ const AssetPage = ({
 
   const { chainId, type, symbol, name, image } = asset;
 
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, chainId),
+  const isSwapsChain = useMemo(
+    () =>
+      (ALLOWED_DEV_SWAPS_CHAIN_IDS as readonly string[]).includes(chainId),
+    [chainId],
+  );
+
+  const isBridgeChain = useMemo(
+    () => (ALLOWED_BRIDGE_CHAIN_IDS as readonly string[]).includes(chainId),
+    [chainId],
   );
 
   const isSigningEnabled =
