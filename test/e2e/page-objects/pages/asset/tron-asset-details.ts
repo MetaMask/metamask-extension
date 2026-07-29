@@ -1,10 +1,10 @@
-import { Driver } from "../../../webdriver/driver";
+import { Driver } from '../../../webdriver/driver';
 
 const SECTION_TITLES = [
-  "Your balance",
-  "Token details",
-  "Market details",
-  "Your activity",
+  'Your balance',
+  'Token details',
+  'Market details',
+  'Your activity',
 ] as const;
 type SectionTitle = (typeof SECTION_TITLES)[number];
 
@@ -13,18 +13,22 @@ class TronAssetDetailsPage {
 
   private driver: Driver;
 
-  private readonly nativeOverflowBatchSellInMenu = '[data-testid="coin-overview-batchSell"]';
+  private readonly nativeOverflowBatchSellInMenu =
+    '[data-testid="coin-overview-batchSell"]';
 
   /**
    * Native coin overflow when `batchSell` remote flag is enabled (latest UI):
    * Send/Swap are primary buttons; Receive and Batch sell live in the More menu.
    */
-  private readonly nativeOverflowMoreButton = '[data-testid="coin-overview-more"]';
+  private readonly nativeOverflowMoreButton =
+    '[data-testid="coin-overview-more"]';
 
-  private readonly nativeOverflowReceiveInMenu = '[data-testid="coin-overview-receive"]';
+  private readonly nativeOverflowReceiveInMenu =
+    '[data-testid="coin-overview-receive"]';
 
   /** Legacy sole-overflow layout when batch sell is disabled. */
-  private readonly nativeOverflowSoleAction = '[data-testid="coin-overview-default"]';
+  private readonly nativeOverflowSoleAction =
+    '[data-testid="coin-overview-default"]';
 
   private readonly nativeSendButton = '[data-testid="coin-overview-send"]';
 
@@ -40,7 +44,8 @@ class TronAssetDetailsPage {
 
   private readonly tokenSwapButton = '[data-testid="token-overview-swap"]';
 
-  private readonly tronDailyResourcesBandwidth = '[data-testid="tron-daily-resources-bandwidth"]';
+  private readonly tronDailyResourcesBandwidth =
+    '[data-testid="tron-daily-resources-bandwidth"]';
 
   private readonly tronDailyResourcesBandwidthDescription =
     '[data-testid="tron-daily-resources-bandwidth-description"]';
@@ -48,14 +53,17 @@ class TronAssetDetailsPage {
   private readonly tronDailyResourcesDescription =
     '[data-testid="tron-daily-resources-description"]';
 
-  private readonly tronDailyResourcesEnergy = '[data-testid="tron-daily-resources-energy"]';
+  private readonly tronDailyResourcesEnergy =
+    '[data-testid="tron-daily-resources-energy"]';
 
   private readonly tronDailyResourcesEnergyDescription =
     '[data-testid="tron-daily-resources-energy-description"]';
 
-  private readonly tronDailyResourcesSection = '[data-testid="tron-daily-resources"]';
+  private readonly tronDailyResourcesSection =
+    '[data-testid="tron-daily-resources"]';
 
-  private readonly tronDailyResourcesTitle = '[data-testid="tron-daily-resources-title"]';
+  private readonly tronDailyResourcesTitle =
+    '[data-testid="tron-daily-resources-title"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -79,7 +87,9 @@ class TronAssetDetailsPage {
     if (options.receive === true) {
       await this.checkNativeReceiveInOverflowMenu();
     } else if (options.receive === false) {
-      await this.driver.assertElementNotPresent(this.nativeOverflowReceiveInMenu);
+      await this.driver.assertElementNotPresent(
+        this.nativeOverflowReceiveInMenu,
+      );
       await this.driver.assertElementNotPresent(this.nativeOverflowSoleAction);
     }
   }
@@ -112,7 +122,9 @@ class TronAssetDetailsPage {
     await this.driver.waitForSelector(this.tronDailyResourcesEnergy);
     await this.driver.waitForSelector(this.tronDailyResourcesEnergyDescription);
     await this.driver.waitForSelector(this.tronDailyResourcesBandwidth);
-    await this.driver.waitForSelector(this.tronDailyResourcesBandwidthDescription);
+    await this.driver.waitForSelector(
+      this.tronDailyResourcesBandwidthDescription,
+    );
   }
 
   /**
@@ -127,7 +139,7 @@ class TronAssetDetailsPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector({ text: "Your balance" });
+    await this.driver.waitForSelector({ text: 'Your balance' });
   }
 
   async checkPriceChart(): Promise<void> {
