@@ -1917,12 +1917,15 @@ export class LegacyBackgroundApiService {
         );
       }
 
+      // 1. fetch all seed phrases
       const [rootSecret, ...otherSecrets] = await this.#fetchAllSecretData();
       if (!rootSecret) {
         throw new Error('No root SRP found');
       }
 
       for (const secret of otherSecrets) {
+        // import SRP secret
+        // Get the SRP hash, and find the hash in the local state
         const srpHash = this.#messenger.call(
           'SeedlessOnboardingController:getSecretDataBackupState',
           secret.data,
@@ -1930,6 +1933,7 @@ export class LegacyBackgroundApiService {
         );
 
         if (!srpHash) {
+          // import private key secret
           if (secret.type === SecretType.PrivateKey) {
             await this.importAccountWithStrategy(
               AccountImportStrategy.privateKey,
@@ -1947,6 +1951,7 @@ export class LegacyBackgroundApiService {
           );
           const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
+          // import the new mnemonic to the current vault
           await this.importMnemonicToVault(mnemonicToRestore, {
             shouldCreateSocialBackup: false,
             shouldSelectAccount: false,
@@ -1992,6 +1997,7 @@ export class LegacyBackgroundApiService {
             op: TraceOperation.OnboardingSecurityOp,
           });
 
+          // Run data type migration before adding new SRP to ensure data consistency.
           await runSeedlessOnboardingMigrations(this.#messenger);
 
           await this.#messenger.call(
@@ -2017,6 +2023,7 @@ export class LegacyBackgroundApiService {
         }
       });
     } else {
+      // Do not sync the seed phrase to the server, only update the local state
       this.#messenger.call(
         'SeedlessOnboardingController:updateBackupMetadataState',
         {
@@ -2090,10 +2097,13 @@ export class LegacyBackgroundApiService {
       'AppStateController:getIsWalletResetInProgress',
     );
     if (isWalletResetInProgress) {
+      // clear permissions
       this.#messenger.call('PermissionController:clearState');
 
+      // Clear snap state
       await this.#messenger.call('SnapController:clearState');
 
+      // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
       // Currently, the account-order-controller is not in sync with
@@ -2117,6 +2127,7 @@ export class LegacyBackgroundApiService {
       },
     );
 
+    // set is resetting wallet in progress to false, after new vault and keychain are created
     this.#messenger.call(
       'AppStateController:setIsWalletResetInProgress',
       false,
@@ -2129,8 +2140,12 @@ export class LegacyBackgroundApiService {
       metadata: { id: string };
     };
 
+    // Once we have our first HD keyring available, we re-create the internal list of
+    // accounts (they should be up-to-date already, but we still run `updateAccounts` as
+    // there are some account migration happening in that function).
     await this.#messenger.call('AccountsController:updateAccounts');
 
+    // Then we can build the initial tree.
     this.#messenger.call('AccountTreeController:reinit');
 
     return primaryKeyring;
@@ -2151,9 +2166,9 @@ export class LegacyBackgroundApiService {
       Tron: 0,
     };
 
-    const solanaAccountTypes = Object.values(SolAccountType) as string[];
-    const bitcoinAccountTypes = Object.values(BtcAccountType) as string[];
-    const tronAccountTypes = Object.values(TrxAccountType) as string[];
+    const solanaAccountTypes: string[] = Object.values(SolAccountType);
+    const bitcoinAccountTypes: string[] = Object.values(BtcAccountType);
+    const tronAccountTypes: string[] = Object.values(TrxAccountType);
 
     for (const account of accounts) {
       if (solanaAccountTypes.includes(account.type)) {
@@ -2179,9 +2194,12 @@ export class LegacyBackgroundApiService {
   async discoverAndCreateAccounts(
     id?: string,
   ): Promise<Record<'Bitcoin' | 'Solana' | 'Tron', number>> {
+    // Hold the start time so the span can be backdated if discovery does real
+    // work. The common no-op discovery (every login, per keyring) is not traced.
     const startTime = getPerformanceTimestamp();
     try {
       const { keyrings } = this.#messenger.call('KeyringController:getState');
+      // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover = id || keyrings[0]?.metadata.id;
 
       if (!keyringIdToDiscover) {
@@ -2199,6 +2217,7 @@ export class LegacyBackgroundApiService {
 
       const counts = this.#getDiscoveryCountByProvider(result);
 
+      // Only emit a span when discovery actually created accounts.
       if (result.length > 0) {
         trace({
           name: TraceName.DiscoverAccounts,
@@ -2286,6 +2305,7 @@ export class LegacyBackgroundApiService {
       );
       if (isSocialLoginFlow) {
         try {
+          // if social backup is requested, add the seed phrase backup
           await this.addNewSeedPhraseBackup(
             mnemonic,
             id,
@@ -2317,6 +2337,8 @@ export class LegacyBackgroundApiService {
       }
 
       const syncAndDiscoverAccounts = async () => {
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
         await this.#messenger.call('AccountTreeController:syncWithUserStorage');
 
         const discoveredAccounts = await this.discoverAndCreateAccounts(id);
@@ -2343,6 +2365,9 @@ export class LegacyBackgroundApiService {
       const { completedOnboarding } = this.#messenger.call(
         'OnboardingController:getState',
       );
+      // In order to avoid premature sync and avoid potential race condition, for the actual B&S full sync after the onboarding is completed.
+      // We only sync and discover accounts if the onboarding is completed.
+      // i.e we don't sync and discover accounts for `socialImport` flow before the onboarding is completed.
       if (completedOnboarding) {
         // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
         // eslint-disable-next-line no-void
@@ -2366,19 +2391,28 @@ export class LegacyBackgroundApiService {
     );
 
     if (!isSocialLoginFlow) {
-      return;
+      // import the restored seed phrase (mnemonics) to the vault
+      // this is only available for social login flow
+      return; // or throw error here?
     }
 
+    // These mnemonics are restored from the Social Backup, so we don't need to do it again
     const shouldCreateSocialBackup = false;
+    // This is used to select the new account in the wallet.
+    // During the restore seed phrases, we just do the import, but don't change the selected account.
+    // Just let the user select the account manually after the restore.
     const shouldSetSelectedAccount = false;
 
     for (const secret of secretDatas) {
+      // import SRP secret
+      // Get the SRP hash, and find the hash in the local state
       const srpHash = this.#messenger.call(
         'SeedlessOnboardingController:getSecretDataBackupState',
         secret.data,
         secret.type,
       );
       if (srpHash) {
+        // If SRP is in the local state, skip it
         continue;
       }
 
@@ -2394,9 +2428,12 @@ export class LegacyBackgroundApiService {
         continue;
       }
 
+      // If SRP is not in the local state, import it to the vault
+      // convert the seed phrase to a mnemonic (string)
       const encodedSrp = convertEnglishWordlistIndicesToCodepoints(secret.data);
       const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
 
+      // import the new mnemonic to the vault
       await this.importMnemonicToVault(mnemonicToRestore, {
         shouldCreateSocialBackup,
         shouldSelectAccount: shouldSetSelectedAccount,
@@ -2412,6 +2449,8 @@ export class LegacyBackgroundApiService {
    */
   async restoreSocialBackupAndGetSeedPhrase(password: string): Promise<string> {
     try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
       const [firstSecretData, ...remainingSecretData] =
         await this.#fetchAllSecretData(password);
 
@@ -2422,8 +2461,10 @@ export class LegacyBackgroundApiService {
       const encodedSeedPhrase = Array.from(
         Buffer.from(mnemonic, 'utf8').values(),
       );
+      // restore the vault using the root seed phrase
       await this.createNewVaultAndRestore(password, encodedSeedPhrase);
 
+      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
       if (remainingSecretData.length > 0) {
         await this.restoreSeedPhrasesToVault(remainingSecretData);
       }
@@ -2472,10 +2513,13 @@ export class LegacyBackgroundApiService {
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
+      // clear permissions
       this.#messenger.call('PermissionController:clearState');
 
+      // Clear snap state
       await this.#messenger.call('SnapController:clearState');
 
+      // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
       // Currently, the account-order-controller is not in sync with
@@ -2494,6 +2538,7 @@ export class LegacyBackgroundApiService {
         this.#messenger.call('TokenDetectionController:enable');
       }
 
+      // create new vault
       const seedPhraseAsUint8Array =
         this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
@@ -2506,18 +2551,31 @@ export class LegacyBackgroundApiService {
         },
       );
 
+      // set is resetting wallet in progress to false, after new vault and keychain are created
       this.#messenger.call(
         'AppStateController:setIsWalletResetInProgress',
         false,
       );
 
+      // We re-created the vault, meaning we only have 1 new HD keyring
+      // now. We re-create the internal list of accounts (which is
+      // not an expensive operation, since we should only have 1 HD
+      // keyring that has one default account.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
       await this.#messenger.call('AccountsController:updateAccounts');
 
+      // Init multichain accounts after creating internal accounts.
       await this.#messenger.call('MultichainAccountService:init');
 
+      // And we re-init the account tree controller too, to use the
+      // newly created accounts.
+      // TODO: Remove this once the `accounts-controller` once only
+      // depends only on keyrings `:stateChange`.
       this.#messenger.call('AccountTreeController:reinit');
 
       if (completedOnboarding) {
+        // check if external services are enabled
         const { useExternalServices } = this.#messenger.call(
           'PreferencesController:getState',
         );
@@ -2537,6 +2595,7 @@ export class LegacyBackgroundApiService {
           const { keyrings } = this.#messenger.call(
             'KeyringController:getState',
           );
+          // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
           const primaryKeyringId = keyrings[0].metadata.id;
           this.#messenger.call(
             'SeedlessOnboardingController:updateBackupMetadataState',
