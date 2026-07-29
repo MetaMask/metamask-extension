@@ -96,7 +96,7 @@ import {
   filterExcludedTokenBalances,
   filterExcludedAssetList,
 } from '../components/app/assets/enablement/networks-customization';
-import { getAccountIdByAddress, getInternalAccountsObject } from './accounts';
+import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
