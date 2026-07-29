@@ -17,9 +17,6 @@ const meta: Meta<typeof GlobalMenuDrawer> = {
     showCloseButton: {
       control: 'boolean',
     },
-    onClickOutside: {
-      control: 'boolean',
-    },
     width: {
       control: 'text',
     },

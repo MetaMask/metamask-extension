@@ -39,13 +39,6 @@ export type GlobalMenuDrawerProps = {
   width?: string;
 
   /**
-   * Whether clicking outside the drawer closes it
-   *
-   * @default true
-   */
-  onClickOutside?: boolean;
-
-  /**
    * Optional data-testid for testing
    */
   'data-testid'?: string;

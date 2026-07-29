@@ -1,10 +1,4 @@
-import React, {
-  useLayoutEffect,
-  useRef,
-  useState,
-  useCallback,
-  type MouseEvent,
-} from 'react';
+import React, { useLayoutEffect, useRef, useState, useCallback } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -30,7 +24,6 @@ export const GlobalMenuDrawer = ({
   title,
   showCloseButton = true,
   width = '400px',
-  onClickOutside = true,
   'data-testid': dataTestId,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
@@ -75,29 +68,6 @@ export const GlobalMenuDrawer = ({
     dialogRef.current?.close();
   }, []);
 
-  // Backdrop clicks hit the dialog with coordinates outside its box
-  const handleDialogClick = (event: MouseEvent<HTMLDialogElement>) => {
-    if (!onClickOutside || !showBackdrop) {
-      return;
-    }
-
-    const dialog = dialogRef.current;
-    if (!dialog) {
-      return;
-    }
-
-    const rect = dialog.getBoundingClientRect();
-    const clickedOutside =
-      event.clientX < rect.left ||
-      event.clientX > rect.right ||
-      event.clientY < rect.top ||
-      event.clientY > rect.bottom;
-
-    if (clickedOutside) {
-      dialog.close();
-    }
-  };
-
   const titleId = 'global-menu-drawer-title';
   const className = [
     'global-menu-drawer',
@@ -113,9 +83,10 @@ export const GlobalMenuDrawer = ({
       ref={dialogRef}
       aria-labelledby={title ? titleId : undefined}
       className={className}
+      // @ts-expect-error Missing in React types
+      closedby="any"
       data-testid={dataTestId}
       onClose={handleDialogClose}
-      onClick={handleDialogClick}
       style={{ '--drawer-width': width } as React.CSSProperties}
     >
       <Box
