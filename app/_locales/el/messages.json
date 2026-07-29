@@ -383,8 +383,6 @@
     "message": "Κατάθεση $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_success_description": {
-  },
   "activity_deposit_success_title": {
     "message": "Κατατέθηκαν $1",
     "description": "$1 is the token symbol"
