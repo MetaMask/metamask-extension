@@ -202,6 +202,7 @@ describe('getAssetsControllerInitMessenger', () => {
           'SnapController:handleRequest',
           'PreferencesController:getState',
           'OnboardingController:getState',
+          'RemoteFeatureFlagController:getState',
         ]),
       }),
     );

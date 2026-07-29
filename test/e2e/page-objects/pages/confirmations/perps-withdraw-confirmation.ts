@@ -117,7 +117,9 @@ export class PerpsWithdrawConfirmation {
   }
 
   async clickWithdraw(): Promise<void> {
-    await this.driver.clickElement(this.confirmButton);
+    // Firefox WebDriver often reports a successful element.click() here without
+    // firing the React handler, leaving the confirmation unapproved.
+    await this.driver.clickElementUsingMouseMove(this.confirmButton);
   }
 
   async fillAmount(amount: string): Promise<void> {

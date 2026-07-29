@@ -6,6 +6,7 @@ import {
 import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
@@ -101,7 +102,8 @@ type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
   | PreferencesControllerGetStateAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events needed during AssetsController initialization.
@@ -138,6 +140,7 @@ export function getAssetsControllerInitMessenger(
       'SnapController:handleRequest',
       'PreferencesController:getState',
       'OnboardingController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     events: ['OnboardingController:stateChange'],
   });
