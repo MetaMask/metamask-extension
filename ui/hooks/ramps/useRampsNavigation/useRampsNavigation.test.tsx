@@ -149,6 +149,7 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(true);
     expect(openTab).toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(mockGetGeolocation).not.toHaveBeenCalled();
@@ -159,6 +160,7 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
