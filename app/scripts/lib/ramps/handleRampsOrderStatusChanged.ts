@@ -3,10 +3,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  createEventBuilder,
-  trackEvent,
-} from '../../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import {
   buildRampsTransactionCompletedProperties,
   buildRampsTransactionFailedProperties,

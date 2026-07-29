@@ -89,8 +89,13 @@ describe('createWatchRampsCheckoutTab', () => {
   }
 
   it('closes the tab and resolves the order for redirect-only checkouts', async () => {
-    const { platform, rampsController, watch, getOnUpdated, checkoutAnalytics } =
-      createHarness();
+    const {
+      platform,
+      rampsController,
+      watch,
+      getOnUpdated,
+      checkoutAnalytics,
+    } = createHarness();
 
     watch({
       tabId: 9,
@@ -124,10 +129,15 @@ describe('createWatchRampsCheckoutTab', () => {
       status: RampsOrderStatus.Precreated,
       walletAddress: '0xabc',
     };
-    const { platform, rampsController, watch, getOnUpdated, checkoutAnalytics } =
-      createHarness({
-        orders: [stub],
-      });
+    const {
+      platform,
+      rampsController,
+      watch,
+      getOnUpdated,
+      checkoutAnalytics,
+    } = createHarness({
+      orders: [stub],
+    });
 
     watch({
       tabId: 3,
@@ -238,7 +248,8 @@ describe('createWatchRampsCheckoutTab', () => {
   });
 
   it('tears down listeners when the user closes the checkout tab', () => {
-    const { platform, watch, getOnRemoved, checkoutAnalytics } = createHarness();
+    const { platform, watch, getOnRemoved, checkoutAnalytics } =
+      createHarness();
 
     watch({
       tabId: 5,

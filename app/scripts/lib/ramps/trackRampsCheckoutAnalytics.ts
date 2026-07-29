@@ -4,15 +4,12 @@
  * checkout tab watcher (survives popup unload).
  */
 /* eslint-disable @typescript-eslint/naming-convention */
+import type { Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type { Json } from '@metamask/utils';
-import {
-  createEventBuilder,
-  trackEvent,
-} from '../../controllers/analytics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
 const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
