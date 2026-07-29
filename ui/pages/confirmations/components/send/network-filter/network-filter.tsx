@@ -2,28 +2,18 @@ import React, { useCallback, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
+  IconName,
   Modal,
   ModalOverlay,
   ModalContent,
+  ModalContentSize,
   ModalHeader,
   ModalBody,
-  ModalContentSize,
-  IconName,
-  IconSize,
-  Text,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-  BorderColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
@@ -170,8 +160,6 @@ export const NetworkFilter = ({
     return networkName || `Chain ${selectedChainId}`;
   }, [getChainNetworkDetails, selectedChainId, t]);
 
-  const isSingleNetworkSelected = selectedChainId !== null;
-
   const handleNetworkFilterClick = useCallback(() => {
     setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
   }, []);
@@ -247,33 +235,10 @@ export const NetworkFilter = ({
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
-          className="hover:bg-hover active:bg-pressed"
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderRadius={BorderRadius.LG}
-          color={
-            isSingleNetworkSelected
-              ? TextColor.primaryDefault
-              : TextColor.textDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          paddingLeft={2}
-          paddingRight={2}
-          marginBottom={2}
-          marginTop={2}
-          ellipsis
+          startIconProps={{ 'data-testid': 'icon-filter' }}
+          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed my-2"
         >
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={
-              isSingleNetworkSelected
-                ? TextColor.primaryDefault
-                : TextColor.textDefault
-            }
-            ellipsis
-          >
-            {displayName}
-          </Text>
+          {displayName}
         </ButtonBase>
       </Box>
       {isNetworkManagementEnabled ? (
@@ -292,32 +257,27 @@ export const NetworkFilter = ({
           sections={sharedModalSections}
         />
       ) : (
-        <Modal
-          isOpen={isNetworkFilterPopoverOpen}
-          onClose={closePopover}
-          isClosedOnOutsideClick={true}
-          isClosedOnEscapeKey={true}
-        >
+        <Modal isOpen={isNetworkFilterPopoverOpen} onClose={closePopover}>
           <ModalOverlay />
           <ModalContent size={ModalContentSize.Md}>
             <ModalHeader
-              endAccessory={
-                <ButtonIcon
-                  ariaLabel="Close recipient modal"
-                  data-testid="close-recipient-modal-btn"
-                  iconName={IconName.Close}
-                  onClick={closePopover}
-                  size={ButtonIconSize.Sm}
-                />
-              }
+              onClose={closePopover}
+              closeButtonProps={{
+                ariaLabel: t('close'),
+                'data-testid': 'close-recipient-modal-btn',
+              }}
             >
               {t('selectNetworkToFilter')}
             </ModalHeader>
-            <ModalBody paddingLeft={0} paddingRight={0}>
+            <ModalBody className="px-0">
               <NetworkListItem
                 name={t('allNetworks')}
                 iconSrc={IconName.Global}
-                iconSize={IconSize.Xl}
+                iconSize={
+                  AvatarNetworkSize.Xl as unknown as React.ComponentProps<
+                    typeof NetworkListItem
+                  >['iconSize']
+                }
                 selected={selectedChainId === null}
                 onClick={() => handleNetworkSelection(null)}
                 focus={false}
