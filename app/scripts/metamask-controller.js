@@ -3667,12 +3667,6 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController,
       ),
 
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
-
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
         metaMetricsController,
@@ -6753,14 +6747,14 @@ export default class MetamaskController extends EventEmitter {
     const {
       analyticsId,
       dataCollectionForMarketing,
-      completedMetaMetricsOnboarding,
+      consentDecisionMade,
       optedIn,
     } = this.getState();
 
     if (
       analyticsId &&
       dataCollectionForMarketing &&
-      completedMetaMetricsOnboarding &&
+      consentDecisionMade &&
       optedIn
     ) {
       // setup multiplexing
@@ -8235,10 +8229,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: (payload, options) => {
         trackEvent(
