@@ -29,9 +29,10 @@ jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
 }));
 
 const mockUsePerpsLiveMarketListData = jest.fn();
+const mockSetFlowAttribution = jest.fn();
 jest.mock('../../../hooks/perps/usePerpsAttribution', () => ({
   usePerpsAttribution: () => ({
-    setFlowAttribution: jest.fn(),
+    setFlowAttribution: mockSetFlowAttribution,
   }),
 }));
 jest.mock('../../../hooks/perps/stream', () => ({
@@ -488,6 +489,57 @@ describe('MarketListView', () => {
       );
       expect(abandonCall[1]).toEqual(
         expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
+    it('attributes discovery to search when the tap came from a query', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      // The query funnel reports perp_market_search as its source, so the trade
+      // that follows must not claim market-list discovery.
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith(
+        expect.objectContaining({ discoverySource: 'perp_market_search' }),
+      );
+    });
+
+    it('keeps market-list discovery for a tap with no active query', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith(
+        expect.objectContaining({
+          discoverySource: 'perps_market_list_all',
+        }),
+      );
+    });
+
+    it('reports the searched result count when a no-match query is cleared mid-debounce', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('xyznomatch123');
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+      // Clearing re-renders with the FULL market list before the flush runs, so
+      // the flushed query must use the count it had while it was on screen.
+      typeSearch('');
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall?.[1]).toEqual(
+        expect.objectContaining({
+          search_query: 'xyznomatch123',
+          results_count: 0,
+          has_results: false,
+        }),
       );
     });
 

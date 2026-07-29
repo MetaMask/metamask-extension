@@ -40,6 +40,7 @@ import {
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
 import { useDispatch } from '../../../store/hooks';
+import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -285,11 +286,39 @@ export const PerpsView = () => {
     }
     setBatchActionError(null);
     setIsCancelAllPending(true);
+    let result: BatchCloseResult | undefined;
     try {
-      const result = await submitRequestToBackground<BatchCloseResult>(
+      result = await submitRequestToBackground<BatchCloseResult>(
         'perpsCancelOrders',
         [{ cancelAll: true }],
       );
+    } catch (error) {
+      // The request never reached the controller, so its terminal cancel event
+      // will never fire — without this fallback the failure is invisible to
+      // MetaMetrics. Kept separate from the refresh failure below, which
+      // happens AFTER the cancel has already been handed off.
+      captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsOrderCancelTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
+      setBatchActionError(t('somethingWentWrong'));
+      setIsCancelAllPending(false);
+      return;
+    }
+
+    try {
       if (!result?.success) {
         const failureCount = result?.failureCount ?? 0;
         if (failureCount > 0 || result === undefined || result === null) {
@@ -303,12 +332,14 @@ export const PerpsView = () => {
       );
       applyOrdersSnapshot(fresh ?? []);
     } catch (error) {
+      // Refresh-only failure: the cancel itself reached the controller, which
+      // owns its terminal event, so no client cancel analytics here.
       captureException(error);
       setBatchActionError(t('somethingWentWrong'));
     } finally {
       setIsCancelAllPending(false);
     }
-  }, [isEligible, applyOrdersSnapshot, orders.length, t]);
+  }, [isEligible, applyOrdersSnapshot, orders.length, t, track]);
 
   const hasPositions = positions.length > 0;
   // Only the single-position view can mirror a card-level RoE; for zero or

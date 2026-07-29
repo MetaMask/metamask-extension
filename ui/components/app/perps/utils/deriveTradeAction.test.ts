@@ -20,6 +20,36 @@ describe('derivePerpsTradeAction', () => {
     );
   });
 
+  it('omits the action when an opposite-side order only reduces the position', () => {
+    // 1 short against a 2 long closes half — `willFlipPosition` says no flip, so
+    // reporting one would contradict the confirmation UI. The controller's
+    // ACTION enum has no reduce member, so the property is omitted instead.
+    expect(
+      derivePerpsTradeAction('long', 'short', {
+        orderSize: 1,
+        positionSize: 2,
+      }),
+    ).toBeUndefined();
+  });
+
+  it('omits the action when an opposite-side order exactly closes the position', () => {
+    expect(
+      derivePerpsTradeAction('short', 'long', {
+        orderSize: 2,
+        positionSize: -2,
+      }),
+    ).toBeUndefined();
+  });
+
+  it('still reports a flip when the opposite-side order overshoots the position', () => {
+    expect(
+      derivePerpsTradeAction('long', 'short', {
+        orderSize: 3,
+        positionSize: 2,
+      }),
+    ).toBe(PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT);
+  });
+
   it('returns flip_long_to_short for a short order against a long position', () => {
     expect(derivePerpsTradeAction('long', 'short')).toBe(
       PERPS_EVENT_VALUE.ACTION.FLIP_LONG_TO_SHORT,

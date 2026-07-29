@@ -277,6 +277,8 @@ export const MarketListView = () => {
   // Query typed but not yet emitted. Flushed on unmount so a mid-debounce exit
   // is never silently lost (mirrors mobile's `pendingSearchQueryRef`).
   const pendingQueryRef = useRef<string | null>(null);
+  // Result count as of the render that last had this pending query on screen.
+  const pendingResultCountRef = useRef<number | undefined>(undefined);
   const isLoadingRef = useRef(isLoading);
   isLoadingRef.current = isLoading;
   // What is in the box right now, so a tap can be attributed to a search that
@@ -299,8 +301,13 @@ export const MarketListView = () => {
    * count-dependent props are omitted rather than reported as a mid-load zero.
    */
   const emitSearchQuery = useCallback(
-    (normalizedQuery: string, resultsSettled: boolean) => {
-      const resultCount = displayedMarketsRef.current.length;
+    (
+      normalizedQuery: string,
+      resultsSettled: boolean,
+      resultCountOverride?: number,
+    ) => {
+      const resultCount =
+        resultCountOverride ?? displayedMarketsRef.current.length;
       const hasResults = resultCount > 0;
       const chips = activeChipsRef.current;
 
@@ -345,8 +352,13 @@ export const MarketListView = () => {
     if (!pendingQueryRef.current) {
       return;
     }
-    emitSearchQuery(pendingQueryRef.current, !isLoadingRef.current);
+    emitSearchQuery(
+      pendingQueryRef.current,
+      !isLoadingRef.current,
+      pendingResultCountRef.current,
+    );
     pendingQueryRef.current = null;
+    pendingResultCountRef.current = undefined;
   }, [emitSearchQuery]);
 
   /**
@@ -355,6 +367,7 @@ export const MarketListView = () => {
    */
   const resetSearchSession = useCallback(() => {
     pendingQueryRef.current = null;
+    pendingResultCountRef.current = undefined;
     emittedQueryRef.current = '';
     emittedResultsCountRef.current = undefined;
     searchStartedAtRef.current = null;
@@ -416,6 +429,13 @@ export const MarketListView = () => {
       return undefined;
     }
     pendingQueryRef.current = normalizedQuery;
+    // Snapshot the count for THIS query while it is still the rendered one.
+    // Clearing the box re-renders with the unfiltered list before the flush
+    // runs, so reading the live ref at flush time would report the full-list
+    // count (and `has_results: true`) for a query that matched nothing.
+    pendingResultCountRef.current = isLoading
+      ? undefined
+      : displayedMarkets.length;
     // Wait for the markets to settle so the reported count is never a mid-load
     // zero. The effect re-runs when loading completes or the count changes.
     if (isLoading) {
@@ -509,8 +529,16 @@ export const MarketListView = () => {
 
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
+      const tappedQuery = trimmedQueryRef.current.toLowerCase();
+      // A market reached through the search box was discovered by search, not by
+      // browsing the list. The query funnel already reports
+      // `perp_market_search` as its source, so recording market-list here would
+      // strip search attribution off every controller-emitted trade, close and
+      // cancel that follows.
       setFlowAttribution({
-        discoverySource: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
+        discoverySource: tappedQuery
+          ? PERPS_EVENT_VALUE.SOURCE.PERP_MARKET_SEARCH
+          : PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
         entryPoint: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
       });
       // A tap on a search result closes the search funnel: report the rank the
@@ -519,7 +547,6 @@ export const MarketListView = () => {
       // inside the 500 ms debounce still counts; the pending query is flushed
       // first so the stream is always query -> tap, never tap -> query. The
       // flush re-arms `resultTappedRef`, so it is set after it, not before.
-      const tappedQuery = trimmedQueryRef.current.toLowerCase();
       if (tappedQuery) {
         const resultRank =
           displayedMarketsRef.current.findIndex(

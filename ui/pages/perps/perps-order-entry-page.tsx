@@ -524,11 +524,15 @@ const PerpsOrderEntryPage = () => {
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allPositions]);
-  // Stable primitive for the considered-event effect: only the position
-  // DIRECTION (not the live object) affects `action`, so gating on it avoids
-  // position-stream churn resetting the debounce when the form is unchanged.
+  // Stable primitives for the considered-event effect: only the position
+  // DIRECTION and MAGNITUDE (not the live object) affect `action`, so gating on
+  // them avoids position-stream churn resetting the debounce when the form is
+  // unchanged.
   const positionDirection = position
     ? getPositionDirection(position.size)
+    : null;
+  const positionSizeAbs = position
+    ? Math.abs(Number.parseFloat(position.size.replaceAll(',', '')))
     : null;
 
   // Reset the considered-event gating refs when the market or order context
@@ -588,12 +592,18 @@ const PerpsOrderEntryPage = () => {
     const action = derivePerpsTradeAction(
       positionDirection,
       orderFormState.direction,
+      positionSizeAbs === null
+        ? undefined
+        : { orderSize, positionSize: positionSizeAbs },
     );
     const timeoutId = setTimeout(() => {
       trackRef.current(MetaMetricsEventName.PerpsTransactionConsidered, {
         [PERPS_EVENT_PROPERTY.ORDER_CONTEXT]:
           PERPS_EVENT_VALUE.ORDER_CONTEXT.TRADE,
-        [PERPS_EVENT_PROPERTY.ACTION]: action,
+        // Omitted for a reduction — see derivePerpsTradeAction.
+        ...(action === undefined
+          ? {}
+          : { [PERPS_EVENT_PROPERTY.ACTION]: action }),
         [PERPS_EVENT_PROPERTY.ORDER_SIZE]: orderSize,
         [PERPS_EVENT_PROPERTY.ORDER_SIZE_PERCENT]:
           orderFormState.balancePercent,
@@ -615,7 +625,7 @@ const PerpsOrderEntryPage = () => {
       });
     }, TRANSACTION_CONSIDERED_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
-  }, [orderMode, orderFormState, positionDirection]);
+  }, [orderMode, orderFormState, positionDirection, positionSizeAbs]);
 
   // Snapshot of the abandon-order props, refreshed after each render so the
   // unmount / page-hide emit carries the latest form state rather than a
@@ -1411,6 +1421,16 @@ const PerpsOrderEntryPage = () => {
             tradeAction: derivePerpsTradeAction(
               position ? getPositionDirection(position.size) : null,
               orderFormState.direction,
+              position
+                ? {
+                    orderSize: Number.parseFloat(
+                      orderParams.size.replaceAll(',', ''),
+                    ),
+                    positionSize: Number.parseFloat(
+                      position.size.replaceAll(',', ''),
+                    ),
+                  }
+                : undefined,
             ),
           });
           // Emit the submit-in-progress toast here (not via route state).
@@ -1506,6 +1526,16 @@ const PerpsOrderEntryPage = () => {
         tradeAction: derivePerpsTradeAction(
           position ? getPositionDirection(position.size) : null,
           orderFormState.direction,
+          position
+            ? {
+                orderSize: Number.parseFloat(
+                  orderParams.size.replaceAll(',', ''),
+                ),
+                positionSize: Number.parseFloat(
+                  position.size.replaceAll(',', ''),
+                ),
+              }
+            : undefined,
         ),
       });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
