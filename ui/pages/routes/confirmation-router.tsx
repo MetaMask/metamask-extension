@@ -37,6 +37,8 @@ import {
   isMerklClaimTransaction,
   isMusdConversionTransaction,
 } from '../../components/app/musd/utils';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -61,6 +63,7 @@ const SNAP_APPROVAL_TYPES = [
 
 export const ConfirmationRouter = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const { closeModals } = useModalState();
@@ -89,6 +92,7 @@ export const ConfirmationRouter = () => {
     if (canRedirect && hasBatchSellQuotes && isPopup) {
       closeModals();
       navigate(DEFAULT_ROUTE, { replace: true });
+      dispatch(resetBridgeController());
     } else if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
@@ -108,6 +112,7 @@ export const ConfirmationRouter = () => {
   }, [
     canRedirect,
     closeModals,
+    dispatch,
     hasApprovalFlows,
     hasBatchSellQuotes,
     hasBridgeQuotes,

@@ -18,11 +18,20 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import { ConfirmationRouter } from './confirmation-router';
 
 jest.mock('../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
+}));
+
+jest.mock('../../ducks/bridge/actions', () => ({
+  resetBridgeController: jest.fn(() => ({
+    type: 'RESET_BRIDGE_CONTROLLER',
+  })),
 }));
 
 const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -155,6 +164,53 @@ describe('ConfirmationRouter', () => {
       });
 
       expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+
+    // The batch-sell page's `beforeunload` listener is the primary way this
+    // state gets cleared, but it isn't reliable when the popup is dismissed
+    // rather than fully unloaded. The router must reset it directly so a
+    // leftover quote can't keep hijacking every future popup navigation.
+    it('resets the bridge controller so the leftover quote does not keep hijacking future navigations', () => {
+      renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(resetBridgeController).toHaveBeenCalled();
+    });
+
+    it('does not reset the bridge controller when there is nothing to redirect for', () => {
+      renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(resetBridgeController).not.toHaveBeenCalled();
+    });
+
+    // Simulates the real `resetBridgeController` thunk actually clearing the
+    // quote from state (via the background state sync), rather than being a
+    // pure no-op. Without dispatching a reset, this quote would keep
+    // re-triggering the home redirect on every check and the pending
+    // approval would never be shown.
+    it('still navigates to the pending approval once the leftover quote is cleared', () => {
+      (resetBridgeController as jest.Mock).mockImplementation(
+        () => (dispatch: MetaMaskReduxDispatch) =>
+          dispatch({
+            type: UPDATE_METAMASK_STATE,
+            value: { quotes: [] },
+          }),
+      );
+
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+        hasPendingApproval: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(
+        `${CONFIRM_TRANSACTION_ROUTE}/${PENDING_APPROVAL_ID}`,
+      );
     });
 
     it('stays on the batch sell review page', () => {
