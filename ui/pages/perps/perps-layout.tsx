@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
 import { PerpsToastProvider } from '../../components/app/perps';
@@ -14,7 +14,9 @@ import {
   getSelectedInternalAccount,
   type AccountsState,
 } from '../../../shared/lib/selectors/accounts';
+import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
+import { useDispatch } from '../../store/hooks';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
@@ -55,7 +57,7 @@ export default function PerpsLayout() {
   usePerpsViewActive('PerpsLayout');
   usePerpsLifecycleBreadcrumbs();
 
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { pathname, search } = useLocation();
 
   const selectedAddress = useSelector(
@@ -86,14 +88,28 @@ export default function PerpsLayout() {
       address: userEntry?.address,
     };
   }, shallowEqual);
+
+  const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
+  useEffect(() => {
+    getPerpsStreamManager().setUseTerminalApi(useTerminalApi);
+  }, [useTerminalApi]);
+
   useLayoutEffect(() => {
+    // `cachedMarketDataByProvider` is populated only by the controller's
+    // direct-provider preload (no Terminal API), so when the Terminal backend
+    // is enabled we skip seeding the markets channel from it. Otherwise the
+    // un-enriched snapshot would warm the channel and suppress the
+    // Terminal-enabled REST fallback. User-scoped caches are unaffected.
     getPerpsStreamManager().hydrateFromControllerCache(
-      cacheSnapshot as Parameters<
+      {
+        ...cacheSnapshot,
+        markets: useTerminalApi ? undefined : cacheSnapshot.markets,
+      } as Parameters<
         ReturnType<typeof getPerpsStreamManager>['hydrateFromControllerCache']
       >[0],
       selectedAddress,
     );
-  }, [cacheSnapshot, selectedAddress]);
+  }, [cacheSnapshot, selectedAddress, useTerminalApi]);
 
   // Persist the active Perps path on every in-Perps navigation so that a
   // brief close/reopen within PERPS_REOPEN_TTL_MS returns the user to this

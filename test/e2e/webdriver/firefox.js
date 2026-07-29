@@ -8,6 +8,7 @@ const {
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
+const { UserPromptHandler } = require('selenium-webdriver/lib/capabilities');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
@@ -136,11 +137,20 @@ class FirefoxDriver {
     );
 
     options.setAcceptInsecureCerts(true);
+    // Leave alerts open so tests can read text and click OK.
+    options.setAlertBehavior(UserPromptHandler.IGNORE);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
       path.join(process.cwd(), 'test-artifacts', 'downloads'),
     );
+
+    // Firefox 153 restricts WebDriver navigation to privileged pages (most
+    // `about:` pages, `chrome://`, `resource://`) unless the browser is
+    // launched with system access allowed. `getInternalId` reads the extension
+    // UUID from `about:debugging#addons`, so without this the session cannot
+    // start. See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    options.addArguments('--remote-allow-system-access');
 
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent

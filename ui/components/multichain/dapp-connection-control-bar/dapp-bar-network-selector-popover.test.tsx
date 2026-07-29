@@ -6,8 +6,22 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const MAINNET_CLIENT_ID = 'mainnet-client';
 const BNB_CLIENT_ID = 'bnb-client';
@@ -191,11 +205,9 @@ const setupSelectors = ({
 const renderPopover = ({
   isOpen = true,
   onClose = jest.fn(),
-  trackEvent = jest.fn(),
 }: {
   isOpen?: boolean;
   onClose?: jest.Mock;
-  trackEvent?: jest.Mock;
 } = {}) => {
   const anchor = document.createElement('button');
   document.body.appendChild(anchor);
@@ -203,29 +215,21 @@ const renderPopover = ({
   const store = configureStore({ metamask: {}, activeTab: {} });
 
   const utils = renderWithProvider(
-    <MetaMetricsContext.Provider
-      value={{
-        trackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      }}
-    >
-      <DappBarEVMNetworkSelectorPopover
-        referenceElement={anchor}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
-    </MetaMetricsContext.Provider>,
+    <DappBarEVMNetworkSelectorPopover
+      referenceElement={anchor}
+      isOpen={isOpen}
+      onClose={onClose}
+    />,
     store,
   );
 
-  return { ...utils, onClose, trackEvent, anchor };
+  return { ...utils, onClose, trackEvent: mockTrackEvent, anchor };
 };
 
 describe('DappBarNetworkSelectorPopover', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     setupSelectors();
   });
 
@@ -328,19 +332,21 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
 
     it('tracks a network-switched MetaMetrics event', () => {
-      expect(trackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          location: 'Dapp Connection Control Bar',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x38',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          from_network: '0x1',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          to_network: '0x38',
-        },
-      });
+      expect(trackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.NavNetworkSwitched,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Network,
+            location: 'Dapp Connection Control Bar',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x38',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            from_network: '0x1',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            to_network: '0x38',
+          }),
+        }),
+      );
     });
 
     it('closes the popover', () => {

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { TextButton, TextColor } from '@metamask/design-system-react';
@@ -23,6 +23,10 @@ import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import {
+  transitionBack,
+  transitionForward,
+} from '../../../components/ui/transition';
+import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
@@ -41,6 +45,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -89,7 +94,9 @@ const PasskeyItem = () => {
       return;
     }
 
-    navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true });
+    transitionForward(() =>
+      navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true }),
+    );
   }, [environmentType, navigate]);
 
   const removePasskey = useCallback(async () => {
@@ -172,7 +179,9 @@ const PasskeyItem = () => {
           .build(),
       );
 
-      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+      transitionBack(() =>
+        navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      );
     } catch (error: unknown) {
       let errorStatus = 'failed';
       const durationMs = Date.now() - startedAt;
@@ -212,11 +221,14 @@ const PasskeyItem = () => {
           })
           .build(),
       );
-      navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
+      transitionForward(() =>
+        navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true }),
+      );
     } finally {
       setIsPasskeyOperationPending(false);
     }
   }, [
+    createEventBuilder,
     dispatch,
     environmentType,
     isEnrolledPasskeyIncompatibleWithSidepanel,

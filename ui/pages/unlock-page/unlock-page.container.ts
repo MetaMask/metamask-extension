@@ -126,6 +126,7 @@ const mergeProps = (
       const search = fromLocation.search || '';
       redirectTo = fromLocation.pathname + search;
     }
+
     navigate(redirectTo, { replace: true });
   };
 

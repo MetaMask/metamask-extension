@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
 import { getUsePhishDetect } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { setUsePhishDetect } from '../../../store/actions';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   AUTO_LOCK_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
@@ -62,8 +64,20 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'phishing-detection', component: PhishingDetectionItem },
 ];
 
-const SecurityAndPasswordTab = () => (
-  <SettingsTab items={SECURITY_AND_PASSWORD_SETTING_ITEMS} />
-);
+const CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS =
+  SECURITY_AND_PASSWORD_SETTING_ITEMS.filter(
+    ({ id }) => id !== 'phishing-detection',
+  );
+
+const SecurityAndPasswordTab = () => {
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS
+    : SECURITY_AND_PASSWORD_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
+};
 
 export default SecurityAndPasswordTab;

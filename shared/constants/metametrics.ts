@@ -535,11 +535,11 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
-   * The profile ID of the user if they have been signed in
+   * The canonical profile ID of the user if they have been signed in
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  profile_id?: string;
+  canonical_profile_id?: string;
   /**
    * The account type derived from the user's onboarding flow.
    */
@@ -751,7 +751,7 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user signs in
    */
-  ProfileId = 'profile_id',
+  CanonicalProfileId = 'canonical_profile_id',
   /**
    * Identifies the account type derived from the user's onboarding flow.
    */
@@ -777,8 +777,6 @@ export enum MetaMetricsUserTrait {
   /**
    * Whether the device is mobile or desktop.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).
@@ -938,6 +936,7 @@ export enum MetaMetricsEventName {
   StorageErrorToastViewed = 'Storage Error Toast Viewed',
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',
   VaultCorruptionDetected = 'Vault Corruption Detected',
@@ -1006,6 +1005,14 @@ export enum MetaMetricsEventName {
   SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
+  SecurityCheckStarted = 'Security Check Started',
+  SecurityCheckQuestionAnswered = 'Security Check Question Answered',
+  SecurityCheckCompletedClean = 'Security Check Completed Clean',
+  SecurityCheckDismissed = 'Security Check Dismissed',
+  ScamWarningShown = 'Scam Warning Shown',
+  ScamWarningStopped = 'Scam Warning Stopped',
+  ScamWarningContactSupport = 'Scam Warning Contact Support',
+  ScamWarningProceeded = 'Scam Warning Proceeded',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -1032,7 +1039,7 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   ImportCustomTokenViewed = 'Import Custom Token Viewed',
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
-  TokenScreenOpened = 'Token Screen Opened',
+  TokenScreenViewed = 'Token Screen Viewed',
   TokenAdded = 'Token Added',
   LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1077,10 +1084,11 @@ export enum MetaMetricsEventName {
   ChainlistNetworkSelected = 'Chainlist Network Selected',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  NftScreenViewed = 'NFT Screen Viewed',
   NftDetailsOpened = 'NFT Details Opened',
-  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiScreenViewed = 'DeFi Screen Viewed',
   DeFiDetailsOpened = 'DeFi Details Opened',
-  ActivityScreenOpened = 'Activity Screen Opened',
+  ActivityScreenViewed = 'Activity Screen Viewed',
   PerpsScreenViewed = 'Perp Screen Viewed',
   PerpsUiInteraction = 'Perp UI Interaction',
   PerpsTradeTransaction = 'Perp Trade Transaction',
@@ -1367,6 +1375,7 @@ export enum MetaMetricsSwapsEventSource {
   ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
   TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
@@ -1441,4 +1450,9 @@ export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
+}
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
 }

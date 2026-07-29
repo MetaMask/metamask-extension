@@ -13,7 +13,7 @@ import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
 } from '../../../../../shared/lib/eip7702-support-utils';
-import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
   RelaySubmitRequest,

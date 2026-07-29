@@ -1,16 +1,15 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SEND_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -22,7 +21,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -32,14 +30,14 @@ import {
 } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
-import { getNetworkIcon } from '../../../../shared/lib/network.utils';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
 
 export const AppHeader = ({ location }) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -47,8 +45,7 @@ export const AppHeader = ({ location }) => {
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const { chainId, isEvm } = multichainNetwork;
-  const networkIconSrc = getNetworkIcon(chainId, isEvm);
+  const { chainId } = multichainNetwork;
 
   const dispatch = useDispatch();
 
@@ -56,8 +53,7 @@ export const AppHeader = ({ location }) => {
   const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
-  // Disable the network and account pickers if the user is in
-  // a critical flow
+  // Disable the account picker if the user is in a critical flow
   const isConfirmationPage = Boolean(
     matchPath(
       {
@@ -73,35 +69,22 @@ export const AppHeader = ({ location }) => {
       location?.pathname || '',
     ),
   );
-  const isSendPage = Boolean(
-    matchPath({ path: SEND_ROUTE, end: false }, location?.pathname || ''),
-  );
-
-  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
-
-  const hasUnapprovedTransactions =
-    Object.keys(unapprovedTransactions).length > 0;
 
   const disableAccountPicker = isConfirmationPage || isSwapsPage;
-
-  const disableNetworkPicker =
-    isSwapsPage ||
-    isConfirmationPage ||
-    isSendPage ||
-    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
     dispatch(toggleNetworkMenu());
-    trackEvent({
-      event: MetaMetricsEventName.NavNetworkMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'App header',
-        chain_id: chainId,
-      },
-    });
-  }, [chainId, dispatch, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavNetworkMenuOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'App header',
+          chain_id: chainId,
+        })
+        .build(),
+    );
+  }, [chainId, dispatch, trackEvent, createEventBuilder]);
 
   const unlockedStyling = {
     alignItems: AlignItems.center,
@@ -140,18 +123,12 @@ export const AppHeader = ({ location }) => {
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
-                popupStatus={popupStatus}
-                currentNetwork={multichainNetwork}
-                networkIconSrc={networkIconSrc}
-                networkOpenCallback={networkOpenCallback}
-                disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
                 menuRef={menuRef}
               />
             ) : (
               <AppHeaderLockedContent
                 currentNetwork={multichainNetwork}
-                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

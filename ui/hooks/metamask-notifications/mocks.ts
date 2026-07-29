@@ -39,4 +39,14 @@ export const createMockNotificationPreferences = (
     mutedTraderProfileIds: [],
     ...overrides.socialAI,
   },
+  agenticCli: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    ...overrides.agenticCli,
+  },
+  priceAlerts: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    ...overrides.priceAlerts,
+  },
 });

@@ -20,6 +20,7 @@ export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
   firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
+  hasSeenOnboardingCompletionPage: boolean;
   onboardingTabs?: Record<string, string>;
 };
 
@@ -30,6 +31,7 @@ export const getDefaultOnboardingControllerState = () => ({
   seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
 });
 
 const defaultTransientState = {
@@ -57,6 +59,12 @@ const controllerMetadata: StateMetadata<OnboardingControllerState> = {
     usedInUi: true,
   },
   completedOnboarding: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  hasSeenOnboardingCompletionPage: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -121,6 +129,7 @@ export type OnboardingControllerMessenger = Messenger<
 const MESSENGER_EXPOSED_METHODS = [
   'setSeedPhraseBackedUp',
   'completeOnboarding',
+  'setHasSeenOnboardingCompletionPage',
   'setFirstTimeFlowType',
   'registerOnboarding',
   'getIsSocialLoginFlow',
@@ -192,6 +201,19 @@ export class OnboardingController extends BaseController<
   }
 
   /**
+   * Records that the user has been shown the onboarding completion page at least once.
+   *
+   * @param hasSeenOnboardingCompletionPage - Whether the onboarding completion page has been shown.
+   */
+  setHasSeenOnboardingCompletionPage(
+    hasSeenOnboardingCompletionPage: boolean,
+  ): void {
+    this.update((state) => {
+      state.hasSeenOnboardingCompletionPage = hasSeenOnboardingCompletionPage;
+    });
+  }
+
+  /**
    * Setter for the `firstTimeFlowType` property
    *
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
@@ -256,6 +278,7 @@ export class OnboardingController extends BaseController<
   resetOnboarding(): void {
     this.update((state) => {
       state.completedOnboarding = false;
+      state.hasSeenOnboardingCompletionPage = false;
       state.firstTimeFlowType = null;
       state.seedPhraseBackedUp = null;
       state.onboardingTabs = {};

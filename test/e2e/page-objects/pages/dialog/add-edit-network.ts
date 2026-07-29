@@ -23,7 +23,7 @@ class AddEditNetworkModal {
     tag: 'button',
   };
 
-  private readonly backButton = '[data-testid="settings-header-back-button"]';
+  private readonly backButton = '[data-testid="page-header-back-button"]';
 
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
@@ -145,9 +145,12 @@ class AddEditNetworkModal {
     );
   }
 
-  async saveEditedNetwork(): Promise<void> {
+  async saveEditedNetwork(timeout?: number): Promise<void> {
     console.log('Save and close edit network modal');
-    await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.editModalSaveButton,
+      timeout,
+    );
   }
 
   async clickBackButton(): Promise<void> {

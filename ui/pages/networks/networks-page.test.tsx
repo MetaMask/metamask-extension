@@ -25,6 +25,13 @@ const mockSafeChains = [
     explorers: [{ url: 'https://cronoscan.com' }],
   },
   {
+    name: 'Sepolia',
+    chainId: 11155111,
+    nativeCurrency: { symbol: 'SepoliaETH' },
+    rpc: ['https://sepolia.infura.io/v3/123'],
+    explorers: [{ url: 'https://sepolia.etherscan.io' }],
+  },
+  {
     name: 'HTTP Only Network',
     chainId: 200,
     nativeCurrency: { symbol: 'HTTP' },
@@ -38,6 +45,17 @@ const mockSafeChains = [
     rpc: [`https://rpc-${index + 1}.example.com`],
     explorers: [{ url: `https://explorer-${index + 1}.example.com` }],
   })),
+  {
+    name: 'Multi RPC Network',
+    chainId: 300,
+    nativeCurrency: { symbol: 'MULTI' },
+    rpc: [
+      'https://rpc-primary.example.com',
+      'https://rpc-secondary.example.com',
+      'https://rpc-tertiary.example.com',
+    ],
+    explorers: [{ url: 'https://explorer-multi.example.com' }],
+  },
 ];
 
 jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
@@ -253,9 +271,9 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
 
-    await userEvent.click(screen.getByTestId('settings-header-search-button'));
+    await userEvent.click(screen.getByTestId('page-header-search-button'));
     await userEvent.type(
-      screen.getByTestId('settings-header-search-input'),
+      screen.getByTestId('page-header-search-input'),
       'ugtfvh',
     );
 
@@ -286,7 +304,9 @@ describe('NetworksPage', () => {
       screen.getByTestId('networks-page-add-custom-network-button'),
     );
 
-    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
@@ -326,6 +346,16 @@ describe('NetworksPage', () => {
         messages.searchNetworkNameOrChainId.message,
       ),
     ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-search')),
+    ).toBe(false);
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-source-banner')),
+    ).toBe(true);
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
     expect(screen.queryByText('HTTP Only Network')).not.toBeInTheDocument();
     expect(
@@ -357,6 +387,86 @@ describe('NetworksPage', () => {
     );
     expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+  });
+
+  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-added-pill'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows built-in test networks in Chainlist when test networks are shown', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...testNetworkConfiguration,
+      },
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: true,
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Sepolia',
+    );
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
+  });
+
+  it('prefills only the top Chainlist RPC URL in the add network form', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    await userEvent.type(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      'Multi RPC',
+    );
+
+    const multiRpcButton = (
+      await screen.findByText('Multi RPC Network')
+    ).closest('button');
+    expect(multiRpcButton).toBeInTheDocument();
+
+    fireEvent.click(multiRpcButton as HTMLButtonElement);
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('rpc-primary.example.com')).toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-secondary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-tertiary.example.com'),
+    ).not.toBeInTheDocument();
   });
 
   it('prefills Chainlist network name from the canonical network name when available', async () => {
@@ -476,6 +586,8 @@ describe('NetworksPage', () => {
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
   });
 });

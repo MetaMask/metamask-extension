@@ -14,7 +14,7 @@ import {
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
@@ -29,6 +29,21 @@ import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/co
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import * as useSubmitBridgeTransactionModule from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
+
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
   trackHardwareWalletRecoveryConnectCtaClicked,
@@ -69,6 +84,7 @@ setBackgroundConnection({
 describe('BridgeCTAButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
@@ -237,7 +253,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -308,7 +324,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -358,7 +374,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -418,7 +434,6 @@ describe('BridgeCTAButton', () => {
           isSubmitting: false,
         }));
 
-      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
       };
@@ -449,13 +464,13 @@ describe('BridgeCTAButton', () => {
           ),
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         },
       });
       const store = configureStore(mockStore);
-      const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
+      const Wrapper = createProviderWrapper(store, '/');
 
       const { getByRole } = render(
         <HardwareWalletProvider>
@@ -479,7 +494,7 @@ describe('BridgeCTAButton', () => {
 
       expect(
         mockTrackHardwareWalletRecoveryConnectCtaClicked,
-      ).toHaveBeenCalledWith(mockTrackEvent, {
+      ).toHaveBeenCalledWith(expect.any(Function), {
         location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
         walletType: HardwareWalletType.Ledger,
         connectionState,
@@ -606,7 +621,7 @@ describe('BridgeCTAButton', () => {
           ...bridgeSliceOverrides,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
           ...bridgeStateOverrides,
@@ -762,7 +777,7 @@ describe('BridgeCTAButton', () => {
           wasTxDeclined,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quoteRequest: {
@@ -798,7 +813,7 @@ describe('BridgeCTAButton', () => {
         wasTxDeclined: false,
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now() - 35000,
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
@@ -856,7 +871,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
       },

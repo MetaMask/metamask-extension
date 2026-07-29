@@ -9,9 +9,30 @@ import {
   getPostQuoteWithdrawTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
+  isValidTransactionHash,
 } from './transactions.utils';
 
 describe('Transactions utils', () => {
+  describe('isValidTransactionHash', () => {
+    it('returns true for a valid EVM transaction hash', () => {
+      expect(
+        isValidTransactionHash(
+          '0x8586e162e456a23c1969573a4b79e77912705b474bc5aa0c2a63d56556623ab2',
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for invalid EVM transaction hashes', () => {
+      expect(
+        isValidTransactionHash('48a75190-45ca-11ef-9001-f3886ec2397c'),
+      ).toBe(false);
+    });
+
+    it('returns false for truncated EVM hashes', () => {
+      expect(isValidTransactionHash('0x1234')).toBe(false);
+    });
+  });
+
   describe('isBatchTransaction', () => {
     it('returns true when nestedTransactions has items', () => {
       const nested: NestedTransactionMetadata[] = [{ to: '0x1', data: '0x' }];

@@ -188,6 +188,20 @@ describe('QuotesListItem', () => {
     expect(screen.getByText(/2\.5.*•.*25%/u)).toBeInTheDocument();
   });
 
+  it('does not throw when sendAmountPercent has more than 15 significant digits', () => {
+    seedCurrencyLocaleSelectors(mockUseSelector);
+
+    expect(() =>
+      render(
+        <QuotesListItem
+          {...defaultProps}
+          asset={makeAsset({ balance: '10', symbol: 'AAA' })}
+          sendAmountPercent={33.333333333333336}
+        />,
+      ),
+    ).not.toThrow();
+  });
+
   it('calls onSlippagePercentChangeClick with the asset when the slippage button is clicked', () => {
     seedCurrencyLocaleSelectors(mockUseSelector);
     const onSlippagePercentChangeClick = jest.fn();

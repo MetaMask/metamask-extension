@@ -1,7 +1,10 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
-import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  isOnChainNotification,
+  type INotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -22,8 +25,6 @@ import {
   hasNotificationComponents,
 } from './notification-components';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsListItem({
   notification,
 }: {
@@ -39,8 +40,8 @@ export function NotificationsListItem({
     const otherNotificationProperties = () => {
       if (
         'notification_type' in notification &&
-        notification.notification_type === 'on-chain' &&
-        notification.payload?.chain_id
+        isOnChainNotification(notification) &&
+        notification.payload.chain_id
       ) {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -96,24 +96,62 @@ describe('calculateBalanceForAllWallets', () => {
     expect(mockGetAggregatedBalanceForAccount).not.toHaveBeenCalled();
   });
 
-  it('forwards the optional trace callback to the aggregation selector', () => {
+  it('strips assetsInfo from the state passed to the aggregation selector', () => {
     mockGetAggregatedBalanceForAccount.mockReturnValue({
       entries: [],
       totalBalanceInFiat: 1,
       pricePercentChange1d: 0,
     });
-    const trace = jest.fn();
+
+    const assetsBalance = {};
+    const assetsPrice = {};
+    const assetPreferences = {};
+    const stateWithMetadata = {
+      assetsInfo: { 'eip155:56/erc20:0x1': { decimals: 9, symbol: 'TY' } },
+      assetsBalance,
+      assetsPrice,
+      assetPreferences,
+      customAssets: {},
+      selectedCurrency: 'usd',
+    } as never;
+
+    calculateBalanceForAllWallets(
+      stateWithMetadata,
+      accountTreeState,
+      accountsById,
+      undefined,
+    );
+
+    // Balance amounts in state are human-readable, but when decimals metadata
+    // is present the aggregation selector re-scales amounts >= 10^decimals as
+    // if they were raw base units, dropping large balances from the total
+    // (#44786). Passing empty assetsInfo disables that heuristic.
+    const passedState = mockGetAggregatedBalanceForAccount.mock.calls[0][0];
+    expect(passedState.assetsInfo).toEqual({});
+    expect(passedState.assetsBalance).toBe(assetsBalance);
+    expect(passedState.assetsPrice).toBe(assetsPrice);
+    expect(passedState.assetPreferences).toBe(assetPreferences);
+  });
+
+  it('does not pass a trace callback to the aggregation selector', () => {
+    mockGetAggregatedBalanceForAccount.mockReturnValue({
+      entries: [],
+      totalBalanceInFiat: 1,
+      pricePercentChange1d: 0,
+    });
 
     calculateBalanceForAllWallets(
       assetsControllerState,
       accountTreeState,
       accountsById,
       undefined,
-      trace as never,
     );
 
-    // 7th positional argument of getAggregatedBalanceForAccount is the trace.
-    expect(mockGetAggregatedBalanceForAccount.mock.calls[0][6]).toBe(trace);
+    // This runs inside a Redux selector that recomputes per account group on
+    // every state change, so tracing it emits an unbounded number of
+    // transaction roots (#44447). The 7th positional argument of
+    // `getAggregatedBalanceForAccount` is the trace.
+    expect(mockGetAggregatedBalanceForAccount.mock.calls[0][6]).toBeUndefined();
   });
 });
 

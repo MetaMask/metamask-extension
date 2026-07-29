@@ -1,17 +1,17 @@
 import React from 'react';
-import README from './README.mdx';
-import { Meta, StoryFn } from '@storybook/react';
-import { IconName } from '../icon';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { StoryFn, Meta } from '@storybook/react';
 import { Tag } from './tag';
 
 export default {
-  title: 'Components/ComponentLibrary/Tag',
+  title: 'Components/ComponentLibrary/Tag (deprecated)',
   component: Tag,
   tags: ['autodocs'],
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`Tag` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-tag--docs) instead.',
+      },
     },
   },
   argTypes: {
@@ -27,37 +27,7 @@ export default {
   },
 } as Meta<typeof Tag>;
 
-export const DefaultStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
+const Template: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const Label: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
-
-Label.args = {
-  label: 'Label Story',
-};
-
-export const StartIconNameStory: StoryFn<typeof Tag> = (args) => (
-  <Tag {...args} />
-);
-
-StartIconNameStory.args = {
-  label: 'Snap Name',
-  startIconName: IconName.Snaps,
-};
-
-StartIconNameStory.storyName = 'StartIconName';
-
-export const StartIconPropsStory: StoryFn<typeof Tag> = (args) => (
-  <Tag {...args} />
-);
-
-StartIconPropsStory.args = {
-  label: 'Snap Name',
-  startIconName: IconName.Snaps,
-  startIconProps: {
-    color: IconColor.primaryDefault,
-  },
-};
-
-StartIconPropsStory.storyName = 'StartIconProps';

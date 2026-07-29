@@ -21,19 +21,17 @@ import {
 } from '../../../shared/constants/app';
 import Settings from './settings';
 
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
+
 const mockNavigate = jest.fn();
 const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_POPUP);
-const mockRunCloseTransition = jest.fn((onComplete: () => void) =>
-  onComplete(),
-);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-}));
-
-jest.mock('../routes/global-menu-route-transition', () => ({
-  useGlobalMenuRouteTransition: () => mockRunCloseTransition,
 }));
 
 jest.mock('../../../shared/lib/environment-type', () => ({
@@ -95,9 +93,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
       expect(
         screen.getByText(messages.securityAndPrivacy.message),
       ).toBeInTheDocument();
@@ -116,9 +112,7 @@ describe('Settings', () => {
         screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
-      expect(
-        await screen.findByText(messages.theme.message),
-      ).toBeInTheDocument();
+      await screen.findByTestId('settings-tab-item-preferences-and-display');
     });
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
@@ -172,9 +166,7 @@ describe('Settings', () => {
     it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -183,16 +175,13 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
-      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
       mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -201,16 +190,13 @@ describe('Settings', () => {
           `${DEFAULT_ROUTE}?drawerOpen=true`,
         );
       });
-      expect(mockRunCloseTransition).toHaveBeenCalledTimes(1);
     });
 
     it('navigates to parent tab without global-menu transition when back is clicked on a sub-page', async () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -219,21 +205,61 @@ describe('Settings', () => {
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
       });
-      expect(mockRunCloseTransition).not.toHaveBeenCalled();
     });
 
     it('navigates from a notification section back to the main notifications settings page', async () => {
       mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
+      });
+    });
+  });
+
+  describe('pure black theme', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      setBackgroundConnection(backgroundConnectionMock as never);
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    });
+
+    it('applies bg-background-alternative to sidebar in pure black mode', async () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(true);
+      mockPathname = CURRENCY_ROUTE;
+
+      const { container } = renderSettings(mockStore);
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('.bg-background-alternative'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('applies bg-background-muted to sidebar when pure black is off', async () => {
+      const { usePureBlack } = jest.requireMock(
+        '@metamask/design-system-react',
+      );
+      usePureBlack.mockReturnValue(false);
+      mockPathname = CURRENCY_ROUTE;
+
+      const { container } = renderSettings(mockStore);
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('.bg-background-muted'),
+        ).toBeInTheDocument();
+        expect(
+          container.querySelector('.bg-background-alternative'),
+        ).not.toBeInTheDocument();
       });
     });
   });

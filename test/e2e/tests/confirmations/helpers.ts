@@ -43,7 +43,7 @@ export function withTransactionEnvelopeTypeFixtures(
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           analyticsId: MOCK_ANALYTICS_ID,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         })
         .build(),
@@ -55,7 +55,7 @@ export function withTransactionEnvelopeTypeFixtures(
       testSpecificMock: combinedMocks,
       manifestFlags: {
         remoteFeatureFlags: {
-          extensionUxTokenManagementFilter: false,
+          extensionUxTokenManagementFilter: true,
         },
       },
       title,
@@ -81,7 +81,7 @@ export function withSignatureFixtures(
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
           analyticsId: MOCK_ANALYTICS_ID,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         })
         .build(),

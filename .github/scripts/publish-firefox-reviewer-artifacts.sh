@@ -11,15 +11,17 @@
 #
 # Environment:
 #   RELEASE_TAG                  — e.g. v13.37.0 (required)
-#   FIREFOX_BUNDLE_SCRIPT_TOKEN  — clone private repo + read release branch bundle.sh
-#   FIREFOX_BUNDLE_SCRIPT_REF    — git ref (default: main)
+#   FIREFOX_BUNDLE_SCRIPT_TOKEN  — clone private repo + fetch bundle.sh tags
 #   AMO_REVIEWER_PACKAGE_ROOT    — output root (default: $RUNNER_TEMP/amo-reviewer-artifacts)
-#   AMO_REVIEWER_BUCKET            — required for upload
+#   AMO_REVIEWER_BUCKET          — required for upload
 #   AWS_DEFAULT_REGION             — default us-east-2
 
 set -euo pipefail
 
-DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF="main"
+# Pin firefox-bundle-script tooling (prepare_release.sh + scripts). Bump via PR
+# when tooling changes; merge MetaMask/firefox-bundle-script before release use.
+# INFRA-3753: includes FIREFOX_BUNDLE_SH_GIT_REF / per-version tag support.
+FIREFOX_BUNDLE_SCRIPT_REF="1cb37c0817b319d9846dbca827d533e0ae769984"
 
 MODE="${1:-}"
 if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
@@ -42,6 +44,7 @@ AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-us-east-2}"
 PACKAGE_ROOT="${AMO_REVIEWER_PACKAGE_ROOT:-${RUNNER_TEMP:-/tmp}/amo-reviewer-artifacts}"
 PACKAGE_DIR="${PACKAGE_ROOT}/${raw_version}"
 S3_PREFIX="reviewer-source/${raw_version}"
+FIREFOX_BUNDLE_SH_GIT_REF="v${raw_version}"
 
 ensure_mtree() {
   if command -v mtree >/dev/null 2>&1; then
@@ -106,14 +109,15 @@ package_release_variant() {
 
   mkdir -p "${PACKAGE_DIR}"
 
-  # prepare_release.sh is the canonical orchestrator: it fetches bundle.sh from
-  # origin/release, runs compare_builds.sh + create_submission_package.sh, and
-  # writes packages under output/. It also sets PRODUCTION_BUILD_FILE /
-  # FIREFOX_BUNDLE_SCRIPT_ARGS / SUBMISSION_DIR_PREFIX internally (per --flask),
-  # and exits non-zero when the reproduced build differs from the published one,
-  # which under set -e correctly fails the reviewer publish.
+  # prepare_release.sh fetches bundle.sh at FIREFOX_BUNDLE_SH_GIT_REF (v{version} tag),
+  # runs compare_builds.sh + create_submission_package.sh, and writes packages
+  # under output/. Exits non-zero when reproduced build differs from published.
   echo "Packaging ${variant} reviewer artifacts via prepare_release.sh..."
-  ( cd "${clone_dir}" && bash ./prepare_release.sh "${prepare_args[@]}" "${raw_version}" "${last_listed}" )
+  (
+    cd "${clone_dir}"
+    export FIREFOX_BUNDLE_SH_GIT_REF
+    bash ./prepare_release.sh "${prepare_args[@]}" "${raw_version}" "${last_listed}"
+  )
 
   local submission_dir source_zip notes_file
   submission_dir="${clone_dir}/output/${submission_dir_prefix}_v${raw_version}"
@@ -144,18 +148,13 @@ run_package() {
   local work_root script_ref clone_dir last_listed
   work_root="$(mktemp -d)"
   trap 'rm -rf "${work_root}"' EXIT
-  script_ref="${FIREFOX_BUNDLE_SCRIPT_REF:-${DEFAULT_FIREFOX_BUNDLE_SCRIPT_REF}}"
+  script_ref="${FIREFOX_BUNDLE_SCRIPT_REF}"
   clone_dir="${work_root}/firefox-bundle-script"
 
   mkdir -p "${PACKAGE_DIR}"
 
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
   clone_firefox_bundle_script "${script_ref}" "${clone_dir}"
-
-  # prepare_release.sh reads bundle.sh via `git show origin/release:bundle.sh`,
-  # so the origin/release remote-tracking ref must exist in the shallow clone.
-  echo "Fetching release branch so prepare_release.sh can read bundle.sh..."
-  git -C "${clone_dir}" fetch origin "+refs/heads/release:refs/remotes/origin/release" --depth 1
 
   last_listed="$(resolve_last_listed_version)"
   echo "Using last listed version: ${last_listed}"

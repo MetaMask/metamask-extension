@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   type NavigateOptions,
   type To,
@@ -20,11 +20,9 @@ import {
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import {
-  ASSET_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../shared/lib/deep-links/routes/route';
+import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -39,6 +37,7 @@ import {
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { useDispatch } from '../../store/hooks';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -197,30 +196,25 @@ export const useBridgeNavigation = () => {
         isNonEvm ? assetReference : tokenAddress,
       );
 
-      navigate(
-        isNative && !isNonEvm
-          ? `${ASSET_ROUTE}/${routeChainId}`
-          : `${ASSET_ROUTE}/${routeChainId}/${encodeURIComponent(tokenAddress)}`,
-        {
-          state: {
-            ...state,
-            bridgeState,
-            token: {
-              type: isNative ? AssetType.native : AssetType.token,
-              assetId: asset.assetId,
-              address: tokenAddress,
-              symbol: asset.symbol,
-              name: asset.name ?? asset.symbol,
-              chainId: routeChainId,
-              image: asset.iconUrl,
-              isNative,
-              decimals: asset.decimals,
-            },
+      navigate(buildAssetRoutePath(asset.assetId), {
+        state: {
+          ...state,
+          bridgeState,
+          token: {
+            type: isNative ? AssetType.native : AssetType.token,
+            assetId: asset.assetId,
+            address: tokenAddress,
+            symbol: asset.symbol,
+            name: asset.name ?? asset.symbol,
+            chainId: routeChainId,
+            image: asset.iconUrl,
+            isNative,
+            decimals: asset.decimals,
           },
         },
-      );
+      });
     },
-    [navigate, state],
+    [navigate, state, bridgeState],
   );
 
   /**

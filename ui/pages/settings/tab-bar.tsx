@@ -1,4 +1,5 @@
 import React from 'react';
+import { type NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -14,6 +15,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import MenuItem from '../../components/ui/menu/menu-item';
+import { transitionForward } from '../../components/ui/transition';
 
 type TabItem = {
   key: string;
@@ -38,6 +40,122 @@ type TabBarProps = {
   onTabClick?: (key: string) => boolean | void;
 };
 
+type RenderTabItemsOptions = {
+  items: TabItem[];
+  isActive: TabBarProps['isActive'];
+  removeFullscreenStyles: boolean;
+  onTabClick?: TabBarProps['onTabClick'];
+  navigate: NavigateFunction;
+};
+
+function navigateToTab(
+  navigate: NavigateFunction,
+  key: string,
+  shouldAnimateNavigation: boolean,
+) {
+  if (!shouldAnimateNavigation) {
+    navigate(key);
+    return;
+  }
+
+  transitionForward(() => navigate(key));
+}
+
+function getTabClickHandler(
+  navigate: NavigateFunction,
+  key: string,
+  shouldAnimateNavigation: boolean,
+  onTabClick?: TabBarProps['onTabClick'],
+) {
+  return (event?: React.MouseEvent) => {
+    event?.preventDefault();
+
+    if (onTabClick?.(key) === true) {
+      return;
+    }
+
+    navigateToTab(navigate, key, shouldAnimateNavigation);
+  };
+}
+
+function renderTabItems({
+  items,
+  isActive,
+  removeFullscreenStyles,
+  onTabClick,
+  navigate,
+}: RenderTabItemsOptions) {
+  return items.map(({ key, content, iconName, dataTestId }) => {
+    const active = isActive(key, content);
+    const activeClass =
+      active && !removeFullscreenStyles ? 'sm:bg-pressed' : '';
+    const caretClass = removeFullscreenStyles
+      ? 'rtl:rotate-180'
+      : 'sm:hidden rtl:rotate-180';
+    const handleClick = getTabClickHandler(
+      navigate,
+      key,
+      removeFullscreenStyles,
+      onTabClick,
+    );
+
+    return (
+      <MenuItem
+        key={key}
+        to={key}
+        iconName={iconName}
+        iconColor={IconColor.IconAlternative}
+        iconSize={IconSize.Lg}
+        textVariant={TextVariant.BodyMd}
+        className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
+        data-testid={dataTestId}
+        onClick={handleClick}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Between}
+          className="w-full"
+        >
+          <Text fontWeight={FontWeight.Medium} className="whitespace-nowrap">
+            {content}
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+            className={caretClass}
+          />
+        </Box>
+      </MenuItem>
+    );
+  });
+}
+
+function renderTabSections(
+  sections: TabSection[],
+  options: Omit<RenderTabItemsOptions, 'items'>,
+) {
+  return sections.map(({ key, title, items }, sectionIndex) => (
+    <Box key={key} flexDirection={BoxFlexDirection.Column} className="w-full">
+      <Box
+        className="mx-4"
+        paddingTop={sectionIndex > 0 ? 4 : 2}
+        paddingBottom={2}
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
+          {title}
+        </Text>
+      </Box>
+      {renderTabItems({ ...options, items })}
+    </Box>
+  ));
+}
+
 const TabBar = ({
   tabs = [],
   sections = [],
@@ -45,56 +163,13 @@ const TabBar = ({
   removeFullscreenStyles = false,
   onTabClick,
 }: TabBarProps) => {
-  const renderItems = (items: TabItem[]) =>
-    items.map(({ key, content, iconName, dataTestId }) => {
-      const active = isActive(key, content);
-
-      const activeClass =
-        active && !removeFullscreenStyles ? 'sm:bg-pressed' : '';
-
-      const caretClass = removeFullscreenStyles
-        ? 'rtl:rotate-180'
-        : 'sm:hidden rtl:rotate-180';
-
-      return (
-        <MenuItem
-          key={key}
-          to={key}
-          iconName={iconName}
-          iconColor={IconColor.IconAlternative}
-          iconSize={IconSize.Lg}
-          textVariant={TextVariant.BodyMd}
-          className={`!rounded-none hover:bg-hover focus:outline-none focus:[outline:none] focus-visible:outline-none focus-visible:[outline:none] focus:shadow-none ${activeClass}`}
-          data-testid={dataTestId}
-          onClick={
-            onTabClick
-              ? (e?: React.MouseEvent) => {
-                  if (onTabClick(key) === true) {
-                    e?.preventDefault();
-                  }
-                }
-              : undefined
-          }
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Between}
-            className="w-full"
-          >
-            <Text fontWeight={FontWeight.Medium} className="whitespace-nowrap">
-              {content}
-            </Text>
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-              className={caretClass}
-            />
-          </Box>
-        </MenuItem>
-      );
-    });
+  const navigate = useNavigate();
+  const tabItemOptions = {
+    isActive,
+    removeFullscreenStyles,
+    onTabClick,
+    navigate,
+  };
 
   if (sections.length > 0) {
     return (
@@ -103,35 +178,14 @@ const TabBar = ({
         className="w-full h-full overflow-y-auto py-4"
         data-testid="settings-tab-bar-grouped"
       >
-        {sections.map(({ key, title, items }, sectionIndex) => (
-          <Box
-            key={key}
-            flexDirection={BoxFlexDirection.Column}
-            className="w-full"
-          >
-            <Box
-              className="mx-4"
-              paddingTop={sectionIndex > 0 ? 4 : 2}
-              paddingBottom={2}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
-              >
-                {title}
-              </Text>
-            </Box>
-            {renderItems(items)}
-          </Box>
-        ))}
+        {renderTabSections(sections, tabItemOptions)}
       </Box>
     );
   }
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} className="w-full pt-2">
-      {renderItems(tabs)}
+      {renderTabItems({ ...tabItemOptions, items: tabs })}
     </Box>
   );
 };

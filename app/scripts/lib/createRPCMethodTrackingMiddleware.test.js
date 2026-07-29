@@ -24,10 +24,8 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import {
-  configureAnalytics,
-  getAnalyticsMessenger,
-} from '../controllers/analytics';
+import { configureAnalytics } from '../controllers/analytics';
+import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -77,6 +75,7 @@ messenger.registerActionHandler(
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
   optedIn: false,
+  consentDecisionMade: false,
 };
 
 messenger.registerActionHandler('AnalyticsController:getState', () => ({
@@ -85,11 +84,21 @@ messenger.registerActionHandler('AnalyticsController:getState', () => ({
 
 messenger.registerActionHandler('AnalyticsController:optIn', () => {
   analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
 messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
+
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  },
+);
 
 const trackEventSpy = jest.fn();
 messenger.registerActionHandler(
@@ -110,6 +119,7 @@ messenger.delegate({
     'AnalyticsController:getState',
     'AnalyticsController:optIn',
     'AnalyticsController:optOut',
+    'AnalyticsController:resetConsentDecision',
     'AnalyticsController:trackEvent',
     'AnalyticsController:identify',
     'AnalyticsController:trackView',
@@ -155,9 +165,7 @@ messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
 }));
 
 configureAnalytics({
-  messenger: getAnalyticsMessenger(messenger),
-  version: '0.0.1',
-  environment: 'test',
+  messenger: getAnalyticsControllerInitMessenger(messenger),
 });
 
 function getTrackedEventCall(callIndex) {

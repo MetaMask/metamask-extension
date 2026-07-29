@@ -12,7 +12,7 @@ class SettingsPage {
     '[data-testid="settings-tab-item-assets"]';
 
   private readonly backButton = {
-    testId: 'settings-header-back-button',
+    testId: 'page-header-back-button',
   };
 
   private readonly developerToolsSettingsButton =
@@ -39,10 +39,9 @@ class SettingsPage {
     '[data-testid="settings-search-result-item"]';
 
   private readonly searchSettingsInput =
-    '[data-testid="settings-header-search-input"]';
+    '[data-testid="page-header-search-input"]';
 
-  private readonly searchButton =
-    '[data-testid="settings-header-search-button"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
@@ -52,6 +51,9 @@ class SettingsPage {
 
   private readonly backupAndSyncSettingsButton =
     '[data-testid="settings-tab-item-backup-and-sync"]';
+
+  private readonly syncAccountsSettingsButton =
+    '[data-testid="settings-tab-item-sync-accounts"]';
 
   private readonly showNativeTokenAsMainBalanceToggleLabel = {
     xpath:
@@ -265,6 +267,10 @@ class SettingsPage {
   async goToBackupAndSyncSettings(): Promise<void> {
     console.log('Navigating to Backup & Sync Settings page');
     await this.driver.clickElement(this.backupAndSyncSettingsButton);
+  }
+
+  async goToSyncAccountsSettings(): Promise<void> {
+    await this.driver.clickElement(this.syncAccountsSettingsButton);
   }
 
   async goToTransactionsSettings(): Promise<void> {

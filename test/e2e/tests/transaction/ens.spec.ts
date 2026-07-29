@@ -57,9 +57,12 @@ describe('ENS', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '20' });
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);

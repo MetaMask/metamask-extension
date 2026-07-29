@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
@@ -29,6 +29,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  getCustomerServiceToken,
   getRewardsHasAccountOptedIn,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -41,11 +42,8 @@ import {
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
+import { useDispatch } from '../../store/hooks';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
@@ -69,7 +67,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getAnalyticsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -90,6 +87,7 @@ import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -105,7 +103,7 @@ import {
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
@@ -163,7 +161,7 @@ export const useUserLastSubscriptionByProduct = (
 };
 
 export const useCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldMembershipCancelledEvent } = useSubscriptionMetrics();
 
   const latestSubscriptionDuration = useMemo(() => {
@@ -227,7 +225,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldSubscriptionRestartRequestEvent } =
     useSubscriptionMetrics();
 
@@ -273,7 +271,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -311,7 +309,7 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   subscription?: Subscription;
   newRecurringInterval?: RecurringInterval;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -501,7 +499,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
  * @returns An object with the getSubscriptionEligibility function.
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
   const evmInternalAccount = useSelector((state) =>
@@ -585,7 +583,7 @@ export const useHandleSubscription = ({
   useTestClock?: boolean;
   rewardPoints?: number;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
@@ -734,26 +732,21 @@ export const useHandleSubscription = ({
 
 export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
     const supportLinkWithUserId = buildSupportLinkWithUserData(
       SUPPORT_LINK as string,
       {
         version,
-        profileId,
-        canonicalProfileId,
-        analyticsId,
+        customerServiceToken,
         shieldCustomerId,
       },
     );
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, canonicalProfileId, analyticsId, shieldCustomerId]);
+  }, [version, shieldCustomerId]);
 
   return {
     handleClickContactSupport,
@@ -765,7 +758,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 }: {
   subscription?: Subscription;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
     | Pick<
         TokenWithApprovalAmount,
@@ -848,7 +841,7 @@ export const useShieldRewards = (): {
   isRewardsSeason: boolean;
   hasAccountOptedIn: boolean;
 } => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,

@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
@@ -13,7 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   resolvePendingApproval,
@@ -62,6 +62,7 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
+import { useDispatch } from '../../store/hooks';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -86,7 +87,7 @@ const ConfirmAddSuggestedNFT = () => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
@@ -115,22 +116,30 @@ const ConfirmAddSuggestedNFT = () => {
       suggestedNfts.map(async ({ requestData: { asset }, id }) => {
         await dispatch(resolvePendingApproval(id, null));
 
-        trackEvent({
-          event: MetaMetricsEventName.NftAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_contract_address: asset.address,
-            token_symbol: asset.symbol,
-            token_id: asset.tokenId,
-            token_standard: asset.standard,
-            asset_type: AssetType.NFT,
-            source: MetaMetricsTokenEventSource.Dapp,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.NftAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              token_contract_address: asset.address,
+              token_symbol: asset.symbol,
+              token_id: asset.tokenId,
+              token_standard: asset.standard,
+              asset_type: AssetType.NFT,
+              source: MetaMetricsTokenEventSource.Dapp,
+            })
+            .build(),
+        );
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedNfts,
+  ]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
