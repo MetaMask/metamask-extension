@@ -9,17 +9,16 @@ exports[`SrpInputForm render matches snapshot 1`] = `
       class="flex flex-row gap-1 items-center"
     >
       <p
-        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         Enter your Secret Recovery Phrase
       </p>
       <button
         aria-label="info"
-        class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
-        color="text-icon-alternative"
+        class="inline-flex items-center justify-center p-0 h-5 w-5 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-alternative"
       >
         <svg
-          class="inline-block w-5 h-5 text-inherit"
+          class="inline-block w-4 h-4 text-inherit"
           fill="currentColor"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
@@ -38,17 +37,17 @@ exports[`SrpInputForm render matches snapshot 1`] = `
           class="flex flex-col gap-1"
         >
           <div
-            class="flex flex-col bg-muted srp-input-import__container rounded-lg"
+            class="flex flex-col mt-2 bg-muted srp-input-import__container srp-input-import__container--empty rounded-lg"
           >
             <div
-              class="p-4 srp-input-import__srp-note rounded-lg"
+              class="pt-3 pr-4 pb-3 pl-4 srp-input-import__srp-note rounded-lg"
               style="flex: 1;"
             >
               <textarea
-                class="srp-input-import__initial-input"
+                class="srp-input-import__initial-input text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm"
                 data-testid="srp-input-import__srp-note"
                 id="first-word-input-text-area"
-                placeholder="Add a space between each word and make sure no one is watching."
+                placeholder="Add a space between words. Make sure no one is watching."
                 rows="7"
               />
             </div>
