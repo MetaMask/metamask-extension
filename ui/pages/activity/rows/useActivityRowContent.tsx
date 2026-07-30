@@ -30,7 +30,10 @@ type ActivityContent = {
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
-function getChainDisplay(caipChainId: CaipChainId) {
+function getChainDisplay(caipChainId: CaipChainId | undefined) {
+  if (!caipChainId) {
+    return { chainId: undefined, networkName: undefined };
+  }
   const { namespace } = parseCaipChainId(caipChainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155

@@ -24,6 +24,7 @@ import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
+  getActivityItemIdentifier,
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
@@ -115,10 +116,7 @@ export function ActivityList({
   });
 
   const handleClick = (item: ActivityListItem) => {
-    // A pending ramp order has no on-chain hash yet — fall back to its
-    // stable provider order id so it can still be opened. Use `||` (not `??`)
-    // so an empty-string hash also falls through to the id.
-    const identifier = item.hash || item.id;
+    const identifier = getActivityItemIdentifier(item);
     if (!identifier) {
       return;
     }
@@ -228,7 +226,9 @@ export function ActivityList({
       >
         <TransactionDetails
           chainId={selectedItem?.chainId}
-          txIdentifier={selectedItem?.hash || selectedItem?.id}
+          txIdentifier={
+            selectedItem ? getActivityItemIdentifier(selectedItem) : undefined
+          }
           onBack={() => dialogRef.current?.close?.()}
         />
       </dialog>

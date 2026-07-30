@@ -104,6 +104,27 @@ function getItemHash(item: ActivityListItem) {
   return item.hash?.toLowerCase();
 }
 
+/**
+ * Stable list / details identifier for an activity item. Pending ramp orders
+ * have no on-chain hash yet — fall back to the shared activity `data.id`
+ * (provider order id) so they can still be opened. Use `||` (not `??`) so an
+ * empty-string hash also falls through to the id.
+ *
+ * @param item - The activity item.
+ * @returns The hash or ramp order id, if any.
+ */
+export function getActivityItemIdentifier(
+  item: ActivityListItem,
+): string | undefined {
+  if (item.hash) {
+    return item.hash;
+  }
+  if (item.type === 'rampBuy' || item.type === 'rampSell') {
+    return item.data.id;
+  }
+  return undefined;
+}
+
 function parseDate(timestamp: number) {
   const date = new Date(timestamp);
   date.setHours(0, 0, 0, 0);

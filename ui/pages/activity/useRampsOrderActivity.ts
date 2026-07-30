@@ -51,7 +51,7 @@ export function useRampsOrderActivity(filters: ActivityListFilter) {
 
     const selectedNetworks = new Set(networks);
     return items.filter((item) => {
-      if (!selectedNetworks.has(item.chainId)) {
+      if (!item.chainId || !selectedNetworks.has(item.chainId)) {
         return false;
       }
       if (kindFilter === 'buySell') {

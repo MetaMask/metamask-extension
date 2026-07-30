@@ -100,7 +100,6 @@ const buildItem = (overrides: Partial<RampOrderItem> = {}): RampOrderItem =>
     status: 'success',
     timestamp: 1700000000000,
     hash: undefined,
-    id: '/providers/transak/orders/order-123456789012',
     data: {
       from: '0xabc123',
       fiat: { amount: '100', currency: 'USD' },
@@ -113,6 +112,7 @@ const buildItem = (overrides: Partial<RampOrderItem> = {}): RampOrderItem =>
       },
       statusDescription: undefined,
       paymentDetails: [],
+      id: '/providers/transak/orders/order-123456789012',
     },
     ...overrides,
   }) as RampOrderItem;

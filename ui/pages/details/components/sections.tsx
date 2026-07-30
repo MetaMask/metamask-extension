@@ -55,7 +55,7 @@ export function MetadataSection({
   const showAddressRows = Boolean(addressRows?.from && addressRows?.to);
   const txId =
     item.hash &&
-    (!item.chainId.startsWith('eip155:') || isValidTransactionHash(item.hash))
+    (!item.chainId?.startsWith('eip155:') || isValidTransactionHash(item.hash))
       ? item.hash
       : undefined;
 
@@ -95,10 +95,12 @@ export function MetadataSection({
         />
       )}
 
-      <Row
-        label={t('network')}
-        value={<NetworkName chainId={item.chainId} />}
-      />
+      {item.chainId ? (
+        <Row
+          label={t('network')}
+          value={<NetworkName chainId={item.chainId} />}
+        />
+      ) : null}
 
       <Row
         label={t('transactionIdLabel')}

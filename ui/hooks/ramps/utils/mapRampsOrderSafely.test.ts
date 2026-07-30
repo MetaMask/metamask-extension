@@ -34,20 +34,28 @@ describe('mapRampsOrderSafely', () => {
     expect(mapRampsOrderSafely(order)?.chainId).toBe('eip155:1');
   });
 
-  it('normalizes a bare chain-id string network (observed on the Banxa-backed staging provider)', () => {
+  it('maps a bare chain-id string network via the shared mapper', () => {
     const order = { ...baseOrder, network: '1' } as unknown as RampsOrder;
 
     expect(mapRampsOrderSafely(order)?.chainId).toBe('eip155:1');
   });
 
-  it('returns undefined instead of throwing when the order is unmappable', () => {
-    const order = { ...baseOrder, network: undefined } as unknown as RampsOrder;
+  it('returns undefined when the order cannot be mapped', () => {
+    const order = {
+      ...baseOrder,
+      network: undefined,
+      cryptoCurrency: undefined,
+    } as unknown as RampsOrder;
 
     expect(mapRampsOrderSafely(order)).toBeUndefined();
   });
 
   it('seeds a missing chainId from the fallback (redirect order not yet populated)', () => {
-    const order = { ...baseOrder, network: undefined } as unknown as RampsOrder;
+    const order = {
+      ...baseOrder,
+      network: undefined,
+      cryptoCurrency: undefined,
+    } as unknown as RampsOrder;
 
     expect(mapRampsOrderSafely(order, 'eip155:1')?.chainId).toBe('eip155:1');
   });
@@ -61,7 +69,7 @@ describe('mapRampsOrderSafely', () => {
     expect(mapRampsOrderSafely(order, 'eip155:137')?.chainId).toBe('eip155:1');
   });
 
-  it('normalizes an upper-cased "BUY" orderType to rampBuy (the real API sends it upper-cased)', () => {
+  it('maps an upper-cased "BUY" orderType to rampBuy', () => {
     const order = {
       ...baseOrder,
       network: '1',
@@ -71,7 +79,7 @@ describe('mapRampsOrderSafely', () => {
     expect(mapRampsOrderSafely(order)?.type).toBe('rampBuy');
   });
 
-  it('normalizes an upper-cased "SELL" orderType to rampSell', () => {
+  it('maps an upper-cased "SELL" orderType to rampSell', () => {
     const order = {
       ...baseOrder,
       network: '1',
@@ -82,7 +90,18 @@ describe('mapRampsOrderSafely', () => {
     expect(mapRampsOrderSafely(order)?.type).toBe('rampSell');
   });
 
-  it('overlays a stashed preview onto a precreated order with no token/fiat data yet', () => {
+  it('hides PRECREATED orders (shared mapper filters them out)', () => {
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+      providerOrderId: 'precreated-order',
+      status: 'PRECREATED',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order)).toBeUndefined();
+  });
+
+  it('overlays a stashed preview onto a pending order with no token/fiat data yet', () => {
     setPendingOrderPreview('order-2', {
       cryptoCurrency: { symbol: 'ETH', assetId: 'eip155:1/slip44:60' },
       cryptoAmount: '0.05',
@@ -96,7 +115,7 @@ describe('mapRampsOrderSafely', () => {
       providerOrderId: 'order-2',
       cryptoCurrency: undefined,
       fiatCurrency: undefined,
-      status: 'PRECREATED',
+      status: 'PENDING',
     } as unknown as RampsOrder;
 
     const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
@@ -106,9 +125,6 @@ describe('mapRampsOrderSafely', () => {
   });
 
   it('keeps cryptoAmount human-readable by omitting decimals on the mapped token', () => {
-    // Activity formatters treat TokenAmount.amount as base units when decimals
-    // is set. Ramps amounts are already human (e.g. 5 USDC), so leaving
-    // decimals: 6 would render as 0.000005 → "0 USDC".
     const order = {
       ...baseOrder,
       network: { name: 'Ethereum', chainId: 'eip155:1' },
@@ -136,7 +152,7 @@ describe('mapRampsOrderSafely', () => {
       providerOrderId: 'order-without-preview',
       cryptoCurrency: undefined,
       fiatCurrency: undefined,
-      status: 'PRECREATED',
+      status: 'PENDING',
     } as unknown as RampsOrder;
 
     const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
@@ -145,12 +161,22 @@ describe('mapRampsOrderSafely', () => {
     expect(mapped?.data.fiat?.currency).toBeUndefined();
   });
 
+  it('exposes the provider order id on data.id for pending rows without a hash', () => {
+    const order = {
+      ...baseOrder,
+      network: { name: 'Ethereum', chainId: 'eip155:1' },
+      providerOrderId: 'provider-order-id-1',
+      txHash: '',
+      status: 'PENDING',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.hash).toBeUndefined();
+    expect(mapped?.data.id).toBe('provider-order-id-1');
+  });
+
   it('pins orderType to the first confirmed value, ignoring a later conflicting poll of the same order', () => {
-    // An order's buy/sell direction can't legitimately change after creation.
-    // Polling has been observed to return an inconsistent orderType across
-    // successive fetches of the same order, flickering the details screen
-    // between Buying/Selling — the second (conflicting) poll result must not
-    // override the first.
     const buyOrder = {
       ...baseOrder,
       network: '1',

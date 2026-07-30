@@ -40,7 +40,7 @@ describe('useRampsOrderActivity', () => {
     expect(result.current[0]).toMatchObject({
       type: 'rampBuy',
       chainId: 'eip155:1',
-      id: 'order-1',
+      data: { id: 'order-1' },
     });
   });
 
@@ -102,6 +102,6 @@ describe('useRampsOrderActivity', () => {
     );
 
     expect(result.current).toHaveLength(1);
-    expect(result.current[0]).toMatchObject({ id: 'order-1' });
+    expect(result.current[0]).toMatchObject({ data: { id: 'order-1' } });
   });
 });

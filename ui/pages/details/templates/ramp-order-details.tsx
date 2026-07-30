@@ -44,7 +44,7 @@ export function RampOrderDetails({
 
   const { fiat, token, provider, statusDescription, paymentDetails } =
     item.data;
-  const orderId = item.id ? getInternalOrderCode(item.id) : undefined;
+  const orderId = item.data.id ? getInternalOrderCode(item.data.id) : undefined;
   const rawOrder = orderId ? getOrderById(orderId) : undefined;
   const paidWith =
     rawOrder?.paymentMethod?.name ?? rawOrder?.paymentMethod?.shortName;
