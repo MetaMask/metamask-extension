@@ -61,90 +61,14 @@ describe('formatPriceImpactFiat', () => {
     expect(formatPriceImpactFiat(undefined, 'usd')).toBeUndefined();
   });
 
-  it('returns undefined when sentAmount.valueInCurrency is null', () => {
-    expect(
-      formatPriceImpactFiat(
-        {
-          sentAmount: { valueInCurrency: null },
-          toTokenAmount: { valueInCurrency: '900' },
-        },
-        'usd',
-      ),
-    ).toBeUndefined();
-  });
-
-  it('returns undefined when toTokenAmount.valueInCurrency is undefined', () => {
-    expect(
-      formatPriceImpactFiat(
-        {
-          sentAmount: { valueInCurrency: '1000' },
-          toTokenAmount: { valueInCurrency: undefined },
-        },
-        'usd',
-      ),
-    ).toBeUndefined();
-  });
-
-  it('returns undefined when sentAmount is missing', () => {
-    expect(
-      formatPriceImpactFiat(
-        { toTokenAmount: { valueInCurrency: '900' } },
-        'usd',
-      ),
-    ).toBeUndefined();
-  });
-
-  it('returns undefined when toTokenAmount is missing', () => {
-    expect(
-      formatPriceImpactFiat({ sentAmount: { valueInCurrency: '1000' } }, 'usd'),
-    ).toBeUndefined();
-  });
-
-  it('formats the absolute difference between source and destination fiat amounts', () => {
-    const result = formatPriceImpactFiat(
-      {
-        sentAmount: { valueInCurrency: '1000' },
-        toTokenAmount: { valueInCurrency: '995.77' },
-      },
-      'usd',
-    );
-    expect(result).toBeDefined();
-    expect(result).toContain('4.23');
-  });
-
-  it('uses the absolute value so a favourable quote does not produce a negative result', () => {
-    const result = formatPriceImpactFiat(
-      {
-        sentAmount: { valueInCurrency: '900' },
-        toTokenAmount: { valueInCurrency: '1000' },
-      },
-      'usd',
-    );
-    expect(result).toBeDefined();
-    expect(result).toContain('100');
-  });
-
   it('handles string numeric inputs', () => {
-    const result = formatPriceImpactFiat(
-      {
-        sentAmount: { valueInCurrency: '500.50' },
-        toTokenAmount: { valueInCurrency: '496.27' },
-      },
-      'usd',
-    );
-    expect(result).toBeDefined();
-    expect(result).toContain('4.23');
+    const result = formatPriceImpactFiat('4.23', 'usd');
+    expect(result).toMatchInlineSnapshot(`"$4.23"`);
   });
 
   it('handles numeric inputs', () => {
-    const result = formatPriceImpactFiat(
-      {
-        sentAmount: { valueInCurrency: 1000 },
-        toTokenAmount: { valueInCurrency: 990 },
-      },
-      'usd',
-    );
-    expect(result).toBeDefined();
-    expect(result).toContain('10');
+    // @ts-expect-error - we want to test with a number
+    const result = formatPriceImpactFiat(10, 'usd');
+    expect(result).toMatchInlineSnapshot(`"$10.00"`);
   });
 });

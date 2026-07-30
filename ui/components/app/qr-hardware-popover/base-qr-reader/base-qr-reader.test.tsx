@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { URDecoder } from '@ngraveio/bc-ur';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import {
@@ -250,6 +251,72 @@ describe('BaseQrReader', () => {
 
     expect(screen.getByTestId('qr-camera-access-blocked')).toBeInTheDocument();
     expect(mockRequestVideoStream).not.toHaveBeenCalled();
+  });
+
+  it('reports PermissionCameraDenied when camera access is blocked', async () => {
+    const setCameraPermissionErrorCode = jest.fn();
+    mockEnhancedQrReader.mockImplementation(
+      () => null as unknown as React.ReactElement,
+    );
+    mockCheckStatus.mockResolvedValue({
+      permissions: false,
+      environmentReady: true,
+    });
+    mockQueryCameraPermission.mockResolvedValue({
+      state: CameraPermissionState.Denied,
+      permissionStatus: {
+        state: CameraPermissionState.Denied,
+        addEventListener: jest.fn(),
+      } as unknown as PermissionStatus,
+    });
+
+    await act(async () => {
+      renderWithProvider(
+        <BaseQrReader
+          {...defaultProps}
+          setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+        />,
+      );
+    });
+
+    expect(setCameraPermissionErrorCode).toHaveBeenCalledWith(
+      ErrorCode.PermissionCameraDenied,
+    );
+  });
+
+  it('reports PermissionCameraPromptDismissed when camera access is needed', async () => {
+    const setCameraPermissionErrorCode = jest.fn();
+    mockEnhancedQrReader.mockImplementation(
+      () => null as unknown as React.ReactElement,
+    );
+    mockCheckStatus.mockResolvedValue({
+      permissions: true,
+      environmentReady: true,
+    });
+    mockQueryCameraPermission.mockResolvedValue({
+      state: CameraPermissionState.Prompt,
+      permissionStatus: {
+        state: CameraPermissionState.Prompt,
+        addEventListener: jest.fn(),
+      } as unknown as PermissionStatus,
+    });
+    const notAllowed = new Error('denied');
+    notAllowed.name = DOMExceptionName.NotAllowed;
+    mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+
+    await act(async () => {
+      renderWithProvider(
+        <BaseQrReader
+          {...defaultProps}
+          setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+        />,
+      );
+    });
+
+    expect(screen.getByTestId('qr-camera-access-needed')).toBeInTheDocument();
+    expect(setCameraPermissionErrorCode).toHaveBeenCalledWith(
+      ErrorCode.PermissionCameraPromptDismissed,
+    );
   });
 
   it('does not poll when permission is denied', async () => {

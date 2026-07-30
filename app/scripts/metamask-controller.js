@@ -200,7 +200,6 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -234,8 +233,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
+} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -380,11 +378,11 @@ import { AuthenticationControllerInit } from './messenger-client-init/identity/a
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
-import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
@@ -461,6 +459,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
+import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
@@ -683,6 +682,7 @@ export default class MetamaskController extends EventEmitter {
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
       GeolocationApiService: GeolocationApiServiceInit,
+      SentinelApiService: SentinelApiServiceInit,
       GeolocationController: GeolocationControllerInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
@@ -732,6 +732,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
@@ -880,6 +881,8 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
       messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
     this.accountTreeController = messengerClientsByName.AccountTreeController;
     this.oauthService = messengerClientsByName.OAuthService;
     this.subscriptionService = messengerClientsByName.SubscriptionService;
@@ -1476,6 +1479,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
       ProfileMetricsController: this.profileMetricsController,
       ConfigRegistryController: this.configRegistryController,
       TransactionController: this.txController,
@@ -1543,6 +1547,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
@@ -1739,23 +1744,6 @@ export default class MetamaskController extends EventEmitter {
     if (this.preferencesController.state.useExternalServices) {
       this.messengerClientApi.startRampsLifecycle?.();
     }
-  }
-
-  /**
-   * Gathers metadata (primarily connectivity status) about the globally selected
-   * network as well as each enabled network and persists it to state.
-   */
-  async lookupSelectedNetworks() {
-    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
-      this._getMetaMaskState(),
-    );
-
-    await Promise.allSettled([
-      this.networkController.lookupNetwork(),
-      ...enabledNetworkClientIds.map(async (networkClientId) => {
-        return await this.networkController.lookupNetwork(networkClientId);
-      }),
-    ]);
   }
 
   triggerNetworkrequests() {
@@ -2572,7 +2560,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       const addedNetwork =
         await this.networkController.addNetwork(networkConfiguration);
-      await this.lookupSelectedNetworks();
+      await this.controllerMessenger.call(
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      );
       return addedNetwork;
     } catch (error) {
       // `addNetwork` rejected, so `networkAdded` was not published
@@ -2742,8 +2732,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        this.notificationManager.markAsAutomaticallyClosed.bind(
-          this.notificationManager,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
       getCode: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3517,9 +3508,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'AccountOrderController:updateAccountsList',
       ),
-      setEnabledNetworks: this.setEnabledNetworks.bind(this),
-      setEnabledAllPopularNetworks:
-        this.setEnabledAllPopularNetworks.bind(this),
+      setEnabledNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledNetworks',
+      ),
+      setEnabledAllPopularNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+      ),
       updateHiddenAccountsList: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'AccountOrderController:updateHiddenAccountsList',
@@ -3657,12 +3653,6 @@ export default class MetamaskController extends EventEmitter {
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
-
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
@@ -3960,14 +3950,22 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
-      openUpdateTabAndReload: () =>
-        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
-      requestSafeReload: this.requestSafeReload.bind(this),
+      openUpdateTabAndReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:openUpdateTabAndReload',
+      ),
+      requestSafeReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:requestSafeReload',
+      ),
       applyTransactionContainersExisting: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:applyTransactionContainersExisting',
       ),
-      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
+      lookupSelectedNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      ),
       resetWallet: this.resetWallet.bind(this),
     };
   }
@@ -5469,6 +5467,10 @@ export default class MetamaskController extends EventEmitter {
         deviceRead: true,
       },
       async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no isUnlocked(); pairing is reported via getMode().
+          return Boolean(keyring.getMode());
+        }
         return keyring.isUnlocked();
       },
     );
@@ -6744,14 +6746,14 @@ export default class MetamaskController extends EventEmitter {
     const {
       analyticsId,
       dataCollectionForMarketing,
-      completedMetaMetricsOnboarding,
+      consentDecisionMade,
       optedIn,
     } = this.getState();
 
     if (
       analyticsId &&
       dataCollectionForMarketing &&
-      completedMetaMetricsOnboarding &&
+      consentDecisionMade &&
       optedIn
     ) {
       // setup multiplexing
@@ -8226,10 +8228,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Metametrics Actions
       getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
       },
       trackEvent: (payload, options) => {
         trackEvent(
@@ -8573,28 +8573,6 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
-  };
-
-  setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  setEnabledAllPopularNetworks = async () => {
-    try {
-      this.networkEnablementController.enableAllPopularNetworks();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
   };
 
   /**
@@ -9282,12 +9260,17 @@ export default class MetamaskController extends EventEmitter {
       getFlatState: this.getState.bind(this),
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
       getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
+      requestSafeReload: this.requestSafeReload.bind(this),
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,

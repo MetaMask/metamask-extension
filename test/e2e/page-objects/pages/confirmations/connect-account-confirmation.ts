@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConnectAccountConfirmation {
-  driver: Driver;
-
   private readonly accountListItem = (accountName: string) => ({
     testId: `multichain-account-cell-name-${accountName}`,
   });
@@ -24,6 +22,8 @@ class ConnectAccountConfirmation {
     text: 'Connect this website with MetaMask',
     tag: 'p',
   };
+
+  driver: Driver;
 
   private readonly editAccountButton = {
     text: 'Edit accounts',
@@ -47,6 +47,19 @@ class ConnectAccountConfirmation {
     this.driver = driver;
   }
 
+  async cancelConnect(): Promise<void> {
+    console.log('Cancel connection on Connect Account confirmation page');
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.cancelConnectButton,
+    );
+  }
+
+  async checkForAccountsInPermissionList(accounts: string[]): Promise<void> {
+    for (const account of accounts) {
+      await this.driver.waitForSelector(this.accountListItem(account));
+    }
+  }
+
   async checkPageIsLoaded({
     origin = '127.0.0.1',
   }: { origin?: string } = {}): Promise<void> {
@@ -58,13 +71,6 @@ class ConnectAccountConfirmation {
     console.log(`Connect Account confirmation page is loaded`);
   }
 
-  async cancelConnect(): Promise<void> {
-    console.log('Cancel connection on Connect Account confirmation page');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.cancelConnectButton,
-    );
-  }
-
   async confirmConnect(): Promise<void> {
     console.log('Confirm connection on Connect Account confirmation page');
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -74,19 +80,6 @@ class ConnectAccountConfirmation {
 
   async goToPermissionsTab(): Promise<void> {
     await this.driver.clickElement(this.permissionsTab);
-  }
-
-  async openEditAccountsModal(): Promise<void> {
-    console.log('Open edit accounts modal');
-    await this.driver.clickElement(this.editAccountButton);
-  }
-
-  async openEditNetworksModal(): Promise<void> {
-    console.log('Open edit networks modal');
-    const editButtons = await this.driver.findElements(
-      this.editPermissionsButton,
-    );
-    await editButtons[1].click();
   }
 
   async isConfirmButtonEnabled(): Promise<boolean> {
@@ -102,10 +95,17 @@ class ConnectAccountConfirmation {
     return true;
   }
 
-  async checkForAccountsInPermissionList(accounts: string[]): Promise<void> {
-    for (const account of accounts) {
-      await this.driver.waitForSelector(this.accountListItem(account));
-    }
+  async openEditAccountsModal(): Promise<void> {
+    console.log('Open edit accounts modal');
+    await this.driver.clickElement(this.editAccountButton);
+  }
+
+  async openEditNetworksModal(): Promise<void> {
+    console.log('Open edit networks modal');
+    const editButtons = await this.driver.findElements(
+      this.editPermissionsButton,
+    );
+    await editButtons[1].click();
   }
 }
 

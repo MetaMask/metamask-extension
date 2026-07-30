@@ -2,10 +2,6 @@ import { Driver } from '../../../webdriver/driver';
 import SelectNetwork from './select-network';
 
 class DappConnectionsNetworkModal {
-  private readonly driver: Driver;
-
-  private readonly selectNetwork: SelectNetwork;
-
   private readonly dappAddCustomNetworkButton = {
     tag: 'button',
     text: 'Add a custom network',
@@ -16,9 +12,23 @@ class DappConnectionsNetworkModal {
     text: 'Manage networks',
   };
 
+  private readonly driver: Driver;
+
+  private readonly selectNetwork: SelectNetwork;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.selectNetwork = new SelectNetwork(driver);
+  }
+
+  async checkNetworkOptionIsDisplayed(
+    networkName: string,
+    shouldBeDisplayed: boolean = true,
+  ): Promise<void> {
+    await this.selectNetwork.checkNetworkOptionIsDisplayed(
+      networkName,
+      shouldBeDisplayed,
+    );
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -35,16 +45,6 @@ class DappConnectionsNetworkModal {
       throw e;
     }
     console.log('Dapp connections network modal is loaded');
-  }
-
-  async checkNetworkOptionIsDisplayed(
-    networkName: string,
-    shouldBeDisplayed: boolean = true,
-  ): Promise<void> {
-    await this.selectNetwork.checkNetworkOptionIsDisplayed(
-      networkName,
-      shouldBeDisplayed,
-    );
   }
 
   async toggleShowTestNetwork(): Promise<void> {

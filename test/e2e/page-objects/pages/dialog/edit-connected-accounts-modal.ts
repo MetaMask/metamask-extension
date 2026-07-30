@@ -1,11 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class EditConnectedAccountsModal {
-  driver: Driver;
+  private readonly accountCell = '.multichain-account-cell';
 
   private readonly accountCheckbox = 'input[type="checkbox"]';
-
-  private readonly accountCell = '.multichain-account-cell';
 
   private readonly accountName = (accountLabel: string) => ({
     testId: `multichain-account-cell-name-${accountLabel}`,
@@ -23,6 +21,8 @@ class EditConnectedAccountsModal {
   private readonly connectAccountsButton = {
     testId: 'connect-more-accounts-button',
   };
+
+  driver: Driver;
 
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',

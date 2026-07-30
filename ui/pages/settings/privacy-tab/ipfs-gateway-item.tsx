@@ -11,7 +11,7 @@ import {
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
-  IPFS_FORBIDDEN_GATEWAY,
+  IPFS_FORBIDDEN_GATEWAYS,
 } from '../../../../shared/constants/network';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { PRIVACY_ITEMS } from '../search-config';
@@ -53,7 +53,7 @@ export const IpfsGatewayItem = () => {
     }
 
     const urlObj = new URL(validUrl);
-    if (urlObj.host === IPFS_FORBIDDEN_GATEWAY) {
+    if (IPFS_FORBIDDEN_GATEWAYS.includes(urlObj.host)) {
       setIpfsGatewayError(t('forbiddenIpfsGateway'));
       return;
     }
