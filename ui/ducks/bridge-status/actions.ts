@@ -1,6 +1,6 @@
 import {
   type QuoteMetadata,
-  type QuoteResponse,
+  type QuoteResponseV1,
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
 } from '@metamask/bridge-controller';
@@ -35,7 +35,7 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  */
 export const submitBridgeTx = (
   accountAddress: string,
-  quote: QuoteResponse & QuoteMetadata,
+  quote: QuoteResponseV1 & QuoteMetadata,
   isStxSupportedInClient: boolean,
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
   location: MetaMetricsSwapsEventSource,
@@ -44,7 +44,7 @@ export const submitBridgeTx = (
   callBridgeStatusControllerMethod<
     [
       string,
-      QuoteResponse & QuoteMetadata,
+      QuoteResponseV1 & QuoteMetadata,
       boolean,
       RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
       MetaMetricsSwapsEventSource,
@@ -74,7 +74,7 @@ export const submitBridgeTx = (
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
 export const submitBridgeIntent = (params: {
-  quoteResponse: QuoteResponse & QuoteMetadata;
+  quoteResponse: QuoteResponseV1 & QuoteMetadata;
   accountAddress: string;
   location: MetaMetricsSwapsEventSource;
   tokenSecurityTypeDestination?: string | null;
@@ -96,7 +96,7 @@ export const submitBridgeIntent = (params: {
  * @returns A thunk that dispatches the `submitBatchSell` bridge status action.
  */
 export const submitBatchSellTrade = (params: {
-  quoteResponses: ((QuoteResponse & QuoteMetadata) | null)[];
+  quoteResponses: ((QuoteResponseV1 & QuoteMetadata) | null)[];
   accountAddress: string;
   isStxEnabled: boolean;
   quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
