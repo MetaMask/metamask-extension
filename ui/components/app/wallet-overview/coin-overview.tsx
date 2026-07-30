@@ -1,4 +1,10 @@
-import React, { useContext, useCallback, useMemo } from 'react';
+import React, {
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -74,6 +80,8 @@ export type CoinOverviewProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
+
+const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
 const BalanceOverviewSkeleton = () => (
   <Box
@@ -255,16 +263,55 @@ export const CoinOverview = ({
     hasBalance &&
     aggregateFiatBalanceIsZero;
 
+  const enabledNetworksDelayKey = useMemo(
+    () =>
+      Object.entries(enabledNetworks)
+        .map(([namespace, networks]) => {
+          const enabledChainIds = Object.entries(networks)
+            .filter(([, isEnabled]) => isEnabled)
+            .map(([enabledChainId]) => enabledChainId)
+            .sort((firstChainId, secondChainId) =>
+              firstChainId.localeCompare(secondChainId),
+            )
+            .join(',');
+
+          return `${namespace}:${enabledChainIds}`;
+        })
+        .sort((firstNetwork, secondNetwork) =>
+          firstNetwork.localeCompare(secondNetwork),
+        )
+        .join('|'),
+    [enabledNetworks],
+  );
+
+  const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
+    useState(false);
+
+  useEffect(() => {
+    if (!shouldDelayZeroFiatBalance) {
+      setHasZeroFiatBalanceDelayElapsed(false);
+      return undefined;
+    }
+
+    setHasZeroFiatBalanceDelayElapsed(false);
+    const timeoutId = setTimeout(() => {
+      setHasZeroFiatBalanceDelayElapsed(true);
+    }, ZERO_FIAT_BALANCE_DELAY_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [enabledNetworksDelayKey, shouldDelayZeroFiatBalance]);
+
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      (shouldDelayZeroFiatBalance ||
+      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
       balanceIsLoading,
