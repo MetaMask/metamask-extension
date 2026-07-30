@@ -234,8 +234,7 @@ import {
 import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
+} from '../../shared/lib/hardware-wallets';
 import {
   DefiReferralPartner,
   getPartnerByOrigin,
@@ -385,7 +384,6 @@ import { NotificationServicesControllerInit } from './messenger-client-init/noti
 import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
-import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
@@ -3963,9 +3961,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
-      openUpdateTabAndReload: () =>
-        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
-      requestSafeReload: this.requestSafeReload.bind(this),
+      openUpdateTabAndReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:openUpdateTabAndReload',
+      ),
+      requestSafeReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:requestSafeReload',
+      ),
       applyTransactionContainersExisting: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:applyTransactionContainersExisting',
@@ -5472,6 +5475,10 @@ export default class MetamaskController extends EventEmitter {
         deviceRead: true,
       },
       async (keyring) => {
+        if (deviceName === HardwareDeviceNames.qr) {
+          // QR keyrings have no isUnlocked(); pairing is reported via getMode().
+          return Boolean(keyring.getMode());
+        }
         return keyring.isUnlocked();
       },
     );
@@ -9293,6 +9300,7 @@ export default class MetamaskController extends EventEmitter {
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
+      requestSafeReload: this.requestSafeReload.bind(this),
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
