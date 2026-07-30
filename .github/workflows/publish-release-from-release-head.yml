@@ -242,24 +242,75 @@ jobs:
 
       # SLSA build provenance attestation (INFRA-2665).
       - name: Attest webpack chrome artifact
+        id: attest-chrome
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
         with:
           subject-path: build-dist-webpack/builds/metamask-chrome-*.zip
 
       - name: Attest webpack firefox artifact
+        id: attest-firefox
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
         with:
           subject-path: build-dist-mv2-webpack/builds/metamask-firefox-*.zip
 
       - name: Attest webpack flask chrome artifact
+        id: attest-flask-chrome
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
         with:
           subject-path: build-flask-webpack/builds/metamask-chrome-*.zip
 
       - name: Attest webpack flask firefox artifact
+        id: attest-flask-firefox
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
         with:
           subject-path: build-flask-mv2-webpack/builds/metamask-firefox-*.zip
+
+      # Publish each Sigstore bundle as a release asset so the AMO submission
+      # Lambda can verify provenance without a GitHub token (INFRA-3786).
+      # actions/attest (pinned via attest-build-provenance) writes each bundle
+      # under a unique RUNNER_TEMP/<mkdtemp>/attestation.json, so the four
+      # bundle-path outputs point at four distinct files and can be collected
+      # in one pass after the last attest step.
+      - name: Collect attestation bundles
+        env:
+          CHROME_BUNDLE: ${{ steps.attest-chrome.outputs.bundle-path }}
+          FIREFOX_BUNDLE: ${{ steps.attest-firefox.outputs.bundle-path }}
+          FLASK_CHROME_BUNDLE: ${{ steps.attest-flask-chrome.outputs.bundle-path }}
+          FLASK_FIREFOX_BUNDLE: ${{ steps.attest-flask-firefox.outputs.bundle-path }}
+        run: |
+          set -euo pipefail
+
+          # Names the bundle after the release asset it covers, so the AMO
+          # Lambda can resolve it from the zip name alone.
+          collect_bundle() {
+            local bundle_path="${1}"
+            local zip_glob="${2}"
+
+            if [[ -z "${bundle_path}" || ! -f "${bundle_path}" ]]; then
+              echo "::error::Attestation bundle missing for ${zip_glob}"
+              exit 1
+            fi
+
+            local zips=()
+            while IFS= read -r zip; do
+              zips+=("${zip}")
+            done < <(compgen -G "${zip_glob}" || true)
+
+            if [[ "${#zips[@]}" -ne 1 ]]; then
+              echo "::error::Expected exactly 1 artifact for ${zip_glob}, found ${#zips[@]}"
+              exit 1
+            fi
+
+            local dest
+            dest="${GITHUB_WORKSPACE}/$(basename "${zips[0]}").sigstore.json"
+            cp "${bundle_path}" "${dest}"
+            echo "Collected $(basename "${dest}")"
+          }
+
+          collect_bundle "${CHROME_BUNDLE}" 'build-dist-webpack/builds/metamask-chrome-*.zip'
+          collect_bundle "${FIREFOX_BUNDLE}" 'build-dist-mv2-webpack/builds/metamask-firefox-*.zip'
+          collect_bundle "${FLASK_CHROME_BUNDLE}" 'build-flask-webpack/builds/metamask-chrome-*.zip'
+          collect_bundle "${FLASK_FIREFOX_BUNDLE}" 'build-flask-mv2-webpack/builds/metamask-firefox-*.zip'
 
       - name: Generate SHA256SUMS
         run: |
@@ -305,6 +356,7 @@ jobs:
             echo "| Sentry (Flask webpack) | ✅ Published |"
             echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| Attestation (4 webpack artifacts) | ✅ Attested |"
+            echo "| Attestation bundles (release assets) | ✅ Published |"
             echo "| SHA256SUMS | ✅ Generated |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"

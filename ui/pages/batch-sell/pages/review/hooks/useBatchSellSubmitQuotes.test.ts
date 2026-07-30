@@ -62,7 +62,9 @@ const mockSubmitBatchSellTrade = jest.mocked(submitBatchSellTrade);
 
 const MOCK_ACCOUNT = { address: '0xdeadbeef', type: 'eip155:eoa' };
 
-const MOCK_QUOTE_RESPONSE = { quote: { requestId: 'req-1' } } as never;
+const MOCK_QUOTE_RESPONSE = {
+  quote: { requestId: 'req-1', srcChainId: 1 },
+} as never;
 
 const MOCK_RECEIVED_ASSET_NO_SECURITY: BatchSellAsset = {
   assetId: 'eip155:1/erc20:0xusdc' as never,
@@ -225,6 +227,23 @@ describe('useBatchSellSubmitQuotes', () => {
       expect(mockGetIsSmartTransaction).toHaveBeenCalledWith(
         expect.anything(),
         '0x1',
+      );
+    });
+
+    // `getIsSmartTransaction` falls back to the globally selected network when
+    // given no chain id, which has nothing to do with the chain being sold on.
+    it('reports STX as disabled instead of querying the global network when the source chain has no hex equivalent', async () => {
+      mockGetMaybeHexChainId.mockReturnValue(undefined);
+
+      const { result } = renderDefault();
+
+      await act(async () => {
+        await result.current.submitBatchSellQuotes();
+      });
+
+      expect(mockGetIsSmartTransaction).not.toHaveBeenCalled();
+      expect(mockSubmitBatchSellTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ isStxEnabled: false }),
       );
     });
 
