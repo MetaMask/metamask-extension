@@ -3946,6 +3946,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
+      ),
       openUpdateTabAndReload: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:openUpdateTabAndReload',
