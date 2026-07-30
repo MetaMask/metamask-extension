@@ -222,12 +222,14 @@ describe.each([
                         } as never);
 
                         // Render the hook
-                        const { result, waitForNextUpdate } =
-                          renderUseGasIncludedSupport();
+                        const { result } = renderUseGasIncludedSupport();
 
                         await waitFor(async () => {
                           if (!isNonEvmChainId(validFromToken.chainId)) {
-                            await waitForNextUpdate();
+                            const prevUpdate0 = result.current;
+                            await waitFor(() => {
+                              expect(result.current).not.toBe(prevUpdate0);
+                            });
                           }
                         });
 
