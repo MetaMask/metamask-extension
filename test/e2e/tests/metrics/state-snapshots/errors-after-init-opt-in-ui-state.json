@@ -120,6 +120,7 @@
     "consentDecisionMade": true,
     "conversionRates": "object",
     "countries": "object",
+    "country": null,
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
@@ -343,6 +344,7 @@
     "recoveryPhraseReminderHasBeenShown": false,
     "recoveryPhraseReminderLastShown": "number",
     "referrals": "object",
+    "region": null,
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
@@ -400,6 +402,7 @@
     "theme": "os",
     "thresholdCache": "object",
     "throttledOrigins": "object",
+    "timezone": null,
     "tokenBalances": "object",
     "tokenScanCache": "object",
     "tokenSecurityTypeDestination": null,
