@@ -206,7 +206,9 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
