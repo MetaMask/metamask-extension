@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
+import { QuoteResponseV1, RequestStatus } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -214,7 +214,7 @@ describe('BridgeQuotesModal', () => {
                   },
                 },
               },
-            }) as unknown as QuoteResponse,
+            }) as unknown as QuoteResponseV1,
         ),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,

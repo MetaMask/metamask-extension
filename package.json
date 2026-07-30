@@ -16,6 +16,9 @@
       "./shared/*/index.ts"
     ]
   },
+  "workspaces": [
+    "test/fakes/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
@@ -310,8 +313,6 @@
     "@metamask/multichain-account-service": "^13.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/bridge-controller@npm:^77.7.0": "patch:@metamask/bridge-controller@npm%3A77.8.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch",
-    "@metamask/bridge-controller@npm:^77.8.0": "patch:@metamask/bridge-controller@npm%3A77.8.0#~/.yarn/patches/@metamask-bridge-controller-npm-77.5.0-c154d2913a.patch",
     "postcss@npm:7.0.36": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch"
   },
@@ -355,8 +356,8 @@
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.14.2",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
-    "@metamask/bridge-controller": "^77.8.0",
-    "@metamask/bridge-status-controller": "^74.4.0",
+    "@metamask/bridge-controller": "^78.0.1",
+    "@metamask/bridge-status-controller": "^74.6.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
     "@metamask/claims-controller": "^0.4.2",
@@ -374,6 +375,7 @@
     "@metamask/design-system-react": "^0.35.0",
     "@metamask/design-system-tailwind-preset": "^0.10.0",
     "@metamask/design-tokens": "^8.7.0",
+    "@metamask/dummy-package": "workspace:*",
     "@metamask/eip-5792-middleware": "3.0.3",
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
     "@metamask/ens-controller": "^19.1.4",
@@ -717,8 +719,7 @@
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-storybook": "^0.12.0",
     "eslint-plugin-tailwindcss": "^3.18.0",
     "ethers": "^5.7.0",
