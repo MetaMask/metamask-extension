@@ -61,8 +61,12 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     // `network.chainId` populated yet, which would otherwise map to undefined
     // and render a blank page. Still falls through to the generic sources if
     // the order can't be mapped at all.
+    // Only seed chain from the URL when it looks like a real CAIP chain id —
+    // never pass through a missing/broken segment as a literal fallback.
+    const chainFallback =
+      chainId && chainId.includes(':') ? chainId : undefined;
     const mappedRampsOrder = rampsOrder
-      ? mapRampsOrderSafely(rampsOrder, chainId)
+      ? mapRampsOrderSafely(rampsOrder, chainFallback)
       : undefined;
     if (mappedRampsOrder) {
       return mappedRampsOrder;

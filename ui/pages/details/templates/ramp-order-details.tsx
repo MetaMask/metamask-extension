@@ -44,8 +44,10 @@ export function RampOrderDetails({
 
   const { fiat, token, provider, statusDescription, paymentDetails } =
     item.data;
+  // Lookup accepts shared data.id as-is (getOrderById normalizes via
+  // getInternalOrderCode). Display/copy uses the canonical internal code.
+  const rawOrder = item.data.id ? getOrderById(item.data.id) : undefined;
   const orderId = item.data.id ? getInternalOrderCode(item.data.id) : undefined;
-  const rawOrder = orderId ? getOrderById(orderId) : undefined;
   const paidWith =
     rawOrder?.paymentMethod?.name ?? rawOrder?.paymentMethod?.shortName;
   const showStatusDescription =

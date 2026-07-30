@@ -117,7 +117,7 @@ export function ActivityList({
 
   const handleClick = (item: ActivityListItem) => {
     const identifier = getActivityItemIdentifier(item);
-    if (!identifier) {
+    if (!identifier || !item.chainId) {
       return;
     }
 

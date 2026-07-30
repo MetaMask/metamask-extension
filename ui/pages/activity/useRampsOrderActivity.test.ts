@@ -6,7 +6,6 @@ import {
 import { useRampsOrderActivity } from './useRampsOrderActivity';
 
 const buyOrderData = {
-  id: '1',
   provider: { id: 'transak', name: 'Transak' },
   cryptoAmount: '1.5',
   fiatAmount: 100,
@@ -86,7 +85,6 @@ describe('useRampsOrderActivity', () => {
     // it to eip155:1 (Ethereum Mainnet) instead of dropping it.
     const precreatedOrder = {
       ...buyOrderData,
-      id: '2',
       providerOrderId: 'order-2',
       network: null,
       cryptoCurrency: null,

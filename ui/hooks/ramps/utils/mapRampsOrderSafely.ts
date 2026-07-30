@@ -6,19 +6,16 @@ import {
 import { getPendingOrderPreview } from './pendingOrderPreview';
 
 /**
- * Seeds a missing chain id when the shared mapper would otherwise leave
- * `chainId` unresolved — right after a checkout redirect the callback order's
- * `network` / crypto fields may not be populated yet, so the caller supplies
- * the chain it already knows (e.g. the URL / user-selected token).
- *
- * String `network` values and cryptoCurrency fallbacks are handled inside
- * `mapRampsOrder` itself.
+ * Seeds a chain id only when the order has no resolvable network/crypto chain
+ * inputs yet (e.g. right after checkout redirect). Callers pass the chain they
+ * already know from the URL / selected token. String networks and
+ * cryptoCurrency fallbacks are handled by `mapRampsOrder` itself.
  *
  * @param order - The raw ramps order.
  * @param fallbackChainId - Chain to use when the order's is missing.
- * @returns The order with `network` seeded when needed.
+ * @returns The order, optionally with `network` seeded.
  */
-function withFallbackNetwork(
+function seedNetworkIfNeeded(
   order: RampsOrder,
   fallbackChainId?: string,
 ): RampsOrder {
@@ -49,15 +46,13 @@ function withFallbackNetwork(
 const knownOrderTypes = new Map<string, 'buy' | 'sell'>();
 
 /**
- * An order's buy/sell direction can't legitimately change after creation, but
- * polling has been observed to return an inconsistent `orderType` across
- * successive fetches of the same order — this flickered the details screen
- * between "Buying" and "Selling". Pin to whichever valid value was seen first
- * for a given order code. Casing / DEPOSIT→buy normalization is handled by
- * `mapRampsOrder`.
+ * Pins buy/sell direction to the first confirmed value for an order code.
+ * Polling has been observed to flip `orderType` across fetches of the same
+ * order, which flickered details between Buying/Selling. Casing and DEPOSIT
+ * normalization stay in `mapRampsOrder`.
  *
  * @param order - The raw ramps order.
- * @returns The order with `orderType` pinned to its first confirmed value.
+ * @returns The order with a stable `orderType` when previously confirmed.
  */
 function withStableOrderType(order: RampsOrder): RampsOrder {
   const orderCode = getInternalOrderCode(order);
@@ -79,14 +74,11 @@ function withStableOrderType(order: RampsOrder): RampsOrder {
 }
 
 /**
- * A newly-resolved order's own payload can still be empty (no token/amount/fees)
- * until the provider fills it in — overlay what the user picked on the
- * build-quote screen (stashed via `setPendingOrderPreview`) so the activity
- * list/details view shows a best-effort amount instead of a blank one. Real
- * fields always win once the provider/polling populates them.
+ * Overlays build-quote preview amounts onto an order that still lacks
+ * token/fiat fields. Real provider fields always win once populated.
  *
  * @param order - The raw ramps order.
- * @returns The order with crypto/fiat fields filled from the preview, if any.
+ * @returns The order with preview fields filled when missing.
  */
 function withPendingOrderPreview(order: RampsOrder): RampsOrder {
   if (order.cryptoCurrency && order.fiatCurrency) {
@@ -111,44 +103,23 @@ function withPendingOrderPreview(order: RampsOrder): RampsOrder {
 }
 
 /**
- * Maps a ramps order into the shared activity item shape, with extension-only
- * normalizations that `mapRampsOrder` does not cover (pending preview overlay,
- * stable buy/sell direction across polls, and a caller-supplied chain fallback).
- *
- * Returns `undefined` when the shared mapper filters the order out (hidden
- * statuses / `excludeFromPurchases`) or when mapping fails.
+ * Thin extension adapter around shared `mapRampsOrder`. Applies only
+ * extension-owned concerns (build-quote preview, poll orderType pinning,
+ * details-route chain seed), then returns the shared ActivityItem unchanged.
  *
  * @param order - The raw ramps order to map.
- * @param fallbackChainId - Chain to use when the order has none yet (e.g. a
- * just-resolved redirect order); passed through to network seeding.
- * @returns The mapped activity item, or undefined if the order can't be mapped.
+ * @param fallbackChainId - Optional chain for redirect stubs missing network.
+ * @returns The mapped activity item, or undefined when filtered / unmappable.
  */
 export function mapRampsOrderSafely(
   order: RampsOrder,
   fallbackChainId?: string,
 ): NonNullable<ReturnType<typeof mapRampsOrder>> | undefined {
   try {
-    const normalizedOrder = withStableOrderType(
-      withFallbackNetwork(withPendingOrderPreview(order), fallbackChainId),
+    const prepared = withStableOrderType(
+      seedNetworkIfNeeded(withPendingOrderPreview(order), fallbackChainId),
     );
-    const mapped = mapRampsOrder(normalizedOrder as unknown as RampsOrderLike);
-    if (!mapped) {
-      return undefined;
-    }
-    // `mapRampsOrder` sets `data.id` to `order.id ?? providerOrderId`, but
-    // extension lookup (`getOrderById` / `getInternalOrderCode`) keys on the
-    // internal order code — which is not always the same as raw `order.id`.
-    // Normalize so list/details identifiers round-trip through getOrderById.
-    if (mapped.type === 'rampBuy' || mapped.type === 'rampSell') {
-      return {
-        ...mapped,
-        data: {
-          ...mapped.data,
-          id: getInternalOrderCode(order),
-        },
-      };
-    }
-    return mapped;
+    return mapRampsOrder(prepared as unknown as RampsOrderLike) ?? undefined;
   } catch {
     return undefined;
   }

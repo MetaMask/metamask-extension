@@ -107,11 +107,11 @@ function getItemHash(item: ActivityListItem) {
 /**
  * Stable list / details identifier for an activity item. Pending ramp orders
  * have no on-chain hash yet — fall back to the shared activity `data.id`
- * (provider order id) so they can still be opened. Use `||` (not `??`) so an
- * empty-string hash also falls through to the id.
+ * (`order.id ?? providerOrderId` from mapRampsOrder) so they can still be
+ * opened. Prefer truthiness over `??` so an empty-string hash falls through.
  *
  * @param item - The activity item.
- * @returns The hash or ramp order id, if any.
+ * @returns The hash or shared ramp order id, if any.
  */
 export function getActivityItemIdentifier(
   item: ActivityListItem,
@@ -257,5 +257,6 @@ export function getItemKey(row: GroupedItem, index: number) {
     return `date-header:${row.date}`;
   }
 
-  return `${row.item.chainId}:${row.item.timestamp}:${row.item.type}:${index}`;
+  const identity = getActivityItemIdentifier(row.item) ?? String(index);
+  return `${row.item.chainId ?? ''}:${row.item.timestamp}:${row.item.type}:${identity}`;
 }
