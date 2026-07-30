@@ -67,8 +67,6 @@ const ENTRYPOINTS = [
   'ui/', // UI components and styles
 ];
 
-// Madge re-parses string tsConfigs and drops moduleResolution; pass options
-// so `#ui`/`#shared` package.json imports resolve.
 function parseTsConfig(tsConfigPath: string): { options: ts.CompilerOptions } {
   const configFile = ts.readJsonConfigFile(tsConfigPath, ts.sys.readFile);
   const { options, errors } = ts.parseJsonSourceFileConfigFileContent(
