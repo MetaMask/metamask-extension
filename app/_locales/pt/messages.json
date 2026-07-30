@@ -10312,18 +10312,6 @@
   "statusNotConnected": {
     "message": "Não conectado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Algo deu errado ao adicionar esta trustline. Tente novamente.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Algo deu errado ao remover esta trustline. Tente novamente.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Você ainda tem $1 $2 nesta carteira. Você deve enviar ou trocar tudo antes de desativar este ativo na Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Ainda se conectando à $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
