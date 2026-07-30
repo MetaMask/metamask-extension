@@ -5,9 +5,17 @@
 globalThis.stateHooks ??= {} as typeof stateHooks;
 
 if (process.env.ENABLE_SENTRY === 'true') {
-  // LavaMoat writable endowments expose the original function without
-  // receiver unwrapping. Bind receiver-sensitive globals in the protected root
-  // before Sentry replaces them so its wrappers can safely call the originals.
+  // Three globals are involved:
+  // - the browser global: the real Window or WorkerGlobalScope;
+  // - LavaMoat's protected root global: where MetaMask application code runs;
+  // - Sentry's restricted package global.
+  //
+  // Sentry's writable policy bridges its package global to the root global so
+  // it can replace these APIs, but the bridge does not adjust a function's
+  // `this` value. When Sentry's wrapper calls the original from its package
+  // global, LavaMoat cannot translate that receiver to the browser global and
+  // native APIs such as fetch throw "Illegal invocation". Binding the originals
+  // to the root global here lets LavaMoat translate the receiver correctly.
   for (const globalName of [
     'fetch',
     'requestAnimationFrame',
