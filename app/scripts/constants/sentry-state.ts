@@ -188,17 +188,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     gasFeeEstimatesByChainId: true,
     nonRPCGasFeeApisDisabled: false,
   },
-  GeolocationController: {
-    // Geolocation is masked (typeof only) so a user's country/region/timezone
-    // is never sent in error reports.
-    location: false,
-    country: false,
-    region: false,
-    timezone: false,
-    status: false,
-    lastFetchedAt: false,
-    error: false,
-  },
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
