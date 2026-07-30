@@ -2746,6 +2746,71 @@ describe('MetaMaskController', () => {
             });
           },
         );
+
+        it('times out the abandoned account creation when the device wedges, instead of leaving the UI spinner stuck forever', async () => {
+          // Regression test: a locked/unresponsive device makes
+          // `keyring.createAccounts` hang forever. `createAccounts` mutates
+          // vault state so it cannot run on the lock-free `deviceRead` path,
+          // but the UX backstop must still reject so the UI thunk's
+          // `hideLoadingIndication()` runs and the spinner clears.
+          const withKeyringV2Spy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Lattice });
+
+              return await callback({
+                keyring: {
+                  entropySource: 'test-entropy-source',
+                  createAccounts: jest
+                    .fn()
+                    .mockReturnValue(new Promise(() => undefined)),
+                  network: null,
+                },
+              });
+            });
+
+          // Intercept the device-read backstop timer so the test can fire it
+          // deterministically without faking every timer in the app.
+          const originalSetTimeout = global.setTimeout;
+          let fireDeviceReadTimeout;
+          const setTimeoutSpy = jest
+            .spyOn(global, 'setTimeout')
+            .mockImplementation((handler, timeout, ...args) => {
+              if (timeout === HARDWARE_DEVICE_READ_TIMEOUT_MS) {
+                fireDeviceReadTimeout = handler;
+                return 0;
+              }
+              return originalSetTimeout(handler, timeout, ...args);
+            });
+
+          try {
+            const wedgedUnlock = metamaskController.unlockHardwareWalletAccount(
+              accountToUnlock,
+              HardwareDeviceNames.lattice,
+            );
+            // Swallow the timeout rejection asserted below so the wedged
+            // promise never surfaces as an unhandled rejection.
+            wedgedUnlock.catch(() => undefined);
+
+            // Let `unlockHardwareWalletAccount` reach the (hanging) create call.
+            await new Promise((resolve) => {
+              const poll = () =>
+                withKeyringV2Spy.mock.calls.length > 0
+                  ? resolve()
+                  : originalSetTimeout(poll, 5);
+              poll();
+            });
+
+            // The abandoned account creation is bounded by the UX backstop.
+            fireDeviceReadTimeout();
+            await expect(wedgedUnlock).rejects.toThrow(
+              'Hardware wallet account creation timed out',
+            );
+          } finally {
+            withKeyringV2Spy.mockRestore();
+            setTimeoutSpy.mockRestore();
+          }
+        });
       });
     });
 
