@@ -55,4 +55,74 @@ for (const { name, load } of stateHookInitializers) {
   });
 }
 
+describe('bootstrap Sentry globals', () => {
+  const globalNames = [
+    'fetch',
+    'requestAnimationFrame',
+    'setInterval',
+    'setTimeout',
+  ] as const;
+
+  it('binds receiver-sensitive globals before installing Sentry', () => {
+    const originalEnableSentry = process.env.ENABLE_SENTRY;
+    const originalStateHooksDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'stateHooks',
+    );
+    const originalGlobalDescriptors = new Map(
+      globalNames.map((globalName) => [
+        globalName,
+        Object.getOwnPropertyDescriptor(globalThis, globalName),
+      ]),
+    );
+
+    try {
+      process.env.ENABLE_SENTRY = 'true';
+      for (const globalName of globalNames) {
+        const receiverSensitiveGlobal = function (this: typeof globalThis) {
+          expect(this).toBe(globalThis);
+        };
+        Reflect.set(globalThis, globalName, receiverSensitiveGlobal);
+      }
+
+      jest.resetModules();
+      require('./bootstrap');
+
+      for (const globalName of globalNames) {
+        const boundGlobal = globalThis[globalName];
+        expect(typeof boundGlobal).toBe('function');
+        Reflect.apply(
+          boundGlobal as (...args: unknown[]) => unknown,
+          Object.create(null),
+          [],
+        );
+      }
+    } finally {
+      if (originalEnableSentry === undefined) {
+        delete process.env.ENABLE_SENTRY;
+      } else {
+        process.env.ENABLE_SENTRY = originalEnableSentry;
+      }
+
+      if (originalStateHooksDescriptor) {
+        Object.defineProperty(
+          globalThis,
+          'stateHooks',
+          originalStateHooksDescriptor,
+        );
+      } else {
+        Reflect.deleteProperty(globalThis, 'stateHooks');
+      }
+
+      for (const [globalName, descriptor] of originalGlobalDescriptors) {
+        if (descriptor) {
+          Object.defineProperty(globalThis, globalName, descriptor);
+        } else {
+          Reflect.deleteProperty(globalThis, globalName);
+        }
+      }
+    }
+  });
+});
+
 export {};
