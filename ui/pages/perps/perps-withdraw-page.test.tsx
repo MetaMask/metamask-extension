@@ -727,7 +727,9 @@ describe('PerpsWithdrawPage', () => {
     await awaitSubmitPromisesForMethod('perpsGetAccountState');
 
     expect(
-      await screen.findByText(`${messages.perpsAvailableBalance.message}$20.00`),
+      await screen.findByText(
+        `${messages.perpsAvailableBalance.message}$20.00`,
+      ),
     ).toBeInTheDocument();
 
     await waitForBlockedWithdrawSettled();
@@ -739,6 +741,67 @@ describe('PerpsWithdrawPage', () => {
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
       '20.00',
     );
+  });
+
+  it('releases the adopted fresh balance once the stream reports a new balance', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '20' });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    const { rerender } = renderWithProvider(
+      <PerpsWithdrawPage />,
+      createMockStore(),
+    );
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+    expect(
+      await screen.findByText(
+        `${messages.perpsAvailableBalance.message}$20.00`,
+      ),
+    ).toBeInTheDocument();
+
+    await waitForBlockedWithdrawSettled();
+
+    // The stream catches up with a genuinely funded balance: the adopted figure
+    // must be released, otherwise the page pins $20 for the rest of its mount.
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: { spendableBalance: '150' } as never,
+      isInitialLoading: false,
+    });
+    rerender(<PerpsWithdrawPage />);
+
+    expect(
+      await screen.findByText(
+        `${messages.perpsAvailableBalance.message}$150.00`,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
   });
 
   it('submits the withdrawal when the fresh balance read fails', async () => {

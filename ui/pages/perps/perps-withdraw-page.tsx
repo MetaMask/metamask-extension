@@ -112,7 +112,13 @@ const PerpsWithdrawPage = () => {
     available: number;
   } | null>(null);
 
-  const streamedAvailableNum = parseFloat(getTradeableBalance(account)) || 0;
+  // Parsed with the same function as the fresh read below so both sides of the
+  // comparison share one failure mode; an unparseable streamed balance falls
+  // back to 0 for display, as before.
+  const streamedBalance = parsePerpsAmountInput(getTradeableBalance(account));
+  const streamedAvailableNum = Number.isFinite(streamedBalance)
+    ? streamedBalance
+    : 0;
 
   // A fresh account-state read overrides the streamed balance until the stream
   // catches up, so the displayed balance, the percentage buttons, the
