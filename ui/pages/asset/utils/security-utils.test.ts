@@ -73,11 +73,11 @@ describe('security-utils', () => {
 
   describe('formatFeePercent', () => {
     it('formats a number as a percentage', () => {
-      expect(formatFeePercent(5)).toBe('5.0%');
+      expect(formatFeePercent(5, 'N/A')).toBe('5.0%');
     });
 
-    it('returns N/A for null', () => {
-      expect(formatFeePercent(null)).toBe('N/A');
+    it('returns the provided label for null', () => {
+      expect(formatFeePercent(null, 'securityTrustNa')).toBe('securityTrustNa');
     });
   });
 
@@ -121,7 +121,13 @@ describe('security-utils', () => {
 
   describe('formatCompactSupply', () => {
     it('formats millions', () => {
-      expect(formatCompactSupply(5_000_000)).toBe('5.00M');
+      expect(formatCompactSupply(5_000_000, undefined, 'N/A')).toBe('5.00M');
+    });
+
+    it('returns the provided label for null', () => {
+      expect(formatCompactSupply(null, undefined, 'securityTrustNa')).toBe(
+        'securityTrustNa',
+      );
     });
   });
 });

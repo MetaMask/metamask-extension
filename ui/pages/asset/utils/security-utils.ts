@@ -443,9 +443,12 @@ export const getFeatureTags = (
   };
 };
 
-export const formatFeePercent = (fee: number | null | undefined): string => {
+export const formatFeePercent = (
+  fee: number | null | undefined,
+  naLabel: string,
+): string => {
   if (fee === null || fee === undefined) {
-    return 'N/A';
+    return naLabel;
   }
   return `${fee.toFixed(1)}%`;
 };
@@ -482,10 +485,11 @@ export const getTop10HoldingPct = (
 
 export const formatCompactSupply = (
   supply: number | null | undefined,
-  decimals?: number,
+  decimals: number | undefined,
+  naLabel: string,
 ): string => {
   if (supply === null || supply === undefined) {
-    return 'N/A';
+    return naLabel;
   }
   const adjusted =
     decimals !== null && decimals !== undefined && decimals > 0

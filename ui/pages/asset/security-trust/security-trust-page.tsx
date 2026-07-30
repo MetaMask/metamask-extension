@@ -195,7 +195,8 @@ const TokenDistributionSection = ({
         {totalSupplyLabel}
       </Text>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
-        {formatCompactSupply(financialStats?.supply, decimals)} {symbol}
+        {formatCompactSupply(financialStats?.supply, decimals, naLabel)}{' '}
+        {symbol}
       </Text>
     </Box>
 
@@ -263,6 +264,7 @@ const BuySellTaxSection = ({
   sellTaxLabel,
   transferLabel,
   noHiddenFeesLabel,
+  naLabel,
 }: {
   title: string;
   fees: TokenSecurityFees | null;
@@ -270,6 +272,7 @@ const BuySellTaxSection = ({
   sellTaxLabel: string;
   transferLabel: string;
   noHiddenFeesLabel: string;
+  naLabel: string;
 }) => (
   <>
     <SectionHeader title={title} />
@@ -285,7 +288,7 @@ const BuySellTaxSection = ({
             color={TextColor.TextDefault}
             fontWeight={FontWeight.Bold}
           >
-            {formatFeePercent(value)}
+            {formatFeePercent(value, naLabel)}
           </Text>
           <Text
             variant={TextVariant.BodySm}
@@ -519,6 +522,7 @@ const SecurityTrustPage = () => {
             sellTaxLabel={t('securityTrustSellTax')}
             transferLabel={t('securityTrustTransfer')}
             noHiddenFeesLabel={t('securityTrustNoHiddenFeesDetected')}
+            naLabel={t('securityTrustNa')}
           />
 
           <SectionDivider />
