@@ -162,7 +162,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
-const inTestState = inTest
+const inTestState = process.env.IN_TEST
   ? { recoverInProgress: false, hasVaultAtStartup: null }
   : null;
 
