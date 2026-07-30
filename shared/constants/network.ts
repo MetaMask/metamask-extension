@@ -1558,6 +1558,10 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 export const IPFS_FORBIDDEN_GATEWAY = 'gateway.ipfs.io';
+export const IPFS_FORBIDDEN_GATEWAYS = [
+  IPFS_FORBIDDEN_GATEWAY,
+  'ipfs.infura.io',
+];
 
 export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'ethereum-mainnet': () => process.env.QUICKNODE_MAINNET_URL,

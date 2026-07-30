@@ -39,6 +39,7 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -60,6 +61,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
@@ -416,6 +418,51 @@ describe('LegacyBackgroundApiService', () => {
 
           expect(result).toEqual(mockTabIds);
           expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('requestSafeReload', () => {
+    it('triggers a safe reload of the extension', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:requestSafeReload',
+          );
+
+          expect(mockRequestSafeReload).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('openUpdateTabAndReload', () => {
+    it('opens the update tab and reloads with the injected requestSafeReload', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+      jest.mocked(openUpdateTabAndReload).mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:openUpdateTabAndReload',
+          );
+
+          expect(openUpdateTabAndReload).toHaveBeenCalledWith(
+            mockRequestSafeReload,
+          );
         },
       );
     });
@@ -839,6 +886,164 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(globalChainId);
+      });
+    });
+  });
+
+  describe('lookupSelectedNetworks', () => {
+    it('looks up the selected network and each enabled network client', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+        const lookupNetwork = jest.fn().mockResolvedValue(undefined);
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:getState',
+          jest.fn().mockReturnValue({
+            enabledNetworkMap: {
+              eip155: {
+                '0x1': true,
+                '0xe708': false,
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId: {
+              '0x1': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'mainnet' }],
+              },
+              '0xe708': {
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:lookupNetwork',
+          lookupNetwork,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:lookupSelectedNetworks',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'NetworkEnablementController:getState',
+        );
+        expect(callSpy).toHaveBeenCalledWith('NetworkController:getState');
+        expect(lookupNetwork).toHaveBeenCalledWith();
+        expect(lookupNetwork).toHaveBeenCalledWith('mainnet');
+        expect(lookupNetwork).not.toHaveBeenCalledWith('linea-mainnet');
+      });
+    });
+  });
+
+  describe('setEnabledNetworks', () => {
+    it('enables the network then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableNetwork = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableNetwork',
+            enableNetwork,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          );
+
+          expect(enableNetwork).toHaveBeenCalledWith('0x1');
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling the network fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableNetwork',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledNetworks',
+            '0x1',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('setEnabledAllPopularNetworks', () => {
+    it('enables all popular networks then looks up selected networks via sibling call', async () => {
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const enableAllPopularNetworks = jest.fn();
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+          const lookupSpy = jest
+            .spyOn(service, 'lookupSelectedNetworks')
+            .mockResolvedValue(undefined);
+
+          rootMessenger.registerActionHandler(
+            'NetworkEnablementController:enableAllPopularNetworks',
+            enableAllPopularNetworks,
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          );
+
+          expect(enableAllPopularNetworks).toHaveBeenCalledTimes(1);
+          expect(lookupSpy).toHaveBeenCalledTimes(1);
+          expect(callSpy).not.toHaveBeenCalledWith(
+            'LegacyBackgroundApiService:lookupSelectedNetworks',
+          );
+        },
+      );
+    });
+
+    it('logs and rethrows when enabling all popular networks fails', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const error = new Error('enable all failed');
+        const lookupSpy = jest.spyOn(service, 'lookupSelectedNetworks');
+
+        rootMessenger.registerActionHandler(
+          'NetworkEnablementController:enableAllPopularNetworks',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(lookupSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -3605,6 +3810,10 @@ function getMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
+      'NetworkController:lookupNetwork',
+      'NetworkEnablementController:getState',
+      'NetworkEnablementController:enableNetwork',
+      'NetworkEnablementController:enableAllPopularNetworks',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:getAssets',
@@ -3717,6 +3926,7 @@ async function withService<ReturnValue>(
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
+    requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     createVaultMutex: new Mutex(),
