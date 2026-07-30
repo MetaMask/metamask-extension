@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { CaipAssetType } from '@metamask/utils';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -147,7 +146,7 @@ const TokenButtons = ({
     isDeactivating,
     errorMessage,
   } = useAssetActivation({
-    assetId: token.address as CaipAssetType,
+    assetId: token.address,
     assetSymbol: token.symbol,
   });
 

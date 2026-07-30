@@ -100,11 +100,9 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   const tokenRequireActivate = useSelector((state) =>
-    getIsAssetRequireActivate(
-      state,
-      selectedAccount?.id,
-      token.assetId as CaipAssetType | undefined,
-    ),
+    getIsAssetRequireActivate(state, {
+      assetId: (token.assetId as CaipAssetType | undefined) ?? '',
+    }),
   );
 
   if (isEvm) {
