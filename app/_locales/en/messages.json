@@ -7750,6 +7750,9 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "This market uses unsupported collateral and can't be traded."
+  },
   "perpsWatchlist": {
     "message": "Watchlist"
   },
