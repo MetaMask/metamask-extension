@@ -574,6 +574,22 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('keeps showing the skeleton when loading finishes with an empty catalog', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.queryByText(messages.perpsMarketNotFound.message),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-order-entry-page'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows market not found when symbol does not match any market', () => {
       mockUseParams.mockReturnValue({ symbol: 'NONEXISTENT' });
       const store = mockStore(createMockState());
@@ -1680,9 +1696,10 @@ describe('PerpsOrderEntryPage', () => {
 
     it('emits the error screen view when the market is not found', () => {
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [...mockCryptoMarkets, ...mockHip3Markets],
         isInitialLoading: false,
       });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 
       const errorCall = mockAnalyticsTrackEvent.mock.calls.find(
@@ -1699,10 +1716,26 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('does not emit an error screen view while the market catalog is empty', () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) =>
+            arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+            arg?.properties?.screen_type === 'error',
+        ),
+      ).toBe(false);
+    });
+
     it('does not report abandonment when leaving a market-not-found screen', async () => {
       // No order form was ever shown, so there is nothing to abandon.
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [...mockCryptoMarkets, ...mockHip3Markets],
         isInitialLoading: false,
       });
       mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
@@ -1824,7 +1857,7 @@ describe('PerpsOrderEntryPage', () => {
 
     it('emits exactly one error screen view and no trading view when the market is not found', () => {
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [...mockCryptoMarkets, ...mockHip3Markets],
         isInitialLoading: false,
       });
       mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
@@ -1848,7 +1881,7 @@ describe('PerpsOrderEntryPage', () => {
 
     it('re-arms the error screen view for a second unknown symbol', () => {
       mockLiveMarketData.mockReturnValue({
-        markets: [],
+        markets: [...mockCryptoMarkets, ...mockHip3Markets],
         isInitialLoading: false,
       });
       mockUseParams.mockReturnValue({ symbol: 'BADONE' });

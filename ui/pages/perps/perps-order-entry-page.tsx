@@ -338,6 +338,7 @@ const PerpsOrderEntryPage = () => {
       (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol, allMarkets]);
+  const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -496,7 +497,7 @@ const PerpsOrderEntryPage = () => {
   // below); emit the error screen view for that funnel state.
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: !marketsLoading && Boolean(decodedSymbol) && !market,
+    conditions: marketCatalogReady && Boolean(decodedSymbol) && !market,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.ERROR,
       [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
@@ -1807,7 +1808,7 @@ const PerpsOrderEntryPage = () => {
   if (!symbol || !decodedSymbol) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
-  if (marketsLoading) {
+  if (!marketCatalogReady) {
     return <PerpsDetailPageSkeleton />;
   }
   if (!market) {
