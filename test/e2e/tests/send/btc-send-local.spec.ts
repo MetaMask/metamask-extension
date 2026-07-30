@@ -54,7 +54,7 @@ async function mockBtcSendLocalMocks(
 describe('BTC Account - Send with local bitcoind', function (this: Suite) {
   this.timeout(180_000);
 
-  it('sends BTC using a local Bitcoin regtest node TEST', async function () {
+  it('sends BTC using a local Bitcoin regtest node', async function () {
     // Captured in afterLocalNodesStart (which runs before the network mocks
     // are set up) so the mock builder can proxy calls to the local node.
     // testSpecificMock itself keeps its single-argument contract.
