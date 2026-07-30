@@ -151,17 +151,7 @@ import { NetworkHandler } from './network-handler';
 import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
-// Eager in test environments: React.lazy + Suspense for this chunk can leave
-// the integration suite stuck on a blank `main-container-wrapper`
-// (display:none) while the dynamic import never paints. Static require
-// resolves reliably; production builds still code-split via mmLazy.
-// IN_TEST is set by webpack for E2E test builds; NODE_ENV==='test' covers
-// Jest integration and unit tests.
-const OnboardingFlow =
-  process.env.IN_TEST || process.env.NODE_ENV === 'test'
-    ? // eslint-disable-next-line @typescript-eslint/no-require-imports -- sync load for tests only
-      require('../onboarding-flow').default
-    : mmLazy(() => import('../onboarding-flow/index.ts'));
+const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 
 const Lock = mmLazy(() => import('../lock/index.ts'));
 const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
