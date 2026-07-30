@@ -25,7 +25,10 @@ import {
   getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
+import {
+  FeatureId,
+  selectBridgeFeatureFlags,
+} from '@metamask/bridge-controller';
 import {
   KnownCaipNamespace,
   parseCaipAccountId,
@@ -1149,13 +1152,16 @@ export const getTokensMarketData = (state) => {
 
 export { getTokenRatesControllerMarketData as getMarketData };
 
-export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
-    return [];
-  }
-  return Object.values(state.metamask.addressBook[chainId]);
-}
+export const getAddressBook = createSelector(
+  getCurrentChainId,
+  (state) => state.metamask.addressBook,
+  (chainId, addressBook) => {
+    if (!addressBook[chainId]) {
+      return EMPTY_ARRAY;
+    }
+    return Object.values(addressBook[chainId]);
+  },
+);
 
 export const getCompleteAddressBook = createShallowResultSelector(
   (state) => state.metamask.addressBook,
@@ -2010,6 +2016,23 @@ export const getIsSwapsChain = createParameterizedSelector(20)(
 
 export function selectHasBridgeQuotes(state) {
   return Boolean(Object.values(state.metamask.quotes || {}).length);
+}
+
+/**
+ * Batch sell fetches quotes through the same BridgeController state as a
+ * regular swap/bridge (`state.metamask.quotes`), so a lingering batch-sell
+ * quote also makes {@link selectHasBridgeQuotes} return `true`. Every quote
+ * fetched for batch sell carries `featureId: FeatureId.BATCH_SELL`, which
+ * lets callers tell the two apart, e.g. so a popup reopened with a stale
+ * batch-sell quote doesn't get redirected to the generic swap page.
+ *
+ * @param state - The Redux state
+ * @returns {boolean} Whether any bridge quote in state came from batch sell
+ */
+export function selectHasBatchSellQuotes(state) {
+  return Object.values(state.metamask.quotes || {}).some(
+    (quote) => quote?.featureId === FeatureId.BATCH_SELL,
+  );
 }
 
 /**

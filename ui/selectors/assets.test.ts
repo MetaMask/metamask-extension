@@ -49,10 +49,33 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AssetSelectorTestState = any;
 
-const mockGetAggregatedBalanceForAccount = jest.fn();
+const mockGetAggregatedBalanceForAccount = jest.fn(
+  (..._args: unknown[]) => undefined,
+);
+const mockCalculateBalanceForAllWalletsFromUnified = jest.fn(
+  (..._args: unknown[]) => ({
+    wallets: {},
+    totalBalanceInUserCurrency: 0,
+    userCurrency: 'usd',
+  }),
+);
+const mockCalculateBalanceChangeForAccountGroupFromUnified = jest.fn(
+  (..._args: unknown[]) => ({
+    period: '1d',
+    currentTotalInUserCurrency: 0,
+    previousTotalInUserCurrency: 0,
+    amountChangeInUserCurrency: 0,
+    percentChange: 0,
+    userCurrency: 'usd',
+  }),
+);
 jest.mock('@metamask/assets-controller', () => ({
   getAggregatedBalanceForAccount: (...args: unknown[]) =>
     mockGetAggregatedBalanceForAccount(...args),
+  calculateBalanceForAllWallets: (...args: unknown[]) =>
+    mockCalculateBalanceForAllWalletsFromUnified(...args),
+  calculateBalanceChangeForAccountGroup: (...args: unknown[]) =>
+    mockCalculateBalanceChangeForAccountGroupFromUnified(...args),
   // The getter selectors fall back to this default state; return empty maps so
   // the "missing → empty" getter expectations hold in tests.
   getDefaultAssetsControllerState: () => ({

@@ -50,7 +50,6 @@ describe('getBridgeApiBaseUrlForMetaMaskEnv', () => {
     'e2e',
     'dev',
     'local',
-    'test',
     ENVIRONMENT.DEVELOPMENT,
     ENVIRONMENT.TESTING,
     ENVIRONMENT.OTHER,
