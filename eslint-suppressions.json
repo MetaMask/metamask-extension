@@ -169,11 +169,6 @@
       "count": 1
     }
   },
-  "ui/hooks/bridge/useBridgeNavigation.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 6
-    }
-  },
   "ui/hooks/bridge/useInitialBridgeTokens.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -452,9 +447,6 @@
   "ui/pages/create-account/connect-hardware/index.tsx": {
     "promise/no-nesting": {
       "count": 1
-    },
-    "react-hooks/exhaustive-deps": {
-      "count": 3
     }
   },
   "ui/pages/create-account/connect-hardware/select-hardware.tsx": {
@@ -485,11 +477,6 @@
   "ui/pages/notification-details/notification-details.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/pages/notifications-settings/notifications-settings-allow-notifications.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
     }
   },
   "ui/pages/settings/debug-tab/debug-content/sentry-test.tsx": {

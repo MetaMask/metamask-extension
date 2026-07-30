@@ -4,7 +4,6 @@ import { getFromToken } from '../../ducks/bridge/selectors';
 import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
-import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
 import { useDispatch } from '../../store/hooks';
 
 export const useBridgeExchangeRates = () => {
@@ -18,10 +17,6 @@ export const useBridgeExchangeRates = () => {
   const fromAbortController = useRef<AbortController | null>(
     new AbortController(),
   );
-
-  const cachedFromTokenExchangeRate = fromToken
-    ? exchangeRateFromMarketData(fromToken.assetId, marketData)
-    : undefined;
 
   // Cleanup abort controller on unmount
   useEffect(() => {

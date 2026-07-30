@@ -7,20 +7,6 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/perps/perps-market-detail-page.tsx
  */
 export class PerpsMarketDetailPage {
-  private readonly driver: Driver;
-
-  /**
-   * `CloseAmountSection` slider wrapper. Full `data-testid` is
-   * `{closeAmountSliderPctTestIdPrefix}{0-100}`.
-   *
-   * @see ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.tsx
-   */
-  private static readonly closeAmountSliderPctTestIdPrefix =
-    'close-amount-slider-pct-';
-
-  private static readonly perpsClosePositionModalTestId =
-    'perps-close-position-modal';
-
   private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
 
   private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
@@ -36,7 +22,17 @@ export class PerpsMarketDetailPage {
    * Close-amount slider wrapper in the open close-position modal only (avoids
    * targeting any other `CloseAmountSection` in the document).
    */
-  private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
+  private readonly closeAmountSliderInCloseModal =
+    '[data-testid="perps-close-position-modal"] [data-testid^="close-amount-slider-pct-"]';
+
+  /**
+   * `CloseAmountSection` slider wrapper. Full `data-testid` is
+   * `{closeAmountSliderPctTestIdPrefix}{0-100}`.
+   *
+   * @see ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.tsx
+   */
+  private static readonly closeAmountSliderPctTestIdPrefix =
+    'close-amount-slider-pct-';
 
   /** MUI v5 Slider keyboard target inside the close modal (visually-hidden `input[type="range"]`). */
   private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} input[type="range"]`;
@@ -59,12 +55,11 @@ export class PerpsMarketDetailPage {
     testId: 'perps-close-summary-receive-value',
   };
 
-  private readonly marginAmountInput =
-    '[data-testid="perps-edit-margin-amount-input"] input';
-
   private readonly decreaseMarginModal = {
     testId: 'perps-decrease-margin-modal',
   };
+
+  private readonly driver: Driver;
 
   private readonly editMarginAvailableValue = {
     testId: 'perps-edit-margin-available-value',
@@ -85,6 +80,9 @@ export class PerpsMarketDetailPage {
   };
 
   private readonly longCtaButton = { testId: 'perps-long-cta-button' };
+
+  private readonly marginAmountInput =
+    '[data-testid="perps-edit-margin-amount-input"] input';
 
   private readonly marginCard = { testId: 'perps-margin-card' };
 
@@ -117,6 +115,9 @@ export class PerpsMarketDetailPage {
   };
 
   private readonly orderEntry = { testId: 'order-entry' };
+
+  private static readonly perpsClosePositionModalTestId =
+    'perps-close-position-modal';
 
   /**
    * Perps toast (`dataTestId` default `perps-toast` → `perps-toast-banner-base`).
@@ -196,14 +197,20 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits for the market detail page to be loaded.
-   * Uses multiple selectors for robustness (convention).
+   * Cancels the reverse position modal without reversing.
    */
-  async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.marketDetailBackButton,
-      this.marketDetailPage,
-    ]);
+  async cancelReversePosition(): Promise<void> {
+    await this.driver.clickElement(this.reversePositionModalCancel);
+  }
+
+  /**
+   * Waits until the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
+   * @param textFragment
+   */
+  async checkAutoCloseRowContains(textFragment: string): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid="perps-auto-close-row"][contains(normalize-space(.), "${textFragment}")]`,
+    });
   }
 
   /**
@@ -223,23 +230,22 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Waits for the market detail page to be loaded.
+   * Uses multiple selectors for robustness (convention).
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.marketDetailBackButton,
+      this.marketDetailPage,
+    ]);
+  }
+
+  /**
    * Asserts that the position CTA buttons (Modify/Close) are visible.
    * Call after placing an order to verify the position was opened.
    */
   async checkPositionCtaButtonsVisible(): Promise<void> {
     await this.waitForPositionCtaButtons();
-  }
-
-  /**
-   * Asserts that the position size text matches the expected value.
-   *
-   * @param expectedText - Exact text to match (e.g. "1.25 ETH").
-   */
-  async checkPositionSizeValue(expectedText: string): Promise<void> {
-    await this.driver.waitForSelector({
-      ...this.positionSizeValue,
-      text: expectedText,
-    });
   }
 
   /**
@@ -267,11 +273,34 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Dismisses the perps toast if it is open (e.g. success toast after a fill).
-   * No-op if the toast is absent (uses {@link Driver.clickElementSafe}).
+   * Asserts that the position size text matches the expected value.
+   *
+   * @param expectedText - Exact text to match (e.g. "1.25 ETH").
    */
-  async dismissPerpsToastIfPresent(): Promise<void> {
-    await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+  async checkPositionSizeValue(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({
+      ...this.positionSizeValue,
+      text: expectedText,
+    });
+  }
+
+  /**
+   * Clicks the Add Funds CTA button visible when balance is zero.
+   */
+  async clickAddFundsCta(): Promise<void> {
+    await this.driver.clickElement(this.addFundsCtaButton);
+  }
+
+  /**
+   * Clicks the auto-close row to open the TP/SL update modal.
+   * Works whether the position has no TP/SL yet (shows a CTA) or already has one.
+   *
+   * Dismisses any visible toast and scrolls the row to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
+   */
+  async clickAutoCloseRow(): Promise<void> {
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.autoCloseRow);
   }
 
   /**
@@ -289,42 +318,6 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Clicks the favourite (star) button to toggle watchlist for this market.
-   * The button is always visible in the market detail header.
-   */
-  async clickFavoriteButton(): Promise<void> {
-    await this.driver.clickElement(this.favoriteButton);
-  }
-
-  /**
-   * Waits for the favorite (star) button to reach the given state.
-   * Pass `'favorited'` for aria-label "Remove from favorites",
-   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
-   *
-   * @param state - Target button state, or undefined for any state.
-   */
-  async waitForFavoriteButton(
-    state?: 'favorited' | 'unfavorited',
-  ): Promise<void> {
-    if (state === undefined) {
-      await this.driver.waitForSelector(this.favoriteButton);
-      return;
-    }
-    const ariaLabel =
-      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
-    await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
-    });
-  }
-
-  /**
-   * Clicks the Add Funds CTA button visible when balance is zero.
-   */
-  async clickAddFundsCta(): Promise<void> {
-    await this.driver.clickElement(this.addFundsCtaButton);
-  }
-
-  /**
    * Clicks the Close CTA button to open the close position modal.
    * Requires an open position in this market.
    * Dismisses a visible perps success toast first so the click is not obscured (Firefox).
@@ -335,10 +328,46 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Clicks the favourite (star) button to toggle watchlist for this market.
+   * The button is always visible in the market detail header.
+   */
+  async clickFavoriteButton(): Promise<void> {
+    await this.driver.clickElement(this.favoriteButton);
+  }
+
+  /**
    * Clicks the Long button to open the order entry for a new long position.
    */
   async clickLong(): Promise<void> {
     await this.driver.clickElement(this.longCtaButton);
+  }
+
+  /**
+   * Opens the margin Add/Remove popover: clicks the margin summary card, then waits for the menu.
+   *
+   * Dismisses any visible toast and scrolls the card to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
+   */
+  async clickMarginMenu(): Promise<void> {
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.marginCard);
+    await this.driver.waitForSelector(this.marginMenu);
+  }
+
+  /**
+   * Clicks "Add" in the margin card menu to open the Add Margin modal.
+   * Requires the margin menu to already be open (call clickMarginMenu() first).
+   */
+  async clickMarginMenuAdd(): Promise<void> {
+    await this.driver.clickElement(this.marginMenuAdd);
+  }
+
+  /**
+   * Clicks "Remove" in the margin card menu to open the Decrease Margin modal.
+   * Requires the margin menu to already be open (call clickMarginMenu() first).
+   */
+  async clickMarginMenuRemove(): Promise<void> {
+    await this.driver.clickElement(this.marginMenuRemove);
   }
 
   /**
@@ -378,51 +407,6 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Opens the margin Add/Remove popover: clicks the margin summary card, then waits for the menu.
-   *
-   * Dismisses any visible toast and scrolls the card to the viewport centre
-   * so that sticky CTA buttons at the bottom cannot intercept the click.
-   */
-  async clickMarginMenu(): Promise<void> {
-    await this.dismissPerpsToastIfPresent();
-    await this.driver.findScrollToAndClickElement(this.marginCard);
-    await this.driver.waitForSelector(this.marginMenu);
-  }
-
-  /**
-   * Clicks "Add" in the margin card menu to open the Add Margin modal.
-   * Requires the margin menu to already be open (call clickMarginMenu() first).
-   */
-  async clickMarginMenuAdd(): Promise<void> {
-    await this.driver.clickElement(this.marginMenuAdd);
-  }
-
-  /**
-   * Clicks "Remove" in the margin card menu to open the Decrease Margin modal.
-   * Requires the margin menu to already be open (call clickMarginMenu() first).
-   */
-  async clickMarginMenuRemove(): Promise<void> {
-    await this.driver.clickElement(this.marginMenuRemove);
-  }
-
-  /**
-   * Cancels the reverse position modal without reversing.
-   */
-  async cancelReversePosition(): Promise<void> {
-    await this.driver.clickElement(this.reversePositionModalCancel);
-  }
-
-  /**
-   * Confirms and submits the reverse position modal.
-   * Waits for the modal to disappear after save.
-   */
-  async confirmReversePosition(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.reversePositionModalSave,
-    );
-  }
-
-  /**
    * Clicks a balance preset button by percentage (e.g. 25, 50, 75, 100).
    *
    * @param percentage - The preset percentage (e.g. 25 for 25%).
@@ -454,15 +438,83 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Clicks the auto-close row to open the TP/SL update modal.
-   * Works whether the position has no TP/SL yet (shows a CTA) or already has one.
+   * High-level helper: clicks Close then confirms the close position modal.
+   * Dismisses any visible perps toast first (handled by clickClose).
    *
-   * Dismisses any visible toast and scrolls the row to the viewport centre
-   * so that sticky CTA buttons at the bottom cannot intercept the click.
+   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
    */
-  async clickAutoCloseRow(): Promise<void> {
-    await this.dismissPerpsToastIfPresent();
-    await this.driver.findScrollToAndClickElement(this.autoCloseRow);
+  async closePosition(percent = 100): Promise<void> {
+    await this.clickClose();
+    await this.confirmCloseModal(percent);
+  }
+
+  /**
+   * High-level helper: waits for the close position modal, verifies summary rows,
+   * optionally adjusts the close percentage, then submits.
+   * Use when the modal is already open (e.g. after clickModifyMenuReduceExposure()).
+   *
+   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
+   */
+  async confirmCloseModal(percent = 100): Promise<void> {
+    await this.waitForClosePositionModal();
+    await this.waitForCloseSummaryRows();
+    if (percent < 100) {
+      await this.setClosePercent(percent);
+    }
+    await this.submitClosePosition();
+  }
+
+  /**
+   * Confirms and submits the reverse position modal.
+   * Waits for the modal to disappear after save.
+   */
+  async confirmReversePosition(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.reversePositionModalSave,
+    );
+  }
+
+  /**
+   * Dismisses the geo-block modal by clicking the "Got it" button.
+   */
+  async dismissGeoBlockModal(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
+  }
+
+  /**
+   * Dismisses the perps toast if it is open (e.g. success toast after a fill).
+   * No-op if the toast is absent (uses {@link Driver.clickElementSafe}).
+   */
+  async dismissPerpsToastIfPresent(): Promise<void> {
+    await this.driver.clickElementSafe(this.perpsToastCloseButton, 2000);
+  }
+
+  /**
+   * Types an amount in the amount input (USD).
+   * Targets the actual input inside the amount field so fill works.
+   *
+   * @param amount
+   */
+  async fillAmount(amount: string): Promise<void> {
+    await this.driver.waitForSelector(this.amountInputField);
+    await this.driver.fill(this.amountInputFieldInput, amount);
+  }
+
+  /**
+   * Fills the USD margin amount in the Add or Remove margin modal.
+   * Requires the corresponding modal to be open (add / decrease).
+   *
+   * @param mode - 'add' for perps-add-margin-modal, 'remove' for perps-decrease-margin-modal.
+   * @param amountUsd - Amount string without currency (e.g. '100', '250').
+   */
+  async fillMarginModalAmount(
+    mode: 'add' | 'remove',
+    amountUsd: string,
+  ): Promise<void> {
+    const modal =
+      mode === 'add' ? this.addMarginModal : this.decreaseMarginModal;
+    await this.driver.waitForSelector(modal);
+    await this.driver.fill(this.marginAmountInput, amountUsd);
   }
 
   /**
@@ -486,33 +538,6 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Fills the USD margin amount in the Add or Remove margin modal.
-   * Requires the corresponding modal to be open (add / decrease).
-   *
-   * @param mode - 'add' for perps-add-margin-modal, 'remove' for perps-decrease-margin-modal.
-   * @param amountUsd - Amount string without currency (e.g. '100', '250').
-   */
-  async fillMarginModalAmount(
-    mode: 'add' | 'remove',
-    amountUsd: string,
-  ): Promise<void> {
-    const modal =
-      mode === 'add' ? this.addMarginModal : this.decreaseMarginModal;
-    await this.driver.waitForSelector(modal);
-    await this.driver.fill(this.marginAmountInput, amountUsd);
-  }
-
-  /**
-   * Saves the margin edit modal (applies the margin change).
-   */
-  async saveMarginEdit(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.editMarginModalSave,
-      20000,
-    );
-  }
-
-  /**
    * Reads the close % from the wrapper `data-testid` inside the open close modal.
    */
   private async getCloseAmountSliderPercentInModal(): Promise<number> {
@@ -532,6 +557,30 @@ export class PerpsMarketDetailPage {
       );
     }
     return parseInt(match[1], 10);
+  }
+
+  /**
+   * Navigates to the market detail page by clicking the market row in the Market List.
+   * Requires the Perps Market List to be visible (e.g. after navigateToMarketList()).
+   * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
+   *
+   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH'). Colons are replaced with dashes to match the UI testid.
+   */
+  async navigateToMarket(symbol: string): Promise<void> {
+    const marketRowTestId = `market-row-${symbol.replaceAll(':', '-')}`;
+    await this.driver.waitForSelector({ testId: marketRowTestId });
+    await this.driver.clickElement({ testId: marketRowTestId });
+    await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Saves the margin edit modal (applies the margin change).
+   */
+  async saveMarginEdit(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.editMarginModalSave,
+      20000,
+    );
   }
 
   /**
@@ -571,6 +620,32 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * High-level helper: opens the TP/SL update modal, fills the stop-loss price, and saves.
+   *
+   * @param price - Stop loss price string (e.g. '2400.00').
+   */
+  async setStopLoss(price: string): Promise<void> {
+    await this.clickAutoCloseRow();
+    await this.waitForUpdateTpslModal();
+    await this.fillSlPriceInTpslModal(price);
+    await this.submitTpslUpdate();
+    await this.waitForUpdateTpslModalClosed();
+  }
+
+  /**
+   * High-level helper: opens the TP/SL update modal, fills the take-profit price, and saves.
+   *
+   * @param price - Take profit price string (e.g. '3500.00').
+   */
+  async setTakeProfit(price: string): Promise<void> {
+    await this.clickAutoCloseRow();
+    await this.waitForUpdateTpslModal();
+    await this.fillTpPriceInTpslModal(price);
+    await this.submitTpslUpdate();
+    await this.waitForUpdateTpslModalClosed();
+  }
+
+  /**
    * Submits the close position modal.
    * Closes the position at the currently selected percentage (default: 100%).
    *
@@ -593,58 +668,6 @@ export class PerpsMarketDetailPage {
       this.updateTpslModalSubmit,
       timeout,
     );
-  }
-
-  /**
-   * Waits until the TP/SL update modal is removed from the DOM after save or dismiss.
-   * @param timeout
-   */
-  async waitForUpdateTpslModalClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.updateTpslModal, {
-      timeout,
-    });
-  }
-
-  /**
-   * Waits until the auto-close row body text includes a fragment (e.g. formatted fiat "3,500").
-   * @param textFragment
-   */
-  async checkAutoCloseRowContains(textFragment: string): Promise<void> {
-    await this.driver.waitForSelector({
-      xpath: `//*[@data-testid="perps-auto-close-row"][contains(normalize-space(.), "${textFragment}")]`,
-    });
-  }
-
-  /**
-   * Types an amount in the amount input (USD).
-   * Targets the actual input inside the amount field so fill works.
-   *
-   * @param amount
-   */
-  async fillAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector(this.amountInputField);
-    await this.driver.fill(this.amountInputFieldInput, amount);
-  }
-
-  /**
-   * Dismisses the geo-block modal by clicking the "Got it" button.
-   */
-  async dismissGeoBlockModal(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
-  }
-
-  /**
-   * Navigates to the market detail page by clicking the market row in the Market List.
-   * Requires the Perps Market List to be visible (e.g. after navigateToMarketList()).
-   * Use a symbol with no existing position (e.g. AVAX) to see Long/Short buttons.
-   *
-   * @param symbol - Market symbol (e.g. 'AVAX', 'ETH'). Colons are replaced with dashes to match the UI testid.
-   */
-  async navigateToMarket(symbol: string): Promise<void> {
-    const marketRowTestId = `market-row-${symbol.replaceAll(':', '-')}`;
-    await this.driver.waitForSelector({ testId: marketRowTestId });
-    await this.driver.clickElement({ testId: marketRowTestId });
-    await this.checkPageIsLoaded();
   }
 
   /**
@@ -671,6 +694,17 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Waits for the close position modal summary rows (fees + receive) to be visible.
+   * Call after waitForClosePositionModal() to verify the modal is fully rendered.
+   */
+  async waitForCloseSummaryRows(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.closeSummaryFeesValue,
+      this.closeSummaryReceiveValue,
+    ]);
+  }
+
+  /**
    * Waits for the Decrease Margin modal to be visible (margin menu → Remove).
    */
   async waitForDecreaseMarginModal(): Promise<void> {
@@ -694,13 +728,23 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits until the reverse-position confirmation modal is removed from the DOM.
+   * Waits for the favorite (star) button to reach the given state.
+   * Pass `'favorited'` for aria-label "Remove from favorites",
+   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
    *
-   * @param timeout - Max wait in ms (default 15_000).
+   * @param state - Target button state, or undefined for any state.
    */
-  async waitForReversePositionModalClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.reversePositionModal, {
-      timeout,
+  async waitForFavoriteButton(
+    state?: 'favorited' | 'unfavorited',
+  ): Promise<void> {
+    if (state === undefined) {
+      await this.driver.waitForSelector(this.favoriteButton);
+      return;
+    }
+    const ariaLabel =
+      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
     });
   }
 
@@ -710,6 +754,14 @@ export class PerpsMarketDetailPage {
    */
   async waitForGeoBlockModal(): Promise<void> {
     await this.driver.waitForSelector(this.geoBlockModal);
+  }
+
+  /**
+   * Waits for the margin modal available balance row to be visible.
+   * Call after waitForAddMarginModal() or waitForDecreaseMarginModal().
+   */
+  async waitForMarginModalAvailableBalance(): Promise<void> {
+    await this.driver.waitForSelector(this.editMarginAvailableValue);
   }
 
   /**
@@ -736,6 +788,36 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Waits until the reverse-position confirmation modal is removed from the DOM.
+   *
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForReversePositionModalClosed(timeout = 15000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.reversePositionModal, {
+      timeout,
+    });
+  }
+
+  /**
+   * Waits for the reverse position modal summary rows (est size + fee) to be visible.
+   * Call after waitForReversePositionModal() to verify the modal content is loaded.
+   */
+  async waitForReversePositionSummaryRows(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.reverseEstSizeValue,
+      this.reverseFeeValue,
+    ]);
+  }
+
+  /**
+   * Waits for the estimated TP PnL row to be visible inside the TP/SL update modal.
+   * Confirms the modal content is fully rendered with live price data.
+   */
+  async waitForTpslModalEstimatedTpPnlRow(): Promise<void> {
+    await this.driver.waitForSelector(this.tpslEstimatedTpPnlRow);
+  }
+
+  /**
    * Waits for the Long/Short trade buttons (visible when user has no position in this market).
    */
   async waitForTradeCtaButtons(): Promise<void> {
@@ -752,93 +834,12 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits for the estimated TP PnL row to be visible inside the TP/SL update modal.
-   * Confirms the modal content is fully rendered with live price data.
+   * Waits until the TP/SL update modal is removed from the DOM after save or dismiss.
+   * @param timeout
    */
-  async waitForTpslModalEstimatedTpPnlRow(): Promise<void> {
-    await this.driver.waitForSelector(this.tpslEstimatedTpPnlRow);
-  }
-
-  /**
-   * Waits for the close position modal summary rows (fees + receive) to be visible.
-   * Call after waitForClosePositionModal() to verify the modal is fully rendered.
-   */
-  async waitForCloseSummaryRows(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.closeSummaryFeesValue,
-      this.closeSummaryReceiveValue,
-    ]);
-  }
-
-  /**
-   * Waits for the reverse position modal summary rows (est size + fee) to be visible.
-   * Call after waitForReversePositionModal() to verify the modal content is loaded.
-   */
-  async waitForReversePositionSummaryRows(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.reverseEstSizeValue,
-      this.reverseFeeValue,
-    ]);
-  }
-
-  /**
-   * Waits for the margin modal available balance row to be visible.
-   * Call after waitForAddMarginModal() or waitForDecreaseMarginModal().
-   */
-  async waitForMarginModalAvailableBalance(): Promise<void> {
-    await this.driver.waitForSelector(this.editMarginAvailableValue);
-  }
-
-  /**
-   * High-level helper: waits for the close position modal, verifies summary rows,
-   * optionally adjusts the close percentage, then submits.
-   * Use when the modal is already open (e.g. after clickModifyMenuReduceExposure()).
-   *
-   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
-   */
-  async confirmCloseModal(percent = 100): Promise<void> {
-    await this.waitForClosePositionModal();
-    await this.waitForCloseSummaryRows();
-    if (percent < 100) {
-      await this.setClosePercent(percent);
-    }
-    await this.submitClosePosition();
-  }
-
-  /**
-   * High-level helper: clicks Close then confirms the close position modal.
-   * Dismisses any visible perps toast first (handled by clickClose).
-   *
-   * @param percent - Close percentage 0–100 (default 100). Pass less than 100 for a partial close.
-   */
-  async closePosition(percent = 100): Promise<void> {
-    await this.clickClose();
-    await this.confirmCloseModal(percent);
-  }
-
-  /**
-   * High-level helper: opens the TP/SL update modal, fills the take-profit price, and saves.
-   *
-   * @param price - Take profit price string (e.g. '3500.00').
-   */
-  async setTakeProfit(price: string): Promise<void> {
-    await this.clickAutoCloseRow();
-    await this.waitForUpdateTpslModal();
-    await this.fillTpPriceInTpslModal(price);
-    await this.submitTpslUpdate();
-    await this.waitForUpdateTpslModalClosed();
-  }
-
-  /**
-   * High-level helper: opens the TP/SL update modal, fills the stop-loss price, and saves.
-   *
-   * @param price - Stop loss price string (e.g. '2400.00').
-   */
-  async setStopLoss(price: string): Promise<void> {
-    await this.clickAutoCloseRow();
-    await this.waitForUpdateTpslModal();
-    await this.fillSlPriceInTpslModal(price);
-    await this.submitTpslUpdate();
-    await this.waitForUpdateTpslModalClosed();
+  async waitForUpdateTpslModalClosed(timeout = 15000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.updateTpslModal, {
+      timeout,
+    });
   }
 }

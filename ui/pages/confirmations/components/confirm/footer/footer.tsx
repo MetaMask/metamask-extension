@@ -54,6 +54,7 @@ import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/sh
 import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,

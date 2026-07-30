@@ -1105,7 +1105,7 @@ describe('Bridge selectors', () => {
         trade,
         estimatedProcessingTimeInSeconds,
         ...calculatedQuoteMetadata
-      } = recommendedQuote as QuoteResponse;
+      } = recommendedQuote as QuoteResponseV1;
       expect(calculatedQuoteMetadata).toMatchSnapshot();
       const quoteMetadata = {
         adjustedReturn: {
@@ -1379,6 +1379,13 @@ describe('Bridge selectors', () => {
 
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote;
       expect({
         ...recommendedQuote,
         chainId: 'eip155:10',
@@ -1551,8 +1558,14 @@ describe('Bridge selectors', () => {
       const { recommendedQuotes, ...rest } = result;
       expect(result.recommendedQuotes).toHaveLength(1);
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
-      const { quote, approval, trade, estimatedProcessingTimeInSeconds } =
-        recommendedQuote;
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         ...recommendedQuote,
         chainId: 'eip155:10',
@@ -1697,6 +1710,7 @@ describe('Bridge selectors', () => {
         ...calculatedQuoteMetadata
       } = recommendedQuote;
 
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
       expect({
         ...recommendedQuote,
         chainId: 'eip155:10',
@@ -1836,6 +1850,13 @@ describe('Bridge selectors', () => {
 
       const { recommendedQuotes, ...rest } = result;
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuote;
       expect({
         ...recommendedQuote,
         chainId: 'eip155:10',
@@ -2834,7 +2855,7 @@ describe('Bridge selectors', () => {
       },
     );
 
-    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+    it('should treat gas-sponsored quotes as non-gasless for hardware wallets', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -2844,6 +2865,15 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
+          quotes: (
+            mockBridgeQuotesNativeErc20 as unknown as QuoteResponseV1[]
+          ).map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasSponsored: true,
+            },
+          })),
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
         metamaskStateOverrides: {
@@ -2854,7 +2884,7 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.isInsufficientGasForQuote).toStrictEqual(true);
     });
 
     it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
@@ -4622,12 +4652,6 @@ describe('Bridge selectors', () => {
 
     it('returns undefined when priceImpact.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
-        metamaskStateOverrides: {
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
-          },
-        },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
             ...quote,
@@ -4642,6 +4666,12 @@ describe('Bridge selectors', () => {
             },
           })),
         },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
       const { activeQuote } = getBridgeQuotes(state as never);
       expect(
@@ -4653,12 +4683,6 @@ describe('Bridge selectors', () => {
 
     it('returns undefined when toTokenAmount.valueInCurrency is null', () => {
       const state = createBridgeMockStore({
-        metamaskStateOverrides: {
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
-          },
-        },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
             ...quote,
@@ -4676,10 +4700,17 @@ describe('Bridge selectors', () => {
             },
           })),
         },
+        metamaskStateOverrides: {
+          currentCurrency: 'usd',
+          currencyRates: {
+            ETH: { conversionRate: null, usdConversionRate: 2524.25 },
+          },
+        },
       });
-
-      const { activeQuote } = getBridgeQuotes(state as never);
-      expect(activeQuote?.quote.dest.valueInCurrency).toBeUndefined();
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.toTokenAmount
+          ?.valueInCurrency,
+      ).toBeUndefined();
       const result = getFormattedPriceImpactFiat(state as never);
       expect(result).toBeUndefined();
     });

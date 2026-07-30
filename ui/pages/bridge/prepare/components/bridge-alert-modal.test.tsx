@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { parseCaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
@@ -13,7 +13,6 @@ import * as useSubmitBridgeTransactionModule from '../../../../hooks/bridge/useS
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
 import { BridgeAlertModal } from './bridge-alert-modal';
-import { parseCaipAssetType } from '@metamask/utils';
 
 const mockOnClose = jest.fn();
 const mockSubmitBridgeTransaction = jest.fn();
@@ -28,7 +27,7 @@ jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  quotes: QuoteResponse[],
+  quotes: QuoteResponseV1[],
   priceImpact: string = '0.05',
   variant?: 'submit-cta' | 'alert-details',
   stateOverrides?: Record<string, unknown>,
@@ -273,7 +272,7 @@ describe('BridgeAlertModal', () => {
         _condition: string,
         priceImpact: string,
         stateOverrides: Record<string, unknown>,
-        quotes: QuoteResponse[],
+        quotes: QuoteResponseV1[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
           renderModal(

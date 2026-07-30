@@ -830,6 +830,7 @@
         "console.error": true,
         "fetch.bind": true,
         "performance.now": true,
+        "performance.timeOrigin": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -887,7 +888,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/assets-controllers>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -950,7 +951,7 @@
         "@metamask/controller-utils": true,
         "@metamask/messenger": true,
         "@metamask/utils": true,
-        "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
         "eslint>fast-deep-equal": true
       }
     },
@@ -1739,7 +1740,7 @@
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
@@ -2041,7 +2042,6 @@
     "@metamask/perps-controller": {
       "globals": {
         "AbortController": true,
-        "WebSocket": true,
         "clearInterval": true,
         "clearTimeout": true,
         "fetch": true,
@@ -2056,6 +2056,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
+        "@metamask/perps-controller>bignumber.js": true,
         "uuid": true
       }
     },
@@ -2217,7 +2218,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@metamask/react-data-query>@tanstack/query-core": true
+        "@tanstack/react-query>@tanstack/query-core": true
       }
     },
     "@metamask/remote-feature-flag-controller": {
@@ -2269,6 +2270,23 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
+      }
+    },
+    "@metamask/sentinel-api-service": {
+      "globals": {
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/react-data-query>@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true
       }
     },
     "@metamask/shield-controller": {
@@ -2341,6 +2359,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
         "@metamask/utils": true,
         "lodash": true
@@ -2552,6 +2571,7 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2847,12 +2867,17 @@
         "AbortSignal": true,
         "CustomEvent": true,
         "DOMException": true,
+        "DecompressionStream": true,
         "Event": true,
         "EventTarget": true,
         "Headers": true,
+        "Response": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
+        "atob": true,
         "clearInterval": true,
+        "clearTimeout": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
@@ -2866,11 +2891,14 @@
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "CloseEvent": true,
-        "CustomEvent": true,
+        "DOMException": true,
         "Event": true,
         "EventTarget": true,
         "MessageEvent": true,
+        "TextEncoder": true,
+        "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
@@ -3464,15 +3492,16 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+    "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
+        "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
+        "console.error": true,
+        "document.visibilityState": true,
         "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       }
     },
@@ -3489,24 +3518,13 @@
         "setTimeout": true
       }
     },
-    "@metamask/react-data-query>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "navigator": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      }
-    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
@@ -3917,6 +3935,11 @@
       }
     },
     "@metamask/notification-services-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
@@ -4952,7 +4975,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -6901,21 +6924,15 @@
         "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
-        "JSONSchema": true,
         "URL": true,
+        "__zod_globalConfig": true,
         "__zod_globalRegistry": true,
         "atob": true,
         "btoa": true,
-        "coerce": true,
-        "core": true,
-        "iso": true,
-        "locales": true,
-        "navigator": true,
-        "regexes": true,
-        "util": true
+        "navigator": true
       }
     }
   }

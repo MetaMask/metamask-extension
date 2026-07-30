@@ -139,7 +139,7 @@ export const BridgeQuotesModal = ({
         {/* QUOTE LIST */}
         <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
           {sortedQuotes.map(
-            (quote: QuoteResponse & QuoteMetadata, index: number) => {
+            (quote: QuoteMetadata & QuoteResponse, index: number) => {
               const {
                 toTokenAmount,
                 quote: { dest, protocols, requestId },

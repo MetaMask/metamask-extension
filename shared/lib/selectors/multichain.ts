@@ -1,6 +1,4 @@
-import { createSelector } from 'reselect';
-import { CaipNamespace, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { selectDefaultNetworkClientIdsByChainId } from './networks';
+import { CaipNamespace } from '@metamask/utils';
 
 type EnabledNetworksByChainId = Record<CaipNamespace, Record<string, boolean>>;
 
@@ -18,16 +16,3 @@ export const getEnabledNetworks = (state: {
     enabledNetworkMap: EnabledNetworksByChainId;
   };
 }) => state.metamask.enabledNetworkMap ?? EMPTY_ENABLED_NETWORKS;
-
-export const selectAllEnabledNetworkClientIds = createSelector(
-  getEnabledNetworks,
-  selectDefaultNetworkClientIdsByChainId,
-  (allEnabledNetworks, defaultNetworkClientIdsByChainId) => {
-    const chainIds = Object.entries(
-      allEnabledNetworks[KnownCaipNamespace.Eip155] ?? {},
-    )
-      .filter(([_chainId, isEnabled]) => isEnabled)
-      .map(([chainId, _isEnabled]) => chainId) as Hex[];
-    return chainIds.map((chainId) => defaultNetworkClientIdsByChainId[chainId]);
-  },
-);

@@ -24,7 +24,7 @@ setBackgroundConnection({
 
 const createDiscountedQuotes = (
   discountType?: string | null,
-): QuoteResponse[] =>
+): QuoteResponseV1[] =>
   mockBridgeQuotesErc20Erc20.map((quote) => ({
     ...quote,
     quote: {
@@ -43,7 +43,7 @@ const createDiscountedQuotes = (
   }));
 
 const createBridgeStoreWithQuotes = (
-  quotes: QuoteResponse[],
+  quotes: QuoteResponseV1[],
   bridgeStateOverrides: Record<string, unknown> = {},
 ) =>
   createBridgeMockStore({

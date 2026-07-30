@@ -3,7 +3,7 @@ import {
   ChainId,
   formatProviderLabel,
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { formatTokenAmount, formatCurrencyAmount, readMmFee } from './quote';
 
@@ -166,7 +166,7 @@ describe('Bridge quote utils', () => {
             ],
           },
         },
-      }) as unknown as QuoteResponse;
+      }) as unknown as QuoteResponseV1;
 
     it('returns fee percentages and no discount when discountType is absent', () => {
       expect(

@@ -1016,6 +1016,12 @@ export const isNativeBalanceInsufficientForQuote = (
   fromAssetId: CaipAssetType,
   minimumBalanceToKeep: string,
 ): boolean => {
+  if (
+    !quote.quote.src?.normalizedAmount ||
+    !quote.quote.feeData?.network?.[0].normalizedAmount
+  ) {
+    return false;
+  }
   return isNativeAddress(fromAssetId)
     ? new BigNumber(nativeBalance)
         .sub(
@@ -1028,7 +1034,10 @@ export const isNativeBalanceInsufficientForQuote = (
         .sub(minimumBalanceToKeep)
         .lte(0)
     : new BigNumber(nativeBalance).lte(
-        quote?.quote?.feeData?.network?.[0].normalizedAmount ?? '0',
+        sumAmounts(
+          quote?.quote?.feeData?.network,
+          quote?.quote?.feeData?.relayer,
+        ).normalizedAmount ?? '0',
       );
 };
 /**

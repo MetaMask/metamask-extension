@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { type QuoteResponse } from '@metamask/bridge-controller';
+import { type QuoteResponseV1 } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../../../shared/lib/format-amount';
@@ -139,7 +139,7 @@ export const isQuoteExpiredOrInvalid = ({
   toToken,
   isQuoteExpired,
 }: {
-  activeQuote: QuoteResponse | null;
+  activeQuote: QuoteResponseV1 | null;
   toToken: BridgeToken | null;
   isQuoteExpired: boolean;
 }): boolean => {
@@ -183,7 +183,7 @@ export const bpsToPercentage = (
   return (bpsValue / 100).toString();
 };
 
-export const readMmFee = (quote: QuoteResponse) => {
+export const readMmFee = (quote: QuoteResponseV1) => {
   // Get the fee percentage from the quote or fallback to default
   const quoteBpsFee = quote.quote.feeData?.metabridge?.[0]?.quoteBpsFee;
   const baseBpsFee = quote.quote.feeData?.metabridge?.[0]?.baseBpsFee;
