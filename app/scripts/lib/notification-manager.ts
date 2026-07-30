@@ -103,8 +103,12 @@ export default class NotificationManager extends EventEmitter {
 
   _onWindowClosed(windowId: number) {
     if (windowId === this._popupId) {
-      // Set alongside `_popupId` in `showPopup`; keep a hard call so an unset setter throws.
-      this._setCurrentPopupId!(undefined);
+      // Set alongside `_popupId` in `showPopup`; throw if the setter was never wired.
+      const setCurrentPopupId = this._setCurrentPopupId;
+      if (!setCurrentPopupId) {
+        throw new Error('NotificationManager: setCurrentPopupId was never set');
+      }
+      setCurrentPopupId(undefined);
       this._popupId = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,

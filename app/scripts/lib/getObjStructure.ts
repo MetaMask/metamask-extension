@@ -44,15 +44,16 @@ export default function getObjStructure(
  * @returns The modified object
  */
 function deepMap(
-  target: Record<string, unknown> = {},
+  target: Record<string, unknown> | undefined,
   visit: (value: unknown) => string,
 ): Record<string, unknown> {
-  Object.entries(target).forEach(([key, value]) => {
+  const mappedTarget = target ?? {};
+  Object.entries(mappedTarget).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
-      target[key] = deepMap(value as Record<string, unknown>, visit);
+      mappedTarget[key] = deepMap(value as Record<string, unknown>, visit);
     } else {
-      target[key] = visit(value);
+      mappedTarget[key] = visit(value);
     }
   });
-  return target;
+  return mappedTarget;
 }
