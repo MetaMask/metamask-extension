@@ -1,7 +1,7 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SnapSignInConfirmation {
-  protected driver: Driver;
+  private addressTestId = 'snap-ui-address';
 
   private cancelButton = {
     testId: 'confirm-sign-in-cancel-snap-footer-button',
@@ -13,12 +13,12 @@ class SnapSignInConfirmation {
     text: 'Confirm',
   };
 
+  protected driver: Driver;
+
   private header = {
     text: 'Sign-in request',
     tag: 'h2',
   };
-
-  private addressTestId = 'snap-ui-address';
 
   constructor(driver: Driver) {
     this.driver = driver;

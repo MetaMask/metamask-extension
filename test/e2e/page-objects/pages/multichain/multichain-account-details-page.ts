@@ -2,64 +2,70 @@ import { Driver } from '../../../webdriver/driver';
 import { largeDelayMs } from '../../../helpers';
 
 class MultichainAccountDetailsPage {
-  private readonly driver: Driver;
+  // First row is account name
 
-  // Header elements
-  private readonly backButton = '[aria-label="Back"]';
+  private readonly accountAddressRow =
+    '.multichain-account-details__row:nth-of-type(2)';
 
-  private readonly accountNameHeader = '.multichain-page-header'; // The header title
+  // The header title
 
   // Account information section
   private readonly accountAvatar = '[data-testid="avatar"]';
 
-  private readonly accountNameRow =
-    '[data-testid="account-details-row-value-account-name"]'; // First row is account name
+  private readonly accountNameHeader = '.multichain-page-header';
 
-  private readonly accountAddressRow =
-    '.multichain-account-details__row:nth-of-type(2)'; // Second row is address
+  private readonly accountNameInput = 'input[placeholder*="Account"]';
+
+  private readonly accountNameRow =
+    '[data-testid="account-details-row-value-account-name"]';
+
+  // Second row is address
 
   private readonly accountNavigationButton =
     '[data-testid="account-address-navigation-button"]';
 
-  // Account name editing
-  private readonly editAccountNameButton = '[aria-label="Edit"]';
+  // Address and wallet navigation
+  private readonly addressValue =
+    '[data-testid="account-details-row-value-address"]';
 
-  private readonly accountNameInput = 'input[placeholder*="Account"]';
+  // Header elements
+  private readonly backButton = '[aria-label="Back"]';
 
   private readonly confirmAccountNameButton =
     '[data-testid="account-name-confirm-button"]';
 
-  // Address and wallet navigation
-  private readonly addressValue =
-    '[data-testid="account-details-row-value-address"]'; // Address text
+  private readonly copyAddressButton =
+    '[data-testid="address-copy-button-text"]';
 
-  private readonly walletValue =
-    '[data-testid="account-details-row-value-wallet"]'; // Wallet text
+  private readonly driver: Driver;
 
-  private readonly walletNavigationButton =
-    '[data-testid="account-details-row-wallet"]';
+  // Account name editing
+  private readonly editAccountNameButton = '[aria-label="Edit"]';
 
-  // Account-specific features
-  private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
-
-  private readonly secretRecoveryPhraseRow =
-    '[data-testid="multichain-srp-backup"]';
-
-  private readonly showPrivateKeyButton =
-    '[data-testid="account-show-private-key-button"]';
-
-  private readonly exportSrpButton = '[data-testid="multichain-srp-backup"]';
+  // Error states
+  private readonly errorMessage = '[data-testid="error-message"]';
 
   private readonly exportPrivateKeyButton =
     '[data-testid="account-export-private-key-button"]';
+
+  private readonly exportSrpButton = '[data-testid="multichain-srp-backup"]';
+
+  private readonly loadingSpinner = '[data-testid="loading-spinner"]';
+
+  private readonly networksRow = { text: 'Networks' };
+
+  private readonly privateKeyRow = { text: 'Private key' };
+
+  // QR Code and address display
+  private readonly qrCodeImage = '.qr-code';
 
   // Account removal
   private readonly removeAccountButton =
     '[data-testid="account-details-row-remove-account"]';
 
-  private readonly removeAccountModalHeader = {
-    tag: 'h4',
-    text: 'Remove account',
+  private readonly removeAccountCancelButton = {
+    css: '.mm-modal-footer__button',
+    text: 'Cancel',
   };
 
   private readonly removeAccountConfirmButton = {
@@ -67,33 +73,56 @@ class MultichainAccountDetailsPage {
     text: 'Remove',
   };
 
-  private readonly removeAccountCancelButton = {
-    css: '.mm-modal-footer__button',
-    text: 'Cancel',
+  private readonly removeAccountModalHeader = {
+    tag: 'h4',
+    text: 'Remove account',
   };
 
-  // QR Code and address display
-  private readonly qrCodeImage = '.qr-code';
+  private readonly secretRecoveryPhraseRow =
+    '[data-testid="multichain-srp-backup"]';
 
-  private readonly copyAddressButton =
-    '[data-testid="address-copy-button-text"]';
+  private readonly showPrivateKeyButton =
+    '[data-testid="account-show-private-key-button"]';
+
+  // Account-specific features
+  private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
 
   private readonly viewOnEtherscanButton = {
     tag: 'button',
     text: 'View on explorer',
   };
 
-  private readonly networksRow = { text: 'Networks' };
+  // Wallet text
 
-  private readonly privateKeyRow = { text: 'Private key' };
+  private readonly walletNavigationButton =
+    '[data-testid="account-details-row-wallet"]';
 
-  // Error states
-  private readonly errorMessage = '[data-testid="error-message"]';
+  // Address text
 
-  private readonly loadingSpinner = '[data-testid="loading-spinner"]';
+  private readonly walletValue =
+    '[data-testid="account-details-row-value-wallet"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Cancel account removal
+   */
+  async cancelAccountRemoval(): Promise<void> {
+    console.log('Cancel account removal');
+    await this.driver.clickElement(this.removeAccountButton);
+    await this.driver.delay(largeDelayMs);
+    await this.driver.waitForSelector(this.removeAccountModalHeader);
+    await this.driver.clickElement(this.removeAccountCancelButton);
+    await this.driver.delay(largeDelayMs);
+  }
+
+  /**
+   * Check if account icon is present
+   */
+  async checkAccountIconPresent(): Promise<boolean> {
+    return await this.driver.isElementPresent(this.accountAvatar);
   }
 
   /**
@@ -108,45 +137,57 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Get the account name from the header
+   * Check if QR code is displayed
    */
-  async getAccountName(): Promise<string> {
-    const element = await this.driver.findElement(this.accountNameHeader);
-    return await element.getText();
+  async checkQrCodeIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.qrCodeImage);
   }
 
   /**
-   * Get the account address from the address row
+   * Check if remove account button is present
    */
-  async getAccountAddress(): Promise<string> {
-    const element = await this.driver.findElement(this.addressValue);
-    return await element.getText();
+  async checkRemoveAccountButtonPresent(): Promise<boolean> {
+    try {
+      await this.driver.findElement(this.removeAccountButton, 3000);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
-   * Get the wallet name from the wallet row
+   * Check that the "show private key" button is not displayed
    */
-  async getWalletName(): Promise<string> {
-    const element = await this.driver.findElement(this.walletValue);
-    return await element.getText();
+  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that show private key button is not displayed');
+    await this.driver.assertElementNotPresent(this.privateKeyRow);
   }
 
   /**
-   * Get the account name from the account name row
+   * Click on the address row
    */
-  async getAccountNameFromRow(): Promise<string> {
-    // Since the account name row contains the account name, we can get it from the row text
-    const element = await this.driver.findElement(this.accountNameRow);
-    const rowText = await element.getText();
-    // The account name should be in the row text
-    return rowText;
+  async clickAddressNavigationButton(): Promise<void> {
+    console.log('Click on the address navigation button');
+    await this.driver.clickElement(this.accountNavigationButton);
+    await this.driver.delay(largeDelayMs);
   }
 
   /**
-   * Check if account icon is present
+   * Click the confirm account name button
    */
-  async checkAccountIconPresent(): Promise<boolean> {
-    return await this.driver.isElementPresent(this.accountAvatar);
+  async clickConfirmAccountNameButton(): Promise<void> {
+    console.log('Click confirm account name button');
+    await this.driver.clickElement(this.confirmAccountNameButton);
+    await this.driver.delay(largeDelayMs);
+  }
+
+  /**
+   * Click on the copy address button
+   */
+  async clickCopyAddressButton(): Promise<void> {
+    console.log('Click on the copy address button');
+    await this.driver.clickElement(this.copyAddressButton);
+    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -159,14 +200,6 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Check that the "show private key" button is not displayed
-   */
-  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
-    console.log('Check that show private key button is not displayed');
-    await this.driver.assertElementNotPresent(this.privateKeyRow);
-  }
-
-  /**
    * Click on the private key row
    */
   async clickPrivateKeyRow(): Promise<void> {
@@ -174,14 +207,6 @@ class MultichainAccountDetailsPage {
     const privateKeyRow = await this.driver.findElement(this.privateKeyRow);
     await privateKeyRow.click();
     await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Click on reveal SRP button
-   */
-  async clickRevealRow(): Promise<void> {
-    console.log('Click on reveal SRP button');
-    await this.driver.clickElement(this.exportSrpButton);
   }
 
   /**
@@ -209,37 +234,16 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Click on the wallet row
+   * Click on reveal SRP button
    */
-  async clickWalletRow(): Promise<void> {
-    console.log('Click on the wallet row');
-    await this.driver.clickElement(this.walletNavigationButton);
-    await this.driver.delay(largeDelayMs);
+  async clickRevealRow(): Promise<void> {
+    console.log('Click on reveal SRP button');
+    await this.driver.clickElement(this.exportSrpButton);
   }
 
-  /**
-   * Click on the address row
-   */
-  async clickAddressNavigationButton(): Promise<void> {
-    console.log('Click on the address navigation button');
-    await this.driver.clickElement(this.accountNavigationButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Get address from share modal
-   */
-  async getAddressFromShareModal(): Promise<string> {
-    const element = await this.driver.findElement('.qr-code__address-segments');
-    return await element.getText();
-  }
-
-  /**
-   * Click on the copy address button
-   */
-  async clickCopyAddressButton(): Promise<void> {
-    console.log('Click on the copy address button');
-    await this.driver.clickElement(this.copyAddressButton);
+  async clickSecretRecoveryPhraseRow(): Promise<void> {
+    console.log('Click on the Secret Recovery Phrase row');
+    await this.driver.clickElement(this.secretRecoveryPhraseRow);
     await this.driver.delay(largeDelayMs);
   }
 
@@ -252,18 +256,12 @@ class MultichainAccountDetailsPage {
     await this.driver.delay(largeDelayMs);
   }
 
-  async clickSecretRecoveryPhraseRow(): Promise<void> {
-    console.log('Click on the Secret Recovery Phrase row');
-    await this.driver.clickElement(this.secretRecoveryPhraseRow);
-    await this.driver.delay(largeDelayMs);
-  }
-
   /**
-   * Navigate back from account details
+   * Click on the wallet row
    */
-  async navigateBack(): Promise<void> {
-    console.log('Navigate back from account details');
-    await this.driver.clickElement(this.backButton);
+  async clickWalletRow(): Promise<void> {
+    console.log('Click on the wallet row');
+    await this.driver.clickElement(this.walletNavigationButton);
     await this.driver.delay(largeDelayMs);
   }
 
@@ -293,20 +291,54 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Click the confirm account name button
+   * Get the account address from the address row
    */
-  async clickConfirmAccountNameButton(): Promise<void> {
-    console.log('Click confirm account name button');
-    await this.driver.clickElement(this.confirmAccountNameButton);
-    await this.driver.delay(largeDelayMs);
+  async getAccountAddress(): Promise<string> {
+    const element = await this.driver.findElement(this.addressValue);
+    return await element.getText();
   }
 
   /**
-   * Navigate to wallet details
+   * Get the account name from the header
    */
-  async navigateToWalletDetails(): Promise<void> {
-    console.log('Navigate to wallet details');
-    await this.driver.clickElement(this.walletNavigationButton);
+  async getAccountName(): Promise<string> {
+    const element = await this.driver.findElement(this.accountNameHeader);
+    return await element.getText();
+  }
+
+  /**
+   * Get the account name from the account name row
+   */
+  async getAccountNameFromRow(): Promise<string> {
+    // Since the account name row contains the account name, we can get it from the row text
+    const element = await this.driver.findElement(this.accountNameRow);
+    const rowText = await element.getText();
+    // The account name should be in the row text
+    return rowText;
+  }
+
+  /**
+   * Get address from share modal
+   */
+  async getAddressFromShareModal(): Promise<string> {
+    const element = await this.driver.findElement('.qr-code__address-segments');
+    return await element.getText();
+  }
+
+  /**
+   * Get the wallet name from the wallet row
+   */
+  async getWalletName(): Promise<string> {
+    const element = await this.driver.findElement(this.walletValue);
+    return await element.getText();
+  }
+
+  /**
+   * Navigate back from account details
+   */
+  async navigateBack(): Promise<void> {
+    console.log('Navigate back from account details');
+    await this.driver.clickElement(this.backButton);
     await this.driver.delay(largeDelayMs);
   }
 
@@ -320,22 +352,12 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Check if QR code is displayed
+   * Navigate to wallet details
    */
-  async checkQrCodeIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.qrCodeImage);
-  }
-
-  /**
-   * Check if remove account button is present
-   */
-  async checkRemoveAccountButtonPresent(): Promise<boolean> {
-    try {
-      await this.driver.findElement(this.removeAccountButton, 3000);
-      return true;
-    } catch {
-      return false;
-    }
+  async navigateToWalletDetails(): Promise<void> {
+    console.log('Navigate to wallet details');
+    await this.driver.clickElement(this.walletNavigationButton);
+    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -347,18 +369,6 @@ class MultichainAccountDetailsPage {
     await this.driver.delay(largeDelayMs);
     await this.driver.waitForSelector(this.removeAccountModalHeader);
     await this.driver.clickElement(this.removeAccountConfirmButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Cancel account removal
-   */
-  async cancelAccountRemoval(): Promise<void> {
-    console.log('Cancel account removal');
-    await this.driver.clickElement(this.removeAccountButton);
-    await this.driver.delay(largeDelayMs);
-    await this.driver.waitForSelector(this.removeAccountModalHeader);
-    await this.driver.clickElement(this.removeAccountCancelButton);
     await this.driver.delay(largeDelayMs);
   }
 
