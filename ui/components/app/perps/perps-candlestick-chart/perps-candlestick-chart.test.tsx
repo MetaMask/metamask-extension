@@ -79,6 +79,16 @@ const mockStore = configureStore({
 // Comfortably past the component's 50ms pane-height timer.
 const PANE_HEIGHT_TIMER_OVERRUN_MS = 100;
 
+// The component's default height is 250px, split 80/20 between the candle pane
+// and the volume pane. Pinning both values catches a MAIN/VOLUME swap.
+const DEFAULT_MAIN_PANE_HEIGHT = 200;
+const DEFAULT_VOLUME_PANE_HEIGHT = 50;
+
+// The panes array the chart handed back, so pane sizing can be asserted without
+// calling panes() again and perturbing the call count.
+const getPanesOf = (chart?: { panes: jest.Mock }) =>
+  chart?.panes.mock.results[0]?.value as { setHeight: jest.Mock }[];
+
 // The component creates the candlestick series first, then the volume series.
 const getCandlestickSeries = () => mockCreatedSeries[0];
 const getVolumeSeries = () => mockCreatedSeries[1];
@@ -304,7 +314,7 @@ describe('PerpsCandlestickChart — chart disposal (TAT-3462)', () => {
     expect(chart?.panes).not.toHaveBeenCalled();
   });
 
-  it('applies pane heights when the chart stays mounted past the timer', () => {
+  it('applies the 80/20 pane split when the chart stays mounted past the timer', () => {
     // Arrange
     renderWithProvider(<PerpsCandlestickChart />, mockStore);
     const chart = mockCreatedCharts.at(-1);
@@ -312,7 +322,37 @@ describe('PerpsCandlestickChart — chart disposal (TAT-3462)', () => {
     // Act
     jest.advanceTimersByTime(PANE_HEIGHT_TIMER_OVERRUN_MS);
 
-    // Assert — clearing the timer on unmount must not break the normal path
+    // Assert — clearing the timer on unmount must not break the normal path, and
+    // the candle pane gets 80% of the default 250px height while volume gets 20%.
     expect(chart?.panes).toHaveBeenCalled();
+    const panes = getPanesOf(chart);
+    expect(panes[0].setHeight).toHaveBeenCalledWith(DEFAULT_MAIN_PANE_HEIGHT);
+    expect(panes[1].setHeight).toHaveBeenCalledWith(DEFAULT_VOLUME_PANE_HEIGHT);
+  });
+
+  it('disposes the previous chart and drops its pending pane-height timer when the theme changes', () => {
+    // Arrange — the init effect re-runs on theme change, which the component
+    // names as the real-world trigger for a timer outliving its chart.
+    mockUseTheme.mockReturnValue('light');
+    const { rerender } = renderWithProvider(
+      <PerpsCandlestickChart />,
+      mockStore,
+    );
+    const firstChart = mockCreatedCharts.at(-1);
+
+    // Act — flip the theme before the first chart's pane-height timer comes due
+    mockUseTheme.mockReturnValue('dark');
+    rerender(<PerpsCandlestickChart />);
+    jest.advanceTimersByTime(PANE_HEIGHT_TIMER_OVERRUN_MS);
+
+    // Assert — old chart disposed and its timer never fired; new chart still sized
+    expect(mockCreatedCharts).toHaveLength(2);
+    const secondChart = mockCreatedCharts.at(-1);
+    expect(firstChart?.remove).toHaveBeenCalledTimes(1);
+    expect(firstChart?.panes).not.toHaveBeenCalled();
+    expect(secondChart?.panes).toHaveBeenCalled();
+    const panes = getPanesOf(secondChart);
+    expect(panes[0].setHeight).toHaveBeenCalledWith(DEFAULT_MAIN_PANE_HEIGHT);
+    expect(panes[1].setHeight).toHaveBeenCalledWith(DEFAULT_VOLUME_PANE_HEIGHT);
   });
 });
