@@ -1,18 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 class ConfirmAlertModal {
-  protected driver: Driver;
-
   private alertModalAcknowledgeCheckBox =
     '[data-testid="alert-modal-acknowledge-checkbox"]';
 
   private alertModalButton = '[data-testid="alert-modal-button"]';
 
+  private alertModalCancelButton =
+    '[data-testid="confirm-alert-modal-cancel-button"]';
+
   private alertModalSubmitButton =
     '[data-testid="confirm-alert-modal-submit-button"]';
 
-  private alertModalCancelButton =
-    '[data-testid="confirm-alert-modal-cancel-button"]';
+  protected driver: Driver;
 
   private networkDisplayLocator = {
     css: 'p',
@@ -23,10 +23,9 @@ class ConfirmAlertModal {
     this.driver = driver;
   }
 
-  async rejectFromAlertModal() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.alertModalCancelButton,
-    );
+  async acknowledgeAlert() {
+    await this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
+    await this.driver.clickElement(this.alertModalButton);
   }
 
   async confirmFromAlertModal() {
@@ -34,9 +33,10 @@ class ConfirmAlertModal {
     await this.driver.clickElement(this.alertModalSubmitButton);
   }
 
-  async acknowledgeAlert() {
-    await this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
-    await this.driver.clickElement(this.alertModalButton);
+  async rejectFromAlertModal() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.alertModalCancelButton,
+    );
   }
 
   async verifyNetworkDisplay(networkName: string): Promise<void> {

@@ -319,7 +319,7 @@ const MarketingSectionContent = () => {
   const t = useI18nContext();
 
   return (
-    <Box className="mt-auto">
+    <Box className="mt-auto pb-4">
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Regular}
