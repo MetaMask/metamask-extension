@@ -62,6 +62,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  PERPS_EXTENSION_EVENT_PROPERTY,
 } from '../../../shared/constants/perps-events';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
@@ -79,6 +80,9 @@ function parsePerpsAmountInput(raw: string): number {
 function countSubAccounts(state: AccountState | null | undefined): number {
   return Object.keys(state?.subAccountBreakdown ?? {}).length;
 }
+
+/** `failure_reason` reported when the fresh read blocks a stale-balance withdrawal. */
+const STALE_BALANCE_FAILURE_REASON = 'stale_streamed_balance';
 
 /**
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
@@ -103,8 +107,21 @@ const PerpsWithdrawPage = () => {
   const [routesError, setRoutesError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [freshBalance, setFreshBalance] = useState<{
+    streamed: number;
+    available: number;
+  } | null>(null);
 
-  const availableNum = parseFloat(getTradeableBalance(account)) || 0;
+  const streamedAvailableNum = parseFloat(getTradeableBalance(account)) || 0;
+
+  // A fresh account-state read overrides the streamed balance until the stream
+  // catches up, so the displayed balance, the percentage buttons, the
+  // validation message and the submit guard all agree on one figure instead of
+  // rejecting an amount the screen still presents as available.
+  const availableNum =
+    freshBalance && freshBalance.streamed === streamedAvailableNum
+      ? freshBalance.available
+      : streamedAvailableNum;
 
   const usdcAssetId = useMemo(
     () =>
@@ -249,7 +266,7 @@ const PerpsWithdrawPage = () => {
       // Re-read the balance first and stop here rather than submitting a
       // withdrawal that cannot succeed. Fails open: a refresh error leaves the
       // submit path untouched.
-      const freshBalance = await submitRequestToBackground<
+      const freshAccountState = await submitRequestToBackground<
         AccountState | undefined
       >('perpsGetAccountState', []).catch(() => undefined);
 
@@ -259,15 +276,39 @@ const PerpsWithdrawPage = () => {
       // there too. Sub-account keys are named differently by the stream and by
       // this read, so completeness is compared by count.
       const isPartialRead =
-        countSubAccounts(freshBalance) < countSubAccounts(account);
+        countSubAccounts(freshAccountState) < countSubAccounts(account);
+      const freshAvailableNum = parsePerpsAmountInput(
+        getTradeableBalance(freshAccountState),
+      );
+      const requestedNum = parsePerpsAmountInput(cleanAmount);
 
       if (
-        freshBalance &&
+        freshAccountState &&
         !isPartialRead &&
-        parsePerpsAmountInput(getTradeableBalance(freshBalance)) <
-          parsePerpsAmountInput(cleanAmount)
+        Number.isFinite(freshAvailableNum) &&
+        freshAvailableNum < requestedNum
       ) {
-        setSubmitError(t('perpsWithdrawInsufficient'));
+        // Adopting the fresh figure surfaces the insufficient-balance message
+        // through the normal validation path and re-arms Max against the real
+        // balance, so the block is actionable instead of contradicting the
+        // screen.
+        setFreshBalance({
+          streamed: streamedAvailableNum,
+          available: freshAvailableNum,
+        });
+        // The guard is the fix for the ticket's largest withdraw bucket and
+        // returns before `perpsWithdraw`, so the controller emits nothing for
+        // it — report it here or prevented failures silently leave the funnel.
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.VALIDATION,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]:
+            PERPS_EVENT_VALUE.ERROR_MESSAGE_KEY.INSUFFICIENT_BALANCE,
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: STALE_BALANCE_FAILURE_REASON,
+          [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+          [PERPS_EXTENSION_EVENT_PROPERTY.STALE_BALANCE_SHORTFALL]:
+            Math.round((streamedAvailableNum - freshAvailableNum) * 100) / 100,
+        });
         return;
       }
 
@@ -321,6 +362,7 @@ const PerpsWithdrawPage = () => {
     isSubmitting,
     navigate,
     selectedAccount?.address,
+    streamedAvailableNum,
     t,
     track,
     usdcAssetId,

@@ -454,7 +454,7 @@ describe('CancelOrderModal', () => {
       });
     });
 
-    it('shows error message when perpsCancelOrder returns success: false', async () => {
+    it('shows a generic cancel failure when the provider error has no translation', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,
@@ -469,12 +469,14 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Order not found')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsCancelOrderFailed.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
     });
 
-    it('shows generic error message when perpsCancelOrder rejects', async () => {
+    it('shows the translated message when the provider error maps to a known code', async () => {
       const user = userEvent.setup();
       mockSubmitRequestToBackground.mockRejectedValue(
         new Error('Network error'),
@@ -488,9 +490,35 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsNetworkError.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
+    });
+
+    it('translates a retried ORDER_UNKNOWN_COIN cancel failure', async () => {
+      const user = userEvent.setup();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'ORDER_UNKNOWN_COIN',
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={jest.fn()} order={baseOrder} />,
+        mockStore,
+      );
+
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.perpsOrderFailed.message),
+        ).toBeInTheDocument();
+      });
+      expect(screen.queryByText('ORDER_UNKNOWN_COIN')).not.toBeInTheDocument();
     });
 
     it('does not call onClose when cancel fails', async () => {
@@ -509,7 +537,9 @@ describe('CancelOrderModal', () => {
       await user.click(screen.getByTestId('perps-cancel-order-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Cancel request rejected')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsCancelOrderFailed.message),
+        ).toBeInTheDocument();
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
       expect(onClose).not.toHaveBeenCalled();
@@ -713,7 +743,7 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCancelOrderFailed',
-          description: 'Order not found',
+          description: messages.perpsCancelOrderFailed.message,
         });
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });
@@ -735,7 +765,7 @@ describe('CancelOrderModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastCancelOrderFailed',
-          description: 'Network error',
+          description: messages.perpsNetworkError.message,
         });
         expect(screen.getByTestId('perps-cancel-order-button')).toBeEnabled();
       });

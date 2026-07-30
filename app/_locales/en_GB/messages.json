@@ -7020,6 +7020,10 @@
   "perpsCancelOrder": {
     "message": "Cancel order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order could not be cancelled. Try again.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Set candle interval"
   },

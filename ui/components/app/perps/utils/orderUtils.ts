@@ -19,6 +19,11 @@ const TP_SL_DETAILED_ORDER_TYPES = new Set([
 /**
  * HyperLiquid rejects a cancel for an order it no longer holds open with this
  * status text (surfaced by the SDK as `<type> <index>: <error>`).
+ *
+ * Protocol-specific prose, like `API_ERROR_PATTERNS` in
+ * `utils/translate-perps-error.ts`, and it should stay in sync with mobile the
+ * same way. It lives here instead of in that list because it maps to a benign
+ * end state the UI closes out on, not to a `PerpsErrorCode` to display.
  */
 const ORDER_NO_LONGER_OPEN_PATTERN =
   /never placed, already canceled, or filled/iu;

@@ -48,6 +48,7 @@ import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
 import { isClosingOrder, isOrderNoLongerOpenError } from '../utils/orderUtils';
+import { translatePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -219,10 +220,16 @@ export const CancelOrderModal = ({
         PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
       );
-      setError(errorMessage);
+      // Analytics keeps the provider string; the trader gets copy they can act
+      // on. Raw provider prose (`ORDER_UNKNOWN_COIN`, `cancel 0: …`) reaches
+      // this branch, and the retry above makes it more reachable than before.
+      const displayedError =
+        translatePerpsError(err, t as (key: string) => string) ??
+        t('perpsCancelOrderFailed');
+      setError(displayedError);
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CANCEL_ORDER_FAILED,
-        description: errorMessage,
+        description: displayedError,
       });
       setIsSubmitting(false);
     }

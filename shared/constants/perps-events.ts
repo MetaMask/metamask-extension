@@ -125,3 +125,16 @@ export const PERPS_EVENT_VALUE = {
     TRADE: 'trade',
   },
 } as const;
+
+/**
+ * Extension-only event properties.
+ *
+ * The perps controller exposes no canonical key for the gap between the
+ * streamed (cached) balance and the freshly read one, which the withdraw page
+ * reports when it blocks a withdrawal the provider would reject (TAT-3490).
+ * Kept out of `PERPS_EVENT_PROPERTY` so the "must mirror the controller" rule
+ * above stays unambiguous.
+ */
+export const PERPS_EXTENSION_EVENT_PROPERTY = {
+  STALE_BALANCE_SHORTFALL: 'stale_balance_shortfall',
+} as const;

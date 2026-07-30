@@ -9,7 +9,10 @@ import { usePerpsEligibility } from '../../hooks/perps';
 import * as accountsSelectors from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EXTENSION_EVENT_PROPERTY,
+} from '../../../shared/constants/perps-events';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
@@ -204,6 +207,19 @@ async function flushRejectedWithdrawRoutesPromises() {
 async function waitForWithdrawHandlerSettled() {
   await waitFor(() => {
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
+  });
+}
+
+/**
+ * Same wait for a blocked submit: the entered amount now exceeds the adopted
+ * fresh balance, so the submit button stays disabled and the quick-action
+ * buttons are what re-enable when `isSubmitting` clears.
+ */
+async function waitForBlockedWithdrawSettled() {
+  await waitFor(() => {
+    expect(
+      screen.getByTestId('perps-withdraw-percentage-max'),
+    ).not.toBeDisabled();
   });
 }
 
@@ -560,8 +576,9 @@ describe('PerpsWithdrawPage', () => {
       'perpsWithdraw',
       expect.any(Array),
     );
+    expect(screen.getByTestId('perps-withdraw-submit')).toBeDisabled();
 
-    await waitForWithdrawHandlerSettled();
+    await waitForBlockedWithdrawSettled();
   });
 
   it('submits the withdrawal when the fresh balance read omits a sub-account', async () => {
@@ -618,6 +635,110 @@ describe('PerpsWithdrawPage', () => {
 
     await awaitSubmitPromisesForMethod('perpsWithdraw');
     await waitForWithdrawHandlerSettled();
+  });
+
+  it('blocks the withdrawal when the fresh read sees a sub-account the stream has not cached', async () => {
+    const user = userEvent.setup();
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: {
+        spendableBalance: '100',
+        subAccountBreakdown: { main: {} },
+      } as never,
+      isInitialLoading: false,
+    });
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({
+          withdrawableBalance: '20',
+          subAccountBreakdown: { '': {}, dex1: {} },
+        });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+    expect(
+      await screen.findByText(messages.perpsWithdrawInsufficient.message),
+    ).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalledWith(
+      'perpsWithdraw',
+      expect.any(Array),
+    );
+
+    await waitForBlockedWithdrawSettled();
+  });
+
+  it('shows the fresh balance in the available balance and Max after a block', async () => {
+    const user = userEvent.setup();
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '20' });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+    expect(
+      await screen.findByText(`${messages.perpsAvailableBalance.message}$20.00`),
+    ).toBeInTheDocument();
+
+    await waitForBlockedWithdrawSettled();
+
+    await act(async () => {
+      await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
+    });
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '20.00',
+    );
   });
 
   it('submits the withdrawal when the fresh balance read fails', async () => {
@@ -824,6 +945,53 @@ describe('PerpsWithdrawPage', () => {
 
       await waitForWithdrawHandlerSettled();
       await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
+    });
+
+    it('reports the prevented withdrawal when the fresh balance blocks it', async () => {
+      const user = userEvent.setup();
+      mockSubmit.mockImplementation((method: string) => {
+        if (method === 'perpsGetWithdrawalRoutes') {
+          return Promise.resolve([
+            {
+              assetId:
+                'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: 'eip155:42161',
+              contractAddress:
+                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+              constraints: { minAmount: '1.01' },
+            },
+          ]);
+        }
+        if (method === 'perpsGetAccountState') {
+          return Promise.resolve({ withdrawableBalance: '20' });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+      await settleInitialWithdrawRoutesFetch();
+
+      const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+      await act(async () => {
+        await user.clear(amountInput);
+        await user.type(amountInput, '50');
+        await user.click(screen.getByTestId('perps-withdraw-submit'));
+      });
+
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
+
+      await waitFor(() => {
+        expect(mockTrack).toHaveBeenCalledWith('Perp Error', {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'validation',
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'insufficient_balance',
+          [PERPS_EVENT_PROPERTY.FAILURE_REASON]: 'stale_streamed_balance',
+          [PERPS_EVENT_PROPERTY.SIZE]: '50',
+          [PERPS_EXTENSION_EVENT_PROPERTY.STALE_BALANCE_SHORTFALL]: 80,
+        });
+      });
+
+      await waitForBlockedWithdrawSettled();
     });
 
     it('fires PerpsError when withdrawal throws an exception', async () => {
