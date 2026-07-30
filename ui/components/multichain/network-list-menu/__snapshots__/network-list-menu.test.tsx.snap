@@ -1196,6 +1196,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
               <button
                 aria-label="Back"
                 class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="network-list-menu-back-button"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"

@@ -33,6 +33,7 @@
       "open": "boolean"
     },
     "isAccessedFromDappConnectedSitePopover": "boolean",
+    "isAccessedFromOnboarding": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",

@@ -18,6 +18,7 @@
     "homeDeepLinkQrCode": null,
     "importNftsModal": "object",
     "isAccessedFromDappConnectedSitePopover": "boolean",
+    "isAccessedFromOnboarding": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",

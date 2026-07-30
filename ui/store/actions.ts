@@ -4521,9 +4521,10 @@ export async function forceUpdateMetamaskState(
 }
 
 export function toggleNetworkMenu(payload?: {
-  isAddingNewNetwork: boolean;
+  isAddingNewNetwork?: boolean;
   isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
+  isAccessedFromOnboarding?: boolean;
 }) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,

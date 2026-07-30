@@ -295,6 +295,10 @@ export function getIsAccessedFromDappConnectedSitePopover(state) {
   return state.appState.isAccessedFromDappConnectedSitePopover;
 }
 
+export function getIsAccessedFromOnboarding(state) {
+  return state.appState.isAccessedFromOnboarding;
+}
+
 export function getIsMultiRpcOnboarding(state) {
   return state.appState.isMultiRpcOnboarding;
 }

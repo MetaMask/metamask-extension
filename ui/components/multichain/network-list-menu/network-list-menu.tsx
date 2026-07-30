@@ -65,6 +65,7 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getIsAccessedFromDappConnectedSitePopover,
+  getIsAccessedFromOnboarding,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
   getMultichainNetworkConfigurationsByChainId,
@@ -183,6 +184,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const isAccessedFromDappConnectedSitePopover = useSelector(
     getIsAccessedFromDappConnectedSitePopover,
   );
+  const isAccessedFromOnboarding = useSelector(getIsAccessedFromOnboarding);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
@@ -943,11 +945,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   let onBack;
   if (actionMode === ACTION_MODE.ADD_EDIT) {
-    onBack = () => {
-      editedNetwork ? dispatch(setEditedNetwork()) : networkFormState.clear();
+    // When accessed from onboarding, the ADD_EDIT view is opened directly
+    // without a preceding network list, so there is no back destination.
+    if (!isAccessedFromOnboarding) {
+      onBack = () => {
+        editedNetwork ? dispatch(setEditedNetwork()) : networkFormState.clear();
 
-      setActionMode(ACTION_MODE.LIST);
-    };
+        setActionMode(ACTION_MODE.LIST);
+      };
+    }
   } else if (
     actionMode === ACTION_MODE.ADD_RPC ||
     actionMode === ACTION_MODE.ADD_EXPLORER_URL
@@ -979,6 +985,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
           onClose={onClose}
           onBack={onBack}
+          backButtonProps={{
+            'data-testid': 'network-list-menu-back-button',
+          }}
         >
           <Text
             ellipsis

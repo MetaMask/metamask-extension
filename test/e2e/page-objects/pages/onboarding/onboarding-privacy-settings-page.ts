@@ -175,6 +175,19 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
+   * Open the add custom network form from general settings without submitting it.
+   */
+  async openAddNetworkForm(): Promise<void> {
+    console.log('Open add custom network form');
+    await this.driver.clickElement(this.addCustomNetworkButton);
+    await this.driver.waitForMultipleSelectors([
+      this.networkNameInput,
+      this.chainIdInput,
+      this.addRpcUrlDropDown,
+    ]);
+  }
+
+  /**
    * Go to assets settings and toggle options, then navigate back.
    */
   async toggleAssetsSettings(): Promise<void> {

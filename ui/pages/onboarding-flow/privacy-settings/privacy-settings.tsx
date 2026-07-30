@@ -472,7 +472,11 @@ export default function PrivacySettings() {
                                         chainId: network.chainId,
                                       }),
                                     );
-                                    dispatch(toggleNetworkMenu());
+                                    dispatch(
+                                      toggleNetworkMenu({
+                                        isAccessedFromOnboarding: true,
+                                      }),
+                                    );
                                   }}
                                   flexDirection={BoxFlexDirection.Row}
                                   alignItems={BoxAlignItems.Center}
@@ -524,6 +528,7 @@ export default function PrivacySettings() {
                                 dispatch(
                                   toggleNetworkMenu({
                                     isAddingNewNetwork: true,
+                                    isAccessedFromOnboarding: true,
                                   }),
                                 );
                               }}
