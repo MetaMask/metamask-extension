@@ -42,7 +42,7 @@ export const NetworkControllerInit: MessengerClientInitFunction<
       [CHAIN_IDS.HYPE]: getFailoverUrlsForInfuraNetwork('hyperevm-mainnet'),
       [CHAIN_IDS.ARC]: getFailoverUrlsForInfuraNetwork('arc-mainnet'),
     },
-    analytics: {
+    analyticsOptions: {
       isRpcEndpointUrlPublic: (endpointUrl) =>
         isPublicEndpointUrl(endpointUrl, infuraProjectId),
       rpcServiceEventsSampleRate: getRpcServiceEventsSampleRate(),

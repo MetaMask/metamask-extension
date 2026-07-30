@@ -78,7 +78,7 @@ describe('NetworkControllerInit', () => {
         '0x3e7': [],
         '0x13b2': [],
       },
-      analytics: {
+      analyticsOptions: {
         isRpcEndpointUrlPublic: expect.any(Function),
         rpcServiceEventsSampleRate: expect.any(Number),
       },
