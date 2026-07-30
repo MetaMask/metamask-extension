@@ -11,7 +11,17 @@ jest.mock('@metamask/controller-utils', () => ({
   handleFetch: jest.fn(),
 }));
 
+jest.mock('../../shared/lib/asset-utils', () => ({
+  getAssetImageUrl: jest.fn(
+    (assetId: string, chainId: string) =>
+      `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${chainId.replaceAll(':', '/')}/${String(assetId).split('/').slice(1).join('/').toLowerCase()}.png`,
+  ),
+}));
+
 const mockHandleFetch = handleFetch as jest.Mock;
+const { getAssetImageUrl: mockGetAssetImageUrl } = jest.requireMock(
+  '../../shared/lib/asset-utils',
+) as { getAssetImageUrl: jest.Mock };
 
 // Each test should use unique addresses so that the module-level token cache
 // (which persists for the lifetime of the test suite) never serves a cached
@@ -118,6 +128,52 @@ describe('useTokensData', () => {
 
       expect(result.current[assetIdA].symbol).toBe('AAA');
       expect(result.current[assetIdB].symbol).toBe('BBB');
+    });
+
+    it('falls back to getAssetImageUrl when the API omits iconUrl', async () => {
+      const address = uniqueAddress();
+      const assetId = buildAssetId(address);
+      const token = buildTokenAsset({
+        assetId,
+        name: 'MetaMask USD',
+        symbol: 'mUSD',
+        iconUrl: '',
+      });
+
+      mockHandleFetch.mockResolvedValue([token]);
+
+      const { result } = renderHook(() => useTokensData([assetId]));
+
+      await waitFor(() => {
+        expect(result.current[assetId]).toBeDefined();
+      });
+
+      const chainId = assetId.split('/')[0];
+      expect(mockGetAssetImageUrl).toHaveBeenCalledWith(assetId, chainId);
+      expect(result.current[assetId].iconUrl).toBe(
+        mockGetAssetImageUrl(assetId, chainId),
+      );
+    });
+
+    it('keeps the API iconUrl when it is present', async () => {
+      const address = uniqueAddress();
+      const assetId = buildAssetId(address);
+      const apiIconUrl = 'https://tokens.api/custom-icon.png';
+      const token = buildTokenAsset({
+        assetId,
+        iconUrl: apiIconUrl,
+      });
+
+      mockHandleFetch.mockResolvedValue([token]);
+
+      const { result } = renderHook(() => useTokensData([assetId]));
+
+      await waitFor(() => {
+        expect(result.current[assetId]).toBeDefined();
+      });
+
+      expect(result.current[assetId].iconUrl).toBe(apiIconUrl);
+      expect(mockGetAssetImageUrl).not.toHaveBeenCalled();
     });
   });
 
