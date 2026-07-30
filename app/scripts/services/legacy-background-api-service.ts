@@ -4,9 +4,22 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
+  NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
+import {
+  NetworkEnablementControllerEnableAllPopularNetworksAction,
+  NetworkEnablementControllerEnableNetworkAction,
+  NetworkEnablementControllerGetStateAction,
+} from '@metamask/network-enablement-controller';
+import {
+  add0x,
+  CaipChainId,
+  Hex,
+  hexToBytes,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -43,10 +56,25 @@ import {
   TransactionControllerUpdateEditableParamsAction,
   TransactionControllerWipeTransactionsAction,
 } from '@metamask/transaction-controller';
-import { CurrencyRateControllerSetCurrentCurrencyAction } from '@metamask/assets-controllers';
-import { AssetsControllerSetSelectedCurrencyAction } from '@metamask/assets-controller';
+import {
+  CurrencyRateControllerSetCurrentCurrencyAction,
+  TokenDetectionControllerDisableAction,
+  TokenDetectionControllerEnableAction,
+} from '@metamask/assets-controllers';
+import {
+  AccountId,
+  Asset,
+  AssetsControllerGetAssetsAction,
+  AssetsControllerSetSelectedCurrencyAction,
+  Caip19AssetId,
+} from '@metamask/assets-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerTestOriginAction,
+} from '@metamask/phishing-controller';
 import {
   ApprovalControllerAcceptRequestAction,
   ApprovalControllerGetStateAction,
@@ -104,12 +132,23 @@ import {
   AccountTreeControllerGetSelectedAccountGroupAction,
   AccountTreeControllerInitAction,
 } from '@metamask/account-tree-controller';
-import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
-import { SubscriptionControllerStopAllPollingAction } from '@metamask/subscription-controller';
+import {
+  SubscriptionControllerGetStateAction,
+  SubscriptionControllerStopAllPollingAction,
+} from '@metamask/subscription-controller';
+import {
+  ShieldControllerStartAction,
+  ShieldControllerStopAction,
+} from '@metamask/shield-controller';
+import {
+  GasFeeControllerDisableNonRPCGasFeeApisAction,
+  GasFeeControllerEnableNonRPCGasFeeApisAction,
+} from '@metamask/gas-fee-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { cloneDeep } from 'lodash';
 import {
@@ -117,39 +156,54 @@ import {
   isPublicEndpointUrl,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
+import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
+import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   ASSETS_UNIFY_STATE_VERSION_1,
   AssetsUnifyStateFeatureFlag,
   isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../shared/constants/app';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
 } from '../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
-import { TransactionControllerInitMessenger } from '../messenger-client-init/messengers/transaction-controller-messenger';
-import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
+import { isRelaySupported } from '../lib/transaction/transaction-relay';
+import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
+import {
+  PreferencesControllerSetPasswordForgottenAction,
+  PreferencesControllerToggleExternalServicesAction,
+} from '../controllers/preferences-controller-method-action-types';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   MetaMetricsControllerCreateEventFragmentAction,
   MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerTrackEventAction,
   MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
 import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
+import {
+  encodeDisabledDelegationsCheck,
+  decodeDisabledDelegationsResult,
+} from '../../../shared/lib/delegation/delegation';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { AppStateControllerSetPasskeyAutoUnlockSuppressedAction } from '../controllers/app-state-controller-method-action-types';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
+import {
+  HardwareWalletType,
+  isUserRejectedHardwareWalletError,
+  toHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -161,35 +215,52 @@ const serviceName = 'LegacyBackgroundApiService';
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'applyTransactionContainersExisting',
+  'captureTestError',
   'changePassword',
+  'checkDelegationDisabled',
   'checkIsSeedlessPasswordOutdated',
+  'decodeTransactionData',
   'estimateGas',
   'exportAccount',
   'getAccountsBySnapId',
+  'getAssets',
   'getCode',
   'getGlobalChainId',
   'getNextNonce',
   'getOpenMetamaskTabsIds',
+  'getPhishingResult',
   'getRequestAccountTabIds',
   'getSeedPhrase',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
+  'isRelaySupported',
+  'isSendBundleSupported',
+  'lookupSelectedNetworks',
+  'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'approveHardwareWalletTransaction',
+  'openUpdateTabAndReload',
   'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
+  'resolvePendingApproval',
   'removeAccount',
   'removePermissionsFor',
+  'requestSafeReload',
   'resetAccount',
   'setAccountLabel',
   'setCurrentCurrency',
+  'setEnabledAllPopularNetworks',
+  'setEnabledNetworks',
   'setLocked',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncPasswordAndUnlockWallet',
   'syncKeyringEncryptionKey',
+  'throwTestError',
+  'toggleExternalServices',
   'unMarkPasswordForgotten',
   'upsertTransactionUIMetricsFragment',
 ] as const;
@@ -213,12 +284,15 @@ type AllowedActions =
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AssetsControllerGetAssetsAction
   | AssetsControllerSetSelectedCurrencyAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerDisableNonRPCGasFeeApisAction
+  | GasFeeControllerEnableNonRPCGasFeeApisAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerChangePasswordAction
   | KeyringControllerExportAccountAction
@@ -230,7 +304,6 @@ type AllowedActions =
   | KeyringControllerWithKeyringV2Action
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerTrackEventAction
   | MetaMetricsControllerUpdateEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -246,14 +319,21 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
+  | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkEnablementControllerEnableAllPopularNetworksAction
+  | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerRejectPermissionsRequestAction
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerTestOriginAction
   | PreferencesControllerSetPasswordForgottenAction
+  | PreferencesControllerToggleExternalServicesAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
@@ -268,9 +348,14 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | ShieldControllerStartAction
+  | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerGetStateAction
   | SubscriptionControllerStopAllPollingAction
+  | TokenDetectionControllerDisableAction
+  | TokenDetectionControllerEnableAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
@@ -294,8 +379,11 @@ type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
   seedlessOperationMutex: Mutex;
+  createVaultMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
+  markNotificationPopupAsAutomaticallyClosed: () => void;
+  requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
 };
@@ -320,9 +408,15 @@ export class LegacyBackgroundApiService {
 
   readonly #getOpenMetamaskTabsIds: () => Record<string, number>;
 
+  readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
+
+  readonly #requestSafeReload: () => Promise<void>;
+
   readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
+
+  readonly #createVaultMutex: Mutex;
 
   readonly #offscreenPromise: Promise<void>;
 
@@ -335,8 +429,11 @@ export class LegacyBackgroundApiService {
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+   * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
+   * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
+   * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -344,8 +441,11 @@ export class LegacyBackgroundApiService {
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    markNotificationPopupAsAutomaticallyClosed,
+    requestSafeReload,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -353,11 +453,15 @@ export class LegacyBackgroundApiService {
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
+    this.#markNotificationPopupAsAutomaticallyClosed =
+      markNotificationPopupAsAutomaticallyClosed;
+    this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
     // TODO: Remove this once the migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#createVaultMutex = createVaultMutex;
     this.#offscreenPromise = offscreenPromise;
 
     this.#messenger.registerMethodActionHandlers(
@@ -407,6 +511,32 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Refreshes and returns the assets for the given accounts via the
+   * AssetsController (force-updating from remote sources).
+   *
+   * No-ops when the assets unify state feature is not enabled, since the
+   * AssetsController is not registered in that case.
+   *
+   * @param accounts - The accounts to fetch assets for.
+   * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
+   * @returns The assets for the given accounts, or `undefined` when the feature
+   * is not enabled.
+   */
+  async getAssets(
+    accounts: InternalAccount[],
+    options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
+  ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
+    if (!this.isAssetsUnifyStateEnabled()) {
+      return undefined;
+    }
+
+    return await this.#messenger.call('AssetsController:getAssets', accounts, {
+      ...options,
+      forceUpdate: true,
+    });
+  }
+
+  /**
    * Determines if the given endpoint URL is a public endpoint URL.
    *
    * @param endpointUrl - The endpoint URL to check.
@@ -414,6 +544,16 @@ export class LegacyBackgroundApiService {
    */
   isPublicEndpointUrl(endpointUrl: string): boolean {
     return isPublicEndpointUrl(endpointUrl, this.#infuraProjectId);
+  }
+
+  /**
+   * Determines whether the sendBundle feature is supported for the given chain.
+   *
+   * @param chainId - The chain ID to check.
+   * @returns `true` if sendBundle is supported for the chain, `false` otherwise.
+   */
+  async isSendBundleSupported(chainId: Hex): Promise<boolean> {
+    return await isSendBundleSupported(chainId);
   }
 
   /**
@@ -432,6 +572,46 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  async requestSafeReload(): Promise<void> {
+    return this.#requestSafeReload();
+  }
+
+  /**
+   * Opens the "Updating" page in a new tab and then triggers a safe extension
+   * reload. Used when an update is available.
+   */
+  async openUpdateTabAndReload(): Promise<void> {
+    return openUpdateTabAndReload(this.#requestSafeReload);
+  }
+
+  /**
+   * Updates the phishing lists if necessary and then checks whether the given
+   * website is a known phishing site.
+   *
+   * @param website - The website origin to check.
+   * @returns The phishing detection result.
+   */
+  async getPhishingResult(
+    website: string,
+  ): Promise<ReturnType<PhishingControllerTestOriginAction['handler']>> {
+    await this.#messenger.call('PhishingController:maybeUpdateState');
+
+    return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Marks the notification popup as having been automatically closed.
+   *
+   * This lets us differentiate between the cases where we close the
+   * notification popup v.s. when the user closes the popup window directly.
+   */
+  markNotificationPopupAsAutomaticallyClosed(): void {
+    this.#markNotificationPopupAsAutomaticallyClosed();
   }
 
   /**
@@ -470,6 +650,44 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Checks whether a delegation has been disabled on-chain by performing an
+   * `eth_call` against the delegation manager contract.
+   *
+   * @param delegationManagerAddress - The delegation manager contract address.
+   * @param delegationHash - The hash of the delegation to check.
+   * @param networkClientId - The ID of the network client to use for the request.
+   * @returns `true` if the delegation is disabled, `false` otherwise.
+   */
+  async checkDelegationDisabled(
+    delegationManagerAddress: Hex,
+    delegationHash: Hex,
+    networkClientId: string,
+  ): Promise<boolean> {
+    // Encode the call to disabledDelegations(bytes32)
+    const callData = encodeDisabledDelegationsCheck({ delegationHash });
+
+    // Make eth_call request through the network controller
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+
+    const result = (await provider.request({
+      method: 'eth_call',
+      params: [
+        {
+          to: delegationManagerAddress,
+          data: callData,
+        },
+        'latest',
+      ],
+    })) as Hex;
+
+    // Decode the result
+    return decodeDisabledDelegationsResult(result);
+  }
+
+  /**
    * Estimates the gas for a given transaction using the currently selected
    * network client.
    *
@@ -492,6 +710,38 @@ export class LegacyBackgroundApiService {
     });
 
     return result.toString(16);
+  }
+
+  /**
+   * Decodes the data of a transaction using the currently selected network
+   * client's provider.
+   *
+   * @param request - The transaction decode request.
+   * @param request.transactionData - The transaction data to decode.
+   * @param request.contractAddress - The address of the contract the
+   * transaction interacts with.
+   * @param request.chainId - The chain ID of the network the transaction is on.
+   * @returns The decoded transaction data, or `undefined` if it could not be
+   * decoded.
+   */
+  async decodeTransactionData(request: {
+    transactionData: Hex;
+    contractAddress: Hex;
+    chainId: Hex;
+  }): Promise<DecodedTransactionDataResponse | undefined> {
+    const { selectedNetworkClientId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const { provider } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+
+    return decodeTransactionData({
+      ...request,
+      provider,
+    });
   }
 
   /**
@@ -530,53 +780,6 @@ export class LegacyBackgroundApiService {
 
     const globalChainId = this.getGlobalChainId();
 
-    const { pendingApprovals } = this.#messenger.call(
-      'ApprovalController:getState',
-    );
-
-    const { transactions } = this.#messenger.call(
-      'TransactionController:getState',
-    );
-
-    const matchingSmartTransactionApprovals = Object.values(
-      pendingApprovals ?? {},
-    ).filter((approval) => {
-      if (
-        approval.type !==
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage
-      ) {
-        return false;
-      }
-
-      const txId = approval.requestState?.txId;
-
-      if (typeof txId !== 'string') {
-        return false;
-      }
-
-      const transaction = transactions.find(({ id }) => id === txId);
-
-      return (
-        transaction &&
-        transaction?.chainId === globalChainId &&
-        isEqualCaseInsensitive(transaction.txParams?.from, selectedAddress)
-      );
-    });
-
-    for (const approval of matchingSmartTransactionApprovals) {
-      try {
-        this.#messenger.call(
-          'ApprovalController:rejectRequest',
-          approval.id,
-          new Error('Transaction activity reset'),
-        );
-      } catch (error) {
-        if (!(error instanceof ApprovalRequestNotFoundError)) {
-          throw error;
-        }
-      }
-    }
-
     this.#messenger.call('TransactionController:wipeTransactions', {
       address: selectedAddress,
       chainId: globalChainId,
@@ -595,6 +798,71 @@ export class LegacyBackgroundApiService {
     this.#messenger.call('NetworkController:resetConnection');
 
     return selectedAddress;
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks(): Promise<void> {
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const enabledNetworkClientIds = getAllEnabledNetworkClientIds(
+      enabledNetworkMap,
+      networkConfigurationsByChainId,
+    );
+
+    await Promise.allSettled([
+      this.#messenger.call('NetworkController:lookupNetwork'),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
+        return await this.#messenger.call(
+          'NetworkController:lookupNetwork',
+          networkClientId,
+        );
+      }),
+    ]);
+  }
+
+  /**
+   * Enables the given network, then refreshes connectivity metadata for
+   * the selected and enabled networks.
+   *
+   * @param chainId - The chain ID of the network to enable.
+   */
+  async setEnabledNetworks(chainId: Hex | CaipChainId): Promise<void> {
+    try {
+      this.#messenger.call(
+        'NetworkEnablementController:enableNetwork',
+        chainId,
+      );
+    } catch (err) {
+      log.error((err as Error).message);
+      throw err;
+    }
+
+    await this.lookupSelectedNetworks();
+  }
+
+  /**
+   * Enables all popular networks, then refreshes connectivity metadata for
+   * the selected and enabled networks.
+   */
+  async setEnabledAllPopularNetworks(): Promise<void> {
+    try {
+      this.#messenger.call(
+        'NetworkEnablementController:enableAllPopularNetworks',
+      );
+    } catch (err) {
+      log.error((err as Error).message);
+      throw err;
+    }
+
+    await this.lookupSelectedNetworks();
   }
 
   /**
@@ -1214,57 +1482,62 @@ export class LegacyBackgroundApiService {
    * @param options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
    */
   async setLocked({ skipSeedlessOperationLock = false } = {}): Promise<void> {
-    const isSocialLoginFlow = this.#messenger.call(
-      'OnboardingController:getIsSocialLoginFlow',
-    );
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.#seedlessOperationMutex.acquire();
-    }
-
+    const releaseVaultMutex = await this.#createVaultMutex.acquire();
     try {
-      if (isSocialLoginFlow) {
-        await this.#messenger.call('SeedlessOnboardingController:setLocked');
-      }
-      await this.#messenger.call('KeyringController:setLocked');
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.#messenger.call('SubscriptionController:stopAllPolling');
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.#messenger.call(
-        'AuthenticationController:getState',
+      const isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
       );
-      if (isSignedIn) {
-        this.#messenger.call('AuthenticationController:performSignOut');
+
+      let releaseLock;
+      if (isSocialLoginFlow && !skipSeedlessOperationLock) {
+        releaseLock = await this.#seedlessOperationMutex.acquire();
       }
 
-      // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-      if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-        clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
-      }
-      this.#messenger.call(
-        'AppStateController:setPasskeyAutoUnlockSuppressed',
-        true,
-      );
-      this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      try {
+        if (isSocialLoginFlow) {
+          await this.#messenger.call('SeedlessOnboardingController:setLocked');
+        }
+        await this.#messenger.call('KeyringController:setLocked');
+
+        // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+        this.#messenger.call('SubscriptionController:stopAllPolling');
+
+        // sign out from Authentication service and clear the Session Data if user is signed in
+        // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+        // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+        const { isSignedIn } = this.#messenger.call(
+          'AuthenticationController:getState',
+        );
+        if (isSignedIn) {
+          this.#messenger.call('AuthenticationController:performSignOut');
+        }
+
+        // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
+        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        }
         this.#messenger.call(
           'AppStateController:setPasskeyAutoUnlockSuppressed',
-          false,
+          true,
         );
-      }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
+        this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+          this.#messenger.call(
+            'AppStateController:setPasskeyAutoUnlockSuppressed',
+            false,
+          );
+        }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+      } catch (error) {
+        log.error('Error setting locked state', error);
+        throw error;
+      } finally {
+        if (releaseLock) {
+          releaseLock();
+        }
       }
+    } finally {
+      releaseVaultMutex();
     }
   }
 
@@ -1442,6 +1715,115 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Resolve a pending approval. For hardware wallet transactions and signatures,
+   * this handles error parsing.
+   *
+   * @param id - The approval ID.
+   * @param value - The value to resolve with (for transactions, contains txMeta).
+   * @param options - Options for the approval.
+   * @param options.walletType - The hardware wallet type (if hardware wallet).
+   * @param options.waitForResult - Whether to wait for the result.
+   */
+  async resolvePendingApproval(
+    id: string,
+    value: unknown,
+    options: {
+      walletType?: HardwareWalletType;
+      waitForResult?: boolean;
+    } | null = {},
+  ): Promise<void> {
+    // RPC params may serialize an omitted argument as `null`, so normalize first
+    // before destructuring to avoid a runtime TypeError.
+    const normalizedOptions = options ?? {};
+    const { walletType, waitForResult } = normalizedOptions;
+    const approvalOptions =
+      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
+
+    try {
+      await this.#messenger.call(
+        'ApprovalController:acceptRequest',
+        id,
+        value,
+        approvalOptions,
+      );
+    } catch (error) {
+      // Ignore if approval was already handled
+      if (error instanceof ApprovalRequestNotFoundError) {
+        return;
+      }
+
+      if (walletType) {
+        await this.#handleHardwareWalletError(error as Error, walletType);
+        return;
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Handle hardware wallet errors with retry support.
+   * Parses the error, checks if it's retryable, and if so, attempts to recreate
+   * the request (transaction or signature). Always throws an RPC error with
+   * properly formatted data.
+   *
+   * @param error - The original error from the hardware wallet.
+   * @param walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+   * @throws Always throws with hardware wallet error data.
+   */
+  async #handleHardwareWalletError(
+    error: Error,
+    walletType: HardwareWalletType,
+  ): Promise<never> {
+    const hwError = toHardwareWalletError(error, walletType);
+    const createRpcError = isUserRejectedHardwareWalletError(hwError)
+      ? providerErrors.userRejectedRequest
+      : rpcErrors.internal;
+    // Throw a JsonRpcError with hardware wallet error data preserved
+    // This ensures the error properties survive serialization across the RPC boundary
+    throw createRpcError({
+      message: hwError.message,
+      data: {
+        code: hwError.code,
+        severity: hwError.severity,
+        category: hwError.category,
+        userMessage: hwError.userMessage,
+        metadata: hwError.metadata,
+      },
+    });
+  }
+
+  /**
+   * Approve a hardware wallet transaction with retry support.
+   * This is a convenience wrapper around resolvePendingApproval for the
+   * transaction confirmation flow, which passes txMeta in a specific format.
+   *
+   * @param opts - Options for the transaction.
+   * @param opts.txId - The transaction ID to approve.
+   * @param opts.txMeta - The transaction metadata.
+   * @param opts.actionId - The action ID for tracking.
+   * @param opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+   * @throws When hardware wallet error occurs (with recreatedTxId if recreation succeeded).
+   */
+  async approveHardwareWalletTransaction({
+    txId,
+    txMeta,
+    actionId,
+    walletType,
+  }: {
+    txId: string | number;
+    txMeta: unknown;
+    actionId: string;
+    walletType: HardwareWalletType;
+  }): Promise<void> {
+    await this.resolvePendingApproval(
+      String(txId),
+      { txMeta, actionId },
+      { waitForResult: true, walletType },
+    );
+  }
+
+  /**
    * Rejects all pending approval requests.
    *
    * Snap dialogs and account confirmations are accepted with a falsy value and
@@ -1513,6 +1895,46 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Toggles external services on or off.
+   *
+   * When enabled, token detection and non-RPC gas fee APIs are started, and the
+   * shield service is started if the user has an active shield subscription.
+   * When disabled, those services are stopped, subscription polling is halted,
+   * and the shield service is stopped if applicable.
+   *
+   * @param useExternal - Whether external services should be enabled.
+   */
+  toggleExternalServices(useExternal: boolean): void {
+    this.#messenger.call(
+      'PreferencesController:toggleExternalServices',
+      useExternal,
+    );
+
+    const subscriptionState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
+
+    if (useExternal) {
+      this.#messenger.call('TokenDetectionController:enable');
+      this.#messenger.call('GasFeeController:enableNonRPCGasFeeApis');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:start');
+      }
+    } else {
+      this.#messenger.call('TokenDetectionController:disable');
+      this.#messenger.call('GasFeeController:disableNonRPCGasFeeApis');
+      // stop polling for the subscriptions if external services are disabled
+      this.#messenger.call('SubscriptionController:stopAllPolling');
+      if (hasActiveShieldSubscription) {
+        this.#messenger.call('ShieldController:stop');
+      }
+    }
+  }
+
+  /**
    * Accepts a permissions request. Silently ignores the request if it can no
    * longer be found.
    *
@@ -1529,5 +1951,45 @@ export class LegacyBackgroundApiService {
         throw error;
       }
     }
+  }
+
+  /**
+   * Capture an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
+   * use this for handling errors.
+   */
+  captureTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      captureException(error);
+    });
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message: string): void {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
+  }
+
+  /**
+   * Determines if the transaction relay supports the given chain.
+   *
+   * @param chainId - The chain ID to check for relay support.
+   * @returns `true` if the transaction relay supports the chain, `false` otherwise.
+   */
+  async isRelaySupported(chainId: Hex): Promise<boolean> {
+    return isRelaySupported(chainId);
   }
 }

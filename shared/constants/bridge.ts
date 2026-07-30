@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  BRIDGE_UAT_API_BASE_URL,
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -14,6 +15,7 @@ import {
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from './network';
+import { ENVIRONMENT } from './build';
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
@@ -36,6 +38,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   CHAIN_IDS.ARC,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -68,9 +71,43 @@ export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
-  ? BRIDGE_DEV_API_BASE_URL
-  : BRIDGE_PROD_API_BASE_URL;
+/**
+ * Resolves the Bridge API base URL to use based on the current MetaMask
+ * environment.
+ *
+ * @returns the Bridge API base URL for the current MetaMask environment
+ */
+export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
+  if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
+  }
+
+  switch (process.env.METAMASK_ENVIRONMENT) {
+    case 'exp':
+    case ENVIRONMENT.STAGING:
+      return BRIDGE_UAT_API_BASE_URL;
+    case 'e2e':
+    case 'dev':
+    case 'local':
+    case ENVIRONMENT.DEVELOPMENT:
+    case ENVIRONMENT.TESTING:
+    case ENVIRONMENT.OTHER:
+      return BRIDGE_DEV_API_BASE_URL;
+    case 'production':
+    case 'rc':
+    case 'pre-release':
+    case 'beta':
+    case ENVIRONMENT.RELEASE_CANDIDATE:
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.PULL_REQUEST:
+    default:
+      return BRIDGE_PROD_API_BASE_URL;
+  }
+};
+
+// Allows developers to point the extension at a custom Bridge API deployment
+// (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
+export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
 
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
@@ -118,6 +155,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
   [CHAIN_IDS.ARC]: 'Arc',
   [toEvmCaipChainId(CHAIN_IDS.ARC)]: 'Arc',
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: 'Robinhood',
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: 'Robinhood',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -268,6 +307,14 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     decimals: 6,
     name: 'EURC',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
+    // ETH -> USDe on Robinhood
+    address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+    symbol: 'USDe',
+    decimals: 18,
+    name: 'USDe',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana

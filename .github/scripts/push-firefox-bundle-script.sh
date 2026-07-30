@@ -52,3 +52,20 @@ done
 git add bundle.sh
 git commit --allow-empty -m "${version}"
 git push origin release
+
+# Per-release tag so prepare_release.sh can fetch bundle.sh at v{X.Y.Z}
+# instead of release branch HEAD (INFRA-3753). Check origin (the source of
+# truth) rather than a local tag that `git clone` may have pulled: a stale
+# local tag would otherwise keep pointing at an old commit. When the tag is
+# not yet on origin, create it at the commit made above and let any push
+# failure surface instead of masking it as a benign re-run.
+# Peel annotated tags to a single commit SHA (refs/tags/X^{}); without ^{},
+# ls-remote can return multiple lines for one annotated tag.
+remote_tag_sha="$(git ls-remote --tags origin "refs/tags/${version}^{}" | awk 'NR==1 { print $1; exit }')"
+if [[ -n "${remote_tag_sha}" ]]; then
+  echo "Tag ${version} already exists on origin (${remote_tag_sha}); leaving immutable release tag untouched"
+else
+  git tag -a "${version}" -m "${version}"
+  git push origin "refs/tags/${version}"
+  echo "Pushed tag ${version}"
+fi

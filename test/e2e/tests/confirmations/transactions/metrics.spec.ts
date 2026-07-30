@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
@@ -29,7 +28,7 @@ describe('Metrics', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

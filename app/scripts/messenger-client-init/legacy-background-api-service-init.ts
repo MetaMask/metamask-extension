@@ -12,8 +12,11 @@ import { MessengerClientInitFunction } from './types';
  * @param request.infuraProjectId - The Infura project ID.
  * @param request.getRequestAccountTabIds - A function that returns a record of account tab IDs.
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
+ * @param request.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
+ * @param request.requestSafeReload - A function that triggers a safe reload of the extension.
  * @param request.sendUpdate - A function to send updates to the UI.
  * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
+ * @param request.createVaultMutex - A mutex to serialize vault creation/export with locking.
  * @param request.offscreenPromise - A promise that resolves when the offscreen document is ready.
  * @returns The initialized service.
  */
@@ -25,8 +28,11 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   infuraProjectId,
   getRequestAccountTabIds,
   getOpenMetamaskTabsIds,
+  markNotificationPopupAsAutomaticallyClosed,
+  requestSafeReload,
   sendUpdate,
   seedlessOperationMutex,
+  createVaultMutex,
   offscreenPromise,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
@@ -34,8 +40,11 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
+    markNotificationPopupAsAutomaticallyClosed,
+    requestSafeReload,
     sendUpdate,
     seedlessOperationMutex,
+    createVaultMutex,
     offscreenPromise,
   });
 

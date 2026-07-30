@@ -8,9 +8,18 @@ import { getConnectivityControllerInstanceOptions } from './instance-options/con
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
+import {
+  getTransactionControllerInstanceOptions,
+  setupTransactionControllerListeners,
+} from './instance-options/transaction-controller';
+import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { createMockMessenger } from './test-utils';
 
-jest.mock('@metamask/wallet');
+const mockWalletInit = jest.fn();
+
+jest.mock('@metamask/wallet', () => ({
+  Wallet: jest.fn(() => ({ init: mockWalletInit })),
+}));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
@@ -31,14 +40,28 @@ jest.mock('./instance-options/remote-feature-flag-controller', () => ({
 jest.mock('./instance-options/storage-service', () => ({
   getStorageServiceInstanceOptions: jest.fn(() => 'storage-options'),
 }));
+jest.mock('./instance-options/transaction-controller', () => ({
+  getTransactionControllerInstanceOptions: jest.fn(
+    () => 'transaction-controller-options',
+  ),
+  setupTransactionControllerListeners: jest.fn(),
+}));
+jest.mock('./messengers/transaction-controller-messenger', () => ({
+  getTransactionControllerInitMessenger: jest.fn(
+    () => 'transaction-controller-init-messenger',
+  ),
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
+const getFlatState = jest.fn(() => ({}) as never);
+const getPermittedAccounts = jest.fn(() => []);
+const getTransactionMetricsRequest = jest.fn(() => ({}) as never);
 
 describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    MockWallet.prototype.init.mockResolvedValue([]);
+    mockWalletInit.mockResolvedValue([]);
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
@@ -46,15 +69,16 @@ describe('initializeWallet', () => {
     const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
 
     initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
       messenger,
       state,
-      connectivityAdapter,
-      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(MockWallet).toHaveBeenCalledWith({
-      messenger,
-      state,
       instanceOptions: {
         approvalController: 'approval-options',
         connectivityController: 'connectivity-options',
@@ -77,7 +101,10 @@ describe('initializeWallet', () => {
         },
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
+        transactionController: 'transaction-controller-options',
       },
+      messenger,
+      state,
     });
   });
 
@@ -88,12 +115,15 @@ describe('initializeWallet', () => {
     const showApprovalRequest = jest.fn();
 
     initializeWallet({
-      messenger,
-      state,
-      encryptor,
-      showApprovalRequest,
       connectivityAdapter,
+      encryptor,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
+      messenger,
+      showApprovalRequest,
+      state,
     });
 
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
@@ -103,14 +133,27 @@ describe('initializeWallet', () => {
       connectivityAdapter,
     });
     expect(getKeyringControllerInstanceOptions).toHaveBeenCalledWith({
-      messenger,
       encryptor,
+      messenger,
     });
     expect(getRemoteFeatureFlagControllerInstanceOptions).toHaveBeenCalledWith({
       messenger,
       state,
     });
     expect(getStorageServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getTransactionControllerInitMessenger).toHaveBeenCalledWith(
+      messenger,
+    );
+    expect(getTransactionControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'transaction-controller-init-messenger',
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+    });
+    expect(setupTransactionControllerListeners).toHaveBeenCalledWith({
+      getTransactionMetricsRequest,
+      messenger: 'transaction-controller-init-messenger',
+    });
   });
 });
 
@@ -119,40 +162,46 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    MockWallet.prototype.init.mockResolvedValue([]);
+    mockWalletInit.mockResolvedValue([]);
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {
     const messenger = createMockMessenger();
 
     initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
       messenger,
       state: { OnboardingController: { completedOnboarding: true } },
-      connectivityAdapter,
-      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith({
       messenger,
+      onboardingState: { completedOnboarding: true },
       // `useExternalServices` is absent, so it defaults to on, matching the
       // live `PreferencesController` default.
       preferencesState: { useExternalServices: true },
-      onboardingState: { completedOnboarding: true },
     });
   });
 
   it('treats an explicit useExternalServices=false as opting out in the baseline', () => {
     initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
       messenger: createMockMessenger(),
       state: { PreferencesController: { useExternalServices: false } },
-      connectivityAdapter,
-      infuraProjectId: 'fake-infura-project-id',
     });
 
     expect(mockSetupToggle).toHaveBeenCalledWith(
       expect.objectContaining({
-        preferencesState: { useExternalServices: false },
         onboardingState: { completedOnboarding: false },
+        preferencesState: { useExternalServices: false },
       }),
     );
   });

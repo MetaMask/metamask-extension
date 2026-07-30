@@ -33,13 +33,23 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "optedIn": false
+      "optedIn": false,
+      "consentDecisionMade": false,
+      "preConsentEventQueue": {
+        "00000000-0000-4000-8000-000000000000": {
+          "type": "track",
+          "eventName": "App Installed",
+          "messageId": "00000000-0000-4000-8000-000000000000",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "properties": {}
+        }
+      }
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 215,
+      "currentMigrationVersion": 221,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -131,6 +141,9 @@
       },
       "currentCurrency": "usd"
     },
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": {}
+    },
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -194,15 +207,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "completedMetaMetricsOnboarding": false,
       "dataCollectionForMarketing": null,
-      "eventsBeforeMetricsOptIn": [
-        {
-          "category": "App",
-          "event": "App Installed",
-          "properties": {}
-        }
-      ],
       "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [
@@ -634,6 +639,7 @@
     "OnboardingController": {
       "completedOnboarding": false,
       "firstTimeFlowType": null,
+      "hasSeenOnboardingCompletionPage": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2045,7 +2051,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -2063,6 +2068,7 @@
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2110,6 +2116,17 @@
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
       "syncQueue": {}
+    },
+    "RampsController": {
+      "userRegion": null,
+      "countries": {
+        "data": [],
+        "error": null,
+        "isLoading": false,
+        "selected": null
+      },
+      "orders": [],
+      "providerAutoSelected": false
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
@@ -2304,6 +2321,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 215
+    "version": 221
   }
 }

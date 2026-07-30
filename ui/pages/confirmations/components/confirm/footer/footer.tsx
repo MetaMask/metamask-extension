@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -40,18 +39,22 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
+import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
+import { useSendScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useSendScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   useHardwareFooter,
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
+import { useDispatch } from '../../../../../store/hooks';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
 import { SingleActionFooter } from './single-action-footer';
 
 const SINGLE_ACTION_FOOTER_TYPES = [
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
@@ -135,6 +138,13 @@ const ConfirmButton = ({
     setConfirmModalVisible(true);
   }, []);
 
+  const {
+    isScamQuestionnaireRequired,
+    isScamQuestionnaireVisible,
+    showScamQuestionnaire,
+    scamQuestionnaireProps,
+  } = useSendScamQuestionnaire({ ownerId: alertOwnerId, onCancel });
+
   const handleSubmitConfirmModal = useCallback(async () => {
     if (currentConfirmation?.id && alertOwnerId === currentConfirmation.id) {
       const [selectedUnconfirmedDangerAlert] = unconfirmedDangerAlerts;
@@ -165,6 +175,9 @@ const ConfirmButton = ({
           onSubmit={handleSubmitConfirmModal}
         />
       )}
+      {isScamQuestionnaireVisible && (
+        <ScamQuestionnaire {...scamQuestionnaireProps} />
+      )}
       {shouldShowDangerConfirmButton ? (
         <Button
           block
@@ -175,7 +188,11 @@ const ConfirmButton = ({
             hasDangerBlockingAlerts,
             disabled,
           )}
-          onClick={handleOpenConfirmModal}
+          onClick={
+            isScamQuestionnaireRequired
+              ? showScamQuestionnaire
+              : handleOpenConfirmModal
+          }
           size={ButtonSize.Lg}
           startIconName={
             hasUnconfirmedFieldDangerAlerts

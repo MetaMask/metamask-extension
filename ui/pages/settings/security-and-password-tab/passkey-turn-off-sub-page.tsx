@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -17,6 +17,7 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { transitionBack } from '../../../components/ui/transition';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
@@ -37,6 +38,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
+import { useDispatch } from '../../../store/hooks';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -68,7 +70,9 @@ export default function PasskeyTurnOffSubPage() {
 
   const goToSettings = () => {
     setWalletPassword('');
-    navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    transitionBack(() =>
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+    );
   };
 
   const handleTurnOffPasskeyWithPasswordSubmit = async () => {

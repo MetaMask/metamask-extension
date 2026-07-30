@@ -441,14 +441,14 @@ describe('MusdConversionInfo', () => {
     });
   });
 
-  describe('bottom pay with row swap', () => {
-    it('does not render the bottom pay with row in the empty state', () => {
-      const { queryByTestId } = render({ hasInput: false });
+  describe('bottom pay with row', () => {
+    it('renders the bottom pay with row in the empty state', () => {
+      const { getByTestId } = render({ hasInput: false });
 
-      expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
     });
 
-    it('renders the bottom pay with row once an amount is entered', () => {
+    it('keeps the bottom pay with row once an amount is entered', () => {
       const { getByTestId } = render({ hasInput: true });
 
       expect(getByTestId('pay-with-row')).toBeInTheDocument();

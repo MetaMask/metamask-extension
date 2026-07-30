@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { formatBlockExplorerTransactionUrl } from '../../../../shared/lib/multichain/networks';
+import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 
 export function getExplorerTxUrl({
   chainId,
@@ -19,7 +20,12 @@ export function getExplorerTxUrl({
   txHash: string | undefined;
   blockExplorerUrl: string | undefined;
 }): string | undefined {
-  if (!txHash) {
+  const txId =
+    txHash && (!chainId.startsWith('eip155:') || isValidTransactionHash(txHash))
+      ? txHash
+      : undefined;
+
+  if (!txId) {
     return undefined;
   }
 
@@ -29,7 +35,7 @@ export function getExplorerTxUrl({
     ];
 
   if (nonEvmExplorerUrls) {
-    return formatBlockExplorerTransactionUrl(nonEvmExplorerUrls, txHash);
+    return formatBlockExplorerTransactionUrl(nonEvmExplorerUrls, txId);
   }
 
   const hexChainId = getMaybeHexChainId(chainId);
@@ -41,7 +47,7 @@ export function getExplorerTxUrl({
     return undefined;
   }
 
-  return `${explorerRoot.replace(/\/$/u, '')}/tx/${txHash}`;
+  return `${explorerRoot.replace(/\/$/u, '')}/tx/${txId}`;
 }
 
 export function useBlockExplorerUrl(

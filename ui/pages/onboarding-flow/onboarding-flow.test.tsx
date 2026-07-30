@@ -139,6 +139,17 @@ jest.mock('./creation-successful/wallet-ready-animation', () => ({
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
 
+const mockCompleteOnboarding = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('./hooks/useOnboardingCompletion', () => ({
+  useOnboardingCompletion: () => ({
+    completeOnboarding: mockCompleteOnboarding,
+    markCompletionPageSeen: jest.fn(),
+    isSidePanelOpen: false,
+    setIsSidePanelOpen: jest.fn(),
+  }),
+}));
+
 // Mock the useBackupAndSync hook to avoid thunk dispatch issues
 jest.mock('../../hooks/identity/useBackupAndSync', () => ({
   useBackupAndSync: () => ({
@@ -270,7 +281,7 @@ describe('Onboarding Flow', () => {
     jest.clearAllMocks();
   });
 
-  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {
+  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
     const completedOnboardingState = {
       metamask: {
         completedOnboarding: true,
@@ -308,8 +319,10 @@ describe('Onboarding Flow', () => {
       ONBOARDING_ROUTE,
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      replace: true,
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
   });
 
@@ -562,6 +575,45 @@ describe('Onboarding Flow', () => {
       const creationSuccessful = queryByTestId('wallet-ready');
       expect(creationSuccessful).toBeInTheDocument();
     });
+  });
+
+  it('redirects locked return visits on the completion route to unlock', async () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore({
+        hasSeenOnboardingCompletionPage: true,
+        completedOnboarding: false,
+        isInitialized: true,
+        isUnlocked: false,
+      }),
+      ONBOARDING_COMPLETION_ROUTE,
+    );
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+        replace: true,
+      });
+    });
+  });
+
+  it('auto-completes onboarding after unlock when the completion page was seen', async () => {
+    const { getByTestId } = renderUnlockPage({
+      hasSeenOnboardingCompletionPage: true,
+      completedOnboarding: false,
+      isInitialized: true,
+      isUnlocked: true,
+      firstTimeFlowType: FirstTimeFlowType.create,
+    });
+
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(mockCompleteOnboarding).toHaveBeenCalledWith(true);
+    });
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(
+      ONBOARDING_COMPLETION_ROUTE,
+      expect.anything(),
+    );
   });
 
   it('should render onboarding Login page screen', async () => {

@@ -26,7 +26,7 @@ async function mockNotificationsEndpoint(
 ): Promise<MockedEndpoint[]> {
   return [
     await mockServer
-      .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+      .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
       .thenCallback(() => ({
         statusCode: 200,
         json: [],

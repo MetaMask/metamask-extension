@@ -75,9 +75,7 @@ export const buildResults = ({
           hasHighPriceImpactWarning: Boolean(
             validation?.isPriceImpactWarning || validation?.isPriceImpactError,
           ),
-          quoteBpsFee:
-            // @ts-expect-error: controller types are not up to date yet
-            recommendedQuote.quote?.feeData?.metabridge?.quoteBpsFee,
+          quoteBpsFee: recommendedQuote.quote?.feeData?.metabridge?.quoteBpsFee,
         },
       ];
     }),

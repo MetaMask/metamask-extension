@@ -55,7 +55,7 @@ function renderSocialLoginIcon(socialLoginType: AuthConnection) {
     default:
       return (
         <img
-          src="images/icons/google.svg"
+          src="images/google.svg"
           className={SOCIAL_LOGIN_ICON_CLASS}
           alt="Google icon"
         />

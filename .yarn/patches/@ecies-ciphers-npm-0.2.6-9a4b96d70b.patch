@@ -1,0 +1,14 @@
+diff --git a/aes.js b/aes.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..b426bb325c214bf8f31f6973b0df08a48dec6efd
+--- /dev/null
++++ b/aes.js
+@@ -0,0 +1 @@
++module.exports = require('./dist/aes/noble.js');
+diff --git a/chacha.js b/chacha.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..c43a5ac38d0c9bdcd9e6c4232f09b4692d012780
+--- /dev/null
++++ b/chacha.js
+@@ -0,0 +1 @@
++module.exports = require('./dist/chacha/noble.js');

@@ -1,18 +1,17 @@
-import React, { ReactNode, useCallback, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { ReactNode, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -22,6 +21,7 @@ import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import { useDispatch } from '../../../../../store/hooks';
 
 // intentionally used generic naming convention for styled selectable list item
 // inspired from ui/components/multichain/network-list-item
@@ -56,7 +56,6 @@ export const SelectableListItem = ({
         variant={TextVariant.bodySmMedium}
         as="button"
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
         alignItems={AlignItems.center}
       >
@@ -78,7 +77,7 @@ type SortControlProps = {
 
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -98,16 +97,17 @@ const SortControl = ({ handleClose }: SortControlProps) => {
           order,
         }),
       );
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TokenSortPreference,
-        properties: {
-          [MetaMetricsUserTrait.TokenSortPreference]: key,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TokenSortPreference)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.TokenSortPreference]: key,
+          })
+          .build(),
+      );
       handleClose();
     },
-    [dispatch, handleClose, trackEvent],
+    [createEventBuilder, dispatch, handleClose, trackEvent],
   );
 
   return (

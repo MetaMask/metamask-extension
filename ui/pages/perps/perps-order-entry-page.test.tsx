@@ -19,7 +19,6 @@ import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -38,6 +37,21 @@ import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSli
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
+
+const mockAnalyticsTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockAnalyticsTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -140,6 +154,7 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
 }));
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
+  ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
 }));
 
@@ -1178,32 +1193,19 @@ describe('PerpsOrderEntryPage', () => {
 
   describe('analytics tracking', () => {
     const renderWithTracking = () => {
-      const mockTrackEvent = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: mockTrackEvent,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       const store = mockStore(createMockState());
-      renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <PerpsOrderEntryPage />
-        </MetaMetricsContext.Provider>,
-        store,
-      );
+      renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const screenViewedCalls = mockTrackEvent.mock.calls.filter(
-        ([arg]) => arg?.event === MetaMetricsEventName.PerpsScreenViewed,
+      const screenViewedCalls = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) => arg?.name === MetaMetricsEventName.PerpsScreenViewed,
       );
 
       expect(screenViewedCalls).toHaveLength(1);
       expect(screenViewedCalls[0][0]).toEqual(
         expect.objectContaining({
-          event: MetaMetricsEventName.PerpsScreenViewed,
-          category: MetaMetricsEventCategory.Perps,
+          name: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
             [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
               PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
             [PERPS_EVENT_PROPERTY.SOURCE]:
@@ -2128,7 +2130,6 @@ describe('PerpsOrderEntryPage', () => {
     it('shows fallback order failure toast for non-Error throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
-          // eslint-disable-next-line prefer-promise-reject-errors
           return Promise.reject('string error');
         }
         return Promise.resolve({ success: true });

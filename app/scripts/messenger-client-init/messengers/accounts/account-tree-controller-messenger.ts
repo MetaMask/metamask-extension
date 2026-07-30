@@ -5,7 +5,6 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
@@ -57,7 +56,6 @@ export function getAccountTreeControllerMessenger(
 }
 
 export type AllowedInitializationActions =
-  | MetaMetricsControllerTrackEventAction
   | AccountsControllerGetAccountAction
   | AccountOrderControllerGetStateAction;
 
@@ -87,7 +85,6 @@ export function getAccountTreeControllerInitMessenger(
   messenger.delegate({
     messenger: accountTreeControllerInitMessenger,
     actions: [
-      'MetaMetricsController:trackEvent',
       'AccountsController:getAccount',
       'AccountOrderController:getState',
     ],

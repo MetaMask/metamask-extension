@@ -1,9 +1,13 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../selectors';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  toggleBasicFunctionality,
+  toggleExternalServices,
+} from '../../../store/actions';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -12,18 +16,26 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { PrivacyPolicyLink } from '../shared';
 import { PRIVACY_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
 
 export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const useExternalServices = useSelector(getUseExternalServices);
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
 
   const handleToggle = (value: boolean) => {
     if (value) {
       dispatch(openBasicFunctionalityModal());
     } else {
-      dispatch(toggleExternalServices(true));
+      dispatch(
+        isBasicFunctionalityConsolidationEnabled
+          ? toggleBasicFunctionality(true)
+          : toggleExternalServices(true),
+      );
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SettingsUpdated)
           .addCategory(MetaMetricsEventCategory.Settings)

@@ -1,11 +1,5 @@
-import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
 import { Messenger } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../shared/constants/build';
-import {
-  getConfigForRemoteFeatureFlagRequest,
-  getRemoteFeatureFlagClientConfigApiService,
-  setupRemoteFeatureFlagToggle,
-} from './remote-feature-flags';
+import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 
 jest.mock('@metamask/messenger', () => ({
   Messenger: jest.fn(),
@@ -198,49 +192,5 @@ describe('setupRemoteFeatureFlagToggle', () => {
       error,
     );
     consoleErrorSpy.mockRestore();
-  });
-});
-
-describe('getConfigForRemoteFeatureFlagRequest', () => {
-  it('returns config in mapping', () => {
-    const result = getConfigForRemoteFeatureFlagRequest();
-    expect(result).toStrictEqual({
-      distribution: 'main',
-      environment: 'dev',
-    });
-  });
-
-  it('returns config when not matching default mapping', () => {
-    process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-
-    const result = getConfigForRemoteFeatureFlagRequest();
-    expect(result).toStrictEqual({
-      distribution: 'main',
-      environment: 'rc',
-    });
-  });
-
-  // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
-  it.each(Object.values(ENVIRONMENT))(
-    'returns main-exp for experimental build in "%s" environment',
-    async (environment: keyof typeof ENVIRONMENT) => {
-      process.env.METAMASK_BUILD_TYPE = 'experimental';
-      process.env.METAMASK_ENVIRONMENT = environment;
-
-      const result = getConfigForRemoteFeatureFlagRequest();
-      expect(result).toStrictEqual({
-        distribution: 'main',
-        environment: 'exp',
-      });
-    },
-  );
-});
-
-describe('getRemoteFeatureFlagClientConfigApiService', () => {
-  it('returns a configured ClientConfigApiService', () => {
-    expect(getRemoteFeatureFlagClientConfigApiService()).toBeInstanceOf(
-      ClientConfigApiService,
-    );
   });
 });

@@ -1,13 +1,26 @@
 import {
+  getIsBasicFunctionalityConsolidationEnabled,
+  getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
   getIsTokenManagementFilterEnabled,
 } from './feature-flags';
 
 const buildState = (
   remoteFeatureFlags: Record<string, unknown> = {},
-): { metamask: { remoteFeatureFlags: Record<string, unknown> } } => ({
+  isBasicFunctionalityConsolidatedEnabled = false,
+): {
+  metamask: {
+    remoteFeatureFlags: Record<string, unknown>;
+    preferences: {
+      isBasicFunctionalityConsolidatedEnabled: boolean;
+    };
+  };
+} => ({
   metamask: {
     remoteFeatureFlags,
+    preferences: {
+      isBasicFunctionalityConsolidatedEnabled,
+    },
   },
 });
 
@@ -171,6 +184,90 @@ describe('getIsNetworkManagementEnabled', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsNetworkManagementEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsBasicFunctionalityToggleEnabled', () => {
+  it('returns true when the flag is true', () => {
+    expect(
+      getIsBasicFunctionalityToggleEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionBasicFunctionalityToggle: true }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when the flag is false', () => {
+    expect(
+      getIsBasicFunctionalityToggleEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionBasicFunctionalityToggle: false }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsBasicFunctionalityToggleEnabled(
+        buildState({
+          extensionBasicFunctionalityToggle: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsBasicFunctionalityToggleEnabled(
+        buildState({
+          extensionBasicFunctionalityToggle: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsBasicFunctionalityToggleEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsBasicFunctionalityConsolidationEnabled', () => {
+  it('returns true when the remote flag and persisted cohort marker are both true', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionBasicFunctionalityToggle: true }, true) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is true but the persisted cohort marker is false', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionBasicFunctionalityToggle: true }, false) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the persisted cohort marker is true but the remote flag is false', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
+      ),
     ).toBe(false);
   });
 });

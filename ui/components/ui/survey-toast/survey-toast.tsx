@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -19,6 +19,7 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
+import { useDispatch } from '../../../store/hooks';
 
 type Survey = {
   url: string;
@@ -28,12 +29,10 @@ type Survey = {
   id: number;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SurveyToast() {
   const [survey, setSurvey] = useState<Survey | null>(null);
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const lastViewedUserSurvey = useSelector(getLastViewedUserSurvey);
   const isOptedIn = useSelector(getOptedIn);
   const completedMetaMetricsOnboarding = useSelector(
@@ -127,14 +126,15 @@ export function SurveyToast() {
       return;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.SurveyToast,
-      category: MetaMetricsEventCategory.Feedback,
-      properties: {
-        response,
-        survey: survey.id,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SurveyToast)
+        .addCategory(MetaMetricsEventCategory.Feedback)
+        .addProperties({
+          response,
+          survey: survey.id,
+        })
+        .build(),
+    );
   }
 
   if (!survey || survey.id <= lastViewedUserSurvey) {
