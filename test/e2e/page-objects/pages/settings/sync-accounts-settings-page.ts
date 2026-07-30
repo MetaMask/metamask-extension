@@ -8,13 +8,18 @@ const OTP_LENGTH = 6;
  * Selectors match `data-testid` values on sync-accounts components.
  */
 class SyncAccountsSettingsPage {
+  private readonly backButton = '[data-testid="sync-accounts-back-button"]';
+
   private readonly doneButton = '[data-testid="qr-sync-done-button"]';
 
   private readonly driver: Driver;
 
+  private readonly generateNewQrCodeButton =
+    '[data-testid="qr-sync-generate-new-qr-code"]';
+
   private readonly loading = '[data-testid="qr-sync-loading"]';
 
-  private readonly otpExpired = '[data-testid="qr-sync-otp-expired"]';
+  private readonly otpExpiredMessage = { text: 'Verification code expired' };
 
   private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
 
@@ -27,26 +32,63 @@ class SyncAccountsSettingsPage {
 
   private readonly qrCode = '[data-testid="qr-sync-qr-code"]';
 
-  private readonly qrLoading = '[data-testid="qr-sync-qr-loading"]';
-
-  private readonly success = '[data-testid="qr-sync-success"]';
-
-  private readonly syncButton = '[data-testid="qr-sync-sync-button"]';
+  private readonly qrExpiredMessage = { text: 'QR code expired' };
 
   private readonly qrSyncWalletRowId = (walletId: string) =>
     `[data-testid="qr-sync-wallet-row-${walletId}"]`;
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private readonly sessionExpiredErrorMessage = {
+    text: 'This sync session expired. Start again to generate a new QR code.',
+  };
+
+  private readonly startWithNewQrCodeButton =
+    '[data-testid="qr-sync-start-with-new-qr-code"]';
+
+  private readonly success = '[data-testid="qr-sync-success"]';
+
+  private readonly successWithSyncedCountsLocator = (
+    walletCount: number,
+    accountCount: number,
+  ): string =>
+    `[data-testid="qr-sync-success"][data-synced-wallet-count="${walletCount}"][data-synced-account-count="${accountCount}"]`;
+
+  private readonly syncButton = '[data-testid="qr-sync-sync-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async assertSuccessSyncedCounts(
+    walletCount: number,
+    accountCount: number,
+  ): Promise<void> {
+    await this.driver.waitForSelector(
+      this.successWithSyncedCountsLocator(walletCount, accountCount),
+    );
   }
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForSelector(this.page);
   }
 
+  async clickBack(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.backButton);
+  }
+
   async clickDone(): Promise<void> {
     await this.driver.clickElement(this.doneButton);
+  }
+
+  async clickGenerateNewQrCode(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.generateNewQrCodeButton,
+    );
+  }
+
+  async clickStartWithNewQrCode(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.startWithNewQrCodeButton,
+    );
   }
 
   async confirmSync(): Promise<void> {
@@ -82,7 +124,7 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForOtpExpired(): Promise<void> {
-    await this.driver.waitForSelector(this.otpExpired);
+    await this.driver.waitForSelector(this.otpExpiredMessage);
   }
 
   async waitForOtpScreen(): Promise<void> {
@@ -94,12 +136,15 @@ class SyncAccountsSettingsPage {
   }
 
   async waitForQrCode(): Promise<void> {
-    await this.driver.waitForSelector(this.qrLoading);
     await this.driver.waitForSelector(this.qrCode);
   }
 
-  async waitForQrLoading(): Promise<void> {
-    await this.driver.waitForSelector(this.qrLoading);
+  async waitForQrExpiredMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.qrExpiredMessage);
+  }
+
+  async waitForSessionExpiredError(): Promise<void> {
+    await this.driver.waitForSelector(this.sessionExpiredErrorMessage);
   }
 
   async waitForSuccess(): Promise<void> {

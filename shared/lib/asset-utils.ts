@@ -67,6 +67,21 @@ export const toAssetId = (
   if (chainIdToUse === MultichainNetworks.TRON) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
   }
+  // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
+  // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
+    const ref = String(addressToUse);
+    if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
+      return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);
+    }
+    const sep41ContractMatch = /^(?:sep41:)?(C[A-Z2-7]{55})$/u.exec(ref);
+    if (sep41ContractMatch) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/sep41:${sep41ContractMatch[1]}`,
+      );
+    }
+    return undefined;
+  }
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
   if (isStrictHexString(checksummedAddress)) {
@@ -75,6 +90,27 @@ export const toAssetId = (
     );
   }
   return undefined;
+};
+
+/**
+ * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
+ * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * custom/unsupported networks).
+ *
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The native asset id, or `undefined` when it can't be resolved.
+ */
+export const getNativeAssetId = (
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    return getNativeAssetForChainId(chainId).assetId;
+  } catch {
+    return undefined;
+  }
 };
 
 /**
@@ -313,6 +349,10 @@ export const isTronSpecialAsset = (
 export function getChainIdFromAssetId(
   assetId: CaipAssetType,
 ): CaipChainId | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+
   return CaipAssetTypeStruct.is(assetId)
     ? parseCaipAssetType(assetId).chainId
     : undefined;

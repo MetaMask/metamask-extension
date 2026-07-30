@@ -43,17 +43,26 @@ export class PerpsMarketListPage {
     testId: 'sort-dropdown-option-volumeLow',
   };
 
-  /**
-   * Returns the selector for a filter dropdown option (e.g. 'all', 'crypto').
-   *
-   * @param optionId - The filter option id (e.g. 'all', 'crypto').
-   */
-  private getFilterOptionSelector(optionId: string): { testId: string } {
-    return { testId: `filter-select-option-${optionId}` };
-  }
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Waits for the market list view to be visible.
+   * Uses multiple selectors for robustness (convention).
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.filterSortRow,
+      this.marketListView,
+    ]);
+  }
+
+  /**
+   * Clicks the market list header back control (`navigate(-1)`), typically returning to Perps home.
+   */
+  async clickBack(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.headerBackButton);
   }
 
   /**
@@ -67,6 +76,15 @@ export class PerpsMarketListPage {
   }
 
   /**
+   * Returns the selector for a filter dropdown option (e.g. 'all', 'crypto').
+   *
+   * @param optionId - The filter option id (e.g. 'all', 'crypto').
+   */
+  private getFilterOptionSelector(optionId: string): { testId: string } {
+    return { testId: `filter-select-option-${optionId}` };
+  }
+
+  /**
    * Navigates to the Perps Market List by clicking the "Explore markets" row.
    * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
    * Dismisses any visible toast first so it does not intercept the click; then uses
@@ -76,13 +94,6 @@ export class PerpsMarketListPage {
     await this.driver.waitForSelector(this.exploreMarketsRow);
     await this.driver.clickElementUsingMouseMove(this.exploreMarketsRow);
     await this.checkPageIsLoaded();
-  }
-
-  /**
-   * Clicks the market list header back control (`navigate(-1)`), typically returning to Perps home.
-   */
-  async clickBack(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.headerBackButton);
   }
 
   /**
@@ -138,16 +149,5 @@ export class PerpsMarketListPage {
    */
   async waitForFilterSortRow(): Promise<void> {
     await this.driver.waitForSelector(this.filterSortRow);
-  }
-
-  /**
-   * Waits for the market list view to be visible.
-   * Uses multiple selectors for robustness (convention).
-   */
-  async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.filterSortRow,
-      this.marketListView,
-    ]);
   }
 }

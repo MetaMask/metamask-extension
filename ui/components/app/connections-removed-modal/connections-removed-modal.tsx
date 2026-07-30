@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -26,9 +25,8 @@ import {
 import { resetWallet } from '../../../store/actions';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
   const navigate = useNavigate();

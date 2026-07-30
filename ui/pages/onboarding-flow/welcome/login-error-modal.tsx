@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Text,
@@ -35,6 +35,7 @@ import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { resetWallet } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 import { LOGIN_ERROR, LoginErrorType } from './types';
 
 const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
@@ -54,9 +55,6 @@ type LoginErrorModalProps = {
  * @param props.onClose - The function to call when the modal is closed
  * @param props.loginError - The type of login error that occurred
  */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function LoginErrorModal({
   onClose,
   loginError,

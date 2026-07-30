@@ -12,7 +12,7 @@ import {
 } from '../../../components/app/assets/types';
 import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
 
-type LocationStateToken = {
+export type LocationStateToken = {
   address: string;
   symbol: string;
   name: string;

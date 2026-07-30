@@ -23,12 +23,12 @@ class ContractDeploymentConfirmation extends Confirmation {
     };
   }
 
-  async checkTitle() {
-    await this.driver.waitForSelector(this.deploymentHeadingTitle);
-  }
-
   async checkDeploymentSiteInfo() {
     await this.driver.waitForSelector(this.deploymentSiteInfo);
+  }
+
+  async checkTitle() {
+    await this.driver.waitForSelector(this.deploymentHeadingTitle);
   }
 }
 

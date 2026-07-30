@@ -11,7 +11,6 @@ import {
 import {
   selectQrSyncError,
   selectQrSyncPhase,
-  selectShouldCreateQrSyncSession,
 } from '../../../selectors/qr-sync/qr-sync';
 import {
   AddWallets,
@@ -29,7 +28,6 @@ const SyncAccountsSettings = () => {
   const t = useI18nContext();
   const qrSyncPhase = useSelector(selectQrSyncPhase);
   const qrSyncError = useSelector(selectQrSyncError);
-  const shouldCreateSession = useSelector(selectShouldCreateQrSyncSession);
   const [isExiting, setIsExiting] = useState(false);
   const [password, setPassword] = useState<string | undefined>();
   const [syncSummary, setSyncSummary] = useState<Pick<
@@ -37,20 +35,48 @@ const SyncAccountsSettings = () => {
     'syncedAccountCount' | 'syncedWalletCount'
   > | null>(null);
 
+  const cancelQrSyncSession = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:cancelSync',
+      [],
+    ]).catch(() => undefined);
+  }, []);
+
+  const createQrSyncSession = useCallback(async () => {
+    await submitRequestToBackground<void>('messengerCall', [
+      'QrSyncController:createSession',
+      [],
+    ]).catch(() => undefined);
+  }, []);
+
+  const startNewSession = useCallback(async () => {
+    await cancelQrSyncSession();
+    await createQrSyncSession();
+  }, [cancelQrSyncSession, createQrSyncSession]);
+
   useEffect(() => {
-    if (!shouldCreateSession || isExiting) {
-      return;
+    if (isExiting) {
+      return undefined;
     }
 
-    const createQrSyncSession = async () => {
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:createSession',
-        [],
-      ]).catch(() => undefined);
+    let isActive = true;
+
+    const initializeSession = async () => {
+      await cancelQrSyncSession();
+      if (!isActive || isExiting) {
+        return;
+      }
+
+      await createQrSyncSession();
     };
 
-    createQrSyncSession();
-  }, [isExiting, shouldCreateSession]);
+    initializeSession();
+
+    return () => {
+      isActive = false;
+      cancelQrSyncSession().catch(() => undefined);
+    };
+  }, [cancelQrSyncSession, createQrSyncSession, isExiting]);
 
   useEffect(() => {
     if (qrSyncPhase === QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
@@ -60,13 +86,6 @@ const SyncAccountsSettings = () => {
     setPassword(undefined);
   }, [qrSyncPhase]);
 
-  const cancelQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
-  }, []);
-
   const handleExit = useCallback(async () => {
     setIsExiting(true);
     await cancelQrSyncSession();
@@ -74,11 +93,8 @@ const SyncAccountsSettings = () => {
   }, [cancelQrSyncSession, navigate]);
 
   const handleRetry = useCallback(() => {
-    // cancel the current sync session and start a new one
-    // cancelSync reset the QrSync state to IDLE besides disconnect/cleanup the existing session
-    // `IDLE` phase will trigger the `createSession` request to create a new session
-    cancelQrSyncSession().catch(() => undefined);
-  }, [cancelQrSyncSession]);
+    startNewSession().catch(() => undefined);
+  }, [startNewSession]);
 
   const handleAddWallets = useCallback(
     async ({
@@ -109,9 +125,9 @@ const SyncAccountsSettings = () => {
     switch (effectivePhase) {
       case QR_SYNC_PHASES.IDLE:
       case QR_SYNC_PHASES.DISPLAYING_QR:
-        return <QrCodeScan />;
+        return <QrCodeScan onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_OTP_INPUT:
-        return <EnterVerificationCode />;
+        return <EnterVerificationCode onRestart={handleRetry} />;
       case QR_SYNC_PHASES.AWAITING_SYNC_OFFER:
         return (
           <LoadingStep

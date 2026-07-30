@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "Opções da conta"
   },
-  "accountPermissionToast": {
-    "message": "Permissões de conta atualizadas"
-  },
   "accountSelectionRequired": {
     "message": "Você precisa selecionar uma conta!"
   },
@@ -379,22 +376,11 @@
     "message": "Convertido para $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": "Falha no depósito"
-  },
   "activity_deposit_failed_title": {
     "message": "Falha no depósito"
   },
-  "activity_deposit_pending_description": {
-    "message": "Depositando $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_deposit_pending_title": {
     "message": "Depositando $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": "Depositado $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_title": {
@@ -1005,12 +991,10 @@
     "message": "Falha na troca"
   },
   "activity_swap_pending_title": {
-    "message": "Trocando $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Trocando"
   },
   "activity_swap_success_title": {
-    "message": "Trocou $1 por $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "Troca realizada"
   },
   "activity_unwrap_failed_description": {
     "message": "Falha ao desencapsular"
@@ -1181,6 +1165,27 @@
   "addWallet": {
     "message": "Adicionar carteira"
   },
+  "add_device_error_connection": {
+    "message": "Não foi possível manter uma conexão segura com seu telefone. Verifique sua conexão com a internet e tente novamente."
+  },
+  "add_device_error_expired": {
+    "message": "Esta sessão de sincronização expirou. Recomece para gerar um novo código QR."
+  },
+  "add_device_error_generic": {
+    "message": "Algo deu errado durante a sincronização com o seu telefone. Tente novamente."
+  },
+  "add_device_error_invalid_code": {
+    "message": "O código de verificação estava incorreto. Recomece para tentar sincronizar seu telefone."
+  },
+  "add_device_error_rejected": {
+    "message": "A sincronização foi cancelada no seu telefone. Recomece para tentar sincronizar."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Não conseguimos finalizar a sincronização das suas contas com o seu telefone. Tente novamente."
+  },
+  "add_device_error_title": {
+    "message": "Não foi possível concluir a sincronização"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 contas importadas foram sincronizadas com o seu telefone.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1242,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Você está interagindo com um endereço desconhecido. Isso ajuda a prevenir transações maliciosas."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Inclui $1 para proteção adicional",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Opcional"
@@ -2002,21 +2011,11 @@
     "message": "Aprovar $1 para ponte",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "Você está permitindo acesso a $1 $2. O contrato não acessará nenhum fundo adicional."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Você precisará permitir acesso à $1 $2 para fazer a ponte e, em seguida, aprovar a realização de ponte para $3. Isso exigirá duas confirmações separadas."
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Link do explorador de blocos copiado"
   },
   "bridgeConfirmTwoTransactions": {
     "message": "Será necessário confirmar 2 transações na sua carteira de hardware:"
-  },
-  "bridgeDetailsTitle": {
-    "message": "Detalhes da ponte",
-    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
@@ -2026,9 +2025,6 @@
   },
   "bridgeEnterAmount": {
     "message": "Selecione o valor"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "Visualizar em $1"
   },
   "bridgeExplorerPopupDescription": {
     "message": "Esta transação ocorre em duas redes. Um link mostra a origem, o outro mostra o destino após a confirmação."
@@ -2313,42 +2309,11 @@
   "bridgeSendLoading": {
     "message": "Enviando da cadeia de origem"
   },
-  "bridgeStatusComplete": {
-    "message": "Concluída",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "Falhou",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "Em andamento",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$1 recebido em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "Recebendo $1 em $2",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "Realizado swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "Realizando swap de $1 para $2",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "Suspeito"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Token suspeito"
-  },
-  "bridgeTo": {
-    "message": "Fazer ponte para"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 é um token malicioso."
@@ -2364,56 +2329,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "Nenhum token corresponde a \"$1\""
-  },
-  "bridgeTransactionProgress": {
-    "message": "Transação $1 de 2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "Realizando ponte"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "Entre em contato com"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Suporte da MetaMask"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "Já se passaram mais de 3 horas?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "Status"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "Troca realizada"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "Trocando"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "Carimbo de data/hora"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 às $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "$1 $2 em",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "Você recebeu"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "Você enviou"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use o máximo permitido"
@@ -2431,12 +2346,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "É necessário um saldo mínimo de reserva de $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "Ponte realizada"
-  },
-  "bridgedToChain": {
-    "message": "Ponte realizada para $1"
   },
   "bridging": {
     "message": "Realizando ponte"
@@ -2550,9 +2459,6 @@
   },
   "clear": {
     "message": "Limpar"
-  },
-  "clearActivity": {
-    "message": "Limpar dados de atividades e nonce"
   },
   "clearActivityDescription": {
     "message": "Redefine o nonce da conta e apaga os dados da guia de atividades da sua carteira. Somente a conta e a rede atuais serão afetadas. Seus saldos e transações recebidas não serão alterados."
@@ -3204,9 +3110,6 @@
   "decimal": {
     "message": "Decimal do token"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Os decimais devem ter pelo menos 0 algarismos e no máximo 36."
-  },
   "decrypt": {
     "message": "Descriptografar"
   },
@@ -3339,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "a página de trocas"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "a página Seguir negociação"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "a página de proteção de transações"
   },
@@ -3463,10 +3369,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Endereço de recebimento"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "ID da transação de destino",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Detalhes"
@@ -3793,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "Expira em $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Excesso de tentativas incorretas. Comece com um novo código QR."
   },
   "enter_your_password": {
     "message": "Digite sua senha"
@@ -4269,9 +4174,6 @@
   "gotIt": {
     "message": "Entendi"
   },
-  "grantExactAccess": {
-    "message": "Conceder acesso exato"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -4336,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Carteira de hardware conectada"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "O dispositivo está demorando muito para responder, ou a conexão expirou. Verifique se o seu dispositivo está conectado e desbloqueado, e tente novamente."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continuar"
@@ -5503,10 +5408,6 @@
     "message": "Detalhes do bônus resgatável",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "Converter $1 para mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "Detalhes do bônus",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5764,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Não compatível com esta conta."
+  },
   "networkOptions": {
     "message": "Opções da rede"
   },
@@ -5808,9 +5712,6 @@
   },
   "networksSmallCase": {
     "message": "redes"
-  },
-  "nevermind": {
-    "message": "Não importa"
   },
   "new": {
     "message": "Nova!"
@@ -5889,14 +5790,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Detecção automática de NFTs ativada"
   },
-  "nftBought": {
-    "message": "Comprou $1"
-  },
   "nftEmptyDescription": {
     "message": "Existe um mundo de NFTs por aí. Comece sua coleção hoje mesmo."
-  },
-  "nftMinted": {
-    "message": "Mintou $1"
   },
   "nftOptions": {
     "message": "Opções de NFT"
@@ -7036,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "Valor de encerramento"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "O preço não pode diferir mais de 95% do preço de mercado"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Insira um preço limite válido para continuar."
+  },
   "perpsCloseLong": {
     "message": "Encerrar posição long"
   },
@@ -7044,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "Encerrar posição"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "O preço atual não está disponível. Tente novamente em instantes."
   },
   "perpsCloseShort": {
     "message": "Encerrar posição short"
@@ -7074,9 +6978,6 @@
   },
   "perpsDateYesterday": {
     "message": "Ontem"
-  },
-  "perpsDepositActivityTitle": {
-    "message": "Perps creditados"
   },
   "perpsDepositErrorBridgeFailed": {
     "message": "Falha na ponte"
@@ -7577,6 +7478,10 @@
     "message": "Seu PnL é de $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Falha ao enviar ordem de fechamento",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Margem de $1 adicionada à posição $2",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7624,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Posição parcialmente encerrada",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Falha ao enviar ordem de fechamento parcial",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Sua posição ainda está ativa",
@@ -7735,10 +7644,6 @@
   },
   "perpsWithdraw": {
     "message": "Sacar"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "Perps sacados",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "Tempo estimado"
@@ -8194,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "Custo total: $1"
   },
+  "rampsBestRate": {
+    "message": "Melhor taxa"
+  },
+  "rampsBuyToken": {
+    "message": "Comprar $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Comprar via $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Alterar fornecedor."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Tente novamente ou entre em contato com o suporte se isso continuar acontecendo."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Não foi possível verificar sua região"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Erro ao carregar métodos de pagamento"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Erro ao carregar tokens"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "A compra máxima é de $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "A compra mínima é de $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Mais confiável"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Nenhum método de pagamento disponível."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Nenhum provedor disponível."
+  },
   "rampsNoTokensAvailable": {
     "message": "Nenhum token disponível"
+  },
+  "rampsOnNetwork": {
+    "message": "em $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Outras opções"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "dia útil"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "dias úteis"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "hora"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "horas"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instantâneo"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Menos de"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "min"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Máx. $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Mín. $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Usado anteriormente"
+  },
+  "rampsProviders": {
+    "message": "Fornecedores"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Falha ao buscar cotação."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Cotação não disponível."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Cotações exibidas para $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Selecione o método de pagamento"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Estamos com uma interrupção no serviço. Tente novamente mais tarde."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "A opção Comprar está temporariamente indisponível"
+  },
+  "rampsShowAllTokens": {
+    "message": "Mostrar todos os tokens"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "A compra de criptomoedas ainda não é suportada em sua região."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "A opção Comprar não está disponível aqui"
   },
   "rank": {
     "message": "Classificação"
@@ -8409,9 +8434,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "A operação foi concluída com sucesso."
   },
-  "retryTransaction": {
-    "message": "Tentar transação novamente"
-  },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
@@ -8465,10 +8487,6 @@
   },
   "revokePermission": {
     "message": "Revogar permissão"
-  },
-  "revokePermissionTitle": {
-    "message": "Remover permissão de $1",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Você está removendo a permissão de alguém para gastar tokens de sua conta."
@@ -8940,14 +8958,6 @@
   "sent": {
     "message": "Enviado"
   },
-  "sentSpecifiedTokens": {
-    "message": "Enviou $1",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "Enviou $1 como $2",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Rede de teste Sepolia"
   },
@@ -8956,10 +8966,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "Solicitação de saque"
-  },
-  "setApprovalForAllTitle": {
-    "message": "Aprovar $1 sem limite de gastos",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "Configurar",
@@ -9663,9 +9669,6 @@
   "sign": {
     "message": "Assinar"
   },
-  "signatureRequest": {
-    "message": "Solicitação de assinatura"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "O NFT será refletido em sua carteira quando o lance for aceito."
   },
@@ -10309,18 +10312,6 @@
   "statusNotConnected": {
     "message": "Não conectado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Algo deu errado ao adicionar esta trustline. Tente novamente.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Algo deu errado ao remover esta trustline. Tente novamente.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Você ainda tem $1 $2 nesta carteira. Você deve enviar ou trocar tudo antes de desativar este ativo na Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Ainda se conectando à $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10475,10 +10466,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "Corretora descentralizada"
-  },
-  "swapDetailsTitle": {
-    "message": "Detalhes da troca",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "Contrato direto"
@@ -10684,10 +10671,6 @@
   "swapTokenNotAvailable": {
     "message": "O token não está disponível para troca nesta região"
   },
-  "swapTokenToToken": {
-    "message": "Trocar $1 por $2",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "Trocar tokens"
   },
@@ -10838,6 +10821,9 @@
   "tokenDecimal": {
     "message": "Decimal do token"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Digite um número inteiro entre 0 e 36."
+  },
   "tokenDetails": {
     "message": "Dados do token"
   },
@@ -10962,10 +10948,6 @@
   "transactionIncludesTypes": {
     "message": "Esta transação inclui: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "Essa transação estava protegida. Nós a cancelamos para evitar a perda inesperada de fundos.",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "Configurações da transação"
   },
@@ -10974,10 +10956,6 @@
   },
   "transactionSubmitted": {
     "message": "Transação enviada"
-  },
-  "transactionTotalGasFee": {
-    "message": "Taxa de gás total",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "Transações"
@@ -11304,9 +11282,6 @@
     "message": "Visualizar em $1",
     "description": "$1 is the block explorer name"
   },
-  "viewDetails": {
-    "message": "Ver detalhes"
-  },
   "viewOnBlockExplorer": {
     "message": "Ver no explorador de blocos"
   },
@@ -11422,12 +11397,6 @@
   },
   "whatsThis": {
     "message": "O que é isso?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Aprova o token para realização de ponte."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Aprova o token para realização de troca."
   },
   "withdrawTo": {
     "message": "Receber",

@@ -105,6 +105,21 @@ export const getIsPerpsSlippageConfigEnabled = createSelector(
 );
 
 /**
+ * Whether limit orders are enabled in the single-position close flow.
+ *
+ * Remote flag `perpsClosePositionLimitOrderEnabled` — the camel-cased form of
+ * `perps-close-position-limit-order-enabled`. The flag defaults to disabled
+ * and supports the standard boolean or version-gated rollout shape.
+ */
+export const getIsPerpsCloseLimitOrderEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(
+      remoteFeatureFlags.perpsClosePositionLimitOrderEnabled,
+    ),
+);
+
+/**
  * Whether perps surfaces should render full asset names (e.g. "Bitcoin")
  * instead of just the ticker (e.g. "BTC").
  *
@@ -112,7 +127,7 @@ export const getIsPerpsSlippageConfigEnabled = createSelector(
  * so full names can be shipped dark and rolled out independently. Follows the
  * same `{ enabled, minimumVersion }` rollout shape as `perpsEnabledVersion`
  * (boolean still supported for backward compatibility). When disabled, consumers
- * fall back to the ticker via `getDisplayName(symbol)`.
+ * fall back to the ticker via `getDisplaySymbol(symbol)`.
  */
 export const getIsPerpsShowFullAssetNamesEnabled = createSelector(
   getRemoteFeatureFlags,

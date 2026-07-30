@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
+import { usePureBlack } from '@metamask/design-system-react';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -19,12 +20,10 @@ import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-import ConfirmResetAccount from './confirm-reset-account';
-
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
-import FadeModal from './fade-modal';
+import FadeModal, { type FadeModalRef } from './fade-modal';
 import RampsInfoModal from './ramps/ramps-info-modal';
 
 const modalContainerBaseStyle = {
@@ -63,11 +62,6 @@ type ModalConfig = {
   customOnHideOpts?: CustomOnHideOpts;
 };
 
-type FadeModalRef = {
-  show: () => void;
-  hide: () => void;
-};
-
 const MODALS: Record<string, ModalConfig> = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
@@ -84,19 +78,6 @@ const MODALS: Record<string, ModalConfig> = {
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
       paddingRight:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-    },
-  },
-
-  CONFIRM_RESET_ACCOUNT: {
-    contents: <ConfirmResetAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
@@ -291,7 +272,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     }) => {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatch(
           customOnHideOpts.action(
             ...(customOnHideOpts.args ?? []),
@@ -320,7 +300,8 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const modalRef = useRef<FadeModalRef>(null);
+  const isPureBlack = usePureBlack();
+  const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
     if (active) {
@@ -332,8 +313,14 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  const modalStyle =
-    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
+  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
+  const modalStyle = {
+    ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
+    ...(isPureBlack && {
+      backgroundColor: 'var(--color-background-alternative)',
+      border: '1px solid var(--color-border-muted)',
+    }),
+  };
   const contentStyle = modal.contentStyle ?? {};
 
   return (
@@ -345,7 +332,6 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
         }
         hideModal(modal.customOnHideOpts);
       }}
-      // @ts-expect-error FadeModal is a JS class component without TS type declarations
       ref={modalRef}
       modalStyle={modalStyle}
       contentStyle={contentStyle}

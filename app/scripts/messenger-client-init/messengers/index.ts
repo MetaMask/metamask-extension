@@ -66,6 +66,10 @@ import {
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
 import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDeFiPositionsControllerV2Messenger,
+  getDeFiPositionsControllerV2InitMessenger,
+} from './defi-positions/defi-positions-controller-v2-messenger';
 import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 import {
   getAccountTreeControllerMessenger,
@@ -139,8 +143,10 @@ import {
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
-import { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-import { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+import {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -207,6 +213,7 @@ import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
+import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -264,8 +271,10 @@ export {
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-export { getQrSyncControllerMessenger } from './qr-sync-controller-messenger';
-export { getQrSyncDataServiceMessenger } from './qr-sync-data-service-messenger';
+export {
+  getQrSyncControllerMessenger,
+  getQrSyncDataServiceMessenger,
+} from './qr-sync';
 export {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -283,6 +292,7 @@ export {
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -438,6 +448,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getDeFiPositionsControllerMessenger,
     getInitMessenger: getDeFiPositionsControllerInitMessenger,
   },
+  DeFiPositionsControllerV2: {
+    getMessenger: getDeFiPositionsControllerV2Messenger,
+    getInitMessenger: getDeFiPositionsControllerV2InitMessenger,
+  },
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: noop,
@@ -572,6 +586,10 @@ export const MESSENGER_FACTORIES = {
   },
   SelectedNetworkController: {
     getMessenger: getSelectedNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  SentinelApiService: {
+    getMessenger: getSentinelApiServiceMessenger,
     getInitMessenger: noop,
   },
   ShieldController: {

@@ -114,6 +114,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  ledgerDmk: {
+    name: 'ledgerDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   enableMultichainAccounts: {
     name: 'enableMultichainAccounts',
     type: FeatureFlagType.Remote,
@@ -222,6 +234,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  defiControllerV2: {
+    name: 'defiControllerV2',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: {
+      versions: {
+        '13.41.0': {
+          enabled: false,
+        },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   assetsEnableNotificationsByDefault: {
     name: 'assetsEnableNotificationsByDefault',
     type: FeatureFlagType.Remote,
@@ -260,12 +286,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: '13.33.0',
           deprecatedControllers: [],
           enabled: true,
+          tracesEnabled: false,
         },
         '13.15.0': {
           deprecatedControllers: [],
           enabled: false,
           featureVersion: null,
           minimumVersion: null,
+          tracesEnabled: false,
         },
       },
     },
@@ -2143,19 +2171,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  // Value is enabled despite the flag being disabled in prod, as specs are already updated to use the redesigned activity list.
-  // See https://github.com/MetaMask/metamask-extension/pull/42837
-  extensionUxActivityListRedesign: {
-    name: 'extensionUxActivityListRedesign',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      minimumVersion: '13.36.0',
-      enabled: true,
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
     name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,
     type: FeatureFlagType.Remote,
@@ -2263,6 +2278,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     },
     status: FeatureFlagStatus.Active,
   },
+  perpsClosePositionLimitOrderEnabled: {
+    name: 'perpsClosePositionLimitOrderEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   perpsEnabled: {
     name: 'perpsEnabled',
     type: FeatureFlagType.Remote,
@@ -2874,18 +2897,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  ledgerDmk: {
-    name: 'ledgerDmk',
-    type: FeatureFlagType.Remote,
-    inProd: true,
-    productionDefault: {
-      enabled: false,
-      featureVersion: null,
-      minimumVersion: null,
-    },
-    status: FeatureFlagStatus.Active,
-  },
-
   stxMigrationBatchStatus: {
     name: 'stxMigrationBatchStatus',
     type: FeatureFlagType.Remote,
@@ -3086,6 +3097,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       minimumVersion: '13.0.0',
       enabled: false,
     },
+    status: FeatureFlagStatus.Active,
+  },
+
+  productSafetyScamQuestionnaireEnabled: {
+    name: 'productSafetyScamQuestionnaireEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [
+      { name: 'control', scope: { type: 'threshold', value: 1.0 } },
+      { name: 'treatment', scope: { type: 'threshold', value: 1.0 } },
+    ],
     status: FeatureFlagStatus.Active,
   },
 };

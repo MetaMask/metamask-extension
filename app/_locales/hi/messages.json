@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "अकाउंट विकल्प"
   },
-  "accountPermissionToast": {
-    "message": "अकाउंट अनुमतियां अपडेट की गईं"
-  },
   "accountSelectionRequired": {
     "message": "आपको एक अकाउंट चुनना होगा!"
   },
@@ -379,22 +376,11 @@
     "message": "$1 में कन्वर्ट किया गया",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": "डिपॉज़िट नहीं हो पाया"
-  },
   "activity_deposit_failed_title": {
     "message": "डिपॉज़िट नहीं हो पाया"
   },
-  "activity_deposit_pending_description": {
-    "message": "$1 डिपॉज़िट कर रहे हैं",
-    "description": "$1 is the token symbol"
-  },
   "activity_deposit_pending_title": {
     "message": "$1 डिपॉज़िट कर रहे हैं",
-    "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": "$1 डिपॉज़िट किया गया",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_title": {
@@ -1005,12 +991,10 @@
     "message": "स्वैप नहीं हो पाया"
   },
   "activity_swap_pending_title": {
-    "message": "$1 को $2 से स्वैप किया जा रहा है",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया जा रहा है"
   },
   "activity_swap_success_title": {
-    "message": "$1 को $2 से स्वैप किया गया",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "स्वैप किया गया"
   },
   "activity_unwrap_failed_description": {
     "message": "अनरैप नहीं हो पाया"
@@ -1181,6 +1165,27 @@
   "addWallet": {
     "message": "वॉलेट जोड़ें"
   },
+  "add_device_error_connection": {
+    "message": "हम आपके फ़ोन से सुरक्षित कनेक्शन बनाए नहीं रख सके। कृपया अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
+  },
+  "add_device_error_expired": {
+    "message": "यह सिंक सत्र समाप्त हो गया है। नया QR कोड जनरेट करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_generic": {
+    "message": "आपके फ़ोन के साथ सिंक करते समय कुछ गड़बड़ी हुई। कृपया फिर से प्रयास करें।"
+  },
+  "add_device_error_invalid_code": {
+    "message": "सत्यापन कोड गलत था। अपने फ़ोन को सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_rejected": {
+    "message": "आपके फ़ोन पर सिंक कैंसिल कर दिया गया था। सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_sync_failed": {
+    "message": "हम आपके एकाउंट्स को आपके फ़ोन के साथ सिंक करना पूरा नहीं कर सके। कृपया फिर से प्रयास करें।"
+  },
+  "add_device_error_title": {
+    "message": "सिंक पूरा नहीं हो सका"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1242,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "आप किसी अज्ञात एड्रेस से इंटरैक्ट कर रहे हैं। इससे बुरी नीयत वाले ट्रांसेक्शन को रोकने में मदद मिलती है।"
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "इसमें अतिरिक्त सुरक्षा के लिए $1 शामिल है",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "वैकल्पिक"
@@ -2002,21 +2011,11 @@
     "message": "ब्रिज के लिए $1 एप्रूव करें",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "आप $1 $2 को एक्सेस की अनुमति दे रहे हैं। कॉन्ट्रैक्ट किसी अतिरिक्त फंड तक एक्सेस नहीं करेगा।"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "आपको ब्रिजिंग के लिए $1 $2 तक एक्सेस की अनुमति देनी होगी, और फिर $3 तक ब्रिजिंग को एप्रूव करनी होगी। इसके लिए दो अलग-अलग कन्फर्मेशन की आवश्यकता होगी।"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ब्लॉक एक्सप्लोरर लिंक कॉपी किया गया"
   },
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
-  },
-  "bridgeDetailsTitle": {
-    "message": "ब्रिज विवरण",
-    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
@@ -2026,9 +2025,6 @@
   },
   "bridgeEnterAmount": {
     "message": "रकम चुनें"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "$1 पर देखें"
   },
   "bridgeExplorerPopupDescription": {
     "message": "यह ट्रांज़ैक्शन दो नेटवर्क पर रहता है। एक लिंक सोर्स दिखाता है, दूसरा कन्फर्म होने के बाद डेस्टिनेशन दिखाता है।"
@@ -2313,42 +2309,11 @@
   "bridgeSendLoading": {
     "message": "सोर्स चेन से भेज रहे हैं"
   },
-  "bridgeStatusComplete": {
-    "message": "पूरा हुआ",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "विफल हुआ",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "प्रगति पर है",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$2 पर $1 प्राप्त हुआ",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "$2 पर $1 प्राप्त हो रहा है",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "$1 को $2 से स्वैप किया गया",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "$1 को $2 से स्वैप किया जा रहा है",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "संदिग्ध"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "संदिग्ध टोकन"
-  },
-  "bridgeTo": {
-    "message": "इसपर ब्रिज करें"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1 एक बुरी नीयत वाला टोकन है।"
@@ -2364,56 +2329,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "कोई टोकन \"$1\" से मेल नहीं खाता"
-  },
-  "bridgeTransactionProgress": {
-    "message": "ट्रांसेक्शन 2 में से $1"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "ब्रिज किया गया"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "ब्रिज किया जा रहा है"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "MetaMask सपोर्ट से"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "संपर्क करें"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "क्या 3 घंटे से अधिक समय हो गया है?"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "Nonce"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "स्टेटस"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "स्वैप किया गया"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "स्वैप किया जा रहा है"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "टाइम स्टैम्प"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$2 पर $1",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "पर $1 $2",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "कुल गैस फीस"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "आपको प्राप्त हुआ"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "आपने भेजा"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "अधिकतम अनुमत सीमा का उपयोग करें"
@@ -2431,12 +2346,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "न्यूनतम $1 रिज़र्व बैलेंस आवश्यक है",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "ब्रिज किया गया"
-  },
-  "bridgedToChain": {
-    "message": "$1 पर ब्रिज किया गया"
   },
   "bridging": {
     "message": "ब्रिज किया जा रहा है"
@@ -2550,9 +2459,6 @@
   },
   "clear": {
     "message": "हटाएं"
-  },
-  "clearActivity": {
-    "message": "एक्टिविटी और nonce डेटा हटाएं"
   },
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
@@ -3204,9 +3110,6 @@
   "decimal": {
     "message": "टोकन डेसीमल"
   },
-  "decimalsMustZerotoTen": {
-    "message": "डेसीमल कम से कम 0 होना चाहिए और 36 से अधिक न हो।"
-  },
   "decrypt": {
     "message": "डिक्रिप्ट करें"
   },
@@ -3339,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "स्वैप पेज"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "फ़ॉलो ट्रेडिंग पेज"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "ट्रांसेक्शन शील्ड पेज"
   },
@@ -3463,10 +3369,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "प्राप्ति एड्रेस"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "गंतव्य ट्रांसेक्शन ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "विवरण"
@@ -3793,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "$1सेकंड में एक्स्पायर होगा",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
   },
   "enter_your_password": {
     "message": "अपना पासवर्ड डालें"
@@ -4269,9 +4174,6 @@
   "gotIt": {
     "message": "समझ गए"
   },
-  "grantExactAccess": {
-    "message": "सटीक पहुंच प्रदान करें"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -4336,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "hardware wallet कनेक्ट किया गया"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "डिवाइस को प्रतिक्रिया देने में बहुत अधिक समय लग रहा है या कनेक्शन का समय समाप्त हो गया। सुनिश्चित करें कि आपका डिवाइस कनेक्टेड और अनलॉक है, फिर दोबारा प्रयास करें।"
   },
   "hardwareWalletErrorContinueButton": {
     "message": "जारी रखें"
@@ -5503,10 +5408,6 @@
     "message": "क्लेम करने लायक बोनस का विवरण",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1 को mUSD में कन्वर्ट करें",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "बोनस का विवरण",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5764,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "यह अकाउंट इसका सपोर्ट नहीं करता है।"
+  },
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
   },
@@ -5808,9 +5712,6 @@
   },
   "networksSmallCase": {
     "message": "नेटवर्क"
-  },
-  "nevermind": {
-    "message": "कोई बात नहीं"
   },
   "new": {
     "message": "नया!"
@@ -5889,14 +5790,8 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT ऑटोडिटेक्शन चालू किया गया"
   },
-  "nftBought": {
-    "message": "$1 खरीदा गया"
-  },
   "nftEmptyDescription": {
     "message": "NFTs की एक अलग दुनिया है। आज ही अपना कलेक्शन शुरू करें।"
-  },
-  "nftMinted": {
-    "message": "$1 मिंट किया ग्ग्य"
   },
   "nftOptions": {
     "message": "NFT विकल्प"
@@ -7036,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "अमाउंट क्लोज़ करें"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "प्राइस मार्केट प्राइस से 95% से अधिक अंतर पर नहीं हो सकती"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "जारी रखने के लिए एक मान्य लिमिट प्राइस दर्ज करें।"
+  },
   "perpsCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
   },
@@ -7044,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "वर्तमान प्राइस उपलब्ध नहीं है। कुछ देर बाद फिर से प्रयास करें।"
   },
   "perpsCloseShort": {
     "message": "शॉर्ट को क्लोज़ करें"
@@ -7074,9 +6978,6 @@
   },
   "perpsDateYesterday": {
     "message": "कल"
-  },
-  "perpsDepositActivityTitle": {
-    "message": "फंडेड पर्प्स"
   },
   "perpsDepositErrorBridgeFailed": {
     "message": "ब्रिज नहीं हो पाया"
@@ -7577,6 +7478,10 @@
     "message": "आपका PnL $1 है",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "क्लोज़ ऑर्डर प्लेस नहीं हो पाया",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "$2 पोज़िशन में $1 मार्जिन जोड़ा गया",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7624,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "पोज़िशन आंशिक रूप से बंद की गई",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "आंशिक क्लोज़ ऑर्डर प्लेस नहीं हो पाया",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "आपकी पोज़िशन अभी भी सक्रिय है",
@@ -7735,10 +7644,6 @@
   },
   "perpsWithdraw": {
     "message": "निकालें"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "पर्प्स विदड्रॉ",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "अनुमानित समय"
@@ -8194,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
   },
+  "rampsBestRate": {
+    "message": "सबसे अच्छी रेट"
+  },
+  "rampsBuyToken": {
+    "message": "$1 खरीदें",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1 के माध्यम से खरीदना।",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "प्रोवाइडर बदलें।"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "कृपया फिर से प्रयास करें, या यदि ऐसा बार-बार हो रहा है तो सपोर्ट से संपर्क करें।"
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "हम आपके क्षेत्र की पुष्टि नहीं कर सके"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "भुगतान विधियाँ लोड करने में गड़बड़ी हुई"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "टोकन को लोड करने में गड़बड़ी हुई"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "अधिकतम खरीद $1 है",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "न्यूनतम खरीद $1 है",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "सबसे विश्वसनीय"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "पेमेंट का कोई तरीका उपलब्ध नहीं है।"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "कोई प्रोवाइडर उपलब्ध नहीं है।"
+  },
   "rampsNoTokensAvailable": {
     "message": "कोई टोकन उपलब्ध नहीं है"
+  },
+  "rampsOnNetwork": {
+    "message": "$1 पर",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "अन्य विकल्प"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "घंटा"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "घंटे"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "तुरंत"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "से कम"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "मिनट"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "मिनट"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "अधिकतम $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "न्यूनतम $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "पहले इस्तेमाल किया गया"
+  },
+  "rampsProviders": {
+    "message": "प्रोवाइडर्स"
+  },
+  "rampsQuoteFetchError": {
+    "message": "कोटेशन प्राप्त नहीं हो पाया।"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "कोटेशन उपलब्ध नहीं है।"
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "भुगतान विधि चुनें"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "हमारी सेवा में रुकावट आ रही है। कृपया बाद में फिर से कोशिश करें।"
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
+  },
+  "rampsShowAllTokens": {
+    "message": "सभी टोकन दिखाएं"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "आपके क्षेत्र में अभी क्रिप्टो खरीदना सपोर्टेड नहीं है।"
+  },
+  "rampsUnsupportedTitle": {
+    "message": "यहाँ खरीदारी उपलब्ध नहीं है"
   },
   "rank": {
     "message": "रैंक"
@@ -8409,9 +8434,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "परिचालन सफलतापूर्वक पूरा हुआ।"
   },
-  "retryTransaction": {
-    "message": "ट्रांसेक्शन का फिर से कोशिश करें"
-  },
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
   },
@@ -8465,10 +8487,6 @@
   },
   "revokePermission": {
     "message": "अनुमति कैंसिल करने की"
-  },
-  "revokePermissionTitle": {
-    "message": "$1 अनुमति हटाएं",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "आप किसी की अपने अकाउंट से टोकन खर्च करने की अनुमति हटा रहे हैं।"
@@ -8940,14 +8958,6 @@
   "sent": {
     "message": "भेजा गया"
   },
-  "sentSpecifiedTokens": {
-    "message": "$1 भेजा गया",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "$1 को $2 के रूप में भेजा गया",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
   },
@@ -8956,10 +8966,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "विदड्रॉवल का अनुरोध"
-  },
-  "setApprovalForAllTitle": {
-    "message": "बिना किसी खर्च की लिमिट के $1 एप्रूव करें",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "सेट अप करें",
@@ -9663,9 +9669,6 @@
   "sign": {
     "message": "हस्ताक्षर करें"
   },
-  "signatureRequest": {
-    "message": "हस्ताक्षर का अनुरोध"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "बिड स्वीकार होने पर NFT आपके वॉलेट में दिखाई देगा।"
   },
@@ -10309,18 +10312,6 @@
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "यह ट्रस्टलाइन जोड़ते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "यह ट्रस्टलाइन हटाते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "आपके वॉलेट में अभी भी $1 $2 हैं। स्टेलर पर इस एसेट को डीएक्टिवेट करने से पहले आपको यह सब भेजना या स्वैप करना होगा।",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10475,10 +10466,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "विकेंद्रीकृत विनिमय"
-  },
-  "swapDetailsTitle": {
-    "message": "स्वैप विवरण",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "प्रत्यक्ष कॉन्ट्रैक्ट"
@@ -10684,10 +10671,6 @@
   "swapTokenNotAvailable": {
     "message": "इस क्षेत्र में स्वैप करने के लिए टोकन उपलब्ध नहीं है"
   },
-  "swapTokenToToken": {
-    "message": "$1 से $2 में स्वैप करें",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "टोकन स्वैप करें"
   },
@@ -10838,6 +10821,9 @@
   "tokenDecimal": {
     "message": "टोकन डेसिमल"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0 और 36 के बीच एक पूर्ण संख्या दर्ज करें।"
+  },
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
@@ -10962,10 +10948,6 @@
   "transactionIncludesTypes": {
     "message": "इस ट्रांसेक्शन में शामिल है: $1."
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "यह ट्रांसेक्शन सुरक्षित था। हमने अचानक फंड लॉस को रोकने के लिए इसे कैंसिल कर दिया।",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "ट्रांसेक्शन संबंधी सेटिंग्स"
   },
@@ -10974,10 +10956,6 @@
   },
   "transactionSubmitted": {
     "message": "ट्रांसेक्शन सबमिट किया गया"
-  },
-  "transactionTotalGasFee": {
-    "message": "कुल गैस फीस",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "ट्रांसेक्शन्स"
@@ -11304,9 +11282,6 @@
     "message": "$1 पर देखें",
     "description": "$1 is the block explorer name"
   },
-  "viewDetails": {
-    "message": "विवरण देखें"
-  },
   "viewOnBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर पर देखें"
   },
@@ -11422,12 +11397,6 @@
   },
   "whatsThis": {
     "message": "यह क्या है?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ब्रिज के लिए टोकन एप्रूव करता है।"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "स्वैप के लिए टोकन एप्रूव करता है।"
   },
   "withdrawTo": {
     "message": "प्राप्त करें",

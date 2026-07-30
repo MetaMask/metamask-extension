@@ -181,9 +181,6 @@
   "decimal": {
     "message": "Decimalpræcision"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
-  },
   "delete": {
     "message": "Slet"
   },
@@ -343,9 +340,6 @@
   "networks": {
     "message": "Netværk"
   },
-  "nevermind": {
-    "message": "Lige meget"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -496,9 +490,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
   },
   "signed": {
     "message": "Underskrevet"

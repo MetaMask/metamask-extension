@@ -13,7 +13,7 @@ const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 2;
 
 function readTestResults(TEST_RESULTS_PATH: string): TestRun {
   const testSuiteName =
-    process.env.TEST_SUITE_NAME || 'test-e2e-chrome-browserify';
+    process.env.TEST_SUITE_NAME || 'test-e2e-chrome-webpack';
 
   try {
     const testRuns: TestRun[] = JSON.parse(

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -14,6 +14,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -26,6 +27,7 @@ const METRICS_PROPERTIES = {
   tokenDecimalPrecision: 'token_decimal_precision',
   tokenStandard: 'token_standard',
   tokenSymbol: 'token_symbol',
+  sourceConnectionMethod: 'source_connection_method',
   viewState: 'view_state',
 } as const;
 
@@ -129,10 +131,6 @@ const mockTokenSearch = {
   } as MockSearchState,
   spy: jest.fn(),
 };
-
-jest.mock('../../hooks/useDebouncedValue', () => ({
-  useDebouncedValue: <Value,>(value: Value) => value,
-}));
 
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: {
@@ -405,7 +403,7 @@ describe('TokenManagementPage', () => {
     metamask: {
       ...mockState.metamask,
       analyticsId: 'test-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedMultichainNetworkChainId,
       useExternalServices: true,
@@ -550,7 +548,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.TokenScreenOpened,
+          name: MetaMetricsEventName.TokenScreenViewed,
           properties: {
             category: MetaMetricsEventCategory.Home,
             screen: 'manage_tokens',
@@ -575,7 +573,7 @@ describe('TokenManagementPage', () => {
     await waitFor(() =>
       expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: MetaMetricsEventName.TokenScreenOpened,
+          name: MetaMetricsEventName.TokenScreenViewed,
           properties: {
             category: MetaMetricsEventCategory.Home,
             screen: 'manage_tokens',
@@ -1168,6 +1166,18 @@ describe('TokenManagementPage', () => {
       name: 'USD Coin',
       symbol: 'USDC',
     });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenAdded,
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+          [METRICS_PROPERTIES.tokenContractAddress]: usdcAddress,
+          [METRICS_PROPERTIES.tokenSymbol]: 'USDC',
+        }),
+      }),
+      expect.anything(),
+    );
   });
 
   it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
@@ -1270,8 +1280,10 @@ describe('TokenManagementPage', () => {
       },
     });
 
-    store.replaceReducer((() => nextState) as never);
-    store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+    await act(async () => {
+      store.replaceReducer((() => nextState) as never);
+      store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+    });
 
     const importedAadRow = await screen.findByTestId(
       `token-management-cell-0x1:${aadTokenAddress}`,

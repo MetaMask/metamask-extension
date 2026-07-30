@@ -137,9 +137,6 @@
   "accountOptions": {
     "message": "アカウントのオプション"
   },
-  "accountPermissionToast": {
-    "message": "アカウントのアクセス許可が更新されました"
-  },
   "accountSelectionRequired": {
     "message": "アカウントを選択する必要があります！"
   },
@@ -379,22 +376,11 @@
     "message": "$1に換金しました",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": "デポジット失敗"
-  },
   "activity_deposit_failed_title": {
     "message": "デポジット失敗"
   },
-  "activity_deposit_pending_description": {
-    "message": "$1をデポジットしています",
-    "description": "$1 is the token symbol"
-  },
   "activity_deposit_pending_title": {
     "message": "$1をデポジットしています",
-    "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": "$1をデポジットしました",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_title": {
@@ -1005,12 +991,10 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップ中"
   },
   "activity_swap_success_title": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+    "message": "スワップしました"
   },
   "activity_unwrap_failed_description": {
     "message": "ラップの解除に失敗しました"
@@ -1181,6 +1165,27 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
+  "add_device_error_connection": {
+    "message": "お使いのスマートフォンとの安全な接続を維持できませんでした。インターネット接続を確認して、もう一度お試しください。"
+  },
+  "add_device_error_expired": {
+    "message": "この同期セッションは期限切れになりました。もう一度やり直して、新しいQRコードを生成してください。"
+  },
+  "add_device_error_generic": {
+    "message": "スマートフォンとの同期中に問題が発生しました。もう一度お試しください。"
+  },
+  "add_device_error_invalid_code": {
+    "message": "確認コードが正しくありませんでした。もう一度やり直して、スマートフォンを同期してみてください。"
+  },
+  "add_device_error_rejected": {
+    "message": "お使いのスマートフォンで同期がキャンセルされました。もう一度同期してみてください。"
+  },
+  "add_device_error_sync_failed": {
+    "message": "アカウントとスマートフォンの同期を完了できませんでした。もう一度お試しください。"
+  },
+  "add_device_error_title": {
+    "message": "同期を完了できませんでした"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1件のインポート済みアカウントが携帯電話に同期されました。",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1242,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "不明なアドレスとやり取りしています。これにより悪質なトランザクションを防ぐことができます。"
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "追加の保護として$1が含まれています",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "オプション"
@@ -2002,21 +2011,11 @@
     "message": "$1のブリッジを承認",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
-  "bridgeApprovalWarning": {
-    "message": "$1 $2へのアクセスを許可しようとしています。このコントラクトが他の資金にアクセスすることはありません。"
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$3へのブリッジを承認する必要があります。これには2回の承認が必要です。"
-  },
   "bridgeBlockExplorerLinkCopied": {
     "message": "ブロックエクスプローラーのリンクをコピーしました"
   },
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
-  },
-  "bridgeDetailsTitle": {
-    "message": "ブリッジの詳細",
-    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeDiscountBadgeDao": {
     "message": "DAO"
@@ -2026,9 +2025,6 @@
   },
   "bridgeEnterAmount": {
     "message": "金額を選択"
-  },
-  "bridgeExplorerLinkViewOn": {
-    "message": "$1で表示"
   },
   "bridgeExplorerPopupDescription": {
     "message": "このトランザクションは2つのネットワーク上に存在します。一つのリンクはソースを表示し、もう一つのリンクは確定後に送金先を表示します。"
@@ -2313,42 +2309,11 @@
   "bridgeSendLoading": {
     "message": "ブリッジ元のチェーンから送金中"
   },
-  "bridgeStatusComplete": {
-    "message": "完了",
-    "description": "Status text indicating a bridge transaction has successfully completed."
-  },
-  "bridgeStatusFailed": {
-    "message": "失敗",
-    "description": "Status text indicating a bridge transaction has failed."
-  },
-  "bridgeStatusInProgress": {
-    "message": "進行中",
-    "description": "Status text indicating a bridge transaction is currently processing."
-  },
-  "bridgeStepActionBridgeComplete": {
-    "message": "$2で$1を受け取りました",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionBridgePending": {
-    "message": "$2で$1を受け取っています",
-    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
-  },
-  "bridgeStepActionSwapComplete": {
-    "message": "$1を$2にスワップ",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
-  "bridgeStepActionSwapPending": {
-    "message": "$1を$2にスワップしています",
-    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
-  },
   "bridgeSuspicious": {
     "message": "不審"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "不審なトークン"
-  },
-  "bridgeTo": {
-    "message": "ブリッジ先:"
   },
   "bridgeTokenIsMaliciousBanner": {
     "message": "$1は悪意のあるトークンです。"
@@ -2364,56 +2329,6 @@
   },
   "bridgeTokenNotFound": {
     "message": "「$1」に一致するトークンがありません"
-  },
-  "bridgeTransactionProgress": {
-    "message": "トランザクション $1/2"
-  },
-  "bridgeTxDetailsBridged": {
-    "message": "ブリッジ完了"
-  },
-  "bridgeTxDetailsBridging": {
-    "message": "ブリッジ"
-  },
-  "bridgeTxDetailsDelayedDescription": {
-    "message": "お問い合わせ先:"
-  },
-  "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMaskサポート"
-  },
-  "bridgeTxDetailsDelayedTitle": {
-    "message": "3時間を経過していますか？"
-  },
-  "bridgeTxDetailsNonce": {
-    "message": "ナンス"
-  },
-  "bridgeTxDetailsStatus": {
-    "message": "ステータス"
-  },
-  "bridgeTxDetailsSwapped": {
-    "message": "スワップ完了"
-  },
-  "bridgeTxDetailsSwapping": {
-    "message": "スワップ中"
-  },
-  "bridgeTxDetailsTimestamp": {
-    "message": "タイムスタンプ"
-  },
-  "bridgeTxDetailsTimestampValue": {
-    "message": "$1 $2",
-    "description": "$1 is the date, $2 is the time"
-  },
-  "bridgeTxDetailsTokenAmountOnChain": {
-    "message": "次のネットワークの$1 $2:",
-    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotalGasFee": {
-    "message": "ガス代合計"
-  },
-  "bridgeTxDetailsYouReceived": {
-    "message": "受取"
-  },
-  "bridgeTxDetailsYouSent": {
-    "message": "送金"
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "最大許容額を使用"
@@ -2431,12 +2346,6 @@
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "$1以上の準備金が必要です",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridged": {
-    "message": "ブリッジ完了"
-  },
-  "bridgedToChain": {
-    "message": "$1へのブリッジ完了"
   },
   "bridging": {
     "message": "ブリッジ"
@@ -2550,9 +2459,6 @@
   },
   "clear": {
     "message": "消去"
-  },
-  "clearActivity": {
-    "message": "アクティビティとナンスデータを消去"
   },
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
@@ -3204,9 +3110,6 @@
   "decimal": {
     "message": "トークンの小数桁数"
   },
-  "decimalsMustZerotoTen": {
-    "message": "小数桁数は0以上、36以下の範囲で使用する必要があります。"
-  },
   "decrypt": {
     "message": "復号化"
   },
@@ -3339,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "スワップページ"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "「取引のフォロー」ページ"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "トランザクションシールドページ"
   },
@@ -3463,10 +3369,6 @@
   },
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "受取アドレス"
-  },
-  "destinationTransactionIdLabel": {
-    "message": "送金先Tx ID",
-    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "詳細"
@@ -3793,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "期限切れまであと$1秒",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
   },
   "enter_your_password": {
     "message": "パスワードを入力"
@@ -4273,9 +4178,6 @@
   "gotIt": {
     "message": "了解"
   },
-  "grantExactAccess": {
-    "message": "正確なアクセスを許可する"
-  },
   "gwei": {
     "message": "gwei"
   },
@@ -4340,6 +4242,9 @@
   },
   "hardwareWalletConnected": {
     "message": "ハードウェアウォレットが接続されました"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "デバイスの応答に時間がかかりすぎるか、接続がタイムアウトしました。デバイスが接続されており、ロックが解除されていることを確認してから、もう一度お試しください。"
   },
   "hardwareWalletErrorContinueButton": {
     "message": "続行"
@@ -5507,10 +5412,6 @@
     "message": "請求可能なボーナスの詳細",
     "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
-  "musdConversionActivityTitle": {
-    "message": "$1をmUSDに変換",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
   "musdConversionBonusTooltipAria": {
     "message": "ボーナスの詳細",
     "description": "Accessible name for the info control that opens the mUSD conversion bonus explanation popover"
@@ -5768,6 +5669,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "このアカウントではサポートされていません。"
+  },
   "networkOptions": {
     "message": "ネットワークオプション"
   },
@@ -5812,9 +5716,6 @@
   },
   "networksSmallCase": {
     "message": "ネットワーク"
-  },
-  "nevermind": {
-    "message": "取り消し"
   },
   "new": {
     "message": "新登場!"
@@ -5893,14 +5794,8 @@
   "nftAutoDetectionEnabled": {
     "message": "NFTの自動検出が有効になりました"
   },
-  "nftBought": {
-    "message": "$1を購入しました"
-  },
   "nftEmptyDescription": {
     "message": "NFTの世界が無限に広がっています。さっそくコレクションを始めましょう。"
-  },
-  "nftMinted": {
-    "message": "$1をミントしました"
   },
   "nftOptions": {
     "message": "NFTオプション"
@@ -7040,6 +6935,12 @@
   "perpsCloseAmount": {
     "message": "クローズ金額"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "価格と市場価格との差は95%以内にする必要があります"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "続行するには、有効なリミット価格を入力してください。"
+  },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
@@ -7048,6 +6949,9 @@
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "現在の価格は入手できません。しばらくしてからもう一度お試しください。"
   },
   "perpsCloseShort": {
     "message": "ショートをクローズ"
@@ -7078,9 +6982,6 @@
   },
   "perpsDateYesterday": {
     "message": "昨日"
-  },
-  "perpsDepositActivityTitle": {
-    "message": "パーペチュアルに入金しました"
   },
   "perpsDepositErrorBridgeFailed": {
     "message": "ブリッジに失敗しました"
@@ -7581,6 +7482,10 @@
     "message": "損益は$1です",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "クローズ注文に失敗しました",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "$1の証拠金を$2のポジションに追加しました",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7628,6 +7533,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "ポジションが一部クローズされました",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "一部クローズ注文に失敗しました",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "ポジションは引き続き有効です",
@@ -7739,10 +7648,6 @@
   },
   "perpsWithdraw": {
     "message": "出金"
-  },
-  "perpsWithdrawActivityTitle": {
-    "message": "パーペチュアルの引き出し",
-    "description": "Title shown in the Activity list for a Perps withdraw transaction"
   },
   "perpsWithdrawEstimatedTime": {
     "message": "推定所要時間"
@@ -8198,8 +8103,128 @@
   "quotedTotalCost": {
     "message": "合計コスト: $1"
   },
+  "rampsBestRate": {
+    "message": "最も有利なレート"
+  },
+  "rampsBuyToken": {
+    "message": "$1を購入",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1経由で購入中。",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "プロバイダーを変更します。"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "もう一度お試しください。引き続き問題が発生する場合はサポートにお問い合わせください。"
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "お住まいの地域を確認できませんでした"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "支払い方法の読み込みエラー"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "トークンの読み込みエラー"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "最高購入額は$1です",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "最低購入額は$1です",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "信頼性が最も高い"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "使用可能な支払方法がありません。"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "利用可能なプロバイダーがありません。"
+  },
   "rampsNoTokensAvailable": {
     "message": "使用可能なトークンがありません"
+  },
+  "rampsOnNetwork": {
+    "message": "$1上",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "その他のオプション"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "即時"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "<"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "分"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "分"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1〜$2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "最大 $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "最小 $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "以前使用"
+  },
+  "rampsProviders": {
+    "message": "プロバイダー"
+  },
+  "rampsQuoteFetchError": {
+    "message": "クォートを取得できませんでした。"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "クォートが利用できません。"
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1用のクォートが表示されています。",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "支払方法を選択"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "現在、サービスに障害が発生しています。後でもう一度お試しください。"
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "購入は一時的にご利用いただけません"
+  },
+  "rampsShowAllTokens": {
+    "message": "すべてのトークンを表示"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "お住まいの地域では、まだ仮想通貨の購入はサポートされていません。"
+  },
+  "rampsUnsupportedTitle": {
+    "message": "ここでは購入できません"
   },
   "rank": {
     "message": "ランキング"
@@ -8413,9 +8438,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "操作が正常に完了しました。"
   },
-  "retryTransaction": {
-    "message": "トランザクションを再試行"
-  },
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },
@@ -8469,10 +8491,6 @@
   },
   "revokePermission": {
     "message": "許可を取り消す"
-  },
-  "revokePermissionTitle": {
-    "message": "$1のアクセス許可を取り消す",
-    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "アカウントのトークンの使用許可を取り消そうとしています。"
@@ -8944,14 +8962,6 @@
   "sent": {
     "message": "送信完了"
   },
-  "sentSpecifiedTokens": {
-    "message": "$1を送金しました",
-    "description": "Symbol of the specified token"
-  },
-  "sentTokenAsToken": {
-    "message": "$1を$2として送金しました",
-    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
   },
@@ -8960,10 +8970,6 @@
   },
   "setApprovalForAllRedesignedTitle": {
     "message": "出金リクエスト"
-  },
-  "setApprovalForAllTitle": {
-    "message": "使用限度額なしで$1を承認",
-    "description": "The token symbol that is being approved"
   },
   "setUp": {
     "message": "設定",
@@ -9667,9 +9673,6 @@
   "sign": {
     "message": "署名"
   },
-  "signatureRequest": {
-    "message": "署名要求"
-  },
   "signature_decoding_bid_nft_tooltip": {
     "message": "入札が受け入れられると、NFTがウォレットに反映されます。"
   },
@@ -10313,18 +10316,6 @@
   "statusNotConnected": {
     "message": "未接続"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "このトラストラインの追加中に問題が発生しました。もう一度お試しください。",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "このトラストラインの削除中に問題が発生しました。もう一度お試しください。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "ウォレットにはまだ$1 $2が残っています。Stellarでこの資産を無効化する前に、すべて使用するか、他の通貨に交換する必要があります。",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "$1に引き続き接続中です...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10479,10 +10470,6 @@
   },
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
-  },
-  "swapDetailsTitle": {
-    "message": "スワップの詳細",
-    "description": "Title for the modal showing details about a swap transaction."
   },
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
@@ -10688,10 +10675,6 @@
   "swapTokenNotAvailable": {
     "message": "この地域ではトークンのスワップが行えません"
   },
-  "swapTokenToToken": {
-    "message": "$1を$2にスワップ",
-    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
-  },
   "swapTokens": {
     "message": "トークンをスワップ"
   },
@@ -10842,6 +10825,9 @@
   "tokenDecimal": {
     "message": "トークンの小数桁数"
   },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0～36の整数を入力してください。"
+  },
   "tokenDetails": {
     "message": "トークンの詳細"
   },
@@ -10966,10 +10952,6 @@
   "transactionIncludesTypes": {
     "message": "このトランザクションには$1が含まれています。"
   },
-  "transactionProtectedByEnforcedSimulations": {
-    "message": "このトランザクションは保護されました。予期せぬ資金の損失を防ぐため、トランザクションがキャンセルされました。",
-    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
-  },
   "transactionSettings": {
     "message": "トランザクション設定"
   },
@@ -10978,10 +10960,6 @@
   },
   "transactionSubmitted": {
     "message": "トランザクションが送信されました"
-  },
-  "transactionTotalGasFee": {
-    "message": "ガス代合計",
-    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactions": {
     "message": "トランザクション"
@@ -11308,9 +11286,6 @@
     "message": "$1で表示",
     "description": "$1 is the block explorer name"
   },
-  "viewDetails": {
-    "message": "詳細を表示"
-  },
   "viewOnBlockExplorer": {
     "message": "ブロックエクスプローラーで表示"
   },
@@ -11426,12 +11401,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "willApproveAmountForBridging": {
-    "message": "ブリッジ用にトークンを承認します。"
-  },
-  "willApproveAmountForSwapping": {
-    "message": "トークンのスワップを承認"
   },
   "withdrawTo": {
     "message": "受取",

@@ -29,7 +29,11 @@ const createEmptyCode = () => new Array<string>(CODE_LENGTH).fill('');
 const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
   QR_SYNC_TIMEOUT_MS.MWP_SESSION_TIMEOUT / 1000;
 
-const EnterVerificationCode = () => {
+type EnterVerificationCodeProps = {
+  onRestart: () => void;
+};
+
+const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
   const t = useI18nContext();
   const qrSyncError = useSelector(selectQrSyncError);
   const hasMaxedOutAttempts =
@@ -186,13 +190,6 @@ const EnterVerificationCode = () => {
     [],
   );
 
-  const onRestart = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
-  }, []);
-
   let errorMessage: string | null = null;
   if (isExpired) {
     errorMessage = t('enter_verification_code_expired');
@@ -227,7 +224,6 @@ const EnterVerificationCode = () => {
           <Input
             // The list is a fixed-length set of positional inputs, so the
             // index is a stable identity here.
-            // eslint-disable-next-line react/no-array-index-key
             key={`verification-code-${index}`}
             ref={(ref) => {
               inputRefs.current[index] = ref;
@@ -263,7 +259,10 @@ const EnterVerificationCode = () => {
           {errorMessage}
         </Text>
         {errorMessage && (
-          <TextButton onClick={onRestart}>
+          <TextButton
+            data-testid="qr-sync-start-with-new-qr-code"
+            onClick={onRestart}
+          >
             {t('start_with_new_qr_code')}
           </TextButton>
         )}

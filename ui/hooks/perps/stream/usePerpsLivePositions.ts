@@ -33,7 +33,6 @@ const EMPTY_POSITIONS: Position[] = [];
  * @returns Object containing positions array and loading state
  */
 export function usePerpsLivePositions(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLivePositionsOptions = {},
 ): UsePerpsLivePositionsReturn {
   const { data: positions, isInitialLoading } = usePerpsChannel(

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
+  BitcoinNode,
   bitcoinToSatoshis,
   createEsploraTransaction,
   scriptPubKeyToScriptHash,
@@ -20,6 +21,14 @@ describe('BitcoinNode helpers', () => {
         ),
       ).toBe(
         '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721',
+      );
+    });
+  });
+
+  describe('getBlockHash', () => {
+    it('returns the mainnet genesis hash for height zero', async () => {
+      await expect(new BitcoinNode().getBlockHash(0)).resolves.toBe(
+        '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
       );
     });
   });

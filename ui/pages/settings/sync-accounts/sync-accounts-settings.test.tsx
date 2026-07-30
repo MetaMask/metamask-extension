@@ -157,11 +157,37 @@ describe('SyncAccountsSettings', () => {
     expect(screen.getByTestId('loading-step')).toBeInTheDocument();
   });
 
-  it('creates a QR sync session when mounted in the idle phase', async () => {
+  it('reconciles and creates a QR sync session when mounted in the idle phase', async () => {
     const store = configureMockStore([thunk])(qrSyncState);
     renderWithProvider(<SyncAccountsSettings />, store);
 
     await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:cancelSync', []],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:createSession', []],
+      );
+    });
+  });
+
+  it('reconciles and creates a QR sync session when mounted with a stale displaying-qr phase', async () => {
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.DISPLAYING_QR,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:cancelSync', []],
+      );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
         ['QrSyncController:createSession', []],
@@ -277,6 +303,10 @@ describe('SyncAccountsSettings', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'messengerCall',
         ['QrSyncController:cancelSync', []],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'messengerCall',
+        ['QrSyncController:createSession', []],
       );
     });
     expect(mockNavigate).not.toHaveBeenCalled();

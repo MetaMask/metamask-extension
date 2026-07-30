@@ -31,7 +31,13 @@ import {
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -47,12 +53,11 @@ import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import { ActivityList as ActivityListV2 } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
+import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -72,7 +77,6 @@ import {
   getAssetsBySelectedAccountGroup,
   getMultichainNativeAssetType,
 } from '../../../selectors/assets';
-import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import {
   getImageForChainId,
   getMultichainIsTestnet,
@@ -87,6 +91,8 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
@@ -97,10 +103,13 @@ import {
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
+import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
+import { AssetActivateCard } from './asset-activation-card';
+import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
@@ -122,30 +131,57 @@ const AssetPage = ({
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
-  const caipChainId = isCaipChainId(asset.chainId)
-    ? asset.chainId
-    : formatChainIdToCaip(asset.chainId);
-  const selectedAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  const caipChainId = useMemo(
+    () =>
+      isCaipChainId(asset.chainId)
+        ? asset.chainId
+        : formatChainIdToCaip(asset.chainId),
+    [asset.chainId],
+  );
+  const selectSelectedAccount = useMemo(
+    () =>
+      (
+        state: Parameters<
+          typeof getInternalAccountBySelectedAccountGroupAndCaip
+        >[0],
+      ) =>
+        getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
+    [caipChainId],
+  );
+  const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
   }, []);
 
   const { chainId, type, symbol, name, image } = asset;
+  const tokenAddress =
+    asset.type === AssetType.token ? asset.address : undefined;
+  const aggregators =
+    asset.type === AssetType.token ? asset.aggregators : undefined;
 
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, chainId),
+  const selectIsSwapsChain = useMemo(
+    () => (state: Parameters<typeof getIsSwapsChain>[0]) =>
+      getIsSwapsChain(state, chainId),
+    [chainId],
   );
+  const isSwapsChain = useSelector(selectIsSwapsChain);
+  const selectIsBridgeChain = useMemo(
+    () => (state: Parameters<typeof getIsBridgeChain>[0]) =>
+      getIsBridgeChain(state, chainId),
+    [chainId],
+  );
+  const isBridgeChain = useSelector(selectIsBridgeChain);
 
-  const isSigningEnabled =
-    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-    selectedAccount.type === TrxAccountType.Eoa;
+  const isSigningEnabled = useMemo(
+    () =>
+      selectedAccount.methods.includes(EthMethod.SignTransaction) ||
+      selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
+      selectedAccount.methods.includes(SolMethod.SignTransaction) ||
+      selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
+      selectedAccount.type === TrxAccountType.Eoa,
+    [selectedAccount.methods, selectedAccount.type],
+  );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -159,10 +195,6 @@ const AssetPage = ({
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
-  const isActivityListRedesignEnabled = useSelector(
-    getIsActivityListRedesignEnabled,
-  );
-
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -170,27 +202,30 @@ const AssetPage = ({
     getCompletedMetaMetricsOnboarding,
   );
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = useMemo(
+    () => completedMetaMetricsOnboarding && isOptedIn,
+    [completedMetaMetricsOnboarding, isOptedIn],
+  );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const analyticsId = useSelector(getAnalyticsId);
 
   let address =
     (() => {
-      if (type === AssetType.token) {
-        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      if (tokenAddress) {
+        return isEvm ? toChecksumHexAddress(tokenAddress) : tokenAddress;
       }
       return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
-  const contractAddress = (() => {
-    if (shouldShowContractAddress) {
+  const contractAddress = useMemo(() => {
+    if (shouldShowContractAddress && tokenAddress) {
       return isEvm
-        ? toChecksumHexAddress(asset.address)
+        ? toChecksumHexAddress(tokenAddress)
         : parseCaipAssetType(address as CaipAssetType).assetReference;
     }
     return '';
-  })();
+  }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
   const { currentPrice } = useCurrentPrice(asset);
 
@@ -238,7 +273,12 @@ const AssetPage = ({
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
 
-  const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
+  const selectBip44Asset = useMemo(
+    () => (state: Parameters<typeof getAsset>[0]) =>
+      getAsset(state, address, chainId),
+    [address, chainId],
+  );
+  const bip44Asset = useSelector(selectBip44Asset);
   const rwaData =
     assetWithBalance?.rwaData ?? bip44Asset?.rwaData ?? asset.rwaData;
   const updatedAsset: Asset = {
@@ -251,32 +291,66 @@ const AssetPage = ({
     },
   };
 
-  const tokenWithFiatAmount = {
-    address: isEvm ? address : assetId,
-    chainId,
-    symbol,
-    image,
-    title: name ?? symbol,
-    tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-    string: balance ? balance.toString() : '',
-    decimals: asset.decimals,
-    aggregators:
-      type === AssetType.token && asset.aggregators ? asset.aggregators : [],
-    isNative: type === AssetType.native,
-    balance,
-    secondary: balance ? Number(balance) : 0,
-    accountType: bip44Asset?.accountType,
-    assetId: bip44Asset?.assetId ?? assetId,
-    rwaData,
-  };
+  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+
+  const isAssetInactive = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId: resolvedAssetId,
+    }),
+  );
+
+  const spendableBalanceData = useSpendableBalance({
+    assetId: resolvedAssetId,
+  });
+  const showSpendableBalance = spendableBalanceData.hasSpendableBalance;
+
+  const tokenWithFiatAmount = useMemo(
+    () => ({
+      address: isEvm ? address : assetId,
+      chainId,
+      symbol,
+      image,
+      title: name ?? symbol,
+      tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+      string: balance ? balance.toString() : '',
+      decimals: asset.decimals,
+      aggregators: aggregators ?? [],
+      isNative: type === AssetType.native,
+      balance,
+      secondary: balance ? Number(balance) : 0,
+      accountType: bip44Asset?.accountType,
+      assetId: bip44Asset?.assetId ?? assetId,
+      rwaData,
+    }),
+    [
+      isEvm,
+      address,
+      assetId,
+      chainId,
+      symbol,
+      image,
+      name,
+      showFiat,
+      tokenFiatAmount,
+      balance,
+      asset.decimals,
+      aggregators,
+      type,
+      bip44Asset,
+      rwaData,
+    ],
+  );
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName =
-    name && symbol && name !== symbol
-      ? `${name} (${symbol})`
-      : (name ?? symbol);
+  const assetDisplayName = useMemo(
+    () =>
+      name && symbol && name !== symbol
+        ? `${name} (${symbol})`
+        : (name ?? symbol),
+    [name, symbol],
+  );
   const assetNameElement = (
     <Text
       variant={TextVariant.BodyMd}
@@ -294,11 +368,14 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
-  const isMusdAssetPage =
-    type === AssetType.token &&
-    isEvm &&
-    isMusdToken((asset as { address?: Hex }).address) &&
-    isMusdFlowEnabled;
+  const isMusdAssetPage = useMemo(
+    () =>
+      type === AssetType.token &&
+      isEvm &&
+      isMusdToken((asset as { address?: Hex }).address) &&
+      isMusdFlowEnabled,
+    [type, isEvm, asset, isMusdFlowEnabled],
+  );
 
   const {
     aggregatedFiat: aggregatedMusdFiat,
@@ -306,9 +383,9 @@ const AssetPage = ({
   } = useMusdMerklPosition(isMusdAssetPage);
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
-  const handleOpenMarketClosedModal = () => {
+  const handleOpenMarketClosedModal = useCallback(() => {
     setIsMarketClosedModalOpen(true);
-  };
+  }, []);
 
   return (
     <Box className="asset__content">
@@ -332,11 +409,24 @@ const AssetPage = ({
         </Box>
         {optionsButton}
       </Box>
+      {isAssetInactive && (
+        <AssetActivateCard
+          asset={tokenAsset as Asset}
+          chainName={networkName}
+        />
+      )}
       <Box paddingLeft={4}>
-        {isStockToken ? (
+        {isStockToken || isAssetInactive ? (
           <Box alignItems={BoxAlignItems.Center} gap={2}>
             {assetNameElement}
-            <StockBadge isMarketClosed={isMarketClosed} />
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+              {isAssetInactive && <AssetInactiveBadge />}
+            </Box>
           </Box>
         ) : (
           assetNameElement
@@ -433,7 +523,17 @@ const AssetPage = ({
               className="asset-page__divider"
             />
           </>
-        ) : (
+        ) : null}
+        {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
+          <SpendableBalanceSection
+            minimumReserveBalance={spendableBalanceData.minimumReserveBalance}
+            spendableBalance={spendableBalanceData.spendableBalance}
+            totalBalance={String(balance)}
+            symbol={symbol}
+            fiatValue={showFiat ? tokenFiatAmount : null}
+          />
+        ) : null}
+        {!isMusdAssetPage && !showSpendableBalance ? (
           <>
             <Text
               variant={TextVariant.HeadingSm}
@@ -450,7 +550,7 @@ const AssetPage = ({
               />
             )}
           </>
-        )}
+        ) : null}
         {/* mUSD Conversion CTA - shows for eligible stablecoins */}
         {!isNativeAsset(updatedAsset) &&
           type === AssetType.token &&
@@ -537,7 +637,7 @@ const AssetPage = ({
                             {asset.decimals}
                           </Text>,
                         )}
-                      {asset.aggregators && asset.aggregators.length > 0 && (
+                      {aggregators && aggregators.length > 0 && (
                         <Box>
                           <Text
                             variant={TextVariant.BodyMd}
@@ -550,7 +650,7 @@ const AssetPage = ({
                             variant={TextVariant.BodyMd}
                             fontWeight={FontWeight.Medium}
                           >
-                            {asset.aggregators
+                            {aggregators
                               .map((agg) =>
                                 agg.replace(/^metamask$/iu, 'MetaMask'),
                               )
@@ -587,23 +687,10 @@ const AssetPage = ({
             >
               {t('yourActivity')}
             </Text>
-            {isActivityListRedesignEnabled && caipAssetId ? (
-              <ActivityListV3
+            {caipAssetId && (
+              <ActivityList
                 filter={{
                   assetId: caipAssetId,
-                }}
-              />
-            ) : (
-              <ActivityListV2
-                filter={{
-                  chainId: caipChainId,
-                  assetScope:
-                    type === AssetType.native
-                      ? {
-                          kind: 'native',
-                          ...(!isEvm && { caipAssetType: address }),
-                        }
-                      : { kind: 'token', tokenAddress: address },
                 }}
               />
             )}

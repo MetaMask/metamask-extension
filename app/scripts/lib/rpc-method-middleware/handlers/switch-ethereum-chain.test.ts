@@ -175,8 +175,8 @@ describe('switchEthereumChainHandler', () => {
 
   it('tries to switch the network', async () => {
     const { mocks, end, handler } = createMockedHandler();
-    mocks.getNetworkConfigurationByChainId = jest
-      .fn()
+    jest
+      .mocked(mocks.getNetworkConfigurationByChainId)
       .mockReturnValueOnce(createMockMainnetConfiguration())
       .mockReturnValueOnce(createMockLineaMainnetConfiguration());
     await handler({

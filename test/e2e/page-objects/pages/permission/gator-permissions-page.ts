@@ -5,12 +5,12 @@ import { Driver } from '../../../webdriver/driver';
  * This page shows permission categories (Sites and Assets) when Gator Permissions feature is enabled.
  */
 class GatorPermissionsPage {
-  private driver: Driver;
-
   private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
 
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
+
+  private driver: Driver;
 
   private readonly gatorPermissionsPage =
     '[data-testid="gator-permissions-page"]';
@@ -19,16 +19,6 @@ class GatorPermissionsPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * Check if the Gator Permissions page is displayed.
-   * Useful for flow logic to detect whether we landed on this intermediate page.
-   */
-  async isPageDisplayed(): Promise<boolean> {
-    return await this.driver.isElementPresentAndVisible(
-      this.gatorPermissionsPage,
-    );
   }
 
   /**
@@ -69,6 +59,16 @@ class GatorPermissionsPage {
   async clickSites(): Promise<void> {
     console.log('Click Sites on Gator Permissions page');
     await this.driver.clickElement(this.sitesButton);
+  }
+
+  /**
+   * Check if the Gator Permissions page is displayed.
+   * Useful for flow logic to detect whether we landed on this intermediate page.
+   */
+  async isPageDisplayed(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.gatorPermissionsPage,
+    );
   }
 }
 

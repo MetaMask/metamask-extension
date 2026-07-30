@@ -22,7 +22,6 @@ export type TotalRowProps = {
   variant?: ConfirmInfoRowSize;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TotalRow({
   variant = ConfirmInfoRowSize.Default,
 }: TotalRowProps) {
