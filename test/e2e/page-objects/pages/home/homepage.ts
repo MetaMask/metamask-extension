@@ -17,9 +17,8 @@ export type CheckExpectedBalanceOptions = {
   timeout?: number;
 };
 
-// TODO: Remove this widened wait once #43958 completes the Solana discovery
-// mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
+// Non-EVM account icons can take longer than the default 10s selector wait
+// while Snap discovery / account tree setup finishes.
 const NON_EVM_ICON_TIMEOUT = 20_000;
 
 class HomePage {
@@ -223,8 +222,6 @@ class HomePage {
 
   async waitForNonEvmAccountsLoaded(): Promise<void> {
     console.log('Waiting for Non EVM account icons to be visible');
-    // See the removal TODO on `NON_EVM_ICON_TIMEOUT`. Still polled: returns
-    // as soon as the icons render.
     await this.driver.waitForSelector(this.solanaAccountIcon, {
       timeout: NON_EVM_ICON_TIMEOUT,
     });

@@ -880,8 +880,24 @@ function tryFromLedgerErrorMessage(
     return null;
   }
 
-  // Status code may be in the message, e.g. "Device is locked (... (0x5515))"
   const errorMessage = getErrorMessage(error);
+  const normalizedMessage = errorMessage.toLowerCase();
+
+  // Chrome runtime / offscreen bridge unavailable (DMK or legacy path).
+  if (
+    normalizedMessage.includes('receiving end does not exist') ||
+    normalizedMessage.includes('could not establish connection') ||
+    normalizedMessage.includes('offscreen document is not available')
+  ) {
+    return createHardwareWalletError(
+      ErrorCode.ConnectionTransportMissing,
+      walletType,
+      'Ledger hardware wallet service is not available. Please try again.',
+      { cause: getErrorCause(error) },
+    );
+  }
+
+  // Status code may be in the message, e.g. "Device is locked (... (0x5515))"
   const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
   if (!hexStatusCode) {
     return null;

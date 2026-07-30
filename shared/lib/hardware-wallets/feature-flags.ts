@@ -1,3 +1,5 @@
+import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
+
 /**
  * Hardware Wallet Feature Flag constants.
  *
@@ -18,3 +20,18 @@
  * extension version meets `minimumVersion`.
  */
 export const ENABLE_DMK_FEATURE_FLAG = 'ledgerDmk';
+
+/**
+ * Resolves whether the Ledger DMK remote feature flag is enabled.
+ *
+ * @param remoteFeatureFlags - Remote feature flag map (controller or Redux).
+ * @returns True when `ledgerDmk` is enabled for the current extension version.
+ */
+export function isDmkFeatureEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined | null,
+): boolean {
+  return getBooleanFeatureFlag(
+    remoteFeatureFlags?.[ENABLE_DMK_FEATURE_FLAG],
+    false,
+  );
+}
