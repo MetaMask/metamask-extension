@@ -1142,7 +1142,8 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/client-utils>@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
