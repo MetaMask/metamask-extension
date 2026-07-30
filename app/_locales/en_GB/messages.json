@@ -8195,6 +8195,14 @@
   "rampsOrderDetailsOrderId": {
     "message": "Order ID"
   },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Paid with",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "$1 fee",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
   "rampsOrderDetailsTotal": {
     "message": "Total"
   },

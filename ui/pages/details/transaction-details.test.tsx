@@ -46,21 +46,10 @@ describe('TransactionDetails', () => {
       orders: [],
       getOrderById: (id: string) =>
         id === 'c-28ac6e008a0311f1b2c79d79967cd671'
-          ? ({
-              providerOrderId: id,
-              providerOrderLink: '',
-              cryptoAmount: 0,
-              fiatAmount: 0,
-              totalFeesFiat: 0,
-              txHash: '',
-              walletAddress: '0xabc',
-              createdAt: 1,
-              status: 'PENDING',
-              network: { name: 'Ethereum', chainId: 'eip155:1' },
-              orderType: 'BUY',
-            } as never)
+          ? ({ providerOrderId: id } as never)
           : undefined,
       addOrder: jest.fn(),
+      addPrecreatedOrder: jest.fn(),
       removeOrder: jest.fn(),
       refreshOrder: jest.fn(),
       getOrderFromCallback: jest.fn(),
@@ -85,6 +74,7 @@ describe('TransactionDetails', () => {
       orders: [],
       getOrderById: () => undefined,
       addOrder: jest.fn(),
+      addPrecreatedOrder: jest.fn(),
       removeOrder: jest.fn(),
       refreshOrder: jest.fn(),
       getOrderFromCallback: jest.fn(),

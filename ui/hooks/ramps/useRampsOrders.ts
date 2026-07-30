@@ -7,15 +7,24 @@ import {
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
 import {
   addRampsOrder,
+  addRampsPrecreatedOrder,
   getRampsOrderFromCallback,
   refreshRampsOrder,
   removeRampsOrder,
 } from '../../store/controller-actions/ramps-controller';
 
+export type AddPrecreatedOrderParams = {
+  orderId: string;
+  providerCode: string;
+  walletAddress: string;
+  chainId?: string;
+};
+
 export type UseRampsOrdersResult = {
   orders: RampsOrder[];
   getOrderById: (providerOrderId: string) => RampsOrder | undefined;
   addOrder: (order: RampsOrder) => Promise<void>;
+  addPrecreatedOrder: (params: AddPrecreatedOrderParams) => Promise<void>;
   removeOrder: (providerOrderId: string) => Promise<void>;
   refreshOrder: (
     providerCode: string,
@@ -42,6 +51,11 @@ export function useRampsOrders(): UseRampsOrdersResult {
 
   const addOrder = useCallback((order: RampsOrder) => addRampsOrder(order), []);
 
+  const addPrecreatedOrder = useCallback(
+    (params: AddPrecreatedOrderParams) => addRampsPrecreatedOrder(params),
+    [],
+  );
+
   const removeOrder = useCallback(
     (providerOrderId: string) =>
       removeRampsOrder(getInternalOrderCode(providerOrderId)),
@@ -64,6 +78,7 @@ export function useRampsOrders(): UseRampsOrdersResult {
     orders,
     getOrderById,
     addOrder,
+    addPrecreatedOrder,
     removeOrder,
     refreshOrder,
     getOrderFromCallback,

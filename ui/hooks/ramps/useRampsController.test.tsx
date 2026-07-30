@@ -12,6 +12,7 @@ jest.mock('../../store/controller-actions/ramps-controller', () => ({
   getRampsQuotes: jest.fn(),
   getRampsBuyWidgetData: jest.fn(),
   addRampsOrder: jest.fn(),
+  addRampsPrecreatedOrder: jest.fn(),
   removeRampsOrder: jest.fn(),
   refreshRampsOrder: jest.fn(),
   getRampsOrderFromCallback: jest.fn(),

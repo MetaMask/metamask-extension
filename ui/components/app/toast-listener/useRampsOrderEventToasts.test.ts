@@ -39,8 +39,35 @@ describe('useRampsOrderEventToasts', () => {
     clearToastPhase('order-1');
   });
 
-  it('shows a pending toast when a new pending order is added', () => {
+  it('does not toast when a precreated order is first seeded', () => {
     const { rerender } = renderHook(() => useRampsOrderEventToasts());
+
+    act(() => {
+      mockOrders = [
+        {
+          providerOrderId: 'order-1',
+          status: RampsOrderStatus.Precreated,
+        },
+      ];
+      rerender();
+    });
+
+    expect(showPendingToast).not.toHaveBeenCalled();
+  });
+
+  it('shows a pending toast when an order leaves PRECREATED', () => {
+    mockOrders = [
+      {
+        providerOrderId: 'order-1',
+        status: RampsOrderStatus.Precreated,
+      },
+    ];
+    const { rerender } = renderHook(() => useRampsOrderEventToasts());
+
+    // Seed previous map on first pass after mount with the precreated order.
+    act(() => {
+      rerender();
+    });
 
     act(() => {
       mockOrders = [

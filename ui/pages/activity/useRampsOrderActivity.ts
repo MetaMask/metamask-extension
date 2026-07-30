@@ -1,20 +1,23 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapRampsOrder } from '@metamask/client-utils';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
+import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
 import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
+
+const BUY_SELL_TYPES = new Set(['rampBuy', 'rampSell']);
 
 export function useRampsOrderActivity(filters: ActivityListFilter) {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);
   const assetId = 'assetId' in filters ? filters.assetId : undefined;
   const networks = 'networks' in filters ? filters.networks : undefined;
+  const kindFilter = 'kindFilter' in filters ? filters.kindFilter : undefined;
 
   // Hidden statuses / excludeFromPurchases are filtered by mapRampsOrder.
   const items = useMemo(
     () =>
       orders
-        .map((order) => mapRampsOrder(order))
-        .filter((item) => item !== null),
+        .map((order) => mapRampsOrderSafely(order))
+        .filter((item) => item !== undefined),
     [orders],
   );
 
@@ -28,8 +31,14 @@ export function useRampsOrderActivity(filters: ActivityListFilter) {
     }
 
     const selectedNetworks = new Set(networks);
-    return items.filter(
-      (item) => item.chainId && selectedNetworks.has(item.chainId),
-    );
-  }, [assetId, items, networks]);
+    return items.filter((item) => {
+      if (!item.chainId || !selectedNetworks.has(item.chainId)) {
+        return false;
+      }
+      if (kindFilter === 'buySell') {
+        return BUY_SELL_TYPES.has(item.type);
+      }
+      return true;
+    });
+  }, [assetId, items, kindFilter, networks]);
 }

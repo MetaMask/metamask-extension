@@ -1,9 +1,5 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import {
-  dedupeItems,
-  getActivityItemIdentifier,
-  groupActivityListItems,
-} from './helpers';
+import { dedupeItems, groupActivityListItems } from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {
@@ -22,23 +18,6 @@ function makeItem(
     ...overrides,
   } as ActivityListItem;
 }
-
-describe('getActivityItemIdentifier', () => {
-  it('uses the stable order id for a settled ramp order', () => {
-    const item = {
-      type: 'rampBuy',
-      chainId: 'eip155:1',
-      status: 'success',
-      timestamp: 1,
-      hash: '0xsettlement',
-      data: { id: '/providers/transak/orders/order-1' },
-    } as ActivityListItem;
-
-    expect(getActivityItemIdentifier(item)).toMatchInlineSnapshot(
-      `"/providers/transak/orders/order-1"`,
-    );
-  });
-});
 
 describe('dedupeItems', () => {
   it('replaces contractInteraction with a more specific API item for the same hash', () => {

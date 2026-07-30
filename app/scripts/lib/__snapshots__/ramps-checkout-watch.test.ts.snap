@@ -1,13 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createWatchRampsCheckoutTab logs when the callback order cannot be resolved 1`] = `
-{
-  "addOrderCalls": [],
-  "errorCalls": [
-    [
-      "Failed to resolve ramps order from callback",
-      [Error: callback lookup failed],
-    ],
+exports[`createWatchRampsCheckoutTab restores the precreated stub when the callback order cannot be resolved 1`] = `
+[
+  [
+    {
+      "providerOrderId": "c-custom",
+      "status": "PENDING",
+      "walletAddress": "0xabc",
+    },
   ],
-}
+  [
+    {
+      "providerOrderId": "c-custom",
+      "status": "PRECREATED",
+      "walletAddress": "0xabc",
+    },
+  ],
+]
 `;

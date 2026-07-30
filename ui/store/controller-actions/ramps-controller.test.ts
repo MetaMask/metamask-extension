@@ -1,6 +1,7 @@
 import * as BackgroundConnectionModule from '../background-connection';
 import {
   addRampsOrder,
+  addRampsPrecreatedOrder,
   getRampsBuyWidgetData,
   getRampsOrderFromCallback,
   getRampsPaymentMethods,
@@ -36,6 +37,12 @@ describe('ramps-controller actions', () => {
     };
     const quote = { id: 'quote-1' } as never;
     const order = { id: 'order-1', providerOrderId: 'abc' } as never;
+    const precreatedOrderParams = {
+      orderId: 'order-1',
+      providerCode: 'transak',
+      walletAddress: '0xabc',
+    };
+
     await setRampsUserRegion('us-ca', { forceRefresh: true });
     await setRampsSelectedToken('eip155:1/erc20:0x0');
     await setRampsSelectedProvider('transak', { autoSelected: true });
@@ -50,6 +57,7 @@ describe('ramps-controller actions', () => {
     });
     await getRampsQuotes(quoteParams);
     await getRampsBuyWidgetData(quote);
+    await addRampsPrecreatedOrder(precreatedOrderParams);
     await addRampsOrder(order);
     await removeRampsOrder('order-1');
     await refreshRampsOrder('transak', 'order-1', '0xabc');

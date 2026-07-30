@@ -77,4 +77,29 @@ describe('useRampsOrderActivity', () => {
 
     expect(result.current).toHaveLength(1);
   });
+
+  it('does not use the array index as a fallback chainId for a not-yet-populated order', () => {
+    // A freshly precreated order (e.g. MoonPay's PRECREATED state) has no
+    // network yet. Placed at index 1, Array.map would previously pass the
+    // index (1) as mapRampsOrderSafely's fallbackChainId, silently mapping
+    // it to eip155:1 (Ethereum Mainnet) instead of dropping it.
+    const precreatedOrder = {
+      ...buyOrderData,
+      providerOrderId: 'order-2',
+      network: null,
+      cryptoCurrency: null,
+      status: 'PRECREATED',
+    };
+    const store = createRampsMockStore({
+      orders: [buyOrder, precreatedOrder],
+    });
+
+    const { result } = renderHook(
+      () => useRampsOrderActivity({ networks: ['eip155:1'] }),
+      { wrapper: createRampsTestWrapper(store) },
+    );
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toMatchObject({ data: { id: 'order-1' } });
+  });
 });
