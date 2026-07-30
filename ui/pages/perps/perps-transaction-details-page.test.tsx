@@ -350,6 +350,40 @@ describe('PerpsTransactionDetailsPage', () => {
         screen.queryByText(messages.perpsEntryPrice.message),
       ).not.toBeInTheDocument();
     });
+
+    // `transformFillsToTransactions` sets `fill.action` to `'Sold'` (spot/
+    // prelaunch closes) or `'Flipped'` (flipping a position) for fills that
+    // are still `category: 'position_close'`. The price row label must key
+    // off `transaction.category` (the same signal `showPnl` uses), not
+    // `fill.action`, so these close-like fills are still labeled "Close
+    // price" rather than "Entry price".
+    // @ts-expect-error: each is a valid test function in jest
+    it.each(['Sold', 'Flipped'])(
+      'labels the price row "Close price" for a position_close fill with action %s',
+      (action: string) => {
+        const baseTransaction = findTransaction('tx-002');
+        const baseFill = baseTransaction.fill;
+        if (!baseFill) {
+          throw new Error('tx-002 fixture is missing a fill');
+        }
+        const transaction: PerpsTransaction = {
+          ...baseTransaction,
+          fill: {
+            ...baseFill,
+            action,
+          },
+        };
+
+        renderWithTransaction(transaction);
+
+        expect(
+          screen.getByText(messages.perpsClosePrice.message),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByText(messages.perpsEntryPrice.message),
+        ).not.toBeInTheDocument();
+      },
+    );
   });
 
   describe('trade transaction without realized PnL (tx-001)', () => {

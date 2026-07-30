@@ -168,7 +168,9 @@ const TradeDetailRows = ({
     <>
       <Row
         label={
-          fill.action === 'Closed' ? t('perpsClosePrice') : t('perpsEntryPrice')
+          transaction.category === 'position_close'
+            ? t('perpsClosePrice')
+            : t('perpsEntryPrice')
         }
         value={formatPerpsFiatUniversal(fill.entryPrice)}
       />
