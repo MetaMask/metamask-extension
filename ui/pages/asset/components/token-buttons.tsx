@@ -29,8 +29,8 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
-import { AssetActivationErrorToast } from './asset-activation-error-toast';
 import { useDispatch } from '../../../store/hooks';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -158,7 +158,7 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.Arrow2UpRight}
+              name={IconName.Dollar}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
@@ -166,8 +166,6 @@ const TokenButtons = ({
           label={t('buy')}
           data-testid="token-overview-buy"
           onClick={handleBuyAndSellOnClick}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={token.isERC721}
         />
 
@@ -177,7 +175,7 @@ const TokenButtons = ({
             onClick={handleSendOnClick}
             Icon={
               <Icon
-                name={IconName.Send}
+                name={IconName.Arrow2UpRight}
                 color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />

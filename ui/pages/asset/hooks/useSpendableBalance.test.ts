@@ -21,7 +21,7 @@ const STELLAR_NATIVE_ASSET_ID =
 
 describe('useSpendableBalance', () => {
   const getSpendableForAccountMock =
-    stellarAssetsSelectors.getSpendableForAccount as jest.Mock;
+    stellarAssetsSelectors.getSpendableForAccount as unknown as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();

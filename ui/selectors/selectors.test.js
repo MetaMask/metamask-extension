@@ -5260,3 +5260,22 @@ describe('getUnconnectedAccounts', () => {
     );
   });
 });
+
+describe('selectHasBatchSellQuotes', () => {
+  it('returns false when there are no quotes', () => {
+    const state = { metamask: { quotes: [] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns false when quotes exist but none came from batch sell', () => {
+    const state = {
+      metamask: { quotes: [{ featureId: 'unified_swap_bridge' }] },
+    };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns true when a quote came from batch sell', () => {
+    const state = { metamask: { quotes: [{ featureId: 'batch_sell' }] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(true);
+  });
+});
