@@ -6,8 +6,6 @@ import { RawLocator } from '../../common';
  * Used when user clicks "Speed up" or "Cancel" on a pending transaction in the activity list.
  */
 export default class SpeedUpAndCancelModal {
-  private driver: Driver;
-
   private readonly cancelTransactionTitle: RawLocator = {
     text: 'Cancel transaction',
   };
@@ -15,18 +13,20 @@ export default class SpeedUpAndCancelModal {
   private readonly confirmButton: RawLocator =
     '[data-testid="cancel-speedup-confirm-button"]';
 
+  private driver: Driver;
+
   private readonly modal: RawLocator =
     '[data-testid="speed-up-and-cancel-modal"]';
-
-  private readonly tenPercentText: RawLocator = {
-    text: '10% increase',
-  };
 
   private readonly speedRow: RawLocator =
     '[data-testid="gas-fee-details-speed"]';
 
   private readonly speedUpTransactionTitle: RawLocator = {
     text: 'Speed up transaction',
+  };
+
+  private readonly tenPercentText: RawLocator = {
+    text: '10% increase',
   };
 
   constructor(driver: Driver) {
