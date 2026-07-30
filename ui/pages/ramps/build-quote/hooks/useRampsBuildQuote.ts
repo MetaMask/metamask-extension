@@ -6,6 +6,7 @@ import {
   getInternalOrderCode,
   normalizeProviderCode,
 } from '@metamask/ramps-controller';
+import { sanitizeUrlPath } from '../../../../../shared/lib/ramps/url-path';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -25,7 +26,6 @@ import {
   removePendingOrderPreview,
   setPendingOrderPreview,
 } from '../../../../hooks/ramps/utils/pendingOrderPreview';
-import { sanitizeUrlPath } from '../../../../hooks/ramps/utils/sanitizeUrlPath';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
