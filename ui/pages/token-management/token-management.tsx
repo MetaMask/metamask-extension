@@ -26,7 +26,6 @@ import {
   TextAlign,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {

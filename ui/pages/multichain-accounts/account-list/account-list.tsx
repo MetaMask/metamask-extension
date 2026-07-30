@@ -20,7 +20,6 @@ import {
   Text,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 import { TextVariant } from '../../../helpers/constants/design-system';

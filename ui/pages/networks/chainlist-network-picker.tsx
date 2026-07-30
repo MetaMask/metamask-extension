@@ -9,7 +9,6 @@ import {
   Text,
   TextButton,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {

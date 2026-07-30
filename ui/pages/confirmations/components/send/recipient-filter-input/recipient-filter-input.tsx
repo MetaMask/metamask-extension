@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 

@@ -18,7 +18,6 @@ import {
   Text,
   TextColor,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';

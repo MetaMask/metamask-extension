@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
+import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
 
@@ -25,7 +25,6 @@ const NetworkListSearch = ({
         onFocus={() => setFocusSearch(true)}
         onChange={(event) => setSearchQuery(event.target.value)}
         placeholder={t('search')}
-        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>
