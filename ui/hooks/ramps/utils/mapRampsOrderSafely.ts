@@ -41,38 +41,6 @@ function seedNetworkIfNeeded(
   };
 }
 
-// Keyed by internal order code, holding the first valid ('buy'/'sell')
-// orderType seen for that order — see withStableOrderType below.
-const knownOrderTypes = new Map<string, 'buy' | 'sell'>();
-
-/**
- * Pins buy/sell direction to the first confirmed value for an order code.
- * Polling has been observed to flip `orderType` across fetches of the same
- * order, which flickered details between Buying/Selling. Casing and DEPOSIT
- * normalization stay in `mapRampsOrder`.
- *
- * @param order - The raw ramps order.
- * @returns The order with a stable `orderType` when previously confirmed.
- */
-function withStableOrderType(order: RampsOrder): RampsOrder {
-  const orderCode = getInternalOrderCode(order);
-  const normalized =
-    typeof order.orderType === 'string'
-      ? order.orderType.toLowerCase()
-      : undefined;
-  const currentType =
-    normalized === 'buy' || normalized === 'sell' ? normalized : undefined;
-  const knownType = knownOrderTypes.get(orderCode);
-
-  if (!knownType) {
-    if (currentType) {
-      knownOrderTypes.set(orderCode, currentType);
-    }
-    return order;
-  }
-  return currentType === knownType ? order : { ...order, orderType: knownType };
-}
-
 /**
  * Overlays build-quote preview amounts onto an order that still lacks
  * token/fiat fields. Real provider fields always win once populated.
@@ -104,8 +72,8 @@ function withPendingOrderPreview(order: RampsOrder): RampsOrder {
 
 /**
  * Thin extension adapter around shared `mapRampsOrder`. Applies only
- * extension-owned concerns (build-quote preview, poll orderType pinning,
- * details-route chain seed), then returns the shared ActivityItem unchanged.
+ * extension-owned concerns (build-quote preview, details-route chain seed),
+ * then returns the shared ActivityItem unchanged.
  *
  * @param order - The raw ramps order to map.
  * @param fallbackChainId - Optional chain for redirect stubs missing network.
@@ -116,8 +84,9 @@ export function mapRampsOrderSafely(
   fallbackChainId?: string,
 ): NonNullable<ReturnType<typeof mapRampsOrder>> | undefined {
   try {
-    const prepared = withStableOrderType(
-      seedNetworkIfNeeded(withPendingOrderPreview(order), fallbackChainId),
+    const prepared = seedNetworkIfNeeded(
+      withPendingOrderPreview(order),
+      fallbackChainId,
     );
     return mapRampsOrder(prepared as unknown as RampsOrderLike) ?? undefined;
   } catch {

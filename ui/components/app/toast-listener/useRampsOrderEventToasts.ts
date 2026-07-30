@@ -21,8 +21,6 @@ import {
   shouldShowTerminalToast,
 } from './toast-lifecycle';
 
-const ACTIVITY_BUY_SELL_FILTER = 'buySell';
-
 const TERMINAL_FAILED = new Set<RampsOrderStatus>([
   RampsOrderStatus.Failed,
   RampsOrderStatus.Cancelled,
@@ -37,10 +35,8 @@ const IN_PROGRESS = new Set<RampsOrderStatus>([
 
 const generateToastId = (orderCode: string) => `ramp-${orderCode}`;
 
-function navigateToBuySellActivity(navigate: ReturnType<typeof useNavigate>) {
-  navigate(ACTIVITY_ROUTE, {
-    state: { activityFilter: ACTIVITY_BUY_SELL_FILTER },
-  });
+function navigateToActivity(navigate: ReturnType<typeof useNavigate>) {
+  navigate(ACTIVITY_ROUTE);
 }
 
 /**
@@ -116,7 +112,7 @@ function handleOrderStatusChange({
   }
 
   const toastId = generateToastId(orderCode);
-  const onActionClick = () => navigateToBuySellActivity(navigate);
+  const onActionClick = () => navigateToActivity(navigate);
   const action = {
     actionText: t('rampsOrderToastView'),
     onActionClick,

@@ -113,38 +113,4 @@ describe('mapRampsOrderSafely', () => {
     expect(mapped?.data.token).toBeUndefined();
     expect(mapped?.data.fiat?.currency).toBeUndefined();
   });
-
-  it('pins orderType to the first confirmed value across conflicting polls', () => {
-    const buyOrder = {
-      ...baseOrder,
-      providerOrderId: 'pinned-order-1',
-      orderType: 'buy',
-    } as unknown as RampsOrder;
-
-    expect(mapRampsOrderSafely(buyOrder)?.type).toBe('rampBuy');
-
-    const sameOrderPolledAsSell = {
-      ...baseOrder,
-      providerOrderId: 'pinned-order-1',
-      orderType: 'sell',
-    } as unknown as RampsOrder;
-
-    expect(mapRampsOrderSafely(sameOrderPolledAsSell)?.type).toBe('rampBuy');
-  });
-
-  it('does not let one order code affect the pinned orderType of another', () => {
-    const buyOrder = {
-      ...baseOrder,
-      providerOrderId: 'pinned-order-buy',
-      orderType: 'buy',
-    } as unknown as RampsOrder;
-    const sellOrder = {
-      ...baseOrder,
-      providerOrderId: 'pinned-order-sell',
-      orderType: 'sell',
-    } as unknown as RampsOrder;
-
-    expect(mapRampsOrderSafely(buyOrder)?.type).toBe('rampBuy');
-    expect(mapRampsOrderSafely(sellOrder)?.type).toBe('rampSell');
-  });
 });

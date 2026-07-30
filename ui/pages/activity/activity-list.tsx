@@ -28,7 +28,6 @@ import {
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
-  type ActivityKindFilter,
   type ActivityListFilter,
 } from './helpers';
 import { useActivityScreenViewed } from './useActivityScreenViewed';
@@ -39,16 +38,13 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 62;
 const headerHeight = 40;
-const BUY_SELL_TYPES = new Set(['rampBuy', 'rampSell']);
 
 export function ActivityList({
   filter,
   entryPoint,
-  kindFilter,
 }: {
   filter?: ActivityListFilter;
   entryPoint?: ScreenViewedEntryPoint;
-  kindFilter?: ActivityKindFilter;
 } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -63,7 +59,6 @@ export function ActivityList({
   );
   const filters: ActivityListFilter = filter ?? {
     networks: deferredNetworks ?? [],
-    kindFilter,
   };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
@@ -82,13 +77,10 @@ export function ActivityList({
     // also surface as a generic local/API tx — dedupeItems keeps whichever
     // source it saw first for a given hash, and the ramp-specific view is
     // strictly more informative than the generic classification.
-    let items = dedupeItems(rampsItems, localItems, evmItems, nonEvmItems);
-    if (kindFilter === 'buySell') {
-      items = items.filter((item) => BUY_SELL_TYPES.has(item.type));
-    }
-
-    return groupActivityListItems(items);
-  }, [evmItems, kindFilter, localItems, nonEvmItems, rampsItems]);
+    return groupActivityListItems(
+      dedupeItems(rampsItems, localItems, evmItems, nonEvmItems),
+    );
+  }, [evmItems, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),

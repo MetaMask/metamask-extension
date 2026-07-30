@@ -173,14 +173,6 @@
   "activityEmptyNoFundsDescription": {
     "message": "Add funds to your wallet to get started."
   },
-  "activityFilterAll": {
-    "message": "All",
-    "description": "Activity list filter chip that shows all activity types"
-  },
-  "activityFilterBuySell": {
-    "message": "Buy/Sell",
-    "description": "Activity list filter chip that shows only ramp buy and sell orders"
-  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
