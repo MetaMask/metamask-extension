@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { TransactionDetails } from './transaction-details';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { useRampsOrders } from '../../hooks/ramps/useRampsOrders';
 import {
@@ -8,6 +7,7 @@ import {
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
+import { TransactionDetails } from './transaction-details';
 
 jest.mock('./components/header', () => ({
   Header: () => <div data-testid="header" />,
