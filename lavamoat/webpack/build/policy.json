@@ -1181,6 +1181,7 @@
     },
     "postcss-loader>cosmiconfig": {
       "builtin": {
+        "crypto.randomUUID": true,
         "fs": true,
         "fs/promises": true,
         "os": true,
@@ -1191,8 +1192,8 @@
         "process.cwd": true
       },
       "packages": {
-        "lockfile-lint>cosmiconfig>env-paths": true,
         "postcss-loader>cosmiconfig>env-paths": true,
+        "stylelint>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
         "postcss-loader>cosmiconfig>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
@@ -1420,7 +1421,16 @@
         "webpack>tapable": true
       }
     },
-    "lockfile-lint>cosmiconfig>env-paths": {
+    "postcss-loader>cosmiconfig>env-paths": {
+      "builtin": {
+        "os": true,
+        "path": true
+      },
+      "globals": {
+        "process.env": true
+      }
+    },
+    "stylelint>cosmiconfig>env-paths": {
       "builtin": {
         "os.homedir": true,
         "os.tmpdir": true,
@@ -1430,15 +1440,6 @@
       "globals": {
         "process.env": true,
         "process.platform": true
-      }
-    },
-    "postcss-loader>cosmiconfig>env-paths": {
-      "builtin": {
-        "os": true,
-        "path": true
-      },
-      "globals": {
-        "process.env": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -2404,12 +2405,14 @@
       "packages": {
         "css-loader>icss-utils": true,
         "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss-selector-parser": true,
         "stylelint>postcss-value-parser": true
       }
     },
     "css-loader>postcss-modules-scope": {
       "packages": {
-        "stylelint>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss-selector-parser": true
       }
     },
     "css-loader>postcss-modules-values": {
@@ -2420,7 +2423,7 @@
     "tailwindcss>postcss-nested": {
       "packages": {
         "postcss": true,
-        "stylelint>postcss-selector-parser": true
+        "tailwindcss>postcss-selector-parser": true
       }
     },
     "postcss-rtlcss": {
@@ -2430,6 +2433,12 @@
       }
     },
     "stylelint>postcss-selector-parser": {
+      "packages": {
+        "stylelint>postcss-selector-parser>cssesc": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "tailwindcss>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "@storybook/react>util-deprecate": true
@@ -2972,7 +2981,7 @@
         "postcss": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
-        "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss-selector-parser": true,
         "tailwindcss>sucrase": true
       }
     },

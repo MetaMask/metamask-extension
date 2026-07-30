@@ -1701,8 +1701,24 @@
     "message": "Activate $1 on $2 to get started.",
     "description": "Explainer for the trustline activation card. $1 is the token symbol and $2 is the chain name."
   },
+  "assetActivationError": {
+    "message": "Something went wrong while adding this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
+  },
+  "assetDeactivate": {
+    "message": "Remove",
+    "description": "Button label to deactivate an asset."
+  },
+  "assetDeactivationError": {
+    "message": "Something went wrong while removing this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
+  },
+  "assetDeactivationNonZeroBalanceError": {
+    "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "assetInactive": {
     "message": "Inactive",
@@ -7059,6 +7075,10 @@
   "perpsDateYesterday": {
     "message": "Yesterday"
   },
+  "perpsDepositEmptyTitle": {
+    "message": "Deposit",
+    "description": "Title shown for a wallet-tracked deposit transaction on the Activity page when the deposited amount is zero or unknown"
+  },
   "perpsDepositErrorBridgeFailed": {
     "message": "Bridge failed"
   },
@@ -7088,6 +7108,10 @@
   },
   "perpsDepositToastSuccessTitle": {
     "message": "Your Perps account was funded"
+  },
+  "perpsDepositedVerb": {
+    "message": "Deposited",
+    "description": "Verb shown in the title of a wallet-tracked deposit transaction on the Activity page, followed by the amount and asset (e.g. 'Deposited 5.00 USDC')"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -7498,11 +7522,17 @@
   "perpsStatusCompleted": {
     "message": "Completed"
   },
+  "perpsStatusFailed": {
+    "message": "Failed"
+  },
   "perpsStatusFilled": {
     "message": "Filled"
   },
   "perpsStatusOpen": {
     "message": "Open"
+  },
+  "perpsStatusPending": {
+    "message": "Pending"
   },
   "perpsStatusQueued": {
     "message": "Queued"
@@ -7738,6 +7768,9 @@
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
+  "perpsUnsupportedCollateral": {
+    "message": "This market uses unsupported collateral and can't be traded."
+  },
   "perpsWatchlist": {
     "message": "Watchlist"
   },
@@ -7817,6 +7850,14 @@
   "perpsWithdrawTooltip": {
     "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
     "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
+  },
+  "perpsWithdrawalEmptyTitle": {
+    "message": "Withdrawal",
+    "description": "Title shown for a wallet-tracked withdrawal transaction on the Activity page when the withdrawn amount is zero or unknown"
+  },
+  "perpsWithdrewVerb": {
+    "message": "Withdrew",
+    "description": "Verb shown in the title of a wallet-tracked withdrawal transaction on the Activity page, followed by the amount and asset (e.g. 'Withdrew 5.00 USDC')"
   },
   "perpsYouReceive": {
     "message": "You receive"
@@ -8204,6 +8245,9 @@
   "rampsBuyToken": {
     "message": "Buy $1",
     "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyWidgetError": {
+    "message": "Unable to start your purchase. Please try again."
   },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
@@ -10410,18 +10454,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "stellarClassicTrustlineAddError": {
-    "message": "Something went wrong while adding this trustline. Try again.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Something went wrong while removing this trustline. Try again.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "You still have $1 $2 in this wallet. You must send or swap it all before deactivating this asset on Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
   },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",

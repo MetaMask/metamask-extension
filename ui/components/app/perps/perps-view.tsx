@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   usePerpsLivePositions,
@@ -40,6 +40,7 @@ import {
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
 import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 import type { PerpsTransaction } from './types';
 import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
