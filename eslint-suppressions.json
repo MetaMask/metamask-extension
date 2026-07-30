@@ -469,11 +469,6 @@
       "count": 1
     }
   },
-  "ui/pages/notifications-settings/notifications-settings-allow-notifications.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/pages/shield/transaction-shield/shield-banner-animation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
