@@ -1,9 +1,11 @@
-import { Driver } from "../../../webdriver/driver";
+import { Driver } from '../../../webdriver/driver';
 
 class CustomTokenImportPage {
-  private readonly addressInput = '[data-testid="custom-token-import-address-input"]';
+  private readonly addressInput =
+    '[data-testid="custom-token-import-address-input"]';
 
-  private readonly backButton = '[data-testid="custom-token-import-back-button"]';
+  private readonly backButton =
+    '[data-testid="custom-token-import-back-button"]';
 
   private readonly driver: Driver;
 
@@ -11,7 +13,8 @@ class CustomTokenImportPage {
 
   private readonly pageSelector = '[data-testid="custom-token-import-page"]';
 
-  private readonly submitButton = '[data-testid="custom-token-import-submit-button"]';
+  private readonly submitButton =
+    '[data-testid="custom-token-import-submit-button"]';
 
   private readonly submitButtonEnabled =
     '[data-testid="custom-token-import-submit-button"]:not([disabled])';
@@ -21,12 +24,12 @@ class CustomTokenImportPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    console.log("Check that the Add Custom Token page is loaded");
+    console.log('Check that the Add Custom Token page is loaded');
     await this.driver.waitForSelector(this.pageSelector);
   }
 
   async goBackToHomepage(): Promise<void> {
-    console.log("Go back to homepage from the Add Custom Token page");
+    console.log('Go back to homepage from the Add Custom Token page');
     await this.driver.clickElement(this.backButton);
   }
 
@@ -47,10 +50,13 @@ class CustomTokenImportPage {
    * product clearFormData() (on selectedNetwork change) cannot wipe a fill.
    */
   async waitForAddressInputStable(): Promise<void> {
-    console.log("Waiting for custom token address input to be stable");
+    console.log('Waiting for custom token address input to be stable');
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.isElementPresentAndVisible(this.addressInput, 1000);
+        return await this.driver.isElementPresentAndVisible(
+          this.addressInput,
+          1000,
+        );
       },
       {
         timeout: this.driver.timeout,
