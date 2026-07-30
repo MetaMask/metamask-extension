@@ -1,11 +1,13 @@
 import { Driver } from '../../../webdriver/driver';
 
 class EditConnectedAccountsModal {
-  driver: Driver;
+  private readonly accountCell = '.multichain-account-cell';
 
   private readonly accountCheckbox = 'input[type="checkbox"]';
 
-  private readonly accountCell = '.multichain-account-cell';
+  private readonly accountName = (accountLabel: string) => ({
+    testId: `multichain-account-cell-name-${accountLabel}`,
+  });
 
   private readonly addNewAccountButton = {
     testId: 'add-multichain-account-button',
@@ -16,38 +18,19 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
+  private readonly connectAccountsButton = {
+    testId: 'connect-more-accounts-button',
+  };
+
+  driver: Driver;
+
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',
     tag: 'h4',
   };
 
-  private readonly connectAccountsButton = {
-    testId: 'connect-more-accounts-button',
-  };
-
-  private readonly newlyCreateAccount = {
-    css: 'p',
-    text: 'Account 2',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.editAccountsModalTitle,
-        this.connectAccountsButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for edit connected accounts modal to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Edit connected accounts modal is loaded');
   }
 
   async addNewAccount(): Promise<void> {
@@ -74,11 +57,40 @@ class EditConnectedAccountsModal {
       },
       { interval: 500, timeout: 10000 },
     );
-    await this.driver.waitForSelector(this.newlyCreateAccount, {
+    await this.driver.waitForSelector(this.accountName('Account 2'), {
       timeout: 10000,
     });
-    await this.driver.clickElement(this.newlyCreateAccount);
+    await this.driver.clickElement(this.accountName('Account 2'));
     await this.clickOnConnect();
+  }
+
+  /**
+   * Check that an account label is displayed in the edit accounts modal.
+   *
+   * @param accountLabel - The account label to check for.
+   */
+  async checkAccountIsDisplayed(accountLabel: string): Promise<void> {
+    console.log(`Check that account ${accountLabel} is displayed`);
+    await this.driver.waitForSelector(this.accountName(accountLabel));
+  }
+
+  /**
+   * Check that the given account labels are displayed in the edit accounts modal.
+   *
+   * @param accountLabels - The account labels to check for.
+   */
+  async checkAccountsAreDisplayed(accountLabels: string[]): Promise<void> {
+    for (const accountLabel of accountLabels) {
+      await this.checkAccountIsDisplayed(accountLabel);
+    }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.editAccountsModalTitle,
+      this.connectAccountsButton,
+    ]);
+    console.log('Edit connected accounts modal is loaded');
   }
 
   async clickOnConnect(): Promise<void> {

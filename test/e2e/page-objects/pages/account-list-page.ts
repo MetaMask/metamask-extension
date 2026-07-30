@@ -2,13 +2,8 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import { quoteXPathText } from '../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../constants';
-import PrivacySettings from './settings/privacy-settings';
-import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings/settings-page';
 
 class AccountListPage {
-  private readonly driver: Driver;
-
   private readonly accountDetailsTab = {
     text: 'Account details',
     tag: 'button',
@@ -42,11 +37,18 @@ class AccountListPage {
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
-  private readonly addMultichainWalletButtonEnabled =
-    '[data-testid="account-list-add-wallet-button"]:not([disabled])';
-
   private readonly addSnapAccountButton =
     '[data-testid="choose-wallet-type-snap-account"]';
+
+  private readonly addWalletButtonReady = {
+    tag: 'p',
+    text: 'Add wallet',
+  };
+
+  private readonly addWalletButtonSyncing = {
+    tag: 'p',
+    text: 'Syncing...',
+  };
 
   private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
 
@@ -61,6 +63,8 @@ class AccountListPage {
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
+
+  private readonly driver: Driver;
 
   private readonly exportSrpButton = {
     text: 'Show Secret Recovery Phrase',
@@ -109,6 +113,10 @@ class AccountListPage {
     '[data-testid="choose-wallet-type-import-wallet"]';
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
+
+  private readonly multichainAccountListSearch = {
+    testId: 'multichain-account-list-search',
+  };
 
   private readonly multichainAccountMenuAddresses = {
     tag: 'p',
@@ -181,11 +189,6 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly syncingMessage = {
-    text: 'Syncing...',
-    tag: 'p',
-  };
-
   private readonly unhideAccountButton =
     '[data-testid="multichain-account-menu-item-showAccount"]';
 
@@ -222,26 +225,6 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(
-    timeout: number = 10000,
-    { waitForSync = true }: { waitForSync?: boolean } = {},
-  ): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.addMultichainWalletButton],
-        { timeout },
-      );
-    } catch (e) {
-      console.log('Timeout while waiting for account list to be loaded', e);
-      throw e;
-    }
-
-    if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted();
-    }
-    console.log('Account list is loaded');
-  }
-
   /**
    * Watch an EOA (external owned account).
    *
@@ -273,63 +256,6 @@ class AccountListPage {
         this.watchAccountConfirmButton,
       );
     }
-  }
-
-  /**
-   * Import a new account with a private key.
-   *
-   * @param privateKey - Private key of the account
-   * @param expectedErrorMessage - Expected error message if the import should fail
-   */
-  async addNewImportedAccount(
-    privateKey: string,
-    expectedErrorMessage?: string,
-  ): Promise<void> {
-    console.log(`Adding new imported account`);
-    await this.waitForAddWalletButtonStablyEnabled();
-    await this.driver.clickElement(this.addMultichainWalletButton);
-    await this.driver.clickElement(
-      this.importAccountFromMultichainWalletModalButton,
-    );
-    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-    if (expectedErrorMessage) {
-      await this.driver.clickElement(this.importAccountConfirmButton);
-      await this.driver.waitForSelector({
-        css: '.mm-help-text',
-        text: expectedErrorMessage,
-      });
-    } else {
-      await this.driver.clickElementAndWaitToDisappear(
-        this.importAccountConfirmButton,
-      );
-      await this.closeChooseWalletTypePage();
-    }
-  }
-
-  /**
-   * Adds a new multichain wallet.
-   */
-  async addMultichainWallet(): Promise<void> {
-    console.log(`Adding new multichain wallet`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
-  }
-
-  /**
-   * Import a wallet.
-   */
-  async clickImportWallet(): Promise<void> {
-    await this.driver.clickElement(
-      this.importWalletFromMultichainWalletModalButton,
-    );
-  }
-
-  /**
-   * Waiting until syncing is completed.
-   */
-  async waitUntilSyncingIsCompleted(): Promise<void> {
-    console.log(`Check that account syncing not displayed in account list`);
-    await this.checkAddWalletButtonIsDisplayed();
-    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
@@ -365,118 +291,46 @@ class AccountListPage {
     });
   }
 
-  async closeAccountModal(): Promise<void> {
-    console.log(`Close account modal in account list`);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.closeAccountModalButton,
-    );
-  }
-
-  async closeChooseWalletTypePage(): Promise<void> {
-    console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElement(this.chooseWalletTypeBackButton);
-  }
-
-  async closeMultichainAccountsPage(): Promise<void> {
-    console.log(`Close multichain accounts page`);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.closeMultichainAccountsPageButton,
-    );
-  }
-
-  async hideAccount(): Promise<void> {
-    console.log(`Hide account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.hideAccountButton);
+  /**
+   * Adds a new multichain wallet.
+   */
+  async addMultichainWallet(): Promise<void> {
+    console.log(`Adding new multichain wallet`);
+    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
-   * Import an account with a JSON file.
+   * Import a new account with a private key.
    *
-   * @param jsonFilePath - Path to the JSON file to import
-   * @param password - Password for the imported account
+   * @param privateKey - Private key of the account
+   * @param expectedErrorMessage - Expected error message if the import should fail
    */
-  async importAccountWithJsonFile(
-    jsonFilePath: string,
-    password: string,
+  async addNewImportedAccount(
+    privateKey: string,
+    expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.waitForAddWalletButtonStablyEnabled();
     await this.driver.clickElement(this.addMultichainWalletButton);
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
-    await this.driver.clickElement(this.importAccountDropdownOption);
-    await this.driver.clickElement(this.importAccountJsonFileOption);
-
-    const fileInput = await this.driver.findElement(
-      this.importAccountJsonFileInput,
-    );
-    await fileInput.sendKeys(jsonFilePath);
-    await this.driver.fill(this.importAccountJsonPasswordInput, password);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.importAccountConfirmButton,
-    );
-    await this.closeChooseWalletTypePage();
-  }
-
-  /**
-   * Open the account details modal for the specified account in account list.
-   *
-   * @param accountLabel - The label of the account to open the details modal for.
-   */
-  async openAccountDetailsModal(accountLabel: string): Promise<void> {
-    console.log(
-      `Open account details modal in account list for account ${accountLabel}`,
-    );
-    await this.openAccountOptionsInAccountList(accountLabel);
-    await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.clickElementSafe(this.accountDetailsTab);
-  }
-
-  /**
-   * Open the multichain account menu for the specified account.
-   *
-   * @param options - Options for opening the multichain account menu
-   * @param options.accountLabel - The label of the account to open the menu for
-   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
-   */
-  async openMultichainAccountMenu(options: {
-    accountLabel: string;
-    srpIndex?: number;
-  }): Promise<void> {
-    const { accountLabel, srpIndex = 0 } = options;
-    console.log(
-      `Open multichain account menu in account list for account ${accountLabel}`,
-    );
-    // To ensure no pending Create Account action is in progress
-    await this.driver.assertElementNotPresent(this.addingAccountMessage, {
-      waitAtLeastGuard: largeDelayMs,
-    });
-
-    await this.driver.clickElement({
-      xpath: this.multichainAccountOptionsMenuButtonByLabel(
-        accountLabel,
-        srpIndex,
-      ),
-    });
-  }
-
-  /**
-   * Click a multichain account menu item.
-   *
-   * @param item - The menu item to click (e.g., 'Account details', 'Rename', 'Addresses')
-   */
-  async clickMultichainAccountMenuItem(
-    item: 'Account details' | 'Rename' | 'Addresses',
-  ): Promise<void> {
-    console.log(`Click multichain account menu item ${item}`);
-    await this.driver.clickElement(
-      `${this.multichainAccountMenuItem}[aria-label="${item}"]`,
-    );
+    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+    if (expectedErrorMessage) {
+      await this.driver.clickElement(this.importAccountConfirmButton);
+      await this.driver.waitForSelector({
+        css: '.mm-help-text',
+        text: expectedErrorMessage,
+      });
+    } else {
+      // Import + forceUpdateMetamaskState can outlive the default 3s staleness
+      // wait under multi-SRP / Solana load on CI before the Add Wallet page
+      // navigates away.
+      await this.driver.clickElementAndWaitToDisappear(
+        this.importAccountConfirmButton,
+        10000,
+      );
+      await this.closeChooseWalletTypePage();
+    }
   }
 
   /**
@@ -496,30 +350,109 @@ class AccountListPage {
   }
 
   /**
-   * Open the account options menu for the specified account.
+   * Checks that the account balance is displayed in the account list.
    *
-   * @param accountLabel - The label of the account to open the options menu for.
+   * @param expectedBalance - The expected balance to check.
    */
-  async openAccountOptionsInAccountList(accountLabel: string): Promise<void> {
+  async checkAccountBalanceDisplayed(expectedBalance: string): Promise<void> {
     console.log(
-      `Open account options in account list for account ${accountLabel}`,
+      `Check that account balance ${expectedBalance} is displayed in account list`,
     );
-    await this.driver.clickElement(
-      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
-    );
+    await this.driver.waitForSelector({
+      css: this.accountListBalance,
+      text: expectedBalance,
+    });
   }
 
   /**
-   * View the account on explorer for the specified account in account list.
+   * Verifies that account balance is private.
    *
-   * @param accountLabel - The label of the account to view on explorer.
    */
-  async viewAccountOnExplorer(accountLabel: string): Promise<void> {
+  async checkAccountBalanceIsPrivate(): Promise<void> {
+    console.log(`Verify that account balance is private`);
+    await this.driver.waitForSelector({
+      css: this.accountPageBalance,
+      text: '••••••',
+    });
+  }
+
+  async checkAccountDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
     console.log(
-      `View account on explorer in account list for account ${accountLabel}`,
+      `Check that account label ${expectedLabel} is displayed in account list`,
     );
-    await this.openAccountOptionsInAccountList(accountLabel);
-    await this.driver.clickElement(this.viewAccountOnExplorerButton);
+    await this.driver.waitForSelector({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  /**
+   * Checks that the account with the specified label is not displayed in the account list.
+   *
+   * @param expectedLabel - The label of the account that should not be displayed.
+   */
+  async checkAccountIsNotDisplayedInAccountList(
+    expectedLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
+  async checkAccountIsPinned(): Promise<void> {
+    console.log(`Check that account is pinned`);
+    await this.driver.waitForSelector(this.pinnedHeader);
+  }
+
+  async checkAccountIsUnpinned(): Promise<void> {
+    console.log(`Check that account is unpinned`);
+    await this.driver.assertElementNotPresent(this.pinnedHeader);
+  }
+
+  async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
+    console.log(`Check that account name ${accountName} is displayed`);
+    await this.driver.waitForSelector({
+      text: accountName,
+      tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayedUnderWallet(
+    accountName: string,
+    walletName: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account name ${accountName} is displayed under wallet ${walletName}`,
+    );
+    const walletHeader = await this.driver.waitForSelector({
+      css: this.walletHeader,
+      text: walletName,
+    });
+    // VirtualizedList wraps each item in a div, so the header and account rows are not direct
+    // siblings—each is the only child of its wrapper div. Go to the header's parent (the wrapper),
+    // then to that parent's first following sibling (the next item's wrapper), and find the account name inside it.
+    // Use . (string value) instead of text() so we match the element that contains the text in any descendant.
+    await this.driver.findNestedElement(walletHeader, {
+      xpath: `../following-sibling::*[1]//*[contains(., ${quoteXPathText(accountName)})]`,
+    });
+  }
+
+  async checkAccountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
   }
 
   /**
@@ -545,95 +478,93 @@ class AccountListPage {
     );
   }
 
-  async openAccountOptionsMenu(): Promise<void> {
-    console.log(`Open account option menu`);
-    await this.driver.waitForSelector(this.accountListItem);
-    await this.driver.clickElement(this.multichainAccountOptionsMenuButton);
+  async checkAddAccountSnapButtonIsDisplayed(): Promise<void> {
+    console.log('Check add account snap button is displayed');
+    await this.driver.waitForSelector(this.addSnapAccountButton);
   }
 
-  async openConnectHardwareWalletModal(): Promise<void> {
-    console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
-    await this.driver.clickElement(this.addHardwareWalletButton);
-    // This delay is needed to mitigate an existing bug
-    // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.delay(largeDelayMs);
+  async checkAddAccountSnapButtonNotPresent(): Promise<void> {
+    console.log('Check add account snap button is not present');
+    await this.driver.assertElementNotPresent(this.addSnapAccountButton);
   }
 
-  async openHiddenAccountOptions(): Promise<void> {
-    console.log(`Open hidden accounts options menu`);
-    await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-  }
-
-  async openHiddenAccountsList(): Promise<void> {
-    console.log(`Open hidden accounts option menu`);
-    await this.driver.clickElement(this.hiddenAccountsList);
-  }
-
-  async pinAccount(): Promise<void> {
-    console.log(`Pin account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.pinAccountButton);
+  async checkAddWalletButtonIsDisplayed(): Promise<void> {
+    console.log('Check add wallet button is displayed');
+    await this.driver.waitForSelector(this.addWalletButtonReady);
   }
 
   /**
-   * Remove the specified account from the account list.
+   * Checks that the watch ethereum account option is displayed in the choose wallet type page.
    *
-   * @param accountLabel - The label of the account to remove.
-   * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
+   * @param expectedAvailability - Whether the watch ethereum account option is expected to be displayed.
    */
-  async removeAccount(
-    accountLabel: string,
-    confirmRemoval: boolean = true,
+  async checkAddWatchAccountAvailable(
+    expectedAvailability: boolean,
   ): Promise<void> {
-    console.log(`Remove account in account list`);
-    await this.openAccountOptionsInAccountList(accountLabel);
-    await this.driver.clickElement(this.removeAccountButton);
-    await this.driver.waitForSelector(this.removeAccountMessage);
-    if (confirmRemoval) {
-      console.log('Confirm removal of account');
-      await this.driver.clickElement(this.removeAccountConfirmButton);
+    console.log(
+      `Check watch ethereum account option is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
+    );
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(
+        this.chooseWalletTypeWatchEthereumAccountButton,
+      );
     } else {
-      console.log('Click nevermind button to cancel account removal');
-      await this.driver.clickElement(this.removeAccountNevermindButton);
+      await this.driver.assertElementNotPresent(
+        this.chooseWalletTypeWatchEthereumAccountButton,
+      );
     }
   }
 
-  async switchToAccount(expectedLabel: string): Promise<void> {
-    console.log(
-      `Switch to account with label ${expectedLabel} in account list`,
-    );
-    await this.driver.clickElement({
-      css: this.accountListItem,
-      text: expectedLabel,
+  async checkCurrentAccountIsImported(): Promise<void> {
+    console.log(`Check that current account is an imported account`);
+    await this.driver.waitForSelector({
+      css: this.currentSelectedAccount,
+      text: 'Imported',
     });
   }
 
-  async unhideAccount(): Promise<void> {
-    console.log(`Unhide account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.unhideAccountButton);
-  }
-
-  async unpinAccount(): Promise<void> {
-    console.log(`Unpin account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.unpinAccountButton);
+  async checkHiddenAccountsListExists(): Promise<void> {
+    console.log(`Check that hidden accounts list is displayed in account list`);
+    await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
   /**
-   * Checks that the account balance is displayed in the account list.
-   *
-   * @param expectedBalance - The expected balance to check.
+   * Check that the SRP is imported through a single field, rather than one
+   * input per word.
    */
-  async checkAccountBalanceDisplayed(expectedBalance: string): Promise<void> {
-    console.log(
-      `Check that account balance ${expectedBalance} is displayed in account list`,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountListBalance,
-      text: expectedBalance,
-    });
+  async checkImportSrpInputIsDisplayed(): Promise<void> {
+    console.log('Check that the import SRP input is displayed');
+    await this.driver.waitForSelector(this.importSrpInput);
+  }
+
+  /**
+   * Wait until the import SRP input displays the expected value. A textarea
+   * holds its value as a property rather than an attribute, so this polls the
+   * value instead of matching it with a locator.
+   *
+   * @param expectedValue - The expected value.
+   */
+  async checkImportSrpInputValue(expectedValue: string): Promise<void> {
+    console.log(`Check that the import SRP input value is "${expectedValue}"`);
+    let actualValue: string | null = null;
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const srpInput = await this.driver.findElement(this.importSrpInput);
+          actualValue = await srpInput.getAttribute('value');
+          return actualValue === expectedValue;
+        },
+        { interval: 100, timeout: this.driver.timeout },
+      );
+    } catch (error: unknown) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Import SRP input value should match the typed word. Expected "${expectedValue}", got "${actualValue}". ${reason}`,
+      );
+    }
   }
 
   /**
@@ -683,16 +614,15 @@ class AccountListPage {
     }
   }
 
-  async checkAccountDisplayedInAccountList(
-    expectedLabel: string = 'Account',
-  ): Promise<void> {
-    console.log(
-      `Check that account label ${expectedLabel} is displayed in account list`,
-    );
-    await this.driver.waitForSelector({
-      css: this.accountListItem,
-      text: expectedLabel,
-    });
+  async checkMultiChainAccountMenuIsDisplayed(): Promise<void> {
+    console.log(`Check that multichain account menu is displayed`);
+    await this.driver.waitForMultipleSelectors([
+      this.multichainAccountMenuAddresses,
+      this.multichainAccountMenuDetails,
+      this.multichainAccountMenuHide,
+      this.multichainAccountMenuRename,
+      this.multichainAccountMenuPin,
+    ]);
   }
 
   /**
@@ -710,162 +640,6 @@ class AccountListPage {
       css: this.multichainAccountListItem,
       text: expectedLabel,
     });
-  }
-
-  async checkWalletDisplayedInAccountListMenu(
-    expectedLabel: string = 'Wallet',
-  ): Promise<void> {
-    console.log(
-      `Check that wallet label ${expectedLabel} is displayed in account list menu`,
-    );
-    await this.driver.waitForSelector({
-      css: this.walletHeader,
-      text: expectedLabel,
-    });
-  }
-
-  async checkWalletDetailsButtonIsDisplayed(): Promise<void> {
-    console.log('Check wallet details button is displayed');
-    await this.driver.waitForSelector(this.walletDetailsButton);
-  }
-
-  async checkAddWalletButtonIsDisplayed(): Promise<void> {
-    console.log('Check add wallet button is displayed');
-    await this.driver.waitForSelector(this.addMultichainWalletButton);
-  }
-
-  /**
-   * Waits until the "Add wallet" button is enabled and stays enabled,
-   * ensuring AccountTreeController sync has fully settled before clicking.
-   * The button is disabled while `isAccountTreeSyncingInProgress` is true;
-   * stableFor guards against sync flickering (briefly enabled then disabled again).
-   */
-  async waitForAddWalletButtonStablyEnabled(): Promise<void> {
-    console.log('Waiting for add wallet button to be stably enabled');
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          this.addMultichainWalletButtonEnabled,
-          1000,
-        );
-      },
-      { timeout: 30000, interval: 500, stableFor: 2000 },
-    );
-  }
-
-  async clickWalletDetailsButton(): Promise<void> {
-    console.log('Click wallet details button');
-    await this.driver.clickElement(this.walletDetailsButton);
-  }
-
-  async checkAccountNotDisplayedInAccountList(
-    expectedLabel: string = 'Account',
-  ): Promise<void> {
-    console.log(
-      `Check that account label ${expectedLabel} is not displayed in account list`,
-    );
-    await this.driver.assertElementNotPresent({
-      css: this.accountListItem,
-      text: expectedLabel,
-    });
-  }
-
-  /**
-   * Checks that the account with the specified label is not displayed in the account list.
-   *
-   * @param expectedLabel - The label of the account that should not be displayed.
-   */
-  async checkAccountIsNotDisplayedInAccountList(
-    expectedLabel: string,
-  ): Promise<void> {
-    console.log(
-      `Check that account label ${expectedLabel} is not displayed in account list`,
-    );
-    await this.driver.assertElementNotPresent({
-      css: this.accountListItem,
-      text: expectedLabel,
-    });
-  }
-
-  async checkAccountIsPinned(): Promise<void> {
-    console.log(`Check that account is pinned`);
-    await this.driver.waitForSelector(this.pinnedHeader);
-  }
-
-  async checkAccountIsUnpinned(): Promise<void> {
-    console.log(`Check that account is unpinned`);
-    await this.driver.assertElementNotPresent(this.pinnedHeader);
-  }
-
-  async checkAddAccountSnapButtonIsDisplayed(): Promise<void> {
-    console.log('Check add account snap button is displayed');
-    await this.driver.waitForSelector(this.addSnapAccountButton);
-  }
-
-  async checkAddAccountSnapButtonNotPresent(): Promise<void> {
-    console.log('Check add account snap button is not present');
-    await this.driver.assertElementNotPresent(this.addSnapAccountButton);
-  }
-
-  /**
-   * Checks that the watch ethereum account option is displayed in the choose wallet type page.
-   *
-   * @param expectedAvailability - Whether the watch ethereum account option is expected to be displayed.
-   */
-  async checkAddWatchAccountAvailable(
-    expectedAvailability: boolean,
-  ): Promise<void> {
-    console.log(
-      `Check watch ethereum account option is ${
-        expectedAvailability ? 'displayed ' : 'not displayed'
-      }`,
-    );
-    await this.driver.clickElement(this.addMultichainWalletButton);
-    if (expectedAvailability) {
-      await this.driver.waitForSelector(
-        this.chooseWalletTypeWatchEthereumAccountButton,
-      );
-    } else {
-      await this.driver.assertElementNotPresent(
-        this.chooseWalletTypeWatchEthereumAccountButton,
-      );
-    }
-  }
-
-  /**
-   * Verifies that account balance is private.
-   *
-   */
-  async checkAccountBalanceIsPrivate(): Promise<void> {
-    console.log(`Verify that account balance is private`);
-    await this.driver.waitForSelector({
-      css: this.accountPageBalance,
-      text: '••••••',
-    });
-  }
-
-  async checkCurrentAccountIsImported(): Promise<void> {
-    console.log(`Check that current account is an imported account`);
-    await this.driver.waitForSelector({
-      css: this.currentSelectedAccount,
-      text: 'Imported',
-    });
-  }
-
-  async checkHiddenAccountsListExists(): Promise<void> {
-    console.log(`Check that hidden accounts list is displayed in account list`);
-    await this.driver.waitForSelector(this.hiddenAccountsList);
-  }
-
-  async checkMultiChainAccountMenuIsDisplayed(): Promise<void> {
-    console.log(`Check that multichain account menu is displayed`);
-    await this.driver.waitForMultipleSelectors([
-      this.multichainAccountMenuAddresses,
-      this.multichainAccountMenuDetails,
-      this.multichainAccountMenuHide,
-      this.multichainAccountMenuRename,
-      this.multichainAccountMenuPin,
-    ]);
   }
 
   /**
@@ -927,6 +701,25 @@ class AccountListPage {
     });
   }
 
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors(
+        [this.addMultichainAccountButton, this.multichainAccountListSearch],
+        { timeout },
+      );
+    } catch (e) {
+      console.log('Timeout while waiting for account list to be loaded', e);
+      throw e;
+    }
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted(timeout);
+    }
+    console.log('Account list is loaded');
+  }
+
   /**
    * Check that the remove account button is not displayed in the account options menu for the specified account.
    *
@@ -942,12 +735,231 @@ class AccountListPage {
     await this.driver.assertElementNotPresent(this.removeAccountButton);
   }
 
+  async checkWalletDetailsButtonIsDisplayed(): Promise<void> {
+    console.log('Check wallet details button is displayed');
+    await this.driver.waitForSelector(this.walletDetailsButton);
+  }
+
+  async checkWalletDisplayedInAccountListMenu(
+    expectedLabel: string = 'Wallet',
+  ): Promise<void> {
+    console.log(
+      `Check that wallet label ${expectedLabel} is displayed in account list menu`,
+    );
+    await this.driver.waitForSelector({
+      css: this.walletHeader,
+      text: expectedLabel,
+    });
+  }
+
+  /**
+   * Import a wallet.
+   */
+  async clickImportWallet(): Promise<void> {
+    await this.driver.clickElement(
+      this.importWalletFromMultichainWalletModalButton,
+    );
+  }
+
+  /**
+   * Click a multichain account menu item.
+   *
+   * @param item - The menu item to click (e.g., 'Account details', 'Rename', 'Addresses')
+   */
+  async clickMultichainAccountMenuItem(
+    item: 'Account details' | 'Rename' | 'Addresses',
+  ): Promise<void> {
+    console.log(`Click multichain account menu item ${item}`);
+    await this.driver.clickElement(
+      `${this.multichainAccountMenuItem}[aria-label="${item}"]`,
+    );
+  }
+
+  async clickWalletDetailsButton(): Promise<void> {
+    console.log('Click wallet details button');
+    await this.driver.clickElement(this.walletDetailsButton);
+  }
+
+  async closeAccountModal(): Promise<void> {
+    console.log(`Close account modal in account list`);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeAccountModalButton,
+    );
+  }
+
+  async closeChooseWalletTypePage(): Promise<void> {
+    console.log(`Navigate back from choose wallet type page`);
+    await this.driver.clickElement(this.chooseWalletTypeBackButton);
+  }
+
+  async closeMultichainAccountsPage(): Promise<void> {
+    console.log(`Close multichain accounts page`);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.closeMultichainAccountsPageButton,
+    );
+  }
+
+  async hideAccount(): Promise<void> {
+    console.log(`Hide account in account list`);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.hideAccountButton);
+  }
+
+  /**
+   * Import an account with a JSON file.
+   *
+   * @param jsonFilePath - Path to the JSON file to import
+   * @param password - Password for the imported account
+   */
+  async importAccountWithJsonFile(
+    jsonFilePath: string,
+    password: string,
+  ): Promise<void> {
+    console.log(`Adding new imported account`);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importAccountFromMultichainWalletModalButton,
+    );
+    await this.driver.clickElement(this.importAccountDropdownOption);
+    await this.driver.clickElement(this.importAccountJsonFileOption);
+
+    const fileInput = await this.driver.findElement(
+      this.importAccountJsonFileInput,
+    );
+    await fileInput.sendKeys(jsonFilePath);
+    await this.driver.fill(this.importAccountJsonPasswordInput, password);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.importAccountConfirmButton,
+    );
+    await this.closeChooseWalletTypePage();
+  }
+
+  /**
+   * Open the account details modal for the specified account in account list.
+   *
+   * @param accountLabel - The label of the account to open the details modal for.
+   */
+  async openAccountDetailsModal(accountLabel: string): Promise<void> {
+    console.log(
+      `Open account details modal in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
+  }
+
+  /**
+   * Open the account options menu for the specified account.
+   *
+   * @param accountLabel - The label of the account to open the options menu for.
+   */
+  async openAccountOptionsInAccountList(accountLabel: string): Promise<void> {
+    console.log(
+      `Open account options in account list for account ${accountLabel}`,
+    );
+    await this.driver.clickElement(
+      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
+    );
+  }
+
+  async openAccountOptionsMenu(): Promise<void> {
+    console.log(`Open account option menu`);
+    await this.driver.waitForSelector(this.accountListItem);
+    await this.driver.clickElement(this.multichainAccountOptionsMenuButton);
+  }
+
+  async openConnectHardwareWalletModal(): Promise<void> {
+    console.log(`Open connect hardware wallet modal`);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(this.addHardwareWalletButton);
+    // This delay is needed to mitigate an existing bug
+    // See https://github.com/metamask/metamask-extension/issues/25851
+    await this.driver.delay(largeDelayMs);
+  }
+
+  async openHiddenAccountOptions(): Promise<void> {
+    console.log(`Open hidden accounts options menu`);
+    await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
+  }
+
+  async openHiddenAccountsList(): Promise<void> {
+    console.log(`Open hidden accounts option menu`);
+    await this.driver.clickElement(this.hiddenAccountsList);
+  }
+
+  /**
+   * Open the multichain account menu for the specified account.
+   *
+   * @param options - Options for opening the multichain account menu
+   * @param options.accountLabel - The label of the account to open the menu for
+   * @param options.srpIndex - Optional SRP index if there are multiple SRPs
+   */
+  async openMultichainAccountMenu(options: {
+    accountLabel: string;
+    srpIndex?: number;
+  }): Promise<void> {
+    const { accountLabel, srpIndex = 0 } = options;
+    console.log(
+      `Open multichain account menu in account list for account ${accountLabel}`,
+    );
+    // To ensure no pending Create Account action is in progress
+    await this.driver.assertElementNotPresent(this.addingAccountMessage, {
+      waitAtLeastGuard: largeDelayMs,
+    });
+
+    await this.driver.clickElement({
+      xpath: this.multichainAccountOptionsMenuButtonByLabel(
+        accountLabel,
+        srpIndex,
+      ),
+    });
+  }
+
+  async pinAccount(): Promise<void> {
+    console.log(`Pin account in account list`);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.pinAccountButton);
+  }
+
+  /**
+   * Remove the specified account from the account list.
+   *
+   * @param accountLabel - The label of the account to remove.
+   * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
+   */
+  async removeAccount(
+    accountLabel: string,
+    confirmRemoval: boolean = true,
+  ): Promise<void> {
+    console.log(`Remove account in account list`);
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.removeAccountButton);
+    await this.driver.waitForSelector(this.removeAccountMessage);
+    if (confirmRemoval) {
+      console.log('Confirm removal of account');
+      await this.driver.clickElement(this.removeAccountConfirmButton);
+    } else {
+      console.log('Click nevermind button to cancel account removal');
+      await this.driver.clickElement(this.removeAccountNevermindButton);
+    }
+  }
+
   async selectAccount(accountLabel: string): Promise<void> {
     console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
       text: accountLabel,
     });
     console.log(`Account with label ${accountLabel} selected`);
+  }
+
+  async startExportSrpForAccount(accountLabel: string): Promise<void> {
+    console.log(`Exporting SRP for account ${accountLabel}`);
+    await this.openAccountDetailsModal(accountLabel);
+    await this.driver.delay(500);
+    await this.driver.clickElement(this.exportSrpButton);
   }
 
   async startImportSecretPhrase(srp: string): Promise<void> {
@@ -961,72 +973,64 @@ class AccountListPage {
     await this.driver.clickElement(this.importSrpConfirmButton);
   }
 
-  async startExportSrpForAccount(accountLabel: string): Promise<void> {
-    console.log(`Exporting SRP for account ${accountLabel}`);
-    await this.openAccountDetailsModal(accountLabel);
-    await this.driver.delay(500);
-    await this.driver.clickElement(this.exportSrpButton);
-  }
-
-  async checkAccountBelongsToSrp(
-    accountName: string,
-    srpIndex: number,
-  ): Promise<void> {
-    console.log(`Check that current account is an imported account`);
-    await new HeaderNavbar(this.driver).openSettingsPage();
-    const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToSecurityAndPasswordSettings();
-
-    const privacySettings = new PrivacySettings(this.driver);
-    await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-    await privacySettings.openSrpList();
-
-    if (srpIndex === 0) {
-      throw new Error('SRP index must be > 0');
-    }
-
-    const selectedSrp = await this.driver.waitForSelector({
-      css: '.select-srp__container',
-      text: `Secret Recovery Phrase ${srpIndex}`,
-    });
-    const showAccountsButton = await this.driver.waitForSelector(
-      `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
-    );
-    await showAccountsButton.click();
-
-    await this.driver.findNestedElement(selectedSrp, {
-      text: accountName,
-      tag: 'p',
-    });
-  }
-
-  async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
-    console.log(`Check that account name ${accountName} is displayed`);
-    await this.driver.waitForSelector({
-      text: accountName,
-      tag: 'p',
-    });
-  }
-
-  async checkAccountNameIsDisplayedUnderWallet(
-    accountName: string,
-    walletName: string,
-  ): Promise<void> {
+  async switchToAccount(expectedLabel: string): Promise<void> {
     console.log(
-      `Check that account name ${accountName} is displayed under wallet ${walletName}`,
+      `Switch to account with label ${expectedLabel} in account list`,
     );
-    const walletHeader = await this.driver.waitForSelector({
-      css: this.walletHeader,
-      text: walletName,
+    await this.driver.clickElement({
+      css: this.accountListItem,
+      text: expectedLabel,
     });
-    // VirtualizedList wraps each item in a div, so the header and account rows are not direct
-    // siblings—each is the only child of its wrapper div. Go to the header's parent (the wrapper),
-    // then to that parent's first following sibling (the next item's wrapper), and find the account name inside it.
-    // Use . (string value) instead of text() so we match the element that contains the text in any descendant.
-    await this.driver.findNestedElement(walletHeader, {
-      xpath: `../following-sibling::*[1]//*[contains(., ${quoteXPathText(accountName)})]`,
+  }
+
+  /**
+   * Type into the import SRP input.
+   *
+   * @param text - The text to type.
+   */
+  async typeIntoImportSrpInput(text: string): Promise<void> {
+    console.log(`Type "${text}" into the import SRP input`);
+    const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
+    await srpInput.sendKeys(text);
+  }
+
+  async unhideAccount(): Promise<void> {
+    console.log(`Unhide account in account list`);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.unhideAccountButton);
+  }
+
+  async unpinAccount(): Promise<void> {
+    console.log(`Unpin account in account list`);
+    await this.openAccountOptionsMenu();
+    await this.driver.clickElement(this.unpinAccountButton);
+  }
+
+  /**
+   * View the account on explorer for the specified account in account list.
+   *
+   * @param accountLabel - The label of the account to view on explorer.
+   */
+  async viewAccountOnExplorer(accountLabel: string): Promise<void> {
+    console.log(
+      `View account on explorer in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.viewAccountOnExplorerButton);
+  }
+
+  /**
+   * Waiting until syncing is completed.
+   *
+   * @param timeout - Maximum time in ms to wait for syncing to finish.
+   */
+  async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
+      timeout,
+      waitAtLeastGuard: largeDelayMs,
     });
+    await this.checkAddWalletButtonIsDisplayed();
   }
 }
 

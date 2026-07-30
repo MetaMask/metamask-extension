@@ -2,8 +2,8 @@ import {
   RampsService,
   type RampsServiceMessenger,
 } from '@metamask/ramps-controller';
+import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import type { MessengerClientInitFunction } from './types';
-import { getRampsEnvironment } from './ramps-environment';
 
 /**
  * Initialize the RampsService.

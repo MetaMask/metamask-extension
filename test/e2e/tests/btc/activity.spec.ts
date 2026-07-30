@@ -3,15 +3,13 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_ADDRESS, DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
+import { broadcastBitcoinSend } from '../../page-objects/flows/bitcoin-send.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BitcoinTransactionDetailsPage from '../../page-objects/pages/home/bitcoin-transaction-details';
-import SendPage from '../../page-objects/pages/send/send-page';
-import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
-import { Driver } from '../../webdriver/driver';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import {
   mockExchangeRates,
   mockCurrencyExchangeRates,
@@ -23,7 +21,6 @@ import {
   mockTokensV3Assets,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
-import { BTC_CHAIN_ID } from './mocks/bridge';
 
 async function mockBtcActivityMocks(mockServer: Mockttp) {
   return [
@@ -40,34 +37,6 @@ async function mockBtcActivityMocks(mockServer: Mockttp) {
   ];
 }
 
-async function landOnBitcoinHomepage(driver: Driver): Promise<HomePage> {
-  await login(driver);
-  const homePage = new HomePage(driver);
-  await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
-  await homePage.checkPageIsLoaded();
-  return homePage;
-}
-
-async function broadcastBitcoinSend(
-  driver: Driver,
-  recipient: string,
-  amount: string,
-): Promise<void> {
-  const homePage = await landOnBitcoinHomepage(driver);
-  const assetList = new TokensTab(driver);
-  await assetList.checkTokenAmountIsDisplayed(`${DEFAULT_BTC_BALANCE} BTC`);
-  const sendPage = new SendPage(driver);
-  await homePage.startSendFlow();
-  await sendPage.selectToken(BTC_CHAIN_ID, 'BTC');
-  await sendPage.fillRecipient({ recipientAddress: recipient });
-  await sendPage.fillAmount(amount);
-  await sendPage.isContinueButtonEnabled();
-  await sendPage.pressContinueButton();
-  const reviewPage = new BitcoinReviewTxPage(driver);
-  await reviewPage.checkPageIsLoaded();
-  await reviewPage.clickConfirmButton();
-}
-
 describe('BTC Account - Activity', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const sendAmount = '0.5';
@@ -81,7 +50,10 @@ describe('BTC Account - Activity', function (this: Suite) {
         testSpecificMock: mockBtcActivityMocks,
       },
       async ({ driver }) => {
-        const homePage = await landOnBitcoinHomepage(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
         const activity = new ActivityTab(driver);
@@ -106,14 +78,26 @@ describe('BTC Account - Activity', function (this: Suite) {
         testSpecificMock: mockBtcActivityMocks,
       },
       async ({ driver }) => {
-        await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await homePage.checkPageIsLoaded();
+
+        await broadcastBitcoinSend({
+          driver,
+          recipientAddress,
+          amount: sendAmount,
+        });
 
         const activity = new ActivityTab(driver);
+
+        // Bug #43641 - Sometimes we land at Home instead of Activity list, so we manually go to the Activity list before checking for the transaction until that is resolved
+        await homePage.goToActivityList();
         await activity.checkTransactionActivityByText('Sending BTC');
         await activity.checkPendingTxNumberDisplayedInActivity(1);
         await activity.clickOnActivity(1);
 
-        const details = new BitcoinTransactionDetailsPage(driver);
+        const details = new TransactionDetailsPage(driver);
         await details.checkPageIsLoaded();
         await details.checkTitle('Sending BTC');
         await details.checkTime();
@@ -136,7 +120,11 @@ describe('BTC Account - Activity', function (this: Suite) {
         testSpecificMock: mockBtcActivityMocks,
       },
       async ({ driver }) => {
-        const homePage = await landOnBitcoinHomepage(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await homePage.checkPageIsLoaded();
+
         const assetList = new TokensTab(driver);
         await assetList.selectOnlyNetworkInFilter('Bitcoin');
 

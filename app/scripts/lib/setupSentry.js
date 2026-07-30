@@ -297,7 +297,7 @@ export function beforeBreadcrumb() {
     const appState = getState();
     const state = getAnalyticsStateFromAppState(appState);
     if (
-      !state?.completedMetaMetricsOnboarding ||
+      !state?.consentDecisionMade ||
       !state?.optedIn ||
       breadcrumb?.category === 'ui.input'
     ) {

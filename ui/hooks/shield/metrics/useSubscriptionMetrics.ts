@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
@@ -15,7 +15,8 @@ import {
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
 } from '../../../../shared/lib/shield';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -24,6 +25,7 @@ import {
   ExistingSubscriptionEventParams,
 } from '../../../../shared/types';
 import { useAnalytics } from '../../useAnalytics';
+
 import {
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCtaClickedEventParams,
@@ -44,7 +46,7 @@ import {
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -197,8 +199,6 @@ export const useSubscriptionMetrics = () => {
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackShieldEvent(MetaMetricsEventName.ShieldMembershipCancelled, {
         ...formattedParams,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         status: params.cancellationStatus,
         error: params.errorMessage,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -218,8 +218,6 @@ export const useSubscriptionMetrics = () => {
         formatCaptureShieldPaymentMethodChangeEventProps(params);
       trackShieldEvent(MetaMetricsEventName.ShieldPaymentMethodChange, {
         ...formattedParams,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         status: params.changeStatus,
         error: params.errorMessage,
       });

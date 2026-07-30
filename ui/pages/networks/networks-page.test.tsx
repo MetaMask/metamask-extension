@@ -271,9 +271,9 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeChecked();
     expect(testnetToggle).toBeDisabled();
 
-    await userEvent.click(screen.getByTestId('settings-header-search-button'));
+    await userEvent.click(screen.getByTestId('page-header-search-button'));
     await userEvent.type(
-      screen.getByTestId('settings-header-search-input'),
+      screen.getByTestId('page-header-search-input'),
       'ugtfvh',
     );
 
@@ -304,7 +304,9 @@ describe('NetworksPage', () => {
       screen.getByTestId('networks-page-add-custom-network-button'),
     );
 
-    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
@@ -344,6 +346,16 @@ describe('NetworksPage', () => {
         messages.searchNetworkNameOrChainId.message,
       ),
     ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-search')),
+    ).toBe(false);
+    expect(
+      screen
+        .getByTestId('networks-page-chainlist-network-list')
+        .contains(screen.getByTestId('networks-page-chainlist-source-banner')),
+    ).toBe(true);
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
     expect(screen.queryByText('HTTP Only Network')).not.toBeInTheDocument();
     expect(
@@ -574,6 +586,8 @@ describe('NetworksPage', () => {
     );
     await userEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
   });
 });

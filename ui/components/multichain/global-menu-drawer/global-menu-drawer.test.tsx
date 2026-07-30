@@ -8,6 +8,7 @@ import {
   NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
@@ -15,6 +16,11 @@ import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 const getEnvironmentType = jest.requireMock(
   '../../../../shared/lib/environment-type',
 ).getEnvironmentType as jest.Mock;
+
+jest.mock('@metamask/design-system-react', () => ({
+  ...jest.requireActual('@metamask/design-system-react'),
+  usePureBlack: jest.fn(() => false),
+}));
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../shared/lib/environment-type'),
@@ -79,6 +85,29 @@ describe('GlobalMenuDrawer', () => {
     });
 
     expect(getByTestId('global-menu-drawer')).toBeInTheDocument();
+  });
+
+  // Fullscreen drawer uses a portal that requires layout measurement — tested via manual QA.
+  // The border-l is applied only when isPureBlack && isLargeDrawer (fullscreen or wide sidepanel).
+
+  it('does not apply border-l in pure black mode on popup', async () => {
+    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
+    usePureBlack.mockReturnValue(true);
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const { container } = renderWithProvider(
+      <GlobalMenuDrawer isOpen onClose={() => undefined}>
+        <span>Content</span>
+      </GlobalMenuDrawer>,
+      configureStore(mockState),
+      '/',
+    );
+
+    await waitFor(() => {
+      expect(
+        container.querySelector('.border-l.border-muted'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('calls onClose when close button is clicked', async () => {

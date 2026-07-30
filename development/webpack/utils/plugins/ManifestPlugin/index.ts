@@ -619,11 +619,9 @@ export class ManifestPlugin<Z extends boolean> {
       if (resources && resources.length > 0) {
         if (manifest.manifest_version === 3) {
           manifest.web_accessible_resources =
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
-            resource.matches.includes('<all_urls>'),
+            resource.matches?.includes('<all_urls>'),
           );
           if (war) {
             // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
@@ -637,8 +635,6 @@ export class ManifestPlugin<Z extends boolean> {
           }
         } else {
           manifest.web_accessible_resources = [
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ...(manifest.web_accessible_resources || []),
             ...resources,
           ];
