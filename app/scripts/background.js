@@ -137,8 +137,6 @@ const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
 const maxSeenFailedNonces = 99;
 
-const inTest = process.env.IN_TEST;
-
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
 /**
@@ -158,7 +156,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
-const inTestState = inTest
+const inTestState = process.env.IN_TEST
   ? { restoreInProgress: false, hasVaultAtStartup: null }
   : null;
 
@@ -232,7 +230,7 @@ const senderOriginMapping = {};
 const tabOriginMapping = {};
 const frameIdMapping = {};
 
-if (inTest || process.env.METAMASK_DEBUG) {
+if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
     persistenceManager,
     { validateVault: false },
@@ -429,7 +427,7 @@ function maybeDetectPhishing(theController) {
 
       const { hostname, href, searchParams } = new URL(details.url);
       if (
-        inTest &&
+        process.env.IN_TEST &&
         searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
       ) {
         // this is a test page that needs to bypass early phishing detection
@@ -588,7 +586,7 @@ const criticalErrorHandler = new CriticalErrorHandler();
  */
 const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
-  if (inTest) {
+  if (process.env.IN_TEST) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
     if (simulatedDelay === true) {
@@ -651,7 +649,7 @@ const handleOnConnect = async (port) => {
     // not during the initial onboarding session) and we're not in the restore
     // flow (so recovery can complete).
     if (
-      inTest &&
+      process.env.IN_TEST &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
       !inTestState?.restoreInProgress &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
@@ -729,7 +727,7 @@ const installOnConnectListener = () => {
   lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
 };
 if (
-  inTest &&
+  process.env.IN_TEST &&
   getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
 ) {
   const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
@@ -1354,10 +1352,10 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { completedMetaMetricsOnboarding, optedIn } = controller.getState();
+  const { consentDecisionMade, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (!completedMetaMetricsOnboarding || !optedIn) {
+  if (!consentDecisionMade || !optedIn) {
     return;
   }
 
@@ -2169,41 +2167,19 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     eventProperties.deeplink_path = deferredDeepLink.referringLink;
   }
 
-  const appInstalledEvent = {
-    category: MetaMetricsEventCategory.App,
-    event: MetaMetricsEventName.AppInstalled,
-    properties: eventProperties,
-  };
+  const { consentDecisionMade, optedIn } = controller.getState();
 
-  const { completedMetaMetricsOnboarding, optedIn, analyticsId } =
-    controller.getState();
-
-  if (completedMetaMetricsOnboarding === true && optedIn === false) {
+  if (consentDecisionMade === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the analytics ID is
-  // available. Otherwise keep the event buffered for the opt-in flush path so
-  // it is not dropped.
-  if (
-    completedMetaMetricsOnboarding === true &&
-    optedIn === true &&
-    analyticsId
-  ) {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AppInstalled)
-        .addCategory(MetaMetricsEventCategory.App)
-        .addProperties(eventProperties)
-        .build(),
-    );
-  } else {
-    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
-    // so we queue the metrics event for possible submission later.
-    controller.metaMetricsController.addEventBeforeMetricsOptIn(
-      appInstalledEvent,
-    );
-  }
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.AppInstalled)
+      .addCategory(MetaMetricsEventCategory.App)
+      .addProperties(eventProperties)
+      .build(),
+  );
 };
 
 /**
@@ -2561,7 +2537,7 @@ async function initBackground(backup) {
     // IndexedDB and we're not already in the restore flow (backup param is
     // null). Skip when backup param is non-null so vault recovery can complete.
     if (
-      inTest &&
+      process.env.IN_TEST &&
       !backup &&
       getManifestFlags().testing?.simulateBackgroundInitializationHang &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
@@ -2595,7 +2571,9 @@ async function initOrRestoreBackground() {
   // Fetch the backup once, shared by the restore path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
-  const testingFlags = inTest ? getManifestFlags().testing : undefined;
+  const testingFlags = process.env.IN_TEST
+    ? getManifestFlags().testing
+    : undefined;
   let backup = null;
   if (
     restoreSession ||
@@ -2650,7 +2628,7 @@ initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
-if (inTest) {
+if (process.env.IN_TEST) {
   // listen for test messages from the background
   // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
   // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
@@ -2661,4 +2639,8 @@ if (inTest) {
     }
     return Promise.resolve();
   });
+  // Load conditionally so this test-only package is excluded from production builds and policies.
+  global.stateHooks.hasConsoleAccess = () =>
+    // eslint-disable-next-line n/global-require
+    require('@metamask/dummy-package').hasConsoleAccess();
 }

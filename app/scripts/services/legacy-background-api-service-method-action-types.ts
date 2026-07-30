@@ -85,6 +85,23 @@ export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
 };
 
 /**
+ * Triggers a safe reload of the extension without disrupting user state.
+ */
+export type LegacyBackgroundApiServiceRequestSafeReloadAction = {
+  type: `LegacyBackgroundApiService:requestSafeReload`;
+  handler: LegacyBackgroundApiService['requestSafeReload'];
+};
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension
+ * reload. Used when an update is available.
+ */
+export type LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction = {
+  type: `LegacyBackgroundApiService:openUpdateTabAndReload`;
+  handler: LegacyBackgroundApiService['openUpdateTabAndReload'];
+};
+
+/**
  * Updates the phishing lists if necessary and then checks whether the given
  * website is a known phishing site.
  *
@@ -95,6 +112,18 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
   type: `LegacyBackgroundApiService:getPhishingResult`;
   handler: LegacyBackgroundApiService['getPhishingResult'];
 };
+
+/**
+ * Marks the notification popup as having been automatically closed.
+ *
+ * This lets us differentiate between the cases where we close the
+ * notification popup v.s. when the user closes the popup window directly.
+ */
+export type LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction =
+  {
+    type: `LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed`;
+    handler: LegacyBackgroundApiService['markNotificationPopupAsAutomaticallyClosed'];
+  };
 
 /**
  * Marks the password as forgotten.
@@ -507,7 +536,10 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceRequestSafeReloadAction
+  | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction

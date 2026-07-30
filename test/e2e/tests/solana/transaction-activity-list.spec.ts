@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
+import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -14,6 +14,8 @@ import {
   buildSolanaTestSpecificMock,
 } from './common-solana';
 import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
+
+const SOLANA_EXPLORER_URL = 'https://solscan.io';
 
 describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
@@ -38,20 +40,21 @@ describe('Transaction activity list', function (this: Suite) {
         await activityTab.checkNoFailedTransactions();
         await activityTab.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.checkTransactionStatus('success');
-        await transactionDetails.checkTransactionAmount(
+        await transactionDetails.checkStatusByTestId('success');
+        await transactionDetails.checkAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
-        await transactionDetails.checkTransactionFromToLink(
+        await transactionDetails.checkFromToLink(
           commonSolanaTxConfirmedDetailsFixture.fromAddress,
         );
-        await transactionDetails.checkTransactionFromToLink(
+        await transactionDetails.checkFromToLink(
           commonSolanaTxConfirmedDetailsFixture.toAddress,
         );
-        await transactionDetails.checkTransactionHashLink(
+        await transactionDetails.checkHashLink(
           commonSolanaTxConfirmedDetailsFixture.txHash,
+          SOLANA_EXPLORER_URL,
         );
-        await transactionDetails.checkTransactionViewDetailsLink();
+        await transactionDetails.checkViewDetailsLink();
       },
     );
   });
@@ -86,14 +89,15 @@ describe('Transaction activity list', function (this: Suite) {
         await activityTab.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
 
-        await transactionDetails.checkTransactionStatus(
+        await transactionDetails.checkStatusByTestId(
           commonSolanaTxFailedDetailsFixture.status,
         );
-        await transactionDetails.checkTransactionHashLink(
+        await transactionDetails.checkHashLink(
           commonSolanaTxFailedDetailsFixture.txHash,
+          SOLANA_EXPLORER_URL,
         );
-        await transactionDetails.checkTransactionViewDetailsLink();
-        await transactionDetails.checkTransactionBaseFee(
+        await transactionDetails.checkViewDetailsLink();
+        await transactionDetails.checkBaseFee(
           commonSolanaTxFailedDetailsFixture.networkFeeFiat,
         );
       },

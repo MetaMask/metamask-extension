@@ -63,7 +63,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="inline-flex items-center border bg-default transition-colors h-12 pl-4 pr-0 border-default rounded-full app-text-field-search"
+                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover app-text-field-search"
                 data-testid="search-list"
               >
                 <svg
@@ -77,7 +77,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                   />
                 </svg>
                 <input
-                  class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate"
+                  class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                   placeholder="Search"
                   type="search"
                   value=""
@@ -1487,7 +1487,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="inline-flex items-center border bg-default transition-colors h-12 pl-4 pr-0 border-default rounded-full app-text-field-search"
+                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover app-text-field-search"
                 data-testid="search-list"
               >
                 <svg
@@ -1501,7 +1501,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   />
                 </svg>
                 <input
-                  class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate"
+                  class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                   placeholder="Search"
                   type="search"
                   value=""

@@ -1,6 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -10,11 +9,15 @@ import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { setTransactionActive } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { type Confirmation } from '../types/confirm';
+import { useDispatch } from '../../../store/hooks';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../context/confirm', () => ({
