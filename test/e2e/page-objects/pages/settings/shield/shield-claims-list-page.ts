@@ -1,8 +1,6 @@
 import { Driver } from '../../../../webdriver/driver';
 
 export default class ShieldClaimsListPage {
-  private readonly driver: Driver;
-
   private readonly activeClaimsHeading = {
     text: 'Active claims',
     tag: 'h4',
@@ -26,15 +24,17 @@ export default class ShieldClaimsListPage {
     tag: 'h4',
   };
 
+  private readonly draftClaimItem = '[data-testid^="claim-item-draft"]';
+
   private readonly draftClaimsHeading =
     '[data-testid="claims-group-drafts-heading"]';
 
   private readonly draftClaimsList = '[data-testid="claims-group-drafts-list"]';
 
-  private readonly draftClaimItem = '[data-testid^="claim-item-draft"]';
-
   private readonly draftDeletedToast =
     '[data-testid="claim-draft-deleted-toast"]';
+
+  private readonly driver: Driver;
 
   private readonly emptyNewClaimButton =
     '[data-testid="claims-list-empty-new-claim-button"]';
@@ -63,29 +63,9 @@ export default class ShieldClaimsListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.pageContainer);
-    console.log('Shield Claims List page is loaded');
-  }
-
   async checkClaimExists(claimId: string): Promise<void> {
     console.log(`Checking if claim ${claimId} exists`);
     await this.driver.waitForSelector(this.claimItem(claimId));
-  }
-
-  async clickClaimItem(claimId: string): Promise<void> {
-    console.log(`Clicking on claim ${claimId} to view details`);
-    await this.driver.clickElement(this.claimItem(claimId));
-  }
-
-  async clickEmptyNewClaimButton(): Promise<void> {
-    console.log('Clicking on empty new claim button');
-    await this.driver.clickElement(this.emptyNewClaimButton);
-  }
-
-  async clickSubmitClaimButton(): Promise<void> {
-    console.log('Clicking on submit claim button');
-    await this.driver.clickElement(this.submitClaimButton);
   }
 
   async checkCompletedClaimsDisplayed(): Promise<void> {
@@ -93,9 +73,35 @@ export default class ShieldClaimsListPage {
     await this.driver.waitForSelector(this.completedClaimsHeading);
   }
 
+  async checkDraftClaimDeleted(): Promise<void> {
+    console.log('Checking if draft claim is deleted');
+    await this.checkDraftDeletedToast();
+    await this.driver.assertElementNotPresent(this.draftClaimsList);
+  }
+
+  async checkDraftClaimExists(): Promise<void> {
+    console.log('Checking if exactly one draft claim exists in draft section');
+    await this.driver.waitForSelector(this.draftClaimItem);
+  }
+
+  async checkDraftDeletedToast(): Promise<void> {
+    console.log('Checking draft deleted toast is displayed');
+    await this.driver.waitForSelector(this.draftDeletedToast);
+  }
+
+  async checkDraftSectionDisplayed(): Promise<void> {
+    console.log('Checking if draft section is displayed');
+    await this.driver.waitForSelector(this.draftClaimsHeading);
+  }
+
   async checkHistoryTabEmptyState(): Promise<void> {
     console.log('Checking if history tab shows empty state');
     await this.driver.waitForSelector(this.noCompletedClaimsHeading);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.pageContainer);
+    console.log('Shield Claims List page is loaded');
   }
 
   async checkPendingClaimsDisplayed(): Promise<void> {
@@ -112,16 +118,6 @@ export default class ShieldClaimsListPage {
   async checkRejectedClaimsDisplayed(): Promise<void> {
     console.log('Checking if rejected claims are displayed');
     await this.driver.waitForSelector(this.rejectedClaimsHeading);
-  }
-
-  async clickHistoryTab(): Promise<void> {
-    console.log('Clicking on History tab');
-    await this.driver.clickElement(this.claimHistoryButton);
-  }
-
-  async clickPendingTab(): Promise<void> {
-    console.log('Clicking on Claims tab');
-    await this.driver.clickElement(this.claimsButton);
   }
 
   async checkSubmitClaimButtonDisabled(): Promise<void> {
@@ -141,14 +137,9 @@ export default class ShieldClaimsListPage {
     }, 10000);
   }
 
-  async checkDraftSectionDisplayed(): Promise<void> {
-    console.log('Checking if draft section is displayed');
-    await this.driver.waitForSelector(this.draftClaimsHeading);
-  }
-
-  async checkDraftClaimExists(): Promise<void> {
-    console.log('Checking if exactly one draft claim exists in draft section');
-    await this.driver.waitForSelector(this.draftClaimItem);
+  async clickClaimItem(claimId: string): Promise<void> {
+    console.log(`Clicking on claim ${claimId} to view details`);
+    await this.driver.clickElement(this.claimItem(claimId));
   }
 
   async clickDraftClaim(): Promise<void> {
@@ -156,14 +147,23 @@ export default class ShieldClaimsListPage {
     await this.driver.clickElement(this.draftClaimItem);
   }
 
-  async checkDraftDeletedToast(): Promise<void> {
-    console.log('Checking draft deleted toast is displayed');
-    await this.driver.waitForSelector(this.draftDeletedToast);
+  async clickEmptyNewClaimButton(): Promise<void> {
+    console.log('Clicking on empty new claim button');
+    await this.driver.clickElement(this.emptyNewClaimButton);
   }
 
-  async checkDraftClaimDeleted(): Promise<void> {
-    console.log('Checking if draft claim is deleted');
-    await this.checkDraftDeletedToast();
-    await this.driver.assertElementNotPresent(this.draftClaimsList);
+  async clickHistoryTab(): Promise<void> {
+    console.log('Clicking on History tab');
+    await this.driver.clickElement(this.claimHistoryButton);
+  }
+
+  async clickPendingTab(): Promise<void> {
+    console.log('Clicking on Claims tab');
+    await this.driver.clickElement(this.claimsButton);
+  }
+
+  async clickSubmitClaimButton(): Promise<void> {
+    console.log('Clicking on submit claim button');
+    await this.driver.clickElement(this.submitClaimButton);
   }
 }

@@ -13,8 +13,6 @@ const QUOTE_READY_TIMEOUT = 30_000;
  * @see ui/pages/confirmations/components/confirm/info/perps-withdraw-info/perps-withdraw-info.tsx
  */
 export class PerpsWithdrawConfirmation {
-  private readonly driver: Driver;
-
   private readonly amountInput = { testId: 'custom-amount-input' };
 
   private readonly bridgeTimeRow = { testId: 'bridge-time-row' };
@@ -27,6 +25,8 @@ export class PerpsWithdrawConfirmation {
     testId: 'custom-amount-info',
     text,
   });
+
+  private readonly driver: Driver;
 
   private readonly headerBackButton = {
     testId: 'wallet-initiated-header-back-button',
