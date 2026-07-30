@@ -466,7 +466,6 @@ describe('PersistenceManager', () => {
       expect(log.error).not.toHaveBeenCalled();
     });
 
-
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
