@@ -25,6 +25,7 @@ import {
   removePendingOrderPreview,
   setPendingOrderPreview,
 } from '../../../../hooks/ramps/utils/pendingOrderPreview';
+import { sanitizeUrlPath } from '../../../../hooks/ramps/utils/sanitizeUrlPath';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -63,16 +64,6 @@ export type RampsBuildQuoteViewModel =
   | { kind: 'loading' }
   | { kind: 'redirect' }
   | RampsBuildQuoteReadyViewModel;
-
-// Provider checkout URLs carry query params (provider codes, wallet address);
-// log only the pathname so analytics never captures that PII.
-function sanitizeUrlPath(url: string): string {
-  try {
-    return new URL(url).pathname;
-  } catch {
-    return '';
-  }
-}
 
 export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();

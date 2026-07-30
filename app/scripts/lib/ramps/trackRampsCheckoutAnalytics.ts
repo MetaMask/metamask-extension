@@ -9,6 +9,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { sanitizeUrlPath } from '../../../../shared/lib/ramps/url-path';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 
 const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
@@ -20,14 +21,6 @@ export type RampsCheckoutAnalyticsContext = {
   region?: string;
   orderCode?: string;
 };
-
-function sanitizeUrlPath(url: string): string {
-  try {
-    return new URL(url).pathname;
-  } catch {
-    return '';
-  }
-}
 
 function trackCheckoutEvent(
   eventName: MetaMetricsEventName,
