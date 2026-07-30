@@ -84,6 +84,9 @@ function countSubAccounts(state: AccountState | null | undefined): number {
 /** `failure_reason` reported when the fresh read blocks a stale-balance withdrawal. */
 const STALE_BALANCE_FAILURE_REASON = 'stale_streamed_balance';
 
+/** Rounds the reported shortfall to cents; analytics-only, never displayed. */
+const SHORTFALL_CENTS_ROUNDING = 100;
+
 /**
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
@@ -313,7 +316,10 @@ const PerpsWithdrawPage = () => {
           [PERPS_EVENT_PROPERTY.FAILURE_REASON]: STALE_BALANCE_FAILURE_REASON,
           [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
           [PERPS_EXTENSION_EVENT_PROPERTY.STALE_BALANCE_SHORTFALL]:
-            Math.round((streamedAvailableNum - freshAvailableNum) * 100) / 100,
+            Math.round(
+              (streamedAvailableNum - freshAvailableNum) *
+                SHORTFALL_CENTS_ROUNDING,
+            ) / SHORTFALL_CENTS_ROUNDING,
         });
         return;
       }
