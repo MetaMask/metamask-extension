@@ -183,9 +183,10 @@ describe('createWatchRampsCheckoutTab', () => {
       status: RampsOrderStatus.Precreated,
       walletAddress: '0xabc',
     };
-    const { rampsController, watch, getOnUpdated } = createHarness({
-      orders: [stub],
-    });
+    const { rampsController, watch, getOnUpdated, checkoutAnalytics } =
+      createHarness({
+        orders: [stub],
+      });
     rampsController.getOrderFromCallback.mockRejectedValue(
       new Error('callback lookup failed'),
     );
@@ -195,7 +196,7 @@ describe('createWatchRampsCheckoutTab', () => {
       providerCode: 'moonpay',
       walletAddress: '0xabc',
       orderAlreadyPrecreated: true,
-      orderCode: 'c-custom',
+      ...checkoutAnalytics,
     });
 
     getOnUpdated()?.(
