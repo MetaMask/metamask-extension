@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { formatUsd, formatUsdCompact } from '../lib/helpers';
 import type { WidgetModel } from '../lib/types';
@@ -131,16 +130,4 @@ export function Widget({ data, onSwap, onDisable }: WidgetModel) {
       ) : null}
     </div>
   );
-}
-
-export function mountWidget(container: HTMLElement) {
-  const root = createRoot(container);
-  return {
-    render(model: WidgetModel) {
-      root.render(<Widget {...model} />);
-    },
-    unmount() {
-      root.unmount();
-    },
-  };
 }

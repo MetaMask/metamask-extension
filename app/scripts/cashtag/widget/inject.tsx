@@ -1,9 +1,11 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
 import type { AssetData, InterestAnchor, InterestEvent } from '../lib/types';
-import { injectPageStyles, loadCssText, removePageStyles } from '../lib/ui';
-import { mountWidget } from './widget';
+import { injectPageStyles, loadCss, removePageStyles } from '../lib/ui';
+import { Widget } from './widget';
 
 const widgetPageStyleAttr = 'data-mm-cashtag-widget-css';
 const anchorNameProp = 'anchor-name';
@@ -17,57 +19,64 @@ type WidgetHandle = {
 };
 
 export async function injectWidget() {
+  // Page CSS lives outside the shadow root (popover positioning + shared theme).
   await injectPageStyles(
     'scripts/cashtag/widget/page.css',
     widgetPageStyleAttr,
   );
 
-  const css = await loadCssText('scripts/cashtag/widget/widget.css');
-  const shadowHost = document.createElement('div');
-  shadowHost.id = 'mm-cashtag-popover';
-  shadowHost.setAttribute('popover', 'hint');
-  shadowHost.popover = 'hint';
-  shadowHost.style.setProperty(positionAnchorProp, activeAnchorVar);
+  const host = document.createElement('div');
+  host.id = 'mm-cashtag-popover';
+  host.setAttribute('popover', 'hint');
+  host.popover = 'hint';
+  host.style.setProperty(positionAnchorProp, activeAnchorVar);
 
-  const shadow = shadowHost.attachShadow({ mode: 'open' });
+  const shadowRoot = host.attachShadow({ mode: 'open' });
+
   const style = document.createElement('style');
-  style.textContent = css.replaceAll(':root', ':host');
-  const mountNode = document.createElement('div');
-  shadow.append(style, mountNode);
+  style.textContent = (
+    await loadCss('scripts/cashtag/widget/widget.css')
+  ).replaceAll(':root', ':host');
+  shadowRoot.appendChild(style);
 
-  document.documentElement.appendChild(shadowHost);
-  const widget = mountWidget(mountNode);
+  const mountPoint = document.createElement('div');
+  shadowRoot.appendChild(mountPoint);
+
+  document.documentElement.appendChild(host);
+  const root = createRoot(mountPoint);
 
   return {
-    shadowHost,
+    shadowHost: host,
     show(data: AssetData) {
-      widget.render({
-        data,
-        onSwap: () => {
-          browser.runtime
-            .sendMessage({
-              type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
-              body: { caipAssetId: data.caipAssetId },
-            })
-            .catch(() => undefined);
-        },
-        onDisable: () => {
-          browser.runtime
-            .sendMessage({
-              type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
-              body: { enabled: false },
-            })
-            .catch(() => undefined);
-          window.dispatchEvent(new CustomEvent('mm-cashtag-disable'));
-          if (shadowHost.matches(':popover-open')) {
-            shadowHost.hidePopover();
-          }
-        },
-      });
+      root.render(
+        <Widget
+          data={data}
+          onSwap={() => {
+            browser.runtime
+              .sendMessage({
+                type: EXTENSION_MESSAGES.OPEN_SWAP_PAGE,
+                body: { caipAssetId: data.caipAssetId },
+              })
+              .catch(() => undefined);
+          }}
+          onDisable={() => {
+            browser.runtime
+              .sendMessage({
+                type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+                body: { enabled: false },
+              })
+              .catch(() => undefined);
+            window.dispatchEvent(new CustomEvent('mm-cashtag-disable'));
+            if (host.matches(':popover-open')) {
+              host.hidePopover();
+            }
+          }}
+        />,
+      );
     },
     stop() {
-      widget.unmount();
-      shadowHost.remove();
+      root.unmount();
+      host.remove();
       removePageStyles(widgetPageStyleAttr);
     },
   } satisfies WidgetHandle;
