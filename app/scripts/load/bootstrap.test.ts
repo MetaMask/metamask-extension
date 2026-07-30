@@ -16,14 +16,24 @@ const stateHookInitializers = [
 
 for (const { name, load } of stateHookInitializers) {
   describe(name, () => {
-    const originalStateHooks = globalThis.stateHooks;
+    let originalStateHooks: typeof globalThis.stateHooks;
+    let hadStateHooks = false;
 
     beforeEach(() => {
       jest.resetModules();
+      hadStateHooks = Object.prototype.hasOwnProperty.call(
+        globalThis,
+        'stateHooks',
+      );
+      originalStateHooks = globalThis.stateHooks;
     });
 
     afterEach(() => {
-      globalThis.stateHooks = originalStateHooks;
+      if (hadStateHooks) {
+        globalThis.stateHooks = originalStateHooks;
+      } else {
+        Reflect.deleteProperty(globalThis, 'stateHooks');
+      }
     });
 
     it('creates the shared state hooks object when absent', () => {
