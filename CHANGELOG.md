@@ -9,8 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.43.0]
 
+### Uncategorized
+
+- Bump assets controller to v11.2.1 (#44903)
+
+## **Related issues**
+
+- N/A (#44656)
+
 ### Added
 
+- Bump phishing controller 17.3.0 (#44841)
 - Added Security and Trust signals on the token details page, including verified badges, warning banners, a detail view, and confirmation prompts before buying or swapping risky tokens (#44761)
 - Added contact names to Activity rows when available (#45013)
 - Added spacing below the marketing consent text on the notification settings page (#45021)
