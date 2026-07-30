@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useRampsScreenViewed } from './useRampsScreenViewed';
 import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
@@ -87,6 +87,7 @@ describe('useRampsScreenViewed', () => {
       defaultOptions: { queries: { retry: false } },
     });
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- test-only component
     function RampsEnabledTestWrapper({
       children,
     }: {
@@ -117,7 +118,11 @@ describe('useRampsScreenViewed', () => {
 
     expect(mockTrackEvent).not.toHaveBeenCalled();
 
-    setRampsEnabledRef.current(true);
+    // Wrap the wrapper's state update so React doesn't warn about an update
+    // outside act().
+    act(() => {
+      setRampsEnabledRef.current(true);
+    });
     rerender();
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
