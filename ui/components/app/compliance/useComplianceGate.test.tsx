@@ -1,7 +1,7 @@
 import React, { type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useComplianceGate } from './useComplianceGate';
 

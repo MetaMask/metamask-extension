@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
-import { render, fireEvent } from '@testing-library/react';
+import { renderHook, act, render, fireEvent } from '@testing-library/react';
 import { GasModalType } from '../../constants/gas';
 import {
   GasFeeModalContextProvider,
@@ -31,13 +30,22 @@ describe('GasFeeModalContext', () => {
 
   describe('useGasFeeModalContext', () => {
     it('throws error when used outside of provider', () => {
-      const { result } = renderHook(() => useGasFeeModalContext());
+      const HookConsumer = () => {
+        useGasFeeModalContext();
+        return null;
+      };
 
-      expect(result.error).toEqual(
-        new Error(
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
           'useGasFeeModalContext must be used within a GasFeeModalContextProvider',
-        ),
-      );
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
 
     it('returns initial state', () => {
