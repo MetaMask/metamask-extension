@@ -6,6 +6,11 @@ import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyri
 import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
+import {
+  selectMinimumRequiredTokenBalance,
+  selectPreferredPayTokens,
+  type PreferredPayToken,
+} from '../../selectors/feature-flags';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -29,6 +34,7 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  const transactionType = currentConfirmation?.type;
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -37,6 +43,13 @@ export function useAutomaticTransactionPayToken({
     isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
     isTokenAllowed: isPostQuoteWithdrawTokenAllowed,
   } = usePostQuoteWithdrawTokenFilter();
+
+  const preferredTokensFromFlags = useSelector((state) =>
+    selectPreferredPayTokens(state, transactionType),
+  );
+  const minimumRequiredTokenBalance = useSelector(
+    selectMinimumRequiredTokenBalance,
+  );
 
   const tokens = useMemo(
     () =>
@@ -73,16 +86,20 @@ export function useAutomaticTransactionPayToken({
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
+        minimumRequiredTokenBalance,
+        preferredToken,
+        preferredTokensFromFlags,
         targetToken,
         tokens: tokensWithBalance,
-        preferredToken,
       }),
     [
       isHardwareWallet,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
+      minimumRequiredTokenBalance,
       preferredToken,
+      preferredTokensFromFlags,
       targetToken,
       tokensWithBalance,
     ],
@@ -166,7 +183,9 @@ function getBestToken({
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
+  minimumRequiredTokenBalance,
   preferredToken,
+  preferredTokensFromFlags,
   targetToken,
   tokens,
 }: {
@@ -177,7 +196,9 @@ function getBestToken({
     chainId: string,
     address: string,
   ) => boolean;
+  minimumRequiredTokenBalance: number;
   preferredToken?: SetPayTokenRequest;
+  preferredTokensFromFlags: PreferredPayToken[];
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
 }): { address: Hex; chainId: Hex } | undefined {
@@ -217,6 +238,42 @@ function getBestToken({
 
     if (preferredTokenAvailable) {
       return preferredToken;
+    }
+  }
+
+  if (preferredTokensFromFlags.length) {
+    const candidates: Asset[] = [];
+    for (const preferred of preferredTokensFromFlags) {
+      const matchingToken = tokens.find(
+        (token) =>
+          token.address?.toLowerCase() === preferred.address.toLowerCase() &&
+          String(token.chainId)?.toLowerCase() ===
+            preferred.chainId.toLowerCase(),
+      );
+      if (matchingToken) {
+        candidates.push(matchingToken);
+      }
+    }
+
+    // Post-quote withdraws: first held preferred token (no fiat floor).
+    if (isPostQuoteWithdraw && candidates.length) {
+      return {
+        address: candidates[0].address as Hex,
+        chainId: candidates[0].chainId as Hex,
+      };
+    }
+
+    const eligible = candidates
+      .filter(
+        (token) => (token.fiat?.balance ?? 0) >= minimumRequiredTokenBalance,
+      )
+      .sort((a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0));
+
+    if (eligible.length) {
+      return {
+        address: eligible[0].address as Hex,
+        chainId: eligible[0].chainId as Hex,
+      };
     }
   }
 
