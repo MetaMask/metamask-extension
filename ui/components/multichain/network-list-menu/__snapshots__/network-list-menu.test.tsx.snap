@@ -63,7 +63,7 @@ exports[`NetworkListMenu renders properly 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover app-text-field-search"
+                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover w-full"
                 data-testid="search-list"
               >
                 <svg
@@ -1142,7 +1142,7 @@ exports[`NetworkListMenu renders properly 1`] = `
     id="rfd-hidden-text-:r0:-hidden-text-:r1:"
     style="display: none;"
   >
-    
+
   Press space bar to start a drag.
   When dragging you can use the arrow keys to move the item around and escape to cancel.
   Some screen readers may require you to be in focus mode or to use your pass through key
@@ -1487,7 +1487,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
             >
               <div
-                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover app-text-field-search"
+                class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover w-full"
                 data-testid="search-list"
               >
                 <svg
@@ -2566,7 +2566,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
     id="rfd-hidden-text-:r8:-hidden-text-:r9:"
     style="display: none;"
   >
-    
+
   Press space bar to start a drag.
   When dragging you can use the arrow keys to move the item around and escape to cancel.
   Some screen readers may require you to be in focus mode or to use your pass through key

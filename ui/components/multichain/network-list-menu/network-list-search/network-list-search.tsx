@@ -18,7 +18,7 @@ const NetworkListSearch = ({
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
       <TextFieldSearch
         autoFocus
-        className="app-text-field-search"
+        className="w-full"
         clearButtonOnClick={() => setSearchQuery('')}
         data-testid="search-list"
         onBlur={() => setFocusSearch(false)}

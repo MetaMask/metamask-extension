@@ -160,12 +160,11 @@ export const AccountList = () => {
           paddingBottom={2}
         >
           <TextFieldSearch
-            className="app-text-field-search"
+            className="w-full"
             clearButtonOnClick={() => setSearchPattern('')}
             data-testid="multichain-account-list-search"
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
-            size={TextFieldSize.Lg}
             value={searchPattern}
           />
         </Box>

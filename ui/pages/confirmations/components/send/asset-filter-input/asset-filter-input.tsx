@@ -20,7 +20,7 @@ export const AssetFilterInput = ({
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
       <TextFieldSearch
         autoFocus
-        className="app-text-field-search"
+        className="w-full"
         clearButtonOnClick={() => onChange('')}
         inputProps={
           {
@@ -29,7 +29,6 @@ export const AssetFilterInput = ({
         }
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder ?? t('searchForAnAssetToSend')}
-        size={TextFieldSize.Lg}
         value={searchQuery}
       />
     </Box>

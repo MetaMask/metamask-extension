@@ -138,12 +138,11 @@ export const ChainlistNetworkPicker = ({
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
       <Box className="px-4 pb-4">
         <TextFieldSearch
-          className="app-text-field-search"
+          className="w-full"
           clearButtonOnClick={() => setSearchValue('')}
           data-testid="networks-page-chainlist-search"
           onChange={(event) => setSearchValue(event.target.value)}
           placeholder={t('searchNetworkNameOrChainId')}
-          size={TextFieldSize.Lg}
           value={searchValue}
         />
       </Box>

@@ -160,12 +160,11 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          className="app-text-field-search"
+          className="w-full"
           clearButtonOnClick={handleClearSearch}
           data-testid="multichain-address-rows-list-search"
           onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
-          size={TextFieldSize.Lg}
           value={searchPattern}
         />
       </Box>
