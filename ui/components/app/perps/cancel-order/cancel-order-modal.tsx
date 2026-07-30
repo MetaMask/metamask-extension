@@ -47,7 +47,7 @@ import {
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
-import { isClosingOrder } from '../utils/orderUtils';
+import { isClosingOrder, isOrderNoLongerOpenError } from '../utils/orderUtils';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Order } from '../types';
@@ -193,6 +193,18 @@ export const CancelOrderModal = ({
       setIsSubmitting(false);
       onClose();
     } catch (err) {
+      // The order is already off the book (filled, cancelled elsewhere, or
+      // removed with its position). The user wanted it gone and it is gone, so
+      // close out quietly instead of surfacing a failure they cannot act on.
+      if (isOrderNoLongerOpenError(err)) {
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CANCEL_ORDER_ALREADY_CLOSED,
+          dataTestId: 'perps-toast-cancel-order-already-closed',
+        });
+        setIsSubmitting(false);
+        onClose();
+        return;
+      }
       const errorMessage =
         err instanceof Error ? err.message : t('somethingWentWrong');
       // Transport/background throws never reach the controller cancel

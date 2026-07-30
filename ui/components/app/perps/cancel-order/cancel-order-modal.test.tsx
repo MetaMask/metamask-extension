@@ -621,6 +621,36 @@ describe('CancelOrderModal', () => {
     });
   });
 
+  describe('order already closed on the provider', () => {
+    const alreadyClosedError =
+      'cancel 0: Order was never placed, already canceled, or filled. asset=4';
+
+    it('closes the modal without an error when the order is no longer open', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: alreadyClosedError,
+      });
+
+      renderWithProvider(
+        <CancelOrderModal isOpen onClose={onClose} order={baseOrder} />,
+        mockStore,
+      );
+
+      await user.click(screen.getByTestId('perps-cancel-order-button'));
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Error',
+        expect.anything(),
+      );
+    });
+  });
+
   describe('geo-blocking', () => {
     it('shows geo-block modal instead of canceling when user is not eligible', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });

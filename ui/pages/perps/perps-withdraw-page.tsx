@@ -25,7 +25,11 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { AssetRoute, WithdrawResult } from '@metamask/perps-controller';
+import type {
+  AccountState,
+  AssetRoute,
+  WithdrawResult,
+} from '@metamask/perps-controller';
 import {
   HYPERLIQUID_ASSET_CONFIGS,
   HYPERLIQUID_WITHDRAWAL_MINUTES,
@@ -50,6 +54,7 @@ import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
 import { usePerpsEventTracking } from '../../hooks/perps';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -95,9 +100,7 @@ const PerpsWithdrawPage = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance =
-    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
-  const availableNum = parseFloat(availableBalance) || 0;
+  const availableNum = parseFloat(getTradeableBalance(account)) || 0;
 
   const usdcAssetId = useMemo(
     () =>
@@ -235,15 +238,23 @@ const PerpsWithdrawPage = () => {
     }
 
     try {
-      const validation = await submitRequestToBackground<{
-        isValid: boolean;
-        error?: string;
-      }>('perpsValidateWithdrawal', [
-        { amount: cleanAmount, assetId: usdcAssetId },
-      ]);
+      // The balance above comes from the account WebSocket stream, which goes
+      // stale whenever the service worker suspends. HyperLiquid re-checks the
+      // amount against a freshly fetched account state, so submitting a stale
+      // max is the main source of `Insufficient balance` withdrawal failures.
+      // Re-read the balance first and stop here rather than submitting a
+      // withdrawal that cannot succeed. Fails open: a refresh error leaves the
+      // submit path untouched.
+      const freshBalance = await submitRequestToBackground<
+        AccountState | undefined
+      >('perpsGetAccountState', []).catch(() => undefined);
 
-      if (!validation?.isValid) {
-        setSubmitError(validation?.error ?? t('perpsWithdrawInvalidAmount'));
+      if (
+        freshBalance &&
+        parsePerpsAmountInput(getTradeableBalance(freshBalance)) <
+          parsePerpsAmountInput(cleanAmount)
+      ) {
+        setSubmitError(t('perpsWithdrawInsufficient'));
         return;
       }
 
@@ -253,20 +264,11 @@ const PerpsWithdrawPage = () => {
       );
 
       if (result?.success) {
-        track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
-        });
         navigate(DEFAULT_ROUTE);
         return;
       }
 
       const failedMessage = result?.error ?? t('perpsWithdrawFailed');
-      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
-      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
@@ -285,11 +287,6 @@ const PerpsWithdrawPage = () => {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
-      });
       track(MetaMetricsEventName.PerpsError, {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,

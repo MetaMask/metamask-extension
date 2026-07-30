@@ -1003,6 +1003,49 @@ describe('PerpsControllerInit', () => {
           expect(result).toBe('tx-retry');
         });
       });
+
+      describe('perpsCancelOrder recovers from an unhydrated asset map', () => {
+        it('retries once after init when the provider reports ORDER_UNKNOWN_COIN', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder
+            .mockResolvedValueOnce({
+              success: false,
+              error: 'ORDER_UNKNOWN_COIN',
+            })
+            .mockResolvedValueOnce({ success: true, orderId: '1' });
+
+          const result = await api.perpsCancelOrder({
+            orderId: '1',
+            symbol: 'ETH',
+          });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(cancelOrder).toHaveBeenCalledTimes(2);
+          expect(result).toStrictEqual({ success: true, orderId: '1' });
+        });
+
+        it('surfaces other cancel failures without retrying', async () => {
+          const { api, messengerClient } = initWithApi();
+          const cancelOrder = messengerClient.cancelOrder as jest.Mock;
+          cancelOrder.mockResolvedValueOnce({
+            success: false,
+            error: 'Order cancellation failed',
+          });
+
+          const result = await api.perpsCancelOrder({
+            orderId: '1',
+            symbol: 'ETH',
+          });
+
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(cancelOrder).toHaveBeenCalledTimes(1);
+          expect(result).toStrictEqual({
+            success: false,
+            error: 'Order cancellation failed',
+          });
+        });
+      });
     });
   });
 

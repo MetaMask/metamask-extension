@@ -1,4 +1,5 @@
 import {
+  PERPS_ERROR_CODES,
   PerpsController,
   type PerpsControllerMessenger as PackagePerpsControllerMessenger,
   type RawLedgerUpdate,
@@ -320,6 +321,43 @@ function guardWrite<TArgs extends unknown[], TResult>(
   return withAutoInit(controller, fn, isPreSendInitError);
 }
 
+/**
+ * Guard for `cancelOrder`, which additionally recovers from an unhydrated
+ * symbol → asset map.
+ *
+ * The HyperLiquid provider validates the order symbol against that map *before*
+ * it prepares the exchange client, so `ORDER_UNKNOWN_COIN` is returned without
+ * anything reaching the socket. It means the map has not been (re)built yet —
+ * a service worker restart, a provider re-init, or an undiscovered HIP-3 dex —
+ * rather than that the market is invalid. `init()` rebuilds the map, so a
+ * single retry is both safe and usually sufficient.
+ *
+ * The provider returns this as a failed result instead of throwing, so the
+ * check is on the resolved value rather than in `withAutoInit`.
+ * @param controller
+ * @param fn
+ */
+function guardCancelOrder<
+  TArgs extends unknown[],
+  TResult extends { success: boolean; error?: string },
+>(controller: PerpsController, fn: (...args: TArgs) => Promise<TResult>) {
+  const guarded = guardWrite(controller, fn);
+
+  return async (...args: TArgs): Promise<TResult> => {
+    const result = await guarded(...args);
+
+    if (
+      result?.success === false &&
+      result.error === PERPS_ERROR_CODES.ORDER_UNKNOWN_COIN
+    ) {
+      await controller.init();
+      return await fn(...args);
+    }
+
+    return result;
+  };
+}
+
 function getApi(
   messengerClient: PerpsController,
   onDisconnectStart: () => void,
@@ -356,7 +394,10 @@ function getApi(
       messengerClient.closePositions.bind(messengerClient),
     ),
     perpsEditOrder: write(messengerClient.editOrder.bind(messengerClient)),
-    perpsCancelOrder: write(messengerClient.cancelOrder.bind(messengerClient)),
+    perpsCancelOrder: guardCancelOrder(
+      messengerClient,
+      messengerClient.cancelOrder.bind(messengerClient),
+    ),
     perpsCancelOrders: write(
       messengerClient.cancelOrders.bind(messengerClient),
     ),

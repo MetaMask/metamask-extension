@@ -16,6 +16,12 @@ const TP_SL_DETAILED_ORDER_TYPES = new Set([
   'Take Profit Limit',
   'Take Profit Market',
 ]);
+/**
+ * HyperLiquid rejects a cancel for an order it no longer holds open with this
+ * status text (surfaced by the SDK as `<type> <index>: <error>`).
+ */
+const ORDER_NO_LONGER_OPEN_PATTERN =
+  /never placed, already canceled, or filled/iu;
 
 /**
  * Safely creates a BigNumber, returning null for empty/invalid values.
@@ -466,6 +472,21 @@ export const normalizeMarketDetailsOrders = ({
 export const isClosingOrder = (
   order: Pick<Order, 'reduceOnly' | 'isPositionTpsl'>,
 ): boolean => Boolean(order.reduceOnly || order.isPositionTpsl);
+
+/**
+ * Determines whether a failed cancel means the order is already off the book.
+ *
+ * The order is gone — filled, cancelled elsewhere, or removed with its position
+ * — which is the outcome the user asked for, so the UI treats it as a benign
+ * end state instead of a failure the user has to react to.
+ *
+ * @param error - The error surfaced by the cancel request.
+ * @returns Whether the order is no longer open on the provider.
+ */
+export const isOrderNoLongerOpenError = (error: unknown): boolean => {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return ORDER_NO_LONGER_OPEN_PATTERN.test(message);
+};
 
 /**
  * Formats an order label following the pattern: [Type] [close?] [direction]

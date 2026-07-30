@@ -237,8 +237,8 @@ describe('PerpsWithdrawPage', () => {
           },
         ]);
       }
-      if (method === 'perpsValidateWithdrawal') {
-        return Promise.resolve({ isValid: true });
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '100' });
       }
       if (method === 'perpsWithdraw') {
         return Promise.resolve({ success: true, withdrawalId: 'hl_test' });
@@ -307,14 +307,11 @@ describe('PerpsWithdrawPage', () => {
 
     // `user.click` resolves before the async `handleWithdraw` finishes; await the
     // same background promises so `setState` / `finally` run inside `act`.
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
     await awaitSubmitPromisesForMethod('perpsWithdraw');
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith(
-        'perpsValidateWithdrawal',
-        expect.any(Array),
-      );
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetAccountState', []);
       expect(mockSubmit).toHaveBeenCalledWith(
         'perpsWithdraw',
         expect.any(Array),
@@ -352,7 +349,7 @@ describe('PerpsWithdrawPage', () => {
     expect(amountInput).toHaveValue('1.123456');
   });
 
-  it('does not call perpsValidateWithdrawal when no account is selected', async () => {
+  it('does not read the account state when no account is selected', async () => {
     const user = userEvent.setup();
     const spy = jest
       .spyOn(accountsSelectors, 'getSelectedInternalAccount')
@@ -371,10 +368,7 @@ describe('PerpsWithdrawPage', () => {
       await screen.findByText(messages.perpsWithdrawNoAccount.message),
     ).toBeInTheDocument();
 
-    expect(mockSubmit).not.toHaveBeenCalledWith(
-      'perpsValidateWithdrawal',
-      expect.any(Array),
-    );
+    expect(mockSubmit).not.toHaveBeenCalledWith('perpsGetAccountState', []);
 
     spy.mockRestore();
   });
@@ -390,14 +384,11 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '10.123456');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
     await awaitSubmitPromisesForMethod('perpsWithdraw');
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith(
-        'perpsValidateWithdrawal',
-        expect.any(Array),
-      );
+      expect(mockSubmit).toHaveBeenCalledWith('perpsGetAccountState', []);
     });
 
     await waitForWithdrawHandlerSettled();
@@ -418,8 +409,8 @@ describe('PerpsWithdrawPage', () => {
           },
         ]);
       }
-      if (method === 'perpsValidateWithdrawal') {
-        return Promise.resolve({ isValid: true });
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '100' });
       }
       if (method === 'perpsWithdraw') {
         return Promise.resolve({ success: false, error: 'provider_error' });
@@ -436,7 +427,7 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
     await awaitSubmitPromisesForMethod('perpsWithdraw');
 
     await waitFor(() => {
@@ -530,7 +521,7 @@ describe('PerpsWithdrawPage', () => {
     expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
   });
 
-  it('shows server validation error when perpsValidateWithdrawal returns invalid', async () => {
+  it('blocks the withdrawal when the fresh balance is below the entered amount', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
       if (method === 'perpsGetWithdrawalRoutes') {
@@ -545,11 +536,8 @@ describe('PerpsWithdrawPage', () => {
           },
         ]);
       }
-      if (method === 'perpsValidateWithdrawal') {
-        return Promise.resolve({
-          isValid: false,
-          error: 'blocked_by_provider',
-        });
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '20' });
       }
       return Promise.resolve(undefined);
     });
@@ -563,9 +551,11 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
 
-    expect(await screen.findByText('blocked_by_provider')).toBeInTheDocument();
+    expect(
+      await screen.findByText(messages.perpsWithdrawInsufficient.message),
+    ).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalledWith(
       'perpsWithdraw',
       expect.any(Array),
@@ -574,7 +564,7 @@ describe('PerpsWithdrawPage', () => {
     await waitForWithdrawHandlerSettled();
   });
 
-  it('shows generic invalid message when validation fails without an error string', async () => {
+  it('submits the withdrawal when the fresh balance read fails', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
       if (method === 'perpsGetWithdrawalRoutes') {
@@ -589,8 +579,11 @@ describe('PerpsWithdrawPage', () => {
           },
         ]);
       }
-      if (method === 'perpsValidateWithdrawal') {
-        return Promise.resolve({ isValid: false });
+      if (method === 'perpsGetAccountState') {
+        return Promise.reject(new Error('stream_unavailable'));
+      }
+      if (method === 'perpsWithdraw') {
+        return Promise.resolve({ success: true, withdrawalId: 'hl_test' });
       }
       return Promise.resolve(undefined);
     });
@@ -604,12 +597,14 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'perpsWithdraw',
+        expect.any(Array),
+      );
+    });
 
-    expect(
-      await screen.findByText(messages.perpsWithdrawInvalidAmount.message),
-    ).toBeInTheDocument();
-
+    await awaitSubmitPromisesForMethod('perpsWithdraw');
     await waitForWithdrawHandlerSettled();
   });
 
@@ -628,8 +623,8 @@ describe('PerpsWithdrawPage', () => {
           },
         ]);
       }
-      if (method === 'perpsValidateWithdrawal') {
-        return Promise.resolve({ isValid: true });
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({ withdrawableBalance: '100' });
       }
       if (method === 'perpsWithdraw') {
         return Promise.reject(new Error('network'));
@@ -649,7 +644,7 @@ describe('PerpsWithdrawPage', () => {
     await user.type(amountInput, '50');
     await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-    await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+    await awaitSubmitPromisesForMethod('perpsGetAccountState');
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith(
         'perpsWithdraw',
@@ -696,7 +691,7 @@ describe('PerpsWithdrawPage', () => {
   });
 
   describe('analytics', () => {
-    it('fires PerpsWithdrawalTransaction with success on successful withdrawal', async () => {
+    it('leaves the withdrawal transaction event to the controller on success', async () => {
       const user = userEvent.setup();
       renderWithProvider(<PerpsWithdrawPage />, createMockStore());
 
@@ -707,23 +702,21 @@ describe('PerpsWithdrawPage', () => {
       await user.type(amountInput, '50');
       await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
       await awaitSubmitPromisesForMethod('perpsWithdraw');
 
       await waitFor(() => {
-        expect(mockTrack).toHaveBeenCalledWith(
-          'Perp Withdrawal Transaction',
-          expect.objectContaining({
-            status: 'success',
-            size: '50',
-          }),
-        );
+        expect(mockNavigate).toHaveBeenCalledWith('/');
       });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Withdrawal Transaction',
+        expect.anything(),
+      );
 
       await waitForWithdrawHandlerSettled();
     });
 
-    it('fires PerpsWithdrawalTransaction with failed status when withdrawal fails', async () => {
+    it('fires only PerpsError when the withdrawal fails', async () => {
       const user = userEvent.setup();
       mockSubmit.mockImplementation((method: string) => {
         if (method === 'perpsGetWithdrawalRoutes') {
@@ -738,8 +731,8 @@ describe('PerpsWithdrawPage', () => {
             },
           ]);
         }
-        if (method === 'perpsValidateWithdrawal') {
-          return Promise.resolve({ isValid: true });
+        if (method === 'perpsGetAccountState') {
+          return Promise.resolve({ withdrawableBalance: '100' });
         }
         if (method === 'perpsWithdraw') {
           return Promise.resolve({ success: false, error: 'provider_error' });
@@ -756,18 +749,22 @@ describe('PerpsWithdrawPage', () => {
       await user.type(amountInput, '50');
       await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
       await awaitSubmitPromisesForMethod('perpsWithdraw');
 
       await waitFor(() => {
         expect(mockTrack).toHaveBeenCalledWith(
-          'Perp Withdrawal Transaction',
+          'Perp Error',
           expect.objectContaining({
-            status: 'failed',
+            [PERPS_EVENT_PROPERTY.ERROR_TYPE]: 'backend',
             [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: 'provider_error',
           }),
         );
       });
+      expect(mockTrack).not.toHaveBeenCalledWith(
+        'Perp Withdrawal Transaction',
+        expect.anything(),
+      );
 
       await waitForWithdrawHandlerSettled();
       await awaitSubmitPromisesForMethod('perpsClearWithdrawResult');
@@ -788,8 +785,8 @@ describe('PerpsWithdrawPage', () => {
             },
           ]);
         }
-        if (method === 'perpsValidateWithdrawal') {
-          return Promise.resolve({ isValid: true });
+        if (method === 'perpsGetAccountState') {
+          return Promise.resolve({ withdrawableBalance: '100' });
         }
         if (method === 'perpsWithdraw') {
           return Promise.reject(new Error('network'));
@@ -809,7 +806,7 @@ describe('PerpsWithdrawPage', () => {
       await user.type(amountInput, '50');
       await user.click(screen.getByTestId('perps-withdraw-submit'));
 
-      await awaitSubmitPromisesForMethod('perpsValidateWithdrawal');
+      await awaitSubmitPromisesForMethod('perpsGetAccountState');
       await waitFor(() => {
         expect(mockSubmit).toHaveBeenCalledWith(
           'perpsWithdraw',
