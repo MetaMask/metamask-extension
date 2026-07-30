@@ -61,8 +61,12 @@ export function useGetDisplayName() {
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   return useCallback(
-    (address: string) => {
-      // Non-EVM addresses must not go through hex helpers (they'd get a `0x` prefix).
+    (address?: string) => {
+      if (!address) {
+        return '';
+      }
+
+      // Non-EVM addresses must not go through hex helpers
       const key = address.toLowerCase();
       const ensResolution = ensResolutions[address] || ensResolutions[key];
 

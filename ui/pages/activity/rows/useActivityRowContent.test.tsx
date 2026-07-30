@@ -33,7 +33,7 @@ jest.mock('../../../components/app/chain-badge/chain-badge', () => ({
   ),
 }));
 
-const mockGetDisplayName = jest.fn((address: string) =>
+const mockGetDisplayName = jest.fn((address?: string): string =>
   address ? '0x11111...11111' : '',
 );
 
@@ -67,7 +67,7 @@ const buildActivity = (type: 'assetActivation' | 'assetDeactivation') =>
 
 describe('useActivityRowContent', () => {
   beforeEach(() => {
-    mockGetDisplayName.mockImplementation((address: string) =>
+    mockGetDisplayName.mockImplementation((address?: string) =>
       address ? '0x11111...11111' : '',
     );
     mockUseGetDisplayName.mockReturnValue(mockGetDisplayName);
@@ -227,5 +227,4 @@ describe('useActivityRowContent', () => {
       'activity_receive_success_description|Bob',
     );
   });
-
 });

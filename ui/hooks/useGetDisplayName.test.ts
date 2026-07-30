@@ -1,6 +1,20 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useGetDisplayName } from './useGetDisplayName';
 
+type MockState = {
+  addressBook: { address: string; name?: string }[];
+  accountGroups: {
+    metadata?: { name?: string };
+    accounts: { address: string }[];
+  }[];
+  tokenList: Record<string, { name?: string }>;
+  metamask: { ensResolutionsByAddress: Record<string, string> };
+};
+
+// Declared before jest.mock factories so eslint no-use-before-define is happy.
+// Reassigned per test: selectors memoize on the state reference.
+let mockState: MockState;
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector: (state: unknown) => unknown) =>
     selector(mockState),
@@ -22,20 +36,6 @@ jest.mock('../selectors/multichain-accounts/account-tree', () => ({
 
 const mockAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const mockSolanaAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-
-type MockState = {
-  addressBook: { address: string; name?: string }[];
-  accountGroups: {
-    metadata?: { name?: string };
-    accounts: { address: string }[];
-  }[];
-  tokenList: Record<string, { name?: string }>;
-  metamask: { ensResolutionsByAddress: Record<string, string> };
-};
-
-// Reassigned per test: the hook's selectors memoize on the state reference, so
-// mutating a shared object would serve stale results.
-let mockState: MockState;
 
 function setState(overrides: Partial<MockState> = {}) {
   mockState = {
@@ -120,6 +120,13 @@ describe('useGetDisplayName', () => {
     const { result } = renderHook(() => useGetDisplayName());
 
     expect(result.current(mockAddress)).toBe('0xd8dA6...96045');
+  });
+
+  it('returns an empty string for a missing address', () => {
+    const { result } = renderHook(() => useGetDisplayName());
+
+    expect(result.current(undefined)).toBe('');
+    expect(result.current('')).toBe('');
   });
 
   it('shortens a non-EVM address without adding a hex prefix', () => {
