@@ -691,6 +691,79 @@ describe('NotificationSectionSubPage', () => {
         false,
       );
     });
+
+    it('enables every account and tracks aggregate enabled when select all is clicked', async () => {
+      renderAggPage([
+        { address: address1, enabled: false },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledWith(
+          [address1, address2],
+          true,
+        );
+      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            settings_type: 'wallet_activity',
+            notification_channel: 'all',
+            enabled: true,
+          }),
+        }),
+      );
+    });
+
+    it('disables every account and tracks aggregate disabled when deselect all is clicked', async () => {
+      renderAggPage([
+        { address: address1, enabled: true },
+        { address: address2, enabled: true },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledWith(
+          [address1, address2],
+          false,
+        );
+      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            settings_type: 'wallet_activity',
+            notification_channel: 'all',
+            enabled: false,
+          }),
+        }),
+      );
+    });
+
+    it('skips analytics when select all fails to persist', async () => {
+      mockSwitchAccountNotifications.mockRejectedValueOnce(
+        new Error('mock failure'),
+      );
+      renderAggPage([
+        { address: address1, enabled: false },
+        { address: address2, enabled: false },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+      });
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
   });
   /* eslint-enable @typescript-eslint/naming-convention */
 

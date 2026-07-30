@@ -479,11 +479,6 @@
       "count": 1
     }
   },
-  "ui/pages/notifications-settings/notifications-settings-allow-notifications.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/pages/settings/debug-tab/debug-content/sentry-test.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
