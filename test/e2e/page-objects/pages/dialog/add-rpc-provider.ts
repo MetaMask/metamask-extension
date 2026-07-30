@@ -1,15 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
 class AddRpcProviderDialog {
-  protected driver: Driver;
-
   private addRpcProviderButton = {
     tag: 'button',
     text: 'Approve',
   };
 
+  protected driver: Driver;
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async approveAddRpcProvider() {
+    await this.driver.clickElementAndWaitToDisappear(this.addRpcProviderButton);
   }
 
   /**
@@ -30,10 +34,6 @@ class AddRpcProviderDialog {
       throw e;
     }
     console.log(`Add RPC provider dialog for ${networkName} is loaded`);
-  }
-
-  async approveAddRpcProvider() {
-    await this.driver.clickElementAndWaitToDisappear(this.addRpcProviderButton);
   }
 }
 

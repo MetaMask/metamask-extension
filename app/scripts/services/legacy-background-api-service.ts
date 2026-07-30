@@ -4,9 +4,22 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
+  NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
-import { add0x, Hex, hexToBytes, Json, NonEmptyArray } from '@metamask/utils';
+import {
+  NetworkEnablementControllerEnableAllPopularNetworksAction,
+  NetworkEnablementControllerEnableNetworkAction,
+  NetworkEnablementControllerGetStateAction,
+} from '@metamask/network-enablement-controller';
+import {
+  add0x,
+  CaipChainId,
+  Hex,
+  hexToBytes,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
@@ -144,6 +157,7 @@ import {
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
+import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -159,6 +173,7 @@ import {
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
@@ -216,17 +231,22 @@ const MESSENGER_EXPOSED_METHODS = [
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
+  'lookupSelectedNetworks',
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
+  'openUpdateTabAndReload',
   'rejectAllPendingApprovals',
   'rejectPendingApproval',
   'rejectPermissionsRequest',
   'removeAccount',
   'removePermissionsFor',
+  'requestSafeReload',
   'resetAccount',
   'setAccountLabel',
   'setCurrentCurrency',
+  'setEnabledAllPopularNetworks',
+  'setEnabledNetworks',
   'setLocked',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
@@ -292,7 +312,11 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
+  | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkEnablementControllerEnableAllPopularNetworksAction
+  | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerGetStateAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
   | PermissionControllerAcceptPermissionsRequestAction
@@ -352,6 +376,7 @@ type LegacyBackgroundApiServiceOptions = {
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
+  requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
   offscreenPromise: Promise<void>;
 };
@@ -378,6 +403,8 @@ export class LegacyBackgroundApiService {
 
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
+  readonly #requestSafeReload: () => Promise<void>;
+
   readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
@@ -396,6 +423,7 @@ export class LegacyBackgroundApiService {
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
+   * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
    * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.createVaultMutex - A mutex to serialize vault creation/export with locking.
@@ -407,6 +435,7 @@ export class LegacyBackgroundApiService {
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
     markNotificationPopupAsAutomaticallyClosed,
+    requestSafeReload,
     sendUpdate,
     seedlessOperationMutex,
     createVaultMutex,
@@ -419,6 +448,7 @@ export class LegacyBackgroundApiService {
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
+    this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
@@ -535,6 +565,21 @@ export class LegacyBackgroundApiService {
    */
   getOpenMetamaskTabsIds(): Record<string, number> {
     return this.#getOpenMetamaskTabsIds();
+  }
+
+  /**
+   * Triggers a safe reload of the extension without disrupting user state.
+   */
+  async requestSafeReload(): Promise<void> {
+    return this.#requestSafeReload();
+  }
+
+  /**
+   * Opens the "Updating" page in a new tab and then triggers a safe extension
+   * reload. Used when an update is available.
+   */
+  async openUpdateTabAndReload(): Promise<void> {
+    return openUpdateTabAndReload(this.#requestSafeReload);
   }
 
   /**
@@ -746,6 +791,71 @@ export class LegacyBackgroundApiService {
     this.#messenger.call('NetworkController:resetConnection');
 
     return selectedAddress;
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks(): Promise<void> {
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+
+    const enabledNetworkClientIds = getAllEnabledNetworkClientIds(
+      enabledNetworkMap,
+      networkConfigurationsByChainId,
+    );
+
+    await Promise.allSettled([
+      this.#messenger.call('NetworkController:lookupNetwork'),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
+        return await this.#messenger.call(
+          'NetworkController:lookupNetwork',
+          networkClientId,
+        );
+      }),
+    ]);
+  }
+
+  /**
+   * Enables the given network, then refreshes connectivity metadata for
+   * the selected and enabled networks.
+   *
+   * @param chainId - The chain ID of the network to enable.
+   */
+  async setEnabledNetworks(chainId: Hex | CaipChainId): Promise<void> {
+    try {
+      this.#messenger.call(
+        'NetworkEnablementController:enableNetwork',
+        chainId,
+      );
+    } catch (err) {
+      log.error((err as Error).message);
+      throw err;
+    }
+
+    await this.lookupSelectedNetworks();
+  }
+
+  /**
+   * Enables all popular networks, then refreshes connectivity metadata for
+   * the selected and enabled networks.
+   */
+  async setEnabledAllPopularNetworks(): Promise<void> {
+    try {
+      this.#messenger.call(
+        'NetworkEnablementController:enableAllPopularNetworks',
+      );
+    } catch (err) {
+      log.error((err as Error).message);
+      throw err;
+    }
+
+    await this.lookupSelectedNetworks();
   }
 
   /**

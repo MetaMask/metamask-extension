@@ -1,11 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
 class EditConnectedAccountsModal {
-  driver: Driver;
+  private readonly accountCell = '.multichain-account-cell';
 
   private readonly accountCheckbox = 'input[type="checkbox"]';
-
-  private readonly accountCell = '.multichain-account-cell';
 
   private readonly addNewAccountButton = {
     testId: 'add-multichain-account-button',
@@ -16,13 +14,15 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
+  private readonly connectAccountsButton = {
+    testId: 'connect-more-accounts-button',
+  };
+
+  driver: Driver;
+
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',
     tag: 'h4',
-  };
-
-  private readonly connectAccountsButton = {
-    testId: 'connect-more-accounts-button',
   };
 
   private readonly newlyCreateAccount = {
@@ -32,22 +32,6 @@ class EditConnectedAccountsModal {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.editAccountsModalTitle,
-        this.connectAccountsButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for edit connected accounts modal to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Edit connected accounts modal is loaded');
   }
 
   async addNewAccount(): Promise<void> {
@@ -79,6 +63,22 @@ class EditConnectedAccountsModal {
     });
     await this.driver.clickElement(this.newlyCreateAccount);
     await this.clickOnConnect();
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.editAccountsModalTitle,
+        this.connectAccountsButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for edit connected accounts modal to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Edit connected accounts modal is loaded');
   }
 
   async clickOnConnect(): Promise<void> {
