@@ -28,10 +28,12 @@ import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
+import { useAssetActivation } from '../hooks/useAssetActivation';
 import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
 } from './security-trust';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -162,60 +164,94 @@ const TokenButtons = ({
     runSwap();
   }, [gateCtaAction, openBridgeExperience, token]);
 
-  return (
-    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('buy')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        disabled={token.isERC721 || !isCtaGateReady}
-      />
+  const {
+    deactivateAsset,
+    canDeactivate,
+    dismissErrorMessage,
+    isDeactivating,
+    errorMessage,
+  } = useAssetActivation({
+    assetId: token.address,
+    assetSymbol: token.symbol,
+  });
 
-      {shouldShowSendButton ? (
+  return (
+    <>
+      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
         <IconButton
           className="token-overview__button"
-          onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.Arrow2UpRight}
+              name={IconName.Dollar}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
-          label={t('send')}
-          data-testid="eth-overview-send"
+          label={t('buy')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          disabled={token.isERC721 || !isCtaGateReady}
+        />
+
+        {shouldShowSendButton ? (
+          <IconButton
+            className="token-overview__button"
+            onClick={handleSendOnClick}
+            Icon={
+              <Icon
+                name={IconName.Arrow2UpRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            label={t('send')}
+            data-testid="eth-overview-send"
+            disabled={
+              token.isERC721 ||
+              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            }
+          />
+        ) : null}
+
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleSwapOnClick}
+          data-testid="token-overview-swap"
+          label={t('swap')}
           disabled={
-            token.isERC721 ||
-            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            !isExternalServicesEnabled || isMarketClosed || !isCtaGateReady
           }
         />
-      ) : null}
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+        {canDeactivate ? (
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.Trash}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={deactivateAsset}
+            data-testid="token-overview-deactivate-asset"
+            label={t('assetDeactivate') as string}
+            disabled={isDeactivating}
           />
-        }
-        onClick={handleSwapOnClick}
-        data-testid="token-overview-swap"
-        label={t('swap')}
-        disabled={
-          !isExternalServicesEnabled || isMarketClosed || !isCtaGateReady
-        }
+        ) : null}
+      </Box>
+      <AssetActivationErrorToast
+        message={errorMessage}
+        onClose={dismissErrorMessage}
       />
-    </Box>
+    </>
   );
 };
 

@@ -10312,18 +10312,6 @@
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "यह ट्रस्टलाइन जोड़ते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "यह ट्रस्टलाइन हटाते समय कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "आपके वॉलेट में अभी भी $1 $2 हैं। स्टेलर पर इस एसेट को डीएक्टिवेट करने से पहले आपको यह सब भेजना या स्वैप करना होगा।",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",
     "description": "Message shown when network connection is slow. $1 is the network name."

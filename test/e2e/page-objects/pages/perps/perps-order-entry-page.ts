@@ -9,8 +9,6 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/components/app/perps/order-entry/order-entry.tsx
  */
 export class PerpsOrderEntryPage {
-  private readonly driver: Driver;
-
   private readonly amountInputField = { testId: 'amount-input-field' };
 
   private readonly amountInputFieldInput =
@@ -26,6 +24,8 @@ export class PerpsOrderEntryPage {
   private readonly directionTabLong = { testId: 'direction-tab-long' };
 
   private readonly directionTabShort = { testId: 'direction-tab-short' };
+
+  private readonly driver: Driver;
 
   private readonly leverageInput = '[data-testid="leverage-input"] input';
 
@@ -68,15 +68,6 @@ export class PerpsOrderEntryPage {
         timeout: options?.timeout ?? 20000,
       },
     );
-  }
-
-  /**
-   * Waits until the order entry route has unmounted (e.g. after submit navigates back to market detail).
-   *
-   * @param timeout - Max wait in ms (default 15_000).
-   */
-  async waitForPageClosed(timeout = 15000): Promise<void> {
-    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
   }
 
   /**
@@ -198,6 +189,15 @@ export class PerpsOrderEntryPage {
    */
   async waitForOrderSubmitError(): Promise<void> {
     await this.driver.waitForSelector(this.orderSubmitError);
+  }
+
+  /**
+   * Waits until the order entry route has unmounted (e.g. after submit navigates back to market detail).
+   *
+   * @param timeout - Max wait in ms (default 15_000).
+   */
+  async waitForPageClosed(timeout = 15000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.orderEntryPage, { timeout });
   }
 
   /**
