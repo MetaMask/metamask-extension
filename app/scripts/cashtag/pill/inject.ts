@@ -51,6 +51,14 @@ export async function injectPills(assetsByTicker: Map<string, AssetData>) {
     element.append(buildPillContents(data));
   };
 
+  // Drop pill markup and reinstate the plain `$TICKER` cashtag text, then
+  // remove the `data-mm-cashtag` hook that the injected styles key off.
+  const unpaint = (element: HTMLAnchorElement) => {
+    element.replaceChildren(`$${element.dataset.mmCashtag ?? ''}`);
+    delete element.dataset.mmCashtag;
+    painted.delete(element);
+  };
+
   const scan = (root: ParentNode) => {
     for (const { element, asset } of findCashtagAnchors(root, assetsByTicker)) {
       paint(element, asset);
@@ -77,6 +85,11 @@ export async function injectPills(assetsByTicker: Map<string, AssetData>) {
     stop() {
       observer.disconnect();
       removePageStyles('data-mm-cashtag-pill-css');
+      for (const element of document.querySelectorAll<HTMLAnchorElement>(
+        '[data-mm-cashtag]',
+      )) {
+        unpaint(element);
+      }
     },
   };
 }
