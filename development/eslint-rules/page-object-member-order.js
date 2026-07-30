@@ -4,12 +4,12 @@
  * Custom ESLint rule: enforce E2E page-object member order.
  *
  * Required order inside a page-object class:
- *   1. Selectors      — every class *property* (`PropertyDefinition`), whether
- *                       its value is a string, an object, or an arrow function
- *                       that builds a dynamic locator.
+ *   1. Selectors      — class *properties* (`PropertyDefinition`): strings,
+ *                       objects, and arrow functions that build locators.
  *   2. Constructor
- *   3. Action methods — every class *method* (`MethodDefinition`) that drives
- *                       the `driver`.
+ *   3. Action methods — class *methods* (`MethodDefinition`) and arrow-function
+ *                       properties that drive the `driver` (async arrows, or any
+ *                       arrow whose body references `this.driver`).
  *
  * Members are additionally required to be alphabetical within each group, to
  * match the existing `order: 'alphabetically'` convention.
@@ -45,6 +45,60 @@ function getMemberName(member) {
 }
 
 /**
+ * @param {import('estree').Node | null | undefined} node
+ * @returns {boolean}
+ */
+function usesThisDriver(node) {
+  if (!node || typeof node !== 'object') {
+    return false;
+  }
+
+  if (
+    node.type === 'MemberExpression' &&
+    node.object?.type === 'ThisExpression'
+  ) {
+    const { property } = node;
+    if (property?.type === 'Identifier' && property.name === 'driver') {
+      return true;
+    }
+    if (property?.type === 'Literal' && property.value === 'driver') {
+      return true;
+    }
+  }
+
+  for (const key of Object.keys(node)) {
+    if (key === 'parent') {
+      continue;
+    }
+    const child = node[key];
+    if (Array.isArray(child)) {
+      if (child.some((item) => usesThisDriver(item))) {
+        return true;
+      }
+    } else if (child && typeof child === 'object' && child.type) {
+      if (usesThisDriver(child)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * @param {import('estree').PropertyDefinition} member
+ * @returns {boolean}
+ */
+function isArrowFunctionAction(member) {
+  const { value } = member;
+  if (value?.type !== 'ArrowFunctionExpression') {
+    return false;
+  }
+
+  return value.async || usesThisDriver(value.body);
+}
+
+/**
  * @param {import('estree').Node} member
  * @returns {number | null} one of GROUP.*, or null for members we ignore
  */
@@ -52,8 +106,10 @@ function classify(member) {
   if (member.type === 'MethodDefinition') {
     return member.kind === 'constructor' ? GROUP.CONSTRUCTOR : GROUP.ACTION;
   }
-  // PropertyDefinition covers strings, objects, AND arrow-function selectors.
   if (member.type === 'PropertyDefinition') {
+    if (isArrowFunctionAction(member)) {
+      return GROUP.ACTION;
+    }
     return GROUP.SELECTOR;
   }
   // StaticBlock, TSIndexSignature, etc. are ignored.

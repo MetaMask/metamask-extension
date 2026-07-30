@@ -10320,18 +10320,6 @@
   "statusNotConnected": {
     "message": "Chưa kết nối"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Đã xảy ra lỗi khi thêm trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Đã xảy ra lỗi khi xóa trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Bạn vẫn còn $1 $2 trong ví này. Bạn phải gửi hoặc hoán đổi toàn bộ trước khi hủy kích hoạt tài sản này trên Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."

@@ -4,15 +4,15 @@ import { Driver } from '../../webdriver/driver';
 import { regularDelayMs } from '../../helpers';
 
 export default class DeepLink {
-  protected readonly driver: Driver;
+  private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
 
   private readonly checkbox: string = '[data-testid="deep-link-checkbox"]';
 
-  private readonly descriptionBox = '[data-testid="deep-link-description"]';
-
   private readonly continueButton = '[data-testid="deep-link-continue-button"]';
 
-  private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
+  private readonly descriptionBox = '[data-testid="deep-link-description"]';
+
+  protected readonly driver: Driver;
 
   private readonly loadingIndicator = '[data-testid="loading-indicator"]';
 
@@ -34,20 +34,20 @@ export default class DeepLink {
     console.log('Deep Link page is loaded');
   }
 
-  async clickContinueButton() {
-    try {
-      await this.driver.clickElementAndWaitToDisappear(this.continueButton);
-    } catch (e) {
-      console.log('Error clicking continue button on Deep Link page', e);
-      throw e;
-    }
-  }
-
   async clickCancelButton() {
     try {
       await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
     } catch (e) {
       console.log('Error clicking cancel button on Deep Link page', e);
+      throw e;
+    }
+  }
+
+  async clickContinueButton() {
+    try {
+      await this.driver.clickElementAndWaitToDisappear(this.continueButton);
+    } catch (e) {
+      console.log('Error clicking continue button on Deep Link page', e);
       throw e;
     }
   }
@@ -64,11 +64,13 @@ export default class DeepLink {
     }
   }
 
-  async hasSkipDeepLinkInterstitialCheckBox(): Promise<boolean> {
-    const skipCheckbox = await this.driver.driver.findElements(
-      By.css(this.checkbox),
+  async getDescriptionText(): Promise<string> {
+    const routeBox = await this.driver.driver.findElement(
+      By.css(this.descriptionBox),
     );
-    return skipCheckbox.length > 0;
+    assert.strictEqual(await routeBox.isDisplayed(), true);
+    const routeText = await routeBox.getText();
+    return routeText;
   }
 
   async getSkipDeepLinkInterstitialCheckBoxState(): Promise<boolean> {
@@ -76,6 +78,13 @@ export default class DeepLink {
       '#dont-remind-me-checkbox',
     );
     return await skipCheckbox.isSelected();
+  }
+
+  async hasSkipDeepLinkInterstitialCheckBox(): Promise<boolean> {
+    const skipCheckbox = await this.driver.driver.findElements(
+      By.css(this.checkbox),
+    );
+    return skipCheckbox.length > 0;
   }
 
   async setSkipDeepLinkInterstitialCheckBox(skip: boolean): Promise<void> {
@@ -87,14 +96,5 @@ export default class DeepLink {
     } else if (isChecked) {
       await this.clickSkipDeepLinkInterstitialCheckBox();
     }
-  }
-
-  async getDescriptionText(): Promise<string> {
-    const routeBox = await this.driver.driver.findElement(
-      By.css(this.descriptionBox),
-    );
-    assert.strictEqual(await routeBox.isDisplayed(), true);
-    const routeText = await routeBox.getText();
-    return routeText;
   }
 }
