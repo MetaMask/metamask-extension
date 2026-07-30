@@ -1,6 +1,7 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../platforms/extension';
+import type { AppStateController } from '../controllers/app-state-controller';
 import {
   NOTIFICATION_HEIGHT,
   NOTIFICATION_WIDTH,
@@ -18,7 +19,7 @@ export default class NotificationManager extends EventEmitter {
 
   _popupId: number | undefined;
 
-  _setCurrentPopupId: ((id: number | undefined) => void) | undefined;
+  _setCurrentPopupId: AppStateController['setCurrentPopupId'] | undefined;
 
   _popupAutomaticallyClosed: boolean | undefined;
 
@@ -46,7 +47,7 @@ export default class NotificationManager extends EventEmitter {
    * @param currentPopupId - id of current opened metamask popup window
    */
   async showPopup(
-    setCurrentPopupId: (id: number | undefined) => void,
+    setCurrentPopupId: AppStateController['setCurrentPopupId'],
     currentPopupId: number | undefined,
   ) {
     this._popupId = currentPopupId;
@@ -102,7 +103,8 @@ export default class NotificationManager extends EventEmitter {
 
   _onWindowClosed(windowId: number) {
     if (windowId === this._popupId) {
-      this._setCurrentPopupId?.(undefined);
+      // Set alongside `_popupId` in `showPopup`; keep a hard call so an unset setter throws.
+      this._setCurrentPopupId!(undefined);
       this._popupId = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,

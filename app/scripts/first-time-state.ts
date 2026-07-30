@@ -1,9 +1,8 @@
-type FirstTimeState = {
+/**
+ * Initial wallet state for first-time / empty installs.
+ */
+const initialState = {
   /** Initial configuration parameters */
-  config: Record<string, unknown>;
-};
-
-const initialState: FirstTimeState = {
   config: {},
 };
 export default initialState;

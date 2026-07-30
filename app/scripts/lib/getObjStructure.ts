@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import type { MetaMaskStorageStructure } from '../../../shared/lib/stores/base-store';
 
 // This will create an object that represents the structure of the given object
 // it replaces all values with the result of their type
@@ -26,10 +27,10 @@ import { cloneDeep } from 'lodash';
  * replaced with the javascript type of that value.
  */
 export default function getObjStructure(
-  obj: Record<string, unknown>,
+  obj: MetaMaskStorageStructure | undefined,
 ): Record<string, unknown> {
   const structure = cloneDeep(obj);
-  return deepMap(structure, (value) => {
+  return deepMap(structure as Record<string, unknown> | undefined, (value) => {
     return value === null ? 'null' : typeof value;
   });
 }
@@ -43,7 +44,7 @@ export default function getObjStructure(
  * @returns The modified object
  */
 function deepMap(
-  target: Record<string, unknown>,
+  target: Record<string, unknown> = {},
   visit: (value: unknown) => string,
 ): Record<string, unknown> {
   Object.entries(target).forEach(([key, value]) => {

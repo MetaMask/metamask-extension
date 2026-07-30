@@ -20,9 +20,9 @@ async function hasOffscreenDocument() {
 
   // getContexts is only available in Chrome 116+
   if ('getContexts' in chrome.runtime) {
-    const contexts = (await chrome.runtime.getContexts({
-      contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
-    })) as chrome.runtime.ExtensionContext[];
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['OFFSCREEN_DOCUMENT'],
+    });
     return contexts.length > 0;
   }
 
@@ -50,7 +50,7 @@ export async function createOffscreen() {
 
   let offscreenDocumentLoadedListener:
     | ((msg: {
-        target: string;
+        target: OffscreenCommunicationTarget;
         isBooted: boolean;
         webdriverPresent: boolean;
       }) => void)
@@ -92,7 +92,7 @@ export async function createOffscreen() {
 
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
-      reasons: [chrome.offscreen.Reason.IFRAME_SCRIPTING],
+      reasons: ['IFRAME_SCRIPTING'],
       justification:
         'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
     });

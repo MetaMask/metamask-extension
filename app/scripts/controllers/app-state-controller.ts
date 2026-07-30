@@ -1483,11 +1483,12 @@ export class AppStateController extends BaseController<
   };
 
   /**
-   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+   * Pass `undefined` to clear when the popup is closed.
    *
    * @param currentPopupId
    */
-  setCurrentPopupId(currentPopupId: number): void {
+  setCurrentPopupId(currentPopupId: number | undefined): void {
     this.update((state) => {
       state.currentPopupId = currentPopupId;
     });

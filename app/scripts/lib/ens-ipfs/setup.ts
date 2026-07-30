@@ -1,17 +1,14 @@
+import type { Hex } from '@metamask/utils';
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
 import browser from 'webextension-polyfill';
 
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
-import resolveEnsToIpfsContentId from './resolver';
+import resolveEnsToIpfsContentId, { type EthProvider } from './resolver';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
 const supportedTopLevelDomains = ['eth'];
-
-type EthProvider = {
-  request: (args: { method: string; params?: unknown[] }) => Promise<string>;
-};
 
 export default function setupEnsIpfsResolver({
   provider,
@@ -20,7 +17,7 @@ export default function setupEnsIpfsResolver({
   getUseAddressBarEnsResolution,
 }: {
   provider: EthProvider;
-  getCurrentChainId: () => string;
+  getCurrentChainId: () => Hex;
   getIpfsGateway: () => string;
   getUseAddressBarEnsResolution: () => boolean;
 }) {
@@ -39,7 +36,9 @@ export default function setupEnsIpfsResolver({
     },
   };
 
-  async function webRequestDidFail(details: { tabId: number; url: string }) {
+  async function webRequestDidFail(
+    details: browser.WebRequest.OnErrorOccurredDetailsType,
+  ) {
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet

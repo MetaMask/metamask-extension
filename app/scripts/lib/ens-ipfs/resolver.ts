@@ -2,12 +2,19 @@ import namehash from 'eth-ens-namehash';
 import contentHash from '@ensdomains/content-hash';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import type { NetworkController } from '@metamask/network-controller';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
-type EthProvider = {
-  request: (args: { method: string; params?: unknown[] }) => Promise<string>;
-};
+/**
+ * Provider used for ENS → IPFS resolution.
+ *
+ * Derived from NetworkController so it stays aligned with
+ * `controller.provider` (from `getProviderAndBlockTracker().provider`).
+ */
+export type EthProvider = NonNullable<
+  ReturnType<NetworkController['getProviderAndBlockTracker']>['provider']
+>;
 
 export default async function resolveEnsToIpfsContentId({
   provider,
