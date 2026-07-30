@@ -124,6 +124,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
@@ -3945,6 +3946,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:isSendBundleSupported',
       ),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
+      ),
       openUpdateTabAndReload: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:openUpdateTabAndReload',
@@ -5650,7 +5655,15 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
+    // `createAccounts` derives the account address from the device, so a
+    // locked or unresponsive device can make this call hang indefinitely.
+    // Unlike the pure-read hardware methods (which run on the lock-free
+    // `deviceRead` path), `createAccounts` mutates vault state and must run
+    // under the controller lock, so it cannot use `deviceRead: true`. Wrap
+    // it in the same UX backstop as `#withKeyringForDevice`'s device-read
+    // branch so a wedged device rejects with an actionable error instead of
+    // leaving the UI spinner (and `showLoadingIndication`) stuck forever.
+    const createOperation = this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         const { entropySource } = keyring;
@@ -5734,6 +5747,39 @@ export default class MetamaskController extends EventEmitter {
         };
       },
     );
+
+    let timeoutHandle;
+    let timedOut = false;
+    let unlockedAccount;
+    try {
+      ({ address: unlockedAccount } = await Promise.race([
+        createOperation,
+        new Promise((_resolve, reject) => {
+          timeoutHandle = setTimeout(() => {
+            timedOut = true;
+            reject(
+              new Error(
+                `Hardware wallet account creation timed out for device: ${deviceName}. Make sure the device is connected and unlocked, then try again.`,
+              ),
+            );
+          }, HARDWARE_DEVICE_READ_TIMEOUT_MS);
+        }),
+      ]));
+    } finally {
+      clearTimeout(timeoutHandle);
+      if (timedOut) {
+        // The abandoned create operation still holds the controller lock until
+        // the device call settles; observe its rejection so it never surfaces
+        // as an unhandled rejection. Mirrors the device-read path in
+        // `#withKeyringForDevice`.
+        createOperation.catch((error) =>
+          log.warn(
+            `Abandoned hardware wallet account creation failed after timeout for device: ${deviceName}`,
+            error,
+          ),
+        );
+      }
+    }
 
     const accounts = this.accountsController.listAccounts();
 
@@ -6837,6 +6883,15 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const perpsController = this.messengerClientsByName.PerpsController;
+    // Dedicated Hyperliquid WebSocket for the order-book panel's aggregated
+    // (`nSigFigs`) subscription, isolated from the controller's shared socket so
+    // the raw and aggregated `l2Book` streams for the same coin cannot
+    // cross-contaminate (the SDK dispatches `l2Book` events by coin only).
+    const aggregatedOrderBookConnection = perpsController
+      ? new AggregatedOrderBookConnection({
+          isTestnet: () => Boolean(perpsController.state?.isTestnet),
+        })
+      : null;
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
@@ -6866,6 +6921,8 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          subscribeAggregatedOrderBook: (params) =>
+            aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
             const { remoteFeatureFlags } = this.controllerMessenger.call(
               'RemoteFeatureFlagController:getState',
@@ -6961,6 +7018,7 @@ export default class MetamaskController extends EventEmitter {
         patchStore.destroy();
         messengerSubscriptions.clear();
         perpsStream?.destroy();
+        aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen
           // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
