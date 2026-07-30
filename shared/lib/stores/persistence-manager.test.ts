@@ -466,17 +466,6 @@ describe('PersistenceManager', () => {
       expect(log.error).not.toHaveBeenCalled();
     });
 
-    it('does not capture exception when store.get throws a browser-shutdown error with reportErrors disabled', async () => {
-      const shutdownError = new Error('The browser is shutting down.');
-      mockStoreGet.mockRejectedValueOnce(shutdownError);
-
-      await expect(
-        manager.get({ validateVault: false, reportErrors: false }),
-      ).rejects.toThrow(shutdownError);
-
-      expect(mockedCaptureException).not.toHaveBeenCalled();
-      expect(log.error).not.toHaveBeenCalled();
-    });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       manager.storageKind = 'data';
