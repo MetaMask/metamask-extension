@@ -3,6 +3,7 @@ import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
+import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
 import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
@@ -24,6 +25,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
+        {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}
@@ -47,5 +49,7 @@ export const TokenCellTitle = React.memo(
       nextProps.token.rwaData?.nextPause?.end &&
     prevProps.token.address === nextProps.token.address &&
     prevProps.token.chainId === nextProps.token.chainId &&
-    prevProps.token.symbol === nextProps.token.symbol,
+    prevProps.token.symbol === nextProps.token.symbol &&
+    prevProps.token.tokenRequireActivate ===
+      nextProps.token.tokenRequireActivate,
 );
