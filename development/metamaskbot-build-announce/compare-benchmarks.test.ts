@@ -331,7 +331,10 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons).toHaveLength(0);
     });
 
-    it('skips entries from failed benchmark runs (missing p75/p95)', () => {
+    it('fails when a benchmark owning a gated metric produced no results', () => {
+      // `startupStandardHome.uiStartup` is allowlisted, so an artifact with no
+      // percentiles removes a blocking signal — the gate must not pass on
+      // absent evidence.
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
@@ -343,9 +346,120 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
+      expect(result.anyFailed).toBe(true);
+      expect(result.errored).toStrictEqual([
+        {
+          benchmarkName: 'startupStandardHome',
+          file: 'benchmark-chrome-webpack-startupStandardHome',
+          source: 'chrome-webpack',
+          error: 'Browser crashed',
+          gated: true,
+        },
+      ]);
+    });
+
+    it('warns without failing when a benchmark with no gated metric produced no results', () => {
+      // No `startupPowerUserHome.*` entry is allowlisted, so its absence is
+      // reported but cannot block — mirroring `applyGatingPolicy`, where a
+      // non-allowlisted breach degrades to a warning.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-startupPowerUserHome',
+          data: {
+            startupPowerUserHome: {
+              error: 'Error: Retry limit reached',
+            } as never,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.comparisons).toHaveLength(0);
+      expect(result.anyFailed).toBe(false);
+      expect(result.errored).toStrictEqual([
+        {
+          benchmarkName: 'startupPowerUserHome',
+          file: 'benchmark-chrome-webpack-startupPowerUserHome',
+          source: 'chrome-webpack',
+          error: 'Error: Retry limit reached',
+          gated: false,
+        },
+      ]);
+    });
+
+    it('records a no-result benchmark that carries no error text', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-startupStandardHome',
+          data: {
+            startupStandardHome: {} as never,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.anyFailed).toBe(true);
+      expect(result.errored[0].error).toBeUndefined();
+    });
+
+    it('does not record a no-result entry that has no threshold config', () => {
+      // An unregistered benchmark has no gated metric to lose, and no
+      // threshold to compare against — unchanged warn-and-skip behaviour.
+      const benchmarks = [
+        {
+          name: 'unknown-benchmark',
+          data: {
+            'unknown-benchmark': { error: 'Browser crashed' } as never,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.comparisons).toHaveLength(0);
+      expect(result.errored).toHaveLength(0);
+      expect(result.anyFailed).toBe(false);
       expect(console.warn).toHaveBeenCalledWith(
-        expect.stringContaining('missing p75/p95'),
+        expect.stringContaining('No threshold config'),
       );
+    });
+
+    it('reports no-result benchmarks in an ERROR section of printReport', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-startupStandardHome',
+          data: {
+            startupStandardHome: { error: 'Browser crashed' } as never,
+          },
+        },
+        {
+          name: 'benchmark-chrome-webpack-startupPowerUserHome',
+          data: {
+            startupPowerUserHome: {
+              error: 'Error: Retry limit reached',
+            } as never,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      try {
+        printReport(result);
+        const allCalls = consoleSpy.mock.calls.flat().join('\n');
+        expect(allCalls).toContain(
+          'ERROR  startupStandardHome [chrome-webpack]',
+        );
+        expect(allCalls).toContain('Browser crashed');
+        expect(allCalls).toContain(
+          'ERROR (non-gated)  startupPowerUserHome [chrome-webpack]',
+        );
+        expect(allCalls).toContain('2 no results');
+        expect(allCalls).toContain(
+          'RESULT: FAIL — a benchmark carrying a gated metric produced no results',
+        );
+      } finally {
+        consoleSpy.mockRestore();
+      }
     });
   });
 });
@@ -415,7 +529,7 @@ describe('printReport', () => {
   });
 
   it('prints PASS result when no comparison failed', () => {
-    printReport({ comparisons: [], anyFailed: false });
+    printReport({ comparisons: [], errored: [], anyFailed: false });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('PASS — all benchmarks within constant limits'),
@@ -424,6 +538,7 @@ describe('printReport', () => {
 
   it('prints FAIL result when anyFailed is true', () => {
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -440,6 +555,7 @@ describe('printReport', () => {
 
   it('shows passing comparison in grouped PASS section', () => {
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -458,6 +574,7 @@ describe('printReport', () => {
 
   it('shows failing comparison with source label and FAIL prefix', () => {
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -474,6 +591,7 @@ describe('printReport', () => {
 
   it('groups passing entries without baseline into PASS section', () => {
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
       ],
@@ -489,6 +607,7 @@ describe('printReport', () => {
       './comparison-utils',
     ) as typeof import('./comparison-utils');
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -524,6 +643,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -554,6 +674,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
         makeComparison({
@@ -582,6 +703,7 @@ describe('printReport', () => {
 
   it('groups multiple sources for the same benchmark name in PASS section', () => {
     printReport({
+      errored: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'startupStandardHome',
