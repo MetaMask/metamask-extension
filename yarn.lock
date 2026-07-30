@@ -8015,9 +8015,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@2.0.0-preview-a1d0bbfa8":
-  version: 2.0.0-preview-a1d0bbfa8
-  resolution: "@metamask-previews/snap-account-service@npm:2.0.0-preview-a1d0bbfa8"
+"@metamask/snap-account-service@npm:^2.0.0, @metamask/snap-account-service@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/snap-account-service@npm:2.1.0"
   dependencies:
     "@metamask/account-api": "npm:^1.1.1"
     "@metamask/eth-snap-keyring": "npm:^23.0.0"
@@ -8030,7 +8030,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/beb419b454a9103f74855b1dc1ecb0e5738d3bb4a4f858fd530bab6e7a4c0ea2af084eef11ad8722e9baec3d5457a714e607863f90e483226090536dd4c2a44f
+  checksum: 10/00ad8d3c5daf0acc95c2c79ea914c5b802923441f2e0412ba01cef2226cbf2cb24bd0fb42ebb0f6078ccba5cddc39767ea3e401f24c429d3712857be401e3207
   languageName: node
   linkType: hard
 
