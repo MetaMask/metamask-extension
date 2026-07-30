@@ -376,21 +376,12 @@
     "message": "In $1 umgerechnet",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1 einzahlen",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 eingezahlt",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "Wallet hinzufügen"
   },
+  "add_device_error_connection": {
+    "message": "Wir konnten keine sichere Verbindung zu Ihrem Smartphone herstellen. Überprüfen Sie bitte Ihre Internetverbindung und versuchen Sie es erneut."
+  },
+  "add_device_error_expired": {
+    "message": "Diese Synchronisierungssitzung ist abgelaufen. Zur Generierung eines neuen QR-Codes starten Sie bitte erneut."
+  },
+  "add_device_error_generic": {
+    "message": "Bei der Synchronisierung mit Ihrem Smartphone ist etwas schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Der Verifizierungscode war falsch. Bitte versuchen Sie erneut, Ihr Smartphone zu synchronisieren."
+  },
+  "add_device_error_rejected": {
+    "message": "Die Synchronisierung wurde auf Ihrem Smartphone abgebrochen. Versuchen Sie die Synchronisierung erneut."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Das Synchronisieren Ihrer Konten mit Ihrem Smartphone konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
+  },
+  "add_device_error_title": {
+    "message": "Synchronisierung konnte nicht abgeschlossen werden"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 importierte Konten wurden mit Ihrem Smartphone synchronisiert.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Sie interagieren mit einer unbekannten Adresse. Dies hilft, betrügerische Transaktionen zu verhindern."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Beinhaltet $1 für zusätzlichen Schutz",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Optional"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "die Swaps-Seite"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "die Seite „Trading folgen“"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "die Seite für den Transaktionsschutz"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "Läuft in $1 Sek. ab",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Zu viele Fehlversuche. Bitte versuchen Sie es mit einem neuen QR-Code."
   },
   "enter_your_password": {
     "message": "Geben Sie Ihr Passwort ein"
@@ -4216,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Hardware-Wallet verknüpft"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Das Gerät reagiert zu langsam oder die Verbindung ist abgelaufen. Stellen Sie sicher, dass Ihr Gerät verbunden und entsperrt ist, und versuchen Sie es dann erneut."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Fortfahren"
@@ -5640,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Von diesem Konto nicht unterstützt."
+  },
   "networkOptions": {
     "message": "Netzwerkoptionen"
   },
@@ -6903,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "Schlussbetrag"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Preis darf nicht mehr als 95 % vom Marktpreis abweichen"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Geben Sie einen gültigen Limitpreis ein, um fortzufahren."
+  },
   "perpsCloseLong": {
     "message": "Long-Position schließen"
   },
@@ -6911,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "Position schließen"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Aktueller Preis nicht verfügbar. Bitte versuchen Sie es in Kürze erneut."
   },
   "perpsCloseShort": {
     "message": "Short-Position schließen"
@@ -7441,6 +7478,10 @@
     "message": "Ihre GuV ist $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Erteilung der Close-Order fehlgeschlagen",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Der Position $2 wurde eine Margin von $1 hinzugefügt",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7488,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Position teilweise geschlossen",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Die Teilschließung der Order fehlgeschlagen",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Ihre Position ist noch aktiv",
@@ -8054,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "Gesamtkosten: $1"
   },
+  "rampsBestRate": {
+    "message": "Bester Wechselkurs"
+  },
+  "rampsBuyToken": {
+    "message": "$1 kaufen",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Kaufen über $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Anbieter wechseln."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Bitte versuchen Sie es erneut oder wenden Sie sich beim Fortbestehen des Problems an den Support."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Wir konnten Ihre Region nicht verifizieren"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Beim Laden der Zahlungsmethoden ist ein Fehler aufgetreten"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Fehler beim Laden von Token"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Maximaler Kauf ist $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Mindestkauf ist $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Am zuverlässigsten"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Es stehen keine Zahlungsmethoden zur Verfügung."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Keine Anbieter verfügbar."
+  },
   "rampsNoTokensAvailable": {
     "message": "Keine Tokens verfügbar"
+  },
+  "rampsOnNetwork": {
+    "message": "bei $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Weitere Optionen"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "Werktag"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "Werktage"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "Stunde"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "Stunden"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Sofort"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Weniger als"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "Min."
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "Min."
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Max. $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Min. $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Zuvor verwendet"
+  },
+  "rampsProviders": {
+    "message": "Anbieter"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Angebot konnte nicht abgerufen werden."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Angebot nicht verfügbar."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Angebote angezeigt für $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Zahlungsmethode auswählen"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Derzeit liegt eine Betriebsstörung vor. Bitte versuchen Sie es später erneut."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Kaufen ist vorübergehend nicht möglich"
+  },
+  "rampsShowAllTokens": {
+    "message": "Alle Token anzeigen"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Der Kauf von Krypto wird in Ihrer Region noch nicht unterstützt."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Kaufen ist hier nicht verfügbar"
   },
   "rank": {
     "message": "Rang"
@@ -10667,6 +10832,9 @@
   },
   "tokenDecimal": {
     "message": "Token-Dezimale"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Geben Sie eine ganze Zahl zwischen 0 und 36 ein."
   },
   "tokenDetails": {
     "message": "Token-Details"

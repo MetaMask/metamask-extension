@@ -376,21 +376,12 @@
     "message": "$1に換金しました",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "デポジット失敗"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1をデポジットしています",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1をデポジットしました",
@@ -1000,7 +991,7 @@
     "message": "スワップに失敗しました"
   },
   "activity_swap_pending_title": {
-    "message": "スワップしています"
+    "message": "スワップ中"
   },
   "activity_swap_success_title": {
     "message": "スワップしました"
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
+  "add_device_error_connection": {
+    "message": "お使いのスマートフォンとの安全な接続を維持できませんでした。インターネット接続を確認して、もう一度お試しください。"
+  },
+  "add_device_error_expired": {
+    "message": "この同期セッションは期限切れになりました。もう一度やり直して、新しいQRコードを生成してください。"
+  },
+  "add_device_error_generic": {
+    "message": "スマートフォンとの同期中に問題が発生しました。もう一度お試しください。"
+  },
+  "add_device_error_invalid_code": {
+    "message": "確認コードが正しくありませんでした。もう一度やり直して、スマートフォンを同期してみてください。"
+  },
+  "add_device_error_rejected": {
+    "message": "お使いのスマートフォンで同期がキャンセルされました。もう一度同期してみてください。"
+  },
+  "add_device_error_sync_failed": {
+    "message": "アカウントとスマートフォンの同期を完了できませんでした。もう一度お試しください。"
+  },
+  "add_device_error_title": {
+    "message": "同期を完了できませんでした"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1件のインポート済みアカウントが携帯電話に同期されました。",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "不明なアドレスとやり取りしています。これにより悪質なトランザクションを防ぐことができます。"
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "追加の保護として$1が含まれています",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "オプション"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "スワップページ"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "「取引のフォロー」ページ"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "トランザクションシールドページ"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "期限切れまであと$1秒",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
   },
   "enter_your_password": {
     "message": "パスワードを入力"
@@ -4220,6 +4242,9 @@
   },
   "hardwareWalletConnected": {
     "message": "ハードウェアウォレットが接続されました"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "デバイスの応答に時間がかかりすぎるか、接続がタイムアウトしました。デバイスが接続されており、ロックが解除されていることを確認してから、もう一度お試しください。"
   },
   "hardwareWalletErrorContinueButton": {
     "message": "続行"
@@ -5644,6 +5669,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "このアカウントではサポートされていません。"
+  },
   "networkOptions": {
     "message": "ネットワークオプション"
   },
@@ -6907,6 +6935,12 @@
   "perpsCloseAmount": {
     "message": "クローズ金額"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "価格と市場価格との差は95%以内にする必要があります"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "続行するには、有効なリミット価格を入力してください。"
+  },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
@@ -6915,6 +6949,9 @@
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "現在の価格は入手できません。しばらくしてからもう一度お試しください。"
   },
   "perpsCloseShort": {
     "message": "ショートをクローズ"
@@ -7445,6 +7482,10 @@
     "message": "損益は$1です",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "クローズ注文に失敗しました",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "$1の証拠金を$2のポジションに追加しました",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7492,6 +7533,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "ポジションが一部クローズされました",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "一部クローズ注文に失敗しました",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "ポジションは引き続き有効です",
@@ -8058,8 +8103,128 @@
   "quotedTotalCost": {
     "message": "合計コスト: $1"
   },
+  "rampsBestRate": {
+    "message": "最も有利なレート"
+  },
+  "rampsBuyToken": {
+    "message": "$1を購入",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1経由で購入中。",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "プロバイダーを変更します。"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "もう一度お試しください。引き続き問題が発生する場合はサポートにお問い合わせください。"
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "お住まいの地域を確認できませんでした"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "支払い方法の読み込みエラー"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "トークンの読み込みエラー"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "最高購入額は$1です",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "最低購入額は$1です",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "信頼性が最も高い"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "使用可能な支払方法がありません。"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "利用可能なプロバイダーがありません。"
+  },
   "rampsNoTokensAvailable": {
     "message": "使用可能なトークンがありません"
+  },
+  "rampsOnNetwork": {
+    "message": "$1上",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "その他のオプション"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "営業日"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "時間"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "即時"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "<"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "分"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "分"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1〜$2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "最大 $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "最小 $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "以前使用"
+  },
+  "rampsProviders": {
+    "message": "プロバイダー"
+  },
+  "rampsQuoteFetchError": {
+    "message": "クォートを取得できませんでした。"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "クォートが利用できません。"
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1用のクォートが表示されています。",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "支払方法を選択"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "現在、サービスに障害が発生しています。後でもう一度お試しください。"
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "購入は一時的にご利用いただけません"
+  },
+  "rampsShowAllTokens": {
+    "message": "すべてのトークンを表示"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "お住まいの地域では、まだ仮想通貨の購入はサポートされていません。"
+  },
+  "rampsUnsupportedTitle": {
+    "message": "ここでは購入できません"
   },
   "rank": {
     "message": "ランキング"
@@ -10671,6 +10836,9 @@
   },
   "tokenDecimal": {
     "message": "トークンの小数桁数"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0～36の整数を入力してください。"
   },
   "tokenDetails": {
     "message": "トークンの詳細"

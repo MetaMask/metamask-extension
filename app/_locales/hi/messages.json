@@ -376,21 +376,12 @@
     "message": "$1 में कन्वर्ट किया गया",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "डिपॉज़िट नहीं हो पाया"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "$1 डिपॉज़िट कर रहे हैं",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "$1 डिपॉज़िट किया गया",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "वॉलेट जोड़ें"
   },
+  "add_device_error_connection": {
+    "message": "हम आपके फ़ोन से सुरक्षित कनेक्शन बनाए नहीं रख सके। कृपया अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
+  },
+  "add_device_error_expired": {
+    "message": "यह सिंक सत्र समाप्त हो गया है। नया QR कोड जनरेट करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_generic": {
+    "message": "आपके फ़ोन के साथ सिंक करते समय कुछ गड़बड़ी हुई। कृपया फिर से प्रयास करें।"
+  },
+  "add_device_error_invalid_code": {
+    "message": "सत्यापन कोड गलत था। अपने फ़ोन को सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_rejected": {
+    "message": "आपके फ़ोन पर सिंक कैंसिल कर दिया गया था। सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
+  },
+  "add_device_error_sync_failed": {
+    "message": "हम आपके एकाउंट्स को आपके फ़ोन के साथ सिंक करना पूरा नहीं कर सके। कृपया फिर से प्रयास करें।"
+  },
+  "add_device_error_title": {
+    "message": "सिंक पूरा नहीं हो सका"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "$1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "आप किसी अज्ञात एड्रेस से इंटरैक्ट कर रहे हैं। इससे बुरी नीयत वाले ट्रांसेक्शन को रोकने में मदद मिलती है।"
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "इसमें अतिरिक्त सुरक्षा के लिए $1 शामिल है",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "वैकल्पिक"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "स्वैप पेज"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "फ़ॉलो ट्रेडिंग पेज"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "ट्रांसेक्शन शील्ड पेज"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "$1सेकंड में एक्स्पायर होगा",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
   },
   "enter_your_password": {
     "message": "अपना पासवर्ड डालें"
@@ -4216,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "hardware wallet कनेक्ट किया गया"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "डिवाइस को प्रतिक्रिया देने में बहुत अधिक समय लग रहा है या कनेक्शन का समय समाप्त हो गया। सुनिश्चित करें कि आपका डिवाइस कनेक्टेड और अनलॉक है, फिर दोबारा प्रयास करें।"
   },
   "hardwareWalletErrorContinueButton": {
     "message": "जारी रखें"
@@ -5640,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "यह अकाउंट इसका सपोर्ट नहीं करता है।"
+  },
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
   },
@@ -6903,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "अमाउंट क्लोज़ करें"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "प्राइस मार्केट प्राइस से 95% से अधिक अंतर पर नहीं हो सकती"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "जारी रखने के लिए एक मान्य लिमिट प्राइस दर्ज करें।"
+  },
   "perpsCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
   },
@@ -6911,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "वर्तमान प्राइस उपलब्ध नहीं है। कुछ देर बाद फिर से प्रयास करें।"
   },
   "perpsCloseShort": {
     "message": "शॉर्ट को क्लोज़ करें"
@@ -7441,6 +7478,10 @@
     "message": "आपका PnL $1 है",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "क्लोज़ ऑर्डर प्लेस नहीं हो पाया",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "$2 पोज़िशन में $1 मार्जिन जोड़ा गया",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7488,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "पोज़िशन आंशिक रूप से बंद की गई",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "आंशिक क्लोज़ ऑर्डर प्लेस नहीं हो पाया",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "आपकी पोज़िशन अभी भी सक्रिय है",
@@ -8054,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
   },
+  "rampsBestRate": {
+    "message": "सबसे अच्छी रेट"
+  },
+  "rampsBuyToken": {
+    "message": "$1 खरीदें",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "$1 के माध्यम से खरीदना।",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "प्रोवाइडर बदलें।"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "कृपया फिर से प्रयास करें, या यदि ऐसा बार-बार हो रहा है तो सपोर्ट से संपर्क करें।"
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "हम आपके क्षेत्र की पुष्टि नहीं कर सके"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "भुगतान विधियाँ लोड करने में गड़बड़ी हुई"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "टोकन को लोड करने में गड़बड़ी हुई"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "अधिकतम खरीद $1 है",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "न्यूनतम खरीद $1 है",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "सबसे विश्वसनीय"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "पेमेंट का कोई तरीका उपलब्ध नहीं है।"
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "कोई प्रोवाइडर उपलब्ध नहीं है।"
+  },
   "rampsNoTokensAvailable": {
     "message": "कोई टोकन उपलब्ध नहीं है"
+  },
+  "rampsOnNetwork": {
+    "message": "$1 पर",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "अन्य विकल्प"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "व्यावसायिक दिन"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "घंटा"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "घंटे"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "तुरंत"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "से कम"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "मिनट"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "मिनट"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "अधिकतम $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "न्यूनतम $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "पहले इस्तेमाल किया गया"
+  },
+  "rampsProviders": {
+    "message": "प्रोवाइडर्स"
+  },
+  "rampsQuoteFetchError": {
+    "message": "कोटेशन प्राप्त नहीं हो पाया।"
+  },
+  "rampsQuoteUnavailable": {
+    "message": "कोटेशन उपलब्ध नहीं है।"
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "भुगतान विधि चुनें"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "हमारी सेवा में रुकावट आ रही है। कृपया बाद में फिर से कोशिश करें।"
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
+  },
+  "rampsShowAllTokens": {
+    "message": "सभी टोकन दिखाएं"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "आपके क्षेत्र में अभी क्रिप्टो खरीदना सपोर्टेड नहीं है।"
+  },
+  "rampsUnsupportedTitle": {
+    "message": "यहाँ खरीदारी उपलब्ध नहीं है"
   },
   "rank": {
     "message": "रैंक"
@@ -10667,6 +10832,9 @@
   },
   "tokenDecimal": {
     "message": "टोकन डेसिमल"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "0 और 36 के बीच एक पूर्ण संख्या दर्ज करें।"
   },
   "tokenDetails": {
     "message": "टोकन विवरण"

@@ -29,6 +29,18 @@ describe('restrictKeyringForDeviceRead', () => {
     expect(facade.bridge).toBe(keyring.bridge);
   });
 
+  it('exposes getMode when the wrapped keyring implements it', () => {
+    const getMode = jest.fn().mockReturnValue('hd');
+    const facade = restrictKeyringForDeviceRead({
+      hdPath: 'm/0',
+      bridge: undefined,
+      getMode,
+    });
+
+    expect(facade.getMode()).toBe('hd');
+    expect(getMode).toHaveBeenCalledTimes(1);
+  });
+
   it('does not expose mutating methods', () => {
     const facade = restrictKeyringForDeviceRead(buildKeyring());
 

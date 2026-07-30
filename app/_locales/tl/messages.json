@@ -376,21 +376,12 @@
     "message": "Na-convert sa $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": ""
-  },
   "activity_deposit_failed_title": {
     "message": "Nabigo ang pagdeposito"
-  },
-  "activity_deposit_pending_description": {
-    "message": ""
   },
   "activity_deposit_pending_title": {
     "message": "Nagdedeposito ng $1",
     "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": ""
   },
   "activity_deposit_success_title": {
     "message": "Naideposito ang $1",
@@ -1174,6 +1165,27 @@
   "addWallet": {
     "message": "Magdagdag ng wallet"
   },
+  "add_device_error_connection": {
+    "message": "Hindi namin mapanatili ang maayos na koneksyon sa iyong telepono. Suriin ang iyong koneksyon sa internet at subukan muli."
+  },
+  "add_device_error_expired": {
+    "message": "Nag-expire ang sync session na ito. Magsimula muli para makalikha ng bagong QR code."
+  },
+  "add_device_error_generic": {
+    "message": "Nagkaproblema habang sini-sync sa iyong telepono. Pakisubukan muli."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Mali ang verification code. Magsimula muli para subukang i-sync ang iyong telepono."
+  },
+  "add_device_error_rejected": {
+    "message": "Kinansela ang sync sa iyong telepono. Simulan muli para subukang i-sync."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Hindi namin matapos ang pag-sync ng iyong mga account sa iyong telepono. Pakisubukan muli."
+  },
+  "add_device_error_title": {
+    "message": "Hindi makumpleto ang pag-sync"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "Naka-sync ang $1 imported account sa telepono mo.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1235,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Nakikipag-ugnayan ka sa hindi kilalang address. Nakakatulong ito na maiwasan ang mga mapaminsalang transaksyon."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "May kasamang $1 para sa karagdagang proteksyon",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Opsyonal"
@@ -3226,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "ang pahina ng mga swap"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "ang page ng Follow Trading"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "ang page ng transaction shield"
   },
@@ -3676,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "Mai-expire pagkalipas ng $1s",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Masyado ng maraming maling pagtatangka. Magsimula gamit ang bagong QR code."
   },
   "enter_your_password": {
     "message": "Ilagay ang password mo"
@@ -4216,6 +4238,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Nakakonekta ang wallet na hardware"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Masyadong natatagalan ang device sa pagtugon o nag-time out ang koneksyon. Tiyaking nakakonekta ang iyong device at naka-unlock, pagkatapos ay subukan muli."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Magpatuloy"
@@ -5640,6 +5665,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Hindi suportado ng account na ito."
+  },
   "networkOptions": {
     "message": "Mga pagpipilian na network"
   },
@@ -6903,6 +6931,12 @@
   "perpsCloseAmount": {
     "message": "Isara ang halaga"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Hindi maaaring malayo ng higit sa 95% ang presyo sa market price"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Ilagay ang wastong limit price para mapagpatuloy."
+  },
   "perpsCloseLong": {
     "message": "Isara ang long"
   },
@@ -6911,6 +6945,9 @@
   },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Hindi available ang kasalukuyang presyo. Subukan muli sa ilang sandali."
   },
   "perpsCloseShort": {
     "message": "Isara ang short"
@@ -7441,6 +7478,10 @@
     "message": "Ang iyong PnL ay $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Nabigong ilagay ang close order",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Nagdagdag ng $1 na margin sa $2 na posisyon",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7488,6 +7529,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Bahagyang naisara ang posisyon",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Nabigong ilagay ang partial close order",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Aktibo pa rin ang iyong posisyon",
@@ -8054,8 +8099,128 @@
   "quotedTotalCost": {
     "message": "Kabuuang halaga: $1"
   },
+  "rampsBestRate": {
+    "message": "Pinakasulit na rate"
+  },
+  "rampsBuyToken": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Bumibili sa pamamagitan ng $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Magpalit ng provider."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Pakisubukan muli, o kontakin ang support kung patuloy itong mangyayari."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Hindi namin ma-verify ang rehiyon mo"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Error ang pag-load sa mga paraan ng pagbabayad"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Error ang pag-load sa mga token"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Ang pinakamataas na pagbili ay $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Ang pinakamababang pagbili ay $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Pinakamaasahan"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Walang available na mga paraan ng pagbabayad."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Wala available na mga provider."
+  },
   "rampsNoTokensAvailable": {
     "message": "Walang available na token"
+  },
+  "rampsOnNetwork": {
+    "message": "sa $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Iba pang opsyon"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "business day"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "na business day"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "oras"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "(na) oras"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Instant"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Mas mababa sa"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "min"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "na min"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Pinakamataas $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Pinakamababa $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Dating ginamit"
+  },
+  "rampsProviders": {
+    "message": "Mga Provider"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Nabigong kunin ang quote."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Hindi available ang quote."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Mga quote na ipinapakita para sa $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Pumili ng paraan ng pagbabayad"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Nakakaranas kami ng pagkaantala sa serbisyo. Pakisubukan muli mamaya."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Pansamantalang hindi available ang Pagbili"
+  },
+  "rampsShowAllTokens": {
+    "message": "Ipakita ang lahat ng token"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Hindi pa suportado sa iyong rehiyon ang pagbili ng crypto."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Hindi available dito ang pagbili"
   },
   "rank": {
     "message": "Rank"
@@ -10667,6 +10832,9 @@
   },
   "tokenDecimal": {
     "message": "Decimal na token"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Ilagay ang buong numero sa pagitan ng 0 at 36."
   },
   "tokenDetails": {
     "message": "Mga detalye ng token"
