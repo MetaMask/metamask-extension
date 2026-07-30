@@ -68,10 +68,11 @@ export const updateCache = async (
       hash: hashData(response),
     };
 
-    const storageItem =
-      ((await getStorageItem(cacheKey)) as BridgeCacheStorage | undefined) ?? {
-        timestamp: Date.now(),
-      };
+    const storageItem = ((await getStorageItem(cacheKey)) as
+      | BridgeCacheStorage
+      | undefined) ?? {
+      timestamp: Date.now(),
+    };
 
     const storageItemWithTimestamp: BridgeCacheStorage =
       typeof (storageItem as BridgeCacheStorage).timestamp === 'number'

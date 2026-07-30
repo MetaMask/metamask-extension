@@ -53,8 +53,9 @@ const KNOWN_CUSTOM_ENDPOINT_URLS = [
 export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
   try {
     const { cachedResponse } =
-      ((await getStorageItem(cacheKey)) as CachedFetchStorageEntry | undefined) ||
-      {};
+      ((await getStorageItem(cacheKey)) as
+        | CachedFetchStorageEntry
+        | undefined) || {};
     return (cachedResponse as ChainInfo[]) || [];
   } catch (error) {
     console.error('Error retrieving chains list from cache', error);

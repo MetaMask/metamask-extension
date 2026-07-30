@@ -6,16 +6,14 @@ describe('#openCustomProtocol', () => {
     let windowSpy: jest.SpyInstance;
 
     beforeEach(() => {
-      windowSpy = jest
-        .spyOn(global, 'window', 'get')
-        .mockImplementation(
-          () =>
-            ({
-              navigator: {
-                msLaunchUri: mockMsLaunchUri,
-              },
-            }) as unknown as Window & typeof globalThis,
-        );
+      windowSpy = jest.spyOn(global, 'window', 'get').mockImplementation(
+        () =>
+          ({
+            navigator: {
+              msLaunchUri: mockMsLaunchUri,
+            },
+          }) as unknown as Window & typeof globalThis,
+      );
     });
 
     afterEach(() => {
@@ -57,16 +55,14 @@ describe('#openCustomProtocol', () => {
         });
       const clearTimeoutMock = jest.fn();
 
-      const windowSpy = jest
-        .spyOn(global, 'window', 'get')
-        .mockImplementation(
-          () =>
-            ({
-              addEventListener: mockAddEventListener,
-              setTimeout: jest.fn(),
-              clearTimeout: clearTimeoutMock,
-            }) as unknown as Window & typeof globalThis,
-        );
+      const windowSpy = jest.spyOn(global, 'window', 'get').mockImplementation(
+        () =>
+          ({
+            addEventListener: mockAddEventListener,
+            setTimeout: jest.fn(),
+            clearTimeout: clearTimeoutMock,
+          }) as unknown as Window & typeof globalThis,
+      );
 
       await openCustomProtocol('TEST PROTOCOL');
 
