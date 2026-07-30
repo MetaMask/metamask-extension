@@ -256,14 +256,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         await removeOrder(seededOrderId);
       };
 
-      trackCheckoutOpened({
-        checkoutSessionId,
-        providerName: selectedProvider?.name,
-        initialUrlPath: sanitizeUrlPath(widget.url),
-        hasCallbackFlow: !orderAlreadyPrecreated,
-        orderId: orderCode,
-      });
-
       const openedTab = await global.platform.openTab({ url: widget.url });
       if (openedTab.id === undefined) {
         // Without a tab id the background watcher cannot detect the callback
@@ -272,6 +264,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         setContinueError(t('rampsBuyWidgetError'));
         return;
       }
+
+      trackCheckoutOpened({
+        checkoutSessionId,
+        providerName: selectedProvider?.name,
+        initialUrlPath: sanitizeUrlPath(widget.url),
+        hasCallbackFlow: !orderAlreadyPrecreated,
+        orderId: orderCode,
+      });
 
       await watchRampsCheckoutTab({
         tabId: openedTab.id,

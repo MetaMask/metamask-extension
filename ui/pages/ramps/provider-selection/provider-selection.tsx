@@ -327,14 +327,13 @@ export function RampsProviderSelectionScreen() {
       isSelectingRef.current = true;
       setIsSelecting(true);
 
-      trackProviderSelected({
-        provider: provider.name,
-        previousProvider: selectedProvider?.name,
-        location: 'Provider Selection',
-      });
-
       try {
         await setSelectedProvider(provider);
+        trackProviderSelected({
+          provider: provider.name,
+          previousProvider: selectedProvider?.name,
+          location: 'Provider Selection',
+        });
         navigate(-1);
       } catch {
         isSelectingRef.current = false;
