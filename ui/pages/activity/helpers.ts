@@ -105,24 +105,20 @@ function getItemHash(item: ActivityListItem) {
 }
 
 /**
- * Stable list / details identifier for an activity item. Pending ramp orders
- * have no on-chain hash yet — fall back to the shared activity `data.id`
- * (`order.id ?? providerOrderId` from mapRampsOrder) so they can still be
- * opened. Prefer truthiness over `??` so an empty-string hash falls through.
+ * Stable list / details identifier for an activity item. Ramp orders use their
+ * shared order id across their lifecycle; other activity kinds use the
+ * on-chain hash.
  *
  * @param item - The activity item.
- * @returns The hash or shared ramp order id, if any.
+ * @returns The shared ramp order id or transaction hash, if any.
  */
 export function getActivityItemIdentifier(
   item: ActivityListItem,
 ): string | undefined {
-  if (item.hash) {
-    return item.hash;
-  }
   if (item.type === 'rampBuy' || item.type === 'rampSell') {
     return item.data.id;
   }
-  return undefined;
+  return item.hash;
 }
 
 function parseDate(timestamp: number) {

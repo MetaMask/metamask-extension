@@ -86,15 +86,6 @@ export async function getRampsBuyWidgetData(
   return submitRequestToBackground('getRampsBuyWidgetData', [quote]);
 }
 
-export async function addRampsPrecreatedOrder(params: {
-  orderId: string;
-  providerCode: string;
-  walletAddress: string;
-  chainId?: string;
-}): Promise<void> {
-  return submitRequestToBackground('addRampsPrecreatedOrder', [params]);
-}
-
 export async function addRampsOrder(order: RampsOrder): Promise<void> {
   return submitRequestToBackground('addRampsOrder', [order]);
 }
@@ -131,8 +122,6 @@ export async function watchRampsCheckoutTab(params: {
   tabId: number;
   providerCode: string;
   walletAddress: string;
-  orderAlreadyPrecreated: boolean;
-  orderCode?: string;
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
 }

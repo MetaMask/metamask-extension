@@ -13,7 +13,6 @@ describe('getRampsControllerApi', () => {
       getPaymentMethods: jest.fn(),
       getQuotes: jest.fn(),
       getBuyWidgetData: jest.fn(),
-      addPrecreatedOrder: jest.fn(),
       addOrder: jest.fn(),
       removeOrder: jest.fn(),
       getOrder: jest.fn(),

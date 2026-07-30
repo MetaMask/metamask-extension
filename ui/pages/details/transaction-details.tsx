@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mapApiTransaction } from '@metamask/client-utils';
+import { mapApiTransaction, mapRampsOrder } from '@metamask/client-utils';
 import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
@@ -9,7 +9,6 @@ import {
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { useRampsOrders } from '../../hooks/ramps/useRampsOrders';
-import { mapRampsOrderSafely } from '../../hooks/ramps/utils/mapRampsOrderSafely';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
 
@@ -34,40 +33,19 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
-  const { orders: rampsOrders, getOrderById } = useRampsOrders();
-  // A ramps order id (e.g. "c-28ac6e...") isn't a transaction hash — only
-  // treat txIdentifier as one when it isn't itself a known order code, or the
-  // generic activity API gets queried with an order code instead of a hash.
-  const rampsOrderById = txIdentifier ? getOrderById(txIdentifier) : undefined;
-  const rampsOrder =
-    rampsOrderById ??
-    (txIdentifier
-      ? rampsOrders.find(
-          (order) => order.txHash?.toLowerCase() === txIdentifier.toLowerCase(),
-        )
-      : undefined);
+  const { getOrderById } = useRampsOrders();
+  const rampsOrder = txIdentifier ? getOrderById(txIdentifier) : undefined;
 
   const apiTransaction = useApiTransaction({
     chainId,
-    txHash:
-      isEvm && selectedAddress && !rampsOrderById ? txIdentifier : undefined,
+    txHash: isEvm && selectedAddress && !rampsOrder ? txIdentifier : undefined,
   });
 
   const transaction = useMemo(() => {
     // The ramps order is the authoritative source for its own activity —
     // takes precedence even if its settlement hash also resolves generically
-    // below (mirrors the dedupe precedence in the activity list). Pass the URL
-    // chainId as a fallback: a just-resolved redirect order may not have its
-    // `network.chainId` populated yet, which would otherwise map to undefined
-    // and render a blank page. Still falls through to the generic sources if
-    // the order can't be mapped at all.
-    // Only seed chain from the URL when it looks like a real CAIP chain id —
-    // never pass through a missing/broken segment as a literal fallback.
-    const chainFallback =
-      chainId && chainId.includes(':') ? chainId : undefined;
-    const mappedRampsOrder = rampsOrder
-      ? mapRampsOrderSafely(rampsOrder, chainFallback)
-      : undefined;
+    // below (mirrors the dedupe precedence in the activity list).
+    const mappedRampsOrder = rampsOrder ? mapRampsOrder(rampsOrder) : undefined;
     if (mappedRampsOrder) {
       return mappedRampsOrder;
     }
@@ -108,7 +86,6 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     return undefined;
   }, [
     apiTransaction,
-    chainId,
     localActivityItem,
     nonEvmActivityItem,
     rampsOrder,

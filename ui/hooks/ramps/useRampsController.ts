@@ -46,7 +46,6 @@ export type UseRampsControllerResult = {
   orders: UseRampsOrdersResult['orders'];
   getOrderById: UseRampsOrdersResult['getOrderById'];
   addOrder: UseRampsOrdersResult['addOrder'];
-  addPrecreatedOrder: UseRampsOrdersResult['addPrecreatedOrder'];
   removeOrder: UseRampsOrdersResult['removeOrder'];
   refreshOrder: UseRampsOrdersResult['refreshOrder'];
   getOrderFromCallback: UseRampsOrdersResult['getOrderFromCallback'];
@@ -87,7 +86,6 @@ export function useRampsController(): UseRampsControllerResult {
     orders,
     getOrderById,
     addOrder,
-    addPrecreatedOrder,
     removeOrder,
     refreshOrder,
     getOrderFromCallback,
@@ -121,7 +119,6 @@ export function useRampsController(): UseRampsControllerResult {
     orders,
     getOrderById,
     addOrder,
-    addPrecreatedOrder,
     removeOrder,
     refreshOrder,
     getOrderFromCallback,

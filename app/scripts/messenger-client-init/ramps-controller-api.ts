@@ -36,8 +36,6 @@ export function getRampsControllerApi(
     getRampsQuotes: rampsController.getQuotes.bind(rampsController),
     getRampsBuyWidgetData:
       rampsController.getBuyWidgetData.bind(rampsController),
-    addRampsPrecreatedOrder:
-      rampsController.addPrecreatedOrder.bind(rampsController),
     addRampsOrder: rampsController.addOrder.bind(rampsController),
     removeRampsOrder: rampsController.removeOrder.bind(rampsController),
     refreshRampsOrder: rampsController.getOrder.bind(rampsController),

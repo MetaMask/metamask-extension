@@ -150,7 +150,6 @@ jest.mock('./messenger-client-init/ramps-controller-init', () => ({
       getRampsPaymentMethods: jest.fn(),
       getRampsQuotes: jest.fn(),
       getRampsBuyWidgetData: jest.fn(),
-      addRampsPrecreatedOrder: jest.fn(),
       addRampsOrder: jest.fn(),
       removeRampsOrder: jest.fn(),
       refreshRampsOrder: jest.fn(),

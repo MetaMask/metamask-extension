@@ -45,11 +45,7 @@ function navigateToBuySellActivity(navigate: ReturnType<typeof useNavigate>) {
 
 /**
  * Watches RampsController orders in Redux and shows pending / success / failed
- * toasts on status transitions. Covers both poll-driven updates (including
- * PRECREATED → PENDING) and redirect-resolved addOrder inserts.
- *
- * Initial PRECREATED seeds from Continue do not toast — that path already
- * showed the "opened in a new tab" toast.
+ * toasts on poll-driven updates and redirect-resolved order inserts.
  */
 export function useRampsOrderEventToasts(): void {
   const orders = useSelector(selectRampsOrdersForSelectedAccount);
@@ -122,11 +118,8 @@ function handleOrderStatusChange({
     onActionClick,
   };
 
-  // Fresh redirect-resolved order, or poll left PRECREATED — pending toast.
   const becameInProgress =
-    IN_PROGRESS.has(order.status) &&
-    (previousStatus === undefined ||
-      previousStatus === RampsOrderStatus.Precreated);
+    IN_PROGRESS.has(order.status) && previousStatus === undefined;
 
   if (becameInProgress && shouldShowPendingToast(orderCode)) {
     showPendingToast(toastId, {
@@ -138,8 +131,8 @@ function handleOrderStatusChange({
   }
 
   if (order.status === RampsOrderStatus.Completed) {
-    // Seed the pending phase if we never toasted one (e.g. PRECREATED →
-    // COMPLETED in a single poll) so the terminal guard still allows success.
+    // A callback can resolve an already completed order without first adding
+    // an in-progress order.
     shouldShowPendingToast(orderCode);
     if (shouldShowTerminalToast(orderCode)) {
       showSuccessToast(toastId, {
