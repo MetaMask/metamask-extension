@@ -10320,18 +10320,6 @@
   "statusNotConnected": {
     "message": "No conectado"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Se produjo un error al agregar esta línea de confianza. Inténtalo de nuevo.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Se produjo un error al eliminar esta línea de confianza. Inténtalo de nuevo.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Aún tienes $1 $2 en esta billetera. Debes enviarlos o canjearlos por completo antes de desactivar este activo en Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Todavía conectándose a $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."

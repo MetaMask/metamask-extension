@@ -1,11 +1,11 @@
 import { Driver } from '../../../webdriver/driver';
 
 class TermsOfUseUpdateModal {
-  private driver: Driver;
-
   private readonly acceptButton = {
     testId: 'terms-of-use-agree-button',
   };
+
+  private driver: Driver;
 
   private readonly popoverScrollButton = {
     testId: 'terms-of-use-scroll-button',

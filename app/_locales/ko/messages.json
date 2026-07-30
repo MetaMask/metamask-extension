@@ -10320,18 +10320,6 @@
   "statusNotConnected": {
     "message": "연결되지 않음"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "이 트러스트라인을 추가하는 중 문제가 발생했습니다. 다시 시도해 주세요.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "이 트러스트라인을 제거하는 중 문제가 발생했습니다. 다시 시도해 주세요.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "이 지갑에 여전히 $1 $2이(가) 있습니다. Stellar에서 이 자산을 비활성화하려면 먼저 모두 전송하거나 스왑해야 합니다.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "$1에 연결 중...",
     "description": "Message shown when network connection is slow. $1 is the network name."

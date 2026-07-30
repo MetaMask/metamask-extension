@@ -1083,6 +1083,7 @@
     "methodData": {},
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
+    "mode": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -1294,6 +1295,12 @@
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
+    "proLayoutPreferences": {
+      "orderBookExpanded": "boolean",
+      "chartExpanded": "boolean",
+      "orderBookPosition": "string",
+      "orderFormPosition": "string"
+    },
     "proofBackfillEnqueued": "boolean",
     "providerAutoSelected": "boolean",
     "providers": {
