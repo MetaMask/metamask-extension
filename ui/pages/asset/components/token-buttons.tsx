@@ -9,6 +9,7 @@ import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
@@ -28,7 +29,10 @@ import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { useAssetActivation } from '../hooks/useAssetActivation';
-import { useDispatch } from '../../../store/hooks';
+import {
+  useAssetPageSecurityTrustCtaGate,
+  useAssetPageSecurityTrustCtaGateReady,
+} from './security-trust';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
@@ -47,6 +51,8 @@ const TokenButtons = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const gateCtaAction = useAssetPageSecurityTrustCtaGate();
+  const isCtaGateReady = useAssetPageSecurityTrustCtaGateReady();
   const isEvm = isEvmChainId(token.chainId);
   const shouldShowSendButton = Boolean(
     token.balance?.value && token.balance.value !== '0',
@@ -69,32 +75,42 @@ const TokenButtons = ({
   }, [token.isERC721, token.address, dispatch]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy({
-      assetId: toAssetId(token.address, token.chainId),
-      chainId: token.chainId,
-    });
-    // The ramps gate can block the buy and show its own modal; don't report a
-    // buy click in that case.
-    if (!opened) {
+    const runBuy = async () => {
+      const opened = await goToBuy({
+        assetId: toAssetId(token.address, token.chainId),
+        chainId: token.chainId,
+      });
+      // The ramps gate can block the buy and show its own modal; don't report a
+      // buy click in that case.
+      if (!opened) {
+        return;
+      }
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Token Overview',
+            text: 'Buy',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: currentChainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: token.symbol,
+          })
+          .build(),
+      );
+    };
+
+    if (gateCtaAction) {
+      gateCtaAction(runBuy, 'buy');
       return;
     }
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Token Overview',
-          text: 'Buy',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: currentChainId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol,
-        })
-        .build(),
-    );
+
+    await runBuy();
   }, [
     currentChainId,
+    gateCtaAction,
     token.address,
     token.chainId,
     token.symbol,
@@ -135,9 +151,18 @@ const TokenButtons = ({
     }
   }, [trackEvent, createEventBuilder, navigate, token]);
 
-  const handleSwapOnClick = useCallback(async () => {
-    openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
-  }, [token, openBridgeExperience]);
+  const handleSwapOnClick = useCallback(() => {
+    const runSwap = () => {
+      openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
+    };
+
+    if (gateCtaAction) {
+      gateCtaAction(runSwap, 'swap');
+      return;
+    }
+
+    runSwap();
+  }, [gateCtaAction, openBridgeExperience, token]);
 
   const {
     deactivateAsset,
@@ -165,7 +190,7 @@ const TokenButtons = ({
           label={t('buy')}
           data-testid="token-overview-buy"
           onClick={handleBuyAndSellOnClick}
-          disabled={token.isERC721}
+          disabled={token.isERC721 || !isCtaGateReady}
         />
 
         {shouldShowSendButton ? (
@@ -200,7 +225,9 @@ const TokenButtons = ({
           onClick={handleSwapOnClick}
           data-testid="token-overview-swap"
           label={t('swap')}
-          disabled={!isExternalServicesEnabled || isMarketClosed}
+          disabled={
+            !isExternalServicesEnabled || isMarketClosed || !isCtaGateReady
+          }
         />
 
         {canDeactivate ? (

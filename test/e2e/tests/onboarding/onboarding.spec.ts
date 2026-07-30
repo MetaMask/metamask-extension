@@ -32,6 +32,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
+import DeepLink from '../../page-objects/pages/deep-link-page';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -594,10 +595,9 @@ describe('MetaMask onboarding', function () {
 
         // Verify the interstitial page shows the caution warning
         // The page displays: "You were sent here by a third party, not MetaMask."
-        await driver.waitForSelector({
-          css: '[data-testid="deep-link-description"]',
-          text: 'third party',
-        });
+        await new DeepLink(driver).checkDescriptionTextIsDisplayed(
+          'third party',
+        );
       },
     );
   });
@@ -651,10 +651,9 @@ describe('MetaMask onboarding', function () {
 
         // Verify the interstitial page shows the caution warning
         // The page displays: "You were sent here by a third party, not MetaMask."
-        await driver.waitForSelector({
-          css: '[data-testid="deep-link-description"]',
-          text: 'third party',
-        });
+        await new DeepLink(driver).checkDescriptionTextIsDisplayed(
+          'third party',
+        );
       },
     );
   });
