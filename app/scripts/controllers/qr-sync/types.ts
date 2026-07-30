@@ -11,6 +11,7 @@ import {
   KeyringControllerWithKeyringV2Action,
 } from '@metamask/keyring-controller';
 import {
+  AccountTreeControllerExportStateAction,
   AccountTreeControllerGetAccountGroupObjectAction,
   AccountTreeControllerGetAccountWalletObjectAction,
 } from '@metamask/account-tree-controller';
@@ -314,7 +315,8 @@ export type QrSyncControllerActions =
 
 export type QrSyncAllowedActions =
   | QrSyncControllerActions
-  | QrSyncDataServiceMethodActions;
+  | QrSyncDataServiceMethodActions
+  | AccountTreeControllerExportStateAction;
 
 export type QrSyncControllerMessenger = Messenger<
   typeof QR_SYNC_CONTROLLER_NAME,

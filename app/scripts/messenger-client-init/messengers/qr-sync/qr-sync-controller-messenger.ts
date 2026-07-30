@@ -28,7 +28,10 @@ export function getQrSyncControllerMessenger(
 
   messenger.delegate({
     messenger: qrSyncControllerMessenger,
-    actions: ['QrSyncDataService:buildWalletExportEntries'],
+    actions: [
+      'QrSyncDataService:buildWalletExportEntries',
+      'AccountTreeController:exportState',
+    ],
   });
 
   return qrSyncControllerMessenger;

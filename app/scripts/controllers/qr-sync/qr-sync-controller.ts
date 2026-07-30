@@ -55,6 +55,7 @@ import {
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
 import { getMwpDappClient } from './mwp-dapp-client-factory';
+import { ExportStateOptions } from '@metamask/account-tree-controller';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -189,15 +190,20 @@ export class QrSyncController extends BaseController<
     password: string,
     selectedAccountGroupIds: AccountGroupId[],
   ): Promise<void> {
+    const selectedPayloadIds = new Set(selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)));
+
     assertQrSyncPhase(this.state.qrSyncPhase, [
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
-    const exportData = (await this.messenger.call(
-      'QrSyncDataService:buildWalletExportEntries',
-      password,
-      selectedAccountGroupIds,
-    )) as QrSyncReadyData;
+    let snapshot = await this.messenger.call(
+      'AccountTreeController:exportState',
+      // FIXME: Maybe we should also enforce password validation here (in :exportState action).
+      { includeSecrets: true, password } as ExportStateOptions,
+    );
+
+    snapshot = snapshot.filterAllGroups((payloadGroup) => selectedPayloadIds.has(payloadGroup.id));
+    const exportData = snapshot.serialize() as unknown as QrSyncReadyData; // FIXME
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 
