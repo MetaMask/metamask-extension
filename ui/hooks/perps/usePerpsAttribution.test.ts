@@ -28,6 +28,7 @@ describe('usePerpsAttribution', () => {
     expect(
       result.current.buildTrackingData({
         totalFee: 1.5,
+        metamaskFee: 1.1,
         marketPrice: 3000,
         vipTier: 2,
         vipDiscount: 25,
@@ -35,6 +36,7 @@ describe('usePerpsAttribution', () => {
       }),
     ).toStrictEqual({
       totalFee: 1.5,
+      metamaskFee: 1.1,
       marketPrice: 3000,
       vipTier: 2,
       vipDiscount: 25,

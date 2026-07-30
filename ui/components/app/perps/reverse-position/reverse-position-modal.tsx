@@ -113,6 +113,7 @@ export const ReversePositionModal = ({
   const {
     feeRate,
     protocolFeeRate,
+    metamaskFeeRate,
     undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
@@ -134,6 +135,14 @@ export const ReversePositionModal = ({
         ? undefined
         : 2 * sizeNum * currentPrice * undiscountedFeeRate,
     [sizeNum, currentPrice, undiscountedFeeRate],
+  );
+
+  const estimatedMetamaskFee = useMemo(
+    () =>
+      metamaskFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * metamaskFeeRate,
+    [sizeNum, currentPrice, metamaskFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -166,6 +175,7 @@ export const ReversePositionModal = ({
             position: positionForFlip,
             trackingData: buildTrackingData({
               totalFee: estimatedFees ?? 0,
+              metamaskFee: estimatedMetamaskFee,
               marketPrice: currentPrice,
               vipTier,
               vipDiscount: metamaskFeeRateDiscountPercentage,
@@ -235,6 +245,7 @@ export const ReversePositionModal = ({
     track,
     t,
     estimatedFees,
+    estimatedMetamaskFee,
     currentPrice,
     vipTier,
     metamaskFeeRateDiscountPercentage,

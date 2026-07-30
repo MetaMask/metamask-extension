@@ -187,6 +187,7 @@ describe('ReversePositionModal', () => {
     mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      metamaskFeeRate: 0.00005,
       protocolFeeRate: 0.00005,
       undiscountedFeeRate: 0.0001,
       isLoading: false,
@@ -297,6 +298,7 @@ describe('ReversePositionModal', () => {
     it('shows strikethrough original and discounted fee when fees are available', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        metamaskFeeRate: 0.00005,
         protocolFeeRate: 0.00005,
         undiscountedFeeRate: 0.0002,
         isLoading: false,
@@ -413,6 +415,7 @@ describe('ReversePositionModal', () => {
               }),
               trackingData: expect.objectContaining({
                 totalFee: expect.any(Number),
+                metamaskFee: 0.7250000000000001,
                 marketPrice: 2900,
                 hlFeeRate: 0.00005,
               }),

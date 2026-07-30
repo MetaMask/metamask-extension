@@ -8,6 +8,7 @@ import type { PerpsTradeAction } from '../../components/app/perps/utils/deriveTr
 
 type BuildTrackingDataInput = {
   totalFee: number;
+  metamaskFee?: number;
   marketPrice: number;
   vipTier: number | null;
   vipDiscount: number | undefined;
@@ -26,6 +27,7 @@ export function usePerpsAttribution() {
   const buildTrackingData = useCallback(
     ({
       totalFee,
+      metamaskFee,
       marketPrice,
       vipTier,
       vipDiscount,
@@ -33,6 +35,7 @@ export function usePerpsAttribution() {
       tradeAction,
     }: BuildTrackingDataInput): TrackingData => ({
       totalFee,
+      ...(metamaskFee === undefined ? {} : { metamaskFee }),
       marketPrice,
       ...(vipTier === null ? {} : { vipTier }),
       ...(vipDiscount === undefined ? {} : { vipDiscount }),
