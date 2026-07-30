@@ -21,14 +21,14 @@ import { MetaMetricsEventName } from '../../../../../shared/constants/metametric
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  SecurityTrustAnalyticsProperty,
-} from './security-trust-analytics-properties';
-import {
   getFeatureTags,
   getResultTypeConfig,
   getSecurityAlertIconProps,
 } from '../../utils/security-utils';
 import type { SecurityTrustLocationState } from '../../types/security-trust';
+import {
+  SecurityTrustAnalyticsProperty,
+} from './security-trust-analytics-properties';
 
 export type SecurityTrustEntryCardToken = {
   symbol: string;
