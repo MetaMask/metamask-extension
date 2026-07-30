@@ -41,8 +41,9 @@ const selectors = {
 };
 
 const clickElement = async (testId: string) => {
+  const element = await screen.findByTestId(testId);
   await act(async () => {
-    fireEvent.click(await screen.findByTestId(testId));
+    fireEvent.click(element);
   });
 };
 
@@ -103,7 +104,7 @@ describe('Notifications Activation', () => {
         isNotificationServicesEnabled: false,
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         dataCollectionForMarketing: false,
       },
@@ -162,7 +163,7 @@ describe('Notifications Activation', () => {
         isNotificationServicesEnabled: false,
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         dataCollectionForMarketing: false,
       },

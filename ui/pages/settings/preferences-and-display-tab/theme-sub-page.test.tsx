@@ -64,7 +64,7 @@ describe('ThemeSubPage', () => {
       metamask: {
         ...mockState.metamask,
         analyticsId: 'test-analytics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         theme: ThemeType.dark,
       },

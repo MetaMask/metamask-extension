@@ -3,7 +3,7 @@ import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   formatAddressToAssetId,
-  QuoteResponse,
+  QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -31,7 +31,7 @@ jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  quotes: QuoteResponse[],
+  quotes: QuoteResponseV1[],
   priceImpact: string = '0.05',
   variant?: 'submit-cta' | 'alert-details',
   stateOverrides?: Record<string, unknown>,
@@ -276,7 +276,7 @@ describe('BridgeAlertModal', () => {
         _condition: string,
         priceImpact: string,
         stateOverrides: Record<string, unknown>,
-        quotes: QuoteResponse[],
+        quotes: QuoteResponseV1[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
           renderModal(
