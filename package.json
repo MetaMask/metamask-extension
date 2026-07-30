@@ -169,11 +169,11 @@
   "previewBuilds": {
     "@metamask/analytics-controller": {
       "type": "non-breaking",
-      "previewVersion": "1.2.1-preview-6cd1bb2f5"
+      "previewVersion": "1.2.1-preview-d67bfdbad"
     },
     "@metamask/geolocation-controller": {
       "type": "non-breaking",
-      "previewVersion": "0.1.3-preview-6cd1bb2f5"
+      "previewVersion": "0.1.3-preview-d67bfdbad"
     }
   },
   "resolutions": {

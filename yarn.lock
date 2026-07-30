@@ -5596,9 +5596,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@1.2.1-preview-6cd1bb2f5":
-  version: 1.2.1-preview-6cd1bb2f5
-  resolution: "@metamask-previews/analytics-controller@npm:1.2.1-preview-6cd1bb2f5"
+"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@1.2.1-preview-d67bfdbad":
+  version: 1.2.1-preview-d67bfdbad
+  resolution: "@metamask-previews/analytics-controller@npm:1.2.1-preview-d67bfdbad"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/geolocation-controller": "npm:^0.1.3"
@@ -5606,7 +5606,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/5b791a78abd5a57309a734cfa84b89a1f9a78b5dc900482929b4698dc29a3829861a293bea65fca8d508b8ac73b5f9c321ce2aff0451dac1d6cf6f3344a2e023
+  checksum: 10/15f937a2b77571467fab21a4cc34bb2c8427e7dea5facdcf2f920da39fcaa6a5808859a8fee0bdba6b46dd5b66a147457b80070c610c3aa9687c5f567c66abc2
   languageName: node
   linkType: hard
 
@@ -6887,14 +6887,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@0.1.3-preview-6cd1bb2f5":
-  version: 0.1.3-preview-6cd1bb2f5
-  resolution: "@metamask-previews/geolocation-controller@npm:0.1.3-preview-6cd1bb2f5"
+"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@0.1.3-preview-d67bfdbad":
+  version: 0.1.3-preview-d67bfdbad
+  resolution: "@metamask-previews/geolocation-controller@npm:0.1.3-preview-d67bfdbad"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-  checksum: 10/72dedfc63de93b44ecee69f419dfc0a8198085bc199896d41c730d5868546be3097cea9bf7a8562171cd9982edf4b65448a73f95feaa0f13bdaf97f4cf03aaed
+  checksum: 10/baebd19dfb85823852ec260d28efacf0b829b88afaef87b970254a3d9825332eab8878073ee39d5527c3b3d1782ed38f405835b50d4e27bf700c3a54420d66f3
   languageName: node
   linkType: hard
 
