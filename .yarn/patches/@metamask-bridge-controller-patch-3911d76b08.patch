@@ -1,0 +1,58 @@
+diff --git a/dist/bridge-controller.cjs b/dist/bridge-controller.cjs
+index f0442783267e65a7bd7d2d9def4937d74cbfb298..577f2e2c0269ebd5a63dba37b7c285883fa615e7 100644
+--- a/dist/bridge-controller.cjs
++++ b/dist/bridge-controller.cjs
+@@ -327,14 +327,12 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+          * @param quoteRequests - The quote requests to fetch the exchange rates for
+          */
+         _BridgeController_fetchAssetExchangeRates.set(this, async (quoteRequests) => {
+-            const exchangeRateSources = __classPrivateFieldGet(this, _BridgeController_getExchangeRateSources, "f").call(this);
+             // Get unique assetIds for all quote requests
+             const assetIds = new Set(quoteRequests
+                 .flatMap((quoteRequest) => [
+                 (0, assets_1.getAssetIdsForToken)(quoteRequest.srcTokenAddress, quoteRequest.srcChainId),
+                 (0, assets_1.getAssetIdsForToken)(quoteRequest.destTokenAddress, quoteRequest.destChainId),
+-            ].flat())
+-                .filter((assetId) => !(0, selectors_1.selectIsAssetExchangeRateInState)(exchangeRateSources, assetId)));
++            ].flat()));
+             const currency = __classPrivateFieldGet(this, _BridgeController_getUseAssetsControllerForRates, "f").call(this)
+                 ? this.messenger.call('AssetsController:getExchangeRatesForBridge')
+                     .currentCurrency
+@@ -344,7 +342,7 @@ class BridgeController extends (0, polling_controller_1.StaticIntervalPollingCon
+             }
+             const pricesByAssetId = await (0, fetch_1.fetchAssetPrices)({
+                 assetIds,
+-                currencies: new Set([currency]),
++                currencies: new Set([currency, "usd"]),
+                 clientId: __classPrivateFieldGet(this, _BridgeController_clientId, "f"),
+                 clientVersion: __classPrivateFieldGet(this, _BridgeController_clientVersion, "f"),
+                 fetchFn: __classPrivateFieldGet(this, _BridgeController_fetchFn, "f"),
+diff --git a/dist/bridge-controller.mjs b/dist/bridge-controller.mjs
+index c7e14bd1349fef6f374e3c01f71ed56abdf25f49..486790b574abd93d5096c2430813004530d397bd 100644
+--- a/dist/bridge-controller.mjs
++++ b/dist/bridge-controller.mjs
+@@ -324,14 +324,12 @@ export class BridgeController extends StaticIntervalPollingController() {
+          * @param quoteRequests - The quote requests to fetch the exchange rates for
+          */
+         _BridgeController_fetchAssetExchangeRates.set(this, async (quoteRequests) => {
+-            const exchangeRateSources = __classPrivateFieldGet(this, _BridgeController_getExchangeRateSources, "f").call(this);
+             // Get unique assetIds for all quote requests
+             const assetIds = new Set(quoteRequests
+                 .flatMap((quoteRequest) => [
+                 getAssetIdsForToken(quoteRequest.srcTokenAddress, quoteRequest.srcChainId),
+                 getAssetIdsForToken(quoteRequest.destTokenAddress, quoteRequest.destChainId),
+-            ].flat())
+-                .filter((assetId) => !selectIsAssetExchangeRateInState(exchangeRateSources, assetId)));
++            ].flat()));
+             const currency = __classPrivateFieldGet(this, _BridgeController_getUseAssetsControllerForRates, "f").call(this)
+                 ? this.messenger.call('AssetsController:getExchangeRatesForBridge')
+                     .currentCurrency
+@@ -341,7 +339,7 @@ export class BridgeController extends StaticIntervalPollingController() {
+             }
+             const pricesByAssetId = await fetchAssetPrices({
+                 assetIds,
+-                currencies: new Set([currency]),
++                currencies: new Set([currency, "usd"]),
+                 clientId: __classPrivateFieldGet(this, _BridgeController_clientId, "f"),
+                 clientVersion: __classPrivateFieldGet(this, _BridgeController_clientVersion, "f"),
+                 fetchFn: __classPrivateFieldGet(this, _BridgeController_fetchFn, "f"),

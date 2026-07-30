@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFromToken } from '../../ducks/bridge/selectors';
-import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
-import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
 
 export const useBridgeExchangeRates = () => {
   const dispatch = useDispatch();
@@ -12,15 +10,9 @@ export const useBridgeExchangeRates = () => {
 
   const fromToken = useSelector(getFromToken);
 
-  const marketData = useSelector(getMarketData);
-
   const fromAbortController = useRef<AbortController | null>(
     new AbortController(),
   );
-
-  const cachedFromTokenExchangeRate = fromToken
-    ? exchangeRateFromMarketData(fromToken.assetId, marketData)
-    : undefined;
 
   // Cleanup abort controller on unmount
   useEffect(() => {
@@ -34,7 +26,7 @@ export const useBridgeExchangeRates = () => {
   useEffect(() => {
     fromAbortController.current?.abort();
     fromAbortController.current = new AbortController();
-    if (fromToken && !cachedFromTokenExchangeRate) {
+    if (fromToken) {
       dispatch(
         setSrcTokenExchangeRates({
           assetId: fromToken.assetId,
@@ -43,5 +35,5 @@ export const useBridgeExchangeRates = () => {
         }),
       );
     }
-  }, [currency, dispatch, fromToken, cachedFromTokenExchangeRate]);
+  }, [currency, dispatch, fromToken]);
 };
