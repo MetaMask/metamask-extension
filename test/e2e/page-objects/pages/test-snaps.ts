@@ -175,7 +175,7 @@ export const spanLocator = {
   wasmResultSpan: '#wasmResult',
   unencryptedStateResultSpan: '#unencryptedStateResult',
   getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
-  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  backgroundEventResultSpan: '#scheduleBackgroundEventResult',
   getBackgroundEventResultSpan: '#getBackgroundEventsResult',
 } satisfies Record<string, string>;
 
@@ -413,6 +413,21 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  /**
+   * Wait until the given result span contains text, and return that text.
+   *
+   * @param spanSelectorId - The name of the result span locator to wait for.
+   * @returns The text of the result span.
+   */
+  async waitForNonEmptyResult(
+    spanSelectorId: keyof typeof spanLocator,
+  ): Promise<string> {
+    console.log(`Waiting for a result in ${spanSelectorId}`);
+    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
+    await this.driver.waitForNonEmptyElement(element);
+    return await element.getText();
   }
 
   async waitForWebSocketUpdate(state: {
