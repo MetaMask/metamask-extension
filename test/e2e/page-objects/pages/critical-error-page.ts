@@ -31,18 +31,6 @@ class CriticalErrorPage {
     this.driver = driver;
   }
 
-  async waitForInPlaceRepairReload(): Promise<void> {
-    await this.driver.waitUntil(
-      async () => !(await this.driver.isElementPresent(this.repairButton)),
-      { interval: 300, timeout: 30_000 },
-    );
-
-    await this.assertNoCriticalErrorRepairSession();
-    await this.assertNoRestoringTab();
-
-    await this.driver.waitForControllersLoaded();
-  }
-
   async assertNoCriticalErrorRepairSession(): Promise<void> {
     const cleared = await this.driver.executeScript(`
       return new Promise(resolve => {
@@ -77,44 +65,6 @@ class CriticalErrorPage {
     await this.driver.driver.switchTo().window(currentHandle);
   }
 
-  async waitForRepairReloadAndHandoff(): Promise<void> {
-    // runtime.reload() kills extension tabs, so the driver's current window
-    // handle is stale. Wait for the reload, then reattach to a surviving tab.
-    await this.driver.delay(3000);
-    const handles = await this.driver.driver.getAllWindowHandles();
-    await this.driver.driver.switchTo().window(handles[0]);
-
-    await this.waitForPageAfterExtensionReload({
-      timeoutMs: 30_000,
-      waitForLoadingLogoToDisappear: false,
-    });
-
-    // The service worker handoff runs asynchronously after runtime.reload():
-    // it reads the repair session from storage.local, converts the
-    // metamask.io/restoring tab to home.html, then clears the key. We must
-    // wait for that key to be cleared before closing extra tabs.
-    await this.driver.waitUntil(
-      async () => {
-        const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
-              const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRepair', (data) => {
-                resolve(!data.criticalErrorRepair);
-              });
-            });
-          `);
-        return Boolean(cleared);
-      },
-      { interval: 300, timeout: 30_000 },
-    );
-
-    // Wait for the UI to receive state and finish launching.
-    await this.driver.delay(5000);
-    await this.driver.waitForControllersLoaded();
-    // Now safe to close extra tabs (service worker has finished handoff / fallback).
-    await this.driver.closeAllOtherTabs();
-  }
-
   /**
    * Check that the page has loaded.
    *
@@ -137,32 +87,13 @@ class CriticalErrorPage {
   }
 
   /**
-   * Validate that the description on the page is for the "trouble starting" scenario.
+   * Check that the repair button is displayed.
    */
-  async validateTroubleStartingDescription(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: this.troubleStartingDescription,
+  async checkRepairButtonIsDisplayed(): Promise<void> {
+    console.log('Check repair button is displayed');
+    await this.driver.waitForSelector(this.repairButton, {
+      timeout: this.repairButtonTimeoutMs,
     });
-  }
-
-  /**
-   * Validate that the given error message is shown.
-   *
-   * @param errorMessage - The error message to check for.
-   */
-  async validateErrorMessage(errorMessage: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: errorMessage,
-      css: this.errorMessage,
-    });
-  }
-
-  /**
-   * Validate that the "Reinstall MetaMask" link is present on the page and
-   * points to the SRP recovery support article.
-   */
-  async validateReinstallMetamaskLink(): Promise<void> {
-    await this.driver.waitForSelector(this.reinstallMetamaskLink);
   }
 
   /**
@@ -205,13 +136,44 @@ class CriticalErrorPage {
   }
 
   /**
-   * Check that the repair button is displayed.
+   * Validate that the given error message is shown.
+   *
+   * @param errorMessage - The error message to check for.
    */
-  async checkRepairButtonIsDisplayed(): Promise<void> {
-    console.log('Check repair button is displayed');
-    await this.driver.waitForSelector(this.repairButton, {
-      timeout: this.repairButtonTimeoutMs,
+  async validateErrorMessage(errorMessage: string): Promise<void> {
+    await this.driver.waitForSelector({
+      text: errorMessage,
+      css: this.errorMessage,
     });
+  }
+
+  /**
+   * Validate that the "Reinstall MetaMask" link is present on the page and
+   * points to the SRP recovery support article.
+   */
+  async validateReinstallMetamaskLink(): Promise<void> {
+    await this.driver.waitForSelector(this.reinstallMetamaskLink);
+  }
+
+  /**
+   * Validate that the description on the page is for the "trouble starting" scenario.
+   */
+  async validateTroubleStartingDescription(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: this.troubleStartingDescription,
+    });
+  }
+
+  async waitForInPlaceRepairReload(): Promise<void> {
+    await this.driver.waitUntil(
+      async () => !(await this.driver.isElementPresent(this.repairButton)),
+      { interval: 300, timeout: 30_000 },
+    );
+
+    await this.assertNoCriticalErrorRepairSession();
+    await this.assertNoRestoringTab();
+
+    await this.driver.waitForControllersLoaded();
   }
 
   /**
@@ -250,6 +212,44 @@ class CriticalErrorPage {
         timeout: 10000,
       });
     }
+  }
+
+  async waitForRepairReloadAndHandoff(): Promise<void> {
+    // runtime.reload() kills extension tabs, so the driver's current window
+    // handle is stale. Wait for the reload, then reattach to a surviving tab.
+    await this.driver.delay(3000);
+    const handles = await this.driver.driver.getAllWindowHandles();
+    await this.driver.driver.switchTo().window(handles[0]);
+
+    await this.waitForPageAfterExtensionReload({
+      timeoutMs: 30_000,
+      waitForLoadingLogoToDisappear: false,
+    });
+
+    // The service worker handoff runs asynchronously after runtime.reload():
+    // it reads the repair session from storage.local, converts the
+    // metamask.io/restoring tab to home.html, then clears the key. We must
+    // wait for that key to be cleared before closing extra tabs.
+    await this.driver.waitUntil(
+      async () => {
+        const cleared = await this.driver.executeScript(`
+            return new Promise(resolve => {
+              const b = globalThis.browser ?? globalThis.chrome;
+              b.storage.local.get('criticalErrorRepair', (data) => {
+                resolve(!data.criticalErrorRepair);
+              });
+            });
+          `);
+        return Boolean(cleared);
+      },
+      { interval: 300, timeout: 30_000 },
+    );
+
+    // Wait for the UI to receive state and finish launching.
+    await this.driver.delay(5000);
+    await this.driver.waitForControllersLoaded();
+    // Now safe to close extra tabs (service worker has finished handoff / fallback).
+    await this.driver.closeAllOtherTabs();
   }
 }
 
