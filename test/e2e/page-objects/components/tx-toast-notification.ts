@@ -5,9 +5,9 @@ import { Driver } from '../../webdriver/driver';
  *
  */
 export class TxToastNotification {
-  protected driver: Driver;
-
   private readonly closeButton = '[aria-label="Close"]';
+
+  protected driver: Driver;
 
   private readonly transactionConfirmedText = {
     tag: 'p',
