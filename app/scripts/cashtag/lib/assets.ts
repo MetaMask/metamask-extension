@@ -4,6 +4,7 @@ import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import type { AssetData } from './types';
 
 const TOKEN_SEARCH_URL = 'https://token.api.cx.metamask.io/tokens/search';
+const PRICE_URL = 'https://price.api.cx.metamask.io/v3/spot-prices';
 const ICON_BASE = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets';
 const ETHEREUM = 'eip155:1' as CaipChainId;
 const BNB_CHAIN = 'eip155:56' as CaipChainId;
@@ -56,9 +57,12 @@ type SearchHit = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
+};
+
+type SpotQuote = {
   price?: string | number | null;
   marketCap?: string | number | null;
-  aggregatedUsdVolume?: string | number | null;
+  totalVolume?: string | number | null;
   pricePercentChange1d?: string | number | null;
 };
 
@@ -85,8 +89,6 @@ function pickHit(symbol: string, hits: SearchHit[]) {
 }
 
 async function lookup(symbol: string, chainId: CaipChainId) {
-  // Use globalThis.fetch — getFetchWithTimeout/searchTokens use window.*,
-  // which does not exist in the MV3 service worker (prod build).
   const params = new URLSearchParams({
     query: symbol,
     networks: chainId,
@@ -103,37 +105,67 @@ async function lookup(symbol: string, chainId: CaipChainId) {
   return pickHit(symbol, body.data ?? []);
 }
 
+async function fetchQuotes(assetIds: string[]) {
+  if (assetIds.length === 0) {
+    return new Map<string, SpotQuote>();
+  }
+
+  const params = new URLSearchParams({
+    assetIds: assetIds.join(','),
+    vsCurrency: 'usd',
+    includeMarketData: 'true',
+  });
+  const response = await globalThis.fetch(`${PRICE_URL}?${params}`, {
+    method: 'GET',
+    headers: { 'X-Client-Id': 'extension' },
+  });
+  if (!response.ok) {
+    return new Map<string, SpotQuote>();
+  }
+
+  const body = (await response.json()) as Record<string, SpotQuote>;
+  return new Map(Object.entries(body));
+}
+
 export async function fetchAssetData(): Promise<AssetData[]> {
-  const assets: AssetData[] = [];
+  const identities: {
+    symbol: string;
+    chainId: CaipChainId;
+    hit: SearchHit;
+  }[] = [];
 
   await Promise.all(
     assetsWhitelist.map(async ({ symbol, chainId }) => {
       try {
         const hit = await lookup(symbol, chainId);
-        if (!hit) {
-          return;
+        if (hit) {
+          identities.push({ symbol, chainId, hit });
         }
-        assets.push({
-          ticker: symbol,
-          name: hit.name,
-          iconUrl:
-            getAssetImageUrl(hit.assetId, chainId) ??
-            `${ICON_BASE}/${hit.assetId.replaceAll(':', '/')}.png`,
-          color: null,
-          caipAssetId: hit.assetId,
-          chainId,
-          isNative: hit.assetId.includes('/slip44:'),
-          price: num(hit.price),
-          change24hPercent: num(hit.pricePercentChange1d),
-          marketCap: num(hit.marketCap),
-          volume24h: num(hit.aggregatedUsdVolume),
-          sparkline: null,
-        });
       } catch {
         // skip failed lookups
       }
     }),
   );
 
-  return assets;
+  const quotes = await fetchQuotes(identities.map(({ hit }) => hit.assetId));
+
+  return identities.map(({ symbol, chainId, hit }) => {
+    const quote = quotes.get(hit.assetId);
+    return {
+      ticker: symbol,
+      name: hit.name,
+      iconUrl:
+        getAssetImageUrl(hit.assetId, chainId) ??
+        `${ICON_BASE}/${hit.assetId.replaceAll(':', '/')}.png`,
+      color: null,
+      caipAssetId: hit.assetId,
+      chainId,
+      isNative: hit.assetId.includes('/slip44:'),
+      price: num(quote?.price),
+      change24hPercent: num(quote?.pricePercentChange1d),
+      marketCap: num(quote?.marketCap),
+      volume24h: num(quote?.totalVolume),
+      sparkline: null,
+    };
+  });
 }
