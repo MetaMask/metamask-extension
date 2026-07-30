@@ -455,9 +455,7 @@ const AssetPage = ({
                 alignItems={BoxAlignItems.Center}
                 gap={2}
               >
-                {isStockToken && (
-                  <StockBadge isMarketClosed={isMarketClosed} />
-                )}
+                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
                 {isAssetInactive && <AssetInactiveBadge />}
               </Box>
             </Box>
@@ -560,9 +558,7 @@ const AssetPage = ({
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
             <SpendableBalanceSection
-              minimumReserveBalance={
-                spendableBalanceData.minimumReserveBalance
-              }
+              minimumReserveBalance={spendableBalanceData.minimumReserveBalance}
               spendableBalance={spendableBalanceData.spendableBalance}
               totalBalance={String(balance)}
               symbol={symbol}
