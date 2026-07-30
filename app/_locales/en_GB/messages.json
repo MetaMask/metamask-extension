@@ -167,6 +167,12 @@
   "activity": {
     "message": "Activity"
   },
+  "activityEmptyDescription": {
+    "message": "Swap your first token today."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Add funds to your wallet to get started."
+  },
   "activityFilterAll": {
     "message": "All",
     "description": "Activity list filter chip that shows all activity types"
@@ -174,12 +180,6 @@
   "activityFilterBuySell": {
     "message": "Buy/Sell",
     "description": "Activity list filter chip that shows only ramp buy and sell orders"
-  },
-  "activityEmptyDescription": {
-    "message": "Swap your first token today."
-  },
-  "activityEmptyNoFundsDescription": {
-    "message": "Add funds to your wallet to get started."
   },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
@@ -8192,6 +8192,9 @@
   "rampsOrderDetailsFees": {
     "message": "Fees"
   },
+  "rampsOrderDetailsOrderId": {
+    "message": "Order ID"
+  },
   "rampsOrderDetailsPaidWith": {
     "message": "Paid with",
     "description": "Label for the payment method used on a ramp order"
@@ -8199,9 +8202,6 @@
   "rampsOrderDetailsProviderFee": {
     "message": "$1 fee",
     "description": "$1 is the ramp provider name for the fee row label"
-  },
-  "rampsOrderDetailsOrderId": {
-    "message": "Order ID"
   },
   "rampsOrderDetailsTotal": {
     "message": "Total"
