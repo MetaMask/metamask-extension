@@ -11,19 +11,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import {
+  RAMPS_RAMP_ROUTING,
+  RAMPS_RAMP_TYPE,
+} from '../../../shared/lib/ramps/analytics';
 import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
 import { useAnalytics } from '../useAnalytics';
 import { useRampsUserRegion } from './useRampsUserRegion';
-
-// The `metamask-ramps` schema requires `ramp_type` on every event. The
-// extension in-app buy flow mirrors mobile's Unified Buy v2.
-// ponytail: single const; promote to a param if the flow ever emits other
-// ramp types (deposit/sell/headless).
-export const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
-
-// The extension buy flow routes through third-party (aggregator) providers.
-// `AGGREGATOR` is valid on every event's optional `ramp_routing` enum.
-export const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
 
 export type RampsTokenSelectedArgs = {
   tokenCaip19?: string;

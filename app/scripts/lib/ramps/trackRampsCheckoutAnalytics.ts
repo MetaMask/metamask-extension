@@ -9,11 +9,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  RAMPS_RAMP_ROUTING,
+  RAMPS_RAMP_TYPE,
+} from '../../../../shared/lib/ramps/analytics';
 import { sanitizeUrlPath } from '../../../../shared/lib/ramps/url-path';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
-
-const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
-const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
 
 export type RampsCheckoutAnalyticsContext = {
   checkoutSessionId: string;

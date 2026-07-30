@@ -8,12 +8,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RampsOrder } from '@metamask/ramps-controller';
 import type { Json } from '@metamask/utils';
-
-// Mirror of the UI hook's RAMPS_RAMP_TYPE / RAMPS_RAMP_ROUTING (see
-// ui/hooks/ramps/useRampsAnalytics.ts) — duplicated rather than shared to
-// avoid a UI→background import across the restricted-path boundary.
-const RAMPS_RAMP_TYPE = 'UNIFIED_BUY_2';
-const RAMPS_RAMP_ROUTING = 'AGGREGATOR';
+import {
+  RAMPS_RAMP_ROUTING,
+  RAMPS_RAMP_TYPE,
+} from '../../../../shared/lib/ramps/analytics';
 
 export function buildRampsTransactionCompletedProperties(
   order: RampsOrder,

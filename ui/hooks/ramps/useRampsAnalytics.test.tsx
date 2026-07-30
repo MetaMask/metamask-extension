@@ -8,8 +8,8 @@ import { createEventBuilder } from '../../../shared/lib/analytics/create-event-b
 import {
   RAMPS_RAMP_ROUTING,
   RAMPS_RAMP_TYPE,
-  useRampsAnalytics,
-} from './useRampsAnalytics';
+} from '../../../shared/lib/ramps/analytics';
+import { useRampsAnalytics } from './useRampsAnalytics';
 import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
 
 const mockTrackEvent = jest.fn();
