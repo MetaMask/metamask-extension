@@ -64,7 +64,15 @@ export function createSidepanelOpener({
         nonce,
       })
       .catch(() => {
-        // No content script on this tab (e.g. chrome:// page); let it time out.
+        // No content script on this tab (e.g. chrome:// page) — fail fast so
+        // triggerUi can open the notification without waiting out the timeout.
+        const entry = pendingOpens.get(nonce);
+        if (!entry) {
+          return;
+        }
+        clearTimeout(entry.timer);
+        pendingOpens.delete(nonce);
+        entry.resolve(false);
       });
 
     return result;
