@@ -79,10 +79,14 @@ function renderUi(element, container) {
 }
 
 function wrapWithStrictModeIfDevelopment(element) {
+  // Keep StrictMode off in E2E/test builds (`yarn start:test` / `build:test:dev`
+  // set NODE_ENV=development and IN_TEST). Matches `withStrictMode` in
+  // `ui/pages/index.js` so effects are not double-mounted under Playwright.
   const isDevelopment =
-    process.env.NODE_ENV === 'development' ||
-    process.env.METAMASK_DEBUG ||
-    global.METAMASK_DEBUG;
+    (process.env.NODE_ENV === 'development' ||
+      process.env.METAMASK_DEBUG ||
+      global.METAMASK_DEBUG) &&
+    !process.env.IN_TEST;
 
   if (isDevelopment) {
     return <StrictMode>{element}</StrictMode>;
