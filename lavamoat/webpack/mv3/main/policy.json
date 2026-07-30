@@ -1748,7 +1748,7 @@
     },
     "@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1829,19 +1829,13 @@
       }
     },
     "@metamask/keyring-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/keyring-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/logging-controller": {
