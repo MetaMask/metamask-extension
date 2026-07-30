@@ -2,14 +2,13 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -41,6 +40,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -183,6 +183,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -391,6 +394,10 @@ export const routeConfig = [
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
+      },
+      {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,

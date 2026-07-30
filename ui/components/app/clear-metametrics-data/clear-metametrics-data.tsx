@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -31,6 +30,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

@@ -68,18 +68,8 @@ const ENTRYPOINTS = [
 ];
 
 /**
- * Given a `tsConfig` string, madge pre-parses it into
- * `{ ...raw, compilerOptions: alreadyParsedOptions }`. filing-cabinet sees the
- * `compilerOptions` key and re-runs `ts.convertCompilerOptionsFromJson` over
- * values that are already enums, which silently drops `module`,
- * `moduleResolution`, `target`, and `jsx`. TypeScript then falls back to Node10
- * resolution, which cannot resolve the `#ui/*` and `#shared/*` subpath imports
- * declared in package.json's `imports` field.
- *
- * Handing madge a pre-parsed config avoids both parsing passes: filing-cabinet
- * uses `options` verbatim.
- *
- * @param tsConfigPath
+ * Madge re-parses string tsConfigs and drops moduleResolution; pass options
+ * so `#ui`/`#shared` package.json imports resolve.
  */
 function parseTsConfig(tsConfigPath: string): { options: ts.CompilerOptions } {
   const configFile = ts.readJsonConfigFile(tsConfigPath, ts.sys.readFile);

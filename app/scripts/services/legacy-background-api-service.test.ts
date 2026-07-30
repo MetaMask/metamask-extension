@@ -39,6 +39,7 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -60,6 +61,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
@@ -421,6 +423,51 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('requestSafeReload', () => {
+    it('triggers a safe reload of the extension', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:requestSafeReload',
+          );
+
+          expect(mockRequestSafeReload).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('openUpdateTabAndReload', () => {
+    it('opens the update tab and reloads with the injected requestSafeReload', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+      jest.mocked(openUpdateTabAndReload).mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:openUpdateTabAndReload',
+          );
+
+          expect(openUpdateTabAndReload).toHaveBeenCalledWith(
+            mockRequestSafeReload,
+          );
+        },
+      );
+    });
+  });
+
   describe('getPhishingResult', () => {
     it('updates the phishing state and returns the test result for the website', async () => {
       const website = 'https://example.com';
@@ -447,6 +494,30 @@ describe('LegacyBackgroundApiService', () => {
         expect(mockTestOrigin).toHaveBeenCalledWith(website);
         expect(result).toBe(phishingResult);
       });
+    });
+  });
+
+  describe('markNotificationPopupAsAutomaticallyClosed', () => {
+    it('marks the notification popup as automatically closed', async () => {
+      const mockMarkNotificationPopupAsAutomaticallyClosed = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markNotificationPopupAsAutomaticallyClosed:
+              mockMarkNotificationPopupAsAutomaticallyClosed,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+          );
+
+          expect(
+            mockMarkNotificationPopupAsAutomaticallyClosed,
+          ).toHaveBeenCalled();
+        },
+      );
     });
   });
 
@@ -2879,6 +2950,56 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
+
+    it('does not persist a gas fallback when container estimation fails', async () => {
+      await withService(async ({ rootMessenger }) => {
+        jest.mocked(enforceSimulations).mockResolvedValue({
+          updateTransaction: (tx) => {
+            tx.txParams.data = NEW_DATA_MOCK;
+          },
+        });
+
+        const transactionMeta = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { gas: '0x29b92700' },
+          txParamsOriginal: { gas: '0x554af' },
+        } as TransactionMeta;
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({ transactions: [transactionMeta] }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:estimateGas',
+          jest.fn().mockResolvedValue({
+            gas: '0x29b92700',
+            simulationFails: {
+              reason: 'Failed to simulate wrapped transaction',
+              debug: { blockGasLimit: '0x77359400' },
+            },
+          }),
+        );
+
+        const updateEditableParamsMock = jest.fn();
+        rootMessenger.registerActionHandler(
+          'TransactionController:updateEditableParams',
+          updateEditableParamsMock,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:applyTransactionContainersExisting',
+            TRANSACTION_ID_MOCK,
+            [TransactionContainerType.EnforcedSimulations],
+          ),
+        ).rejects.toThrow(
+          'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
+        );
+
+        expect(updateEditableParamsMock).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('rejectPendingApproval', () => {
@@ -3642,6 +3763,8 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
+    markNotificationPopupAsAutomaticallyClosed: jest.fn(),
+    requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     createVaultMutex: new Mutex(),
