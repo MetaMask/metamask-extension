@@ -7,13 +7,13 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/perps/perps-withdraw-page.tsx
  */
 export class PerpsWithdrawPage {
-  private readonly driver: Driver;
-
   private readonly amountInput = '[data-testid="perps-fiat-hero-amount-input"]';
 
   private readonly backButton = { testId: 'perps-withdraw-back-button' };
 
   private readonly cancelButton = { testId: 'perps-withdraw-cancel' };
+
+  private readonly driver: Driver;
 
   private readonly headerTitle = { testId: 'perps-withdraw-header-title' };
 
@@ -38,6 +38,14 @@ export class PerpsWithdrawPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Asserts that the submit (Withdraw) button is disabled.
+   * Used to verify validation prevents submission of invalid amounts.
+   */
+  async assertSubmitDisabled(): Promise<void> {
+    await this.driver.waitForSelector(this.submitButton, { state: 'disabled' });
   }
 
   /**
@@ -66,6 +74,13 @@ export class PerpsWithdrawPage {
   }
 
   /**
+   * Clicks the primary Withdraw submit button once it is enabled (valid amount).
+   */
+  async clickSubmit(): Promise<void> {
+    await this.driver.clickElement(this.submitButton);
+  }
+
+  /**
    * Fills the hero amount input with the given amount string (e.g. '100').
    * Clears the field first to avoid appending to the default '0'.
    *
@@ -74,26 +89,6 @@ export class PerpsWithdrawPage {
   async fillAmount(amount: string): Promise<void> {
     await this.driver.waitForSelector(this.amountInput);
     await this.driver.fill(this.amountInput, amount);
-  }
-
-  /**
-   * Asserts that the submit (Withdraw) button is disabled.
-   * Used to verify validation prevents submission of invalid amounts.
-   */
-  async assertSubmitDisabled(): Promise<void> {
-    await this.driver.waitForSelector(this.submitButton, { state: 'disabled' });
-  }
-
-  /**
-   * Waits for a validation error message containing the given text to be visible.
-   *
-   * @param message - Substring of the expected validation message.
-   */
-  async waitForValidationMessage(message: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.withdrawPageChildren,
-      text: message,
-    });
   }
 
   /**
@@ -109,10 +104,15 @@ export class PerpsWithdrawPage {
   }
 
   /**
-   * Clicks the primary Withdraw submit button once it is enabled (valid amount).
+   * Waits for a validation error message containing the given text to be visible.
+   *
+   * @param message - Substring of the expected validation message.
    */
-  async clickSubmit(): Promise<void> {
-    await this.driver.clickElement(this.submitButton);
+  async waitForValidationMessage(message: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.withdrawPageChildren,
+      text: message,
+    });
   }
 
   /**

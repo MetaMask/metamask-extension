@@ -376,22 +376,11 @@
     "message": "Đã chuyển đổi sang $1",
     "description": "$1 is the token symbol"
   },
-  "activity_deposit_failed_description": {
-    "message": "Nạp tiền thất bại"
-  },
   "activity_deposit_failed_title": {
     "message": "Nạp tiền thất bại"
   },
-  "activity_deposit_pending_description": {
-    "message": "Đang gửi $1",
-    "description": "$1 is the token symbol"
-  },
   "activity_deposit_pending_title": {
     "message": "Đang gửi $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_deposit_success_description": {
-    "message": "Đã gửi $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_success_title": {
@@ -1176,6 +1165,27 @@
   "addWallet": {
     "message": "Thêm ví"
   },
+  "add_device_error_connection": {
+    "message": "Chúng tôi không thể duy trì kết nối an toàn với điện thoại của bạn. Hãy kiểm tra kết nối Internet và thử lại."
+  },
+  "add_device_error_expired": {
+    "message": "Phiên đồng bộ này đã hết hạn. Hãy bắt đầu lại để tạo mã QR mới."
+  },
+  "add_device_error_generic": {
+    "message": "Đã xảy ra lỗi khi đồng bộ với điện thoại của bạn. Vui lòng thử lại."
+  },
+  "add_device_error_invalid_code": {
+    "message": "Mã xác minh không chính xác. Hãy bắt đầu lại để thử đồng bộ điện thoại của bạn."
+  },
+  "add_device_error_rejected": {
+    "message": "Quá trình đồng bộ đã bị hủy trên điện thoại của bạn. Hãy bắt đầu lại để thử đồng bộ."
+  },
+  "add_device_error_sync_failed": {
+    "message": "Chúng tôi không thể hoàn tất quá trình đồng bộ tài khoản với điện thoại của bạn. Vui lòng thử lại."
+  },
+  "add_device_error_title": {
+    "message": "Không thể hoàn tất quá trình đồng bộ"
+  },
   "add_device_success_desc_imported_plural": {
     "message": "Đã đồng bộ $1 tài khoản đã nhập vào điện thoại của bạn.",
     "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
@@ -1237,6 +1247,10 @@
   },
   "addedProtectionDescription": {
     "message": "Bạn đang tương tác với một địa chỉ không xác định. Điều này giúp ngăn chặn các giao dịch độc hại."
+  },
+  "addedProtectionIncludesNetworkFee": {
+    "message": "Bao gồm $1 để tăng cường bảo vệ",
+    "description": "$1 is the added-protection fee amount in the user's selected fiat currency."
   },
   "addedProtectionOptionalBadge": {
     "message": "Không bắt buộc"
@@ -1996,12 +2010,6 @@
   "bridgeApproval": {
     "message": "Phê duyệt $1 cho cầu nối",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
-  },
-  "bridgeApprovalWarning": {
-    "message": "Bạn đang cho phép truy cập vào $1 $2. Hợp đồng sẽ không truy cập thêm bất kỳ khoản tiền nào khác."
-  },
-  "bridgeApprovalWarningForHardware": {
-    "message": "Bạn sẽ cần cho phép truy cập vào $1 $2 để thực hiện cầu nối, sau đó hãy phê duyệt việc thực hiện cầu nối sang $3. Điều này sẽ yêu cầu hai lần xác nhận riêng biệt."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Đã sao chép liên kết trình khám phá khối"
@@ -3234,6 +3242,9 @@
   "deepLink_theSwapsPage": {
     "message": "trang hoán đổi"
   },
+  "deepLink_theTopTradersPage": {
+    "message": "trang Theo dõi giao dịch"
+  },
   "deepLink_theTransactionShieldPage": {
     "message": "trang lá chắn giao dịch"
   },
@@ -3684,6 +3695,9 @@
   "enter_verification_code_expires_in": {
     "message": "Hết hạn sau $1 giây",
     "description": "$1 is the number of seconds remaining before the verification code expires"
+  },
+  "enter_verification_code_max_attempts": {
+    "message": "Đã nhập sai quá nhiều lần. Hãy bắt đầu với mã QR mới."
   },
   "enter_your_password": {
     "message": "Nhập mật khẩu"
@@ -4164,9 +4178,6 @@
   "gotIt": {
     "message": "Tôi đã hiểu"
   },
-  "grantExactAccess": {
-    "message": "Cấp quyền truy cập chính xác"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -4231,6 +4242,9 @@
   },
   "hardwareWalletConnected": {
     "message": "Đã kết nối với ví cứng"
+  },
+  "hardwareWalletConnectionTimeout": {
+    "message": "Thiết bị mất quá nhiều thời gian để phản hồi hoặc kết nối đã hết thời gian chờ. Hãy đảm bảo thiết bị của bạn đã được kết nối và mở khóa, sau đó thử lại."
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Tiếp tục"
@@ -5655,6 +5669,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNotSupportedByThisAccount": {
+    "message": "Không được hỗ trợ đối với tài khoản này."
+  },
   "networkOptions": {
     "message": "Tùy chọn mạng"
   },
@@ -6918,6 +6935,12 @@
   "perpsCloseAmount": {
     "message": "Số lượng đóng"
   },
+  "perpsCloseLimitPriceOutsideOracleBand": {
+    "message": "Giá không được chênh lệch quá 95% so với giá thị trường"
+  },
+  "perpsCloseLimitPriceRequired": {
+    "message": "Nhập giá giới hạn hợp lệ để tiếp tục."
+  },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
@@ -6926,6 +6949,9 @@
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
+  },
+  "perpsClosePriceUnavailable": {
+    "message": "Giá hiện tại không khả dụng. Hãy thử lại sau ít phút."
   },
   "perpsCloseShort": {
     "message": "Đóng vị thế bán khống"
@@ -7456,6 +7482,10 @@
     "message": "Lãi/Lỗ của bạn là $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
+  "perpsToastLimitCloseFailed": {
+    "message": "Không thể đặt lệnh đóng vị thế",
+    "description": "Error toast text shown when placing a full-position perps limit close order fails"
+  },
   "perpsToastMarginAddSuccess": {
     "message": "Đã nạp $1 ký quỹ vào vị thế $2",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin addition"
@@ -7507,6 +7537,10 @@
   "perpsToastPartialCloseSuccess": {
     "message": "Đã đóng một phần vị thế",
     "description": "Success toast text shown when a perps position is partially closed"
+  },
+  "perpsToastPartialLimitCloseFailed": {
+    "message": "Không thể đặt lệnh đóng một phần vị thế",
+    "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
   "perpsToastPositionStillActive": {
     "message": "Vị thế của bạn vẫn đang hoạt động",
@@ -7822,149 +7856,6 @@
   "publicAddress": {
     "message": "Địa chỉ công khai"
   },
-  "pushNotificationLimitOrderFilledDescriptionLong": {
-    "message": "Vị thế mua khống $1 của bạn hiện đã mở.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledDescriptionShort": {
-    "message": "Vị thế bán khống $1 của bạn hiện đã mở.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationLimitOrderFilledTitle": {
-    "message": "Lệnh giới hạn đã khớp"
-  },
-  "pushNotificationPositionLiquidatedDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã bị đóng.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã bị đóng.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationPositionLiquidatedTitle": {
-    "message": "Vị thế đã bị thanh lý"
-  },
-  "pushNotificationShieldClaimCreatedDescriptionShort": {
-    "message": "Yêu cầu bồi thường của bạn đã được tạo"
-  },
-  "pushNotificationShieldClaimCreatedTitle": {
-    "message": "Yêu cầu bồi thường đã được tạo"
-  },
-  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
-    "message": "Yêu cầu bồi thường của bạn đã được cập nhật"
-  },
-  "pushNotificationShieldClaimStatusUpdatedTitle": {
-    "message": "Yêu cầu bồi thường đã được cập nhật"
-  },
-  "pushNotificationShieldLearnMoreCta": {
-    "message": "Tìm hiểu thêm"
-  },
-  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
-    "message": "Gói của bạn hiện đã được kích hoạt."
-  },
-  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
-    "message": "Gói của bạn đã bị tạm dừng do lỗi thanh toán."
-  },
-  "pushNotificationShieldSubscriptionTitle": {
-    "message": "MetaMask Lá chắn Giao dịch"
-  },
-  "pushNotificationShieldUpdatePaymentCta": {
-    "message": "Cập nhật thanh toán"
-  },
-  "pushNotificationStopLossTriggeredDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã đóng tại mức cắt lỗ.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã đóng tại mức cắt lỗ.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationStopLossTriggeredTitle": {
-    "message": "Đã kích hoạt cắt lỗ"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionLong": {
-    "message": "Lệnh mua khống $1 của bạn đã đóng tại mức chốt lời.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredDescriptionShort": {
-    "message": "Lệnh bán khống $1 của bạn đã đóng tại mức chốt lời.",
-    "description": "$1 is the asset symbol"
-  },
-  "pushNotificationTakeProfitTriggeredTitle": {
-    "message": "Đã kích hoạt chốt lời"
-  },
-  "pushPlatformNotificationsFundsReceivedDescription": {
-    "message": "Bạn đã nhận được $1 $2"
-  },
-  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
-    "message": "Bạn đã nhận được một ít token"
-  },
-  "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Đã nhận tiền"
-  },
-  "pushPlatformNotificationsFundsSentDescription": {
-    "message": "Bạn đã gửi thành công $1 $2"
-  },
-  "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Bạn đã gửi thành công một ít token"
-  },
-  "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Đã gửi tiền"
-  },
-  "pushPlatformNotificationsNftReceivedDescription": {
-    "message": "Bạn đã nhận được NFT mới"
-  },
-  "pushPlatformNotificationsNftReceivedTitle": {
-    "message": "Đã nhận NFT"
-  },
-  "pushPlatformNotificationsNftSentDescription": {
-    "message": "Bạn đã gửi thành công một NFT"
-  },
-  "pushPlatformNotificationsNftSentTitle": {
-    "message": "Đã gửi NFT"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Quá trình Ký gửi Lido của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
-    "message": "Hoàn tất ký gửi"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Tài sản ký gửi Lido của bạn hiện đã sẵn sàng để rút"
-  },
-  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Tài sản ký gửi đã sẵn sàng để rút"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Quá trình Rút Lido của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
-    "message": "Đã hoàn tất rút tiền"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Yêu cầu rút Lido của bạn đã được gửi"
-  },
-  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
-    "message": "Đã yêu cầu rút tiền"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Quá trình Ký gửi RocketPool của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
-    "message": "Hoàn tất ký gửi"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Quá trình Hủy ký gửi RocketPool của bạn đã thành công"
-  },
-  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
-    "message": "Hoàn tất hủy ký gửi"
-  },
-  "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Quá trình Hoán đổi MetaMask của bạn đã thành công"
-  },
-  "pushPlatformNotificationsSwapCompletedTitle": {
-    "message": "Đã hoàn tất hoán đổi"
-  },
   "qr": {
     "message": "QR",
     "description": "Hardware device name"
@@ -8073,8 +7964,128 @@
   "quotedTotalCost": {
     "message": "Tổng chi phí: $1"
   },
+  "rampsBestRate": {
+    "message": "Tỷ giá tốt nhất"
+  },
+  "rampsBuyToken": {
+    "message": "Mua $1",
+    "description": "$1 is the token symbol being purchased"
+  },
+  "rampsBuyingViaProvider": {
+    "message": "Mua qua $1.",
+    "description": "$1 is the ramp provider name"
+  },
+  "rampsChangeProvider": {
+    "message": "Thay đổi nhà cung cấp."
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "Vui lòng thử lại hoặc liên hệ bộ phận hỗ trợ nếu sự cố này vẫn tiếp diễn."
+  },
+  "rampsEligibilityFailedTitle": {
+    "message": "Chúng tôi không thể xác minh khu vực của bạn"
+  },
+  "rampsErrorLoadingPaymentMethods": {
+    "message": "Lỗi khi tải phương thức thanh toán"
+  },
+  "rampsErrorLoadingTokens": {
+    "message": "Lỗi khi tải token"
+  },
+  "rampsMaxPurchaseLimit": {
+    "message": "Giá trị mua tối đa là $1",
+    "description": "$1 is the formatted maximum fiat amount"
+  },
+  "rampsMinPurchaseLimit": {
+    "message": "Giá trị mua tối thiểu là $1",
+    "description": "$1 is the formatted minimum fiat amount"
+  },
+  "rampsMostReliable": {
+    "message": "Đáng tin cậy nhất"
+  },
+  "rampsNoPaymentMethodsAvailable": {
+    "message": "Không có phương thức thanh toán khả dụng."
+  },
+  "rampsNoProvidersAvailable": {
+    "message": "Hiện không có nhà cung cấp nào."
+  },
   "rampsNoTokensAvailable": {
     "message": "Không có token khả dụng"
+  },
+  "rampsOnNetwork": {
+    "message": "trên $1",
+    "description": "$1 is the network name"
+  },
+  "rampsOtherOptions": {
+    "message": "Tùy chọn khác"
+  },
+  "rampsPaymentDelayBusinessDay": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayBusinessDays": {
+    "message": "ngày làm việc"
+  },
+  "rampsPaymentDelayHour": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayHours": {
+    "message": "giờ"
+  },
+  "rampsPaymentDelayInstant": {
+    "message": "Ngay lập tức"
+  },
+  "rampsPaymentDelayLessThan": {
+    "message": "Ít hơn"
+  },
+  "rampsPaymentDelayMinute": {
+    "message": "phút"
+  },
+  "rampsPaymentDelayMinutes": {
+    "message": "phút"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "$1 – $2",
+    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  },
+  "rampsPaymentMethodMaxLimit": {
+    "message": "Tối đa $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
+  "rampsPaymentMethodMinLimit": {
+    "message": "Tối thiểu $1",
+    "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Đã sử dụng trước đây"
+  },
+  "rampsProviders": {
+    "message": "Nhà cung cấp"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Tìm nạp báo giá không thành công."
+  },
+  "rampsQuoteUnavailable": {
+    "message": "Không có báo giá."
+  },
+  "rampsQuotesDisplayedFor": {
+    "message": "Báo giá được hiển thị cho $1.",
+    "description": "$1 is the payment method name"
+  },
+  "rampsSelectPaymentMethod": {
+    "message": "Chọn phương thức thanh toán"
+  },
+  "rampsServiceDisruptionDescription": {
+    "message": "Chúng tôi đang gặp sự cố dịch vụ. Vui lòng thử lại sau."
+  },
+  "rampsServiceDisruptionTitle": {
+    "message": "Tính năng mua tạm thời không khả dụng"
+  },
+  "rampsShowAllTokens": {
+    "message": "Hiển thị tất cả token"
+  },
+  "rampsUnsupportedDescription": {
+    "message": "Tính năng mua tiền mã hóa hiện chưa được hỗ trợ tại khu vực của bạn."
+  },
+  "rampsUnsupportedTitle": {
+    "message": "Tính năng mua hiện không khả dụng tại đây"
   },
   "rank": {
     "message": "Xếp hạng"
@@ -10166,18 +10177,6 @@
   "statusNotConnected": {
     "message": "Chưa kết nối"
   },
-  "stellarClassicTrustlineAddError": {
-    "message": "Đã xảy ra lỗi khi thêm trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveError": {
-    "message": "Đã xảy ra lỗi khi xóa trustline này. Vui lòng thử lại.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
-  },
-  "stellarClassicTrustlineRemoveNonZeroBalanceError": {
-    "message": "Bạn vẫn còn $1 $2 trong ví này. Bạn phải gửi hoặc hoán đổi toàn bộ trước khi hủy kích hoạt tài sản này trên Stellar.",
-    "description": "Alert when the Stellar changeTrustOpt delete request fails because the token balance is not zero. $1 is the formatted balance amount and $2 is the token symbol."
-  },
   "stillConnectingTo": {
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10686,6 +10685,9 @@
   },
   "tokenDecimal": {
     "message": "Số thập phân của token"
+  },
+  "tokenDecimalsMustBeWholeNumber": {
+    "message": "Nhập một số nguyên từ 0 đến 36."
   },
   "tokenDetails": {
     "message": "Thông tin token"
@@ -11260,12 +11262,6 @@
   },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "willApproveAmountForBridging": {
-    "message": "Phê duyệt token cho cầu nối."
-  },
-  "willApproveAmountForSwapping": {
-    "message": "Phê duyệt token cho hoán đổi."
   },
   "withdrawTo": {
     "message": "Nhận",

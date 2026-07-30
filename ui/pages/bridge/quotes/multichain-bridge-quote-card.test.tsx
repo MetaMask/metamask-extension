@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -191,22 +190,20 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
-          (quote) => ({
-            ...quote,
-            quote: {
-              ...quote.quote,
-              feeData: {
-                ...quote.quote.feeData,
-                metabridge: {
-                  ...quote.quote.feeData.metabridge,
-                  amount: '1',
-                  quoteBpsFee: 87.5,
-                },
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            feeData: {
+              ...quote.quote.feeData,
+              metabridge: {
+                ...quote.quote.feeData.metabridge,
+                amount: '1',
+                quoteBpsFee: 87.5,
               },
             },
-          }),
-        ),
+          },
+        })),
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -254,9 +251,7 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(
-      getByText(
-        `${messages.bridgeFeeDisclaimer.message.replace('$1', '0.875')}. ${messages.willApproveAmountForBridging.message}`,
-      ),
+      getByText(messages.bridgeFeeDisclaimer.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
@@ -519,7 +514,7 @@ describe('MultichainBridgeQuoteCard', () => {
                 priceImpact,
               },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quotesLastFetched: Date.now() - 5000,
           quotesLoadingStatus: RequestStatus.LOADING,
         },

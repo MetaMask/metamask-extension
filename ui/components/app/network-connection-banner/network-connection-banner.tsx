@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import type { FailedNetwork } from '@metamask/network-connection-banner-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -22,6 +21,7 @@ import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionB
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useDispatch } from '../../../store/hooks';
 
 type BannerIcon = {
   color: IconColor;

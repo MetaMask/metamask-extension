@@ -4,11 +4,11 @@ import HomePage from './homepage';
 class DeFiToken {
   protected readonly driver: Driver;
 
-  protected readonly tokenListItemTokenName =
-    '[data-testid="multichain-token-list-item-token-name"]';
-
   protected readonly tokenListItemSecondaryValue =
     '[data-testid="defi-list-market-value"]';
+
+  protected readonly tokenListItemTokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -38,25 +38,47 @@ class DeFiToken {
 }
 
 class DeFiTab extends HomePage {
-  readonly defiTabCells: DeFiToken;
-
   private readonly allNetworksOption =
     '[data-testid="network-filter-all__button"]';
 
+  readonly defiTabCells: DeFiToken;
+
+  private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
+
+  private readonly groupIcon = '[data-testid="avatar-group"]';
+
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
+
+  private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
 
   private readonly popularNetworks =
     '[data-testid="network-filter-all__button"]';
 
-  private readonly groupIcon = '[data-testid="avatar-group"]';
-
-  private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
-
-  private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
-
   constructor(driver: Driver) {
     super(driver);
     this.defiTabCells = new DeFiToken(driver);
+  }
+
+  async checkErrorMessageIsDisplayed(): Promise<void> {
+    console.log('Check that error message is displayed');
+    await this.driver.waitForSelector(this.errorMessage);
+  }
+
+  async checkGroupIconIsDisplayed(): Promise<void> {
+    console.log('Check that group icon is displayed');
+    await this.driver.waitForSelector(this.groupIcon);
+  }
+
+  async checkNoPositionsMessageIsDisplayed(): Promise<void> {
+    console.log('Check that no positions message is displayed');
+    await this.driver.waitForSelector(this.noPositionsMessage);
+  }
+
+  async clickIntoAaveV3DetailsPage() {
+    console.log('Click Aave V3 details page');
+    await this.driver.clickElement({
+      text: 'Aave V3',
+    });
   }
 
   async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
@@ -72,28 +94,6 @@ class DeFiTab extends HomePage {
       },
     );
     await this.driver.clickElement(this.popularNetworks);
-  }
-
-  async clickIntoAaveV3DetailsPage() {
-    console.log('Click Aave V3 details page');
-    await this.driver.clickElement({
-      text: 'Aave V3',
-    });
-  }
-
-  async checkErrorMessageIsDisplayed(): Promise<void> {
-    console.log('Check that error message is displayed');
-    await this.driver.waitForSelector(this.errorMessage);
-  }
-
-  async checkNoPositionsMessageIsDisplayed(): Promise<void> {
-    console.log('Check that no positions message is displayed');
-    await this.driver.waitForSelector(this.noPositionsMessage);
-  }
-
-  async checkGroupIconIsDisplayed(): Promise<void> {
-    console.log('Check that group icon is displayed');
-    await this.driver.waitForSelector(this.groupIcon);
   }
 }
 

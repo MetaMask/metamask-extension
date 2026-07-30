@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { hexToNumber } from '@metamask/utils';
 import { networkConnectionBannerControllerSelectors } from '@metamask/network-connection-banner-controller';
 import type {
@@ -16,6 +16,7 @@ import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { submitRequestToBackground } from '../store/background-connection';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 import { useMessenger } from './useMessenger';
+import { useDispatch } from '../store/hooks';
 import { useAnalytics } from './useAnalytics';
 
 const {

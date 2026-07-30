@@ -19,6 +19,7 @@ import {
   AssetsContractController,
   CurrencyRateController,
   DeFiPositionsController,
+  DeFiPositionsControllerV2,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
@@ -110,6 +111,7 @@ import { PerpsController } from '@metamask/perps-controller';
 import { RampsController, RampsService } from '@metamask/ramps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
 import { AnalyticsController } from '@metamask/analytics-controller';
+import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -160,6 +162,7 @@ export type MessengerClient =
   | DecryptMessageManager
   | DelegationController
   | DeFiPositionsController
+  | DeFiPositionsControllerV2
   | EncryptionPublicKeyController
   | EncryptionPublicKeyManager
   | EnsController
@@ -208,6 +211,7 @@ export type MessengerClient =
   | RewardsDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
+  | SentinelApiService
   | ShieldController
   | SignatureController
   | SmartTransactionsController
@@ -277,6 +281,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
+  DeFiPositionsControllerV2['state'] &
   DelegationController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
