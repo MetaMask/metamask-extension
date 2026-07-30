@@ -50,6 +50,7 @@ export function getMultichainAccountServiceMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'SnapController:handleRequest',
       'SnapAccountService:ensureReady',
+      'SnapAccountService:getCapabilities',
     ],
   });
   return serviceMessenger;

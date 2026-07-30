@@ -27,6 +27,7 @@ const AssetsUnifyStateFeatureFlag = object({
   featureVersion: nullable(string()),
   minimumVersion: optional(nullable(string())),
   deprecatedControllers: optional(array(string())),
+  tracesEnabled: optional(boolean()),
 });
 
 /**

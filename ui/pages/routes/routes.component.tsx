@@ -41,6 +41,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -183,6 +184,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -206,7 +210,9 @@ const Asset = mmLazy(() => import('../asset/index.js'));
 const SecurityTrustPage = mmLazy(
   () => import('../asset/security-trust/index.ts'),
 );
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -394,6 +400,10 @@ export const routeConfig = [
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
+      },
+      {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
