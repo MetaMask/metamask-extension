@@ -76,6 +76,10 @@ function parsePerpsAmountInput(raw: string): number {
   return Number.isFinite(n) ? n : NaN;
 }
 
+function countSubAccounts(state: AccountState | null | undefined): number {
+  return Object.keys(state?.subAccountBreakdown ?? {}).length;
+}
+
 /**
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
@@ -249,8 +253,17 @@ const PerpsWithdrawPage = () => {
         AccountState | undefined
       >('perpsGetAccountState', []).catch(() => undefined);
 
+      // The read only throws when every sub-account (HIP-3 dex) read fails; a
+      // partial failure resolves with the surviving ones and an under-reported
+      // total, which would block a withdrawal HyperLiquid accepts. Fail open
+      // there too. Sub-account keys are named differently by the stream and by
+      // this read, so completeness is compared by count.
+      const isPartialRead =
+        countSubAccounts(freshBalance) < countSubAccounts(account);
+
       if (
         freshBalance &&
+        !isPartialRead &&
         parsePerpsAmountInput(getTradeableBalance(freshBalance)) <
           parsePerpsAmountInput(cleanAmount)
       ) {
@@ -302,6 +315,7 @@ const PerpsWithdrawPage = () => {
       setIsSubmitting(false);
     }
   }, [
+    account,
     amount,
     hasValidInputs,
     isSubmitting,

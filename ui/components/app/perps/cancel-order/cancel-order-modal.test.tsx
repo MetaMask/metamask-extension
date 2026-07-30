@@ -36,10 +36,10 @@ jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
 }));
 
 jest.mock('../perps-toast', () => ({
-  PERPS_TOAST_KEYS: {
-    CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
-    CANCEL_ORDER_SUCCESS: 'perpsToastCancelOrderSuccess',
-  },
+  // Real keys: a hand-maintained subset silently emits `key: undefined` for any
+  // toast the mock has not been updated for.
+  PERPS_TOAST_KEYS: jest.requireActual('../perps-toast/perps-toast.constants')
+    .PERPS_TOAST_KEYS,
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
@@ -638,12 +638,18 @@ describe('CancelOrderModal', () => {
         mockStore,
       );
 
-      await user.click(screen.getByTestId('perps-cancel-order-button'));
+      await act(async () => {
+        await user.click(screen.getByTestId('perps-cancel-order-button'));
+      });
 
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
       });
       expect(screen.queryByText(alreadyClosedError)).not.toBeInTheDocument();
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastCancelOrderAlreadyClosed',
+        dataTestId: 'perps-toast-cancel-order-already-closed',
+      });
       expect(mockTrack).not.toHaveBeenCalledWith(
         'Perp Error',
         expect.anything(),

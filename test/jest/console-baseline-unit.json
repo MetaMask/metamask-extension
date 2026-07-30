@@ -236,7 +236,7 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/components/app/perps/cancel-order/cancel-order-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 39
+      "React: Act warnings (component updates not wrapped)": 36
     },
     "ui/components/app/perps/close-position/close-position-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 8
@@ -891,7 +891,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/perps/perps-withdraw-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 148
+      "React: Act warnings (component updates not wrapped)": 147
     },
     "ui/pages/routes/routes.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 4,

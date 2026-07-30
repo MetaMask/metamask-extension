@@ -564,6 +564,62 @@ describe('PerpsWithdrawPage', () => {
     await waitForWithdrawHandlerSettled();
   });
 
+  it('submits the withdrawal when the fresh balance read omits a sub-account', async () => {
+    const user = userEvent.setup();
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: {
+        spendableBalance: '100',
+        subAccountBreakdown: { main: {}, builderdex: {} },
+      } as never,
+      isInitialLoading: false,
+    });
+    mockSubmit.mockImplementation((method: string) => {
+      if (method === 'perpsGetWithdrawalRoutes') {
+        return Promise.resolve([
+          {
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            chainId: 'eip155:42161',
+            contractAddress:
+              '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as `0x${string}`,
+            constraints: { minAmount: '1.01' },
+          },
+        ]);
+      }
+      if (method === 'perpsGetAccountState') {
+        return Promise.resolve({
+          withdrawableBalance: '20',
+          subAccountBreakdown: { '': {} },
+        });
+      }
+      if (method === 'perpsWithdraw') {
+        return Promise.resolve({ success: true, withdrawalId: 'hl_test' });
+      }
+      return Promise.resolve(undefined);
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await act(async () => {
+      await user.clear(amountInput);
+      await user.type(amountInput, '50');
+      await user.click(screen.getByTestId('perps-withdraw-submit'));
+    });
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledWith(
+        'perpsWithdraw',
+        expect.any(Array),
+      );
+    });
+
+    await awaitSubmitPromisesForMethod('perpsWithdraw');
+    await waitForWithdrawHandlerSettled();
+  });
+
   it('submits the withdrawal when the fresh balance read fails', async () => {
     const user = userEvent.setup();
     mockSubmit.mockImplementation((method: string) => {
