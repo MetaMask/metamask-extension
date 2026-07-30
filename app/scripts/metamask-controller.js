@@ -567,8 +567,9 @@ export default class MetamaskController extends EventEmitter {
     this.connections = {};
 
     // lock to ensure only one seedless onboarding operation is running at once
-    // Shared with LegacyBackgroundApiService until remaining seedless methods
-    // (e.g. changePasswordWithPasskeyVerification) are migrated.
+    // Shared with LegacyBackgroundApiService until
+    // changePasswordWithPasskeyVerification is migrated (the only remaining
+    // MetamaskController user of this mutex).
     this.seedlessOperationMutex = new Mutex();
 
     // timer to reset passkey auto unlock suppressed state
@@ -8575,10 +8576,10 @@ export default class MetamaskController extends EventEmitter {
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      // Temporarily get the mutex from `MetamaskController` until we can
-      // migrate the remaining seedless onboarding functionality to the
-      // LegacyBackgroundApiService (e.g. changePasswordWithPasskeyVerification).
-      // TODO: Remove this once the migration is complete.
+      // Temporarily inject this mutex until changePasswordWithPasskeyVerification
+      // is migrated to LegacyBackgroundApiService (the only remaining
+      // MetamaskController user of this mutex).
+      // TODO: Remove this once that migration is complete.
       seedlessOperationMutex: this.seedlessOperationMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),

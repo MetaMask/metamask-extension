@@ -150,8 +150,8 @@ export type MessengerClientInitRequest<
    */
   persistedState: MessengerClientPersistedState;
 
-  // TODO: Remove this once the remaining seedless onboarding migration to the
-  // LegacyBackgroundApiService is complete (e.g. changePasswordWithPasskeyVerification).
+  // TODO: Remove this once changePasswordWithPasskeyVerification is migrated to
+  // LegacyBackgroundApiService (the only remaining MetamaskController user of this mutex).
   /**
    * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
    */

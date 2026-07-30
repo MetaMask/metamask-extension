@@ -493,10 +493,10 @@ export class LegacyBackgroundApiService {
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until we can
-    // migrate the remaining seedless onboarding functionality to this service
-    // (e.g. changePasswordWithPasskeyVerification).
-    // TODO: Remove this once the migration is complete.
+    // Temporarily get the mutex from `MetamaskController` until
+    // changePasswordWithPasskeyVerification is migrated here (the only remaining
+    // MetamaskController user of this mutex).
+    // TODO: Remove this injection once that migration is complete.
     this.#seedlessOperationMutex = seedlessOperationMutex;
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
