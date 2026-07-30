@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow -- @playwright/test exports `test` as a callable namespace; the global `test` is Mocha's
 import { test as pwTest } from '@playwright/test';
 import { E2E_DRIVER } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';

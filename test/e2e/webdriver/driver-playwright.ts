@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc, jsdoc/require-param -- shim file mirrors the Selenium Driver public API */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect } from '@playwright/test';
@@ -323,6 +322,8 @@ export class PlaywrightDriver {
    * Translates a Selenium-flavored `rawLocator` (string CSS, `{ css }`,
    * `{ xpath }`, `{ testId }`, `{ text, tag }`, `{ css, text }`,
    * `{ css, value }`) into a Playwright `Locator` rooted at the current page.
+   *
+   * @param rawLocator - Selenium-style locator descriptor.
    */
   buildLocator(rawLocator: RawLocator): Locator {
     return this.buildLocatorOn(this.page, rawLocator);
@@ -379,6 +380,9 @@ export class PlaywrightDriver {
    * For element-targeted scripts, prefer `element.locator.evaluate((el, arg)
    * => ..., arg)` directly — it is type-safe and avoids the function
    * serialization roundtrip.
+   *
+   * @param script - JS source string or function to run in the page context.
+   * @param args - Arguments passed to the script.
    */
   async executeScript<TResult = unknown>(
     script: string | ((...args: unknown[]) => unknown),
