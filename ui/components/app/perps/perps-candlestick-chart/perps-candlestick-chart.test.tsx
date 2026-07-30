@@ -19,11 +19,12 @@ type CrosshairParam = {
 
 let mockCrosshairCallback: ((param: CrosshairParam) => void) | undefined;
 let mockCreatedSeries: { ref: object }[] = [];
+let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
 
 jest.mock('lightweight-charts', () => ({
   createChart: () => {
     mockCreatedSeries = [];
-    return {
+    const chart = {
       addSeries: () => {
         const series = {
           ref: {},
@@ -48,9 +49,10 @@ jest.mock('lightweight-charts', () => ({
         unsubscribeVisibleLogicalRangeChange: jest.fn(),
         applyOptions: jest.fn(),
       }),
-      panes: jest
-        .fn()
-        .mockReturnValue([{ getHeight: () => 200 }, { getHeight: () => 60 }]),
+      panes: jest.fn().mockReturnValue([
+        { getHeight: () => 200, setHeight: jest.fn() },
+        { getHeight: () => 60, setHeight: jest.fn() },
+      ]),
       priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
       resize: jest.fn(),
       remove: jest.fn(),
@@ -59,6 +61,8 @@ jest.mock('lightweight-charts', () => ({
       }),
       unsubscribeCrosshairMove: jest.fn(),
     };
+    mockCreatedCharts.push(chart);
+    return chart;
   },
   CandlestickSeries: 'CandlestickSeries',
   HistogramSeries: 'HistogramSeries',
@@ -71,6 +75,9 @@ jest.mock('lightweight-charts', () => ({
 const mockStore = configureStore({
   metamask: { ...mockState.metamask },
 });
+
+// Comfortably past the component's 50ms pane-height timer.
+const PANE_HEIGHT_TIMER_OVERRUN_MS = 100;
 
 // The component creates the candlestick series first, then the volume series.
 const getCandlestickSeries = () => mockCreatedSeries[0];
@@ -262,5 +269,50 @@ describe('PerpsCandlestickChart — volume axis label on hover (TAT-2970)', () =
     });
 
     expect(onCrosshairMove).toHaveBeenCalledWith(null);
+  });
+});
+
+describe('PerpsCandlestickChart — chart disposal (TAT-3462)', () => {
+  beforeEach(() => {
+    mockCrosshairCallback = undefined;
+    mockCreatedSeries = [];
+    mockCreatedCharts = [];
+    mockUseTheme.mockReturnValue('light');
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('does not apply pane heights after the chart has been disposed on unmount', () => {
+    // Arrange
+    const { unmount } = renderWithProvider(
+      <PerpsCandlestickChart />,
+      mockStore,
+    );
+    const chart = mockCreatedCharts.at(-1);
+    expect(chart).toBeDefined();
+    expect(chart?.panes).not.toHaveBeenCalled();
+
+    // Act — unmount before the pane-height timer fires, then let it come due
+    unmount();
+    jest.advanceTimersByTime(PANE_HEIGHT_TIMER_OVERRUN_MS);
+
+    // Assert — the chart was disposed and the timer never touched it afterwards
+    expect(chart?.remove).toHaveBeenCalledTimes(1);
+    expect(chart?.panes).not.toHaveBeenCalled();
+  });
+
+  it('applies pane heights when the chart stays mounted past the timer', () => {
+    // Arrange
+    renderWithProvider(<PerpsCandlestickChart />, mockStore);
+    const chart = mockCreatedCharts.at(-1);
+
+    // Act
+    jest.advanceTimersByTime(PANE_HEIGHT_TIMER_OVERRUN_MS);
+
+    // Assert — clearing the timer on unmount must not break the normal path
+    expect(chart?.panes).toHaveBeenCalled();
   });
 });
