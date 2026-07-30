@@ -1,4 +1,4 @@
-import type { RampsOrder, RampsOrderStatus } from '@metamask/ramps-controller';
+import type { RampsControllerOrderStatusChangedEvent } from '@metamask/ramps-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -9,10 +9,8 @@ import {
   buildRampsTransactionFailedProperties,
 } from './buildRampsTransactionCompletedProperties';
 
-type RampsOrderStatusChangedEvent = {
-  order: RampsOrder;
-  previousStatus: RampsOrderStatus;
-};
+type RampsOrderStatusChangedEventPayload =
+  RampsControllerOrderStatusChangedEvent['payload'][0];
 
 /**
  * Fires the ramps buy-flow terminal-outcome KPI for a `RampsController:
@@ -28,7 +26,7 @@ type RampsOrderStatusChangedEvent = {
  */
 export function handleRampsOrderStatusChanged({
   order,
-}: RampsOrderStatusChangedEvent): void {
+}: RampsOrderStatusChangedEventPayload): void {
   // Status strings are RampsOrderStatus values from @metamask/ramps-controller.
   if (order?.status === 'COMPLETED') {
     trackEvent(
