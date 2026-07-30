@@ -271,12 +271,16 @@ export const CoinOverview = ({
           const enabledChainIds = Object.entries(networks)
             .filter(([, isEnabled]) => isEnabled)
             .map(([enabledChainId]) => enabledChainId)
-            .sort()
+            .sort((firstChainId, secondChainId) =>
+              firstChainId.localeCompare(secondChainId),
+            )
             .join(',');
 
           return `${namespace}:${enabledChainIds}`;
         })
-        .sort()
+        .sort((firstNetwork, secondNetwork) =>
+          firstNetwork.localeCompare(secondNetwork),
+        )
         .join('|'),
     [enabledNetworks],
   );
