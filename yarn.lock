@@ -5991,7 +5991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:^1.2.0":
+"@metamask/client-utils@npm:1.2.0":
   version: 1.2.0
   resolution: "@metamask/client-utils@npm:1.2.0"
   dependencies:
@@ -6002,6 +6002,20 @@ __metadata:
     "@metamask/transaction-controller": "npm:^69.0.0"
     "@metamask/utils": "npm:^11.11.0"
   checksum: 10/e3c092a587ca2da603f62c540c54a6ab41855a795f8ffcb025595a9b1bf344de597b2c1147b447acd5ba37a2d32f67477edc5fbaa21d2157baf170b4b9aeea3d
+  languageName: node
+  linkType: hard
+
+"@metamask/client-utils@patch:@metamask/client-utils@npm%3A1.2.0#~/.yarn/patches/@metamask-client-utils-npm-1.2.0-1adc40c3f3.patch":
+  version: 1.2.0
+  resolution: "@metamask/client-utils@patch:@metamask/client-utils@npm%3A1.2.0#~/.yarn/patches/@metamask-client-utils-npm-1.2.0-1adc40c3f3.patch::version=1.2.0&hash=8d8ecc"
+  dependencies:
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^6.5.0"
+    "@metamask/keyring-api": "npm:^23.5.0"
+    "@metamask/transaction-controller": "npm:^69.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+  checksum: 10/d175314389c38a2f09e50afc111766150d6eb870e2a532139f2fd952d91fb08a5e4677dca46fdb21de0534884c9d115f73a86a4a72edc2a1a513c0a86e3a6659
   languageName: node
   linkType: hard
 
@@ -32921,7 +32935,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
-    "@metamask/client-utils": "npm:^1.2.0"
+    "@metamask/client-utils": "patch:@metamask/client-utils@npm%3A1.2.0#~/.yarn/patches/@metamask-client-utils-npm-1.2.0-1adc40c3f3.patch"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^0.4.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
