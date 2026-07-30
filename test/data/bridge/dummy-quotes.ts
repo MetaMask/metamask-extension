@@ -1,6 +1,6 @@
 import {
   getNativeAssetForChainId,
-  type QuoteResponse,
+  type QuoteResponseV1,
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
 
@@ -447,7 +447,7 @@ export const DummyQuotesNoApproval = {
       },
       estimatedProcessingTimeInSeconds: 60,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ] as unknown as (QuoteResponseV1 & QuoteMetadata)[],
 };
 
 export const ETH_11_USDC_TO_ARB_METADATA = {
@@ -457,8 +457,6 @@ export const ETH_11_USDC_TO_ARB_METADATA = {
     usd: '1000',
   },
   gasFee: {
-    effective: { amount: '12', valueInCurrency: '12', usd: '12' },
-    max: { amount: '12', valueInCurrency: '12', usd: '12' },
     total: { amount: '12', valueInCurrency: '12', usd: '12' },
   },
   totalNetworkFee: {
@@ -926,7 +924,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 1020,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ] as unknown as (QuoteResponseV1 & QuoteMetadata)[],
   ARB_11_USDC_TO_ETH: [
     {
       quote: {
@@ -1031,7 +1029,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 1140,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ] as unknown as (QuoteResponseV1 & QuoteMetadata)[],
   ARB_11_USDC_TO_OP: [
     {
       quote: {
@@ -2706,7 +2704,7 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 20,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ] as unknown as (QuoteResponseV1 & QuoteMetadata)[],
   OP_11_USDC_TO_ARB: [
     {
       quote: {
@@ -4373,5 +4371,5 @@ export const DummyQuotesWithApproval = {
       },
       estimatedProcessingTimeInSeconds: 20,
     },
-  ] as unknown as (QuoteResponse & QuoteMetadata)[],
+  ] as unknown as (QuoteResponseV1 & QuoteMetadata)[],
 };

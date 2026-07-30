@@ -154,7 +154,9 @@ const ConnectHardwareForm = () => {
   const [browserSupported, setBrowserSupported] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
   const [device, setDevice] = useState<string | null>(null);
-  const [isFirefox, setIsFirefox] = useState(false);
+  const [isFirefox] = useState(() =>
+    /Firefox/u.test(window.navigator.userAgent),
+  );
   const previousActiveQrCodeScanRequest = useRef<ActiveQrCodeScanRequest>(
     activeQrCodeScanRequest,
   );
@@ -193,22 +195,18 @@ const ConnectHardwareForm = () => {
     [keyrings],
   );
 
-  // Update balances when accounts change
-  useEffect(() => {
-    setHardwareAccounts((prev) => {
-      if (prev.length === 0) {
-        return prev;
-      }
-      return prev.map((account) => {
+  const hardwareAccountsWithBalances = useMemo(
+    () =>
+      hardwareAccounts.map((account) => {
         const normalizedAddress = account.address.toLowerCase();
         const balanceValue = accounts[normalizedAddress]?.balance || null;
         return {
           ...account,
           balance: balanceValue ? formatBalance(balanceValue, 6) : '...',
         };
-      });
-    });
-  }, [accounts]);
+      }),
+    [hardwareAccounts, accounts],
+  );
 
   const showTemporaryAlert = useCallback(() => {
     dispatch(actions.showAlert(t('hardwareWalletConnected') as string));
@@ -296,6 +294,18 @@ const ConnectHardwareForm = () => {
           }
         }
 
+        if (deviceName === HardwareDeviceNames.qr) {
+          const hwError = toHardwareWalletError(e, HardwareWalletType.Qr);
+
+          if (
+            hwError.code === ErrorCode.PermissionCameraDenied ||
+            hwError.code === ErrorCode.PermissionCameraPromptDismissed
+          ) {
+            setError(t('youNeedToAllowCameraAccess') as string);
+            return;
+          }
+        }
+
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
           (errorCode) => errorMessage.includes(errorCode),
         );
@@ -351,12 +361,6 @@ const ConnectHardwareForm = () => {
       unlocked,
     ],
   );
-
-  useEffect(() => {
-    if (/Firefox/u.test(window.navigator.userAgent)) {
-      setIsFirefox(true);
-    }
-  }, []);
 
   useEffect(() => {
     const previousScanRequest = previousActiveQrCodeScanRequest.current;
@@ -421,6 +425,7 @@ const ConnectHardwareForm = () => {
       getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
     },
     [
+      createEventBuilder,
       defaultHdPaths,
       getPage,
       hardwareAccounts.length,
@@ -499,7 +504,7 @@ const ConnectHardwareForm = () => {
         setError(errorMessage);
       }
     },
-    [dispatch, setCurrentDevice, trackEvent],
+    [createEventBuilder, dispatch, setCurrentDevice, trackEvent],
   );
 
   const onUnlockAccounts = useCallback(
@@ -601,6 +606,7 @@ const ConnectHardwareForm = () => {
       }
     },
     [
+      createEventBuilder,
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,
@@ -712,7 +718,7 @@ const ConnectHardwareForm = () => {
         onPathChange={onPathChange}
         selectedPath={defaultHdPaths[device]}
         device={device}
-        accounts={hardwareAccounts}
+        accounts={hardwareAccountsWithBalances}
         connectedAccounts={connectedAccounts}
         selectedAccounts={selectedAccounts}
         onAccountChange={onAccountChange}
