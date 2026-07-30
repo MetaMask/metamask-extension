@@ -482,6 +482,38 @@ export type LegacyBackgroundApiServiceRejectPendingApprovalAction = {
 };
 
 /**
+ * Resolve a pending approval. For hardware wallet transactions and signatures,
+ * this handles error parsing.
+ *
+ * @param id - The approval ID.
+ * @param value - The value to resolve with (for transactions, contains txMeta).
+ * @param options - Options for the approval.
+ * @param options.walletType - The hardware wallet type (if hardware wallet).
+ * @param options.waitForResult - Whether to wait for the result.
+ */
+export type LegacyBackgroundApiServiceResolvePendingApprovalAction = {
+  type: `LegacyBackgroundApiService:resolvePendingApproval`;
+  handler: LegacyBackgroundApiService['resolvePendingApproval'];
+};
+
+/**
+ * Approve a hardware wallet transaction with retry support.
+ * This is a convenience wrapper around resolvePendingApproval for the
+ * transaction confirmation flow, which passes txMeta in a specific format.
+ *
+ * @param opts - Options for the transaction.
+ * @param opts.txId - The transaction ID to approve.
+ * @param opts.txMeta - The transaction metadata.
+ * @param opts.actionId - The action ID for tracking.
+ * @param opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor').
+ * @throws When hardware wallet error occurs (with recreatedTxId if recreation succeeded).
+ */
+export type LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction = {
+  type: `LegacyBackgroundApiService:approveHardwareWalletTransaction`;
+  handler: LegacyBackgroundApiService['approveHardwareWalletTransaction'];
+};
+
+/**
  * Rejects all pending approval requests.
  *
  * Snap dialogs and account confirmations are accepted with a falsy value and
@@ -600,6 +632,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApplyTransactionContainersExistingAction
   | LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction
   | LegacyBackgroundApiServiceRejectPendingApprovalAction
+  | LegacyBackgroundApiServiceResolvePendingApprovalAction
+  | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction

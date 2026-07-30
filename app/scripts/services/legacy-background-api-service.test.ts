@@ -27,6 +27,7 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { Category, ErrorCode, Severity } from '@metamask/hw-wallet-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
@@ -40,12 +41,24 @@ import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
+
+const mockToHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
+
+jest.mock('../../../shared/lib/hardware-wallets', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
+  toHardwareWalletError: (...args: unknown[]) =>
+    mockToHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
 
@@ -3227,6 +3240,236 @@ describe('LegacyBackgroundApiService', () => {
             { code: 1, message: 'DUMMY_MESSAGE', data: 'DUMMY_DATA' },
           ),
         ).toThrow(error);
+      });
+    });
+  });
+
+  describe('resolvePendingApproval', () => {
+    beforeEach(() => {
+      mockToHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReset();
+      mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    });
+
+    it('does not propagate ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new ApprovalRequestNotFoundError('123');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).resolves.not.toThrow(error);
+      });
+    });
+
+    it('propagates errors other than ApprovalRequestNotFoundError', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('boom');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'DUMMY_ID',
+            'DUMMY_VALUE',
+          ),
+        ).rejects.toThrow(error);
+      });
+    });
+
+    it('normalizes null options before calling ApprovalController:acceptRequest', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          null,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x1' } },
+          undefined,
+        );
+      });
+    });
+
+    it('passes only waitForResult to ApprovalController:acceptRequest options', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockResolvedValue(undefined),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:resolvePendingApproval',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          {
+            waitForResult: true,
+            walletType: HardwareWalletType.Ledger,
+          },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:acceptRequest',
+          'approval-id',
+          { txMeta: { id: '0x2' } },
+          { waitForResult: true },
+        );
+      });
+    });
+
+    it('transforms hardware wallet errors to internal JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('Ledger transport disconnected');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'Device disconnected',
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Please reconnect your device',
+          metadata: {
+            transport: 'usb',
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x3' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: -32603,
+          data: {
+            code: ErrorCode.DeviceDisconnected,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Please reconnect your device',
+            metadata: {
+              transport: 'usb',
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+
+        expect(mockToHardwareWalletError).toHaveBeenCalledWith(
+          error,
+          HardwareWalletType.Ledger,
+        );
+      });
+    });
+
+    it('transforms user-rejected hardware wallet errors to user-rejected JSON-RPC errors', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('User rejected on device');
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:acceptRequest',
+          jest.fn().mockImplementation(() => {
+            throw error;
+          }),
+        );
+
+        mockToHardwareWalletError.mockReturnValue({
+          message: 'User rejected',
+          code: ErrorCode.UserRejected,
+          severity: Severity.Info,
+          category: Category.UserAction,
+          userMessage: 'Request rejected',
+          metadata: {
+            walletType: HardwareWalletType.Ledger,
+          },
+        });
+        mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolvePendingApproval',
+            'approval-id',
+            { txMeta: { id: '0x4' } },
+            { walletType: HardwareWalletType.Ledger },
+          ),
+        ).rejects.toMatchObject({
+          code: 4001,
+          data: {
+            code: ErrorCode.UserRejected,
+            severity: Severity.Info,
+            category: Category.UserAction,
+            userMessage: 'Request rejected',
+            metadata: {
+              walletType: HardwareWalletType.Ledger,
+            },
+          },
+        });
+      });
+    });
+  });
+
+  describe('approveHardwareWalletTransaction', () => {
+    it('delegates to resolvePendingApproval with transaction payload and hardware wallet options', async () => {
+      await withService(async ({ service }) => {
+        const resolvePendingApprovalSpy = jest
+          .spyOn(service, 'resolvePendingApproval')
+          .mockResolvedValue();
+
+        const txMeta = {
+          id: '42',
+          txParams: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        };
+
+        await service.approveHardwareWalletTransaction({
+          txId: 42,
+          txMeta,
+          actionId: 'action-id',
+          walletType: HardwareWalletType.Ledger,
+        });
+
+        expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
+          '42',
+          { txMeta, actionId: 'action-id' },
+          { waitForResult: true, walletType: HardwareWalletType.Ledger },
+        );
       });
     });
   });
