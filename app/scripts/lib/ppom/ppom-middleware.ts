@@ -18,7 +18,11 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
-import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import {
+  BlockaidResultType,
+  LOADING_SECURITY_ALERT_RESPONSE,
+} from '../../../../shared/constants/security-provider';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -117,7 +121,7 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      trace(
+      const validationPromise = trace(
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
         () =>
           validateRequestWithPPOM({
@@ -129,6 +133,32 @@ export function createPPOMMiddleware<
             getSecurityAlertsConfig,
           }),
       );
+
+      // PPOM's threat data is not real-time, so an address it reports as benign
+      // may already be flagged. When PPOM does not flag the request, run a
+      // real-time scan of the signature's address fields. Skipped when PPOM
+      // already flagged it; cached results avoid re-scanning addresses covered
+      // by the trust-signals middleware.
+      if (SIGNING_METHODS.includes(req.method)) {
+        Promise.resolve(validationPromise)
+          .then((securityAlertResponse) => {
+            const resultType = securityAlertResponse?.result_type;
+            const ppomFlagged =
+              resultType === BlockaidResultType.Malicious ||
+              resultType === BlockaidResultType.Warning;
+            if (!ppomFlagged) {
+              scanUnvalidatedSignatureAddresses({
+                request: req,
+                chainId: chainId as Hex,
+                appStateController,
+              });
+            }
+          })
+          .catch(() => {
+            // validateRequestWithPPOM resolves with an error response; this is
+            // defensive only.
+          });
+      }
 
       const securityAlertResponseLoading: SecurityAlertResponse = {
         ...LOADING_SECURITY_ALERT_RESPONSE,

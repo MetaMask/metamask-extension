@@ -92,6 +92,143 @@ export function createCacheKey(chain: SupportedEVMChain, address: string) {
   return `${chain.toLowerCase()}:${address.toLowerCase()}`;
 }
 
+const EVM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/u;
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+// Cap the number of addresses returned for a single signature.
+const MAX_SIGNATURE_ADDRESSES = 10;
+
+// Limit recursion depth when walking nested types.
+const MAX_TRAVERSAL_DEPTH = 12;
+
+type Eip712Field = { name: string; type: string };
+type Eip712Types = Record<string, Eip712Field[]>;
+
+/**
+ * Collect every `address`-typed value in an EIP-712 message.
+ *
+ * Walks the `types` schema from `primaryType` and returns the value of each
+ * field declared as `address` or `address[]`, recursing into nested structs and
+ * arrays. Matching on the declared type rather than the field name means custom
+ * and unknown message shapes are covered without per-protocol handling.
+ *
+ * `domain` is not traversed; `verifyingContract` is already scanned by the
+ * trust-signals middleware.
+ *
+ * @param typedData - Parsed EIP-712 payload (`types`, `primaryType`, `message`).
+ * @param options - Optional configuration.
+ * @param options.exclude - Addresses to skip (e.g. the signer), compared
+ * case-insensitively. The zero address is always excluded.
+ * @param options.excludeFields - Field names to skip, used to avoid a duplicate
+ * alert for a field already handled elsewhere (e.g. permit `spender`).
+ * @returns De-duplicated address values in original casing.
+ */
+export function extractSignatureAddresses(
+  typedData:
+    | { types?: unknown; primaryType?: unknown; message?: unknown }
+    | null
+    | undefined,
+  options: { exclude?: string[]; excludeFields?: string[] } = {},
+): string[] {
+  const types = typedData?.types as Eip712Types | undefined;
+  const primaryType = typedData?.primaryType as string | undefined;
+  const message = typedData?.message;
+
+  if (
+    !types ||
+    typeof types !== 'object' ||
+    !primaryType ||
+    !Array.isArray(types[primaryType]) ||
+    !message ||
+    typeof message !== 'object'
+  ) {
+    return [];
+  }
+
+  const excluded = new Set<string>([ZERO_ADDRESS]);
+  for (const address of options.exclude ?? []) {
+    if (typeof address === 'string' && address) {
+      excluded.add(address.toLowerCase());
+    }
+  }
+
+  const excludedFields = new Set(
+    (options.excludeFields ?? []).map((field) => field.toLowerCase()),
+  );
+
+  // Lower-cased address -> original casing, in insertion order.
+  const found = new Map<string, string>();
+
+  const collect = (value: unknown): void => {
+    if (typeof value === 'string' && EVM_ADDRESS_REGEX.test(value)) {
+      const lower = value.toLowerCase();
+      if (!excluded.has(lower) && !found.has(lower)) {
+        found.set(lower, value);
+      }
+    }
+  };
+
+  const visitStruct = (
+    structName: string,
+    value: unknown,
+    depth: number,
+  ): void => {
+    if (found.size >= MAX_SIGNATURE_ADDRESSES || depth > MAX_TRAVERSAL_DEPTH) {
+      return;
+    }
+    const fields = types[structName];
+    if (!Array.isArray(fields) || !value || typeof value !== 'object') {
+      return;
+    }
+    for (const field of fields) {
+      if (
+        !field ||
+        typeof field.name !== 'string' ||
+        typeof field.type !== 'string' ||
+        excludedFields.has(field.name.toLowerCase())
+      ) {
+        continue;
+      }
+      visitField(
+        field.type,
+        (value as Record<string, unknown>)[field.name],
+        depth,
+      );
+    }
+  };
+
+  const visitField = (type: string, value: unknown, depth: number): void => {
+    if (found.size >= MAX_SIGNATURE_ADDRESSES || depth > MAX_TRAVERSAL_DEPTH) {
+      return;
+    }
+
+    // Handle one array dimension at a time, e.g. `address[]` or `Type[][]`.
+    const arrayMatch = type.match(/^(.*)\[\d*\]$/u);
+    if (arrayMatch) {
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          visitField(arrayMatch[1], item, depth + 1);
+        }
+      }
+      return;
+    }
+
+    if (type === 'address') {
+      collect(value);
+      return;
+    }
+
+    // Recurse into custom struct types; other primitives carry no address.
+    if (Array.isArray(types[type])) {
+      visitStruct(type, value, depth + 1);
+    }
+  };
+
+  visitStruct(primaryType, message, 0);
+
+  return Array.from(found.values());
+}
+
 export enum ResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
