@@ -29,6 +29,9 @@ const DEFAULT_HOOK_PARAMS = {
   assetSymbol: 'USDC',
 };
 
+const STELLAR_NATIVE_ASSET_ID =
+  `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
+
 describe('useAssetActivation', () => {
   const createStellarState = ({
     trustlineLimit,
@@ -146,7 +149,11 @@ describe('useAssetActivation', () => {
   describe('canDeactivate', () => {
     it('returns false for a native asset when the asset does not require a trustline', async () => {
       const { result } = renderHookWithProvider(
-        () => useAssetActivation({ assetSymbol: 'XLM' }),
+        () =>
+          useAssetActivation({
+            assetId: STELLAR_NATIVE_ASSET_ID,
+            assetSymbol: 'XLM',
+          }),
         createStellarState(),
       );
 

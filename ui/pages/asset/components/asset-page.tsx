@@ -91,8 +91,8 @@ import {
 } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { useAssetActivation } from '../hooks/useAssetActivation';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
@@ -293,13 +293,13 @@ const AssetPage = ({
 
   const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
 
-  const { requiresActivate: isAssetInactive } = useAssetActivation({
-    accountId: selectedAccount?.id,
-    assetId: resolvedAssetId,
-  });
+  const isAssetInactive = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId: resolvedAssetId,
+    }),
+  );
 
   const spendableBalanceData = useSpendableBalance({
-    accountId: selectedAccount?.id,
     assetId: resolvedAssetId,
   });
   const showSpendableBalance = spendableBalanceData.hasSpendableBalance;
@@ -412,7 +412,6 @@ const AssetPage = ({
       {isAssetInactive && (
         <AssetActivateCard
           asset={tokenAsset as Asset}
-          accountId={selectedAccount?.id}
           chainName={networkName}
         />
       )}

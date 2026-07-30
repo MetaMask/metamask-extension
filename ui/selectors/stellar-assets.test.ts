@@ -1,7 +1,9 @@
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { XlmScope } from '@metamask/keyring-api';
 import type { CaipAssetType } from '@metamask/utils';
 
+import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../test/data/mock-accounts';
 import {
   getIsAssetRequireActivate,
   getSpendableForAccount,
@@ -10,7 +12,9 @@ import {
   isAssetSupportSpendableBalance,
 } from './stellar-assets';
 
-const ACCOUNT_ID = 'stellar-account-id';
+const ACCOUNT_ID = MOCK_ACCOUNT_STELLAR_PUBNET.id;
+const WALLET_ID = 'entropy:stellar-test';
+const ACCOUNT_GROUP_ID = 'entropy:stellar-test/0';
 const STELLAR_NATIVE_ASSET_ID =
   `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
 const ETHER_NATIVE_ASSET_ID = 'eip155:1/slip44:60' as CaipAssetType;
@@ -26,15 +30,72 @@ const SPENDABLE_BALANCE_STROOPS = '75000000';
 const STELLAR_DECIMALS = 7;
 
 type AssetsState = {
-  metamask: AssetsControllerState;
+  metamask: AssetsControllerState & {
+    selectedAccountGroup?: string | null;
+    accountTree?: {
+      wallets: Record<string, unknown>;
+    };
+    internalAccounts?: {
+      accounts: Record<string, unknown>;
+      selectedAccount: string;
+    };
+  };
 };
 
 function createMockState(
   assetsBalance: AssetsControllerState['assetsBalance'],
+  options?: { withSelectedStellarAccount?: boolean },
 ): AssetsState {
-  return {
-    metamask: { assetsBalance } as unknown as AssetsControllerState,
-  };
+  const metamask: AssetsState['metamask'] = {
+    assetsBalance,
+    selectedAccountGroup: null,
+    accountTree: {
+      wallets: {},
+    },
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  } as AssetsState['metamask'];
+
+  if (options?.withSelectedStellarAccount) {
+    metamask.internalAccounts = {
+      accounts: {
+        [ACCOUNT_ID]: MOCK_ACCOUNT_STELLAR_PUBNET,
+      },
+      selectedAccount: ACCOUNT_ID,
+    };
+    metamask.accountTree = {
+      wallets: {
+        [WALLET_ID]: {
+          id: WALLET_ID,
+          type: AccountWalletType.Entropy,
+          status: 'ready',
+          groups: {
+            [ACCOUNT_GROUP_ID]: {
+              id: ACCOUNT_GROUP_ID,
+              type: AccountGroupType.MultichainAccount,
+              accounts: [ACCOUNT_ID],
+              metadata: {
+                name: 'Stellar',
+                entropy: { groupIndex: 0 },
+                pinned: false,
+                hidden: false,
+                lastSelected: 0,
+              },
+            },
+          },
+          metadata: {
+            name: 'Stellar Wallet',
+            entropy: { id: 'stellar-test' },
+          },
+        },
+      },
+    };
+    metamask.selectedAccountGroup = ACCOUNT_GROUP_ID;
+  }
+
+  return { metamask };
 }
 
 const mockState = createMockState({
@@ -56,26 +117,67 @@ const mockState = createMockState({
   },
 });
 
+const mockStateWithSelectedAccount = createMockState(
+  {
+    [ACCOUNT_ID]: {
+      [STELLAR_NATIVE_ASSET_ID]: {
+        amount: '10',
+        metadata: {
+          minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+          spendableBalance: SPENDABLE_BALANCE_STROOPS,
+          decimal: STELLAR_DECIMALS,
+        },
+      },
+      [TRUSTLINE_USDC]: {
+        amount: '0',
+        metadata: {
+          limit: '1000',
+        },
+      },
+    },
+  },
+  { withSelectedStellarAccount: true },
+);
+
 describe('stellar-assets selectors', () => {
   describe('getSpendableForAccount', () => {
     it('returns spendable and minimum reserve from AssetsController balance metadata', () => {
       expect(
-        getSpendableForAccount(mockState, ACCOUNT_ID, STELLAR_NATIVE_ASSET_ID),
+        getSpendableForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: STELLAR_NATIVE_ASSET_ID,
+        }),
       ).toStrictEqual({
         minimumReserveBalance: '2.5',
         spendableBalance: '7.5',
       });
     });
 
-    it('returns undefined when accountId is missing', () => {
+    it('falls back to the selected account when accountId is omitted', () => {
       expect(
-        getSpendableForAccount(mockState, undefined, STELLAR_NATIVE_ASSET_ID),
+        getSpendableForAccount(mockStateWithSelectedAccount, {
+          assetId: STELLAR_NATIVE_ASSET_ID,
+        }),
+      ).toStrictEqual({
+        minimumReserveBalance: '2.5',
+        spendableBalance: '7.5',
+      });
+    });
+
+    it('returns undefined when accountId is omitted and no selected account exists', () => {
+      expect(
+        getSpendableForAccount(mockState, {
+          assetId: STELLAR_NATIVE_ASSET_ID,
+        }),
       ).toBeUndefined();
     });
 
-    it('returns undefined when assetId is missing', () => {
+    it('returns undefined when assetId is not a CAIP spendable asset', () => {
       expect(
-        getSpendableForAccount(mockState, ACCOUNT_ID, undefined),
+        getSpendableForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: '0xabc',
+        }),
       ).toBeUndefined();
     });
 
@@ -89,8 +191,10 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          STELLAR_NATIVE_ASSET_ID,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: STELLAR_NATIVE_ASSET_ID,
+          },
         ),
       ).toBeUndefined();
     });
@@ -109,8 +213,10 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          STELLAR_NATIVE_ASSET_ID,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: STELLAR_NATIVE_ASSET_ID,
+          },
         ),
       ).toBeUndefined();
     });
@@ -129,15 +235,20 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          STELLAR_NATIVE_ASSET_ID,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: STELLAR_NATIVE_ASSET_ID,
+          },
         ),
       ).toBeUndefined();
     });
 
     it('returns undefined for unsupported assets', () => {
       expect(
-        getSpendableForAccount(mockState, ACCOUNT_ID, ETHER_NATIVE_ASSET_ID),
+        getSpendableForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: ETHER_NATIVE_ASSET_ID,
+        }),
       ).toBeUndefined();
     });
   });
@@ -145,35 +256,57 @@ describe('stellar-assets selectors', () => {
   describe('getTrustlineAssetInfoForAccount', () => {
     it('returns trustline metadata for an account/asset pair', () => {
       expect(
-        getTrustlineAssetInfoForAccount(mockState, ACCOUNT_ID, TRUSTLINE_USDC),
+        getTrustlineAssetInfoForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: TRUSTLINE_USDC,
+        }),
       ).toStrictEqual({
         limit: '1000',
       });
     });
 
+    it('falls back to the selected account when accountId is omitted', () => {
+      expect(
+        getTrustlineAssetInfoForAccount(mockStateWithSelectedAccount, {
+          assetId: TRUSTLINE_USDC,
+        }),
+      ).toStrictEqual({
+        limit: '1000',
+      });
+    });
+
+    it('returns undefined when accountId is omitted and no selected account exists', () => {
+      expect(
+        getTrustlineAssetInfoForAccount(mockState, {
+          assetId: TRUSTLINE_USDC,
+        }),
+      ).toBeUndefined();
+    });
+
     it('returns undefined for native asset enrichment', () => {
       expect(
-        getTrustlineAssetInfoForAccount(
-          mockState,
-          ACCOUNT_ID,
-          STELLAR_NATIVE_ASSET_ID,
-        ),
+        getTrustlineAssetInfoForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: STELLAR_NATIVE_ASSET_ID,
+        }),
       ).toBeUndefined();
     });
 
     it('returns undefined when the account has no balance entry', () => {
       expect(
-        getTrustlineAssetInfoForAccount(
-          createMockState({}),
-          ACCOUNT_ID,
-          TRUSTLINE_USDC,
-        ),
+        getTrustlineAssetInfoForAccount(createMockState({}), {
+          accountId: ACCOUNT_ID,
+          assetId: TRUSTLINE_USDC,
+        }),
       ).toBeUndefined();
     });
 
     it('returns undefined when the asset is missing for the account', () => {
       expect(
-        getTrustlineAssetInfoForAccount(mockState, ACCOUNT_ID, SEP41_ASSET_ID),
+        getTrustlineAssetInfoForAccount(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: SEP41_ASSET_ID,
+        }),
       ).toBeUndefined();
     });
 
@@ -187,29 +320,64 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          TRUSTLINE_USDC,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: TRUSTLINE_USDC,
+          },
         ),
       ).toBeUndefined();
     });
   });
 
   describe('getIsAssetRequireActivate', () => {
-    it('returns false when accountId is missing', () => {
+    it('returns false when accountId is missing and no selected account exists', () => {
       expect(
-        getIsAssetRequireActivate(mockState, undefined, TRUSTLINE_USDC),
+        getIsAssetRequireActivate(mockState, { assetId: TRUSTLINE_USDC }),
       ).toBe(false);
     });
 
-    it('returns false when assetId is missing', () => {
-      expect(getIsAssetRequireActivate(mockState, ACCOUNT_ID, undefined)).toBe(
-        false,
-      );
+    it('returns false when assetId is not a CAIP classic asset', () => {
+      expect(
+        getIsAssetRequireActivate(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: '0xabc',
+        }),
+      ).toBe(false);
+    });
+
+    it('falls back to the selected account when accountId is omitted', () => {
+      expect(
+        getIsAssetRequireActivate(mockStateWithSelectedAccount, {
+          assetId: TRUSTLINE_USDC,
+        }),
+      ).toBe(false);
+
+      expect(
+        getIsAssetRequireActivate(
+          createMockState(
+            {
+              [ACCOUNT_ID]: {
+                [TRUSTLINE_USDC]: {
+                  amount: '0',
+                  metadata: {
+                    limit: '0',
+                  },
+                },
+              },
+            },
+            { withSelectedStellarAccount: true },
+          ),
+          { assetId: TRUSTLINE_USDC },
+        ),
+      ).toBe(true);
     });
 
     it('returns false when trustline limit is active', () => {
       expect(
-        getIsAssetRequireActivate(mockState, ACCOUNT_ID, TRUSTLINE_USDC),
+        getIsAssetRequireActivate(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: TRUSTLINE_USDC,
+        }),
       ).toBe(false);
     });
 
@@ -223,8 +391,10 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          TRUSTLINE_USDC,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: TRUSTLINE_USDC,
+          },
         ),
       ).toBe(true);
     });
@@ -242,19 +412,20 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          TRUSTLINE_USDC,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: TRUSTLINE_USDC,
+          },
         ),
       ).toBe(true);
     });
 
     it('returns false for non-trustline assets', () => {
       expect(
-        getIsAssetRequireActivate(
-          mockState,
-          ACCOUNT_ID,
-          STELLAR_NATIVE_ASSET_ID,
-        ),
+        getIsAssetRequireActivate(mockState, {
+          accountId: ACCOUNT_ID,
+          assetId: STELLAR_NATIVE_ASSET_ID,
+        }),
       ).toBe(false);
     });
 
@@ -271,8 +442,10 @@ describe('stellar-assets selectors', () => {
               },
             },
           }),
-          ACCOUNT_ID,
-          SEP41_ASSET_ID,
+          {
+            accountId: ACCOUNT_ID,
+            assetId: SEP41_ASSET_ID,
+          },
         ),
       ).toBe(false);
     });

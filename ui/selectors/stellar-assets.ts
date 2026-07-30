@@ -9,11 +9,16 @@ import {
   number,
   type Infer,
 } from '@metamask/superstruct';
-import type { CaipAssetType } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  isCaipAssetType,
+  type CaipAssetType,
+} from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 
 import { createParameterizedSelector } from '../../shared/lib/selectors/selector-creators';
 import { getAssetsBalance } from './assets';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 const ACCOUNT_ASSET_LRU_CACHE_SIZE = 50;
 
@@ -101,7 +106,7 @@ type AssetBalanceEntry = AssetsControllerState['assetsBalance'][string][string];
  */
 export function isAssetSupportActivation(
   assetId: string | undefined,
-): assetId is StellarClassicAssetId {
+): assetId is StellarClassicAssetId & CaipAssetType {
   return assetId !== undefined && is(assetId, StellarClassicAssetIdStruct);
 }
 
@@ -113,7 +118,7 @@ export function isAssetSupportActivation(
  */
 export function isAssetSupportSpendableBalance(
   assetId: string | undefined,
-): assetId is StellarNativeAssetId {
+): assetId is StellarNativeAssetId & CaipAssetType {
   return assetId !== undefined && is(assetId, StellarNativeAssetIdStruct);
 }
 
@@ -185,35 +190,71 @@ function normalizeAmount(amount: string, decimalPlaces: number): string {
 }
 
 /**
+ * Parameters for account/asset Stellar selectors.
+ */
+export type StellarAccountAssetParams = {
+  accountId?: string;
+  assetId: string;
+};
+
+/**
+ * Resolves an account id from an explicit override, or from the selected
+ * account for the asset's CAIP chain.
+ *
+ * @param state - Redux state.
+ * @param params - Account/asset lookup params.
+ * @returns Resolved account id, or `undefined`.
+ */
+function selectResolvedAccountIdForAsset(
+  state: unknown,
+  params: StellarAccountAssetParams,
+): string | undefined {
+  const { accountId, assetId } = params;
+  if (accountId) {
+    return accountId;
+  }
+  if (!isCaipAssetType(assetId)) {
+    return undefined;
+  }
+  return getInternalAccountBySelectedAccountGroupAndCaip(
+    state,
+    parseCaipAssetType(assetId).chainId,
+  )?.id;
+}
+
+/**
  * Spendable balance breakdown for an account/asset pair.
  *
  * Reads `minimumReserveBalance`, `spendableBalance`, and `decimal` from
  * `assetsBalance[accountId][assetId].metadata`, then returns both amounts in
  * display units.
+ * When `accountId` is omitted, falls back to the selected internal account for
+ * the asset's CAIP chain.
  *
  * Returns `undefined` when:
- * - `accountId` or `assetId` is missing
- * - the asset does not support spendable balance
+ * - `assetId` is not a CAIP asset type that supports spendable balance
+ * - a resolved `accountId` is missing
  * - native enrichment is missing or fails validation
  *
  * @param state - Redux state with AssetsController balances.
- * @param accountId - Account id, when known.
- * @param assetId - CAIP asset id, when known.
+ * @param params - Account/asset lookup params.
+ * @param params.accountId - Optional account id override.
+ * @param params.assetId - Asset id (CAIP when valid).
  * @returns Display-unit spendable info, or `undefined`.
  */
 export const getSpendableForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   selectAssetsBalance,
-  (_state, accountId?: string) => accountId,
-  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
-  (assetsBalance, accountId, assetId) => {
-    if (!accountId || !assetId || !isAssetSupportSpendableBalance(assetId)) {
+  selectResolvedAccountIdForAsset,
+  (_state: unknown, params: StellarAccountAssetParams) => params.assetId,
+  (assetsBalance, resolvedAccountId, assetId) => {
+    if (!isAssetSupportSpendableBalance(assetId) || !resolvedAccountId) {
       return undefined;
     }
     const nativeInfo = getNativeAssetInfoForAsset(
       assetId,
-      getAssetBalanceMetadata(assetsBalance[accountId]?.[assetId]),
+      getAssetBalanceMetadata(assetsBalance[resolvedAccountId]?.[assetId]),
     );
     if (!nativeInfo) {
       return undefined;
@@ -238,60 +279,72 @@ export const getSpendableForAccount = createParameterizedSelector(
  * Trustline metadata for an account/asset pair.
  *
  * Reads `limit` from `assetsBalance[accountId][assetId].metadata`.
+ * When `accountId` is omitted, falls back to the selected internal account for
+ * the asset's CAIP chain.
  *
  * Returns `undefined` when:
- * - `accountId` or `assetId` is missing
- * - the asset does not support activation
+ * - `assetId` is missing or not a CAIP asset type that supports activation
+ * - a resolved `accountId` is missing
  * - trustline enrichment is missing or fails validation
  *
  * @param state - Redux state with AssetsController balances.
- * @param accountId - Account id, when known.
- * @param assetId - CAIP asset id, when known.
+ * @param params - Account/asset lookup params.
+ * @param params.accountId - Optional account id override.
+ * @param params.assetId - Asset id (CAIP when known).
  * @returns Trustline info, or `undefined`.
  */
 export const getTrustlineAssetInfoForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   selectAssetsBalance,
-  (_state, accountId?: string) => accountId,
-  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
-  (assetsBalance, accountId, assetId) => {
-    if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
+  selectResolvedAccountIdForAsset,
+  (_state: unknown, params: StellarAccountAssetParams) => params.assetId,
+  (assetsBalance, resolvedAccountId, assetId) => {
+    if (!isAssetSupportActivation(assetId) || !resolvedAccountId) {
       return undefined;
     }
     return getTrustlineAssetInfoForAsset(
       assetId,
-      getAssetBalanceMetadata(assetsBalance[accountId]?.[assetId]),
+      getAssetBalanceMetadata(assetsBalance[resolvedAccountId]?.[assetId]),
     );
   },
 );
 
 /**
  * Whether an asset needs trustline activation.
+ * When `accountId` is omitted, falls back to the selected internal account for
+ * the asset's CAIP chain.
  *
  * Returns `false` when:
- * - `accountId` or `assetId` is missing
- * - the asset does not support activation
+ * - `assetId` is missing or not a CAIP asset type that supports activation
+ * - a resolved `accountId` is missing
  * - trustline `limit` is present and non-zero (already active)
  *
  * Returns `true` when the asset is support activation and either trustline metadata is
  * missing (e.g. newly imported) or `limit` is `'0'`.
  *
  * @param state - Redux state with AssetsController balances.
- * @param accountId - Account id, when known.
- * @param assetId - CAIP asset id, when known.
+ * @param params - Account/asset lookup params.
+ * @param params.accountId - Optional account id override.
+ * @param params.assetId - Asset id (CAIP when known).
  * @returns `true` when activation is still required.
  */
 export const getIsAssetRequireActivate = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   getTrustlineAssetInfoForAccount,
-  (_state, accountId?: string) => accountId,
-  (_state, _accountId?: string, assetId?: CaipAssetType) => assetId,
-  (assetMetadata, accountId, assetId) => {
-    if (!accountId || !assetId || !isAssetSupportActivation(assetId)) {
+  selectResolvedAccountIdForAsset,
+  (_state: unknown, params: StellarAccountAssetParams) => params.assetId,
+  (assetMetadata, resolvedAccountId, assetId) => {
+    if (!isAssetSupportActivation(assetId) || !resolvedAccountId) {
       return false;
     }
-    return !assetMetadata || assetMetadata.limit === '0';
+    if (assetMetadata) {
+      return assetMetadata.limit === '0';
+    }
+    // Missing metadata is ambiguous (no account vs newly imported).
+    // No account → don’t require activation.
+    // No metadata → require activation (newly imported).
+    return true;
   },
 );
