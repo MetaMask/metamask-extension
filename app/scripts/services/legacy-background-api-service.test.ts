@@ -39,6 +39,7 @@ import { enforceSimulations } from '../lib/transaction/containers/enforced-simul
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -60,6 +61,7 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
 jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
+jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
 
 describe('LegacyBackgroundApiService', () => {
@@ -416,6 +418,51 @@ describe('LegacyBackgroundApiService', () => {
 
           expect(result).toEqual(mockTabIds);
           expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('requestSafeReload', () => {
+    it('triggers a safe reload of the extension', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:requestSafeReload',
+          );
+
+          expect(mockRequestSafeReload).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('openUpdateTabAndReload', () => {
+    it('opens the update tab and reloads with the injected requestSafeReload', async () => {
+      const mockRequestSafeReload = jest.fn().mockResolvedValue(undefined);
+      jest.mocked(openUpdateTabAndReload).mockResolvedValue(undefined);
+
+      await withService(
+        {
+          options: {
+            requestSafeReload: mockRequestSafeReload,
+          },
+        },
+        async ({ rootMessenger }) => {
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:openUpdateTabAndReload',
+          );
+
+          expect(openUpdateTabAndReload).toHaveBeenCalledWith(
+            mockRequestSafeReload,
+          );
         },
       );
     });
@@ -3717,6 +3764,7 @@ async function withService<ReturnValue>(
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
+    requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     createVaultMutex: new Mutex(),
