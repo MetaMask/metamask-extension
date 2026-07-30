@@ -48,6 +48,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
   MetaMetricsUserTraits,
+  type MetaMetricsEventOptions,
+  type MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -75,11 +77,18 @@ import {
   enrichEventProperties,
   enrichWithABTestAnalytics,
 } from './analytics/platform-adapter';
+import * as analyticsHelpers from './analytics/analytics';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
   updateProfileSessionData,
 } from './analytics/analytics';
+import {
+  createEventBuilder,
+  identify,
+  trackEvent,
+  trackPage,
+} from './analytics';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -97,6 +106,34 @@ const TEST_BADGE_FLAG_KEY = 'testTEST338AbtestAttentionBadge';
 const TEST_QUICK_AMOUNTS_FLAG_KEY = 'testTEST4135AbtestQuickAmounts';
 const TEST_LAYOUT_FLAG_KEY = 'testTEST4242AbtestBalanceLayout';
 
+function trackLegacyMetaMetricsPayload(
+  payload: MetaMetricsEventPayload,
+  options?: MetaMetricsEventOptions,
+): void {
+  trackEvent(
+    createEventBuilder(payload.event)
+      .addProperties({
+        ...(payload.properties ?? {}),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
+        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
+        ...(payload.value === undefined ? {} : { value: payload.value }),
+        ...(payload.currency === undefined
+          ? {}
+          : { currency: payload.currency }),
+      })
+      .addSensitiveProperties(payload.sensitiveProperties)
+      .build({
+        environmentType: payload.environmentType,
+        page: payload.page,
+        referrer: payload.referrer,
+        excludeMetaMetricsId: options?.excludeMetaMetricsId,
+        matomoEvent: options?.matomoEvent,
+      }),
+  );
+}
+
 const segmentMock = createSegmentMock(2);
 
 const VERSION = '0.0.1-test';
@@ -107,6 +144,7 @@ const TEST_GA_COOKIE_ID = '123456.123455';
 
 const MOCK_ANALYTICS_CONTROLLER_OPTED_IN: AnalyticsControllerState = {
   optedIn: true,
+  consentDecisionMade: true,
   analyticsId: TEST_ANALYTICS_ID,
 };
 const MOCK_EXTENSION_ID = 'testid';
@@ -260,11 +298,12 @@ describe('MetaMetricsController', function () {
       await withController(({ controller, controllerMessenger }) => {
         expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
-        expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
-        expect(
-          controllerMessenger.call('AnalyticsController:getState').analyticsId,
-        ).toStrictEqual(TEST_ANALYTICS_ID);
+        const { analyticsId, consentDecisionMade } = controllerMessenger.call(
+          'AnalyticsController:getState',
+        );
+        expect(consentDecisionMade).toBe(true);
+        expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
         expect(controller.state.fragments).toStrictEqual({
           testid: SAMPLE_PERSISTED_EVENT,
@@ -328,7 +367,6 @@ describe('MetaMetricsController', function () {
     it('should throw an error if the param is missing successEvent', async function () {
       await withController(async ({ controller }) => {
         await expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
           controller.createEventFragment({ category: 'test' });
         }).toThrow(/Must specify success event\./u);
@@ -504,7 +542,7 @@ describe('MetaMetricsController', function () {
         return undefined;
       });
       await withController(({ controller }) => {
-        controller.identify({
+        identify({
           ...MOCK_TRAITS,
           ...MOCK_INVALID_TRAITS,
         });
@@ -531,7 +569,7 @@ describe('MetaMetricsController', function () {
     it('should transform date type traits into ISO-8601 timestamp strings', async function () {
       const spy = jest.spyOn(segmentMock, 'identify');
       await withController(({ controller }) => {
-        controller.identify({
+        identify({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           test_date: new Date().toISOString(),
@@ -558,7 +596,7 @@ describe('MetaMetricsController', function () {
           analyticsControllerState: { optedIn: false },
         },
         ({ controller }) => {
-          controller.identify(MOCK_TRAITS);
+          identify(MOCK_TRAITS);
           expect(spy).toHaveBeenCalledTimes(0);
         },
       );
@@ -570,7 +608,7 @@ describe('MetaMetricsController', function () {
         return undefined;
       });
       await withController(({ controller }) => {
-        controller.identify(MOCK_INVALID_TRAITS);
+        identify(MOCK_INVALID_TRAITS);
         expect(spy).toHaveBeenCalledTimes(0);
         expect(warnSpy).toHaveBeenCalledTimes(2);
         expect(warnSpy).toHaveBeenNthCalledWith(
@@ -586,25 +624,52 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', async function () {
+    it('opts in/out via AnalyticsController and records the consent decision', async function () {
       await withController(
         {
-          options: {
-            state: { completedMetaMetricsOnboarding: false },
+          analyticsControllerState: {
+            optedIn: false,
+            consentDecisionMade: false,
           },
-          analyticsControllerState: { optedIn: false },
         },
         async ({ controller, controllerMessenger }) => {
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(false);
-          await controller.setParticipateInMetaMetrics(true);
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
           expect(
-            controllerMessenger.call('AnalyticsController:getState').optedIn,
-          ).toBe(true);
-          await controller.setParticipateInMetaMetrics(false);
-          expect(
-            controllerMessenger.call('AnalyticsController:getState').optedIn,
+            controllerMessenger.call('AnalyticsController:getState')
+              .consentDecisionMade,
           ).toBe(false);
+
+          await controller.setParticipateInMetaMetrics(true);
+          const afterOptIn = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterOptIn.optedIn).toBe(true);
+          expect(afterOptIn.consentDecisionMade).toBe(true);
+
+          await controller.setParticipateInMetaMetrics(false);
+          const afterOptOut = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterOptOut.optedIn).toBe(false);
+          expect(afterOptOut.consentDecisionMade).toBe(true);
+        },
+      );
+    });
+
+    it('resets the consent decision when set to null', async function () {
+      await withController(
+        {
+          analyticsControllerState: {
+            optedIn: true,
+            consentDecisionMade: true,
+          },
+        },
+        async ({ controller, controllerMessenger }) => {
+          await controller.setParticipateInMetaMetrics(null);
+          const afterReset = controllerMessenger.call(
+            'AnalyticsController:getState',
+          );
+          expect(afterReset.optedIn).toBe(false);
+          expect(afterReset.consentDecisionMade).toBe(false);
         },
       );
     });
@@ -643,10 +708,12 @@ describe('MetaMetricsController', function () {
     it('updates the profile when install attribution traits arrive after opt-in', async function () {
       await withController(
         {
-          analyticsControllerState: { optedIn: false },
+          analyticsControllerState: {
+            optedIn: false,
+            consentDecisionMade: false,
+          },
           options: {
             state: {
-              completedMetaMetricsOnboarding: false,
               dataCollectionForMarketing: false,
               traits: {},
             },
@@ -655,7 +722,7 @@ describe('MetaMetricsController', function () {
         async ({ controller }) => {
           await controller.setParticipateInMetaMetrics(true);
           const identifySpy = jest
-            .spyOn(controller, 'identify')
+            .spyOn(analyticsHelpers, 'identify')
             .mockImplementation(() => undefined);
 
           const metaMaskState = {
@@ -679,7 +746,7 @@ describe('MetaMetricsController', function () {
             names: {
               ethereumAddress: {},
             },
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             currentCurrency: 'usd',
@@ -728,7 +795,7 @@ describe('MetaMetricsController', function () {
           analyticsControllerState: { optedIn: false },
         },
         ({ controller }) => {
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -750,7 +817,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segment, 'track');
           const flushSpy = jest.spyOn(segment, 'flush');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: MetaMetricsEventName.MetricsOptOut,
             category: 'Unit Test',
             properties: {
@@ -786,7 +853,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segment, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: MetaMetricsEventName.MetricsOptOut,
             category: 'Unit Test',
           });
@@ -802,7 +869,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -819,7 +886,7 @@ describe('MetaMetricsController', function () {
     it('should track a legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent(
+        trackLegacyMetaMetricsPayload(
           {
             event: 'Fake Event',
             category: 'Unit Test',
@@ -855,7 +922,7 @@ describe('MetaMetricsController', function () {
     it('should track a non legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
@@ -893,7 +960,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -966,7 +1033,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -997,9 +1064,8 @@ describe('MetaMetricsController', function () {
     it('should throw if event not provided', async function () {
       await withController(({ controller }) => {
         expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.trackEvent({ category: 'test' });
+          trackLegacyMetaMetricsPayload({ category: 'test' });
         }).toThrow(/Must specify event\./u);
       });
     });
@@ -1010,7 +1076,7 @@ describe('MetaMetricsController', function () {
         .mockImplementation(jest.fn());
 
       await withController(async ({ controller }) => {
-        controller.trackEvent(
+        trackLegacyMetaMetricsPayload(
           {
             event: 'Fake Event',
             category: 'Unit Test',
@@ -1030,7 +1096,7 @@ describe('MetaMetricsController', function () {
     it('tracks sensitiveProperties in a separate event marked for anonymization', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Fake Event',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -1081,7 +1147,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Card Button Viewed',
             category: 'Unit Test',
           });
@@ -1128,7 +1194,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Unified SwapBridge Page Viewed',
             category: 'Unit Test',
           });
@@ -1176,7 +1242,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Unified SwapBridge Page Viewed',
             category: 'Unit Test',
             properties: {
@@ -1234,7 +1300,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Card Button Viewed',
             category: 'Unit Test',
             properties: {
@@ -1270,7 +1336,7 @@ describe('MetaMetricsController', function () {
         .mockReturnValue({});
 
       await withController(({ controller }) => {
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Unrelated Event',
           category: 'Unit Test',
         });
@@ -1287,7 +1353,7 @@ describe('MetaMetricsController', function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
 
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Unrelated Event',
           category: 'Unit Test',
           properties: {
@@ -1328,7 +1394,7 @@ describe('MetaMetricsController', function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
 
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Unrelated Event',
           category: 'Unit Test',
           properties: {
@@ -1394,7 +1460,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Card Button Viewed',
             category: 'Unit Test',
             properties: {
@@ -1464,7 +1530,7 @@ describe('MetaMetricsController', function () {
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
 
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Unified SwapBridge Page Viewed',
             category: 'Unit Test',
           });
@@ -1492,7 +1558,7 @@ describe('MetaMetricsController', function () {
     it('omits profile identity properties when srpSessionData is unavailable', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Fake Event',
           category: 'Unit Test',
         });
@@ -1516,7 +1582,7 @@ describe('MetaMetricsController', function () {
         } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Fake Event',
           category: 'Unit Test',
         });
@@ -1541,7 +1607,7 @@ describe('MetaMetricsController', function () {
         } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'page');
-        controller.trackPage({
+        trackPage({
           name: 'home',
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -1567,7 +1633,7 @@ describe('MetaMetricsController', function () {
         } as unknown as MetaMaskState);
 
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.trackEvent({
+        trackLegacyMetaMetricsPayload({
           event: 'Signature Requested',
           category: 'Unit Test',
           properties: DEFAULT_EVENT_PROPERTIES,
@@ -1605,7 +1671,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent(
+          trackLegacyMetaMetricsPayload(
             {
               event: 'Signature Requested',
               category: 'Unit Test',
@@ -1638,7 +1704,7 @@ describe('MetaMetricsController', function () {
       async (eventType: string) => {
         await withController(({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: eventType,
             category: 'Unit Test',
             properties: DEFAULT_EVENT_PROPERTIES,
@@ -1678,7 +1744,7 @@ describe('MetaMetricsController', function () {
       async (eventType: string) => {
         await withController(({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: eventType,
             category: 'Unit Test',
             sensitiveProperties: { foo: 'bar' },
@@ -1707,7 +1773,7 @@ describe('MetaMetricsController', function () {
     it('should track a page view', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'page');
-        controller.trackPage({
+        trackPage({
           name: 'home',
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -1739,7 +1805,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
+          trackPage({
             name: 'New Confirmation Page',
             environmentType: ENVIRONMENT_TYPE_BACKGROUND,
             page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -1780,7 +1846,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
+          trackPage({
             name: 'home',
             environmentType: ENVIRONMENT_TYPE_BACKGROUND,
             page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -1812,7 +1878,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
+          trackPage({
             name: 'home',
             page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
           });
@@ -1839,7 +1905,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
-          controller.trackPage({
+          trackPage({
             name: 'home',
             environmentType: ENVIRONMENT_TYPE_BACKGROUND,
             page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -1873,7 +1939,7 @@ describe('MetaMetricsController', function () {
       },
       currentCurrency: 'usd',
       securityAlertsEnabled: false,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       analyticsId: '',
       dataCollectionForMarketing: false,
@@ -2065,7 +2131,7 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
@@ -2164,7 +2230,7 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
@@ -2220,7 +2286,7 @@ describe('MetaMetricsController', function () {
             theme: 'default' as ThemeType,
             useTokenDetection: true,
             allNfts: {},
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             dataCollectionForMarketing: false,
@@ -2289,7 +2355,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2357,7 +2423,7 @@ describe('MetaMetricsController', function () {
           },
           currentCurrency: 'usd',
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2442,7 +2508,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2510,7 +2576,7 @@ describe('MetaMetricsController', function () {
           theme: 'default' as ThemeType,
           useTokenDetection: true,
           allNfts: {},
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           dataCollectionForMarketing: false,
@@ -2692,7 +2758,7 @@ describe('MetaMetricsController', function () {
             TEST_GA_COOKIE_ID,
           );
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
+          trackLegacyMetaMetricsPayload({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -3003,7 +3069,6 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "marketingCampaignCookieId": null,
             }
           `);
@@ -3026,9 +3091,7 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
-              "eventsBeforeMetricsOptIn": [],
               "fragments": {},
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
@@ -3054,9 +3117,7 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
-              "eventsBeforeMetricsOptIn": [],
               "fragments": {},
               "marketingCampaignCookieId": null,
               "tracesBeforeMetricsOptIn": [],
@@ -3082,7 +3143,6 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "completedMetaMetricsOnboarding": true,
               "dataCollectionForMarketing": null,
               "fragments": {},
             }
@@ -3176,7 +3236,6 @@ async function withController<ReturnValue>(
     const mmcState = merge(
       {},
       {
-        completedMetaMetricsOnboarding: true,
         marketingCampaignCookieId: null,
         fragments: {
           testid: SAMPLE_PERSISTED_EVENT,
@@ -3248,11 +3307,21 @@ async function withController<ReturnValue>(
 
     messenger.registerActionHandler('AnalyticsController:optIn', () => {
       mockAnalyticsControllerState.optedIn = true;
+      mockAnalyticsControllerState.consentDecisionMade = true;
     });
 
     messenger.registerActionHandler('AnalyticsController:optOut', () => {
       mockAnalyticsControllerState.optedIn = false;
+      mockAnalyticsControllerState.consentDecisionMade = true;
     });
+
+    messenger.registerActionHandler(
+      'AnalyticsController:resetConsentDecision',
+      () => {
+        mockAnalyticsControllerState.optedIn = false;
+        mockAnalyticsControllerState.consentDecisionMade = false;
+      },
+    );
 
     const analyticsMessenger = getAnalyticsControllerInitMessenger(
       messenger as Parameters<typeof getAnalyticsControllerInitMessenger>[0],
@@ -3360,7 +3429,6 @@ async function withController<ReturnValue>(
       const pageChainProperties = enrichmentContext.getPageChainProperties();
       Object.assign(enrichedProperties, pageChainProperties);
       if (!('chain_id_caip' in pageChainProperties)) {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         delete enrichedProperties.chain_id_caip;
       }
       const enrichedContext = enrichEventContext(context, enrichmentContext);
@@ -3391,6 +3459,7 @@ async function withController<ReturnValue>(
         'AnalyticsController:identify',
         'AnalyticsController:optIn',
         'AnalyticsController:optOut',
+        'AnalyticsController:resetConsentDecision',
         'AnalyticsController:trackEvent',
         'AnalyticsController:trackView',
         'PreferencesController:getState',

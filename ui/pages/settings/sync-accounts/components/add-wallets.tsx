@@ -12,10 +12,9 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
-import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import type { AddDeviceSyncRequest } from '../types';
-import { filterSyncableWallets } from '../utils';
+import { filterSyncableWallets, getSyncSummaryCounts } from '../utils';
 import { WalletSelectionList } from './wallet-selection-list';
 
 type AddWalletsProps = {
@@ -52,20 +51,17 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   );
 
   const handleSyncWallets = useCallback(async () => {
-    const selectedWalletIds = [
-      ...new Set(
-        selectedAccountGroups.map((accountGroupId) =>
-          extractWalletIdFromGroupId(accountGroupId),
-        ),
-      ),
-    ];
+    const { syncedAccountCount, syncedWalletCount } = getSyncSummaryCounts(
+      sortedWallets,
+      selectedAccountGroups,
+    );
 
     await onAddWallets({
       selectedAccountGroupIds: selectedAccountGroups,
-      syncedAccountCount: selectedAccountGroups.length,
-      syncedWalletCount: selectedWalletIds.length,
+      syncedAccountCount,
+      syncedWalletCount,
     });
-  }, [onAddWallets, selectedAccountGroups]);
+  }, [onAddWallets, selectedAccountGroups, sortedWallets]);
 
   return (
     <Box
@@ -101,6 +97,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           className="w-full"
           onClick={handleSyncWallets}
           isDisabled={selectedAccountGroups.length === 0}
+          data-testid="qr-sync-sync-button"
         >
           {t('continue')}
         </Button>

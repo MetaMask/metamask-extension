@@ -5,6 +5,7 @@ import {
   FEATURED_RPCS,
   QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
 } from '../constants/network';
+import { type CachedFetchStorageEntry } from './fetch-with-cache';
 import { getStorageItem } from './storage-helpers';
 
 const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
@@ -14,10 +15,6 @@ type ChainInfo = {
   shortName?: string;
   chainId: number;
   rpc?: string[];
-};
-
-type CachedFetchStorageEntry = {
-  cachedResponse?: unknown;
 };
 
 /**
@@ -53,10 +50,8 @@ const KNOWN_CUSTOM_ENDPOINT_URLS = [
 export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
   try {
     const { cachedResponse } =
-      ((await getStorageItem(cacheKey)) as
-        | CachedFetchStorageEntry
-        | undefined) || {};
-    return (cachedResponse as ChainInfo[]) || [];
+      (await getStorageItem<CachedFetchStorageEntry>(cacheKey)) ?? {};
+    return Array.isArray(cachedResponse) ? (cachedResponse as ChainInfo[]) : [];
   } catch (error) {
     console.error('Error retrieving chains list from cache', error);
     return [];

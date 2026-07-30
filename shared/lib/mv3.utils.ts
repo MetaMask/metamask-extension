@@ -1,5 +1,3 @@
-/* eslint-disable import-x/unambiguous -- Not an external module and not of concern */
-
 const runtimeManifest =
   global.chrome?.runtime.getManifest() || global.browser?.runtime.getManifest();
 
@@ -13,7 +11,9 @@ const runtimeManifest =
 const isManifestV3: boolean = runtimeManifest
   ? runtimeManifest.manifest_version === 3
   : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
-    process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
+    (process.env.ENABLE_MV3 as boolean | string | undefined) === true ||
+    process.env.ENABLE_MV3 === 'true' ||
+    process.env.ENABLE_MV3 === undefined;
 
 /**
  * A boolean indicating whether the browser supports the offscreen document api.

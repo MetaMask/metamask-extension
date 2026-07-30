@@ -265,24 +265,64 @@ describe('preferences controller', () => {
 
   describe('setAdvancedGasFee', () => {
     const { controller } = setupController({});
+    const account = '0xabc';
+
     it('should default to an empty object', () => {
       expect(controller.state.advancedGasFee).toStrictEqual({});
     });
 
     it('should set the setAdvancedGasFee property in state', () => {
       controller.setAdvancedGasFee({
+        account: '0xABC',
         chainId: CHAIN_IDS.GOERLI,
         gasFeePreferences: {
+          userFeeLevel: 'custom',
           maxBaseFee: '1.5',
           priorityFee: '2',
         },
       });
       expect(
-        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].maxBaseFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].userFeeLevel,
+      ).toStrictEqual('custom');
+      expect(
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].maxBaseFee,
       ).toStrictEqual('1.5');
       expect(
-        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].priorityFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].priorityFee,
       ).toStrictEqual('2');
+    });
+
+    it('should clear advancedGasFee for one account without clearing other accounts', () => {
+      const { controller: accountScopedController } = setupController({});
+      accountScopedController.setAdvancedGasFee({
+        account: '0xabc',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          userFeeLevel: 'custom',
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
+      });
+      accountScopedController.setAdvancedGasFee({
+        account: '0xdef',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          userFeeLevel: 'high',
+        },
+      });
+
+      accountScopedController.setAdvancedGasFee({
+        account: '0xabc',
+        chainId: CHAIN_IDS.GOERLI,
+      });
+
+      expect(
+        accountScopedController.state.advancedGasFee[CHAIN_IDS.GOERLI],
+      ).toStrictEqual({
+        '0xdef': {
+          userFeeLevel: 'high',
+        },
+      });
     });
   });
 
@@ -1222,7 +1262,15 @@ describe('preferences controller', () => {
           currentLocale: 'ja',
           theme: ThemeType.dark,
           knownMethodData: { '0x12345678': 'transfer' },
-          advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
+          advancedGasFee: {
+            '0x1': {
+              '0xabc': {
+                userFeeLevel: 'custom',
+                maxBaseFee: '100',
+                priorityFee: '10',
+              },
+            },
+          },
           preferences: {
             autoLockTimeLimit: undefined,
             avatarType: 'jazzicon',

@@ -1,11 +1,12 @@
 import log from 'loglevel';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Button as DSButton,
   ButtonSize as DSButtonSize,
   ButtonVariant as DSButtonVariant,
   IconName,
+  Tag,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -55,7 +56,6 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Tag,
   Text,
 } from '../../component-library';
 import {
@@ -82,6 +82,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -488,8 +489,6 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -555,8 +554,6 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -573,7 +570,7 @@ export const NetworksForm = ({
                 {isRpcFailoverEnabled &&
                 item.failoverUrls &&
                 item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
+                  <Tag className="inline-flex">{t('failover')}</Tag>
                 ) : null}
               </Text>
             )
@@ -583,7 +580,9 @@ export const NetworksForm = ({
             return url.length > (isList ? 37 : 35) ? url : undefined;
           }}
           addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
           onItemAdd={onRpcAdd}
           onItemSelected={(index) =>
             setRpcUrls((state) => ({
@@ -614,7 +613,6 @@ export const NetworksForm = ({
         )}
 
         {isRpcFailoverEnabled &&
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         defaultRpcEndpoint &&
         defaultRpcEndpoint.failoverUrls &&
         defaultRpcEndpoint.failoverUrls.length > 0 ? (
@@ -821,8 +819,6 @@ export const NetworksForm = ({
             variant={DSButtonVariant.Primary}
             size={DSButtonSize.Lg}
             isDisabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
             className="w-full rounded-xl"
             data-testid="page-container-footer-next"
@@ -832,8 +828,6 @@ export const NetworksForm = ({
         ) : (
           <ButtonPrimary
             disabled={isSaveDisabled}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSubmit}
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Full}

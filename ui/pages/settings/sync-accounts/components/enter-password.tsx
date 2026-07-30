@@ -66,6 +66,7 @@ const EnterPassword = ({ onPasswordChange }: EnterPasswordProps) => {
             helpText={
               isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
             }
+            inputProps={{ 'data-testid': 'qr-sync-password-input' }}
             autoFocus
           />
         </form>
@@ -74,6 +75,7 @@ const EnterPassword = ({ onPasswordChange }: EnterPasswordProps) => {
         className="w-full mt-auto"
         onClick={onSubmit}
         isDisabled={isIncorrectPasswordError || !password}
+        data-testid="qr-sync-password-continue"
       >
         {t('continue')}
       </Button>

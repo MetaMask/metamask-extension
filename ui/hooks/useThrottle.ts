@@ -18,7 +18,6 @@ export function useThrottle<ValueType>(value: ValueType, interval = 500) {
       setThrottledValue(value);
     }, interval);
 
-    // eslint-disable-next-line consistent-return
     return () => window.clearTimeout(id);
   }, [value, interval]);
 

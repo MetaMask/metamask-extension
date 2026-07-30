@@ -7,7 +7,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
   Text,
@@ -49,14 +49,16 @@ import {
   useMusdConversionTokens,
   useCanBuyMusd,
 } from '../../../hooks/musd';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import {
+  getMusdAssetIdForChain,
   MUSD_CONVERSION_APY,
   MUSD_CONVERSION_BONUS_TERMS_OF_USE,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
 } from '../../../components/app/musd/constants';
 import { MUSD_DEEPLINK_PARAM } from '../../../../shared/lib/deep-links/routes/musd';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 
 const MUSD_EDUCATION_COIN_IMAGE_DARK = './images/musd-education-coin-dark.png';
 const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
@@ -108,7 +110,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -184,8 +186,21 @@ const MusdEducationScreen = () => {
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
-      openBuyCryptoInPdapp(MUSD_CONVERSION_DEFAULT_CHAIN_ID);
-      navigate(DEFAULT_ROUTE);
+      await goToBuy({
+        // Pre-select mUSD (mainnet) so the in-app flow lands on build-quote
+        // instead of the token-selection page; chainId is only used for the
+        // flag-off Portfolio fallback.
+        assetId: getMusdAssetIdForChain(MUSD_CONVERSION_DEFAULT_CHAIN_ID) as
+          | CaipAssetType
+          | undefined,
+        chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+      });
+      // The Portfolio paths open a new tab, so send the user home; the in-app
+      // path navigates itself (build-quote, or a blocking modal on the
+      // education screen), so leave routing to goToBuy.
+      if (opensBuyInPortfolioTab) {
+        navigate(DEFAULT_ROUTE);
+      }
       return;
     }
 
@@ -226,7 +241,8 @@ const MusdEducationScreen = () => {
     isDeeplinkNoTokensContinueHome,
     isDeeplink,
     isGeoBlocked,
-    openBuyCryptoInPdapp,
+    goToBuy,
+    opensBuyInPortfolioTab,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,

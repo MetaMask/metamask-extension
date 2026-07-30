@@ -7,7 +7,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -15,6 +14,21 @@ import {
 import PasswordOutdatedModal from './password-outdated-modal';
 
 const mockStore = configureMockStore([thunk]);
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 describe('PasswordOutdatedModal', () => {
   beforeEach(() => {
@@ -31,27 +45,16 @@ describe('PasswordOutdatedModal', () => {
         },
       },
     });
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
 
-    renderWithProvider(
-      <MetaMetricsContext.Provider
-        value={mockMetaMetricsContext as typeof mockMetaMetricsContext}
-      >
-        <PasswordOutdatedModal />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    renderWithProvider(<PasswordOutdatedModal />, store);
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PasswordOutdatedModalViewed,
-        category: MetaMetricsEventCategory.App,
+        name: MetaMetricsEventName.PasswordOutdatedModalViewed,
+        properties: {
+          category: MetaMetricsEventCategory.App,
+        },
+        sensitiveProperties: {},
       });
     });
   });
@@ -66,22 +69,8 @@ describe('PasswordOutdatedModal', () => {
         },
       },
     });
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
 
-    renderWithProvider(
-      <MetaMetricsContext.Provider
-        value={mockMetaMetricsContext as typeof mockMetaMetricsContext}
-      >
-        <PasswordOutdatedModal />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    renderWithProvider(<PasswordOutdatedModal />, store);
 
     await waitFor(() => {
       expect(mockTrackEvent).not.toHaveBeenCalled();

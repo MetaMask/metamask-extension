@@ -1,18 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SendPage {
-  private readonly driver: Driver;
-
-  private readonly amountInput = { testId: 'send-amount-input' };
-
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
   private readonly amountFiatValue = { testId: 'send-amount-fiat-value' };
 
+  private readonly amountInput = { testId: 'send-amount-input' };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
-  private readonly sendAlertAcknowledgeButton =
-    '[data-testid="send-alert-modal-acknowledge-button"]';
+  private readonly continueButtonEnabled =
+    '[data-testid="send-continue-button"]:not([disabled])';
+
+  private readonly driver: Driver;
 
   private readonly header = {
     tag: 'h4',
@@ -42,6 +42,12 @@ class SendPage {
     tag: 'button',
   };
 
+  private readonly networkName = (networkName: string) => {
+    return {
+      testId: networkName,
+    };
+  };
+
   private readonly networkPicker = {
     testId: 'send-network-filter-toggle',
   };
@@ -51,6 +57,9 @@ class SendPage {
   private readonly recipientModalButton = {
     testId: 'open-recipient-modal-btn',
   };
+
+  private readonly sendAlertAcknowledgeButton =
+    '[data-testid="send-alert-modal-acknowledge-button"]';
 
   private readonly solanaNetwork = {
     text: 'Solana',
@@ -62,14 +71,86 @@ class SendPage {
     };
   };
 
-  private readonly networkName = (networkName: string) => {
-    return {
-      testId: networkName,
-    };
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Acknowledges the first-time recipient send alert when it appears after Continue.
+   * The alert is async; a short wait avoids racing React 18 mount on slower flows.
+   */
+  async acknowledgeSendAlertIfPresent(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.sendAlertAcknowledgeButton, {
+        timeout: 2000,
+      });
+    } catch (error) {
+      if ((error as { name?: string }).name === 'TimeoutError') {
+        console.log('No send alert modal to acknowledge');
+        return;
+      }
+      throw error;
+    }
+    console.log('Acknowledging send alert modal');
+    await this.driver.clickElement(this.sendAlertAcknowledgeButton);
+  }
+
+  /**
+   * Waits until the amount input value matches the expected amount (compared
+   * numerically). Prefer this over reading the value once, which races the fill.
+   *
+   * @param expectedAmount - The expected amount.
+   */
+  async checkAmountInputValue(expectedAmount: string): Promise<void> {
+    console.log(`Waiting for amount input value to be ${expectedAmount}`);
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        return parseFloat(value) === parseFloat(expectedAmount);
+      },
+      { interval: 100, timeout: 5000 },
+    );
+  }
+
+  /**
+   * Waits for the continue button to reach the expected enabled/disabled state.
+   *
+   * @param options - Wait options.
+   * @param options.state - Expected button state (`enabled` or `disabled`).
+   */
+  async checkContinueButton({
+    state,
+  }: {
+    state: 'enabled' | 'disabled';
+  }): Promise<void> {
+    console.log(`Waiting for continue button to be ${state}`);
+    await this.driver.waitForSelector(this.continueButton, {
+      state,
+    });
+  }
+
+  /**
+   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
+   *
+   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
+   */
+  async checkEnsAddressResolution(
+    ensDomain: string,
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
+    );
+    // check if ens domain is resolved as expected address
+    await this.driver.waitForSelector({
+      text: ensDomain,
+    });
+    await this.driver.waitForSelector({
+      text: address,
+    });
   }
 
   async checkInsufficientFundsError(): Promise<void> {
@@ -91,13 +172,6 @@ class SendPage {
     await this.driver.waitForSelector(this.networkPicker);
   }
 
-  async checkSendFormIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.amountInput,
-      this.inputRecipient,
-    ]);
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if send page is loaded');
     try {
@@ -112,15 +186,24 @@ class SendPage {
     console.log('Send page is loaded');
   }
 
-  async selectNetworkByName(networkName: string): Promise<void> {
-    console.log(`Selecting network ${networkName}`);
-    await this.driver.clickElement(this.networkPicker);
-    await this.driver.clickElement(this.networkName(networkName));
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
+  }
+
+  async checkWarningMessage(warningText: string): Promise<void> {
+    console.log(`Checking if warning message "${warningText}" is displayed`);
+    await this.driver.waitForSelector({
+      text: warningText,
+    });
+    console.log('Warning message validation successful');
   }
 
   async clickMaxButton(): Promise<void> {
@@ -148,6 +231,8 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.clickMaxButton();
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -173,6 +258,9 @@ class SendPage {
       await this.selectAccountFromRecipientModal(recipientName);
     }
     await this.fillAmount(amount);
+    await this.checkAmountInputValue(amount);
+    await this.waitForSendAmountBalance();
+    await this.checkContinueButton({ state: 'enabled' });
     await this.pressContinueButton();
   }
 
@@ -213,66 +301,15 @@ class SendPage {
     }
   }
 
-  async getAmountInputValue(): Promise<string> {
-    console.log('Getting amount input value');
-    const inputElement = await this.driver.findElement(this.amountInput);
-    const value = await inputElement.getAttribute('value');
-    console.log(`Amount input value: ${value}`);
-    return value as string;
-  }
-
-  async isContinueButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.continueButton, {
-        timeout: 2000,
-      });
-    } catch (e) {
-      console.log('Continue button not enabled', e);
-      return false;
-    }
-    console.log('Continue button enabled');
-    return true;
-  }
-
-  async waitForSendAmountBalance(): Promise<void> {
-    console.log('Waiting for send amount balance to be displayed');
-    await this.driver.waitForSelector(this.amountBalance);
-  }
-
-  async waitForSendAmountFiatValue(expectedValue: string): Promise<void> {
-    console.log(
-      `Waiting for send amount fiat value "${expectedValue}" to be displayed`,
-    );
-    await this.driver.waitForSelector({
-      ...this.amountFiatValue,
-      text: expectedValue,
-    });
-  }
-
+  /**
+   * Clicks Continue once the button is stably enabled, then acknowledges the
+   * optional send-alert modal when present.
+   */
   async pressContinueButton(): Promise<void> {
     console.log('Pressing continue button');
+    await this.waitForContinueButtonStablyEnabled();
     await this.driver.clickElement(this.continueButton);
     await this.acknowledgeSendAlertIfPresent();
-  }
-
-  /**
-   * Acknowledges the first-time recipient send alert when it appears after Continue.
-   * The alert is async; a short wait avoids racing React 18 mount on slower flows.
-   */
-  async acknowledgeSendAlertIfPresent(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.sendAlertAcknowledgeButton, {
-        timeout: 2000,
-      });
-    } catch (error) {
-      if ((error as { name?: string }).name === 'TimeoutError') {
-        console.log('No send alert modal to acknowledge');
-        return;
-      }
-      throw error;
-    }
-    console.log('Acknowledging send alert modal');
-    await this.driver.clickElement(this.sendAlertAcknowledgeButton);
   }
 
   async pressOnAmountInput(key: string): Promise<void> {
@@ -289,9 +326,10 @@ class SendPage {
     await this.driver.clickElement({ text: accountName });
   }
 
-  async selectToken(chainId: string, symbol: string): Promise<void> {
-    console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+  async selectNetworkByName(networkName: string): Promise<void> {
+    console.log(`Selecting network ${networkName}`);
+    await this.driver.clickElement(this.networkPicker);
+    await this.driver.clickElement(this.networkName(networkName));
   }
 
   async selectNft(nftName: string): Promise<void> {
@@ -300,34 +338,40 @@ class SendPage {
     await this.driver.clickElement({ text: nftName });
   }
 
-  async checkWarningMessage(warningText: string): Promise<void> {
-    console.log(`Checking if warning message "${warningText}" is displayed`);
-    await this.driver.waitForSelector({
-      text: warningText,
-    });
-    console.log('Warning message validation successful');
+  async selectToken(chainId: string, symbol: string): Promise<void> {
+    console.log(`Selecting token ${symbol} on chain ${chainId}`);
+    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
   }
 
   /**
-   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
-   *
-   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
-   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
-   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
+   * Waits until the Continue button is visible, enabled, and remains so long
+   * enough to avoid clicking during enable/disable flicker from validation.
    */
-  async checkEnsAddressResolution(
-    ensDomain: string,
-    address: string,
-  ): Promise<void> {
-    console.log(
-      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
+  async waitForContinueButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for continue button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.continueButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 30000, interval: 500, stableFor: 2000 },
     );
-    // check if ens domain is resolved as expected address
+  }
+
+  async waitForSendAmountBalance(): Promise<void> {
+    console.log('Waiting for send amount balance to be displayed');
+    await this.driver.waitForSelector(this.amountBalance);
+  }
+
+  async waitForSendAmountFiatValue(expectedValue: string): Promise<void> {
+    console.log(
+      `Waiting for send amount fiat value "${expectedValue}" to be displayed`,
+    );
     await this.driver.waitForSelector({
-      text: ensDomain,
-    });
-    await this.driver.waitForSelector({
-      text: address,
+      ...this.amountFiatValue,
+      text: expectedValue,
     });
   }
 }

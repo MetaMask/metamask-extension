@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -31,12 +31,14 @@ import { usePerpsEligibility } from '../../../hooks/perps';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
+import { useDispatch } from '../../../store/hooks';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -71,6 +73,7 @@ type BatchCloseResult = {
 export const PerpsView = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
@@ -317,7 +320,8 @@ export const PerpsView = () => {
         PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
       [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
       [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
-      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
   });

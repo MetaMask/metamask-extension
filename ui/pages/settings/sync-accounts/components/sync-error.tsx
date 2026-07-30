@@ -31,7 +31,6 @@ type SyncErrorProps = {
 // are routed back to an earlier step and never reach this screen, so they are
 // intentionally omitted here.
 const ERROR_CODE_TO_MESSAGE_KEY: Partial<Record<QrSyncErrorCode, string>> = {
-  [QrSyncErrorCodes.CHANNEL_INIT_FAILED]: 'add_device_error_connection',
   [QrSyncErrorCodes.CHANNEL_DISCONNECTED]: 'add_device_error_connection',
   [QrSyncErrorCodes.SESSION_EXPIRED]: 'add_device_error_expired',
   [QrSyncErrorCodes.OTP_INVALID]: 'add_device_error_invalid_code',

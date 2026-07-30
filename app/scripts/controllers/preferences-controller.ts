@@ -17,6 +17,10 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import type {
+  AdvancedGasFeePreferences,
+  AdvancedGasFeePreferencesByChain,
+} from '../../../shared/constants/gas';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
@@ -96,7 +100,7 @@ export type PreferencesControllerState = Omit<
   | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
-  advancedGasFee: Record<string, Record<string, string>>;
+  advancedGasFee: AdvancedGasFeePreferencesByChain;
   currentLocale: string;
   dismissSeedBackUpReminder: boolean;
   forgottenPassword: boolean;
@@ -690,20 +694,42 @@ export class PreferencesController extends BaseController<
    *
    * @param options
    * @param options.chainId - The chainId the advancedGasFees should be set on
+   * @param options.account - The account the advancedGasFees should be set for
    * @param options.gasFeePreferences - The advancedGasFee options to set
    */
   setAdvancedGasFee({
+    account,
     chainId,
     gasFeePreferences,
   }: {
+    account: string;
     chainId: string;
-    gasFeePreferences: Record<string, string>;
+    gasFeePreferences?: AdvancedGasFeePreferences;
   }): void {
-    const { advancedGasFee } = this.state;
     this.update((state) => {
+      const normalizedAccount = account.toLowerCase();
+      const chainPreferences = state.advancedGasFee[chainId] ?? {};
+
+      if (!gasFeePreferences) {
+        const {
+          [normalizedAccount]: _removedPreference,
+          ...remainingChainPreferences
+        } = chainPreferences;
+
+        state.advancedGasFee = {
+          ...state.advancedGasFee,
+          [chainId]: remainingChainPreferences,
+        };
+
+        return;
+      }
+
       state.advancedGasFee = {
-        ...advancedGasFee,
-        [chainId]: gasFeePreferences,
+        ...state.advancedGasFee,
+        [chainId]: {
+          ...chainPreferences,
+          [normalizedAccount]: gasFeePreferences,
+        },
       };
     });
   }

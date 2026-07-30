@@ -1,11 +1,11 @@
 import { Driver } from '../../../webdriver/driver';
 
 class CreateContractModal {
-  protected driver: Driver;
+  private readonly cancelButton = { text: 'Cancel', tag: 'button' };
 
   private readonly confirmButtton = { text: 'Confirm', tag: 'button' };
 
-  private readonly cancelButton = { text: 'Cancel', tag: 'button' };
+  protected driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -27,12 +27,12 @@ class CreateContractModal {
     console.log('Create contract dialog was loaded');
   }
 
-  async clickConfirm() {
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButtton);
-  }
-
   async clickCancel() {
     await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
+  }
+
+  async clickConfirm() {
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButtton);
   }
 }
 

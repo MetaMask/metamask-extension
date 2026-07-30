@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Text,
@@ -58,6 +58,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useDispatch } from '../../../store/hooks';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -84,14 +85,12 @@ function getSrpExportEventProperties(
   };
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RevealRecoveryPhrase({
   setSecretRecoveryPhrase,
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
@@ -256,7 +255,7 @@ export default function RevealRecoveryPhrase({
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
       gap={6}
-      className="reveal-recovery-phrase h-full"
+      className="reveal-recovery-phrase h-full bg-default"
       data-testid="reveal-recovery-phrase"
     >
       <Box className="w-full">

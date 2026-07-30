@@ -65,20 +65,20 @@ const createStateOverrides = (
 const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
   createStateOverrides({
     useExternalServices: true,
-    selectedNetworkClientId: 'goerli',
+    selectedNetworkClientId: 'sepolia',
     networkConfigurationsByChainId: {
       ...mockState.metamask.networkConfigurationsByChainId,
-      '0x5': {
-        // Goerli testnet - not in allowed swaps chains
-        chainId: '0x5',
-        name: 'Goerli',
+      '0xaa36a7': {
+        // Sepolia - not in allowed swaps chains (prod or testing/dev)
+        chainId: '0xaa36a7',
+        name: 'Sepolia',
         nativeCurrency: 'ETH',
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [
           {
             type: 'infura',
-            url: 'https://goerli.infura.io/v3/test',
-            networkClientId: 'goerli',
+            url: 'https://sepolia.infura.io/v3/test',
+            networkClientId: 'sepolia',
           },
         ],
         blockExplorerUrls: [],

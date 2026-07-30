@@ -2,7 +2,11 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
-type CachedFetchStorageEntry = {
+/**
+ * Shape written by {@link fetchWithCache} under `cachedFetch:<url>` keys.
+ * Shared so other readers (e.g. network-utils) stay aligned with the writer.
+ */
+export type CachedFetchStorageEntry = {
   cachedResponse?: unknown;
   cachedTime?: number;
 };
@@ -45,11 +49,12 @@ const fetchWithCache = async ({
   const currentTime = Date.now();
   const cacheKey = `cachedFetch:${url}`;
   const { cachedResponse, cachedTime } =
-    ((await getStorageItem(cacheKey)) as CachedFetchStorageEntry | undefined) ||
-    {};
+    (await getStorageItem<CachedFetchStorageEntry>(cacheKey)) ?? {};
+  // Truthy `cachedResponse` matches historical behavior: empty/null JSON
+  // payloads are treated as a miss so a fresh request can populate the cache.
   if (
-    cachedResponse !== undefined &&
-    cachedTime !== undefined &&
+    cachedResponse &&
+    typeof cachedTime === 'number' &&
     currentTime - cachedTime < cacheRefreshTime
   ) {
     return cachedResponse;
@@ -75,7 +80,7 @@ const fetchWithCache = async ({
   }
   const responseJson =
     response.status === 204 ? undefined : await response.json();
-  const cacheEntry = {
+  const cacheEntry: CachedFetchStorageEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,
   };

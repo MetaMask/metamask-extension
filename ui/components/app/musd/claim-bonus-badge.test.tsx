@@ -96,19 +96,12 @@ describe('ClaimBonusBadge', () => {
       properties: {
         category: MetaMetricsEventCategory.MusdConversion,
         location: 'token_list_item',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         view_trigger: 'component_mounted',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         button_text: 'Claim 5% bonus',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         network_chain_id: '0x1',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         network_name: 'Ethereum Mainnet',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_symbol: 'MUSD',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         bonus_amount_range: '10.00 - 99.99',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         has_claimed_before: false,
       },
       sensitiveProperties: {},

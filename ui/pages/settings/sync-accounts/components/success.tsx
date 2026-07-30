@@ -85,6 +85,9 @@ const Success = ({
       gap={8}
       paddingTop={8}
       className="flex-1"
+      data-testid="qr-sync-success"
+      data-synced-wallet-count={walletCount}
+      data-synced-account-count={importedAccountCount}
     >
       <Box
         className="text-center"
@@ -116,7 +119,11 @@ const Success = ({
           </Text>
         )}
       </Box>
-      <Button className="w-full mt-10" onClick={onDone}>
+      <Button
+        className="w-full mt-10"
+        onClick={onDone}
+        data-testid="qr-sync-done-button"
+      >
         {t('done')}
       </Button>
     </Box>

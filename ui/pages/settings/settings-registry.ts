@@ -39,7 +39,7 @@ import {
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import {
-  getIsAddDeviceSyncEnabled,
+  getIsQrSyncEnabled,
   getIsPerpsIncludedInBuild,
 } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -93,7 +93,7 @@ export const SETTINGS_ROOT_SECTIONS: readonly {
       DEVELOPER_OPTIONS_ROUTE,
       DEVELOPER_TOOLS_ROUTE,
       ABOUT_US_ROUTE,
-      ...(getIsAddDeviceSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
+      ...(getIsQrSyncEnabled() ? [SYNC_ACCOUNTS_ROUTE] : []),
     ],
   },
 ] as const;
@@ -336,8 +336,8 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     iconName: IconName.SwapVertical,
   },
 
-  // --- Sync Accounts tab (only when ADD_DEVICE_SYNC_ENABLED=true) ---
-  ...(getIsAddDeviceSyncEnabled()
+  // --- Sync Accounts tab (only when QR_SYNC_ENABLED=true) ---
+  ...(getIsQrSyncEnabled()
     ? {
         [SYNC_ACCOUNTS_ROUTE]: {
           labelKey: 'syncAccounts',

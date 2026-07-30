@@ -1,9 +1,0 @@
-.mm-text-field-search {
-  // hides the native search icon and clear button
-  ::-webkit-search-decoration,
-  ::-webkit-search-cancel-button,
-  ::-webkit-search-results-button,
-  ::-webkit-search-results-decoration {
-    display: none;
-  }
-}

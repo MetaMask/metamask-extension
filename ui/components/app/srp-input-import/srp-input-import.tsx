@@ -17,6 +17,7 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldType } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -44,8 +45,6 @@ type SrpInputImportProps = {
   onClearCallback?: () => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SrpInputImport({
   onChange,
   onClearCallback,
@@ -359,11 +358,13 @@ export default function SrpInputImport({
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
           flexDirection={BoxFlexDirection.Column}
-          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          backgroundColor={
+            draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
+          }
           className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
-            <Box padding={4} style={{ flex: 1 }}>
+            <Box style={{ flex: 1 }}>
               <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
@@ -375,6 +376,7 @@ export default function SrpInputImport({
                           }
                         },
                       }}
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
                       error={

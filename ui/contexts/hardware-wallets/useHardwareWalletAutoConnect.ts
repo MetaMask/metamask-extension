@@ -224,7 +224,6 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,
@@ -314,7 +313,6 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,

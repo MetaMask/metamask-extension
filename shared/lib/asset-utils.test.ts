@@ -18,6 +18,7 @@ import {
   fetchAssetMetadata,
   toAssetId,
   fetchAssetMetadataForAssetIds,
+  getNativeAssetId,
   isEvmChainId,
   isTronSpecialAsset,
 } from './asset-utils';
@@ -37,6 +38,23 @@ jest.mock('./fetch-with-timeout', () => ({
 describe('asset-utils', () => {
   const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
   const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
+
+  describe('getNativeAssetId', () => {
+    it('returns the native asset id for a supported chain', () => {
+      expect(getNativeAssetId('eip155:1')).toBe(
+        getNativeAssetForChainId('eip155:1').assetId,
+      );
+    });
+
+    it('returns undefined when no chainId is given', () => {
+      expect(getNativeAssetId(undefined)).toBeUndefined();
+    });
+
+    it('returns undefined for a chain unknown to the asset map', () => {
+      // getNativeAssetForChainId throws on custom/unsupported networks.
+      expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
+    });
+  });
 
   describe('toAssetId', () => {
     beforeEach(() => {
@@ -141,6 +159,45 @@ describe('asset-utils', () => {
         undefined,
         result,
       ]);
+    });
+
+    it('creates Stellar classic asset ID from CODE-ISSUER reference', () => {
+      const ref =
+        'USDY-GAJMPX5NBOG6TQFPQGRABJEEB2YE7RFRLUKJDZAZGAD5GFX4J7TADAZ6';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(ref, chainId);
+      expect(result).toBe(`${chainId}/asset:${ref}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID from Soroban contract StrKey', () => {
+      const contractId =
+        'CAUP7NFABXE5TJRL3FKTPMWRLC7IAXYDCTHQRFSCLR5TMGKHOOQO772J';
+      const chainId = MultichainNetworks.STELLAR;
+
+      const result = toAssetId(contractId, chainId);
+      expect(result).toBe(`${chainId}/sep41:${contractId}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('creates Stellar SEP-41 asset ID when reference includes sep41: prefix', () => {
+      const contractId =
+        'CBOOCGZSVRSZFRE4U2NWR2B4RXYVJWRCBTGOUD2JPI2TDJPWMTJX7FZP';
+      const chainId = MultichainNetworks.STELLAR;
+
+      expect(toAssetId(contractId, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
+      expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
+        `${chainId}/sep41:${contractId}`,
+      );
     });
   });
 

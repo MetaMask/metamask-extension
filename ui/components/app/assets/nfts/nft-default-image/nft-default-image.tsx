@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'clsx';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -10,14 +9,13 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 type NftDefaultImageProps = {
   className: string;
   clickable?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftDefaultImage({
   className,
   clickable,

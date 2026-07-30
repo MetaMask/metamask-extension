@@ -85,6 +85,23 @@ export type LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction = {
 };
 
 /**
+ * Triggers a safe reload of the extension without disrupting user state.
+ */
+export type LegacyBackgroundApiServiceRequestSafeReloadAction = {
+  type: `LegacyBackgroundApiService:requestSafeReload`;
+  handler: LegacyBackgroundApiService['requestSafeReload'];
+};
+
+/**
+ * Opens the "Updating" page in a new tab and then triggers a safe extension
+ * reload. Used when an update is available.
+ */
+export type LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction = {
+  type: `LegacyBackgroundApiService:openUpdateTabAndReload`;
+  handler: LegacyBackgroundApiService['openUpdateTabAndReload'];
+};
+
+/**
  * Updates the phishing lists if necessary and then checks whether the given
  * website is a known phishing site.
  *
@@ -95,6 +112,18 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
   type: `LegacyBackgroundApiService:getPhishingResult`;
   handler: LegacyBackgroundApiService['getPhishingResult'];
 };
+
+/**
+ * Marks the notification popup as having been automatically closed.
+ *
+ * This lets us differentiate between the cases where we close the
+ * notification popup v.s. when the user closes the popup window directly.
+ */
+export type LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction =
+  {
+    type: `LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed`;
+    handler: LegacyBackgroundApiService['markNotificationPopupAsAutomaticallyClosed'];
+  };
 
 /**
  * Marks the password as forgotten.
@@ -195,6 +224,35 @@ export type LegacyBackgroundApiServiceGetSeedPhraseAction = {
 export type LegacyBackgroundApiServiceResetAccountAction = {
   type: `LegacyBackgroundApiService:resetAccount`;
   handler: LegacyBackgroundApiService['resetAccount'];
+};
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export type LegacyBackgroundApiServiceLookupSelectedNetworksAction = {
+  type: `LegacyBackgroundApiService:lookupSelectedNetworks`;
+  handler: LegacyBackgroundApiService['lookupSelectedNetworks'];
+};
+
+/**
+ * Enables the given network, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ *
+ * @param chainId - The chain ID of the network to enable.
+ */
+export type LegacyBackgroundApiServiceSetEnabledNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledNetworks'];
+};
+
+/**
+ * Enables all popular networks, then refreshes connectivity metadata for
+ * the selected and enabled networks.
+ */
+export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
+  type: `LegacyBackgroundApiService:setEnabledAllPopularNetworks`;
+  handler: LegacyBackgroundApiService['setEnabledAllPopularNetworks'];
 };
 
 /**
@@ -507,7 +565,10 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction
+  | LegacyBackgroundApiServiceRequestSafeReloadAction
+  | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceGetCodeAction
@@ -516,6 +577,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
+  | LegacyBackgroundApiServiceLookupSelectedNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledNetworksAction
+  | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction

@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -26,7 +26,10 @@ import {
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
+import { useAssetActivation } from '../hooks/useAssetActivation';
+import { useDispatch } from '../../../store/hooks';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
@@ -51,7 +54,7 @@ const TokenButtons = ({
 
   const currentChainId = token.chainId;
 
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
 
   useEffect(() => {
@@ -65,8 +68,16 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const opened = await goToBuy({
+      assetId: toAssetId(token.address, token.chainId),
+      chainId: token.chainId,
+    });
+    // The ramps gate can block the buy and show its own modal; don't report a
+    // buy click in that case.
+    if (!opened) {
+      return;
+    }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)
@@ -84,10 +95,12 @@ const TokenButtons = ({
     );
   }, [
     currentChainId,
+    token.address,
+    token.chainId,
     token.symbol,
     trackEvent,
     createEventBuilder,
-    openBuyCryptoInPdapp,
+    goToBuy,
   ]);
 
   const handleSendOnClick = useCallback(async () => {
@@ -126,60 +139,92 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
-  return (
-    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('buy')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721}
-      />
+  const {
+    deactivateAsset,
+    canDeactivate,
+    dismissErrorMessage,
+    isDeactivating,
+    errorMessage,
+  } = useAssetActivation({
+    assetId: token.address,
+    assetSymbol: token.symbol,
+  });
 
-      {shouldShowSendButton ? (
+  return (
+    <>
+      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
         <IconButton
           className="token-overview__button"
-          onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.Send}
+              name={IconName.Dollar}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
-          label={t('send')}
-          data-testid="eth-overview-send"
-          disabled={
-            token.isERC721 ||
-            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-          }
+          label={t('buy')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          disabled={token.isERC721}
         />
-      ) : null}
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+        {shouldShowSendButton ? (
+          <IconButton
+            className="token-overview__button"
+            onClick={handleSendOnClick}
+            Icon={
+              <Icon
+                name={IconName.Arrow2UpRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            label={t('send')}
+            data-testid="eth-overview-send"
+            disabled={
+              token.isERC721 ||
+              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            }
           />
-        }
-        onClick={handleSwapOnClick}
-        data-testid="token-overview-swap"
-        label={t('swap')}
-        disabled={!isExternalServicesEnabled || isMarketClosed}
+        ) : null}
+
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleSwapOnClick}
+          data-testid="token-overview-swap"
+          label={t('swap')}
+          disabled={!isExternalServicesEnabled || isMarketClosed}
+        />
+
+        {canDeactivate ? (
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.Trash}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={deactivateAsset}
+            data-testid="token-overview-deactivate-asset"
+            label={t('assetDeactivate') as string}
+            disabled={isDeactivating}
+          />
+        ) : null}
+      </Box>
+      <AssetActivationErrorToast
+        message={errorMessage}
+        onClose={dismissErrorMessage}
       />
-    </Box>
+    </>
   );
 };
 

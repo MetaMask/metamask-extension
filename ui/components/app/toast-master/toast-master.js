@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
-
 import React, { memo, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
@@ -38,7 +36,6 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { MerklClaimToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
@@ -56,6 +53,8 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -89,7 +88,6 @@ const MemoizedSurveyToast = memo(SurveyToast);
 const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
 const MemoizedPermittedNetworkToast = memo(PermittedNetworkToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
-const MemoizedMerklClaimToast = memo(MerklClaimToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
@@ -117,7 +115,6 @@ export function ToastMaster() {
         <MemoizedPrivacyPolicyToast />
         <MemoizedPermittedNetworkToast />
         <MemoizedInfuraSwitchToast />
-        <MemoizedMerklClaimToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />

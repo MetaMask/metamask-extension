@@ -1,14 +1,15 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SelectNetwork {
-  private driver: Driver;
-
   private readonly addCustomNetworkButton =
     '[data-testid="networks-page-add-custom-network-button"]';
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton = '[data-testid="settings-header-back-button"]';
+  private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
+
+  private readonly closeButton = '[data-testid="page-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton =
     '[data-testid="confirm-delete-network-modal-delete-button"]';
@@ -28,15 +29,20 @@ class SelectNetwork {
   private readonly drawerOverlay =
     'div[class*="bg-[var(--color-overlay-default)]"]';
 
+  private driver: Driver;
+
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
+  private readonly networksPageSuccessToast = {
+    testId: 'networks-page-network-success-toast',
+  };
+
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
-  private readonly searchButton =
-    '[data-testid="settings-header-search-button"]';
+  private readonly searchButton = '[data-testid="page-header-search-button"]';
 
-  private readonly searchInput = '[data-testid="settings-header-search-input"]';
+  private readonly searchInput = '[data-testid="page-header-search-input"]';
 
   private readonly selectNetworkMessage = {
     text: 'Manage networks',
@@ -48,22 +54,82 @@ class SelectNetwork {
     tag: 'p',
   };
 
+  private readonly showTestNetworksToggle =
+    'label.toggle-button:has([data-testid="networks-page-show-test-networks"])';
+
   private readonly yourNetworksMessage = {
     text: 'Your networks',
     tag: 'h4',
   };
 
-  private readonly showTestNetworksToggle = '.toggle-button';
-
-  private readonly networksPageSuccessToast = {
-    testId: 'networks-page-network-success-toast',
-  };
-
-  private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
-    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async checkChainInformationIsDisplayed(information: string): Promise<void> {
+    console.log(`Check chain information is displayed: ${information}`);
+    await this.driver.waitForSelector({
+      text: information,
+    });
+  }
+
+  async checkDiscoverButtonIsVisible(): Promise<void> {
+    console.log('Check Discover button is visible in network options');
+    await this.driver.waitForSelector(this.discoverButton);
+  }
+
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully edited!`,
+    });
+  }
+
+  /**
+   * Check if a network option is displayed in the select network dialog.
+   *
+   * @param networkName - The name of the network to check.
+   * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
+   */
+  async checkNetworkOptionIsDisplayed(
+    networkName: string,
+    shouldBeDisplayed: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Check if ${networkName} is ${
+        shouldBeDisplayed ? 'displayed' : 'not displayed'
+      } in select network dialog`,
+    );
+    const networkNameItem = `[data-testid="${networkName}"]`;
+    if (shouldBeDisplayed) {
+      await this.driver.waitForSelector(networkNameItem);
+    } else {
+      await this.driver.assertElementNotPresent(networkNameItem);
+    }
+  }
+
+  async checkNetworkRPCNumber(expectedNumber: number): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} RPC URLs to be displayed in select network dialog`,
+    );
+    await this.driver.wait(async () => {
+      const rpcNumber = await this.driver.findElements(this.rpcUrlItem);
+      return rpcNumber.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} RPC URLs found in select network dialog`);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -80,6 +146,33 @@ class SelectNetwork {
       throw e;
     }
     console.log('Select network dialog is loaded');
+  }
+
+  async checkPopularNetworkIsDisplayed({
+    chainId,
+    networkName,
+  }: {
+    chainId: string;
+    networkName: string;
+  }): Promise<void> {
+    console.log(
+      `Check if ${networkName} is displayed in popular network options`,
+    );
+    await this.driver.waitForSelector({
+      text: networkName,
+      tag: 'p',
+      parent: {
+        css: `[data-testid="popular-network-${chainId}"]`,
+      },
+    });
+  }
+
+  async checkRpcIsSelected(rpcName: string): Promise<void> {
+    console.log(`Check RPC ${rpcName} is selected in network dialog`);
+    await this.driver.waitForSelector({
+      text: rpcName,
+      tag: 'button',
+    });
   }
 
   async checkYourNetworksDialogIsLoaded(): Promise<void> {
@@ -118,19 +211,9 @@ class SelectNetwork {
     await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
-  /**
-   * Disable a featured default network from the network list.
-   * Default networks are removed immediately without a confirmation modal.
-   *
-   * @param chainId - The chain ID of the network to disable.
-   */
-  async disableNetwork(chainId: string): Promise<void> {
-    console.log(`Disable network ${chainId} from network list`);
-    await this.openNetworkListOptions(chainId);
-    await this.driver.clickElement(this.deleteNetworkButton);
-    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal, {
-      waitAtLeastGuard: 200,
-    });
+  async clickDiscoverButton(): Promise<void> {
+    console.log('Click Discover button in network options');
+    await this.driver.clickElement(this.discoverButton);
   }
 
   /**
@@ -149,6 +232,21 @@ class SelectNetwork {
     });
     await this.driver.clickElement(this.confirmDeleteNetworkButton);
     await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal);
+  }
+
+  /**
+   * Disable a featured default network from the network list.
+   * Default networks are removed immediately without a confirmation modal.
+   *
+   * @param chainId - The chain ID of the network to disable.
+   */
+  async disableNetwork(chainId: string): Promise<void> {
+    console.log(`Disable network ${chainId} from network list`);
+    await this.openNetworkListOptions(chainId);
+    await this.driver.clickElement(this.deleteNetworkButton);
+    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal, {
+      waitAtLeastGuard: 200,
+    });
   }
 
   async fillNetworkSearchInput(networkName: string): Promise<void> {
@@ -185,16 +283,16 @@ class SelectNetwork {
     await this.driver.waitForSelector(this.selectRpcMessage);
   }
 
-  async selectNetworkName(networkName: string): Promise<void> {
-    console.log(`Click ${networkName}`);
-    const networkNameItem = `[data-testid="${networkName}"]`;
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    console.log(`Click ${chainId}`);
+    const networkNameItem = `[data-testid="network-list-item-${chainId}"]`;
     await this.driver.clickElementAndWaitToDisappear(networkNameItem);
     await this.driver.assertElementNotPresent('.loading-overlay');
   }
 
-  async selectNetworkByChainId(chainId: string): Promise<void> {
-    console.log(`Click ${chainId}`);
-    const networkNameItem = `[data-testid="network-list-item-${chainId}"]`;
+  async selectNetworkName(networkName: string): Promise<void> {
+    console.log(`Click ${networkName}`);
+    const networkNameItem = `[data-testid="${networkName}"]`;
     await this.driver.clickElementAndWaitToDisappear(networkNameItem);
     await this.driver.assertElementNotPresent('.loading-overlay');
   }
@@ -212,104 +310,6 @@ class SelectNetwork {
     console.log('Toggle show test network in select network dialog');
     await this.driver.clickElement(this.showTestNetworksToggle);
     await this.driver.waitForElementToStopMoving(this.showTestNetworksToggle);
-  }
-
-  /**
-   * Check if a network option is displayed in the select network dialog.
-   *
-   * @param networkName - The name of the network to check.
-   * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
-   */
-  async checkNetworkOptionIsDisplayed(
-    networkName: string,
-    shouldBeDisplayed: boolean = true,
-  ): Promise<void> {
-    console.log(
-      `Check if ${networkName} is ${
-        shouldBeDisplayed ? 'displayed' : 'not displayed'
-      } in select network dialog`,
-    );
-    const networkNameItem = `[data-testid="${networkName}"]`;
-    if (shouldBeDisplayed) {
-      await this.driver.waitForSelector(networkNameItem);
-    } else {
-      await this.driver.assertElementNotPresent(networkNameItem);
-    }
-  }
-
-  async checkNetworkRPCNumber(expectedNumber: number): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} RPC URLs to be displayed in select network dialog`,
-    );
-    await this.driver.wait(async () => {
-      const rpcNumber = await this.driver.findElements(this.rpcUrlItem);
-      return rpcNumber.length === expectedNumber;
-    }, 10000);
-    console.log(`${expectedNumber} RPC URLs found in select network dialog`);
-  }
-
-  async checkRpcIsSelected(rpcName: string): Promise<void> {
-    console.log(`Check RPC ${rpcName} is selected in network dialog`);
-    await this.driver.waitForSelector({
-      text: rpcName,
-      tag: 'button',
-    });
-  }
-
-  async clickDiscoverButton(): Promise<void> {
-    console.log('Click Discover button in network options');
-    await this.driver.clickElement(this.discoverButton);
-  }
-
-  async checkChainInformationIsDisplayed(information: string): Promise<void> {
-    console.log(`Check chain information is displayed: ${information}`);
-    await this.driver.waitForSelector({
-      text: information,
-    });
-  }
-
-  async checkDiscoverButtonIsVisible(): Promise<void> {
-    console.log('Check Discover button is visible in network options');
-    await this.driver.waitForSelector(this.discoverButton);
-  }
-
-  async checkPopularNetworkIsDisplayed({
-    chainId,
-    networkName,
-  }: {
-    chainId: string;
-    networkName: string;
-  }): Promise<void> {
-    console.log(
-      `Check if ${networkName} is displayed in popular network options`,
-    );
-    await this.driver.waitForSelector({
-      text: networkName,
-      tag: 'p',
-      parent: {
-        css: `[data-testid="popular-network-${chainId}"]`,
-      },
-    });
-  }
-
-  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
-    );
-    await this.driver.waitForSelector({
-      ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully added!`,
-    });
-  }
-
-  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
-    );
-    await this.driver.waitForSelector({
-      ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully edited!`,
-    });
   }
 }
 

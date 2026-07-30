@@ -1,12 +1,14 @@
 import type { CaipAssetType } from '@metamask/utils';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ScreenViewedEntryPoint,
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
@@ -29,6 +31,7 @@ export type AssetListProps = {
   ) => void;
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
+  entryPoint?: ScreenViewedEntryPoint;
 };
 
 const TokenListContainer = React.memo(
@@ -44,7 +47,7 @@ const TokenListContainer = React.memo(
         trace({ name: TraceName.AssetDetails });
         onClickAsset(chainId, tokenAddress, assetId);
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.TokenScreenOpened)
+          createEventBuilder(MetaMetricsEventName.TokenScreenViewed)
             .addCategory(MetaMetricsEventCategory.Navigation)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -71,6 +74,7 @@ const AssetList = ({
   onClickAsset,
   showTokensLinks,
   safeChains,
+  entryPoint,
 }: AssetListProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
@@ -82,6 +86,8 @@ const AssetList = ({
   const { hasMusdBalance } = useMusdBalance();
   const { selectedChainId } = useMusdNetworkFilter();
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+
+  useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
   // Use the centralized token filter that includes min balance check
   // This is the source of truth for which tokens are eligible for mUSD conversion

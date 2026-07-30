@@ -133,6 +133,8 @@ type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  consentDecisionMade?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -297,11 +299,20 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
+    const {
+      analyticsId,
+      optedIn,
+      consentDecisionMade,
+      ...metaMetricsControllerPatch
+    } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (analyticsId !== undefined || optedIn !== undefined) {
+    if (
+      analyticsId !== undefined ||
+      optedIn !== undefined ||
+      consentDecisionMade !== undefined
+    ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
@@ -316,6 +327,9 @@ class FixtureBuilderV2 {
       }
       if (optedIn !== undefined) {
         analyticsPatch.optedIn = optedIn;
+      }
+      if (consentDecisionMade !== undefined) {
+        analyticsPatch.consentDecisionMade = consentDecisionMade;
       }
       merge(analyticsController, analyticsPatch);
     }
@@ -897,6 +911,38 @@ class FixtureBuilderV2 {
       };
     }
     return this;
+  }
+
+  withNetworkControllerOnPulseChain(): this {
+    const pulseChainId = '0x171';
+    const pulseChainClientId = 'pulsechain';
+
+    return this.withNetworkController({
+      selectedNetworkClientId: pulseChainClientId,
+      networkConfigurationsByChainId: {
+        [pulseChainId]: {
+          blockExplorerUrls: ['https://scan.pulsechain.com'],
+          chainId: pulseChainId,
+          defaultBlockExplorerUrlIndex: 0,
+          defaultRpcEndpointIndex: 0,
+          name: 'PulseChain',
+          nativeCurrency: 'PLS',
+          rpcEndpoints: [
+            {
+              networkClientId: pulseChainClientId,
+              type: RpcEndpointType.Custom,
+              url: 'https://rpc.pulsechain.com',
+            },
+          ],
+        },
+      },
+      networksMetadata: {
+        [pulseChainClientId]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+    }).withEnabledNetworks({ eip155: { [pulseChainId]: true } });
   }
 
   // We cannot simply use withSelectedNetwork because Sei is not enabled by default

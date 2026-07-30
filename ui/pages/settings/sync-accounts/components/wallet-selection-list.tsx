@@ -149,6 +149,7 @@ export const WalletSelectionList = ({
             paddingRight={4}
             paddingTop={2}
             paddingBottom={2}
+            data-testid={`qr-sync-wallet-row-${item.walletId}`}
           >
             <Checkbox
               id={`wallet-select-${item.walletId}`}
