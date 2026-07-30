@@ -127,6 +127,9 @@ export const lavamoatPlugin = (args: Args) =>
       } else if (chunk.name === 'service-worker.ts') {
         return {
           mode: 'safe',
+          staticShims: [
+            join(rootDir, 'app/scripts/load/init-state-hooks.ts'),
+          ],
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,

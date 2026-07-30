@@ -2,6 +2,7 @@
 //
 // Runs before LavaMoat solely to expose one shared object. The root
 // compartment populates this object with hooks.
-globalThis.stateHooks ??= {} as typeof stateHooks;
-
-export {};
+// This must remain a script because LavaMoat evaluates static shims as raw
+// source.
+// eslint-disable-next-line import-x/unambiguous
+globalThis.stateHooks ??= Object.create(Object.prototype);

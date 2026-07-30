@@ -37,6 +37,7 @@ describe('LavamoatPlugin', () => {
     it('configures the service worker as a protected execution root', () => {
       const result = runtimeConfig(mockChunk('service-worker.ts')) as {
         mode: string;
+        staticShims: string[];
         embeddedOptions?: {
           scuttleGlobalThis?: {
             enabled: boolean;
@@ -46,6 +47,12 @@ describe('LavamoatPlugin', () => {
       };
 
       assert.strictEqual(result.mode, 'safe');
+      assert.strictEqual(result.staticShims.length, 1);
+      assert.ok(
+        result.staticShims[0].endsWith(
+          '/app/scripts/load/init-state-hooks.ts',
+        ),
+      );
       const exceptions =
         result.embeddedOptions?.scuttleGlobalThis?.exceptions ?? [];
       assert.ok(
